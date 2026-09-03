@@ -98,7 +98,7 @@ jor_raise1,322,69,0	script	#EP21_GimliSafeSpot	WARPNPC,2,2,{
 luna_sf1,48,259,0	script	#EP21_GimliSafeExit	WARPNPC,2,2,{ warp "jor_raise1",322,72; end; }
 
 jor_mbase,203,190,0	script	#EP21_CentralBarrackIn	WARPNPC,2,2,{ warp "mbase_in",92,123; end; }
-mbase_in,92,120,0	script	#EP21_CentralBarrackOut	WARPNPC,2,2,{ warp "jor_mbase",203,186; end; }
+mbase_in,94,120,0	script	#EP21_CentralBarrackOut	WARPNPC,2,2,{ warp "jor_mbase",203,186; end; }
 jor_albe,120,146,0	script	#EP21_AlbertaOfficeIn	WARPNPC,2,2,{ warp "jalbe_in",68,42; end; }
 jalbe_in,68,39,0	script	#EP21_AlbertaOfficeOut	WARPNPC,2,2,{ warp "jor_albe",120,142; end; }
 

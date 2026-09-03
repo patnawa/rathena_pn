@@ -668,7 +668,10 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Hazy Forest",I10, "Horror Toy Factory",I11, "Malangdo Culvert",I12,
 		"Nidhoggur's Nest",I13, "Octopus Cave",I14, "Old Glast Heim",I15,
 		"Orc's Memory",I16, "Sarah and Fenrir",I17, "Sara Memory",I18,
-		"Sealed Shrine",I19, "Wolfchev's Laboratory",I20;
+		"Sealed Shrine",I19, "Wolfchev's Laboratory",I20,
+		"Episode 21: Gimli Infiltration",I21, "Episode 21: Mysterious Ghost Ship",I22,
+		"Episode 21: Final Battle",I23, "Episode 21: Secret Altar",I24,
+		"Episode 21: Silent Sanctuary",I25;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -706,6 +709,16 @@ I18: Restrict("RE");
 I19: Go("monk_test",306,143);
 I20: Restrict("RE");
 	Go("lhz_dun04",148,269);
+I21: Restrict("RE");
+	Go("jor_tmple1",238,268);
+I22: Restrict("RE");
+	Go("jor_albe",190,186);
+I23: Restrict("RE");
+	Go("jor_raise1",132,323);
+I24: Restrict("RE");
+	Go("jor_crk_p",83,95);
+I25: Restrict("RE");
+	Go("jor_crk",137,138);
 
 // --------------------------------------------------
 	Special:

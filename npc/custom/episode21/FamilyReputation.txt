@@ -1,0 +1,99 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Family Reputation
+//===== Description: =========================================
+//= Restores Mandel's published seven-family supply daily.
+//= Each completion awards 100 reputation with the selected
+//= family, ten Wigner vouchers, and resets at 04:00.
+//============================================================
+
+function	script	EP21_AllFamilyReputation	{
+	for (.@id = 13; .@id <= 19; ++.@id) {
+		if (get_reputation_points(.@id) < 1000)
+			return false;
+	}
+	return true;
+}
+
+jor_mbase,219,315,4	script	Mandel#ep21_reputation	4_M_MANAGER,{
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && EP21_Supply_Daily != EP21_DailyKey()";
+	mes "[Mandel]";
+	if (!callfunc("EP21_GhostShipUnlocked")) {
+		mes "The resistance has not approved supply contracts for you yet. Finish the Ghost Ship report first.";
+		close;
+	}
+
+	setarray .@rep[1],13,14,15,16,17,18,19;
+	setarray .@item[1],1001629,1001648,1001639,1001637,1001646,1001642,1001645;
+	setarray .@quest[1],17782,17783,17785,17786,17787,17784,17788;
+	setarray .@family$[1],"Gaebolg","Nerius","Heine","Lugenburg","Walter","Wigner","Richard";
+	setarray .@material$[1],"Jormi supply","Ice Seahorse supply","Jortus supply","Lugenburg supply","Walter supply","Seawind supply","Letterster supply";
+	.@key = callfunc("EP21_DailyKey");
+
+	if (EP21_Supply_Daily == .@key) {
+		mes "Today's procurement contract is already complete. New contracts are posted at 04:00 server time.";
+		next;
+		goto L_Reputation;
+	}
+
+	if (EP21_SupplyFamily >= 1 && EP21_SupplyFamily <= 7) {
+		.@i = EP21_SupplyFamily;
+		mes "Your active contract is for the ^3366FF" + .@family$[.@i] + " family^000000.";
+		mes "Bring 10 units of item ^3366FF" + .@item[.@i] + "^000000 (" + .@material$[.@i] + ").";
+		next;
+		.@choice = select("Deliver the 10 materials.:Review all reputation.:Cancel this contract.:Leave.");
+		if (.@choice == 2)
+			goto L_Reputation;
+		if (.@choice == 3) {
+			if (isbegin_quest(.@quest[.@i]))
+				erasequest .@quest[.@i];
+			EP21_SupplyFamily = 0;
+			mes "The contract was cancelled. You may choose another family today.";
+			close;
+		}
+		if (.@choice == 4)
+			close;
+		if (countitem(.@item[.@i]) < 10) {
+			mes "You do not have all ten materials yet.";
+			close;
+		}
+		if (!checkweight(1001618,10)) {
+			mes "Make room for ten Wigner Merchant Guild Vouchers first.";
+			close;
+		}
+		delitem .@item[.@i],10;
+		getitem 1001618,10;
+		add_reputation_points .@rep[.@i],100;
+		if (.@rep[.@i] == 13)
+			EP21_Reputation = get_reputation_points(13);
+		if (isbegin_quest(.@quest[.@i]) == 1)
+			completequest .@quest[.@i];
+		EP21_Supply_Daily = .@key;
+		EP21_SupplyFamily = 0;
+		mes "Contract complete: ^3366FF10 Wigner vouchers^000000 and ^33AA33100 " + .@family$[.@i] + " reputation^000000.";
+		if (callfunc("EP21_AllFamilyReputation"))
+			mes "Every family now trusts you completely. Hard Final Battle is unlocked.";
+		close;
+	}
+
+	mes "Choose one family contract. Only one can be completed per day.";
+	next;
+	.@choice = select("Gaebolg - 10 Jormi supplies.:Nerius - 10 Ice Seahorse supplies.:Heine - 10 Jortus supplies.:Lugenburg - 10 family supplies.:Walter - 10 fleet supplies.:Wigner - 10 Seawind supplies.:Richard - 10 Letterster supplies.:Review reputation.:Leave.");
+	if (.@choice == 8)
+		goto L_Reputation;
+	if (.@choice == 9)
+		close;
+	EP21_SupplyFamily = .@choice;
+	setquest .@quest[.@choice];
+	mes "Contract registered. Return with ten units of item ^3366FF" + .@item[.@choice] + "^000000.";
+	close;
+
+L_Reputation:
+	mes "[Episode 21 Family Reputation]";
+	for (.@i = 1; .@i <= 7; ++.@i)
+		mes .@family$[.@i] + ": ^3366FF" + get_reputation_points(.@rep[.@i]) + " / 1000^000000";
+	if (callfunc("EP21_AllFamilyReputation"))
+		mes "^33AA33Hard Final Battle unlocked.^000000";
+	else
+		mes "Hard Final Battle requires 1,000 with all seven families.";
+	close;
+}

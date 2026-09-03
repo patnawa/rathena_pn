@@ -1,0 +1,327 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Black-Haired Beast and finale bridge
+//= Connects Ghost Ship to Final Battle through the published
+//= tablet repair, eyewitnesses, and serpent investigation.
+//= Reference: https://wiki.muhro.eu/21_Age_of_Heroes/en
+//============================================================
+
+function	script	EP21_MainComplete	{
+	return EP21_Main_Complete || isbegin_quest(18360) == 2 || isbegin_quest(18361) == 2;
+}
+
+function	script	EP21_EnterInstance	{
+	.@name$ = getarg(0);
+	.@party_id = getcharid(1);
+	if (.@party_id) {
+		.@iid = instance_id(IM_PARTY);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "[Episode 21]";
+			mes "Your party already owns another active instance.";
+			close;
+		}
+		if (!.@iid) {
+			if (!is_party_leader()) {
+				mes "[Episode 21]";
+				mes "Your party leader must create the entrance first.";
+				close;
+			}
+			.@iid = instance_create(.@name$,IM_PARTY,.@party_id);
+		}
+	} else {
+		.@iid = instance_id(IM_CHAR);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "[Episode 21]";
+			mes "You already own another active solo instance.";
+			close;
+		}
+		if (!.@iid)
+			.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
+	}
+	if (.@iid < 1) {
+		mes "[Episode 21]";
+		mes "The temporal route could not be stabilized. Try again shortly.";
+		close;
+	}
+	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+		mes "[Episode 21]";
+		mes "The instance map is not ready.";
+		close;
+	}
+	end;
+}
+
+jor_mbase,203,186,4	script	Tris#ep21_finale	22301,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && !EP21_MainComplete()";
+	mes "[Tris]";
+	if (!callfunc("EP21_GhostShipUnlocked")) {
+		mes "Resolve Maristella's Ghost Ship expedition before we launch the final operation.";
+		close;
+	}
+	if (callfunc("EP21_MainComplete")) {
+		EP21_Main_Complete = 1;
+		mes "The Age of Heroes is preserved, even if the rift continues to replay those memories.";
+		close;
+	}
+	if (isbegin_quest(16818)) {
+		if (isbegin_quest(16818) == 1)
+			completequest 16818;
+		if (!isbegin_quest(23249))
+			setquest 23249;
+		mes "Heine's connection is failing. Take the tablet to the upstairs room at ^3366FF(mbase_in 71,126)^000000.";
+		close;
+	}
+	.@active = 0;
+	for (.@qid = 23249; .@qid <= 23255; ++.@qid)
+		.@active = .@active || isbegin_quest(.@qid);
+	for (.@qid = 18343; .@qid <= 18360; ++.@qid)
+		.@active = .@active || isbegin_quest(.@qid);
+	if (!.@active) {
+		setquest 23249;
+		mes "Your earlier Ghost Ship clearance has been recognized. Take Heine's failing tablet to ^3366FF(mbase_in 71,126)^000000.";
+		close;
+	}
+	if (isbegin_quest(23253) == 1) {
+		if (!checkweight(1001618,50)) {
+			mes "Make room for fifty Wigner vouchers first.";
+			close;
+		}
+		changequest 23253,23254;
+		getitem 1001618,50;
+		callfunc "EP21_AddReputation",50;
+		getexp 547793770,239980220;
+		mes "The cult is moving outside. Find Nadoyo beside the barracks.";
+		mes "Reward: ^3366FF50 Wigner vouchers^000000 and ^33AA3350 Gaebolg reputation^000000.";
+		close;
+	}
+	if (isbegin_quest(23255) == 1) {
+		if (EP21_ReportMask != 7) {
+			mes "We still need all three eyewitness reports.";
+			close;
+		}
+		completequest 23255;
+		setquest 18343;
+		mes "Tan and Nadoyo vanished. Search the Rock Crevice at ^3366FF(jor_raise1 198,189)^000000.";
+		close;
+	}
+	if (isbegin_quest(18345) == 1) {
+		changequest 18345,18346;
+		mes "The cult is feeding mana to a serpent. Meet your companions through the small door beside Heine's room.";
+		close;
+	}
+	mes "Repair Heine's tablet first. Our next move depends on what it remembers.";
+	close;
+}
+
+mbase_in,71,126,4	script	Heine's Tablet#ep21_repair	4_VR_BOOK_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23249) == 1 || isbegin_quest(23250) == 1 || isbegin_quest(23251) == 1 || isbegin_quest(23252) == 1";
+	mes "[Heine's Tablet]";
+	if (isbegin_quest(23249) == 1) {
+		mes "The connection is stable, but these ancient circuits need fresh Vellelopy.";
+		next;
+		if (select("I'll do as you order.:Not yet.") == 2)
+			close;
+		changequest 23249,23250;
+		mes "Bring ^3366FF2 Vellelopy (item 1001643)^000000 from Velellings in the Northern Rising Land.";
+		close;
+	}
+	if (isbegin_quest(23250) == 1) {
+		if (countitem(1001643) < 2) {
+			mes "I still require two fresh Vellelopy.";
+			close;
+		}
+		delitem 1001643,2;
+		changequest 23250,23251;
+		mes "The tablet absorbs the material. Heine offers to tell an old story while its mana pathways rebuild.";
+		close;
+	}
+	if (isbegin_quest(23251) == 1) {
+		mes "Heine explains why he first helped Tan and Tris, then spends much longer complaining about both of them.";
+		changequest 23251,23252;
+		close;
+	}
+	if (isbegin_quest(23252) == 1) {
+		if (!checkweight(1001627,1)) {
+			mes "Make room for the repaired tablet first.";
+			close;
+		}
+		mes "Heine reads the mana of a traveler from the future and agrees to help eliminate the Rgan threat at its source.";
+		getitem 1001627,1;
+		changequest 23252,23253;
+		mes "Received ^3366FFHeine's Tablet^000000. Report to Tris.";
+		close;
+	}
+	mes "The restored tablet projects a clear image of Heine.";
+	close;
+}
+
+jor_mbase,209,186,4	script	Nadoyo#ep21_reports	22303,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23254) == 1";
+	mes "[Nadoyo]";
+	if (isbegin_quest(23254) != 1) {
+		mes "Something beneath the temple is drawing the cult together.";
+		close;
+	}
+	changequest 23254,23255;
+	EP21_ReportMask = 0;
+	mes "I saw an enormous serpent. Gather the three eyewitness reports, then return to Tris.";
+	close;
+}
+
+jor_mbase,62,194,4	script	Wounded Soldier#ep21_report	4_M_KNIGHT_SILVER,{
+	if (isbegin_quest(23255) != 1) { mes "[Wounded Soldier]"; mes "The northern patrol barely escaped."; close; }
+	mes "[Wounded Soldier]";
+	mes "Cultists carried mana vessels toward a sealed chamber beneath the temple.";
+	EP21_ReportMask = EP21_ReportMask | 1;
+	mes "Report recorded.";
+	close;
+}
+jor_mbase,186,250,4	script	Exhausted Soldier#ep21_report	4_M_KNIGHT_GOLD,{
+	if (isbegin_quest(23255) != 1) { mes "[Exhausted Soldier]"; mes "Every patrol route is stretched thin."; close; }
+	mes "[Exhausted Soldier]";
+	mes "Tan and Nadoyo followed a tremor toward the Raised Land and did not return.";
+	EP21_ReportMask = EP21_ReportMask | 2;
+	mes "Report recorded.";
+	close;
+}
+jor_mbase,216,297,4	script	Cult Escapee#ep21_report	4_M_MONK,{
+	if (isbegin_quest(23255) != 1) { mes "[Cult Escapee]"; mes "The church hides chambers even its believers never see."; close; }
+	mes "[Cult Escapee]";
+	mes "The priests spoke of resurrecting Jormungandr by feeding it the mana of believers.";
+	EP21_ReportMask = EP21_ReportMask | 4;
+	mes "Report recorded. Return to Tris when all three accounts are collected.";
+	close;
+}
+
+jor_mbase,161,341,4	script	Walter Sailor#ep21_route	4_M_MANAGER,{
+	mes "[Walter Sailor]";
+	if (!callfunc("EP21_GhostShipUnlocked")) {
+		mes "The northern route is reserved for resistance operations.";
+		close;
+	}
+	mes "I can take you to the resistance landing in the Northern Rising Land.";
+	next;
+	if (select("Travel to the Raised Land.:Stay here.") == 2)
+		close;
+	warp "jor_raise1",116,330;
+	end;
+}
+
+jor_raise1,198,189,0	script	Rock Crevice#ep21	CLEAR_NPC,2,2,{
+	if (isbegin_quest(18343) != 1) {
+		message strcharinfo(0),"The narrow crevice is empty.";
+		end;
+	}
+	warp "luna_sf1",44,264;
+	end;
+}
+luna_sf1,47,264,4	script	Nadoyo#ep21_crevice	22303,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18343) == 1";
+	mes "[Nadoyo]";
+	if (isbegin_quest(18343) == 1) {
+		changequest 18343,18344;
+		mes "Tan found a hidden chamber. Check the Decorative Door at ^3366FF(jor_raise1 128,323)^000000.";
+		close;
+	}
+	mes "The hidden route is secure.";
+	close;
+}
+luna_sf1,44,260,0	script	#EP21_CreviceExit	WARPNPC,2,2,{ warp "jor_raise1",198,186; end; }
+
+jor_raise1,128,323,0	script	Decorative Door#ep21	CLEAR_NPC,2,2,{
+	if (isbegin_quest(18344) == 1 || isbegin_quest(18347) == 1 || isbegin_quest(18348) == 1 || isbegin_quest(18349) == 1 || callfunc("EP21_MainComplete")) {
+		warp "jor_tmple1",170,304;
+		end;
+	}
+	message strcharinfo(0),"The decorated stone door will not react to you.";
+	end;
+}
+
+jor_tmple1,170,304,4	script	Cult Priest#ep21_serpent	4_M_MONK,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18344) == 1";
+	mes "[Cult Priest]";
+	if (isbegin_quest(18344) == 1) {
+		changequest 18344,18345;
+		mes "The sleeping serpent devours human mana. When it wakes, the resistance and every deserter will be swallowed first.";
+		mes "Tan and Reinhardt went ahead. Nadoyo must warn Tris.";
+		close;
+	}
+	mes "The sealed chamber hums with stolen mana.";
+	close;
+}
+
+jor_tmple1,174,304,4	script	Nadoyo#ep21_temple	22303,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18345) == 1 || isbegin_quest(18347) == 1";
+	mes "[Nadoyo]";
+	if (isbegin_quest(18345) == 1) {
+		mes "Tris must know about the serpent now. I will return us to command.";
+		close2;
+		warp "jor_mbase",203,182;
+		end;
+	}
+	if (isbegin_quest(18347) == 1) {
+		changequest 18347,18348;
+		mes "Heine found a way to join the battle without erasing history. Use the tablet beside the inner door.";
+		close;
+	}
+	mes "The battle route remains open for those carrying Heine's tablet.";
+	close;
+}
+
+mbase_in,75,126,0	script	Small Door#ep21	CLEAR_NPC,2,2,{
+	if (isbegin_quest(18346) != 1) {
+		message strcharinfo(0),"The small room is quiet.";
+		end;
+	}
+	message strcharinfo(0),"Nyar waits inside with Heine's projection.";
+	end;
+}
+
+mbase_in,80,126,4	script	Nyar#ep21_plan	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18346) == 1";
+	mes "[Nyar]";
+	if (isbegin_quest(18346) != 1) {
+		mes "Changing history directly would collapse the route. Heine is looking for a narrower path.";
+		close;
+	}
+	if (!checkweight(1001618,10)) {
+		mes "Make room for ten Wigner vouchers first.";
+		close;
+	}
+	changequest 18346,18347;
+	getitem 1001618,10;
+	callfunc "EP21_AddReputation",50;
+	getexp 224735900,119990000;
+	mes "Heine can weave you into the remembered battle without changing its fixed events. Return to the Decorative Door.";
+	mes "Reward: ^3366FF10 Wigner vouchers^000000 and ^33AA3350 Gaebolg reputation^000000.";
+	close;
+}
+
+jor_tmple1,178,304,4	script	Heine's Tablet#ep21_final	4_VR_BOOK_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18348) == 1";
+	mes "[Heine's Tablet]";
+	if (isbegin_quest(18348) != 1) {
+		mes "The tablet is waiting for every resistance captain to take position.";
+		close;
+	}
+	mes "Everyone has voted to proceed. I will share the spell that lets us reach every mana channel at once.";
+	next;
+	if (select("Start Final Battle.:Wait.") == 2)
+		close;
+	callfunc "EP21_EnterInstance","Final Battle";
+}
+
+jor_tmple1,182,304,4	script	Nyar#ep21_after_final	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18349) == 1";
+	mes "[Nyar]";
+	if (isbegin_quest(18349) == 1) {
+		changequest 18349,18350;
+		mes "The serpent fell, but its cult concentrated the remaining power elsewhere. Follow me to the hidden altar.";
+		close2;
+		warp "jor_crk_p",83,95;
+		end;
+	}
+	mes "The Decorative Door is the recovery route for the final operation.";
+	close;
+}
+
+jor_raise1,116,330,0	script	#EP21_RaisedReturn	WARPNPC,2,2,{ warp "jor_mbase",161,337; end; }

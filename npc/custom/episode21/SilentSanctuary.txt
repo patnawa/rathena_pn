@@ -1,0 +1,143 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Silent Sanctuary
+//===== Description: =========================================
+//= Restores the ten-minute curse-settling gate, Lasgand's
+//= three resurrection phases, and the Episode 21 finale.
+//============================================================
+
+jor_crk,137,138,0	script	Rift Disturbance#ep21	CLEAR_NPC,2,2,{
+	if (isbegin_quest(18356) != 1 && isbegin_quest(18357) != 1 && isbegin_quest(18358) != 1 && isbegin_quest(18359) != 1) {
+		message strcharinfo(0),"The northern rift is quiet.";
+		end;
+	}
+	warp "jor_twig",187,198;
+	end;
+}
+
+jor_twig,187,198,4	script	Nyar Clone#ep21_sanctuary	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18356) == 1 || isbegin_quest(18357) == 1 || isbegin_quest(18358) == 1 || isbegin_quest(18359) == 1";
+	mes "[Nyar Clone]";
+	if (isbegin_quest(18356) == 1) {
+		changequest 18356,18357;
+		mes "Lehar and Voglinde are lifting Lasgand's curse. They need ten minutes without interruption.";
+		mes "Return when the Settling the Curse timer expires.";
+		close;
+	}
+	if (isbegin_quest(18357) == 1) {
+		if (checkquest(18357,PLAYTIME) != 2) {
+			mes "The curse is still settling. The quest window shows the remaining time.";
+			close;
+		}
+		erasequest 18357;
+		setquest 18358;
+		mes "The curse is broken, but Lasgand keeps resurrecting through a Heart Piece of Ymir. Confirm what is happening inside.";
+		next;
+		if (select("Open Silent Sanctuary.:Wait.") == 2)
+			close;
+		callfunc "EP21_EnterInstance","Silent Sanctuary";
+	}
+	if (isbegin_quest(18358) == 1) {
+		mes "Lasgand is still resurrecting. Re-enter Silent Sanctuary and complete the confirmation.";
+		next;
+		if (select("Enter Silent Sanctuary.:Wait.") == 2)
+			close;
+		callfunc "EP21_EnterInstance","Silent Sanctuary";
+	}
+	if (isbegin_quest(18359) == 1) {
+		changequest 18359,18360;
+		mes "The curse is gone, but the Heart Piece still produces Rgan. Nillem and Nyar need your report at the rift.";
+		close2;
+		warp "jor_crk",140,138;
+		end;
+	}
+	mes "The repeating memory remains accessible through the rift.";
+	close;
+}
+
+jor_crk,140,138,4	script	Nyar#ep21_complete	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18360) == 1";
+	mes "[Nyar]";
+	if (isbegin_quest(18360) != 1) {
+		mes "The rift repeats the same span of history, but it no longer threatens the present.";
+		close;
+	}
+	if (!checkweight(1001618,70)) {
+		mes "Make room for seventy Wigner vouchers first.";
+		close;
+	}
+	completequest 18360;
+	setquest 18361;
+	completequest 18361;
+	EP21_Main_Complete = 1;
+	getitem 1001618,70;
+	callfunc "EP21_AddReputation",60;
+	getexp 674207720,119990110;
+	mes "The rift cannot be sealed, so its time now repeats. Your deeds have entered the history books as part of the Age of Heroes.";
+	mes "Reward: ^3366FF70 Wigner vouchers^000000 and ^33AA3360 Gaebolg reputation^000000.";
+	mes "Episode 21 complete. Normal Final Battle is unlocked; Hard requires 1,000 reputation with all seven families.";
+	close;
+}
+
+1@twbs2,1,1,0	script	#EP21_SilentSanctuary_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	'ss_stage = 0;
+	'ss_round = 0;
+	enablenpc instance_npcname("Aurelie#ep21_ss_start");
+	mapannounce instance_mapname("1@twbs2"),"Silent Sanctuary: speak with Aurelie.",bc_map,0x77AAFF;
+	end;
+OnBossDead:
+	if ('ss_stage != 2) end;
+	'ss_round++;
+	if ('ss_round < 3) {
+		'ss_stage = 1;
+		enablenpc instance_npcname("Lasgand#ep21_ss");
+		mapannounce instance_mapname("1@twbs2"),"Lasgand reforms from the Heart Piece. Confront him again (" + 'ss_round + "/3).",bc_map,0xFF8888;
+		end;
+	}
+	'ss_stage = 3;
+	enablenpc instance_npcname("Aurelie#ep21_ss_end");
+	mapannounce instance_mapname("1@twbs2"),"The third resurrection collapses. Speak with Aurelie.",bc_map,0x55FFAA;
+	end;
+}
+
+1@twbs2,96,70,4	script(DISABLED)	Aurelie#ep21_ss_start	4_F_SCIENCE,{
+	if ('ss_stage != 0) end;
+	mes "[Aurelie]";
+	mes "The old curse is gone, yet the mana is wildly rebuilding Lasgand. We must verify whether the Heart Piece is responsible.";
+	close2;
+	'ss_stage = 1;
+	disablenpc();
+	enablenpc instance_npcname("Lasgand#ep21_ss");
+	end;
+}
+
+1@twbs2,96,82,4	script(DISABLED)	Lasgand#ep21_ss	21979,{
+	if ('ss_stage != 1) end;
+	mes "[Lasgand]";
+	mes "The figure repeats the same broken motions, as if this is the first moment of his resurrection every time.";
+	close2;
+	'ss_stage = 2;
+	disablenpc();
+	monster instance_mapname("1@twbs2"),96,84,"Lasgand",21981,1,instance_npcname("#EP21_SilentSanctuary_Control") + "::OnBossDead";
+	end;
+}
+
+1@twbs2,96,88,4	script(DISABLED)	Aurelie#ep21_ss_end	4_F_SCIENCE,{
+	if ('ss_stage != 3) end;
+	mes "[Aurelie]";
+	mes "It is the Heart Piece of Ymir. This Lasgand behaves exactly as he did at his first resurrection, and the cycle will continue.";
+	if (isbegin_quest(18358) == 1)
+		changequest 18358,18359;
+	close2;
+	warp "jor_twig",187,198;
+	end;
+}
+
+1@twbs2	mapflag	noteleport
+1@twbs2	mapflag	monster_noteleport
+1@twbs2	mapflag	nomemo
+1@twbs2	mapflag	noreturn
+1@twbs2	mapflag	nowarp
+1@twbs2	mapflag	nowarpto
+1@twbs2	mapflag	nosave	SavePoint

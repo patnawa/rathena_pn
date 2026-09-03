@@ -1,0 +1,347 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Final Battle
+//===== Description: =========================================
+//= Implements the one-time story battle and daily Easy,
+//= Normal, and Hard encounters with published access gates,
+//= completion rewards, shadow windows, and crystal loot.
+//= Reference: https://wiki.muhro.eu/Final_Battle
+//============================================================
+
+jor_raise1,132,323,4	script	Nyar#ep21_fb_daily	22006,{
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_FinalBattle_Daily != EP21_DailyKey()";
+	mes "[Nyar]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "This memory cannot be repeated until the Episode 21 main story is complete.";
+		close;
+	}
+	EP21_Main_Complete = 1;
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_FinalBattle_Daily == .@key) {
+		mes "You already claimed today's Final Battle reward. The memory resets at 04:00 server time.";
+		close;
+	}
+	mes "Choose the memory's difficulty. Normal requires the completed story; Hard also requires 1,000 reputation with all seven families.";
+	next;
+	.@choice = select("Easy.:Normal.:Hard.:Review rewards.:Leave.");
+	if (.@choice == 4) {
+		mes "[Final Battle Rewards]";
+		mes "Easy: 10 Wigner vouchers.";
+		mes "Normal: 10 vouchers and Antiquity of Giant Snake (Devouring Tan).";
+		mes "Hard: 50 vouchers and Antiquity of Giant Snake (Encroached Tan Hard).";
+		mes "Boss and Giant Serpent Crystal loot is separate.";
+		close;
+	}
+	if (.@choice == 5)
+		close;
+	if (.@choice == 3 && !callfunc("EP21_AllFamilyReputation")) {
+		mes "[Nyar]";
+		mes "Hard mode remains sealed. Raise Gaebolg, Nerius, Heine, Lugenburg, Walter, Wigner, and Richard reputation to 1,000.";
+		close;
+	}
+	setarray .@quest[1],12649,12650,12651;
+	setarray .@name$[1],"Final Battle","Final Battle(Normal)","Final Battle(Hard)";
+	if (isbegin_quest(.@quest[.@choice]))
+		erasequest .@quest[.@choice];
+	setquest .@quest[.@choice];
+	callfunc "EP21_EnterInstance",.@name$[.@choice];
+}
+
+1@ep21b,1,1,0	script	#EP21_FinalBattle_Control	HIDDEN_NPC,{
+	end;
+
+OnInstanceInit:
+	'fb_stage = 0;
+	'fb_kind = 0;
+	'fb_channels = 0;
+	'fb_wave = 0;
+	'fb_name$ = instance_live_info(ILI_NAME,instance_id());
+	if ('fb_name$ == "Final Battle")
+		enablenpc instance_npcname("Heine's Tablet#ep21_fb_start");
+	else
+		enablenpc instance_npcname("Nyar#ep21_fb_start");
+	mapannounce instance_mapname("1@ep21b"),"Final Battle: speak with the guide at the entry point.",bc_map,0x77AAFF;
+	end;
+
+OnStoryBossDead:
+	if ('fb_stage != 3) end;
+	'fb_stage = 4;
+	enablenpc instance_npcname("Nyar#ep21_fb_story_end");
+	mapannounce instance_mapname("1@ep21b"),"The serpent and Tan fall together. Speak with Nyar.",bc_map,0xFFDD88;
+	end;
+
+OnRepeatStart:
+	if ('fb_stage != 10) end;
+	.@map$ = instance_mapname("1@ep21b");
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnRepeatBossDead";
+	.@mob = ('fb_kind == 3) ? 22410 : 22373;
+	monster .@map$,168,170,"Encroached Tan",.@mob,1,.@event$;
+	'fb_boss = $@mobid[0];
+	setunitdata 'fb_boss,UMOB_DMGIMMUNE,true;
+	'fb_wave = 1;
+	donpcevent instance_npcname(strnpcinfo(0)) + "::OnSpawnShadows";
+	end;
+
+OnSpawnShadows:
+	if ('fb_stage != 10 || !unitexists('fb_boss)) end;
+	.@map$ = instance_mapname("1@ep21b");
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnShadowDead";
+	areamonster .@map$,158,160,178,180,"Tan's Shadow",22353,4,.@event$;
+	mapannounce .@map$,"Destroy Tan's Shadows to force open a damage window.",bc_map,0xCC88FF;
+	end;
+
+OnShadowDead:
+	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnShadowDead";
+	if ('fb_stage != 10 || mobcount(instance_mapname("1@ep21b"),.@event$) > 0) end;
+	if (!unitexists('fb_boss)) end;
+	setunitdata 'fb_boss,UMOB_DMGIMMUNE,false;
+	if ('fb_wave >= 3) {
+		mapannounce instance_mapname("1@ep21b"),"Tan is fully immobilized. Finish the battle!",bc_map,0x55FFAA;
+		end;
+	}
+	mapannounce instance_mapname("1@ep21b"),"Tan is immobilized for 12 seconds!",bc_map,0x55FFAA;
+	sleep 12000;
+	if ('fb_stage != 10 || !unitexists('fb_boss)) end;
+	setunitdata 'fb_boss,UMOB_DMGIMMUNE,true;
+	'fb_wave++;
+	donpcevent instance_npcname(strnpcinfo(0)) + "::OnSpawnShadows";
+	end;
+
+OnRepeatBossDead:
+	if ('fb_stage != 10) end;
+	'fb_stage = 20;
+	if ('fb_kind == 3)
+		enablenpc instance_npcname("Giant Serpent Crystal#ep21_fb_hard");
+	else
+		enablenpc instance_npcname("Giant Serpent Crystal#ep21_fb");
+	enablenpc instance_npcname("Nyar#ep21_fb_reward");
+	mapannounce instance_mapname("1@ep21b"),"Encroached Tan is defeated. Claim the crystal loot and speak with Nyar.",bc_map,0xFFDD88;
+	end;
+}
+
+1@ep21b,96,33,4	script(DISABLED)	Heine's Tablet#ep21_fb_start	4_VR_BOOK_BLUE,{
+	if ('fb_stage != 0) end;
+	mes "[Heine's Tablet]";
+	if (isbegin_quest(18348) == 1) {
+		mes "Use the tablet. I will locate every mana channel before the serpent can consume it.";
+		next;
+		if (select("Use the tablet.:Leave.") == 2)
+			close;
+		'fb_kind = 0;
+		'fb_stage = 1;
+		disablenpc();
+		enablenpc instance_npcname("Tris#ep21_fb_channel");
+		enablenpc instance_npcname("Tan#ep21_fb_channel");
+		enablenpc instance_npcname("Nadoyo#ep21_fb_channel");
+		enablenpc instance_npcname("Heine#ep21_fb_channel");
+		instance_warpall "1@ep21b",168,30,instance_id();
+		end;
+	}
+	if (!callfunc("EP21_MainComplete")) {
+		mes "The battle memory rejects you. Complete the story route first.";
+		close;
+	}
+	'fb_kind = 1;
+	'fb_stage = 10;
+	disablenpc();
+	instance_warpall "1@ep21b",168,170,instance_id();
+	donpcevent instance_npcname("#EP21_FinalBattle_Control") + "::OnRepeatStart";
+	end;
+}
+
+1@ep21b,74,74,4	script(DISABLED)	Nyar#ep21_fb_start	22006,{
+	if ('fb_stage != 0) end;
+	mes "[Nyar]";
+	if ('fb_name$ == "Final Battle(Hard)")
+		'fb_kind = 3;
+	else
+		'fb_kind = 2;
+	mes "Tan's Shadows protect it from damage. Eliminate each shadow wave and strike while the boss is immobilized.";
+	next;
+	if (select("Begin the battle.:Leave.") == 2)
+		close;
+	'fb_stage = 10;
+	disablenpc();
+	instance_warpall "1@ep21b",168,170,instance_id();
+	donpcevent instance_npcname("#EP21_FinalBattle_Control") + "::OnRepeatStart";
+	end;
+}
+
+1@ep21b,160,25,4	script(DISABLED)	Tris#ep21_fb_channel	22301,{
+	if ('fb_stage != 1 || ('fb_channels & 1)) end;
+	mes "[Tris]"; mes "The resistance channels its resolve into Heine's spell."; close2;
+	'fb_channels = 'fb_channels | 1;
+	disablenpc();
+	if ('fb_channels == 15) enablenpc instance_npcname("Giant Egg#ep21_fb_story");
+	end;
+}
+1@ep21b,176,25,4	script(DISABLED)	Tan#ep21_fb_channel	22302,{
+	if ('fb_stage != 1 || ('fb_channels & 2)) end;
+	mes "[Tan]"; mes "Tan offers every fragment of mana needed to reach the serpent."; close2;
+	'fb_channels = 'fb_channels | 2;
+	disablenpc();
+	if ('fb_channels == 15) enablenpc instance_npcname("Giant Egg#ep21_fb_story");
+	end;
+}
+1@ep21b,160,36,4	script(DISABLED)	Nadoyo#ep21_fb_channel	22303,{
+	if ('fb_stage != 1 || ('fb_channels & 4)) end;
+	mes "[Nadoyo]"; mes "Nadoyo anchors the route so no one is lost between memories."; close2;
+	'fb_channels = 'fb_channels | 4;
+	disablenpc();
+	if ('fb_channels == 15) enablenpc instance_npcname("Giant Egg#ep21_fb_story");
+	end;
+}
+1@ep21b,176,36,4	script(DISABLED)	Heine#ep21_fb_channel	4_M_SAGE_C,{
+	if ('fb_stage != 1 || ('fb_channels & 8)) end;
+	mes "[Heine]"; mes "The final channel locks into place. The giant egg is exposed."; close2;
+	'fb_channels = 'fb_channels | 8;
+	disablenpc();
+	if ('fb_channels == 15) {
+		enablenpc instance_npcname("Giant Egg#ep21_fb_story");
+		mapannounce instance_mapname("1@ep21b"),"Every mana channel is stable. Touch the Giant Egg.",bc_map,0x55FFAA;
+	}
+	end;
+}
+
+1@ep21b,168,30,4	script(DISABLED)	Giant Egg#ep21_fb_story	4_ENERGY_RED,{
+	if ('fb_stage != 1 || 'fb_channels != 15) end;
+	mes "[Giant Egg]";
+	mes "The shell splits. Corrupted Tan emerges as the serpent's last vessel.";
+	close2;
+	'fb_stage = 3;
+	disablenpc();
+	monster instance_mapname("1@ep21b"),168,30,"Corrupted Tan",22371,1,instance_npcname("#EP21_FinalBattle_Control") + "::OnStoryBossDead";
+	end;
+}
+
+1@ep21b,172,30,4	script(DISABLED)	Nyar#ep21_fb_story_end	22006,{
+	if ('fb_stage != 4) end;
+	mes "[Nyar]";
+	if (isbegin_quest(18348) == 1) {
+		if (!checkweight(1001618,90)) {
+			mes "Make room for ninety Wigner vouchers first.";
+			close;
+		}
+		changequest 18348,18349;
+		getitem 1001618,90;
+		callfunc "EP21_AddReputation",110;
+		mes "Tan chose to fall with the serpent. Heine will trace the cult's remaining power while Tris gathers his thoughts.";
+		mes "Reward: ^3366FF90 Wigner vouchers^000000 and ^33AA33110 Gaebolg reputation^000000.";
+	} else {
+		mes "The fixed memory is complete. Every party member should record the result before leaving.";
+	}
+	close2;
+	enablenpc instance_npcname("#EP21_FB_StoryExit");
+	end;
+}
+1@ep21b,176,30,0	script(DISABLED)	#EP21_FB_StoryExit	WARPNPC,2,2,{ warp "jor_tmple1",180,304; end; }
+
+1@ep21b,164,170,4	script(DISABLED)	Giant Serpent Crystal#ep21_fb	22374,{
+	if ('fb_stage != 20) end;
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_FB_Crystal_Daily == .@key) {
+		mes "[Giant Serpent Crystal]"; mes "You already extracted this crystal's loot."; close;
+	}
+	EP21_FB_Crystal_Daily = .@key;
+	setarray .@item[0],1001653,1001654,1001655,1001656,1001657,1001658,1001659,1001660,1001661,1001662,1001663,1001664;
+	setarray .@rate[0],26473,14568,9000,26473,14568,9000,26473,14568,9000,26473,14568,9000;
+	for (.@i = 0; .@i < 12; ++.@i) {
+		if (rand(100000) < .@rate[.@i])
+			getitem .@item[.@i],1;
+	}
+	for (.@i = 0; .@i < 3; ++.@i) {
+		if (rand(100000) < 19094)
+			getitem 1001480,1;
+	}
+	setarray .@extra[0],1001034,1001035,1001036,1001037,1000812,1000813,1000814;
+	for (.@i = 0; .@i < 7; ++.@i) {
+		if (rand(100000) < 19094)
+			getitem .@extra[.@i],1;
+	}
+	mes "[Giant Serpent Crystal]";
+	mes "You extract every stable fragment. Each listed material uses its published independent Normal-mode chance.";
+	close;
+}
+
+1@ep21b,164,170,4	script(DISABLED)	Giant Serpent Crystal#ep21_fb_hard	22411,{
+	if ('fb_stage != 20) end;
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_FB_Crystal_Daily == .@key) {
+		mes "[Giant Serpent Crystal]"; mes "You already extracted this crystal's loot."; close;
+	}
+	if (!checkweight(103512,1)) {
+		mes "[Giant Serpent Crystal]"; mes "Make inventory room for the guaranteed Past Heroes Fragment Box."; close;
+	}
+	EP21_FB_Crystal_Daily = .@key;
+	getitem 103512,1;
+	setarray .@item[0],1001653,1001654,1001655,1001656,1001657,1001658,1001659,1001660,1001661,1001662,1001663,1001664;
+	setarray .@rate[0],40000,23000,14568,40000,23000,14568,40000,23000,14568,40000,23000,14568;
+	for (.@i = 0; .@i < 12; ++.@i) {
+		if (rand(100000) < .@rate[.@i])
+			getitem .@item[.@i],1;
+	}
+	for (.@i = 0; .@i < 3; ++.@i) {
+		if (rand(100000) < 29619)
+			getitem 1001480,1;
+	}
+	setarray .@extra[0],1001034,1001035,1001036,1001037,1000812,1000813,1000814;
+	for (.@i = 0; .@i < 7; ++.@i) {
+		if (rand(100000) < 29619)
+			getitem .@extra[.@i],1;
+	}
+	mes "[Giant Serpent Crystal]";
+	mes "You receive the guaranteed Past Heroes Fragment Box and every successful Hard-mode material roll.";
+	close;
+}
+
+1@ep21b,172,170,4	script(DISABLED)	Nyar#ep21_fb_reward	22006,{
+	if ('fb_stage != 20) end;
+	mes "[Nyar]";
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_FinalBattle_Daily == .@key) {
+		mes "You already claimed today's completion reward.";
+		close;
+	}
+	if ('fb_kind == 3) {
+		if (!checkweight(1001618,50) || !checkweight(103537,1)) {
+			mes "Make room for fifty vouchers and the Hard-mode antiquity.";
+			close;
+		}
+		getitem 1001618,50;
+		getitem 103537,1;
+		.@qid = 12651;
+		.@reward$ = "50 Wigner vouchers and 1 Encroached Tan Hard antiquity";
+	} else if ('fb_kind == 2) {
+		if (!checkweight(1001618,10) || !checkweight(102948,1)) {
+			mes "Make room for ten vouchers and the Normal-mode antiquity.";
+			close;
+		}
+		getitem 1001618,10;
+		getitem 102948,1;
+		.@qid = 12650;
+		.@reward$ = "10 Wigner vouchers and 1 Devouring Tan antiquity";
+	} else {
+		if (!checkweight(1001618,10)) {
+			mes "Make room for ten Wigner vouchers.";
+			close;
+		}
+		getitem 1001618,10;
+		.@qid = 12649;
+		.@reward$ = "10 Wigner vouchers";
+	}
+	if (isbegin_quest(.@qid) == 1)
+		completequest .@qid;
+	EP21_FinalBattle_Daily = .@key;
+	mes "Memory complete. Reward: ^3366FF" + .@reward$ + "^000000.";
+	close2;
+	enablenpc instance_npcname("#EP21_FB_DailyExit");
+	end;
+}
+1@ep21b,176,170,0	script(DISABLED)	#EP21_FB_DailyExit	WARPNPC,2,2,{ warp "jor_raise1",132,319; end; }
+
+1@ep21b	mapflag	noteleport
+1@ep21b	mapflag	monster_noteleport
+1@ep21b	mapflag	nomemo
+1@ep21b	mapflag	noreturn
+1@ep21b	mapflag	nowarp
+1@ep21b	mapflag	nowarpto
+1@ep21b	mapflag	nosave	SavePoint

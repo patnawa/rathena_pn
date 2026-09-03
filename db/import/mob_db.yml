@@ -1825,6 +1825,71 @@ Body:
   AttackMotion: 1000
   DamageMotion: 1000
   Drops: []
+- Id: 22410
+  AegisName: EP21_YOR_TAN_H
+  Name: Encroached Tan (Hard)
+  Level: 275
+  Hp: 1140000000
+  Attack: 34200
+  Attack2: 46800
+  Defense: 383
+  MagicDefense: 147
+  Resistance: 920
+  MagicResistance: 860
+  Str: 360
+  Agi: 245
+  Vit: 285
+  Int: 380
+  Dex: 370
+  Luk: 220
+  AttackRange: 3
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Large
+  Race: Demihuman
+  Element: Poison
+  ElementLevel: 3
+  WalkSpeed: 180
+  AttackDelay: 390
+  AttackMotion: 500
+  DamageMotion: 360
+  DamageTaken: 1
+  Ai: '21'
+  Class: Boss
+  Modes:
+    Mvp: true
+  Drops:
+  - Item: Encroached_Tan_Card
+    Rate: 1
+  - Item: aegis_103537
+    Rate: 6500
+- Id: 22411
+  AegisName: EP21_MD_BOX2
+  Name: Serpent Crystal (Hard)
+  Level: 100
+  Hp: 1000
+  Attack: 100
+  Attack2: 100
+  Defense: 100
+  MagicDefense: 100
+  Str: 100
+  Agi: 100
+  Vit: 100
+  Int: 100
+  Dex: 100
+  Luk: 100
+  AttackRange: 1
+  SkillRange: 100
+  ChaseRange: 12
+  Size: Small
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 1
+  WalkSpeed: 1000
+  AttackDelay: 1000
+  AttackMotion: 1000
+  DamageMotion: 1000
+  Drops: []
 - Id: 22412
   AegisName: EP21_YORTUS_A_H
   Name: Awakened Jortus Bishop
@@ -2319,31 +2384,71 @@ Body:
     Rate: 1
     StealProtected: true
 - Id: 21979
-  AegisName: EP21_LASGAND_VIEW
+  AegisName: EP20_DEMIGOD_LASGAND
   Name: Lasgand
-  Level: 1
-  Hp: 1
-  Attack: 1
-  Attack2: 1
-  Defense: 0
-  MagicDefense: 0
-  Str: 1
-  Agi: 1
-  Vit: 1
-  Int: 1
-  Dex: 1
-  Luk: 1
+  Level: 215
+  Hp: 62647916
+  Attack: 16000
+  Attack2: 20000
+  Defense: 252
+  MagicDefense: 135
+  Resistance: 420
+  MagicResistance: 360
+  Str: 240
+  Agi: 205
+  Vit: 220
+  Int: 250
+  Dex: 245
+  Luk: 165
   AttackRange: 1
-  SkillRange: 1
-  ChaseRange: 1
+  SkillRange: 10
+  ChaseRange: 12
   Size: Medium
   Race: Formless
   Element: Neutral
   ElementLevel: 1
-  WalkSpeed: 1000
-  AttackDelay: 1000
-  AttackMotion: 1000
-  DamageMotion: 1000
+  WalkSpeed: 160
+  AttackDelay: 520
+  AttackMotion: 420
+  DamageMotion: 360
+  Ai: '21'
+  Class: Boss
+  Modes:
+    Mvp: true
+  Drops: []
+- Id: 21981
+  AegisName: MD_EP20_BOSS_LASGAND
+  Name: Lasgand
+  Level: 215
+  Hp: 1000000000
+  Attack: 30000
+  Attack2: 38000
+  Defense: 527
+  MagicDefense: 286
+  Resistance: 760
+  MagicResistance: 690
+  Str: 320
+  Agi: 250
+  Vit: 300
+  Int: 340
+  Dex: 330
+  Luk: 190
+  AttackRange: 2
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 1
+  WalkSpeed: 150
+  AttackDelay: 450
+  AttackMotion: 400
+  DamageMotion: 360
+  DamageTaken: 10
+  Ai: '21'
+  Class: Boss
+  Modes:
+    Mvp: true
   Drops: []
 - Id: 22006
   AegisName: EP21_NYAR_VIEW

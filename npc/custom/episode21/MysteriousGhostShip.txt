@@ -305,7 +305,7 @@ OnBossDead:
 	end;
 }
 
-1@wtgs,91,309,4	script(DISABLED)	Mast Traces#ep21gs	CLEAR_NPC,{
+1@wtgs,90,309,4	script(DISABLED)	Mast Traces#ep21gs	CLEAR_NPC,{
 	if ('stage != 3) end;
 	mes "[Mast Traces]";
 	mes "Old height marks are carved into the mast. Maristella recognizes the marks made when her father measured her growth.";
