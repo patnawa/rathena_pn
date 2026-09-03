@@ -77,13 +77,12 @@ function	script	EP21_EnterGhostShip	{
 	end;
 }
 
-// Story entrance. This condensed start keeps the instance reachable while
-// the earlier Episode 21 Gimli sequence is being restored separately.
+// Story entrance. Gimli Infiltration is the published prerequisite.
 jor_albe,190,186,4	script	Maristella Walter#ep21gs	22306,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 260 && isbegin_quest(16816) == 0 && !EP21_GhostShipUnlocked()";
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && EP21_GimliComplete() && isbegin_quest(16816) == 0 && !EP21_GhostShipUnlocked()";
 	mes "[Maristella Walter]";
-	if (BaseLevel < 260) {
-		mes "The Ghost Ship is too dangerous. Return after reaching Base Level 260.";
+	if (BaseLevel < 230) {
+		mes "The Ghost Ship is too dangerous. Return after reaching Base Level 230.";
 		close;
 	}
 	if (isbegin_quest(16817) == 1) {
@@ -98,6 +97,10 @@ jor_albe,190,186,4	script	Maristella Walter#ep21gs	22306,{
 	if (callfunc("EP21_GhostShipUnlocked")) {
 		EP21_GhostShip_Access = 1;
 		mes "Nillem now manages repeat expeditions from the lower harbor at ^3366FF(195, 179)^000000.";
+		close;
+	}
+	if (!callfunc("EP21_GimliComplete") && isbegin_quest(16816) == 0) {
+		mes "We still need the cult's shipping records. Complete Gimli Infiltration through the guard at ^3366FF(jor_tmple1 238, 268)^000000 first.";
 		close;
 	}
 	if (isbegin_quest(16816) == 2) {

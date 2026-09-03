@@ -1794,8 +1794,10 @@ Body:
   Modes:
     Mvp: true
   Drops:
-  - Item: Cap_Of_G_Ship_Card
+  - Item: Encroached_Tan_Card
     Rate: 1
+  - Item: aegis_103537
+    Rate: 6500
 - Id: 22374
   AegisName: EP21_MD_BOX1
   Name: Giant Serpent Crystal
@@ -1823,46 +1825,6 @@ Body:
   AttackMotion: 1000
   DamageMotion: 1000
   Drops: []
-- Id: 22373
-  AegisName: EP21_YOR_TAN_B
-  Name: Corruped Tan
-  Level: 268
-  Hp: 570000000
-  Attack: 25488
-  Attack2: 36804
-  Defense: 628
-  MagicDefense: 589
-  Resistance: 868
-  MagicResistance: 744
-  Str: 321
-  Agi: 203
-  Vit: 214
-  Int: 288
-  Dex: 325
-  Luk: 181
-  AttackRange: 3
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Demihuman
-  Element: Poison
-  ElementLevel: 3
-  WalkSpeed: 200
-  AttackDelay: 430
-  AttackMotion: 520
-  DamageMotion: 360
-  Ai: '21'
-  DamageTaken: 1
-  Class: Boss
-  Modes:
-    Mvp: true
-  Drops:
-  - Item: Cap_Of_G_Ship_Card
-    Rate: 1
-  - Item: aegis_103537
-    Rate: 1500
-  - Item: aegis_103537
-    Rate: 5000
 - Id: 22412
   AegisName: EP21_YORTUS_A_H
   Name: Awakened Jortus Bishop
@@ -6750,9 +6712,6 @@ Body:
   Name: NPC
 - Id: 21636
   AegisName: 20TH_GATE_RED
-  Name: NPC
-- Id: 21813
-  AegisName: 20TH_GATE_RED_M
   Name: NPC
 - Id: 21814
   AegisName: 20TH_GATE_RED_S

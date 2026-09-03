@@ -1,0 +1,481 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Gimli Infiltration
+//===== Description: =========================================
+//= Restores the temple infiltration instance and its report
+//= chain through Nadoyo, Tris, Wilhelm, Reinhardt and Maristella.
+//= Reference: https://wiki.gemstonero.com/guides/midgard/gimli_infiltration
+//============================================================
+
+function	script	EP21_GimliComplete	{
+	return EP21_Gimli_Complete || isbegin_quest(17769) == 2;
+}
+
+function	script	EP21_EnterGimli	{
+	.@name$ = "Gimli Infiltration";
+	.@party_id = getcharid(1);
+	if (.@party_id) {
+		.@iid = instance_id(IM_PARTY);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "[Gimli Infiltration]";
+			mes "Your party already owns another active instance.";
+			close;
+		}
+		if (!.@iid) {
+			if (!is_party_leader()) {
+				mes "[Gimli Infiltration]";
+				mes "Your party leader must create the entrance first.";
+				close;
+			}
+			.@iid = instance_create(.@name$,IM_PARTY,.@party_id);
+		}
+	} else {
+		.@iid = instance_id(IM_CHAR);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "[Gimli Infiltration]";
+			mes "You already own another active solo instance.";
+			close;
+		}
+		if (!.@iid)
+			.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
+	}
+	if (.@iid < 1) {
+		mes "[Gimli Infiltration]";
+		mes "The disguised unit could not assemble. Try again shortly.";
+		close;
+	}
+	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+		mes "[Gimli Infiltration]";
+		mes "The temple route is not ready.";
+		close;
+	}
+	end;
+}
+
+// Quest 17764 is the official final infiltration state immediately before
+// this memorial dungeon. Episode 21 characters may enter from Base Level 230.
+jor_tmple1,238,268,4	script	Disguised Temple Guard#ep21gimli	22366,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && !EP21_GimliComplete() && isbegin_quest(17764) == 0";
+	mes "[Disguised Temple Guard]";
+	if (BaseLevel < 230) {
+		mes "Only experienced operatives may enter the restricted prayer rooms. Return at Base Level 230.";
+		close;
+	}
+	if (callfunc("EP21_GimliComplete")) {
+		EP21_Gimli_Complete = 1;
+		mes "The infiltration report is complete. Maristella is preparing the Ghost Ship expedition in Fishing Village Alberta.";
+		close;
+	}
+	if (isbegin_quest(17764) == 2) {
+		erasequest 17764;
+		setquest 17765;
+		mes "Your unit returned safely. Report to Nadoyo through the northern safe spot at ^3366FF(jor_raise1 322, 69)^000000.";
+		close;
+	}
+	mes "Nadoyo registered your group under false names. Carmigand's escape plan was exposed, so every prisoner must be found before the cult moves them.";
+	next;
+	.@choice = select("Begin Gimli Infiltration.:Review the mission.:Leave.");
+	if (.@choice == 2) {
+		mes "[Disguised Temple Guard]";
+		mes "Follow Nadoyo, Tan and Wilhelm. Search the prayer rooms, protect the believers, and eliminate every guard that discovers the disguise.";
+		close;
+	}
+	if (.@choice == 3)
+		close;
+	if (!isbegin_quest(17764))
+		setquest 17764;
+	callfunc "EP21_EnterGimli";
+}
+
+// Report route and building portals required by this chapter.
+jor_raise1,322,69,0	script	#EP21_GimliSafeSpot	WARPNPC,2,2,{
+	if (isbegin_quest(17765) != 1) {
+		message strcharinfo(0),"Nadoyo has not opened this safe route for you.";
+		end;
+	}
+	warp "luna_sf1",48,262;
+	end;
+}
+luna_sf1,48,259,0	script	#EP21_GimliSafeExit	WARPNPC,2,2,{ warp "jor_raise1",322,72; end; }
+
+jor_mbase,203,190,0	script	#EP21_CentralBarrackIn	WARPNPC,2,2,{ warp "mbase_in",92,123; end; }
+mbase_in,92,120,0	script	#EP21_CentralBarrackOut	WARPNPC,2,2,{ warp "jor_mbase",203,186; end; }
+jor_albe,120,146,0	script	#EP21_AlbertaOfficeIn	WARPNPC,2,2,{ warp "jalbe_in",68,42; end; }
+jalbe_in,68,39,0	script	#EP21_AlbertaOfficeOut	WARPNPC,2,2,{ warp "jor_albe",120,142; end; }
+
+luna_sf1,48,265,4	script	Nadoyo#ep21gimli_report	22303,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17765) == 1";
+	mes "[Nadoyo]";
+	if (isbegin_quest(17765) != 1) {
+		mes "The northern escape route is quiet for now.";
+		close;
+	}
+	if (!checkweight(1001618,30)) {
+		mes "Make room for thirty Wigner vouchers first.";
+		close;
+	}
+	mes "Carmigand and the believers escaped because you kept the cult occupied. Take this report to Tris in Lunaforma.";
+	changequest 17765,17766;
+	getitem 1001618,30;
+	callfunc "EP21_AddReputation",20;
+	getexp 449470800,137131550;
+	mes "Reward: ^3366FF30 Wigner Merchant Guild Vouchers^000000 and ^33AA3320 Gaebolg Command reputation^000000.";
+	close;
+}
+
+jor_mbase,143,272,4	script	Tris#ep21gimli_report	22301,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17766) == 1";
+	mes "[Tris]";
+	if (isbegin_quest(17766) != 1) {
+		mes "Every person who escaped Gimli gives the resistance another chance.";
+		close;
+	}
+	mes "You found Reinhardt—Wilhelm's missing brother—among the cult. Speak to Wilhelm upstairs in the central barracks.";
+	changequest 17766,17767;
+	close;
+}
+
+mbase_in,116,186,4	script	Wilhelm#ep21gimli_report	22305,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17767) == 1";
+	mes "[Wilhelm]";
+	if (isbegin_quest(17767) != 1) {
+		mes "I will decide what Reinhardt's choices mean after the mission is over.";
+		close;
+	}
+	mes "I searched for my brother for years, only to find him wearing the cult's robes. He still has information about the Ghost Ship. Hear him out.";
+	changequest 17767,17768;
+	close;
+}
+
+mbase_in,120,186,4	script	Reinhardt#ep21gimli_report	22304,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17768) == 1";
+	mes "[Reinhardt]";
+	if (isbegin_quest(17768) != 1) {
+		mes "The cult feared one vessel above all others: a ship that appeared from the fog and attacked without living crew.";
+		close;
+	}
+	if (!checkweight(1001618,30)) {
+		mes "Make room for thirty Wigner vouchers first.";
+		close;
+	}
+	mes "The cult changed its sea route because a ghostly Walter vessel kept sinking its ships. Maristella must hear this in Alberta.";
+	changequest 17768,17769;
+	getitem 1001618,30;
+	callfunc "EP21_AddReputation",30;
+	getexp 547793770,239980220;
+	mes "Reward: ^3366FF30 Wigner Merchant Guild Vouchers^000000 and ^33AA3330 Gaebolg Command reputation^000000.";
+	close;
+}
+
+jalbe_in,68,46,4	script	Maristella Walter#ep21gimli_report	22306,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17769) == 1";
+	mes "[Maristella Walter]";
+	if (isbegin_quest(17769) != 1) {
+		mes "We are still comparing old Walter shipping records.";
+		close;
+	}
+	mes "A ship hunting the cult, carrying my family name... We finally know where to search. Meet me at the harbor in Fishing Village Alberta.";
+	completequest 17769;
+	EP21_Gimli_Complete = 1;
+	close;
+}
+
+// Instance controller. Each combat label advances only after all monsters
+// carrying that label have died, preventing party members from skipping waves.
+1@mdtem,1,1,0	script	#EP21_Gimli_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	'gimli_stage = 0;
+	enablenpc instance_npcname("Nadoyo#ep21gimli_start");
+	mapannounce instance_mapname("1@mdtem"),"Gimli Infiltration: meet Nadoyo near the entry point.",bc_map,0x77AAFF;
+	end;
+
+OnBelieverWave:
+	if ('gimli_stage != 3) end;
+	.@map$ = instance_mapname("1@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnBelieverWaveDead";
+	areamonster .@map$,167,151,175,159,"Jordos Inquisitor",22366,3,.@event$;
+	areamonster .@map$,167,151,175,159,"Jordos Judge",22367,2,.@event$;
+	monster .@map$,171,155,"Jordos Executioner",22368,1,.@event$;
+	end;
+OnBelieverWaveDead:
+	if ('gimli_stage != 3 || mobcount(instance_mapname("1@mdtem"),instance_npcname(strnpcinfo(0))+"::OnBelieverWaveDead") > 0) end;
+	'gimli_stage = 4;
+	enablenpc instance_npcname("Escaping Believer#ep21gimli_1");
+	end;
+
+OnGuardWave:
+	if ('gimli_stage != 6) end;
+	.@map$ = instance_mapname("1@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnGuardWaveDead";
+	areamonster .@map$,118,33,125,39,"Jordos Inquisitor",22366,4,.@event$;
+	areamonster .@map$,118,33,125,39,"Jordos Judge",22367,2,.@event$;
+	end;
+OnGuardWaveDead:
+	if ('gimli_stage != 6 || mobcount(instance_mapname("1@mdtem"),instance_npcname(strnpcinfo(0))+"::OnGuardWaveDead") > 0) end;
+	'gimli_stage = 7;
+	enablenpc instance_npcname("#EP21_GimliPortal");
+	end;
+
+OnInnerWave:
+	if ('gimli_stage != 9) end;
+	.@map$ = instance_mapname("2@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnInnerWaveDead";
+	areamonster .@map$,132,118,148,130,"Jordos Inquisitor",22366,4,.@event$;
+	areamonster .@map$,132,118,148,130,"Jordos Judge",22367,3,.@event$;
+	end;
+OnInnerWaveDead:
+	if ('gimli_stage != 9 || mobcount(instance_mapname("2@mdtem"),instance_npcname(strnpcinfo(0))+"::OnInnerWaveDead") > 0) end;
+	'gimli_stage = 10;
+	enablenpc instance_npcname("Temple Guard#ep21gimli_inner");
+	end;
+
+OnSearchWave:
+	if ('gimli_stage != 14) end;
+	.@map$ = instance_mapname("1@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnSearchWaveDead";
+	areamonster .@map$,77,77,83,83,"Jordos Inquisitor",22366,3,.@event$;
+	areamonster .@map$,77,77,83,83,"Jordos Executioner",22368,2,.@event$;
+	end;
+OnSearchWaveDead:
+	if ('gimli_stage != 14 || mobcount(instance_mapname("1@mdtem"),instance_npcname(strnpcinfo(0))+"::OnSearchWaveDead") > 0) end;
+	'gimli_stage = 15;
+	enablenpc instance_npcname("Wilhelm#ep21gimli_move");
+	end;
+
+OnTanWave:
+	if ('gimli_stage != 17) end;
+	.@map$ = instance_mapname("2@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnTanWaveDead";
+	monster .@map$,60,65,"Jordos Executioner",22368,1,.@event$;
+	areamonster .@map$,52,60,68,70,"Jordos Judge",22367,3,.@event$;
+	end;
+OnTanWaveDead:
+	if ('gimli_stage != 17 || mobcount(instance_mapname("2@mdtem"),instance_npcname(strnpcinfo(0))+"::OnTanWaveDead") > 0) end;
+	'gimli_stage = 18;
+	enablenpc instance_npcname("Tan#ep21gimli_move");
+	end;
+
+OnFinalWave1:
+	if ('gimli_stage != 20) end;
+	.@map$ = instance_mapname("1@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnFinalWave1Dead";
+	areamonster .@map$,249,67,257,71,"Jordos Inquisitor",22366,5,.@event$;
+	areamonster .@map$,249,67,257,71,"Jordos Judge",22367,3,.@event$;
+	end;
+OnFinalWave1Dead:
+	if ('gimli_stage != 20 || mobcount(instance_mapname("1@mdtem"),instance_npcname(strnpcinfo(0))+"::OnFinalWave1Dead") > 0) end;
+	'gimli_stage = 21;
+	.@map$ = instance_mapname("1@mdtem");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnFinalWave2Dead";
+	areamonster .@map$,249,67,257,71,"Jordos Executioner",22368,5,.@event$;
+	end;
+OnFinalWave2Dead:
+	if ('gimli_stage != 21 || mobcount(instance_mapname("1@mdtem"),instance_npcname(strnpcinfo(0))+"::OnFinalWave2Dead") > 0) end;
+	'gimli_stage = 22;
+	enablenpc instance_npcname("Tan#ep21gimli_finish");
+	mapannounce instance_mapname("1@mdtem"),"The escape route is secure. Speak with Tan.",bc_map,0x55FFAA;
+	end;
+}
+
+1@mdtem,266,177,4	script(DISABLED)	Nadoyo#ep21gimli_start	22303,{
+	if ('gimli_stage != 0) end;
+	mes "[Nadoyo]";
+	mes "Carmigand's escape was exposed. Follow Tan and Wilhelm through the prayer rooms; anyone who wants to leave must move now.";
+	close2;
+	'gimli_stage = 1;
+	disablenpc();
+	enablenpc instance_npcname("Tan#ep21gimli_start");
+	end;
+}
+
+1@mdtem,250,174,4	script(DISABLED)	Tan#ep21gimli_start	22302,{
+	if ('gimli_stage != 1) end;
+	mes "[Tan]"; mes "Keep the disguise intact until we locate Carmigand. I will move everyone into the first prayer room.";
+	close2;
+	'gimli_stage = 2;
+	disablenpc();
+	enablenpc instance_npcname("Wilhelm#ep21gimli_first");
+	instance_warpall "1@mdtem",170,154,instance_id();
+	end;
+}
+
+1@mdtem,170,157,4	script(DISABLED)	Wilhelm#ep21gimli_first	22305,{
+	if ('gimli_stage != 2) end;
+	mes "[Wilhelm]"; mes "The believers say Carmigand was taken inward. Some of them want to escape, but the guards heard us.";
+	close2;
+	'gimli_stage = 3;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnBelieverWave";
+	end;
+}
+
+1@mdtem,170,158,4	script(DISABLED)	Escaping Believer#ep21gimli_1	4_M_MONK,{
+	if ('gimli_stage != 4) end;
+	mes "[Escaping Believer]"; mes "We will follow your resistance. Another guard post blocks the inner prayer room.";
+	close2;
+	'gimli_stage = 5;
+	disablenpc();
+	enablenpc instance_npcname("Tan#ep21gimli_guard");
+	instance_warpall "1@mdtem",121,36,instance_id();
+	end;
+}
+
+1@mdtem,121,39,4	script(DISABLED)	Tan#ep21gimli_guard	22302,{
+	if ('gimli_stage != 5) end;
+	mes "[Tan]"; mes "The checkpoint recognized Wilhelm's disguise. Break through before it raises the alarm.";
+	close2;
+	'gimli_stage = 6;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnGuardWave";
+	end;
+}
+
+1@mdtem,130,36,0	script(DISABLED)	#EP21_GimliPortal	WARPNPC,2,2,{
+	if ('gimli_stage != 7) end;
+	'gimli_stage = 8;
+	disablenpc();
+	enablenpc instance_npcname("Escaping Believer#ep21gimli_2");
+	instance_warpall "2@mdtem",140,125,instance_id();
+	end;
+}
+
+2@mdtem,140,128,4	script(DISABLED)	Escaping Believer#ep21gimli_2	4_M_MONK,{
+	if ('gimli_stage != 8) end;
+	mes "[Escaping Believer]"; mes "Carmigand was moved beyond the eastern corridor. Tan and Wilhelm are waiting there.";
+	close2;
+	'gimli_stage = 9;
+	disablenpc();
+	enablenpc instance_npcname("Tan#ep21gimli_inner");
+	end;
+}
+
+2@mdtem,145,125,4	script(DISABLED)	Tan#ep21gimli_inner	22302,{
+	if ('gimli_stage != 9) end;
+	mes "[Tan]"; mes "More executioners are coming. Hold this room while Wilhelm questions the guard.";
+	close2;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnInnerWave";
+	end;
+}
+
+2@mdtem,140,125,4	script(DISABLED)	Temple Guard#ep21gimli_inner	22367,{
+	if ('gimli_stage != 10) end;
+	mes "[Temple Guard]"; mes "The prisoner you seek was taken to an unmarked chamber. You will never find its release switch.";
+	close2;
+	'gimli_stage = 11;
+	disablenpc();
+	enablenpc instance_npcname("Wilhelm#ep21gimli_search");
+	instance_warpall "2@mdtem",60,125,instance_id();
+	end;
+}
+
+2@mdtem,60,128,4	script(DISABLED)	Wilhelm#ep21gimli_search	22305,{
+	if ('gimli_stage != 11) end;
+	mes "[Wilhelm]"; mes "One of these suspicious wall sections hides the mechanism. Search carefully; the wrong panels are decoys.";
+	close2;
+	'gimli_stage = 12;
+	disablenpc();
+	enablenpc instance_npcname("Suspicious Place#ep21gimli_a");
+	enablenpc instance_npcname("Suspicious Place#ep21gimli_b");
+	enablenpc instance_npcname("Suspicious Place#ep21gimli_c");
+	end;
+}
+
+2@mdtem,55,125,4	script(DISABLED)	Suspicious Place#ep21gimli_a	CLEAR_NPC,{
+	mes "[Suspicious Place]"; mes "Only a shallow crack. The switch is elsewhere."; close;
+}
+2@mdtem,60,125,4	script(DISABLED)	Suspicious Place#ep21gimli_b	CLEAR_NPC,{
+	if ('gimli_stage != 12) end;
+	mes "[Suspicious Place]"; mes "Click. A concealed mechanism releases, and Tan pulls the group through the opening.";
+	close2;
+	'gimli_stage = 14;
+	disablenpc instance_npcname("Suspicious Place#ep21gimli_a");
+	disablenpc();
+	disablenpc instance_npcname("Suspicious Place#ep21gimli_c");
+	enablenpc instance_npcname("Wilhelm#ep21gimli_rescue");
+	instance_warpall "1@mdtem",80,80,instance_id();
+	end;
+}
+2@mdtem,65,125,4	script(DISABLED)	Suspicious Place#ep21gimli_c	CLEAR_NPC,{
+	mes "[Suspicious Place]"; mes "This panel has not moved in decades."; close;
+}
+
+1@mdtem,80,83,4	script(DISABLED)	Wilhelm#ep21gimli_rescue	22305,{
+	if ('gimli_stage != 14) end;
+	mes "[Wilhelm]"; mes "Reinhardt is alive, but the cult is closing in. Clear this chamber!";
+	close2;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnSearchWave";
+	end;
+}
+
+1@mdtem,84,83,4	script(DISABLED)	Wilhelm#ep21gimli_move	22305,{
+	if ('gimli_stage != 15) end;
+	mes "[Wilhelm]"; mes "Reinhardt can walk. Tan found a service corridor leading toward the escape route.";
+	close2;
+	'gimli_stage = 17;
+	disablenpc();
+	enablenpc instance_npcname("Tan#ep21gimli_fight");
+	instance_warpall "2@mdtem",60,65,instance_id();
+	end;
+}
+
+2@mdtem,60,68,4	script(DISABLED)	Tan#ep21gimli_fight	22302,{
+	if ('gimli_stage != 17) end;
+	mes "[Tan]"; mes "Their executioner controls this passage. Defeat it before the second patrol arrives.";
+	close2;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnTanWave";
+	end;
+}
+
+2@mdtem,65,65,4	script(DISABLED)	Tan#ep21gimli_move	22302,{
+	if ('gimli_stage != 18) end;
+	mes "[Tan]"; mes "The last patrol is between us and the surface. Wilhelm will lead the final diversion.";
+	close2;
+	'gimli_stage = 20;
+	disablenpc();
+	enablenpc instance_npcname("Wilhelm#ep21gimli_final");
+	instance_warpall "1@mdtem",252,67,instance_id();
+	end;
+}
+
+1@mdtem,252,70,4	script(DISABLED)	Wilhelm#ep21gimli_final	22305,{
+	if ('gimli_stage != 20) end;
+	mes "[Wilhelm]"; mes "No more disguises. We hold this ground until every believer reaches Tan.";
+	close2;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnFinalWave1";
+	end;
+}
+
+1@mdtem,256,70,4	script(DISABLED)	Tan#ep21gimli_finish	22302,{
+	if ('gimli_stage < 22) end;
+	mes "[Tan]";
+	if (isbegin_quest(17764) == 1) {
+		mes "Carmigand, Reinhardt, and the believers are safe. Use the exit and report to Nadoyo at the northern safe spot.";
+		changequest 17764,17765;
+	} else {
+		mes "The infiltration is complete. Make sure every party member has recorded the result before leaving.";
+	}
+	close2;
+	enablenpc instance_npcname("#EP21_GimliExit");
+	end;
+}
+
+1@mdtem,260,72,0	script(DISABLED)	#EP21_GimliExit	WARPNPC,2,2,{ warp "jor_raise1",322,72; end; }
+
+1@mdtem	mapflag	noteleport
+1@mdtem	mapflag	monster_noteleport
+1@mdtem	mapflag	nomemo
+1@mdtem	mapflag	noreturn
+1@mdtem	mapflag	nowarp
+1@mdtem	mapflag	nowarpto
+1@mdtem	mapflag	nosave	SavePoint
+2@mdtem	mapflag	noteleport
+2@mdtem	mapflag	monster_noteleport
+2@mdtem	mapflag	nomemo
+2@mdtem	mapflag	noreturn
+2@mdtem	mapflag	nowarp
+2@mdtem	mapflag	nowarpto
+2@mdtem	mapflag	nosave	SavePoint

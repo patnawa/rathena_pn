@@ -90,6 +90,39 @@ foreach ($rootFile in $dbRoots) {
 }
 Write-Host "  database imports: $($dbImports.Count)"
 
+# Duplicate top-level records inside one YAML file are ambiguous: the later
+# entry silently replaces or merges with the first depending on database type.
+# Imports may intentionally override a base record, so this check is scoped to
+# duplicates within each individual file.
+$recordFiles = @(Get-ChildItem -LiteralPath (RepoPath 'db/re'),(RepoPath 'db/import') -File |
+	Where-Object Name -Match '(^|_)(mob|quest|instance)_db\.yml$|(^|_)item_db(_.+)?\.yml$')
+$recordFileCount = 0
+foreach ($file in $recordFiles) {
+	$recordFileCount++
+	$idLines = [Collections.Generic.List[object]]::new()
+	$lineNumber = 0
+	foreach ($line in [IO.File]::ReadLines($file.FullName)) {
+		$lineNumber++
+		if ($line -notmatch '^(\s*)- Id:\s*(\d+)\s*$') { continue }
+		$idLines.Add([pscustomobject]@{
+			Indent = $Matches[1].Length
+			Id = [int]$Matches[2]
+			Line = $lineNumber
+		})
+	}
+	if ($idLines.Count -eq 0) { continue }
+	$topLevelIndent = ($idLines | Measure-Object -Property Indent -Minimum).Minimum
+	$seen = [Collections.Generic.HashSet[int]]::new()
+	foreach ($record in $idLines) {
+		if ($record.Indent -ne $topLevelIndent) { continue }
+		if (!$seen.Add($record.Id)) {
+			$relative = $file.FullName.Substring($repo.Length + 1)
+			Fail "Duplicate top-level ID $($record.Id) in ${relative}:$($record.Line)"
+		}
+	}
+}
+Write-Host "  database record files checked: $recordFileCount"
+
 # Build the authoritative map-name set.
 $maps = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($line in [IO.File]::ReadLines((RepoPath 'db/map_index.txt'))) {
