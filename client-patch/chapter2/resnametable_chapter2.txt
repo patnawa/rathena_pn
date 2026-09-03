@@ -1,0 +1,55 @@
+// Chapter 2 map compatibility aliases.
+// Append these lines to data/resnametable.txt when the client GRFs do not yet
+// expose Gravity's encrypted Chapter 2 map resources. Veledor is also aliased
+// so that client rendering and the fallback server collision map stay aligned.
+veledor.gnd#mu_fild01.gnd#
+veledor.gat#mu_fild01.gat#
+veledor.rsw#mu_fild01.rsw#
+kindlbrk.gnd#icas_in.gnd#
+kindlbrk.gat#icas_in.gat#
+kindlbrk.rsw#icas_in.rsw#
+kin_in01.gnd#icas_in.gnd#
+kin_in01.gat#icas_in.gat#
+kin_in01.rsw#icas_in.rsw#
+mu_fild02.gnd#mu_fild01.gnd#
+mu_fild02.gat#mu_fild01.gat#
+mu_fild02.rsw#mu_fild01.rsw#
+mu_fild03.gnd#mu_fild01.gnd#
+mu_fild03.gat#mu_fild01.gat#
+mu_fild03.rsw#mu_fild01.rsw#
+mu_dun01.gnd#uknw_ruin2.gnd#
+mu_dun01.gat#uknw_ruin2.gat#
+mu_dun01.rsw#uknw_ruin2.rsw#
+mu_dun02.gnd#uknw_ruin2.gnd#
+mu_dun02.gat#uknw_ruin2.gat#
+mu_dun02.rsw#uknw_ruin2.rsw#
+deadroot.gnd#mu_fild01.gnd#
+deadroot.gat#mu_fild01.gat#
+deadroot.rsw#mu_fild01.rsw#
+ragsruth.gnd#ch1_geffen.gnd#
+ragsruth.gat#ch1_geffen.gat#
+ragsruth.rsw#ch1_geffen.rsw#
+rgs_dun1.gnd#uknw_ruin2.gnd#
+rgs_dun1.gat#uknw_ruin2.gat#
+rgs_dun1.rsw#uknw_ruin2.rsw#
+ch2safe1.gnd#1@ch1a.gnd#
+ch2safe1.gat#1@ch1a.gat#
+ch2safe1.rsw#1@ch1a.rsw#
+ch2safe2.gnd#1@ch1a.gnd#
+ch2safe2.gat#1@ch1a.gat#
+ch2safe2.rsw#1@ch1a.rsw#
+ch2safe3.gnd#1@ch1a.gnd#
+ch2safe3.gat#1@ch1a.gat#
+ch2safe3.rsw#1@ch1a.rsw#
+ch2safe4.gnd#1@ch1a.gnd#
+ch2safe4.gat#1@ch1a.gat#
+ch2safe4.rsw#1@ch1a.rsw#
+ch2gms.gnd#ch1_sf02.gnd#
+ch2gms.gat#ch1_sf02.gat#
+ch2gms.rsw#ch1_sf02.rsw#
+1@ch2a.gnd#1@ch1a.gnd#
+1@ch2a.gat#1@ch1a.gat#
+1@ch2a.rsw#1@ch1a.rsw#
+1@ch2b.gnd#1@ch1b.gnd#
+1@ch2b.gat#1@ch1b.gat#
+1@ch2b.rsw#1@ch1b.rsw#

@@ -1,0 +1,26 @@
+Header:
+  Type: MAP_DROP_DB
+  Version: 2
+
+Body:
+  - Map: mu_fild02
+    GlobalDrops: &ch2_common_drops
+      - Index: 0
+        Item: Etel_Dust
+        Rate: 150
+      - Index: 1
+        Item: Shadowdecon
+        Rate: 80
+      - Index: 2
+        Item: Zelunium
+        Rate: 80
+  - Map: mu_fild03
+    GlobalDrops: *ch2_common_drops
+  - Map: mu_dun01
+    GlobalDrops: *ch2_common_drops
+  - Map: mu_dun02
+    GlobalDrops: *ch2_common_drops
+  - Map: deadroot
+    GlobalDrops: *ch2_common_drops
+  - Map: rgs_dun1
+    GlobalDrops: *ch2_common_drops

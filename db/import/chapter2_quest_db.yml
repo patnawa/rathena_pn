@@ -1,0 +1,79 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 27101
+    Title: Chapter 2 - Fragments of the End
+  - Id: 27102
+    Title: Chapter 2 - Break the Shadow Jail
+    Targets:
+      - Mob: CH1_SHADOW_JAILER
+        Count: 20
+  - Id: 27103
+    Title: Chapter 2 - A Dormant Matter
+    Targets:
+      - Mob: CH1_SHADOW_JAILER
+        Count: 20
+  - Id: 27104
+    Title: Chapter 2 - Distorted Ragsroot
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: rgs_dun1
+        MapMobTargets:
+          CH2_FOLNIR_NILF: true
+          CH2_FOLNIR_MYRK: true
+          CH2_FOLNIR_HRE: true
+  - Id: 27110
+    Title: Kindlebrook Noodle Soup
+    Targets:
+      - Mob: CH2_DRAGONCLAM
+        Count: 10
+  - Id: 27111
+    Title: Hotter! Even Hotter!
+    Targets:
+      - Mob: CH2_FLAMEBULL
+        Count: 10
+  - Id: 27112
+    Title: Hot Pup! Even Hotter Pup!
+    Targets:
+      - Mob: CH2_LOGIDOGI
+        Count: 10
+  - Id: 27113
+    Title: Dream of Perpetual Motion
+    Targets:
+      - Mob: CH2_DUDULSON
+        Count: 15
+      - Mob: CH2_GARAKSON
+        Count: 15
+      - Mob: CH2_TUKTAKSON
+        Count: 15
+  - Id: 27114
+    Title: Retrieve Hal Puffs
+  - Id: 27115
+    Title: Jemi's Parts Delivery
+    Targets:
+      - Mob: CH2_ALPURING
+        Count: 10
+      - Mob: CH2_ICYBLAST
+        Count: 10
+  - Id: 27116
+    Title: Heat Preservation Equipment Research
+    Targets:
+      - Mob: CH2_FIRECOTTON
+        Count: 10
+  - Id: 27117
+    Title: Even a Handful of Mana
+  - Id: 27118
+    Title: Distorted Ragsroot Cleanup
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: rgs_dun1
+        MapMobTargets:
+          CH2_FOLNIR_NILF: true
+          CH2_FOLNIR_MYRK: true
+          CH2_FOLNIR_HRE: true
+  - Id: 27119
+    Title: Phantom of Nyrholt

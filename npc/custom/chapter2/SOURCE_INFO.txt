@@ -1,0 +1,17 @@
+Chapter 2 implementation references (checked 2026-09-03):
+
+- https://wiki.muhro.eu/Chapter_2
+- https://rockragnarok.com/rockwiki/Chapter_2_-_Song_of_the_World_Tree:_Fragments_of_the_End
+- https://wiki.gemstonero.com/quests/midgard/chapter_2
+- https://wiki.gemstonero.com/equipment/midgard/item_reform
+- https://wiki.gemstonero.com/equipment/midgard/item_enchant
+- https://www.divine-pride.net/database/monster/22674
+
+MuhRO marks its guide as not yet implemented. This server implementation uses
+the published quest order, requirements, field populations, four-hour standby
+timers, exchange/reform/refinement/enchant costs, official IDs and item effects.
+
+Gravity's late-2025 GRF encryption prevents public tools from extracting most
+new map resources. The server map cache and client resnametable therefore use
+matching compatibility aliases. Replace both sides with native map resources
+once those resources are legitimately available to the client.

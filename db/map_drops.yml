@@ -49,3 +49,4 @@ Footer:
     Mode: Renewal
   - Path: db/import/map_drops.yml
   - Path: db/import/zero_cell_map_drops.yml
+  - Path: db/import/chapter2_map_drops.yml

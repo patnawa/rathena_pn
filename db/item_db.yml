@@ -96,3 +96,4 @@ Footer:
     Mode: Renewal
   - Path: db/import/item_db.yml
   - Path: db/import/zero_cell_item_db.yml
+  - Path: db/import/chapter2_item_db.yml

@@ -1,0 +1,57 @@
+Header:
+  Type: COMBO_DB
+  Version: 1
+
+Body:
+  - Combos:
+      - Combo:
+          - Ch2_Azure_Armor
+          - Ch2_Azure_Manteau
+          - Ch2_Azure_Boots
+    Script: |
+      bonus bVariableCastrate,-5; bonus bDelayrate,-5;
+  - Combos:
+      - Combo:
+          - Ch2_Azure_Robe
+          - Ch2_Azure_Muffler
+          - Ch2_Azure_Shoes
+    Script: |
+      bonus bVariableCastrate,-5; bonus bDelayrate,-5;
+  - Combos:
+      - Combo:
+          - Ch2_Azure_Ring
+          - Ch2_Azure_Brooch
+    Script: |
+      bonus bAtkRate,5; bonus bShortAtkRate,10; bonus bLongAtkRate,10; bonus2 bAddRace,RC_All,5;
+  - Combos:
+      - Combo:
+          - Ch2_Azure_Earring
+          - Ch2_Azure_Necklace
+    Script: |
+      bonus bMatkRate,5; bonus2 bMagicAtkEle,Ele_All,10; bonus2 bMagicAddRace,RC_All,5;
+  - Combos:
+      - Combo:
+          - Ch2_Blaze_Armor
+          - Ch2_Blaze_Manteau
+          - Ch2_Blaze_Boots
+    Script: |
+      bonus bMaxHPrate,10; bonus bVariableCastrate,-10; bonus bDelayrate,-10; bonus2 bAddSize,Size_All,15; bonus2 bAddEle,Ele_All,15;
+  - Combos:
+      - Combo:
+          - Ch2_Blaze_Robe
+          - Ch2_Blaze_Muffler
+          - Ch2_Blaze_Shoes
+    Script: |
+      bonus bMaxHPrate,10; bonus bVariableCastrate,-10; bonus bDelayrate,-10; bonus2 bMagicAddSize,Size_All,15; bonus2 bMagicAddEle,Ele_All,15;
+  - Combos:
+      - Combo:
+          - Ch2_Blaze_Ring
+          - Ch2_Blaze_Brooch
+    Script: |
+      bonus bAtkRate,10; bonus bShortAtkRate,10; bonus bLongAtkRate,10; bonus2 bAddRace,RC_All,15;
+  - Combos:
+      - Combo:
+          - Ch2_Blaze_Earring
+          - Ch2_Blaze_Necklace
+    Script: |
+      bonus bMatkRate,10; bonus2 bMagicAtkEle,Ele_All,10; bonus2 bMagicAddRace,RC_All,15;

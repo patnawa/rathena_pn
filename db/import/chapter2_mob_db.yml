@@ -1,0 +1,844 @@
+Header:
+  Type: MOB_DB
+  Version: 5
+
+Body:
+  - Id: 22674
+    AegisName: CH2_DRAGONCLAM
+    Name: Dragon Clam
+    Level: 230
+    Hp: 20491619
+    BaseExp: 5100000
+    JobExp: 3570000
+    Attack: 10400
+    Attack2: 12800
+    Defense: 362
+    MagicDefense: 232
+    Resistance: 235
+    MagicResistance: 190
+    Str: 180
+    Agi: 150
+    Vit: 170
+    Int: 150
+    Dex: 205
+    Luk: 70
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Fish
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 170
+    AttackDelay: 900
+    AttackMotion: 600
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_1002678
+        Rate: 2000
+      - Item: aegis_300761
+        Rate: 1
+        StealProtected: true
+  - Id: 22685
+    AegisName: CH2_FLAMEBULL
+    Name: Flame Bull
+    Level: 231
+    Hp: 23646022
+    BaseExp: 5350000
+    JobExp: 3745000
+    Attack: 11200
+    Attack2: 13700
+    Defense: 430
+    MagicDefense: 270
+    Resistance: 260
+    MagicResistance: 205
+    Str: 190
+    Agi: 140
+    Vit: 185
+    Int: 130
+    Dex: 210
+    Luk: 65
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 160
+    AttackDelay: 850
+    AttackMotion: 600
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_1002679
+        Rate: 2000
+      - Item: aegis_300762
+        Rate: 1
+        StealProtected: true
+  - Id: 22686
+    AegisName: CH2_UROCHS
+    Name: Urochs
+    Level: 255
+    Hp: 950000000
+    BaseExp: 50000000
+    JobExp: 35000000
+    Attack: 29000
+    Attack2: 35000
+    Defense: 800
+    MagicDefense: 500
+    Resistance: 520
+    MagicResistance: 430
+    Str: 280
+    Agi: 210
+    Vit: 270
+    Int: 190
+    Dex: 280
+    Luk: 110
+    AttackRange: 2
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Large
+    Race: Brute
+    Element: Fire
+    ElementLevel: 4
+    WalkSpeed: 140
+    AttackDelay: 720
+    AttackMotion: 600
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Drops:
+      - Item: aegis_300763
+        Rate: 1
+        StealProtected: true
+  - Id: 22687
+    AegisName: CH2_LOGIDOGI
+    Name: Logidogi
+    Level: 232
+    Hp: 20633929
+    BaseExp: 5450000
+    JobExp: 3815000
+    Attack: 10700
+    Attack2: 13100
+    Defense: 340
+    MagicDefense: 215
+    Resistance: 230
+    MagicResistance: 185
+    Str: 175
+    Agi: 175
+    Vit: 160
+    Int: 145
+    Dex: 212
+    Luk: 75
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 145
+    AttackDelay: 760
+    AttackMotion: 520
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_1002681
+        Rate: 2000
+      - Item: aegis_300764
+        Rate: 1
+        StealProtected: true
+  - Id: 22688
+    AegisName: CH2_FIRECOTTON
+    Name: Fire Cotton
+    Level: 231
+    Hp: 20028309
+    BaseExp: 5300000
+    JobExp: 3710000
+    Attack: 10200
+    Attack2: 12500
+    Defense: 315
+    MagicDefense: 285
+    Resistance: 220
+    MagicResistance: 230
+    Str: 160
+    Agi: 165
+    Vit: 155
+    Int: 180
+    Dex: 208
+    Luk: 80
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Plant
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 165
+    AttackDelay: 820
+    AttackMotion: 600
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_1002683
+        Rate: 2000
+      - Item: aegis_300765
+        Rate: 1
+        StealProtected: true
+  - Id: 22689
+    AegisName: CH2_NAMUNSE
+    Name: Namunse
+    Level: 232
+    Hp: 18520744
+    BaseExp: 5500000
+    JobExp: 3850000
+    Attack: 11000
+    Attack2: 13400
+    Defense: 300
+    MagicDefense: 350
+    Resistance: 215
+    MagicResistance: 270
+    Str: 155
+    Agi: 180
+    Vit: 150
+    Int: 195
+    Dex: 215
+    Luk: 80
+    AttackRange: 3
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Medium
+    Race: Formless
+    Element: Ghost
+    ElementLevel: 1
+    WalkSpeed: 155
+    AttackDelay: 760
+    AttackMotion: 540
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300766
+        Rate: 1
+        StealProtected: true
+  - Id: 22690
+    AegisName: CH2_NAMUNI
+    Name: Namuni
+    Level: 234
+    Hp: 22959321
+    BaseExp: 5750000
+    JobExp: 4025000
+    Attack: 11600
+    Attack2: 14100
+    Defense: 335
+    MagicDefense: 370
+    Resistance: 235
+    MagicResistance: 285
+    Str: 165
+    Agi: 185
+    Vit: 165
+    Int: 205
+    Dex: 220
+    Luk: 85
+    AttackRange: 3
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Medium
+    Race: Formless
+    Element: Ghost
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 740
+    AttackMotion: 540
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300767
+        Rate: 1
+        StealProtected: true
+  - Id: 22691
+    AegisName: CH2_DUDULSON
+    Name: Dudulson
+    Level: 233
+    Hp: 23850387
+    BaseExp: 5800000
+    JobExp: 4060000
+    Attack: 11800
+    Attack2: 14400
+    Defense: 390
+    MagicDefense: 250
+    Resistance: 245
+    MagicResistance: 205
+    Str: 185
+    Agi: 165
+    Vit: 180
+    Int: 150
+    Dex: 220
+    Luk: 75
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 155
+    AttackDelay: 780
+    AttackMotion: 560
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: Ch2_Kindle_Hal_B
+        Rate: 350
+      - Item: aegis_300768
+        Rate: 1
+        StealProtected: true
+  - Id: 22692
+    AegisName: CH2_GARAKSON
+    Name: Garakson
+    Level: 235
+    Hp: 25017350
+    BaseExp: 6050000
+    JobExp: 4235000
+    Attack: 12200
+    Attack2: 14800
+    Defense: 405
+    MagicDefense: 260
+    Resistance: 255
+    MagicResistance: 210
+    Str: 190
+    Agi: 170
+    Vit: 185
+    Int: 155
+    Dex: 223
+    Luk: 75
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Fire
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 760
+    AttackMotion: 560
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: Ch2_Kindle_Hal_R
+        Rate: 250
+      - Item: aegis_300769
+        Rate: 1
+        StealProtected: true
+  - Id: 22693
+    AegisName: CH2_TUKTAKSON
+    Name: Tuktakson
+    Level: 235
+    Hp: 23992392
+    BaseExp: 6000000
+    JobExp: 4200000
+    Attack: 12000
+    Attack2: 14700
+    Defense: 395
+    MagicDefense: 275
+    Resistance: 250
+    MagicResistance: 220
+    Str: 188
+    Agi: 175
+    Vit: 180
+    Int: 165
+    Dex: 224
+    Luk: 80
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 760
+    AttackMotion: 560
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: Ch2_Puffed_Hal
+        Rate: 1250
+      - Item: Ch2_Kindle_Hal_Y
+        Rate: 150
+      - Item: aegis_300770
+        Rate: 1
+        StealProtected: true
+  - Id: 22694
+    AegisName: CH2_PARUSON
+    Name: Paruson
+    Level: 237
+    Hp: 26225839
+    BaseExp: 6250000
+    JobExp: 4375000
+    Attack: 12600
+    Attack2: 15300
+    Defense: 420
+    MagicDefense: 285
+    Resistance: 270
+    MagicResistance: 225
+    Str: 195
+    Agi: 175
+    Vit: 190
+    Int: 170
+    Dex: 228
+    Luk: 80
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 145
+    AttackDelay: 740
+    AttackMotion: 540
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300771
+        Rate: 1
+        StealProtected: true
+  - Id: 22695
+    AegisName: CH2_MORBANG
+    Name: Morbang
+    Level: 239
+    Hp: 26351233
+    BaseExp: 6500000
+    JobExp: 4550000
+    Attack: 13000
+    Attack2: 15800
+    Defense: 440
+    MagicDefense: 300
+    Resistance: 280
+    MagicResistance: 235
+    Str: 200
+    Agi: 180
+    Vit: 195
+    Int: 175
+    Dex: 232
+    Luk: 85
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 145
+    AttackDelay: 720
+    AttackMotion: 540
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300772
+        Rate: 1
+        StealProtected: true
+  - Id: 22696
+    AegisName: CH2_FIRECLAW
+    Name: Fire Claw
+    Level: 239
+    Hp: 27476823
+    BaseExp: 6600000
+    JobExp: 4620000
+    Attack: 13300
+    Attack2: 16100
+    Defense: 455
+    MagicDefense: 290
+    Resistance: 290
+    MagicResistance: 230
+    Str: 205
+    Agi: 185
+    Vit: 200
+    Int: 165
+    Dex: 234
+    Luk: 85
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 140
+    AttackDelay: 700
+    AttackMotion: 520
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300773
+        Rate: 1
+        StealProtected: true
+  - Id: 22697
+    AegisName: CH2_FLAMEANIMA
+    Name: Flame Anima
+    Level: 260
+    Hp: 1200000000
+    BaseExp: 65000000
+    JobExp: 45500000
+    Attack: 33000
+    Attack2: 39000
+    Defense: 900
+    MagicDefense: 700
+    Resistance: 620
+    MagicResistance: 580
+    Str: 300
+    Agi: 230
+    Vit: 300
+    Int: 280
+    Dex: 310
+    Luk: 130
+    AttackRange: 3
+    SkillRange: 14
+    ChaseRange: 16
+    Size: Large
+    Race: Formless
+    Element: Fire
+    ElementLevel: 4
+    WalkSpeed: 135
+    AttackDelay: 650
+    AttackMotion: 500
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Drops:
+      - Item: aegis_300774
+        Rate: 1
+        StealProtected: true
+  - Id: 22698
+    AegisName: CH2_FROST_MORBANG
+    Name: Frost Morbang
+    Level: 255
+    Hp: 1000000000
+    BaseExp: 55000000
+    JobExp: 38500000
+    Attack: 30000
+    Attack2: 36000
+    Defense: 850
+    MagicDefense: 650
+    Resistance: 570
+    MagicResistance: 540
+    Str: 285
+    Agi: 220
+    Vit: 285
+    Int: 260
+    Dex: 295
+    Luk: 120
+    AttackRange: 3
+    SkillRange: 14
+    ChaseRange: 16
+    Size: Large
+    Race: Formless
+    Element: Water
+    ElementLevel: 4
+    WalkSpeed: 140
+    AttackDelay: 680
+    AttackMotion: 520
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Drops:
+      - Item: aegis_300775
+        Rate: 1
+        StealProtected: true
+  - Id: 22699
+    AegisName: CH2_ALPURING
+    Name: Alpuring
+    Level: 229
+    Hp: 19797425
+    BaseExp: 5000000
+    JobExp: 3500000
+    Attack: 10100
+    Attack2: 12400
+    Defense: 236
+    MagicDefense: 319
+    Resistance: 205
+    MagicResistance: 255
+    Str: 155
+    Agi: 170
+    Vit: 150
+    Int: 185
+    Dex: 205
+    Luk: 85
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Water
+    ElementLevel: 2
+    WalkSpeed: 155
+    AttackDelay: 800
+    AttackMotion: 560
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_1002695
+        Rate: 2000
+      - Item: aegis_300776
+        Rate: 1
+        StealProtected: true
+  - Id: 22700
+    AegisName: CH2_ICYBLAST
+    Name: Icy Blast
+    Level: 231
+    Hp: 21212916
+    BaseExp: 5400000
+    JobExp: 3780000
+    Attack: 10800
+    Attack2: 13200
+    Defense: 238
+    MagicDefense: 195
+    Resistance: 220
+    MagicResistance: 175
+    Str: 170
+    Agi: 180
+    Vit: 160
+    Int: 165
+    Dex: 212
+    Luk: 80
+    AttackRange: 3
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Medium
+    Race: Formless
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 760
+    AttackMotion: 540
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_1002693
+        Rate: 2000
+      - Item: aegis_300777
+        Rate: 1
+        StealProtected: true
+  - Id: 22701
+    AegisName: CH2_ICENEEDLE
+    Name: Ice Needle
+    Level: 232
+    Hp: 22656314
+    BaseExp: 5600000
+    JobExp: 3920000
+    Attack: 11300
+    Attack2: 13800
+    Defense: 270
+    MagicDefense: 240
+    Resistance: 230
+    MagicResistance: 200
+    Str: 175
+    Agi: 190
+    Vit: 165
+    Int: 175
+    Dex: 218
+    Luk: 85
+    AttackRange: 4
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Medium
+    Race: Formless
+    Element: Water
+    ElementLevel: 2
+    WalkSpeed: 145
+    AttackDelay: 720
+    AttackMotion: 520
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: Ch2_Ghost_Grass
+        Rate: 800
+      - Item: aegis_300778
+        Rate: 1
+        StealProtected: true
+  - Id: 22702
+    AegisName: CH2_FOLNIR_NILF
+    Name: Folnir Nilf
+    Level: 240
+    Hp: 28116571
+    BaseExp: 6800000
+    JobExp: 4760000
+    Attack: 13600
+    Attack2: 16400
+    Defense: 480
+    MagicDefense: 330
+    Resistance: 300
+    MagicResistance: 260
+    Str: 210
+    Agi: 190
+    Vit: 205
+    Int: 185
+    Dex: 236
+    Luk: 90
+    AttackRange: 2
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Medium
+    Race: Formless
+    Element: Dark
+    ElementLevel: 2
+    WalkSpeed: 140
+    AttackDelay: 700
+    AttackMotion: 520
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300779
+        Rate: 1
+        StealProtected: true
+  - Id: 22703
+    AegisName: CH2_FOLNIR_MYRK
+    Name: Folnir Myrk
+    Level: 240
+    Hp: 26965597
+    BaseExp: 6800000
+    JobExp: 4760000
+    Attack: 13500
+    Attack2: 16300
+    Defense: 465
+    MagicDefense: 350
+    Resistance: 295
+    MagicResistance: 270
+    Str: 205
+    Agi: 195
+    Vit: 200
+    Int: 195
+    Dex: 238
+    Luk: 90
+    AttackRange: 3
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Medium
+    Race: Formless
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 140
+    AttackDelay: 700
+    AttackMotion: 520
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300780
+        Rate: 1
+        StealProtected: true
+  - Id: 22704
+    AegisName: CH2_FOLNIR_HRE
+    Name: Folnir Hre
+    Level: 240
+    Hp: 31961071
+    BaseExp: 7000000
+    JobExp: 4900000
+    Attack: 14000
+    Attack2: 17000
+    Defense: 500
+    MagicDefense: 340
+    Resistance: 315
+    MagicResistance: 265
+    Str: 215
+    Agi: 185
+    Vit: 220
+    Int: 180
+    Dex: 240
+    Luk: 90
+    AttackRange: 2
+    SkillRange: 11
+    ChaseRange: 13
+    Size: Large
+    Race: Undead
+    Element: Dark
+    ElementLevel: 2
+    WalkSpeed: 145
+    AttackDelay: 720
+    AttackMotion: 540
+    DamageMotion: 360
+    Ai: '04'
+    Drops:
+      - Item: aegis_300781
+        Rate: 1
+        StealProtected: true
+  - Id: 22705
+    AegisName: CH2_FEEOS
+    Name: Feeos
+    Level: 260
+    Hp: 1300000000
+    BaseExp: 70000000
+    JobExp: 49000000
+    Attack: 35000
+    Attack2: 42000
+    Defense: 950
+    MagicDefense: 720
+    Resistance: 650
+    MagicResistance: 600
+    Str: 310
+    Agi: 240
+    Vit: 315
+    Int: 290
+    Dex: 320
+    Luk: 140
+    AttackRange: 3
+    SkillRange: 14
+    ChaseRange: 16
+    Size: Large
+    Race: Undead
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 130
+    AttackDelay: 620
+    AttackMotion: 480
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Drops:
+      - Item: aegis_300782
+        Rate: 1
+        StealProtected: true
+  - Id: 22706
+    AegisName: CH2_ANTIRRHINUM
+    Name: Phantom Snapdragon
+    Level: 235
+    Hp: 25000000
+    BaseExp: 12000000
+    JobExp: 8400000
+    Attack: 15500
+    Attack2: 19000
+    Defense: 550
+    MagicDefense: 480
+    Resistance: 350
+    MagicResistance: 330
+    Str: 225
+    Agi: 205
+    Vit: 210
+    Int: 220
+    Dex: 250
+    Luk: 100
+    AttackRange: 3
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Large
+    Race: Plant
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 135
+    AttackDelay: 680
+    AttackMotion: 500
+    DamageMotion: 360
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Drops:
+      - Item: Ch2_Phantom_Crystal
+        Rate: 10000
+      - Item: aegis_300783
+        Rate: 1
+        StealProtected: true

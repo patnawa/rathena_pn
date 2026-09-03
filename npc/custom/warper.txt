@@ -346,7 +346,8 @@ menu	"Abandoned Lab Amicitia",D1, "Abyss Lakes",D2, "Amatsu Dungeon",D3,
 		"Toy Factory",D49, "Turtle Dungeon",D50, "Umbala Dungeon",D51,
 		"Varmundt's Dungeon",D52, "Verus Area",D53,
 		"Episode 20 Areas",D54, "Episode 21 Areas",D55,
-		"Call of the World Tree",D56, "Chapter 1 / Zero Cell",D57;
+		"Call of the World Tree",D56, "Chapter 1 / Zero Cell",D57,
+		"Chapter 2 - Flame Branch",D58;
 
 D1: Restrict("RE");
 	setarray @c[2],253,244,145,278;
@@ -550,6 +551,49 @@ D57_6:
 	if (!callfunc("ZC_CanEnter",2))
 		end;
 	Go("ch1zero4",99,100);
+D58: Restrict("RE");
+	if (!CH2_Step) {
+		message strcharinfo(0),"Start Chapter 2 with Guardian El at Ashridge (ygg_edge 156,179).";
+		end;
+	}
+	menu "Veledor",D58_1,
+		 "Kindlebrook",D58_2,
+		 "Volund Plains",D58_3,
+		 "Volund Forest",D58_4,
+		 "Primordial Flame 1F",D58_5,
+		 "Primordial Flame 2F",D58_6,
+		 "Root of Death",D58_7,
+		 "Ragsroot",D58_8,
+		 "Distorted Ragsroot",D58_9,
+		 "Flame Branch Workshop",D58_10;
+D58_1: Go("veledor",100,100);
+D58_2:
+	if (CH2_Step<3) { message strcharinfo(0),"Clear the Crossroads of Tangled Mana first."; end; }
+	Go("kindlbrk",100,100);
+D58_3:
+	if (CH2_Step<3) { message strcharinfo(0),"Reach Kindlebrook first."; end; }
+	Go("mu_fild02",100,100);
+D58_4:
+	if (CH2_Step<3) { message strcharinfo(0),"Reach Kindlebrook first."; end; }
+	Go("mu_fild03",100,100);
+D58_5:
+	if (CH2_Step<6) { message strcharinfo(0),"Follow Orion's investigation first."; end; }
+	Go("mu_dun01",100,100);
+D58_6:
+	if (CH2_Step<6) { message strcharinfo(0),"Follow Orion's investigation first."; end; }
+	Go("mu_dun02",100,100);
+D58_7:
+	if (CH2_Step<5) { message strcharinfo(0),"Help Kindlebrook first."; end; }
+	Go("deadroot",100,100);
+D58_8:
+	if (CH2_Step<8) { message strcharinfo(0),"Stabilize the Primordial Flame first."; end; }
+	Go("ragsruth",100,100);
+D58_9:
+	if (CH2_Step<10) { message strcharinfo(0),"Restore Nyrholt first."; end; }
+	Go("rgs_dun1",100,100);
+D58_10:
+	if (!callfunc("CH2_Complete")) { message strcharinfo(0),"Finish Chapter 2 to unlock the workshop."; end; }
+	Go("kin_in01",100,100);
 
 // --------------------------------------------------
 	Castles:

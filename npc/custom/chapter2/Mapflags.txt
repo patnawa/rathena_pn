@@ -1,0 +1,31 @@
+veledor	mapflag	town
+veledor	mapflag	nomemo
+kindlbrk	mapflag	town
+kindlbrk	mapflag	nomemo
+kin_in01	mapflag	nomemo
+mu_fild02	mapflag	nobranch
+mu_fild02	mapflag	nomemo
+mu_fild03	mapflag	nobranch
+mu_fild03	mapflag	nomemo
+mu_dun01	mapflag	nobranch
+mu_dun01	mapflag	nomemo
+mu_dun02	mapflag	nobranch
+mu_dun02	mapflag	nomemo
+deadroot	mapflag	nobranch
+deadroot	mapflag	nomemo
+ragsruth	mapflag	nomemo
+rgs_dun1	mapflag	nobranch
+rgs_dun1	mapflag	nomemo
+ch2safe1	mapflag	nomemo
+ch2safe2	mapflag	nomemo
+ch2safe3	mapflag	nomemo
+ch2safe4	mapflag	nomemo
+ch2gms	mapflag	nomemo
+1@ch2a	mapflag	nosave	SavePoint
+1@ch2a	mapflag	noteleport
+1@ch2a	mapflag	nomemo
+1@ch2a	mapflag	nobranch
+1@ch2b	mapflag	nosave	SavePoint
+1@ch2b	mapflag	noteleport
+1@ch2b	mapflag	nomemo
+1@ch2b	mapflag	nobranch

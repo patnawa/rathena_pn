@@ -1,0 +1,668 @@
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+
+Body:
+  - Id: 167
+    TargetItems:
+      Ch2_Azure_Armor: true
+      Ch2_Azure_Robe: true
+      Ch2_Blaze_Armor: true
+      Ch2_Blaze_Robe: true
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: aegis_314927
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314928
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314929
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314930
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314931
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314932
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+      - Slot: 2
+        PerfectEnchants:
+          - Item: aegis_314933
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314934
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314935
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314936
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314937
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314938
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+      - Slot: 1
+        PerfectEnchants:
+          - Item: aegis_314939
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314940
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314941
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+  - Id: 168
+    TargetItems:
+      Ch2_Azure_Manteau: true
+      Ch2_Azure_Muffler: true
+      Ch2_Blaze_Manteau: true
+      Ch2_Blaze_Muffler: true
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: aegis_314942
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314943
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314944
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314945
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314946
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+      - Slot: 2
+        PerfectEnchants:
+          - Item: aegis_314947
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314948
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314949
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314950
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314951
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314952
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+      - Slot: 1
+        PerfectEnchants:
+          - Item: aegis_314939
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314940
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314941
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+  - Id: 169
+    TargetItems:
+      Ch2_Azure_Boots: true
+      Ch2_Azure_Shoes: true
+      Ch2_Blaze_Boots: true
+      Ch2_Blaze_Shoes: true
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: aegis_314953
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314954
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314955
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314956
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314957
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314958
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+      - Slot: 2
+        PerfectEnchants:
+          - Item: aegis_314959
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314960
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314961
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314962
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314963
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314964
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+      - Slot: 1
+        PerfectEnchants:
+          - Item: aegis_314939
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314940
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314941
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+  - Id: 170
+    TargetItems:
+      Ch2_Azure_Shield: true
+      Ch2_Blaze_Shield: true
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: aegis_314979
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314980
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+      - Slot: 2
+        PerfectEnchants:
+          - Item: aegis_314981
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314982
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+      - Slot: 1
+        PerfectEnchants:
+          - Item: aegis_314983
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314984
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+  - Id: 171
+    TargetItems:
+      Ch2_Azure_Ring: true
+      Ch2_Azure_Brooch: true
+      Ch2_Azure_Earring: true
+      Ch2_Azure_Necklace: true
+      Ch2_Blaze_Ring: true
+      Ch2_Blaze_Brooch: true
+      Ch2_Blaze_Earring: true
+      Ch2_Blaze_Necklace: true
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: aegis_314965
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314966
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314967
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314968
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314969
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+          - Item: aegis_314970
+            Price: 15000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 50
+              - Material: Ch2_Kindle_Hal_B
+                Amount: 5
+      - Slot: 2
+        PerfectEnchants:
+          - Item: aegis_314971
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314972
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314973
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314974
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+          - Item: aegis_314975
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
+      - Slot: 1
+        PerfectEnchants:
+          - Item: aegis_314976
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314977
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314978
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5

@@ -1,0 +1,1297 @@
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 106440
+    AegisName: Ch2_Travelers_Leaf
+    Name: Traveler's Leaf
+    Type: Etc
+    Weight: 10
+  - Id: 106441
+    AegisName: Ch2_Phantom_Crystal
+    Name: Phantom Crystal
+    Type: Etc
+    Weight: 10
+  - Id: 106471
+    AegisName: Ch2_Dreamweave_Blue
+    Name: Blue Mangmahal
+    Type: Usable
+    Weight: 10
+  - Id: 106472
+    AegisName: Ch2_Dreamweave_Red
+    Name: Red Mangmahal
+    Type: Usable
+    Weight: 10
+  - Id: 106473
+    AegisName: Ch2_Dreamweave_Yellow
+    Name: Yellow Mangmahal
+    Type: Usable
+    Weight: 10
+  - Id: 450531
+    AegisName: Ch2_Azure_Armor
+    Name: Azure Flame Mana Armor
+    Type: Armor
+    Weight: 2000
+    Defense: 158
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Armor: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bPAtk,0;
+      bonus bBaseAtk,130+15*(.@r/2);
+      bonus bDef,15*(.@r/2);
+      if (.@r>=7) { bonus bShortAtkRate,5; bonus bLongAtkRate,5; bonus bAspdRate,10; }
+      if (.@r>=9) { bonus bPAtk,5; bonus bBaseAtk,25; bonus bDef,100; }
+      if (.@r>=11) { bonus bBaseAtk,35; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bPow,5; bonus bCon,5; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bAtkRate,3; bonus bPAtk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bPow,5; bonus bCon,5; bonus bShortAtkRate,10; bonus bLongAtkRate,10; }
+  - Id: 450532
+    AegisName: Ch2_Azure_Robe
+    Name: Azure Flame Mana Robe
+    Type: Armor
+    Weight: 1200
+    Defense: 126
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Armor: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bSMatk,0;
+      bonus bMatk,130+15*(.@r/2);
+      bonus bDef,15*(.@r/2);
+      if (.@r>=7) { bonus2 bMagicAtkEle,Ele_All,5; bonus bAspdRate,10; }
+      if (.@r>=9) { bonus bSMatk,5; bonus bMatk,25; bonus bDef,100; }
+      if (.@r>=11) { bonus bMatk,35; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bSpl,5; bonus bCon,5; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bMatkRate,3; bonus bSMatk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bSpl,5; bonus bCon,5; bonus2 bMagicAtkEle,Ele_All,10; }
+  - Id: 480751
+    AegisName: Ch2_Azure_Manteau
+    Name: Azure Flame Mana Manteau
+    Type: Armor
+    Weight: 1200
+    Defense: 92
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Garment: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHP,6000; bonus bMaxSP,200; bonus bHit,30; bonus bCritical,5;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) bonus bAspdRate,10;
+      if (.@r>=9) { bonus bPow,5; bonus bCon,5;  }
+      if (.@r>=10) { bonus bVariableCastrate,-5;  }
+      if (.@g>=ENCHANTGRADE_D) { bonus bShortAtkRate,10; bonus bLongAtkRate,10; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bAtkRate,3; bonus bPAtk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bBaseAtk,30; bonus bVariableCastrate,-5; }
+  - Id: 480752
+    AegisName: Ch2_Azure_Muffler
+    Name: Azure Flame Mana Muffler
+    Type: Armor
+    Weight: 700
+    Defense: 73
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Garment: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHP,5000; bonus bMaxSP,400; bonus bFlee,35;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) bonus bAspdRate,10;
+      if (.@r>=9) { bonus bSpl,5; bonus bCon,5;  }
+      if (.@r>=10) { bonus bVariableCastrate,-5;  }
+      if (.@g>=ENCHANTGRADE_D) bonus2 bMagicAtkEle,Ele_All,10;
+      if (.@g>=ENCHANTGRADE_C) { bonus bMatkRate,3; bonus bSMatk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bMatk,30; bonus bVariableCastrate,-5; }
+  - Id: 470420
+    AegisName: Ch2_Azure_Boots
+    Name: Azure Flame Mana Boots
+    Type: Armor
+    Weight: 900
+    Defense: 84
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Shoes: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHPrate,5; bonus bMaxSPrate,5; bonus bHit,30; bonus bCritical,5;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) { bonus bShortAtkRate,7; bonus bLongAtkRate,7; }
+      if (.@r>=9) bonus bAspdRate,7;
+      if (.@r>=10) { bonus bDef,100; bonus bDelayrate,-3; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bRes,25; bonus bMRes,25; }
+      if (.@g>=ENCHANTGRADE_C) bonus bFixedCast,-1000;
+      if (.@g>=ENCHANTGRADE_B) { bonus bPAtk,5; bonus bPow,5; bonus bCon,5; }
+  - Id: 470421
+    AegisName: Ch2_Azure_Shoes
+    Name: Azure Flame Mana Shoes
+    Type: Armor
+    Weight: 500
+    Defense: 67
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Shoes: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHPrate,5; bonus bMaxSPrate,5; bonus bFlee,35;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) bonus2 bMagicAtkEle,Ele_All,7;
+      if (.@r>=9) bonus bAspdRate,7;
+      if (.@r>=10) { bonus bDef,100; bonus bDelayrate,-3; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bRes,25; bonus bMRes,25; }
+      if (.@g>=ENCHANTGRADE_C) bonus bFixedCast,-1000;
+      if (.@g>=ENCHANTGRADE_B) { bonus bSMatk,5; bonus bSpl,5; bonus bCon,5; }
+  - Id: 460147
+    AegisName: Ch2_Azure_Shield
+    Name: Azure Flame Mana Shield
+    Type: Armor
+    Weight: 4000
+    Defense: 230
+    View: 1
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Left_Hand: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bRes,25; bonus bMRes,25;
+      bonus bDef,10*(.@r/2); bonus bMdef,2*(.@r/2);
+      if (.@r>=7) bonus bAspdRate,15;
+      if (.@r>=9) { bonus bDef,50; bonus bMdef,10; bonus bVariableCastrate,-10; }
+      if (.@r>=11) { bonus bRes,10; bonus bMRes,10; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bRes,15; bonus bMRes,15; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bPAtk,3; bonus bSMatk,3; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bDef,50; bonus bMdef,5; }
+  - Id: 490930
+    AegisName: Ch2_Azure_Ring
+    Name: Azure Flame Mana Ring
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Left_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bAtkRate,7; bonus bPAtk,5; bonus bAspdRate,7;
+  - Id: 490931
+    AegisName: Ch2_Azure_Brooch
+    Name: Azure Flame Mana Brooch
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Right_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bAtkRate,7; bonus bPAtk,3; bonus bVariableCastrate,-5;
+  - Id: 490932
+    AegisName: Ch2_Azure_Earring
+    Name: Azure Flame Mana Earring
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Left_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bMatkRate,7; bonus bSMatk,5; bonus bAspdRate,7;
+  - Id: 490933
+    AegisName: Ch2_Azure_Necklace
+    Name: Azure Flame Mana Necklace
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 230
+    Locations:
+      Right_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bMatkRate,7; bonus bSMatk,3; bonus bVariableCastrate,-5;
+  - Id: 450533
+    AegisName: Ch2_Blaze_Armor
+    Name: Blaze Mana Armor
+    Type: Armor
+    Weight: 2500
+    Defense: 178
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Armor: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bPAtk,5;
+      bonus bBaseAtk,130+15*(.@r/2);
+      bonus bDef,15*(.@r/2);
+      if (.@r>=7) { bonus bShortAtkRate,5; bonus bLongAtkRate,5; bonus bAspdRate,10; }
+      if (.@r>=9) { bonus bPAtk,5; bonus bBaseAtk,25; bonus bDef,100; }
+      if (.@r>=11) { bonus bBaseAtk,35; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bPow,5; bonus bCon,5; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bAtkRate,3; bonus bPAtk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bPow,5; bonus bCon,5; bonus bShortAtkRate,10; bonus bLongAtkRate,10; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bAtkRate,7; bonus bMaxHPrate,5; }
+  - Id: 450534
+    AegisName: Ch2_Blaze_Robe
+    Name: Blaze Mana Robe
+    Type: Armor
+    Weight: 1500
+    Defense: 146
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Armor: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bSMatk,5;
+      bonus bMatk,130+15*(.@r/2);
+      bonus bDef,15*(.@r/2);
+      if (.@r>=7) { bonus2 bMagicAtkEle,Ele_All,5; bonus bAspdRate,10; }
+      if (.@r>=9) { bonus bSMatk,5; bonus bMatk,25; bonus bDef,100; }
+      if (.@r>=11) { bonus bMatk,35; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bSpl,5; bonus bCon,5; bonus bDelayrate,-5; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bMatkRate,3; bonus bSMatk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bSpl,5; bonus bCon,5; bonus2 bMagicAtkEle,Ele_All,10; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bMatkRate,7; bonus bMaxHPrate,5; }
+  - Id: 480753
+    AegisName: Ch2_Blaze_Manteau
+    Name: Blaze Mana Manteau
+    Type: Armor
+    Weight: 1500
+    Defense: 112
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Garment: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHP,6000; bonus bMaxSP,200; bonus bHit,30; bonus bCritical,5;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) bonus bAspdRate,10;
+      if (.@r>=9) { bonus bPow,5; bonus bCon,5; bonus bMaxSPrate,3; }
+      if (.@r>=10) { bonus bVariableCastrate,-5; bonus bMaxHPrate,3; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bShortAtkRate,10; bonus bLongAtkRate,10; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bAtkRate,3; bonus bPAtk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bBaseAtk,30; bonus bVariableCastrate,-5; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bAtkRate,5; bonus bMaxSPrate,3; bonus bDelayrate,-5; }
+  - Id: 480754
+    AegisName: Ch2_Blaze_Muffler
+    Name: Blaze Mana Muffler
+    Type: Armor
+    Weight: 900
+    Defense: 93
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Garment: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHP,5000; bonus bMaxSP,400; bonus bFlee,35;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) bonus bAspdRate,10;
+      if (.@r>=9) { bonus bSpl,5; bonus bCon,5; bonus bMaxSPrate,3; }
+      if (.@r>=10) { bonus bVariableCastrate,-5; bonus bMaxHPrate,3; }
+      if (.@g>=ENCHANTGRADE_D) bonus2 bMagicAtkEle,Ele_All,10;
+      if (.@g>=ENCHANTGRADE_C) { bonus bMatkRate,3; bonus bSMatk,5; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bMatk,30; bonus bVariableCastrate,-5; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bMatkRate,5; bonus bMaxSPrate,3; bonus bDelayrate,-5; }
+  - Id: 470422
+    AegisName: Ch2_Blaze_Boots
+    Name: Blaze Mana Boots
+    Type: Armor
+    Weight: 1100
+    Defense: 104
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Shoes: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHPrate,5; bonus bMaxSPrate,5; bonus bHit,30; bonus bCritical,5;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) { bonus bShortAtkRate,7; bonus bLongAtkRate,7; }
+      if (.@r>=9) bonus bAspdRate,7;
+      if (.@r>=10) { bonus bDef,100; bonus bDelayrate,-3; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bRes,25; bonus bMRes,25; }
+      if (.@g>=ENCHANTGRADE_C) bonus bFixedCast,-1000;
+      if (.@g>=ENCHANTGRADE_B) { bonus bPAtk,5; bonus bPow,5; bonus bCon,5; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bMaxHPrate,5; bonus bDelayrate,-5; }
+  - Id: 470423
+    AegisName: Ch2_Blaze_Shoes
+    Name: Blaze Mana Shoes
+    Type: Armor
+    Weight: 700
+    Defense: 87
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Shoes: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHPrate,5; bonus bMaxSPrate,5; bonus bFlee,35;
+      bonus bMaxHP,150*(.@r/2); bonus bDef,15*(.@r/2);
+      if (.@r>=7) bonus2 bMagicAtkEle,Ele_All,7;
+      if (.@r>=9) bonus bAspdRate,7;
+      if (.@r>=10) { bonus bDef,100; bonus bDelayrate,-3; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bRes,25; bonus bMRes,25; }
+      if (.@g>=ENCHANTGRADE_C) bonus bFixedCast,-1000;
+      if (.@g>=ENCHANTGRADE_B) { bonus bSMatk,5; bonus bSpl,5; bonus bCon,5; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bMaxHPrate,5; bonus bDelayrate,-5; }
+  - Id: 460148
+    AegisName: Ch2_Blaze_Shield
+    Name: Blaze Mana Shield
+    Type: Armor
+    Weight: 4500
+    Defense: 250
+    View: 1
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Left_Hand: true
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bRes,25; bonus bMRes,25;
+      bonus bDef,10*(.@r/2); bonus bMdef,2*(.@r/2);
+      if (.@r>=7) bonus bAspdRate,15;
+      if (.@r>=9) { bonus bDef,50; bonus bMdef,10; bonus bVariableCastrate,-10; }
+      if (.@r>=11) { bonus bRes,10; bonus bMRes,10; }
+      if (.@g>=ENCHANTGRADE_D) { bonus bRes,15; bonus bMRes,15; }
+      if (.@g>=ENCHANTGRADE_C) { bonus bPAtk,3; bonus bSMatk,3; }
+      if (.@g>=ENCHANTGRADE_B) { bonus bDef,50; bonus bMdef,5; }
+      if (.@g>=ENCHANTGRADE_A) { bonus bRes,20; bonus bMRes,20; }
+  - Id: 490934
+    AegisName: Ch2_Blaze_Ring
+    Name: Blaze Mana Ring
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Left_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bAtkRate,10; bonus bPAtk,7; bonus bAspdRate,7;
+  - Id: 490935
+    AegisName: Ch2_Blaze_Brooch
+    Name: Blaze Mana Brooch
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Right_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bAtkRate,10; bonus bPAtk,5; bonus bVariableCastrate,-5;
+  - Id: 490936
+    AegisName: Ch2_Blaze_Earring
+    Name: Blaze Mana Earring
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Left_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+      bonus bMatkRate,10; bonus bSMatk,7; bonus bAspdRate,7;
+  - Id: 490937
+    AegisName: Ch2_Blaze_Necklace
+    Name: Blaze Mana Necklace
+    Type: Armor
+    Weight: 100
+    Defense: 0
+    Slots: 1
+    ArmorLevel: 2
+    EquipLevelMin: 235
+    Locations:
+      Right_Accessory: true
+    Refineable: false
+    Gradable: false
+    Script: |
+     bonus bMatkRate,10; bonus bSMatk,5; bonus bVariableCastrate,-5;
+  - Id: 314927
+    AegisName: aegis_314927
+    Name: Flame Flower Spell (Warrior)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314928
+    AegisName: aegis_314928
+    Name: Flame Flower Spell (Archer)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bLongAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314929
+    AegisName: aegis_314929
+    Name: Flame Flower Spell (Sage)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314930
+    AegisName: aegis_314930
+    Name: Flame Flower Spell (Magician)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314931
+    AegisName: aegis_314931
+    Name: Flame Flower Spell (Assassin)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314932
+    AegisName: aegis_314932
+    Name: Flame Flower Spell (Fighter)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314933
+    AegisName: aegis_314933
+    Name: Flame Flower Spell (Berserker)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bShortAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314934
+    AegisName: aegis_314934
+    Name: Flame Flower Spell (Marksman)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bLongAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314935
+    AegisName: aegis_314935
+    Name: Flame Flower Spell (Grand Sage)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314936
+    AegisName: aegis_314936
+    Name: Flame Flower Spell (Grand Mage)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314937
+    AegisName: aegis_314937
+    Name: Flame Flower Spell (Executioner)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314938
+    AegisName: aegis_314938
+    Name: Flame Flower Spell (Special Force)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314939
+    AegisName: aegis_314939
+    Name: Flame Flower Spell (Global Cooldown)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bDelayrate,-(2+2*(.@r>=7)+2*(.@r>=9)+2*(.@g>=ENCHANTGRADE_D)+2*(.@g>=ENCHANTGRADE_C)+1*(.@g>=ENCHANTGRADE_B)+1*(.@g>=ENCHANTGRADE_A));
+  - Id: 314940
+    AegisName: aegis_314940
+    Name: Flame Flower Spell (Power Force)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314941
+    AegisName: aegis_314941
+    Name: Flame Flower Spell (Magic Force)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314942
+    AegisName: aegis_314942
+    Name: Flame Flower Spell (Physical Defense)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bDef,100+20*(.@r/2);
+  - Id: 314943
+    AegisName: aegis_314943
+    Name: Flame Flower Spell (Magical Defense)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMdef,20+4*(.@r/2);
+  - Id: 314944
+    AegisName: aegis_314944
+    Name: Flame Flower Spell (HP & SP)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHPrate,5; bonus bMaxSPrate,5;
+  - Id: 314945
+    AegisName: aegis_314945
+    Name: Flame Flower Spell (Speed)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bAspdRate,10; bonus bSpeedRate,10;
+  - Id: 314946
+    AegisName: aegis_314946
+    Name: Flame Flower Spell (Caster)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bVariableCastrate,-10; bonus bDelayrate,-5;
+  - Id: 314947
+    AegisName: aegis_314947
+    Name: Flame Flower Spell (Melee)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bShortAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314948
+    AegisName: aegis_314948
+    Name: Flame Flower Spell (Range)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bLongAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314949
+    AegisName: aegis_314949
+    Name: Flame Flower Spell (Spell)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314950
+    AegisName: aegis_314950
+    Name: Flame Flower Spell (Magic)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314951
+    AegisName: aegis_314951
+    Name: Flame Flower Spell (Critical)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314952
+    AegisName: aegis_314952
+    Name: Flame Flower Spell (Hit Attack)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314953
+    AegisName: aegis_314953
+    Name: Flame Flower Spell (Size Attack)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314954
+    AegisName: aegis_314954
+    Name: Flame Flower Spell (Size Spell)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314955
+    AegisName: aegis_314955
+    Name: Flame Flower Spell (Physical Force)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314956
+    AegisName: aegis_314956
+    Name: Flame Flower Spell (Magical Force)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314957
+    AegisName: aegis_314957
+    Name: Flame Flower Spell (MaxHP)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxHPrate,10;
+  - Id: 314958
+    AegisName: aegis_314958
+    Name: Flame Flower Spell (MaxSP)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMaxSPrate,10;
+  - Id: 314959
+    AegisName: aegis_314959
+    Name: Flame Flower Spell (Over Power)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314960
+    AegisName: aegis_314960
+    Name: Flame Flower Spell (Firing Shot)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bLongAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314961
+    AegisName: aegis_314961
+    Name: Flame Flower Spell (Spell Buster)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314962
+    AegisName: aegis_314962
+    Name: Flame Flower Spell (Magic Storm)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314963
+    AegisName: aegis_314963
+    Name: Flame Flower Spell (Lucky Strike)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314964
+    AegisName: aegis_314964
+    Name: Flame Flower Spell (Special Agent)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314965
+    AegisName: aegis_314965
+    Name: Flame Flower Spell (Fighting Spirit)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bShortAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314966
+    AegisName: aegis_314966
+    Name: Flame Flower Spell (Expert Archer)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bLongAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314967
+    AegisName: aegis_314967
+    Name: Flame Flower Spell (Spirit Power)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314968
+    AegisName: aegis_314968
+    Name: Flame Flower Spell (Magic)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314969
+    AegisName: aegis_314969
+    Name: Flame Flower Spell (Fatal)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314970
+    AegisName: aegis_314970
+    Name: Flame Flower Spell (Hit Attack)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314971
+    AegisName: aegis_314971
+    Name: Flame Flower Spell (Tenacity)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314972
+    AegisName: aegis_314972
+    Name: Flame Flower Spell (Master Archer)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bBaseAtk,50; bonus bLongAtkRate,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314973
+    AegisName: aegis_314973
+    Name: Flame Flower Spell (Spell Power)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314974
+    AegisName: aegis_314974
+    Name: Flame Flower Spell (Acute)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314975
+    AegisName: aegis_314975
+    Name: Flame Flower Spell (Great Artisan)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314976
+    AegisName: aegis_314976
+    Name: Flame Flower Spell (Physical Power)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314977
+    AegisName: aegis_314977
+    Name: Flame Flower Spell (Magical Power)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314978
+    AegisName: aegis_314978
+    Name: Flame Flower Spell (Magic Essence)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bVariableCastrate,-10; bonus bDelayrate,-5;
+  - Id: 314979
+    AegisName: aegis_314979
+    Name: Flame Flower Spell (Defense)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bDef,100+20*(.@r/2);
+  - Id: 314980
+    AegisName: aegis_314980
+    Name: Flame Flower Spell (Attack)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314981
+    AegisName: aegis_314981
+    Name: Flame Flower Spell (Physical Resistance)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bRes,15+5*(.@g>=ENCHANTGRADE_D)+5*(.@g>=ENCHANTGRADE_C);
+  - Id: 314982
+    AegisName: aegis_314982
+    Name: Flame Flower Spell (Magical Resistance)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMRes,15+5*(.@g>=ENCHANTGRADE_D)+5*(.@g>=ENCHANTGRADE_C);
+  - Id: 314983
+    AegisName: aegis_314983
+    Name: Flame Flower Spell (Guardian)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 314984
+    AegisName: aegis_314984
+    Name: Flame Flower Spell (Intelligence)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bMatk,50; bonus2 bMagicAtkEle,Ele_All,5+5*(.@r>=7)+5*(.@r>=9);
+  - Id: 300761
+    AegisName: aegis_300761
+    Name: Dragon Clam Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Head_Top: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bSMatk,5; bonus2 bMagicAddEle,Ele_Poison,7+(getrefine()>=10?8:0);
+  - Id: 300762
+    AegisName: aegis_300762
+    Name: Flame Bull Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Garment: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bSubEle,Ele_Neutral,20; bonus bShortAtkRate,20; bonus bBaseAtk,5*(getrefine()/3);
+  - Id: 300763
+    AegisName: aegis_300763
+    Name: Urochs Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Garment: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bHit,45; bonus bShortAtkRate,25; if (readparam(bDex)>=120) bonus bPerfectHitRate,20; if (readparam(bCon)>=100) bonus bShortAtkRate,30;
+  - Id: 300764
+    AegisName: aegis_300764
+    Name: Logidogi Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Head_Top: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bPAtk,7; bonus2 bAddEle,Ele_Poison,12+(getrefine()>=10?8:0);
+  - Id: 300765
+    AegisName: aegis_300765
+    Name: Fire Cotton Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Left_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bMatkRate,5; bonus bVariableCastrate,-5;
+  - Id: 300766
+    AegisName: aegis_300766
+    Name: Namunse Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Left_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bHit,15; bonus bLongAtkRate,7;
+  - Id: 300767
+    AegisName: aegis_300767
+    Name: Namuni Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bHit,15; bonus bLongAtkRate,8;
+  - Id: 300768
+    AegisName: aegis_300768
+    Name: Dudulson Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Hand: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bAddEle,Ele_Fire,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0); bonus2 bAddRace,RC_Formless,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0);
+  - Id: 300769
+    AegisName: aegis_300769
+    Name: Garakson Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Hand: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bMagicAddEle,Ele_Fire,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0); bonus2 bMagicAddRace,RC_Formless,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0);
+  - Id: 300770
+    AegisName: aegis_300770
+    Name: Tuktakson Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Hand: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bAddSize,Size_Medium,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0); bonus2 bAddSize,Size_Large,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0);
+  - Id: 300771
+    AegisName: aegis_300771
+    Name: Paruson Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Hand: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bMagicAddSize,Size_Medium,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0); bonus2 bMagicAddSize,Size_Large,10+(getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?10:0);
+  - Id: 300772
+    AegisName: aegis_300772
+    Name: Morbang Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Left_Hand: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bMaxHPrate,-4; bonus2 bSubEle,Ele_Fire,15; bonus2 bSubRace,RC_Formless,15; bonus2 bSubSize,Size_Medium,15; bonus2 bSubSize,Size_Large,15;
+  - Id: 300773
+    AegisName: aegis_300773
+    Name: Fire Claw Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Armor: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bMaxHPrate,3; bonus bMaxSPrate,3; bonus bShortAtkRate,3*(getrefine()/2)+(getrefine()>=12?10:0); bonus bLongAtkRate,3*(getrefine()/2)+(getrefine()>=12?10:0);
+  - Id: 300774
+    AegisName: aegis_300774
+    Name: Flame Anima Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bSMatk,15; bonus bAspd,3; bonus3 bAutoSpell,"AG_CRIMSON_ARROW",5,120; bonus3 bAutoSpell,"AG_CONFLAGRATION",5,40;
+  - Id: 300775
+    AegisName: aegis_300775
+    Name: Frost Morbang Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bLongAtkRate,25+(BaseLevel>=230?45:0); bonus bMaxHPrate,-20; if (readparam(bDex)>=70) bonus bNoSizeFix; if (BaseLevel>=230) bonus bVit,-20;
+  - Id: 300776
+    AegisName: aegis_300776
+    Name: Alpuring Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bMatkRate,5; bonus bDelayrate,-4; bonus bVariableCastrate,-5;
+  - Id: 300777
+    AegisName: aegis_300777
+    Name: Icy Blast Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Head_Top: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bPAtk,7; bonus2 bAddEle,Ele_Undead,12+(getrefine()>=10?8:0);
+  - Id: 300778
+    AegisName: aegis_300778
+    Name: Ice Needle Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Left_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bHit,15; bonus bShortAtkRate,7;
+  - Id: 300779
+    AegisName: aegis_300779
+    Name: Folnir Nilf Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Right_Accessory: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bHit,15; bonus bShortAtkRate,8;
+  - Id: 300780
+    AegisName: aegis_300780
+    Name: Folnir Myrk Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Garment: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bSubEle,Ele_Neutral,20; bonus bLongAtkRate,20; bonus bBaseAtk,5*(getrefine()/3);
+  - Id: 300781
+    AegisName: aegis_300781
+    Name: Folnir Hre Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Head_Top: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bSMatk,5; bonus2 bMagicAddEle,Ele_Undead,7+(getrefine()>=10?8:0);
+  - Id: 300782
+    AegisName: aegis_300782
+    Name: Feeos Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Shoes: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus bShortAtkRate,20; bonus bLongAtkRate,20; bonus bMaxSPrate,-5; bonus bCritAtkRate,-25;
+  - Id: 300783
+    AegisName: aegis_300783
+    Name: Phantom of Antirrhinum Card
+    Type: Card
+    Weight: 10
+    Locations:
+      Armor: true
+    Flags:
+      BuyingStore: true
+      DropEffect: CLIENT
+    Script: |
+      bonus2 bAddClass,Class_Boss,40; bonus bMaxSPrate,-35; if (getrefine()>=12) bonus bPAtk,15; if (BaseLevel>=200) { bonus bPow,10; bonus bCon,10; } if (readparam(bPow)>=90) bonus bAtkRate,15;

@@ -57,3 +57,4 @@ Footer:
     Mode: Renewal
   - Path: db/import/quest_db.yml
   - Path: db/import/zero_cell_quest_db.yml
+  - Path: db/import/chapter2_quest_db.yml

@@ -1,0 +1,436 @@
+// Chapter 2 - Song of the World Tree: Fragments of the End
+// Playable implementation based on the published MuhRO/RockMMO progression.
+
+function	script	CH2_Complete	{
+	return isbegin_quest(27101) == 2;
+}
+
+function	script	CH2_RepLevel	{
+	if (CH2_Reputation >= 300) return 3;
+	if (CH2_Reputation >= 200) return 2;
+	if (CH2_Reputation >= 100) return 1;
+	return 0;
+}
+
+function	script	CH2_Instance	{
+	.@name$ = getarg(0);
+	.@iid = instance_id(IM_CHAR);
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+		mes "[Chapter 2 Expedition]";
+		mes "You already own another active instance. Close it from the instance window before creating this one.";
+		close;
+	}
+	if (!.@iid) {
+		.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
+		if (.@iid < 0) {
+			mes "[Chapter 2 Expedition]";
+			mes "The instance could not be created. Please try again shortly.";
+			close;
+		}
+	}
+	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+		mes "[Chapter 2 Expedition]";
+		mes "The instance entrance is unavailable.";
+		close;
+	}
+	end;
+}
+
+function	script	CH2_GiveReward	{
+	.@quest = getarg(0);
+	.@coins = getarg(1);
+	completequest .@quest;
+	setd("CH2_Daily_CD_"+.@quest,gettimetick(2)+14400);
+	getitem 1002700,.@coins;
+	CH2_Reputation += 2;
+	getexp 12000000,8400000;
+	mes "[Flame Branch Mission]";
+	mes "Reward: ^ff8800"+.@coins+" Flame Coins^000000 and ^33aa33+2 reputation^000000.";
+	close;
+}
+
+function	script	CH2_RecreateItem	{
+	.@idx = getarg(0);
+	.@newid = getarg(1);
+	.@newref = getarg(2);
+	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
+	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
+	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
+	.@identify = @inventorylist_identify[.@idx];
+	.@attribute = @inventorylist_attribute[.@idx];
+	.@c1 = @inventorylist_card1[.@idx]; .@c2 = @inventorylist_card2[.@idx];
+	.@c3 = @inventorylist_card3[.@idx]; .@c4 = @inventorylist_card4[.@idx];
+	.@grade = @inventorylist_enchantgrade[.@idx];
+	delitemidx @inventorylist_idx[.@idx],1;
+	getitem4 .@newid,1,.@identify,.@newref,.@attribute,.@c1,.@c2,.@c3,.@c4,.@grade,.@oid,.@oval,.@opar;
+	return 1;
+}
+
+ygg_edge,156,179,4	script	Guardian El#ch2start	4_F_FAIRYKID5,{
+	if (CH2_Complete()) {
+		mes "[Guardian El]";
+		mes "Veledor and Kindlebrook still need their guardian. Shall I open the route?";
+		if (select("Travel to Veledor:Stay here") == 1) warp "veledor",100,100;
+		close;
+	}
+	if (BaseLevel < 225) {
+		mes "[Guardian El]";
+		mes "The resonance is too violent. Return at Base Level 225.";
+		close;
+	}
+	if (!callfunc("CH1_Complete")) {
+		mes "[Guardian El]";
+		mes "First resolve Chapter 1: Call of the World Tree.";
+		close;
+	}
+	if (!CH2_Step) {
+		if (countitem(512) < 5) {
+			mes "[Guardian El]";
+			mes "Bring ^ff00005 Apples^000000. Nyrholt's ritual will need them later.";
+			close;
+		}
+		mes "[Guardian El]";
+		mes "Fragments of the End are stirring beyond the World Tree. Five settlements have gone silent.";
+		next;
+		mes "Follow me through Veledor, Kindlebrook, the Root of Death, Primordial Flame and Ragsroot.";
+		setquest 27101;
+		CH2_Step = 1;
+		CH2_Reputation = 10;
+		warp "veledor",100,100;
+		end;
+	}
+	warp "veledor",100,100;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 225 && CH1_Complete() && isbegin_quest(27101) == 0";
+	end;
+}
+
+veledor,100,100,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
+	if (!CH2_Step) { mes "[Guardian El]"; mes "Meet me at Ashridge first."; close; }
+	if (CH2_Step == 1) {
+		mes "[Guardian El]"; mes "A knot of corrupted mana blocks the road. Enter the Crossroads and untangle it.";
+		CH2_Step = 2;
+		close;
+	}
+	if (CH2_Step == 2) {
+		if (!CH2_Crossroads) { mes "[Guardian El]"; mes "Use the Tangled Mana portal beside me and defeat its core."; close; }
+		mes "[Guardian El]"; mes "The path has opened. Kindlebrook's people are sheltering beyond it.";
+		CH2_Step = 3;
+		CH2_Reputation += 10;
+		warp "kindlbrk",100,100;
+		end;
+	}
+	if (CH2_Step >= 12 && !CH2_Complete()) {
+		if (!CH2_Phantom) { mes "[Guardian El]"; mes "The Phantom of Nyrholt remains."; close; }
+		mes "[Guardian El]"; mes "You restored the severed Flame Branch and gave every refuge a future.";
+		next;
+		mes "Your reputation now grants access to the Flame Branch exchange and all Chapter 2 routes.";
+		completequest 27101;
+		CH2_Reputation = max(CH2_Reputation,100);
+		getitem 1002700,30;
+		getexp 80000000,56000000;
+		close;
+	}
+	mes "[Guardian El]"; mes "Current chapter stage: "+CH2_Step+". The Expedition Guide can point to your next objective.";
+	close;
+}
+
+veledor,104,100,4	script	Tangled Mana Gate#ch2	4_ENERGY_BLUE,{
+	if (CH2_Step != 2) { mes "The Crossroads is stable for now."; close; }
+	callfunc "CH2_Instance","Crossroads of Tangled Mana";
+}
+
+kindlbrk,100,100,4	script	Karilon#ch2main	4_M_REPAIR,{
+	if (CH2_Step == 3) {
+		mes "[Karilon]"; mes "Shadow Jailers cut off Kindlebrook. Destroy twenty and bring back a path for our refugees.";
+		setquest 27102; CH2_Step = 4;
+		warp "ch1_sf02",160,160;
+		end;
+	}
+	if (CH2_Step == 4) {
+		if (checkquest(27102,HUNTING) != 2) { mes "[Karilon]"; mes "Destroy 20 Shadow Jailers."; close; }
+		completequest 27102; CH2_Step = 5; CH2_Reputation += 10;
+		mes "[Karilon]"; mes "The refugees can move. Orion waits at the Root of Death.";
+		close2; warp "deadroot",100,100; end;
+	}
+	mes "[Karilon]"; mes "Kindlebrook endures because the Flame Branch still remembers warmth."; close;
+}
+
+deadroot,100,100,4	script	Orion#ch2main	4_M_DEWOLDMAN,{
+	if (CH2_Step == 5) {
+		mes "[Orion]"; mes "The Root of Death is frozen from within. We traced the fracture to the Primordial Flame.";
+		CH2_Step = 6; CH2_Reputation += 10;
+		close2; warp "mu_dun01",100,100; end;
+	}
+	mes "[Orion]"; mes "Cold mana preserves memories, but it also traps them."; close;
+}
+
+mu_dun01,100,100,4	script	Flame Researcher#ch2main	4_F_SCIENCE,{
+	if (CH2_Step == 6) {
+		mes "[Flame Researcher]"; mes "A second wave of Shadow Jailers feeds on the Primordial Flame. Eliminate twenty.";
+		setquest 27103; CH2_Step = 7;
+		close2; warp "ch1_sf02",160,160; end;
+	}
+	if (CH2_Step == 7) {
+		if (checkquest(27103,HUNTING) != 2) { mes "[Flame Researcher]"; mes "Destroy 20 Shadow Jailers."; close; }
+		completequest 27103; CH2_Step = 8; CH2_Reputation += 10;
+		mes "[Flame Researcher]"; mes "The flame is free. Take its spark to Nyrholt in Ragsroot.";
+		close2; warp "ragsruth",100,100; end;
+	}
+	mes "[Flame Researcher]"; mes "Primordial Flame readings are stable."; close;
+}
+
+ragsruth,100,100,4	script	Nyrholt Keeper#ch2main	4_M_ROKI2,{
+	if (CH2_Step == 8) {
+		if (countitem(512) < 5) { mes "[Nyrholt Keeper]"; mes "The seal requires 5 Apples, symbols of living renewal."; close; }
+		delitem 512,5;
+		CH2_Step = 9;
+		mes "[Nyrholt Keeper]"; mes "The offering is accepted. Enter Nyrholt and subdue the frozen guardian.";
+		close2; callfunc "CH2_Instance","Nyrholt"; end;
+	}
+	if (CH2_Step == 9) {
+		if (!CH2_Nyrholt) { mes "[Nyrholt Keeper]"; mes "Nyrholt's guardian still holds the seal."; next; if(select("Enter Nyrholt:Leave")==1) callfunc "CH2_Instance","Nyrholt"; close; }
+		mes "[Nyrholt Keeper]"; mes "The seal is restored, but Ragsroot's reflection is still distorted. Defeat 100 creatures there.";
+		setquest 27104; CH2_Step = 10; CH2_Reputation += 15;
+		close2; warp "rgs_dun1",100,100; end;
+	}
+	mes "[Nyrholt Keeper]"; mes "The living Nyrholt and its phantom now overlap."; close;
+}
+
+rgs_dun1,100,100,4	script	Ragsroot Scout#ch2main	4_M_REBELLION2,{
+	if (CH2_Step == 10) {
+		if (checkquest(27104,HUNTING) != 2) { mes "[Ragsroot Scout]"; mes "Defeat 100 Folnir creatures in Distorted Ragsroot."; close; }
+		completequest 27104; CH2_Step = 11; CH2_Reputation += 15;
+		mes "[Ragsroot Scout]"; mes "The distortion has collapsed into one Phantom. Return to the Nyrholt Keeper.";
+		close2; warp "ch2safe4",100,100; end;
+	}
+	mes "[Ragsroot Scout]"; mes "Keep the distortion contained."; close;
+}
+
+ch2safe4,100,100,4	script	Phantom Gate#ch2main	4_ENERGY_RED,{
+	if (CH2_Step == 11) {
+		if (CH2_Phantom) { CH2_Step = 12; mes "The Phantom is gone. Report to Guardian El in Veledor."; close2; warp "veledor",100,100; end; }
+		mes "The Phantom of Nyrholt is beyond this gate.";
+		next;
+		if (select("Enter:Leave") == 1) callfunc "CH2_Instance","Phantom of Nyrholt";
+		close;
+	}
+	mes "The gate responds only to Chapter 2's final resonance."; close;
+}
+
+kindlbrk,104,100,4	script	Chapter 2 Expedition Guide	4_F_KAFRA5,{
+	mes "[Expedition Guide]";
+	mes "Chapter stage: ^0055ff"+CH2_Step+"^000000 / 12";
+	mes "Flame Branch reputation: ^33aa33"+CH2_Reputation+"^000000 (Level "+callfunc("CH2_RepLevel")+")";
+	if (CH2_Complete()) mes "Main story: ^33aa33complete^000000";
+	next;
+	switch(CH2_Step) {
+	case 1: mes "Speak to Guardian El in Veledor."; break;
+	case 2: mes "Clear Crossroads of Tangled Mana."; break;
+	case 3: case 4: mes "Help Karilon in Kindlebrook."; break;
+	case 5: mes "Meet Orion at the Root of Death."; break;
+	case 6: case 7: mes "Investigate Primordial Flame 1F."; break;
+	case 8: case 9: mes "Restore Nyrholt from Ragsroot."; break;
+	case 10: mes "Defeat 100 monsters in Distorted Ragsroot."; break;
+	case 11: mes "Defeat the Phantom of Nyrholt."; break;
+	default: mes "The routes, dailies and exchange are now open."; break;
+	}
+	close;
+}
+
+// Travel network. Each gate checks story progression before exposing later areas.
+veledor,108,100,0	script	#ch2_to_kindle	WARPNPC,1,1,{ if (CH2_Step < 3) end; warp "kindlbrk",96,100; end; }
+kindlbrk,96,100,0	script	#ch2_to_veledor	WARPNPC,1,1,{ warp "veledor",106,100; end; }
+kindlbrk,108,100,0	script	#ch2_to_plains	WARPNPC,1,1,{ if (CH2_Step < 3) end; warp "mu_fild02",100,100; end; }
+mu_fild02,96,100,0	script	#ch2_to_kindle2	WARPNPC,1,1,{ warp "kindlbrk",106,100; end; }
+mu_fild02,108,100,0	script	#ch2_to_forest	WARPNPC,1,1,{ warp "mu_fild03",100,100; end; }
+mu_fild03,96,100,0	script	#ch2_to_plains2	WARPNPC,1,1,{ warp "mu_fild02",106,100; end; }
+mu_fild03,108,100,0	script	#ch2_to_flame	WARPNPC,1,1,{ if (CH2_Step < 6) end; warp "mu_dun01",96,100; end; }
+mu_dun01,96,100,0	script	#ch2_to_forest2	WARPNPC,1,1,{ warp "mu_fild03",106,100; end; }
+mu_dun01,108,100,0	script	#ch2_to_flame2	WARPNPC,1,1,{ warp "mu_dun02",100,100; end; }
+mu_dun02,96,100,0	script	#ch2_to_flame1	WARPNPC,1,1,{ warp "mu_dun01",106,100; end; }
+kindlbrk,100,108,0	script	#ch2_to_workshop	WARPNPC,1,1,{ warp "kin_in01",100,100; end; }
+kin_in01,100,96,0	script	#ch2_to_kindle3	WARPNPC,1,1,{ warp "kindlbrk",100,106; end; }
+kindlbrk,100,96,0	script	#ch2_to_deadroot	WARPNPC,1,1,{ if (CH2_Step < 5) end; warp "deadroot",96,100; end; }
+deadroot,96,100,0	script	#ch2_to_kindle4	WARPNPC,1,1,{ warp "kindlbrk",100,98; end; }
+deadroot,108,100,0	script	#ch2_to_rags	WARPNPC,1,1,{ if (CH2_Step < 8) end; warp "ragsruth",96,100; end; }
+ragsruth,96,100,0	script	#ch2_to_deadroot2	WARPNPC,1,1,{ warp "deadroot",106,100; end; }
+ragsruth,108,100,0	script	#ch2_to_distorted	WARPNPC,1,1,{ if (CH2_Step < 10) end; warp "rgs_dun1",96,100; end; }
+rgs_dun1,96,100,0	script	#ch2_to_rags2	WARPNPC,1,1,{ warp "ragsruth",106,100; end; }
+
+// Chapter 2 field populations and the four published two-hour bosses.
+mu_fild02,0,0,0,0	monster	Dragon Clam	22674,45,5000,5000
+mu_fild02,0,0,0,0	monster	Flame Bull	22685,45,5000,5000
+mu_fild02,0,0,0,0	monster	Logidogi	22687,45,5000,5000
+mu_fild03,0,0,0,0	monster	Fire Cotton	22688,45,5000,5000
+mu_fild03,0,0,0,0	monster	Logidogi	22687,35,5000,5000
+mu_fild03,0,0,0,0	monster	Namunse	22689,35,5000,5000
+mu_fild03,0,0,0,0	monster	Urochs	22686,1,7200000,7200000
+mu_dun01,0,0,0,0	monster	Namuni	22690,35,5000,5000
+mu_dun01,0,0,0,0	monster	Dudulson	22691,35,5000,5000
+mu_dun01,0,0,0,0	monster	Garakson	22692,35,5000,5000
+mu_dun01,0,0,0,0	monster	Tuktakson	22693,35,5000,5000
+mu_dun02,0,0,0,0	monster	Tuktakson	22693,30,5000,5000
+mu_dun02,0,0,0,0	monster	Paruson	22694,35,5000,5000
+mu_dun02,0,0,0,0	monster	Morbang	22695,35,5000,5000
+mu_dun02,0,0,0,0	monster	Fire Claw	22696,35,5000,5000
+mu_dun02,0,0,0,0	monster	Flame Anima	22697,1,7200000,7200000
+deadroot,0,0,0,0	monster	Alpuring	22699,45,5000,5000
+deadroot,0,0,0,0	monster	Icy Blast	22700,45,5000,5000
+deadroot,0,0,0,0	monster	Ice Needle	22701,45,5000,5000
+deadroot,0,0,0,0	monster	Frost Morbang	22698,1,7200000,7200000
+rgs_dun1,0,0,0,0	monster	Folnir Nilf	22702,45,5000,5000
+rgs_dun1,0,0,0,0	monster	Folnir Myrk	22703,45,5000,5000
+rgs_dun1,0,0,0,0	monster	Folnir Hre	22704,45,5000,5000
+rgs_dun1,0,0,0,0	monster	Feeos	22705,1,7200000,7200000
+
+// Daily mission board: cooldown begins on turn-in and expires after four hours.
+kindlbrk,106,104,4	script	Flame Branch Mission Board	4_BOARD3,{
+	if (!CH2_Complete()) { mes "Finish the Chapter 2 main story first."; close; }
+	mes "[Flame Branch Mission Board]";
+	mes "Every mission has an independent four-hour standby timer.";
+	next;
+	.@pick = select("Kindlebrook Noodle Soup:Hotter! Even Hotter!:Hot Pup! Even Hotter Pup!:Dream of Perpetual Motion:Retrieve Hal Puffs:Jemi's Parts Delivery:Heat Equipment Research:Even a Handful of Mana:Distorted Ragsroot Cleanup:Phantom of Nyrholt:Cancel");
+	if (.@pick == 11) close;
+	.@qid = 27109+.@pick;
+	if (isbegin_quest(.@qid) == 2 && gettimetick(2) >= getd("CH2_Daily_CD_"+.@qid))
+		erasequest .@qid;
+	if (isbegin_quest(.@qid) == 2) {
+		mes "This mission is on standby. Try again after its four-hour timer expires.";
+		close;
+	}
+	if (isbegin_quest(.@qid) == 0) {
+		setquest .@qid;
+		mes "Mission accepted. Return to this board when its kills and materials are complete.";
+		close;
+	}
+	if (.@pick == 1) {
+		if (checkquest(.@qid,HUNTING) != 2 || countitem(1002678) < 5) { mes "Need 10 Dragon Clams and 5 Crispy Meat."; close; }
+		delitem 1002678,5; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 2) {
+		if (checkquest(.@qid,HUNTING) != 2 || countitem(1002679) < 5) { mes "Need 10 Flame Bulls and 5 Burning Leather."; close; }
+		delitem 1002679,5; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 3) {
+		if (checkquest(.@qid,HUNTING) != 2 || countitem(1002681) < 5) { mes "Need 10 Logidogi and 5 Old Snacks."; close; }
+		delitem 1002681,5; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 4) {
+		if (checkquest(.@qid,HUNTING) != 2) { mes "Need 15 each of Dudulson, Garakson and Tuktakson."; close; }
+		callfunc "CH2_GiveReward",.@qid,3;
+	}
+	if (.@pick == 5) {
+		if (countitem(1002705) < 10) { mes "Need 10 Hal Puffs."; close; }
+		delitem 1002705,10; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 6) {
+		if (checkquest(.@qid,HUNTING) != 2 || countitem(1002695) < 5 || countitem(1002693) < 5) { mes "Need 10 Alpuring, 10 Icy Blast, 5 Ice Jelly and 5 Frost Shards."; close; }
+		delitem 1002695,5; delitem 1002693,5; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 7) {
+		if (checkquest(.@qid,HUNTING) != 2 || countitem(1002683) < 3) { mes "Need 10 Fire Cotton and 3 Fluffy Sparks."; close; }
+		delitem 1002683,3; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 8) {
+		if (countitem(1002702) < 10) { mes "Need 10 Ghost Flowers."; close; }
+		delitem 1002702,10; callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 9) {
+		if (checkquest(.@qid,HUNTING) != 2) { mes "Defeat 100 monsters in Distorted Ragsroot."; close; }
+		callfunc "CH2_GiveReward",.@qid,6;
+	}
+	if (.@pick == 10) {
+		if (!CH2_DailyPhantom) { mes "Use the Phantom Gate and defeat Phantom Snapdragon first."; close2; callfunc "CH2_Instance","Phantom of Nyrholt"; end; }
+		CH2_DailyPhantom = 0; callfunc "CH2_GiveReward",.@qid,3;
+	}
+	close;
+}
+
+kin_in01,104,100,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
+	if (callfunc("CH2_RepLevel") < 1) { mes "[Flame Coin Exchanger]"; mes "Flame Branch Reputation Level 1 is required. Finish the Chapter 2 story."; close; }
+	mes "[Flame Coin Exchanger]"; mes "Reputation Level "+callfunc("CH2_RepLevel")+". What do you need?";
+	next;
+	switch(select("Traveler's Leaf:Mana Ring:Flame Coin:Azure equipment:Dreamweave Mangmahal:Cancel")) {
+	case 1: .@item=106440; .@coin=1; .@zeny=5000; break;
+	case 2: .@item=1001996; .@coin=1; .@zeny=50000; break;
+	case 3:
+		if (countitem(1001996)<1 || Zeny<30000) { mes "Need 1 Mana Ring and 30,000 Zeny."; close; }
+		delitem 1001996,1; Zeny-=30000; getitem 1002700,1; close;
+	case 4:
+		.@p=select("Armor:Robe:Manteau:Muffler:Boots:Shoes:Shield:Ring:Brooch:Earring:Necklace:Cancel");
+		if(.@p==12) close;
+		setarray .@items[0],450531,450532,480751,480752,470420,470421,460147,490930,490931,490932,490933;
+		.@item=.@items[.@p-1]; .@coin=(.@p>=7?200:125); .@zeny=(.@p>=7?6000000:4000000); break;
+	case 5:
+		.@p=select("Blue Mangmahal (100 coins):Red Mangmahal (150 coins):Yellow Mangmahal (250 coins):Cancel");
+		if(.@p==4) close;
+		setarray .@items[0],106471,106472,106473; setarray .@coins[0],100,150,250; setarray .@zenies[0],1500000,3000000,7000000;
+		.@item=.@items[.@p-1]; .@coin=.@coins[.@p-1]; .@zeny=.@zenies[.@p-1]; break;
+	default: close;
+	}
+	if(countitem(1002700)<.@coin || Zeny<.@zeny) { mes "Need "+.@coin+" Flame Coins and "+.@zeny+" Zeny."; close; }
+	if(!checkweight(.@item,1)) { mes "You are carrying too much."; close; }
+	delitem 1002700,.@coin; Zeny-=.@zeny; getitem .@item,1;
+	mes "Exchange complete."; close;
+}
+
+kin_in01,108,100,4	script	Cardron#ch2craft	4_M_03,{
+	if (callfunc("CH2_RepLevel") < 1) { mes "Complete Chapter 2 to use this workshop."; close; }
+	mes "[Cardron]"; mes "I handle perfect enchants, Mangmahal refinement and Azure-to-Blaze reform.";
+	next;
+	switch(select("Armor/Robe enchant:Garment enchant:Shoes enchant:Shield enchant:Accessory enchant:Mangmahal refinement:Azure-to-Blaze reform:Cancel")) {
+	case 1: close2; item_enchant(167); end;
+	case 2: close2; item_enchant(168); end;
+	case 3: close2; item_enchant(169); end;
+	case 4: close2; item_enchant(170); end;
+	case 5: close2; item_enchant(171); end;
+	case 6:
+		getinventorylist;
+		.@idx=-1;
+		for(.@i=0;.@i<@inventorylist_count;.@i++) {
+			.@id=@inventorylist_id[.@i]; .@r=@inventorylist_refine[.@i];
+			if((.@id==450531||.@id==450532||.@id==480751||.@id==480752||.@id==470420||.@id==470421||.@id==460147||.@id==450533||.@id==450534||.@id==480753||.@id==480754||.@id==470422||.@id==470423||.@id==460148) && .@r>=9 && .@r<=11) { .@idx=.@i; break; }
+		}
+		if(.@idx<0) { mes "Carry an eligible +9, +10 or +11 Azure/Blaze armor piece."; close; }
+		.@r=@inventorylist_refine[.@idx];
+		if(.@r==9) { .@z=75; .@s=75; .@b=10; .@red=0; .@y=0; }
+		if(.@r==10) { .@z=100; .@s=100; .@b=10; .@red=20; .@y=0; }
+		if(.@r==11) { .@z=150; .@s=150; .@b=10; .@red=20; .@y=30; }
+		if(countitem(25731)<.@z||countitem(25729)<.@s||countitem(1002751)<.@b||countitem(1002752)<.@red||countitem(1002753)<.@y) { mes "Missing Zelunium, Shadowdecon or Kindle Hals for this guaranteed refinement."; close; }
+		delitem 25731,.@z; delitem 25729,.@s; delitem 1002751,.@b; if(.@red)delitem 1002752,.@red; if(.@y)delitem 1002753,.@y;
+		callfunc "CH2_RecreateItem",.@idx,@inventorylist_id[.@idx],.@r+1;
+		mes "Guaranteed refinement complete."; close;
+	case 7:
+		getinventorylist; .@idx=-1; .@new=0;
+		setarray .@old[0],450531,450532,480751,480752,470420,470421,460147,490930,490931,490932,490933;
+		setarray .@next[0],450533,450534,480753,480754,470422,470423,460148,490934,490935,490936,490937;
+		for(.@i=0;.@i<@inventorylist_count && .@idx<0;.@i++) {
+			for(.@j=0;.@j<11;.@j++) {
+				if(@inventorylist_id[.@i]==.@old[.@j] && (.@j>=7 || @inventorylist_refine[.@i]>=11)) {
+					.@idx=.@i; .@new=.@next[.@j]; .@access=(.@j>=7); .@j=11;
+				}
+			}
+		}
+		if(.@idx<0) { mes "Carry a +11 Azure armor piece or any Azure accessory."; close; }
+		.@coin=(.@access?250:125); .@ring=(.@access?150:75); .@hal=(.@access?25:15);
+		if(countitem(1002700)<.@coin||countitem(1001996)<.@ring||countitem(1002751)<.@hal||countitem(1002752)<.@hal||countitem(1002753)<.@hal) { mes "Missing Flame Coins, Mana Rings or Kindle Hals."; close; }
+		if(!checkweight(.@new,1)) { mes "You are carrying too much."; close; }
+		delitem 1002700,.@coin; delitem 1001996,.@ring; delitem 1002751,.@hal; delitem 1002752,.@hal; delitem 1002753,.@hal;
+		.@newref=@inventorylist_refine[.@idx]-(.@access?0:2);
+		callfunc "CH2_RecreateItem",.@idx,.@new,.@newref;
+		mes "Azure equipment reformed into Blaze equipment. Cards, enchants, grade and random options were preserved."; close;
+	default: close;
+	}
+}
+
+// Kindle Hal vendor prices from the published Chapter 2 economy.
+kin_in01,112,100,4	script	Kindle Hal Merchant#ch2	4_F_02,{
+	mes "Blue: 200,000 Zeny. Red: 400,000 Zeny. Yellow: 700,000 Zeny.";
+	next;
+	.@p=select("Blue Kindle Hal:Red Kindle Hal:Yellow Kindle Hal:Cancel"); if(.@p==4)close;
+	setarray .@id[0],1002751,1002752,1002753; setarray .@z[0],200000,400000,700000;
+	if(Zeny<.@z[.@p-1]){mes "Not enough Zeny.";close;} Zeny-=.@z[.@p-1]; getitem .@id[.@p-1],1; close;
+}
