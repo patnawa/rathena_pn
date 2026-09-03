@@ -39,7 +39,7 @@ Body:
     Map: 1@twbs2
     X: 96
     Y: 66
-- Id: 151
+- Id: 153
   Name: Final Battle(Normal)
   TimeLimit: 3600
   Enter:
