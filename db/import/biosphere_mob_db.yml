@@ -1,0 +1,2977 @@
+Header:
+  Type: MOB_DB
+  Version: 5
+
+Body:
+  - Id: 21548
+    AegisName: ECO_CORNUS
+    Name: Verdant Cornus
+    Level: 254
+    Hp: 27113233
+    BaseExp: 1380517
+    JobExp: 966362
+    Attack: 12434
+    Attack2: 4668
+    Defense: 434
+    MagicDefense: 243
+    Resistance: 389
+    MagicResistance: 304
+    Str: 178
+    Agi: 146
+    Vit: 169
+    Int: 178
+    Dex: 178
+    Luk: 169
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Holy
+    ElementLevel: 3
+    WalkSpeed: 120
+    AttackDelay: 625
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21549
+    AegisName: ECO_PINGUICULA
+    Name: Verdant Pinguicula
+    Level: 252
+    Hp: 25130533
+    BaseExp: 1308495
+    JobExp: 911366
+    Attack: 14953
+    Attack2: 3748
+    Defense: 513
+    MagicDefense: 198
+    Resistance: 501
+    MagicResistance: 235
+    Str: 267
+    Agi: 225
+    Vit: 212
+    Int: 171
+    Dex: 238
+    Luk: 223
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 481
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21550
+    AegisName: ECO_HUNTER_FLY
+    Name: Verdant Hunter Fly
+    Level: 255
+    Hp: 25130533
+    BaseExp: 1373213
+    JobExp: 960771
+    Attack: 10306
+    Attack2: 6405
+    Defense: 339
+    MagicDefense: 368
+    Resistance: 334
+    MagicResistance: 532
+    Str: 187
+    Agi: 202
+    Vit: 210
+    Int: 284
+    Dex: 260
+    Luk: 284
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Insect
+    Element: Wind
+    ElementLevel: 2
+    WalkSpeed: 120
+    AttackDelay: 433
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21551
+    AegisName: ECO_ROCKER
+    Name: Verdant Rocker
+    Level: 253
+    Hp: 29188380
+    BaseExp: 1347253
+    JobExp: 943077
+    Attack: 10624
+    Attack2: 4013
+    Defense: 431
+    MagicDefense: 241
+    Resistance: 384
+    MagicResistance: 300
+    Str: 175
+    Agi: 144
+    Vit: 166
+    Int: 175
+    Dex: 175
+    Luk: 166
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Insect
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 433
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21552
+    AegisName: ECO_SAVAGE
+    Name: Verdant Savage
+    Level: 252
+    Hp: 30895777
+    BaseExp: 1336711
+    JobExp: 930111
+    Attack: 9762
+    Attack2: 3434
+    Defense: 566
+    MagicDefense: 248
+    Resistance: 499
+    MagicResistance: 295
+    Str: 139
+    Agi: 135
+    Vit: 189
+    Int: 163
+    Dex: 174
+    Luk: 156
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Earth
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 481
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21553
+    AegisName: ECO_FLORA
+    Name: Verdant Flora
+    Level: 254
+    Hp: 26231246
+    BaseExp: 1352885
+    JobExp: 942285
+    Attack: 13564
+    Attack2: 3313
+    Defense: 480
+    MagicDefense: 185
+    Resistance: 436
+    MagicResistance: 205
+    Str: 221
+    Agi: 185
+    Vit: 175
+    Int: 141
+    Dex: 253
+    Luk: 184
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Plant
+    Element: Earth
+    ElementLevel: 1
+    WalkSpeed: 1000
+    AttackDelay: 288
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21554
+    AegisName: ECO_HILL_WIND
+    Name: Verdant Hill Wind
+    Level: 252
+    Hp: 23931278
+    BaseExp: 1327922
+    JobExp: 927225
+    Attack: 13676
+    Attack2: 4235
+    Defense: 305
+    MagicDefense: 166
+    Resistance: 248
+    MagicResistance: 204
+    Str: 203
+    Agi: 239
+    Vit: 133
+    Int: 171
+    Dex: 225
+    Luk: 209
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 90
+    AttackDelay: 360
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+  - Id: 21555
+    AegisName: ECO_MISTRESS
+    Name: Verdant Mistress
+    Level: 260
+    Hp: 425100000
+    BaseExp: 6072857
+    JobExp: 4048571
+    MvpExp: 3036428
+    Attack: 11771
+    Attack2: 7248
+    Defense: 397
+    MagicDefense: 320
+    Resistance: 500
+    MagicResistance: 500
+    Str: 311
+    Agi: 287
+    Vit: 109
+    Int: 187
+    Dex: 380
+    Luk: 97
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Insect
+    Element: Wind
+    ElementLevel: 4
+    WalkSpeed: 100
+    AttackDelay: 649
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Plain_Barmund_Rune
+        Rate: 1500
+      - Item: Plain_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Plain_Essence
+        Rate: 100
+  - Id: 21556
+    AegisName: ECO_EXPLOSION
+    Name: Blazing Explosion
+    Level: 252
+    Hp: 23438635
+    BaseExp: 1332273
+    JobExp: 932126
+    Attack: 10254
+    Attack2: 5675
+    Defense: 298
+    MagicDefense: 313
+    Resistance: 258
+    MagicResistance: 402
+    Str: 131
+    Agi: 142
+    Vit: 147
+    Int: 199
+    Dex: 183
+    Luk: 199
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Brute
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 165
+    AttackDelay: 575
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21557
+    AegisName: ECO_DELETER
+    Name: Blazing Deleter
+    Level: 252
+    Hp: 23785549
+    BaseExp: 1340379
+    JobExp: 938265
+    Attack: 12818
+    Attack2: 4928
+    Defense: 443
+    MagicDefense: 250
+    Resistance: 410
+    MagicResistance: 321
+    Str: 192
+    Agi: 158
+    Vit: 183
+    Int: 192
+    Dex: 192
+    Luk: 183
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Dragon
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 175
+    AttackDelay: 541
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21558
+    AegisName: ECO_JAKK
+    Name: Blazing Jakk
+    Level: 252
+    Hp: 21917288
+    BaseExp: 1322755
+    JobExp: 923617
+    Attack: 14856
+    Attack2: 4664
+    Defense: 310
+    MagicDefense: 170
+    Resistance: 259
+    MagicResistance: 214
+    Str: 217
+    Agi: 256
+    Vit: 142
+    Int: 183
+    Dex: 241
+    Luk: 224
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 90
+    AttackDelay: 481
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21559
+    AegisName: ECO_LAVA_GOLEM
+    Name: Blazing Lava Golem
+    Level: 254
+    Hp: 29549062
+    BaseExp: 1376698
+    JobExp: 957935
+    Attack: 11805
+    Attack2: 4434
+    Defense: 624
+    MagicDefense: 273
+    Resistance: 600
+    MagicResistance: 355
+    Str: 178
+    Agi: 172
+    Vit: 242
+    Int: 209
+    Dex: 222
+    Luk: 199
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Fire
+    ElementLevel: 4
+    WalkSpeed: 300
+    AttackDelay: 1220
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21560
+    AegisName: ECO_MAJORUROS
+    Name: Blazing Majoruros
+    Level: 253
+    Hp: 25488079
+    BaseExp: 1356696
+    JobExp: 944939
+    Attack: 16357
+    Attack2: 3875
+    Defense: 480
+    MagicDefense: 185
+    Resistance: 436
+    MagicResistance: 205
+    Str: 221
+    Agi: 186
+    Vit: 175
+    Int: 142
+    Dex: 197
+    Luk: 184
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 962
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21561
+    AegisName: ECO_HYDRO
+    Name: Blazing Hydro
+    Level: 255
+    Hp: 25367918
+    BaseExp: 1414382
+    JobExp: 990068
+    Attack: 13498
+    Attack2: 5154
+    Defense: 445
+    MagicDefense: 251
+    Resistance: 410
+    MagicResistance: 321
+    Str: 191
+    Agi: 157
+    Vit: 182
+    Int: 191
+    Dex: 191
+    Luk: 182
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Dragon
+    Element: Dark
+    ElementLevel: 2
+    WalkSpeed: 160
+    AttackDelay: 625
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21562
+    AegisName: ECO_ACIDUS
+    Name: Blazing Acidus
+    Level: 254
+    Hp: 22410484
+    BaseExp: 1393537
+    JobExp: 974990
+    Attack: 11610
+    Attack2: 6462
+    Defense: 303
+    MagicDefense: 319
+    Resistance: 265
+    MagicResistance: 414
+    Str: 136
+    Agi: 147
+    Vit: 153
+    Int: 207
+    Dex: 190
+    Luk: 207
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Dragon
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 160
+    AttackDelay: 758
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+  - Id: 21563
+    AegisName: ECO_DETALE
+    Name: Blazing Detale
+    Level: 260
+    Hp: 614250000
+    BaseExp: 8775000
+    JobExp: 5850000
+    MvpExp: 4387500
+    Attack: 11931
+    Attack2: 7726
+    Defense: 503
+    MagicDefense: 289
+    Resistance: 500
+    MagicResistance: 500
+    Str: 311
+    Agi: 287
+    Vit: 210
+    Int: 187
+    Dex: 380
+    Luk: 97
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Dragon
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 250
+    AttackDelay: 336
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Flame_Barmund_Rune
+        Rate: 1500
+      - Item: Flame_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Flame_Essence
+        Rate: 100
+  - Id: 21564
+    AegisName: ECO_ICE_TITAN
+    Name: Glacial Ice Titan
+    Level: 252
+    Hp: 29583419
+    BaseExp: 1326340
+    JobExp: 922895
+    Attack: 9639
+    Attack2: 3586
+    Defense: 601
+    MagicDefense: 263
+    Resistance: 563
+    MagicResistance: 333
+    Str: 164
+    Agi: 158
+    Vit: 223
+    Int: 192
+    Dex: 204
+    Luk: 183
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 200
+    AttackDelay: 658
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21565
+    AegisName: ECO_SIROMA
+    Name: Glacial Siroma
+    Level: 252
+    Hp: 25201125
+    BaseExp: 1317588
+    JobExp: 920009
+    Attack: 12494
+    Attack2: 3911
+    Defense: 306
+    MagicDefense: 167
+    Resistance: 251
+    MagicResistance: 206
+    Str: 206
+    Agi: 243
+    Vit: 135
+    Int: 173
+    Dex: 229
+    Luk: 213
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Formless
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 90
+    AttackDelay: 649
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21566
+    AegisName: ECO_SNOWIER
+    Name: Glacial Snowier
+    Level: 254
+    Hp: 28555443
+    BaseExp: 1359180
+    JobExp: 951426
+    Attack: 10640
+    Attack2: 4240
+    Defense: 459
+    MagicDefense: 260
+    Resistance: 438
+    MagicResistance: 344
+    Str: 209
+    Agi: 172
+    Vit: 199
+    Int: 209
+    Dex: 209
+    Luk: 199
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Water
+    ElementLevel: 2
+    WalkSpeed: 180
+    AttackDelay: 813
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21567
+    AegisName: ECO_CENTIPEDE
+    Name: Glacial Centipede
+    Level: 252
+    Hp: 21467484
+    BaseExp: 1316733
+    JobExp: 921254
+    Attack: 10271
+    Attack2: 5900
+    Defense: 309
+    MagicDefense: 327
+    Resistance: 278
+    MagicResistance: 436
+    Str: 146
+    Agi: 157
+    Vit: 164
+    Int: 221
+    Dex: 203
+    Luk: 221
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Insect
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 794
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21568
+    AegisName: ECO_AQUA_ELEMENTAL
+    Name: Glacial Aqua Elemental
+    Level: 253
+    Hp: 25223418
+    BaseExp: 1338947
+    JobExp: 936796
+    Attack: 9113
+    Attack2: 5295
+    Defense: 311
+    MagicDefense: 331
+    Resistance: 283
+    MagicResistance: 443
+    Str: 149
+    Agi: 161
+    Vit: 167
+    Int: 226
+    Dex: 208
+    Luk: 226
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Water
+    ElementLevel: 4
+    WalkSpeed: 190
+    AttackDelay: 769
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21569
+    AegisName: ECO_ANGELGOLT
+    Name: Glacial Angelgolt
+    Level: 254
+    Hp: 24931628
+    BaseExp: 1380517
+    JobExp: 966362
+    Attack: 12880
+    Attack2: 4912
+    Defense: 442
+    MagicDefense: 249
+    Resistance: 405
+    MagicResistance: 317
+    Str: 188
+    Agi: 155
+    Vit: 179
+    Int: 188
+    Dex: 188
+    Luk: 179
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Angel
+    Element: Holy
+    ElementLevel: 4
+    WalkSpeed: 220
+    AttackDelay: 781
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21570
+    AegisName: ECO_RHYNCHO
+    Name: Glacial Rhyncho
+    Level: 255
+    Hp: 28018013
+    BaseExp: 1386181
+    JobExp: 965475
+    Attack: 14751
+    Attack2: 3650
+    Defense: 506
+    MagicDefense: 195
+    Resistance: 484
+    MagicResistance: 228
+    Str: 255
+    Agi: 214
+    Vit: 202
+    Int: 163
+    Dex: 227
+    Luk: 212
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 220
+    AttackDelay: 658
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+  - Id: 21571
+    AegisName: ECO_KTULLANUX
+    Name: Glacial Ktullanux
+    Level: 260
+    Hp: 585000000
+    BaseExp: 8357143
+    JobExp: 5571429
+    MvpExp: 4178572
+    Attack: 11936
+    Attack2: 8060
+    Defense: 328
+    MagicDefense: 388
+    Resistance: 500
+    MagicResistance: 500
+    Str: 311
+    Agi: 287
+    Vit: 200
+    Int: 187
+    Dex: 380
+    Luk: 97
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Water
+    ElementLevel: 4
+    WalkSpeed: 350
+    AttackDelay: 840
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Ice_Barmund_Rune
+        Rate: 1500
+      - Item: Ice_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Ice_Essence
+        Rate: 100
+  - Id: 21572
+    AegisName: ECO_ANCIENT_MUMMY
+    Name: Grave Ancient Mummy
+    Level: 253
+    Hp: 28033464
+    BaseExp: 1428239
+    JobExp: 1059517
+    Attack: 14486
+    Attack2: 3420
+    Defense: 472
+    MagicDefense: 182
+    Resistance: 421
+    MagicResistance: 198
+    Str: 210
+    Agi: 177
+    Vit: 167
+    Int: 135
+    Dex: 188
+    Luk: 175
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 2
+    WalkSpeed: 140
+    AttackDelay: 719
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21573
+    AegisName: ECO_LUDE
+    Name: Grave Lude
+    Level: 252
+    Hp: 26320301
+    BaseExp: 1317588
+    JobExp: 920009
+    Attack: 12569
+    Attack2: 3752
+    Defense: 294
+    MagicDefense: 158
+    Resistance: 227
+    MagicResistance: 184
+    Str: 176
+    Agi: 207
+    Vit: 115
+    Int: 148
+    Dex: 195
+    Luk: 181
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Undead
+    Element: Undead
+    ElementLevel: 1
+    WalkSpeed: 90
+    AttackDelay: 481
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21574
+    AegisName: ECO_RAGGED_ZOMBIE
+    Name: Grave Ragged Zombie
+    Level: 252
+    Hp: 28560234
+    BaseExp: 1314582
+    JobExp: 920208
+    Attack: 9569
+    Attack2: 3421
+    Defense: 400
+    MagicDefense: 222
+    Resistance: 327
+    MagicResistance: 253
+    Str: 138
+    Agi: 114
+    Vit: 131
+    Int: 138
+    Dex: 178
+    Luk: 131
+    AttackRange: 9
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 575
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21575
+    AegisName: ECO_WRAITH
+    Name: Grave Wraith
+    Level: 254
+    Hp: 29822370
+    BaseExp: 1359180
+    JobExp: 951426
+    Attack: 10892
+    Attack2: 4127
+    Defense: 434
+    MagicDefense: 244
+    Resistance: 390
+    MagicResistance: 305
+    Str: 178
+    Agi: 147
+    Vit: 170
+    Int: 178
+    Dex: 178
+    Luk: 170
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Undead
+    Element: Undead
+    ElementLevel: 4
+    WalkSpeed: 220
+    AttackDelay: 813
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21576
+    AegisName: ECO_FLAME_SKULL
+    Name: Grave Flame Skull
+    Level: 252
+    Hp: 21469657
+    BaseExp: 1327093
+    JobExp: 928502
+    Attack: 11374
+    Attack2: 6138
+    Defense: 318
+    MagicDefense: 340
+    Resistance: 297
+    MagicResistance: 468
+    Str: 160
+    Agi: 172
+    Vit: 180
+    Int: 243
+    Dex: 223
+    Luk: 243
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 541
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21577
+    AegisName: ECO_BANSHEE
+    Name: Grave Banshee
+    Level: 254
+    Hp: 24831628
+    BaseExp: 1380517
+    JobExp: 966362
+    Attack: 12758
+    Attack2: 4868
+    Defense: 442
+    MagicDefense: 249
+    Resistance: 405
+    MagicResistance: 317
+    Str: 188
+    Agi: 155
+    Vit: 179
+    Int: 188
+    Dex: 188
+    Luk: 179
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Demon
+    Element: Dark
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 420
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21578
+    AegisName: ECO_KNIGHT_OF_ABYSS
+    Name: Grave Knight of Abyss
+    Level: 255
+    Hp: 26602843
+    BaseExp: 1407874
+    JobExp: 980584
+    Attack: 17189
+    Attack2: 4029
+    Defense: 478
+    MagicDefense: 185
+    Resistance: 430
+    MagicResistance: 203
+    Str: 216
+    Agi: 182
+    Vit: 172
+    Int: 139
+    Dex: 193
+    Luk: 180
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Demihuman
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 240
+    AttackDelay: 671
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+  - Id: 21579
+    AegisName: ECO_LORD_OF_DEATH
+    Name: Grave Lord of Death
+    Level: 260
+    Hp: 523575000
+    BaseExp: 7479643
+    JobExp: 4986429
+    MvpExp: 3739822
+    Attack: 11842
+    Attack2: 7376
+    Defense: 503
+    MagicDefense: 388
+    Resistance: 500
+    MagicResistance: 500
+    Str: 311
+    Agi: 287
+    Vit: 179
+    Int: 187
+    Dex: 380
+    Luk: 97
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Demon
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 1299
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Death_Barmund_Rune
+        Rate: 1500
+      - Item: Death_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Death_Essence
+        Rate: 100
+  - Id: 21920
+    AegisName: ECO_RUDO
+    Name: Temple Rudo
+    Level: 253
+    Hp: 32534117
+    BaseExp: 1360016
+    JobExp: 951537
+    Attack: 16013
+    Attack2: 9409
+    Defense: 480
+    MagicDefense: 512
+    Resistance: 439
+    MagicResistance: 679
+    Str: 157
+    Agi: 169
+    Vit: 176
+    Int: 238
+    Dex: 216
+    Luk: 238
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Angel
+    Element: Holy
+    ElementLevel: 3
+    WalkSpeed: 130
+    AttackDelay: 168
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21921
+    AegisName: ECO_ARCHANGELING
+    Name: Temple Archangeling
+    Level: 253
+    Hp: 36048967
+    BaseExp: 1357745
+    JobExp: 950422
+    Attack: 18345
+    Attack2: 7780
+    Defense: 703
+    MagicDefense: 398
+    Resistance: 667
+    MagicResistance: 521
+    Str: 216
+    Agi: 178
+    Vit: 206
+    Int: 216
+    Dex: 216
+    Luk: 206
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Holy
+    ElementLevel: 4
+    WalkSpeed: 150
+    AttackDelay: 671
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21922
+    AegisName: ECO_FAKE_ANGEL
+    Name: Temple Fake Angel
+    Level: 253
+    Hp: 33216055
+    BaseExp: 1360833
+    JobExp: 950205
+    Attack: 20418
+    Attack2: 7020
+    Defense: 473
+    MagicDefense: 260
+    Resistance: 400
+    MagicResistance: 324
+    Str: 221
+    Agi: 260
+    Vit: 144
+    Int: 185
+    Dex: 244
+    Luk: 227
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Angel
+    Element: Holy
+    ElementLevel: 3
+    WalkSpeed: 70
+    AttackDelay: 288
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21923
+    AegisName: ECO_PLASMA_P
+    Name: Temple Plasma
+    Level: 254
+    Hp: 35377971
+    BaseExp: 1374116
+    JobExp: 957072
+    Attack: 24118
+    Attack2: 6895
+    Defense: 808
+    MagicDefense: 312
+    Resistance: 794
+    MagicResistance: 375
+    Str: 293
+    Agi: 246
+    Vit: 233
+    Int: 188
+    Dex: 261
+    Luk: 244
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Formless
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 130
+    AttackDelay: 962
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21924
+    AegisName: ECO_SOLACE
+    Name: Temple Solace
+    Level: 254
+    Hp: 35374557
+    BaseExp: 1384784
+    JobExp: 964502
+    Attack: 23587
+    Attack2: 6705
+    Defense: 776
+    MagicDefense: 299
+    Resistance: 738
+    MagicResistance: 349
+    Str: 264
+    Agi: 222
+    Vit: 209
+    Int: 169
+    Dex: 235
+    Luk: 220
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Holy
+    ElementLevel: 3
+    WalkSpeed: 170
+    AttackDelay: 264
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21925
+    AegisName: ECO_ANOPHELES
+    Name: Temple Anopheles
+    Level: 254
+    Hp: 36842663
+    BaseExp: 1348511
+    JobExp: 943958
+    Attack: 17582
+    Attack2: 8155
+    Defense: 802
+    MagicDefense: 463
+    Resistance: 838
+    MagicResistance: 661
+    Str: 297
+    Agi: 245
+    Vit: 283
+    Int: 297
+    Dex: 297
+    Luk: 283
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Insect
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 288
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21926
+    AegisName: ECO_GRYPHON
+    Name: Temple Gryphon
+    Level: 255
+    Hp: 44443635
+    BaseExp: 1405103
+    JobExp: 977700
+    Attack: 15380
+    Attack2: 6349
+    Defense: 989
+    MagicDefense: 433
+    Resistance: 956
+    MagicResistance: 568
+    Str: 198
+    Agi: 191
+    Vit: 269
+    Int: 232
+    Dex: 246
+    Luk: 221
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Wind
+    ElementLevel: 4
+    WalkSpeed: 200
+    AttackDelay: 336
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+  - Id: 21927
+    AegisName: ECO_RANDGRIS
+    Name: Temple Valkyrie Randgris
+    Level: 260
+    Hp: 291553526
+    BaseExp: 1853337
+    JobExp: 1297336
+    MvpExp: 926668
+    Attack: 37632
+    Attack2: 16050
+    Defense: 742
+    MagicDefense: 423
+    Resistance: 724
+    MagicResistance: 568
+    Str: 241
+    Agi: 199
+    Vit: 230
+    Int: 241
+    Dex: 241
+    Luk: 230
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Angel
+    Element: Holy
+    ElementLevel: 4
+    WalkSpeed: 180
+    AttackDelay: 575
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Temple_Barmund_Rune
+        Rate: 1500
+      - Item: Temple_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Temple_Essence
+        Rate: 100
+  - Id: 21928
+    AegisName: ECO_COMODO
+    Name: Venom Comodo
+    Level: 253
+    Hp: 37802826
+    BaseExp: 1361942
+    JobExp: 948593
+    Attack: 21819
+    Attack2: 5918
+    Defense: 739
+    MagicDefense: 285
+    Resistance: 677
+    MagicResistance: 320
+    Str: 232
+    Agi: 195
+    Vit: 184
+    Int: 149
+    Dex: 207
+    Luk: 194
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Poison
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 168
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21929
+    AegisName: ECO_POISON_TOAD
+    Name: Venom Poison Toad
+    Level: 253
+    Hp: 42575740
+    BaseExp: 1369807
+    JobExp: 953140
+    Attack: 15414
+    Attack2: 5916
+    Defense: 897
+    MagicDefense: 392
+    Resistance: 810
+    MagicResistance: 482
+    Str: 157
+    Agi: 151
+    Vit: 213
+    Int: 184
+    Dex: 195
+    Luk: 175
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 200
+    AttackDelay: 433
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21930
+    AegisName: ECO_SIDE_WINDER
+    Name: Venom Side Winder
+    Level: 253
+    Hp: 35522723
+    BaseExp: 1360016
+    JobExp: 951537
+    Attack: 14965
+    Attack2: 8478
+    Defense: 463
+    MagicDefense: 488
+    Resistance: 409
+    MagicResistance: 627
+    Str: 140
+    Agi: 151
+    Vit: 158
+    Int: 213
+    Dex: 195
+    Luk: 213
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Poison
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 216
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21931
+    AegisName: ECO_CRAMP
+    Name: Venom Cramp
+    Level: 254
+    Hp: 38623840
+    BaseExp: 1384784
+    JobExp: 964502
+    Attack: 21976
+    Attack2: 5977
+    Defense: 745
+    MagicDefense: 287
+    Resistance: 685
+    MagicResistance: 324
+    Str: 236
+    Agi: 198
+    Vit: 187
+    Int: 151
+    Dex: 210
+    Luk: 197
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Brute
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 130
+    AttackDelay: 168
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21932
+    AegisName: ECO_KUKRE
+    Name: Venom Kukre
+    Level: 254
+    Hp: 42614131
+    BaseExp: 1362287
+    JobExp: 951220
+    Attack: 16051
+    Attack2: 5598
+    Defense: 476
+    MagicDefense: 262
+    Resistance: 404
+    MagicResistance: 328
+    Str: 224
+    Agi: 264
+    Vit: 147
+    Int: 188
+    Dex: 248
+    Luk: 231
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Fish
+    Element: Water
+    ElementLevel: 1
+    WalkSpeed: 70
+    AttackDelay: 288
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21933
+    AegisName: ECO_NEPENTHES
+    Name: Venom Nepenthes
+    Level: 254
+    Hp: 36829620
+    BaseExp: 1359286
+    JobExp: 951501
+    Attack: 16203
+    Attack2: 6867
+    Defense: 689
+    MagicDefense: 389
+    Resistance: 641
+    MagicResistance: 499
+    Str: 204
+    Agi: 168
+    Vit: 194
+    Int: 204
+    Dex: 262
+    Luk: 194
+    AttackRange: 7
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 1000
+    AttackDelay: 575
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21934
+    AegisName: ECO_ANGRA_MANTIS
+    Name: Venom Angra Mantis
+    Level: 255
+    Hp: 39754493
+    BaseExp: 1375335
+    JobExp: 957921
+    Attack: 20576
+    Attack2: 6010
+    Defense: 831
+    MagicDefense: 321
+    Resistance: 832
+    MagicResistance: 393
+    Str: 313
+    Agi: 263
+    Vit: 248
+    Int: 200
+    Dex: 278
+    Luk: 261
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Insect
+    Element: Earth
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 240
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+  - Id: 21935
+    AegisName: ECO_VENOM_KIMERA
+    Name: Venom Enhanced Chimera
+    Level: 260
+    Hp: 318378443
+    BaseExp: 1853337
+    JobExp: 1297336
+    MvpExp: 926668
+    Attack: 35261
+    Attack2: 14581
+    Defense: 711
+    MagicDefense: 403
+    Resistance: 670
+    MagicResistance: 524
+    Str: 216
+    Agi: 178
+    Vit: 206
+    Int: 216
+    Dex: 216
+    Luk: 206
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Poison
+    ElementLevel: 4
+    WalkSpeed: 170
+    AttackDelay: 671
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Venom_Barmund_Rune
+        Rate: 1500
+      - Item: Venom_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Venom_Essence
+        Rate: 100
+  - Id: 21936
+    AegisName: ECO_NIGHTMARE
+    Name: Soul Nightmare
+    Level: 253
+    Hp: 42580971
+    BaseExp: 1359262
+    JobExp: 945803
+    Attack: 15329
+    Attack2: 6368
+    Defense: 991
+    MagicDefense: 433
+    Resistance: 963
+    MagicResistance: 572
+    Str: 200
+    Agi: 193
+    Vit: 272
+    Int: 235
+    Dex: 249
+    Luk: 224
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Demon
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 408
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21937
+    AegisName: ECO_WHISPER
+    Name: Soul Whisper
+    Level: 253
+    Hp: 33220493
+    BaseExp: 1350324
+    JobExp: 942868
+    Attack: 19843
+    Attack2: 7194
+    Defense: 501
+    MagicDefense: 281
+    Resistance: 450
+    MagicResistance: 370
+    Str: 267
+    Agi: 315
+    Vit: 175
+    Int: 225
+    Dex: 296
+    Luk: 275
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 70
+    AttackDelay: 385
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21938
+    AegisName: ECO_MARIONETTE
+    Name: Soul Marionette
+    Level: 253
+    Hp: 32539822
+    BaseExp: 1349481
+    JobExp: 944167
+    Attack: 15446
+    Attack2: 9668
+    Defense: 515
+    MagicDefense: 559
+    Resistance: 500
+    MagicResistance: 783
+    Str: 190
+    Agi: 205
+    Vit: 213
+    Int: 288
+    Dex: 264
+    Luk: 288
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 130
+    AttackDelay: 240
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21939
+    AegisName: ECO_NOXIOUS
+    Name: Soul Noxious
+    Level: 254
+    Hp: 36842483
+    BaseExp: 1359180
+    JobExp: 951426
+    Attack: 18427
+    Attack2: 8501
+    Defense: 801
+    MagicDefense: 462
+    Resistance: 835
+    MagicResistance: 659
+    Str: 296
+    Agi: 243
+    Vit: 282
+    Int: 296
+    Dex: 295
+    Luk: 282
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 360
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21940
+    AegisName: ECO_THE_PAPER
+    Name: Soul The Paper
+    Level: 254
+    Hp: 35379767
+    BaseExp: 1363447
+    JobExp: 949641
+    Attack: 22595
+    Attack2: 6556
+    Defense: 825
+    MagicDefense: 318
+    Resistance: 824
+    MagicResistance: 389
+    Str: 309
+    Agi: 259
+    Vit: 245
+    Int: 198
+    Dex: 275
+    Luk: 257
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 385
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21941
+    AegisName: ECO_GAJOMART
+    Name: Soul Gajomart
+    Level: 254
+    Hp: 33245387
+    BaseExp: 1366759
+    JobExp: 956255
+    Attack: 16184
+    Attack2: 10048
+    Defense: 512
+    MagicDefense: 555
+    Resistance: 494
+    MagicResistance: 773
+    Str: 186
+    Agi: 201
+    Vit: 209
+    Int: 283
+    Dex: 259
+    Luk: 283
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Formless
+    Element: Fire
+    ElementLevel: 4
+    WalkSpeed: 130
+    AttackDelay: 885
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21942
+    AegisName: ECO_ODIUM
+    Name: Soul Odium
+    Level: 255
+    Hp: 39467913
+    BaseExp: 1386181
+    JobExp: 965475
+    Attack: 22367
+    Attack2: 6564
+    Defense: 844
+    MagicDefense: 326
+    Resistance: 855
+    MagicResistance: 403
+    Str: 324
+    Agi: 273
+    Vit: 257
+    Int: 208
+    Dex: 289
+    Luk: 270
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Undead
+    Element: Ghost
+    ElementLevel: 4
+    WalkSpeed: 150
+    AttackDelay: 216
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+  - Id: 21943
+    AegisName: ECO_GLOOMUNDERNIGHT
+    Name: Soul Gloom Under Night
+    Level: 260
+    Hp: 291562787
+    BaseExp: 1824692
+    JobExp: 1277284
+    MvpExp: 912346
+    Attack: 37269
+    Attack2: 17185
+    Defense: 844
+    MagicDefense: 489
+    Resistance: 900
+    MagicResistance: 712
+    Str: 325
+    Agi: 268
+    Vit: 309
+    Int: 325
+    Dex: 324
+    Luk: 309
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 180
+    AttackDelay: 719
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 1
+    Ai: 21
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Soul_Barmund_Rune
+        Rate: 1500
+      - Item: Soul_Barmund_Rune2
+        Rate: 300
+      - Item: Barmund_Soul_Essence
+        Rate: 100
+  - Id: 22140
+    AegisName: BIO_ANOLIAN
+    Name: Depth Anolian
+    Level: 263
+    Hp: 107320500
+    BaseExp: 5440652
+    JobExp: 3789414
+    Attack: 32536
+    Attack2: 7006
+    Defense: 229
+    MagicDefense: 115
+    Resistance: 1357
+    MagicResistance: 630
+    Str: 369
+    Agi: 254
+    Vit: 293
+    Int: 236
+    Dex: 423
+    Luk: 323
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Fish
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 190
+    AttackDelay: 901
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22141
+    AegisName: BIO_SKEL_ARCHER
+    Name: Depth Skeleton Archer
+    Level: 264
+    Hp: 98579600
+    BaseExp: 5522166
+    JobExp: 3855867
+    Attack: 18354
+    Attack2: 8062
+    Defense: 172
+    MagicDefense: 100
+    Resistance: 640
+    MagicResistance: 578
+    Str: 302
+    Agi: 290
+    Vit: 191
+    Int: 253
+    Dex: 441
+    Luk: 319
+    AttackRange: 10
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 2
+    WalkSpeed: 250
+    AttackDelay: 541
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22142
+    AegisName: BIO_DRAGON_TAIL
+    Name: Depth Dragon Tail
+    Level: 264
+    Hp: 83702230
+    BaseExp: 5478855
+    JobExp: 3825625
+    Attack: 24323
+    Attack2: 9147
+    Defense: 201
+    MagicDefense: 119
+    Resistance: 898
+    MagicResistance: 793
+    Str: 430
+    Agi: 414
+    Vit: 281
+    Int: 361
+    Dex: 597
+    Luk: 455
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Insect
+    Element: Wind
+    ElementLevel: 4
+    WalkSpeed: 175
+    AttackDelay: 719
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22143
+    AegisName: BIO_LAVA_TOAD
+    Name: Depth Lava Toad
+    Level: 262
+    Hp: 102957370
+    BaseExp: 5449476
+    JobExp: 3791860
+    Attack: 28136
+    Attack2: 7530
+    Defense: 363
+    MagicDefense: 159
+    Resistance: 1630
+    MagicResistance: 954
+    Str: 244
+    Agi: 225
+    Vit: 331
+    Int: 286
+    Dex: 411
+    Luk: 295
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Fire
+    ElementLevel: 4
+    WalkSpeed: 150
+    AttackDelay: 840
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22144
+    AegisName: BIO_LITTLE_FATUM
+    Name: Depth Little Fatum
+    Level: 263
+    Hp: 87700530
+    BaseExp: 5475237
+    JobExp: 3830757
+    Attack: 31454
+    Attack2: 10853
+    Defense: 192
+    MagicDefense: 213
+    Resistance: 862
+    MagicResistance: 1414
+    Str: 243
+    Agi: 251
+    Vit: 274
+    Int: 370
+    Dex: 455
+    Luk: 380
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demihuman
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 170
+    AttackDelay: 962
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22145
+    AegisName: BIO_STING
+    Name: Depth Sting
+    Level: 265
+    Hp: 101934980
+    BaseExp: 5596403
+    JobExp: 3917482
+    Attack: 18765
+    Attack2: 8955
+    Defense: 292
+    MagicDefense: 170
+    Resistance: 1402
+    MagicResistance: 1123
+    Str: 352
+    Agi: 249
+    Vit: 335
+    Int: 352
+    Dex: 471
+    Luk: 345
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Earth
+    ElementLevel: 4
+    WalkSpeed: 200
+    AttackDelay: 529
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22146
+    AegisName: BIO_EMPATHIZER
+    Name: Depth Empathizer
+    Level: 262
+    Hp: 78695860
+    BaseExp: 5389361
+    JobExp: 3770674
+    Attack: 33075
+    Attack2: 11708
+    Defense: 199
+    MagicDefense: 223
+    Resistance: 930
+    MagicResistance: 1529
+    Str: 265
+    Agi: 273
+    Vit: 298
+    Int: 403
+    Dex: 493
+    Luk: 415
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Ghost
+    ElementLevel: 2
+    WalkSpeed: 120
+    AttackDelay: 1010
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22147
+    AegisName: BIO_FIRE_FRILLDORA
+    Name: Depth Fire Frilldora
+    Level: 265
+    Hp: 93256470
+    BaseExp: 5675187
+    JobExp: 3962714
+    Attack: 18287
+    Attack2: 8427
+    Defense: 180
+    MagicDefense: 103
+    Resistance: 701
+    MagicResistance: 611
+    Str: 321
+    Agi: 309
+    Vit: 210
+    Int: 270
+    Dex: 455
+    Luk: 340
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 120
+    AttackDelay: 541
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22148
+    AegisName: BIO_HOLY_FRUS
+    Name: Depth Holy Frus
+    Level: 263
+    Hp: 85467880
+    BaseExp: 5525795
+    JobExp: 3848717
+    Attack: 28004
+    Attack2: 7941
+    Defense: 299
+    MagicDefense: 115
+    Resistance: 1357
+    MagicResistance: 630
+    Str: 369
+    Agi: 254
+    Vit: 293
+    Int: 236
+    Dex: 423
+    Luk: 323
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Holy
+    ElementLevel: 2
+    WalkSpeed: 130
+    AttackDelay: 781
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22149
+    AegisName: BIO_HOLY_SKOGUL
+    Name: Depth Holy Skogul
+    Level: 265
+    Hp: 83587530
+    BaseExp: 5693764
+    JobExp: 3983650
+    Attack: 55218
+    Attack2: 16090
+    Defense: 187
+    MagicDefense: 207
+    Resistance: 819
+    MagicResistance: 1341
+    Str: 229
+    Agi: 237
+    Vit: 258
+    Int: 349
+    Dex: 431
+    Luk: 359
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Holy
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 1053
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22150
+    AegisName: BIO_KAPHA
+    Name: Depth Kapha
+    Level: 263
+    Hp: 105899670
+    BaseExp: 5440652
+    JobExp: 3789414
+    Attack: 31020
+    Attack2: 6942
+    Defense: 299
+    MagicDefense: 115
+    Resistance: 1357
+    MagicResistance: 630
+    Str: 369
+    Agi: 254
+    Vit: 293
+    Int: 236
+    Dex: 423
+    Luk: 395
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Fish
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 165
+    AttackDelay: 862
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22151
+    AegisName: BIO_SKEL_SOLDIER
+    Name: Depth Skeleton Soldier
+    Level: 264
+    Hp: 100400600
+    BaseExp: 5526869
+    JobExp: 3849464
+    Attack: 20841
+    Attack2: 7420
+    Defense: 294
+    MagicDefense: 114
+    Resistance: 1312
+    MagicResistance: 609
+    Str: 355
+    Agi: 244
+    Vit: 282
+    Int: 227
+    Dex: 408
+    Luk: 310
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 3
+    WalkSpeed: 160
+    AttackDelay: 575
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22152
+    AegisName: BIO_PINGUICULA_D
+    Name: Depth Dark Pinguicula
+    Level: 264
+    Hp: 81679820
+    BaseExp: 5519017
+    JobExp: 3861388
+    Attack: 19746
+    Attack2: 12116
+    Defense: 198
+    MagicDefense: 222
+    Resistance: 919
+    MagicResistance: 1511
+    Str: 262
+    Agi: 270
+    Vit: 294
+    Int: 398
+    Dex: 487
+    Luk: 409
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Poison
+    ElementLevel: 3
+    WalkSpeed: 230
+    AttackDelay: 599
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22153
+    AegisName: BIO_POM_SPIDER
+    Name: Depth Pom Spider
+    Level: 265
+    Hp: 89009870
+    BaseExp: 5613974
+    JobExp: 3910133
+    Attack: 23905
+    Attack2: 8119
+    Defense: 319
+    MagicDefense: 123
+    Resistance: 1524
+    MagicResistance: 707
+    Str: 420
+    Agi: 289
+    Vit: 334
+    Int: 269
+    Dex: 477
+    Luk: 368
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Insect
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 200
+    AttackDelay: 658
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22154
+    AegisName: BIO_PRAY_GIVER
+    Name: Depth Pray Giver
+    Level: 263
+    Hp: 89002070
+    BaseExp: 5466195
+    JobExp: 3826337
+    Attack: 26893
+    Attack2: 9816
+    Defense: 299
+    MagicDefense: 175
+    Resistance: 1472
+    MagicResistance: 1180
+    Str: 372
+    Agi: 263
+    Vit: 354
+    Int: 372
+    Dex: 496
+    Luk: 365
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 120
+    AttackDelay: 769
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22155
+    AegisName: BIO_WOOD_GOBLIN
+    Name: Depth Wood Goblin
+    Level: 264
+    Hp: 99900999
+    BaseExp: 5466757
+    JobExp: 3826730
+    Attack: 29304
+    Attack2: 9156
+    Defense: 303
+    MagicDefense: 177
+    Resistance: 1506
+    MagicResistance: 1207
+    Str: 382
+    Agi: 270
+    Vit: 363
+    Int: 382
+    Dex: 507
+    Luk: 374
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Plant
+    Element: Earth
+    ElementLevel: 3
+    WalkSpeed: 240
+    AttackDelay: 840
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22252
+    AegisName: BIO_DUNEYRR
+    Name: Depth Duneyrr
+    Level: 265
+    Hp: 166986400
+    BaseExp: 6626510
+    JobExp: 4615364
+    Attack: 47506
+    Attack2: 12034
+    Defense: 443
+    MagicDefense: 171
+    Resistance: 1725
+    MagicResistance: 2009
+    Str: 414
+    Agi: 274
+    Vit: 329
+    Int: 265
+    Dex: 368
+    Luk: 352
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Demihuman
+    Element: Fire
+    ElementLevel: 3
+    WalkSpeed: 130
+    AttackDelay: 420
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22253
+    AegisName: BIO_NAGA
+    Name: Depth Naga
+    Level: 265
+    Hp: 181266750
+    BaseExp: 6600885
+    JobExp: 4597516
+    Attack: 41543
+    Attack2: 10459
+    Defense: 432
+    MagicDefense: 167
+    Resistance: 1651
+    MagicResistance: 1923
+    Str: 393
+    Agi: 261
+    Vit: 312
+    Int: 252
+    Dex: 350
+    Luk: 334
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Earth
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 862
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22254
+    AegisName: BIO_ANCIENT_TREE
+    Name: Bio Ancient Tree
+    Level: 265
+    Hp: 164463460
+    BaseExp: 6498899
+    JobExp: 4526483
+    Attack: 45258
+    Attack2: 11944
+    Defense: 492
+    MagicDefense: 190
+    Resistance: 2066
+    MagicResistance: 2401
+    Str: 509
+    Agi: 335
+    Vit: 404
+    Int: 326
+    Dex: 448
+    Luk: 433
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Plant
+    Element: Earth
+    ElementLevel: 2
+    WalkSpeed: 200
+    AttackDelay: 962
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22255
+    AegisName: BIO_DOLLOCARIS
+    Name: Depth Dollocaris
+    Level: 265
+    Hp: 178600800
+    BaseExp: 6549636
+    JobExp: 4561821
+    Attack: 41198
+    Attack2: 10497
+    Defense: 444
+    MagicDefense: 172
+    Resistance: 1734
+    MagicResistance: 2019
+    Str: 417
+    Agi: 276
+    Vit: 331
+    Int: 267
+    Dex: 370
+    Luk: 354
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Fish
+    Element: Earth
+    ElementLevel: 3
+    WalkSpeed: 200
+    AttackDelay: 1053
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22256
+    AegisName: BIO_ICE_GARGOYLE
+    Name: Depth Frozen Gargoyle
+    Level: 265
+    Hp: 162858710
+    BaseExp: 6595389
+    JobExp: 4605247
+    Attack: 35500
+    Attack2: 11349
+    Defense: 255
+    MagicDefense: 151
+    Resistance: 851
+    MagicResistance: 1915
+    Str: 354
+    Agi: 326
+    Vit: 224
+    Int: 298
+    Dex: 443
+    Luk: 364
+    AttackRange: 11
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Demon
+    Element: Water
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 719
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22257
+    AegisName: BIO_FLAME_GHOST
+    Name: Depth Flame Ghost
+    Level: 265
+    Hp: 159779165
+    BaseExp: 6565544
+    JobExp: 4593592
+    Attack: 31327
+    Attack2: 17705
+    Defense: 280
+    MagicDefense: 314
+    Resistance: 1067
+    MagicResistance: 2177
+    Str: 264
+    Agi: 263
+    Vit: 298
+    Int: 402
+    Dex: 385
+    Luk: 402
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 100
+    AttackDelay: 909
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22258
+    AegisName: BIO_ACIDUS_
+    Name: Depth Acidus
+    Level: 265
+    Hp: 171678990
+    BaseExp: 6690545
+    JobExp: 4655421
+    Attack: 34336
+    Attack2: 13247
+    Defense: 592
+    MagicDefense: 259
+    Resistance: 2412
+    MagicResistance: 1768
+    Str: 325
+    Agi: 288
+    Vit: 442
+    Int: 382
+    Dex: 421
+    Luk: 383
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Dragon
+    Element: Wind
+    ElementLevel: 2
+    WalkSpeed: 200
+    AttackDelay: 769
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22259
+    AegisName: BIO_MOROCC_1
+    Name: Depth Morroc Incarnation
+    Level: 265
+    Hp: 155392230
+    BaseExp: 6652134
+    JobExp: 4633211
+    Attack: 49940
+    Attack2: 12648
+    Defense: 444
+    MagicDefense: 172
+    Resistance: 1734
+    MagicResistance: 2019
+    Str: 417
+    Agi: 276
+    Vit: 331
+    Int: 267
+    Dex: 370
+    Luk: 354
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Angel
+    Element: Dark
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 481
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22260
+    AegisName: BIO_SALAMANDER
+    Name: Depth Salamander
+    Level: 265
+    Hp: 155742230
+    BaseExp: 6575261
+    JobExp: 4579669
+    Attack: 50854
+    Attack2: 13265
+    Defense: 480
+    MagicDefense: 185
+    Resistance: 1987
+    MagicResistance: 2311
+    Str: 487
+    Agi: 321
+    Vit: 387
+    Int: 312
+    Dex: 429
+    Luk: 414
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 130
+    AttackDelay: 300
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
+  - Id: 22261
+    AegisName: BIO_MOSKILLO
+    Name: Depth Moskillro
+    Level: 265
+    Hp: 155812230
+    BaseExp: 6498387
+    JobExp: 4526126
+    Attack: 48782
+    Attack2: 13071
+    Defense: 519
+    MagicDefense: 200
+    Resistance: 2257
+    MagicResistance: 2623
+    Str: 563
+    Agi: 369
+    Vit: 447
+    Int: 361
+    Dex: 493
+    Luk: 478
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Insect
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 200
+    AttackDelay: 862
+    AttackMotion: 500
+    DamageMotion: 500
+    DamageTaken: 10
+    Ai: 04
+    Class: Boss
