@@ -1,0 +1,76 @@
+// Compatibility helpers for the Chapter 1 scripts.
+// The imported scripts use convenience functions from a different script
+// runtime. These wrappers preserve that behavior with native rAthena commands.
+
+// Source NPC used by a decorative Chapter 1 duplicate.
+-	script	dummynpc	-1,{
+	end;
+}
+
+function	script	cloaknpc	{
+	.@npc_name$ = getarg(0);
+	.@hide = getarg(1);
+	.@char_id = getarg(2, 0);
+	if (.@hide)
+		cloakonnpc .@npc_name$, .@char_id;
+	else
+		cloakoffnpc .@npc_name$, .@char_id;
+	return;
+}
+
+function	script	pctalk	{
+	npctalk getarg(0), "", BC_SELF;
+	return;
+}
+
+function	script	pcblock	{
+	setpcblock PCBLOCK_NPC, getarg(0);
+	return;
+}
+
+function	script	get_instance_var	{
+	return getd("'" + getarg(0));
+}
+
+function	script	set_instance_var	{
+	setd "'" + getarg(0), getarg(1);
+	return;
+}
+
+function	script	inc_instance_var	{
+	.@name$ = "'" + getarg(0);
+	setd .@name$, getd(.@name$) + 1;
+	return;
+}
+
+function	script	instance_enable	{
+	.@npc_name$ = instance_npcname(getarg(0));
+	if (getarg(1))
+		enablenpc .@npc_name$;
+	else
+		disablenpc .@npc_name$;
+	return;
+}
+
+function	script	instance_event	{
+	donpcevent instance_npcname(getarg(0)) + "::" + getarg(1);
+	return;
+}
+
+function	script	instance_warning	{
+	switch (getarg(0)) {
+	case 1:
+		mes "You need to be in a party to create this memorial dungeon.";
+		break;
+	case 2:
+		mes "The reservation for " + getarg(1, "this memorial dungeon") + " failed because your party already has an active instance.";
+		break;
+	case 4:
+		mes "Only the party leader can create this memorial dungeon.";
+		break;
+	default:
+		mes "The memorial dungeon cannot be created right now.";
+		break;
+	}
+	close;
+}
