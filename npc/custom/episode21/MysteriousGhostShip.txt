@@ -1,0 +1,462 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Mysterious Ghost Ship
+//===== Description: =========================================
+//= Story and daily versions of the Ghost Ship expedition.
+//= Implements the published deck order, investigation objects,
+//= captain battle, rewards, reputation and daily reset.
+//= References:
+//= https://wiki.muhro.eu/Mysterious_Ghost_Ship
+//= https://wiki.muhro.eu/21_Age_of_Heroes/en
+//============================================================
+
+function	script	EP21_DailyKey	{
+	// Daily period starts at 04:00 in the map-server's local timezone.
+	.@now = gettimetick(2);
+	.@reset = .@now - (gettime(DT_HOUR) * 3600 + gettime(DT_MINUTE) * 60 + gettime(DT_SECOND)) + 14400;
+	if (.@now < .@reset)
+		.@reset -= 86400;
+	return .@reset;
+}
+
+function	script	EP21_GhostShipUnlocked	{
+	// The quest checks migrate characters that completed this section before
+	// the custom unlock variable was introduced.
+	return EP21_GhostShip_Access || isbegin_quest(16818) || isbegin_quest(16819) == 2;
+}
+
+function	script	EP21_AddReputation	{
+	// Reputation type 13 is Gaebolg Resistance in db/import/reputation.yml.
+	add_reputation_points 13,getarg(0);
+	// Mirror the value for compatibility with early custom Episode 21 scripts.
+	EP21_Reputation = get_reputation_points(13);
+	return EP21_Reputation;
+}
+
+function	script	EP21_EnterGhostShip	{
+	.@name$ = "Mysterious Ghost Ship";
+	.@party_id = getcharid(1);
+
+	if (.@party_id) {
+		.@iid = instance_id(IM_PARTY);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "[Ghost Ship Expedition]";
+			mes "Your party already owns another active instance. Close it from the instance window first.";
+			close;
+		}
+		if (!.@iid) {
+			if (!is_party_leader()) {
+				mes "[Ghost Ship Expedition]";
+				mes "Your party leader must create the entrance first.";
+				close;
+			}
+			.@iid = instance_create(.@name$,IM_PARTY,.@party_id);
+		}
+	} else {
+		// Party play is recommended, but a solo owner is supported so content
+		// never becomes inaccessible on a low-population server.
+		.@iid = instance_id(IM_CHAR);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "[Ghost Ship Expedition]";
+			mes "You already own another active solo instance. Close it from the instance window first.";
+			close;
+		}
+		if (!.@iid)
+			.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
+	}
+
+	if (.@iid < 1) {
+		mes "[Ghost Ship Expedition]";
+		mes "The ship could not be reached. Please try again shortly.";
+		close;
+	}
+	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+		mes "[Ghost Ship Expedition]";
+		mes "The entrance is not ready yet.";
+		close;
+	}
+	end;
+}
+
+// Story entrance. This condensed start keeps the instance reachable while
+// the earlier Episode 21 Gimli sequence is being restored separately.
+jor_albe,190,186,4	script	Maristella Walter#ep21gs	22306,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 260 && isbegin_quest(16816) == 0 && !EP21_GhostShipUnlocked()";
+	mes "[Maristella Walter]";
+	if (BaseLevel < 260) {
+		mes "The Ghost Ship is too dangerous. Return after reaching Base Level 260.";
+		close;
+	}
+	if (isbegin_quest(16817) == 1) {
+		mes "That was my father's ship. Megas has received our report, but a Wigner executive is waiting nearby.";
+		changequest 16817,16819;
+		close;
+	}
+	if (isbegin_quest(16819) == 1) {
+		mes "Please speak with the Wigner Executive beside the harbor.";
+		close;
+	}
+	if (callfunc("EP21_GhostShipUnlocked")) {
+		EP21_GhostShip_Access = 1;
+		mes "Nillem now manages repeat expeditions from the lower harbor at ^3366FF(195, 179)^000000.";
+		close;
+	}
+	if (isbegin_quest(16816) == 2) {
+		erasequest 16816;
+		setquest 16817;
+		mes "Megas needs our report. Speak to me once more.";
+		close;
+	}
+	mes "We found the ship that may have belonged to my father, but its crew no longer seems human.";
+	mes "We must board it, examine the Walter family's traces, and learn what happened.";
+	next;
+	if (select("Board the Mysterious Ghost Ship.:Not yet.") == 2)
+		close;
+	if (!isbegin_quest(16816))
+		setquest 16816;
+	callfunc "EP21_EnterGhostShip";
+}
+
+// Daily entrance and report NPC. Published daily access unlocks after the
+// story reward and resets at 04:00 server time.
+jor_albe,195,179,4	script	Nillem#ep21gs_daily	4_M_SAGE_C,{
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && EP21_GhostShip_Daily != EP21_DailyKey()";
+	mes "[Nillem]";
+	if (!callfunc("EP21_GhostShipUnlocked")) {
+		mes "Maristella's first expedition has not identified the Ghost Ship yet.";
+		close;
+	}
+	EP21_GhostShip_Access = 1;
+	.@key = callfunc("EP21_DailyKey");
+
+	if (isbegin_quest(16822) == 1) {
+		if (!checkweight(1001618,10) || !checkweight(102947,1)) {
+			mes "Make room for ten vouchers and the Ghost Ship antiquity before I file the report.";
+			close;
+		}
+		changequest 16822,16823;
+		EP21_GhostShip_Daily = .@key;
+		callfunc "EP21_AddReputation",5;
+		getitem 1001618,10;
+		getitem 102947,1;
+		getexp 91298960,59995050;
+		mes "The surviving memories confirm your report.";
+		mes "Reward: ^3366FF10 Wigner Merchant Guild Vouchers^000000, ^3366FF1 Ghost Ship Antiquity^000000 and ^33AA335 Gaebolg Command reputation^000000.";
+		close;
+	}
+	if (EP21_GhostShip_Daily == .@key) {
+		mes "You already completed today's Ghost Ship investigation.";
+		mes "The expedition resets at 04:00 server time.";
+		close;
+	}
+	if (isbegin_quest(16823))
+		erasequest 16823;
+	if (isbegin_quest(16821) == 2)
+		erasequest 16821;
+
+	mes "The Ghost Ship has returned. We still need fragments of old Walter's memories.";
+	mes "Defeat its captain and report back to me. The published route is unchanged, but this daily version is exceptionally dangerous.";
+	next;
+	.@choice = select("Begin today's expedition.:Check reputation.:Not now.");
+	if (.@choice == 2) {
+		mes "[Nillem]";
+		mes "Gaebolg Command reputation: ^33AA33" + get_reputation_points(13) + "^000000";
+		close;
+	}
+	if (.@choice == 3)
+		close;
+	if (!isbegin_quest(16821))
+		setquest 16821;
+	callfunc "EP21_EnterGhostShip";
+}
+
+jor_albe,194,186,4	script	Wigner Executive#ep21gs	4_M_MANAGER,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16819) == 1";
+	mes "[Wigner Executive]";
+	if (isbegin_quest(16819) != 1) {
+		mes "I handle compensation for the Walter expedition. Maristella will tell you when the report is ready.";
+		close;
+	}
+	if (!checkweight(1001618,70)) {
+		mes "Please make enough inventory room for seventy Wigner vouchers.";
+		close;
+	}
+	mes "Heine sent these goods for the resistance. Your Ghost Ship report finally explains the Walter's disappearance.";
+	changequest 16819,16818;
+	EP21_GhostShip_Access = 1;
+	callfunc "EP21_AddReputation",90;
+	getitem 1001618,70;
+	getexp 1573151350,479960440;
+	mes "Reward: ^3366FF70 Wigner Merchant Guild Vouchers^000000 and ^33AA3390 Gaebolg Command reputation^000000.";
+	mes "The daily Mysterious Ghost Ship expedition is now unlocked through Nillem.";
+	close;
+}
+
+// Instance controller and encounter state.
+1@wtgs,1,1,0	script	#EP21_GhostShip_Control	HIDDEN_NPC,{
+	end;
+
+OnInstanceInit:
+	'stage = 0;
+	enablenpc instance_npcname("Maristella#ep21gs_start");
+	mapannounce instance_mapname("1@wtgs"),"Mysterious Ghost Ship: speak with Maristella Walter on the upper deck.",bc_map,0x77AAFF;
+	end;
+
+OnUpper1:
+	if ('stage != 1) end;
+	areamonster instance_mapname("1@wtgs"),63,308,69,314,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnUpper1Dead";
+	mapannounce instance_mapname("1@wtgs"),"Restless sailors gather beside the port railing.",bc_map,0xBBDDFF;
+	end;
+OnUpper1Dead:
+	if ('stage != 1 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnUpper1Dead") > 0) end;
+	'stage = 2;
+	enablenpc instance_npcname("Sternlight#ep21gs");
+	mapannounce instance_mapname("1@wtgs"),"A sternlight begins to glow where the crew fell.",bc_map,0xBBDDFF;
+	end;
+
+OnUpper2:
+	if ('stage != 5) end;
+	areamonster instance_mapname("1@wtgs"),64,324,70,330,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnUpper2Dead";
+	end;
+OnUpper2Dead:
+	if ('stage != 5 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnUpper2Dead") > 0) end;
+	'stage = 6;
+	areamonster instance_mapname("1@wtgs"),111,305,117,311,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnUpper3Dead";
+	mapannounce instance_mapname("1@wtgs"),"Another drowned crew blocks the starboard route.",bc_map,0xBBDDFF;
+	end;
+OnUpper3Dead:
+	if ('stage != 6 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnUpper3Dead") > 0) end;
+	'stage = 7;
+	enablenpc instance_npcname("#EP21_GS_UpperPortal");
+	mapannounce instance_mapname("1@wtgs"),"The way to the middle deck is open at (121, 318).",bc_map,0x55FFAA;
+	end;
+
+OnMiddle:
+	if ('stage != 8) end;
+	areamonster instance_mapname("1@wtgs"),44,24,50,30,"Ghost Ship Sailor",22369,8,instance_npcname(strnpcinfo(0))+"::OnMiddleDead";
+	end;
+OnMiddleDead:
+	if ('stage != 8 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnMiddleDead") > 0) end;
+	'stage = 9;
+	enablenpc instance_npcname("Crumpled Documents#ep21gs");
+	mapannounce instance_mapname("1@wtgs"),"Waterlogged documents lie among the defeated crew.",bc_map,0xBBDDFF;
+	end;
+
+OnLower1:
+	if ('stage != 11) end;
+	areamonster instance_mapname("1@wtgs"),182,98,188,104,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnLower1Dead";
+	end;
+OnLower1Dead:
+	if ('stage != 11 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnLower1Dead") > 0) end;
+	'stage = 12;
+	enablenpc instance_npcname("Rusty Fountain Pen#ep21gs");
+	end;
+
+OnLower2:
+	if ('stage != 13) end;
+	areamonster instance_mapname("1@wtgs"),147,98,153,104,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnLower2Dead";
+	end;
+OnLower2Dead:
+	if ('stage != 13 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnLower2Dead") > 0) end;
+	'stage = 14;
+	enablenpc instance_npcname("Box Under a Bed#ep21gs");
+	end;
+
+OnLower3:
+	if ('stage != 15) end;
+	areamonster instance_mapname("1@wtgs"),107,114,113,120,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnLower3Dead";
+	end;
+OnLower3Dead:
+	if ('stage != 15 || mobcount(instance_mapname("1@wtgs"),instance_npcname(strnpcinfo(0))+"::OnLower3Dead") > 0) end;
+	'stage = 16;
+	enablenpc instance_npcname("#EP21_GS_CaptainPortal");
+	mapannounce instance_mapname("1@wtgs"),"The Captain's Quarter is open at (106, 110).",bc_map,0x55FFAA;
+	end;
+
+OnBossDead:
+	if ('stage != 18) end;
+	'stage = 19;
+	enablenpc instance_npcname("Ghost Ship Captain#ep21gs_spirit");
+	mapannounce instance_mapname("1@wtgs"),"The captain's rage fades, leaving a final memory behind.",bc_map,0xFFDD88;
+	end;
+}
+
+1@wtgs,84,311,4	script(DISABLED)	Maristella#ep21gs_start	22306,{
+	if ('stage != 0) end;
+	mes "[Maristella Walter]";
+	mes "This deck feels familiar, but the ship is saturated with hostile memories. Stay close and examine every trace we uncover.";
+	close2;
+	'stage = 1;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnUpper1";
+	end;
+}
+
+1@wtgs,66,314,4	script(DISABLED)	Sternlight#ep21gs	4_ENERGY_BLUE,{
+	if ('stage != 2) end;
+	mes "[Sternlight]";
+	mes "The lamp's construction is familiar to Maristella, but it is not the one she remembers from childhood.";
+	close2;
+	'stage = 3;
+	disablenpc();
+	enablenpc instance_npcname("Mast Traces#ep21gs");
+	end;
+}
+
+1@wtgs,91,309,4	script(DISABLED)	Mast Traces#ep21gs	CLEAR_NPC,{
+	if ('stage != 3) end;
+	mes "[Mast Traces]";
+	mes "Old height marks are carved into the mast. Maristella recognizes the marks made when her father measured her growth.";
+	close2;
+	'stage = 4;
+	disablenpc();
+	enablenpc instance_npcname("Old Box#ep21gs");
+	end;
+}
+
+1@wtgs,112,327,4	script(DISABLED)	Old Box#ep21gs	4_WOODBOX,{
+	if ('stage != 4) end;
+	mes "[Old Box]";
+	mes "Hand-carved wooden toys rest inside. Howell Walter made them for his daughter long ago.";
+	close2;
+	'stage = 5;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnUpper2";
+	end;
+}
+
+1@wtgs,121,318,0	script(DISABLED)	#EP21_GS_UpperPortal	WARPNPC,2,2,{
+	if ('stage != 7) end;
+	'stage = 8;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnMiddle";
+	warp instance_mapname("1@wtgs"),47,27;
+	end;
+}
+
+1@wtgs,47,24,4	script(DISABLED)	Crumpled Documents#ep21gs	4_VR_BOOK_BLUE,{
+	if ('stage != 9) end;
+	mes "[Crumpled Documents]";
+	mes "The writing is almost unreadable; seawater blurred every line before the ship became trapped in this state.";
+	close2;
+	'stage = 10;
+	disablenpc();
+	enablenpc instance_npcname("#EP21_GS_MiddlePortal");
+	end;
+}
+
+1@wtgs,59,30,0	script(DISABLED)	#EP21_GS_MiddlePortal	WARPNPC,2,2,{
+	if ('stage != 10) end;
+	'stage = 11;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower1";
+	warp instance_mapname("1@wtgs"),185,101;
+	end;
+}
+
+1@wtgs,184,121,4	script(DISABLED)	Rusty Fountain Pen#ep21gs	4_ENERGY_YELLOW,{
+	if ('stage != 12) end;
+	mes "[Rusty Fountain Pen]";
+	mes "Yohan recognizes the captain's fountain pen. There can be no doubt: this is the missing Walter.";
+	close2;
+	'stage = 13;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower2";
+	end;
+}
+
+1@wtgs,149,127,4	script(DISABLED)	Box Under a Bed#ep21gs	4_WOODBOX,{
+	if ('stage != 14) end;
+	mes "[Journal in the Box]";
+	mes "The captain's journal describes a stranger granting his desperate wish. The crew then lost their memories and transformed into monsters.";
+	close2;
+	'stage = 15;
+	disablenpc();
+	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower3";
+	end;
+}
+
+1@wtgs,106,110,0	script(DISABLED)	#EP21_GS_CaptainPortal	WARPNPC,2,2,{
+	if ('stage != 16) end;
+	'stage = 17;
+	disablenpc();
+	enablenpc instance_npcname("Ghost Ship Captain#ep21gs_battle");
+	warp instance_mapname("1@wtgs"),303,29;
+	end;
+}
+
+1@wtgs,315,31,4	script(DISABLED)	Ghost Ship Captain#ep21gs_battle	22370,{
+	if ('stage != 17) end;
+	mes "[Ghost Ship Captain]";
+	mes "The cult's ships must sink. Every last one... even if this vessel sails forever!";
+	next;
+	mes "[Maristella Walter]";
+	mes "Father, listen to us! We will end the curse, but first we must break the rage holding you here.";
+	close2;
+	'stage = 18;
+	disablenpc();
+	monster instance_mapname("1@wtgs"),315,31,"Ghost Ship Captain",22372,1,instance_npcname("#EP21_GhostShip_Control")+"::OnBossDead";
+	end;
+}
+
+1@wtgs,315,31,4	script(DISABLED)	Ghost Ship Captain#ep21gs_spirit	4_M_DEWOLDMAN,{
+	if ('stage != 19) end;
+	mes "[Howell Walter]";
+	mes "My wish was to sink every cult ship, even after death. Instead it chained all of us to this nightmare.";
+	mes "Maria... seeing everyone once more is more than I deserved. Let this ship finally rest.";
+	close2;
+	'stage = 20;
+	disablenpc();
+	enablenpc instance_npcname("Howell Megas Walter#ep21gs");
+	end;
+}
+
+1@wtgs,324,28,4	script(DISABLED)	Howell Megas Walter#ep21gs	4_M_DEWOLDMAN,{
+	if ('stage != 20) end;
+	mes "[Howell Megas Walter]";
+	mes "Tell the living what happened here. Do not let grief become another prison.";
+	close2;
+	'stage = 21;
+	disablenpc();
+	enablenpc instance_npcname("#EP21_GS_CaptainExit");
+	end;
+}
+
+1@wtgs,331,27,0	script(DISABLED)	#EP21_GS_CaptainExit	WARPNPC,2,2,{
+	if ('stage != 21) end;
+	'stage = 22;
+	disablenpc();
+	enablenpc instance_npcname("Maristella#ep21gs_finish");
+	warp instance_mapname("1@wtgs"),86,306;
+	end;
+}
+
+1@wtgs,84,311,4	script(DISABLED)	Maristella#ep21gs_finish	22306,{
+	if ('stage < 22) end;
+	mes "[Maristella Walter]";
+	if (isbegin_quest(16816) == 1) {
+		mes "The Walter can disappear without regret now. We should report everything to Megas before the last memories fade.";
+		changequest 16816,16817;
+	} else if (isbegin_quest(16821) == 1) {
+		mes "We recovered another fragment of my father's memories. Nillem will preserve it and issue your expedition reward.";
+		changequest 16821,16822;
+	} else {
+		mes "The curse has been broken. Use the portal beside me before the ship fades.";
+	}
+	close2;
+	enablenpc instance_npcname("#EP21_GS_FinalExit");
+	end;
+}
+
+1@wtgs,88,306,0	script(DISABLED)	#EP21_GS_FinalExit	WARPNPC,2,2,{
+	warp "jor_albe",191,182;
+	end;
+}
+
+// Instance restrictions.
+1@wtgs	mapflag	noteleport
+1@wtgs	mapflag	monster_noteleport
+1@wtgs	mapflag	nomemo
+1@wtgs	mapflag	noreturn
+1@wtgs	mapflag	nowarp
+1@wtgs	mapflag	nowarpto
+1@wtgs	mapflag	nosave	SavePoint

@@ -1,0 +1,48 @@
+# This file is a part of rAthena.
+#   Copyright(C) 2022 rAthena Development Team
+#   https://rathena.org - https://github.com/rathena
+#
+# Episode 21 reputation groups used by Age of Heroes content.
+
+Header:
+  Type: REPUTATION_DB
+  Version: 1
+
+Body:
+# BEGIN CODEX EPISODE 21 AGE OF HEROES
+  - Id: 13
+    Name: Gaebolg Resistance
+    Variable: REP_EP21
+    Minimum: -1000
+    Maximum: 1000
+  - Id: 14
+    Name: Blackstar Nerius
+    Variable: REP_EP21_Nerius
+    Minimum: -1000
+    Maximum: 1000
+  - Id: 15
+    Name: Comodo Sage Heine
+    Variable: REP_EP21_Heine
+    Minimum: -1000
+    Maximum: 1000
+  - Id: 16
+    Name: Lugenburg Brothers
+    Variable: REP_EP21_Lugenburg
+    Minimum: -1000
+    Maximum: 1000
+  - Id: 17
+    Name: Walter Fleet
+    Variable: REP_EP21_Walter
+    Minimum: -1000
+    Maximum: 1000
+  - Id: 18
+    Name: Wigner Merchants
+    Variable: REP_EP21_Wigner
+    Minimum: -1000
+    Maximum: 1000
+  - Id: 19
+    Name: Richard Mercenaries
+    Variable: REP_EP21_Richard
+    Minimum: -1000
+    Maximum: 1000
+# END CODEX EPISODE 21 AGE OF HEROES
