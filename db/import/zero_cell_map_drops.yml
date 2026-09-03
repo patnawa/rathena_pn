@@ -1,0 +1,26 @@
+Header:
+  Type: MAP_DROP_DB
+  Version: 2
+
+Body:
+  - Map: ch1zero1
+    GlobalDrops:
+      - Index: 0
+        Item: CH1_ZeroCell_Box_LV
+        Rate: 5765
+  - Map: ch1zero2
+    GlobalDrops:
+      - Index: 0
+        Item: CH1_ZeroCell_Box_NA
+        Rate: 10056
+  - Map: ch1zero3
+    GlobalDrops:
+      - Index: 0
+        Item: CH1_ZeroCell_Box_LV
+        Rate: 18075
+  - Map: ch1zero4
+    GlobalDrops:
+      - Index: 0
+        Item: CH1_ZeroCell_Box_NA
+        Rate: 18075
+

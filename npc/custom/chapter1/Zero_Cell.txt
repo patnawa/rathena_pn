@@ -1,0 +1,395 @@
+//===== rAthena Script =======================================
+//= Chapter 1 - Zero Cell Sector
+//===== Description: =========================================
+//= Post-story investigation, one-hour sector authorization,
+//= daily cleanup quests, access enforcement, and field spawns.
+//= Reference: https://wiki.muhro.eu/Zero_Cell_Sector
+//============================================================
+
+function	script	ZC_HasAccess	{
+	return ZC_Access || isbegin_quest(27093) == 2;
+}
+
+function	script	ZC_DailyKey	{
+	// Beginning of the current daily period, which resets at 04:00
+	// in the map-server's local timezone.
+	.@now = gettimetick(2);
+	.@reset = .@now - (gettime(DT_HOUR) * 3600 + gettime(DT_MINUTE) * 60 + gettime(DT_SECOND)) + 14400;
+	if (.@now < .@reset)
+		.@reset -= 86400;
+	return .@reset;
+}
+
+function	script	ZC_CanEnter	{
+	.@tier = getarg(0);
+	if (!callfunc("ZC_HasAccess")) {
+		message strcharinfo(0), "Complete Robin's Zero Cell investigation first.";
+		return false;
+	}
+	if (.@tier == 1) {
+		if (BaseLevel < 260) {
+			message strcharinfo(0), "Lux and Nox require Base Level 260.";
+			return false;
+		}
+		if (ZC_Auth_LN <= gettimetick(2)) {
+			message strcharinfo(0), "Your Lux/Nox authorization is inactive. Speak to Newt in ch1fild1.";
+			return false;
+		}
+	} else {
+		if (BaseLevel < 270) {
+			message strcharinfo(0), "Vita and Ark require Base Level 270.";
+			return false;
+		}
+		if (ZC_Auth_VA <= gettimetick(2)) {
+			message strcharinfo(0), "Your Vita/Ark authorization is inactive. Speak to Newt in ch1fild1.";
+			return false;
+		}
+	}
+	return true;
+}
+
+function	script	ZC_DailyQuest	{
+	.@quest = getarg(0);
+	.@stamp$ = getarg(1);
+	.@reward = getarg(2);
+	.@rings = getarg(3);
+	.@title$ = getarg(4);
+	.@key = callfunc("ZC_DailyKey");
+
+	if (getd(.@stamp$) == .@key) {
+		mes "[Robin]";
+		mes "You already completed " + .@title$ + " during this daily period.";
+		mes "Cleanup assignments reset at 04:00 server time.";
+		close;
+	}
+
+	.@state = isbegin_quest(.@quest);
+	if (.@state == 2) {
+		erasequest .@quest;
+		.@state = 0;
+	}
+	if (.@state == 0) {
+		mes "[Robin]";
+		mes "I need a cleanup team for " + .@title$ + ".";
+		mes "The quest log counts any Zero Cell monster defeated on that sector map.";
+		if (select("Accept.:Not now.") == 2)
+			close;
+		setquest .@quest;
+		mes "[Robin]";
+		mes "The assignment has been added to your quest log.";
+		close;
+	}
+
+	if (checkquest(.@quest, HUNTING) != 2) {
+		mes "[Robin]";
+		mes "The cleanup is still in progress. Check your quest window for the remaining count.";
+		close;
+	}
+	if (!checkweight(.@reward, 1) || !checkweight(1001996, .@rings)) {
+		mes "[Robin]";
+		mes "Please make room in your inventory before receiving the reward.";
+		close;
+	}
+	completequest .@quest;
+	setd .@stamp$, .@key;
+	getitem .@reward, 1;
+	getitem 1001996, .@rings;
+	mes "[Robin]";
+	mes "Excellent work. Here is your reward.";
+	mes "^3366FF" + getitemname(.@reward) + " x1^000000";
+	mes "^3366FF" + getitemname(1001996) + " x" + .@rings + "^000000";
+	close;
+}
+
+// Robin opens the one-time investigation only after both official
+// Chapter 1 post-story prerequisites are complete.
+ygg_edge,173,185,4	script	Robin#zc_start	4_4JOB_ROBIN,{
+	questinfo QTYPE_QUEST, QMARK_YELLOW, "BaseLevel >= 260 && CH1_Complete() && isbegin_quest(18379) == 2 && isbegin_quest(27089) == 0 && isbegin_quest(27093) == 0";
+	if (callfunc("ZC_HasAccess")) {
+		mes "[Robin]";
+		mes "Newt is managing access from Erosion Zone 1 now.";
+		mes "Follow the western route through the roots if you need another authorization.";
+		close;
+	}
+	if (isbegin_quest(27089) || isbegin_quest(27090) || isbegin_quest(27091) || isbegin_quest(27092) || isbegin_quest(27093)) {
+		mes "[Robin]";
+		mes "Please continue the investigation in the Twisted Land of Darkness.";
+		close;
+	}
+	mes "[Robin]";
+	if (BaseLevel < 260) {
+		mes "The erosion ahead is too dangerous. Return after reaching Base Level 260.";
+		close;
+	}
+	if (!callfunc("CH1_Complete")) {
+		mes "We cannot investigate the Zero Cell anomaly until Bring Down the Air Fortress is complete.";
+		close;
+	}
+	if (isbegin_quest(18379) != 2) {
+		mes "Rubiel still needs your help with A Hazy Gate. Finish that investigation first.";
+		close;
+	}
+	mes "The darkness beyond the roots is behaving strangely. Newt went ahead to investigate.";
+	mes "Will you accompany us into Erosion Zone 1?";
+	if (select("Begin the investigation.:Not yet.") == 2)
+		close;
+	setquest 27089;
+	mes "[Robin]";
+	mes "Use the portal at ^3366FF(ygg_edge 32, 117)^000000, then continue through the portal at ^3366FF(ygg_roots 151, 345)^000000.";
+	close;
+}
+
+ygg_edge,32,117,0	script	#zc_gate_edge	WARPNPC,2,2,{
+	if (!callfunc("ZC_HasAccess") && !isbegin_quest(27089) && !isbegin_quest(27090) && !isbegin_quest(27091) && !isbegin_quest(27092) && !isbegin_quest(27093)) {
+		message strcharinfo(0), "Robin has not authorized this route.";
+		end;
+	}
+	warp "ygg_roots",151,340;
+	end;
+}
+
+ygg_roots,151,345,0	script	#zc_gate_roots	WARPNPC,2,2,{
+	if (!callfunc("ZC_HasAccess") && !isbegin_quest(27089) && !isbegin_quest(27090) && !isbegin_quest(27091) && !isbegin_quest(27092) && !isbegin_quest(27093)) {
+		message strcharinfo(0), "The erosion rejects you. Speak to Robin in Ash Tree Village.";
+		end;
+	}
+	warp "ch1fild1",168,35;
+	end;
+}
+
+ch1fild1,168,38,4	script	Newt#zc_investigate	4_CH1_DELEGACY02,{
+	questinfo QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(27089) == 1";
+	mes "[Newt]";
+	if (isbegin_quest(27089) == 1) {
+		mes "You made it. Robin is waiting farther inside, near ^3366FF(101, 84)^000000.";
+		changequest 27089,27090;
+		close;
+	}
+	if (callfunc("ZC_HasAccess")) {
+		mes "Use my authorization service near Robin when you are ready to enter Zero Cell.";
+		close;
+	}
+	mes "This boundary is unstable. Find Robin before moving any deeper.";
+	close;
+}
+
+ch1fild1,101,84,4	script	Robin#zc_field	4_4JOB_ROBIN,{
+	questinfo QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(27090) == 1 || isbegin_quest(27092) == 1";
+	questinfo QTYPE_DAILYQUEST, QMARK_YELLOW, "ZC_HasAccess() && (ZC_Daily_Lux != ZC_DailyKey() || ZC_Daily_Nox != ZC_DailyKey() || ZC_Daily_Vita != ZC_DailyKey() || ZC_Daily_Ark != ZC_DailyKey())";
+	if (isbegin_quest(27090) == 1) {
+		mes "[Robin]";
+		mes "The anomaly left a trace along the western edge. Examine it at ^3366FF(25, 132)^000000.";
+		changequest 27090,27091;
+		close;
+	}
+	if (isbegin_quest(27092) == 1) {
+		mes "[Robin]";
+		mes "That confirms it: Zero Cell is feeding on the erosion. Newt can stabilize a temporary route.";
+		mes "Speak to him here at ^3366FF(106, 84)^000000.";
+		changequest 27092,27093;
+		close;
+	}
+	if (!callfunc("ZC_HasAccess")) {
+		mes "[Robin]";
+		mes "Complete the investigation before taking cleanup assignments.";
+		close;
+	}
+	menu "Clean Up Zero Cell Lux",L_Lux,
+		 "Clean Up Zero Cell Nox",L_Nox,
+		 "Clean Up Zero Cell Vita",L_Vita,
+		 "Clean Up Zero Cell Ark",L_Ark,
+		 "Leave",L_End;
+L_Lux:
+	callfunc "ZC_DailyQuest",27094,"ZC_Daily_Lux",105161,15,"Zero Cell Lux";
+L_Nox:
+	callfunc "ZC_DailyQuest",27096,"ZC_Daily_Nox",105161,15,"Zero Cell Nox";
+L_Vita:
+	callfunc "ZC_DailyQuest",27098,"ZC_Daily_Vita",105162,20,"Zero Cell Vita";
+L_Ark:
+	callfunc "ZC_DailyQuest",27100,"ZC_Daily_Ark",105162,20,"Zero Cell Ark";
+L_End:
+	close;
+}
+
+ch1fild1,25,132,0	script	Suspicious Trace#zc	4_ENERGY_RED,{
+	questinfo QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(27091) == 1";
+	if (isbegin_quest(27091) != 1) {
+		message strcharinfo(0), "A distorted trace of magic flickers and disappears.";
+		end;
+	}
+	mes "[Suspicious Trace]";
+	mes "The residue twists inward, toward four sealed spaces beyond the erosion zone.";
+	changequest 27091,27092;
+	mes "Report what you found to Robin at ^3366FF(101, 84)^000000.";
+	close;
+}
+
+ch1fild1,106,84,4	script	Newt#zc_service	4_CH1_DELEGACY02,{
+	questinfo QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(27093) == 1";
+	mes "[Newt]";
+	if (isbegin_quest(27093) == 1) {
+		mes "Robin explained the trace. I can now tune a temporary authorization to the Zero Cell sectors.";
+		completequest 27093;
+		ZC_Access = 1;
+		mes "The investigation is complete. Choose the authorization tier you need.";
+		next;
+	}
+	if (!callfunc("ZC_HasAccess")) {
+		mes "We need Robin's investigation data before I can stabilize a route.";
+		close;
+	}
+	.@ln = ZC_Auth_LN - gettimetick(2);
+	.@va = ZC_Auth_VA - gettimetick(2);
+	if (.@ln < 0) .@ln = 0;
+	if (.@va < 0) .@va = 0;
+	mes "Lux/Nox authorization: ^3366FF" + ((.@ln) ? ((.@ln / 60) + " minute(s) remaining") : "inactive") + "^000000";
+	mes "Vita/Ark authorization: ^3366FF" + ((.@va) ? ((.@va / 60) + " minute(s) remaining") : "inactive") + "^000000";
+	next;
+	menu "Authorize Lux / Nox (50 Mana Rings)",L_AuthLN,
+		 "Authorize Vita / Ark (70 Mana Rings)",L_AuthVA,
+		 "Enter an authorized sector",L_Enter,
+		 "Cancel",L_End;
+L_AuthLN:
+	if (BaseLevel < 260) {
+		mes "[Newt]";
+		mes "Lux and Nox require Base Level 260.";
+		close;
+	}
+	if (countitem(1001996) < 50) {
+		mes "[Newt]";
+		mes "Bring me 50 Mana Rings.";
+		close;
+	}
+	if (ZC_Auth_LN > gettimetick(2) && select("Replace the remaining authorization time?:Keep the current time.") == 2)
+		close;
+	delitem 1001996,50;
+	ZC_Auth_LN = gettimetick(2) + 3600;
+	mes "[Newt]";
+	mes "Lux and Nox are authorized for one hour.";
+	next;
+	goto L_Enter;
+L_AuthVA:
+	if (BaseLevel < 270) {
+		mes "[Newt]";
+		mes "Vita and Ark require Base Level 270.";
+		close;
+	}
+	if (countitem(1001996) < 70) {
+		mes "[Newt]";
+		mes "Bring me 70 Mana Rings.";
+		close;
+	}
+	if (ZC_Auth_VA > gettimetick(2) && select("Replace the remaining authorization time?:Keep the current time.") == 2)
+		close;
+	delitem 1001996,70;
+	ZC_Auth_VA = gettimetick(2) + 3600;
+	mes "[Newt]";
+	mes "Vita and Ark are authorized for one hour.";
+	next;
+L_Enter:
+	menu "Lux",L_Lux,"Nox",L_Nox,"Vita",L_Vita,"Ark",L_Ark,"Cancel",L_End;
+L_Lux:
+	if (!callfunc("ZC_CanEnter",1)) close;
+	warp "ch1zero1",99,100;
+	end;
+L_Nox:
+	if (!callfunc("ZC_CanEnter",1)) close;
+	warp "ch1zero2",99,100;
+	end;
+L_Vita:
+	if (!callfunc("ZC_CanEnter",2)) close;
+	warp "ch1zero3",99,100;
+	end;
+L_Ark:
+	if (!callfunc("ZC_CanEnter",2)) close;
+	warp "ch1zero4",99,100;
+	end;
+L_End:
+	close;
+}
+
+// Return gates are placed beside the common entry point.
+ch1zero1,102,100,0	script	#zc_exit_lux	WARPNPC,1,1,{ warp "ch1fild1",106,81; end; }
+ch1zero2,102,100,0	script	#zc_exit_nox	WARPNPC,1,1,{ warp "ch1fild1",106,81; end; }
+ch1zero3,102,100,0	script	#zc_exit_vita	WARPNPC,1,1,{ warp "ch1fild1",106,81; end; }
+ch1zero4,102,100,0	script	#zc_exit_ark	WARPNPC,1,1,{ warp "ch1fild1",106,81; end; }
+
+// Enforce expiration after entry. Each sector enables the load event, and
+// the timer rechecks once per minute while the character remains inside.
+-	script	ZC_ZeroGuard	-1,{
+OnPCLoadMapEvent:
+	.@map$ = strcharinfo(3);
+	if (.@map$ == "ch1zero1" || .@map$ == "ch1zero2" || .@map$ == "ch1zero3" || .@map$ == "ch1zero4") {
+		deltimer "ZC_ZeroGuard::OnAuthCheck";
+		addtimer 1000,"ZC_ZeroGuard::OnAuthCheck";
+	}
+	end;
+OnAuthCheck:
+	.@map$ = strcharinfo(3);
+	if (.@map$ == "ch1zero1" || .@map$ == "ch1zero2") {
+		if (ZC_Auth_LN <= gettimetick(2)) {
+			message strcharinfo(0), "Your Zero Cell authorization expired.";
+			warp "ch1fild1",106,81;
+			end;
+		}
+		addtimer 60000,"ZC_ZeroGuard::OnAuthCheck";
+	} else if (.@map$ == "ch1zero3" || .@map$ == "ch1zero4") {
+		if (ZC_Auth_VA <= gettimetick(2)) {
+			message strcharinfo(0), "Your Zero Cell authorization expired.";
+			warp "ch1fild1",106,81;
+			end;
+		}
+		addtimer 60000,"ZC_ZeroGuard::OnAuthCheck";
+	}
+	end;
+}
+
+ch1zero1	mapflag	loadevent
+ch1zero2	mapflag	loadevent
+ch1zero3	mapflag	loadevent
+ch1zero4	mapflag	loadevent
+
+// Twisted Land of Darkness - Erosion Zone 1
+ch1fild1,0,0,0,0	monster	M.RK-ERROR	22669,7,5000,5000
+ch1fild1,0,0,0,0	monster	M.GC-ERROR	22670,5,5000,5000
+ch1fild1,0,0,0,0	monster	M.GC.D-ERROR	22671,5,5000,5000
+
+// Zero Cell Sector - Lux
+ch1zero1,0,0,0,0	monster	M.RK-4480	22507,60,5000,5000
+ch1zero1,0,0,0,0	monster	M.MC.M-5407	22508,60,5000,5000
+ch1zero1,0,0,0,0	monster	M.SC-3941	22509,60,5000,5000
+ch1zero1,0,0,0,0	monster	M.RA-4152	22510,40,5000,5000
+ch1zero1,0,0,0,0	monster	M.SO-4206	22511,40,5000,5000
+ch1zero1,0,0,0,0	monster	M.AB-4084	22512,40,5000,5000
+ch1zero1,0,0,0,0	monster	M.MI.D-5794	22513,60,5000,5000
+ch1zero1,0,0,0,0	monster	M.GC.D-4402	22514,60,5000,5000
+
+// Zero Cell Sector - Nox
+ch1zero2,0,0,0,0	monster	M.RG-5520	22516,90,5000,5000
+ch1zero2,0,0,0,0	monster	M.MC-4593	22517,90,5000,5000
+ch1zero2,0,0,0,0	monster	M.GN-6059	22518,90,5000,5000
+ch1zero2,0,0,0,0	monster	M.GC-5848	22519,70,5000,5000
+ch1zero2,0,0,0,0	monster	M.MI-4419	22520,70,5000,5000
+ch1zero2,0,0,0,0	monster	M.SR-5916	22521,70,5000,5000
+ch1zero2,0,0,0,0	monster	M.WL-5581	22522,90,5000,5000
+ch1zero2,0,0,0,0	monster	M.WA-5598	22523,90,5000,5000
+
+// Zero Cell Sector - Vita
+ch1zero3,0,0,0,0	monster	M.RK-0001	22525,65,5000,5000
+ch1zero3,0,0,0,0	monster	M.MC.M-0001	22526,65,5000,5000
+ch1zero3,0,0,0,0	monster	M.SC-0001	22527,65,5000,5000
+ch1zero3,0,0,0,0	monster	M.RA-0001	22528,45,5000,5000
+ch1zero3,0,0,0,0	monster	M.SO-0001	22529,45,5000,5000
+ch1zero3,0,0,0,0	monster	M.AB-0001	22530,45,5000,5000
+ch1zero3,0,0,0,0	monster	M.MI.D-0001	22531,65,5000,5000
+ch1zero3,0,0,0,0	monster	M.GC.D-0001	22532,65,5000,5000
+
+// Zero Cell Sector - Ark
+ch1zero4,0,0,0,0	monster	M.RG-0001	22542,65,5000,5000
+ch1zero4,0,0,0,0	monster	M.MC-0001	22543,65,5000,5000
+ch1zero4,0,0,0,0	monster	M.GN-0001	22544,45,5000,5000
+ch1zero4,0,0,0,0	monster	M.GC-0001	22545,65,5000,5000
+ch1zero4,0,0,0,0	monster	M.MI-0001	22546,45,5000,5000
+ch1zero4,0,0,0,0	monster	M.SR-0001	22547,65,5000,5000
+ch1zero4,0,0,0,0	monster	M.WL-0001	22548,45,5000,5000
+ch1zero4,0,0,0,0	monster	M.WA-0001	22549,65,5000,5000

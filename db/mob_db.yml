@@ -90,3 +90,4 @@ Footer:
     Mode: Renewal
   - Path: db/import/mob_db.yml
   - Path: db/import/biosphere_mob_db.yml
+  - Path: db/import/zero_cell_mob_db.yml

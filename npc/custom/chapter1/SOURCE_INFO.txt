@@ -1,0 +1,2 @@
+Source: https://github.com/hayakawakaki/rathena-script-collection
+Commit: 14b7573d3a77ff4b36c9d54d615360fa6929ab13

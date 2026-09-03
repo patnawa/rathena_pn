@@ -145,7 +145,9 @@ menu	"Prontera",T1, "Alberta",T2, "Aldebaran",T3, "Amatsu",T4, "Ayothaya",T5,
 		"Manuk",T26, "Midgarts Expedition Camp",T27, "Mora",T28, "Morocc",T29, "Moscovia",T30,
 		"Nameless Island (Day)",T31, "Nameless Island (Night)",T32, "Niflheim",T33, "Payon",T34, "Rachel",T35,
 		"Rockridge",T36, "Special Security Area, Cor",T37, "Splendide",T38, "Thor Camp",T39, "Umbala",T40,
-		"Varmundt's Mansion",T41, "Veins",T42, "Verus Findspot",T43, "Wolf Village",T44;
+		"Varmundt's Mansion",T41, "Veins",T42, "Verus Findspot",T43, "Wolf Village",T44,
+		"Ashwood Village",T45, "Fishing Village Alberta",T46, "Jornville",T47,
+		"Lunaforma Base",T48, "Scale Island",T49;
 
 T1: Go("prontera",155,183);
 T2: Go("alberta",28,234);
@@ -205,6 +207,16 @@ T43: Restrict("RE");
 	 Go("verus04",123,250);
 T44: Restrict("RE");
 	 Go("wolfvill",144,144);
+T45: Restrict("RE");
+	 Go("ygg_edge",255,240);
+T46: Restrict("RE");
+	 Go("jor_albe",191,182);
+T47: Restrict("RE");
+	 Go("jor_base",240,46);
+T48: Restrict("RE");
+	 Go("jor_mbase",313,106);
+T49: Restrict("RE");
+	 Go("jor_crk",137,137);
 
 // --------------------------------------------------
 	Fields:
@@ -332,7 +344,9 @@ menu	"Abandoned Lab Amicitia",D1, "Abyss Lakes",D2, "Amatsu Dungeon",D3,
 		"Rudus Dungeon",D43, "Scaraba Hole",D44, "Sphinx",D45,
 		"Sunken Ship",D46, "Thanatos Tower",D47, "Thor Volcano",D48,
 		"Toy Factory",D49, "Turtle Dungeon",D50, "Umbala Dungeon",D51,
-		"Varmundt's Dungeon",D52, "Verus Area",D53;
+		"Varmundt's Dungeon",D52, "Verus Area",D53,
+		"Episode 20 Areas",D54, "Episode 21 Areas",D55,
+		"Call of the World Tree",D56, "Chapter 1 / Zero Cell",D57;
 
 D1: Restrict("RE");
 	setarray @c[2],253,244,145,278;
@@ -414,8 +428,9 @@ D23: menu	"Illusion of Abyss",SubD1, "Illusion of Frozen",SubD2, "Illusion of La
 	SubD9: Restrict("RE");
 		   Go("gef_d01_i",114,216);
 D24: Restrict("RE");
-	 setarray @c[2],112,15,280,87,112,12,274,85;
-	 Disp("Abandoned Pit Floor 1:Abandoned Pit Floor 2:Snake God's Warmth 1st Floor:Snake God's Warmth 2nd Floor"); Pick("","jor_ab01","jor_ab02","jor_dun01","jor_dun02");
+	 setarray @c[2],112,15,280,87,112,12,274,85,58,48,62,255,162,86;
+	 Disp("Abandoned Pit Floor 1:Abandoned Pit Floor 2:Snake God's Warmth 1st Floor:Snake God's Warmth 2nd Floor:Inside the Snake's Nest:Snake's Nest:Sacred Root");
+	 Pick("","jor_ab01","jor_ab02","jor_dun01","jor_dun02","jor_dun03","jor_nest","jor_sanct");
 D25: Restrict("RE",5);
 	 setarray @c[2],140,51,53,247,37,63,150,285,146,215;
 	 Disp("Entrance:Juperos 1:Juperos 2:Core:Eastern Ruins of Juperos");
@@ -492,6 +507,49 @@ D52: Restrict("RE");
 D53: Restrict("RE");
 	 setarray @c[2],244,61,72,20,122,22;
 	 Disp("Lab-OPTATIO:R&D-WISH:Verus Center Square"); Pick("verus");
+D54: Restrict("RE");
+	 setarray @c[2],206,16,32,34,25,285,187,198;
+	 Disp("Snake's Maze:Snake God's Root Floor 1:Snake God's Root Floor 2:World Tree Twig");
+	 Pick("","jor_maze","jor_root1","jor_root2","jor_twig");
+D55: Restrict("RE");
+	 setarray @c[2],276,386,118,410,170,62,24,173,298,170,276,128;
+	 Disp("Northern Rising Land:Southern Rising Land:Gimleh Temple Floor 1:Gimleh Temple Floor 2:Jormungand Cult Temple Floor 1:Jormungand Cult Temple Floor 2");
+	 Pick("","jor_raise1","jor_raise2","jor_tmple1","jor_tmple2","jor_sklf1","jor_sklf2");
+D56: Restrict("RE");
+	 setarray @c[2],325,147,264,238,33,246,207,27,18,86,59,171,59,173,145,27,264,294;
+	 Disp("Twisted Land of Darkness:Distorted Brimir Floor 1:Distorted Brimir Floor 2:Destroyed Geffen Field:Destroyed Verus:Destroyed Valkyrie Realm:Devoured Geffenia East:Devoured Geffenia West:Dark Whisper");
+	 Pick("","ygg_roots","uknw_ruin","uknw_ruin2","hem_fild","hem_dun01","hem_dun02","ch1_gfn01","ch1_gfn03","ch1_dw");
+D57: Restrict("RE");
+	menu "Ash Tree Village",D57_1,
+		 "Twisted Land / Zero Cell Hub",D57_2,
+		 "Zero Cell Lux",D57_3,
+		 "Zero Cell Nox",D57_4,
+		 "Zero Cell Vita",D57_5,
+		 "Zero Cell Ark",D57_6;
+D57_1:
+	Go("ygg_edge",173,185);
+D57_2:
+	if (!callfunc("ZC_HasAccess")) {
+		message strcharinfo(0),"Complete Robin's Zero Cell investigation first.";
+		end;
+	}
+	Go("ch1fild1",106,84);
+D57_3:
+	if (!callfunc("ZC_CanEnter",1))
+		end;
+	Go("ch1zero1",99,100);
+D57_4:
+	if (!callfunc("ZC_CanEnter",1))
+		end;
+	Go("ch1zero2",99,100);
+D57_5:
+	if (!callfunc("ZC_CanEnter",2))
+		end;
+	Go("ch1zero3",99,100);
+D57_6:
+	if (!callfunc("ZC_CanEnter",2))
+		end;
+	Go("ch1zero4",99,100);
 
 // --------------------------------------------------
 	Castles:
@@ -610,7 +668,8 @@ I20: Restrict("RE");
 // --------------------------------------------------
 menu	"Auction Hall",S1, "Battlegrounds",S2, "Casino",S3, "Dimensional Rift",S4,
 		"Eden Group Headquarters",S5, "Kunlun Arena",S6, "Izlude Arena",S7, 
-		"Monster Race Arena",S8, "Para Market",S9, "Turbo Track",S10;
+		"Monster Race Arena",S8, "Para Market",S9, "Turbo Track",S10,
+		"Grade Workshop",S11;
 
 S1: Go("auction_01",22,68);
 S2: Go("bat_room",154,150);
@@ -625,6 +684,7 @@ S8: Go("p_track01",62,41);
 S9: Restrict("RE");
 	Go("paramk",97,17);
 S10: Go("turbo_room",99,114);
+S11: Go("grademk",34,184);
 
 OnNaviGenerate:
 

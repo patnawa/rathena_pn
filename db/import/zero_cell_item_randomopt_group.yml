@@ -1,0 +1,1842 @@
+Header:
+  Type: RANDOM_OPTION_GROUP
+  Version: 1
+
+Body:
+  - Id: 9101
+    Group: CH1_MELEE_1H
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 10
+            MaxValue: 20
+          - Option: VAR_ATTPOWER
+            MinValue: 15
+            MaxValue: 45
+          - Option: VAR_ATKPERCENT
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_PATKAMOUNT
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 2
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 3
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 3
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 3
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+  - Id: 9102
+    Group: CH1_MELEE_1H_CRIT
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 10
+            MaxValue: 20
+          - Option: VAR_ATTPOWER
+            MinValue: 15
+            MaxValue: 45
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 15
+            MaxValue: 35
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 5
+            MaxValue: 12
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 2
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 1
+            MaxValue: 5
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 3
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 1
+            MaxValue: 5
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+  - Id: 9103
+    Group: CH1_MELEE_2H
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 15
+            MaxValue: 25
+          - Option: VAR_ATTPOWER
+            MinValue: 20
+            MaxValue: 50
+          - Option: VAR_ATKPERCENT
+            MinValue: 5
+            MaxValue: 12
+          - Option: VAR_PATKAMOUNT
+            MinValue: 5
+            MaxValue: 12
+      - Slot: 2
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 4
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+      - Slot: 3
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 4
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+  - Id: 9104
+    Group: CH1_MELEE_2H_CRIT
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 15
+            MaxValue: 25
+          - Option: VAR_ATTPOWER
+            MinValue: 20
+            MaxValue: 50
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 25
+            MaxValue: 45
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 7
+            MaxValue: 15
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 5
+            MaxValue: 12
+      - Slot: 2
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 8
+            MaxValue: 18
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 3
+            MaxValue: 7
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+      - Slot: 3
+        Options:
+          - Option: MELEE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 8
+            MaxValue: 18
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 3
+            MaxValue: 7
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+  - Id: 9105
+    Group: CH1_RANGED_1H
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 10
+            MaxValue: 20
+          - Option: VAR_ATTPOWER
+            MinValue: 15
+            MaxValue: 45
+          - Option: VAR_ATKPERCENT
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_PATKAMOUNT
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 2
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 3
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 3
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 3
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+  - Id: 9106
+    Group: CH1_RANGED_1H_CRIT
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 10
+            MaxValue: 20
+          - Option: VAR_ATTPOWER
+            MinValue: 15
+            MaxValue: 45
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 15
+            MaxValue: 35
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 5
+            MaxValue: 12
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 2
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 1
+            MaxValue: 5
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 3
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 1
+            MaxValue: 5
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 3
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+  - Id: 9107
+    Group: CH1_RANGED_2H
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 15
+            MaxValue: 25
+          - Option: VAR_ATTPOWER
+            MinValue: 20
+            MaxValue: 50
+          - Option: VAR_ATKPERCENT
+            MinValue: 5
+            MaxValue: 12
+          - Option: VAR_PATKAMOUNT
+            MinValue: 5
+            MaxValue: 12
+      - Slot: 2
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 4
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+      - Slot: 3
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: VAR_ATKPERCENT
+            MinValue: 1
+            MaxValue: 4
+          - Option: VAR_PATKAMOUNT
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+  - Id: 9108
+    Group: CH1_RANGED_2H_CRIT
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 15
+            MaxValue: 25
+          - Option: VAR_ATTPOWER
+            MinValue: 20
+            MaxValue: 50
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 25
+            MaxValue: 45
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 7
+            MaxValue: 15
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 5
+            MaxValue: 12
+      - Slot: 2
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 8
+            MaxValue: 18
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 3
+            MaxValue: 7
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+      - Slot: 3
+        Options:
+          - Option: RANGE_ATTACK_DAMAGE_TARGET
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: DAMAGE_CRI_TARGET
+            MinValue: 8
+            MaxValue: 18
+          - Option: VAR_CRITICALSUCCESSVALUE
+            MinValue: 3
+            MaxValue: 7
+          - Option: VAR_CRITICAL_RATE
+            MinValue: 1
+            MaxValue: 4
+          - Option: DAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: DAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_DAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+  - Id: 9109
+    Group: CH1_MAGIC_1H
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: ADDSKILLMDAMAGE_NOTHING
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_WATER
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_GROUND
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_FIRE
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_WIND
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_POISON
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_SAINT
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_DARKNESS
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_TELEKINESIS
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_UNDEAD
+            MinValue: 15
+            MaxValue: 35
+          - Option: ADDSKILLMDAMAGE_ALL
+            MinValue: 5
+            MaxValue: 15
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_ATTMPOWER
+            MinValue: 15
+            MaxValue: 45
+          - Option: VAR_MAGICATKPERCENT
+            MinValue: 3
+            MaxValue: 10
+          - Option: VAR_SMATKAMOUNT
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 2
+        Options:
+          - Option: ADDSKILLMDAMAGE_NOTHING
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_WATER
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_GROUND
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_FIRE
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_WIND
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_POISON
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_SAINT
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_DARKNESS
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_TELEKINESIS
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_UNDEAD
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_ALL
+            MinValue: 2
+            MaxValue: 5
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 2
+            MaxValue: 5
+          - Option: VAR_ATTMPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_MAGICATKPERCENT
+            MinValue: 1
+            MaxValue: 3
+          - Option: VAR_SMATKAMOUNT
+            MinValue: 1
+            MaxValue: 3
+          - Option: MDAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_FIRE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+      - Slot: 3
+        Options:
+          - Option: ADDSKILLMDAMAGE_NOTHING
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_WATER
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_GROUND
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_FIRE
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_WIND
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_POISON
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_SAINT
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_DARKNESS
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_TELEKINESIS
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_UNDEAD
+            MinValue: 5
+            MaxValue: 15
+          - Option: ADDSKILLMDAMAGE_ALL
+            MinValue: 2
+            MaxValue: 5
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 2
+            MaxValue: 5
+          - Option: VAR_ATTMPOWER
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_MAGICATKPERCENT
+            MinValue: 1
+            MaxValue: 3
+          - Option: VAR_SMATKAMOUNT
+            MinValue: 1
+            MaxValue: 3
+          - Option: MDAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_FIRE_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: MDAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_NOTHING
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_UNDEAD
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_ANIMAL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_PLANT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_INSECT
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_FISHS
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_DEVIL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_HUMAN
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_ANGEL
+            MinValue: 3
+            MaxValue: 10
+          - Option: RACE_MDAMAGE_DRAGON
+            MinValue: 3
+            MaxValue: 10
+  - Id: 9110
+    Group: CH1_MAGIC_2H
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: ADDSKILLMDAMAGE_NOTHING
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_WATER
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_GROUND
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_FIRE
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_WIND
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_POISON
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_SAINT
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_DARKNESS
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_TELEKINESIS
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_UNDEAD
+            MinValue: 25
+            MaxValue: 45
+          - Option: ADDSKILLMDAMAGE_ALL
+            MinValue: 10
+            MaxValue: 20
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_ATTMPOWER
+            MinValue: 20
+            MaxValue: 50
+          - Option: VAR_MAGICATKPERCENT
+            MinValue: 5
+            MaxValue: 15
+          - Option: VAR_SMATKAMOUNT
+            MinValue: 5
+            MaxValue: 15
+      - Slot: 2
+        Options:
+          - Option: ADDSKILLMDAMAGE_NOTHING
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_WATER
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_GROUND
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_FIRE
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_WIND
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_POISON
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_SAINT
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_DARKNESS
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_TELEKINESIS
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_UNDEAD
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_ALL
+            MinValue: 3
+            MaxValue: 7
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 3
+            MaxValue: 7
+          - Option: VAR_ATTMPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: VAR_MAGICATKPERCENT
+            MinValue: 1
+            MaxValue: 5
+          - Option: VAR_SMATKAMOUNT
+            MinValue: 1
+            MaxValue: 5
+          - Option: MDAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_FIRE_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+      - Slot: 3
+        Options:
+          - Option: ADDSKILLMDAMAGE_NOTHING
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_WATER
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_GROUND
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_FIRE
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_WIND
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_POISON
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_SAINT
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_DARKNESS
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_TELEKINESIS
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_UNDEAD
+            MinValue: 7
+            MaxValue: 20
+          - Option: ADDSKILLMDAMAGE_ALL
+            MinValue: 3
+            MaxValue: 7
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 3
+            MaxValue: 7
+          - Option: VAR_ATTMPOWER
+            MinValue: 7
+            MaxValue: 20
+          - Option: VAR_MAGICATKPERCENT
+            MinValue: 1
+            MaxValue: 5
+          - Option: VAR_SMATKAMOUNT
+            MinValue: 1
+            MaxValue: 5
+          - Option: MDAMAGE_PROPERTY_NOTHING_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_WATER_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_GROUND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_FIRE_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_WIND_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_POISON_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_SAINT_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_DARKNESS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_TELEKINESIS_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: MDAMAGE_PROPERTY_UNDEAD_TARGET
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_NOTHING
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_UNDEAD
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_ANIMAL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_PLANT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_INSECT
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_FISHS
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_DEVIL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_HUMAN
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_ANGEL
+            MinValue: 4
+            MaxValue: 12
+          - Option: RACE_MDAMAGE_DRAGON
+            MinValue: 4
+            MaxValue: 12
+

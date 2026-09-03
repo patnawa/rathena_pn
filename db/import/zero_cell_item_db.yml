@@ -1,0 +1,44 @@
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 41251
+    AegisName: CH1_ZeroCell_Box_LV
+    Name: Zero Cell Weapon Box (Lux/Vita)
+    Type: Usable
+    Weight: 100
+    EquipLevelMin: 260
+    Flags:
+      BuyingStore: true
+      Container: true
+      DropEffect: CLIENT
+    Script: |
+      getgroupitem(IG_CH1_ZEROCELL_WEAPON_BOX_LV);
+  - Id: 41252
+    AegisName: CH1_ZeroCell_Box_NA
+    Name: Zero Cell Weapon Box (Nox/Arc)
+    Type: Usable
+    Weight: 100
+    EquipLevelMin: 260
+    Flags:
+      BuyingStore: true
+      Container: true
+      DropEffect: CLIENT
+    Script: |
+      getgroupitem(IG_CH1_ZEROCELL_WEAPON_BOX_NA);
+  - Id: 520054
+    AegisName: Encroached_Axe
+    Name: Encroached Axe
+    Type: Weapon
+    SubType: 1hAxe
+    Weight: 2900
+    Attack: 50
+    Range: 1
+    Slots: 3
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 260
+    Refineable: true
+

@@ -1,0 +1,147 @@
+Header:
+  Type: INSTANCE_DB
+  Version: 2
+Body:
+- Id: 147
+  Name: Gimli Infiltration
+  TimeLimit: 3600
+  Enter:
+    Map: 1@mdtem
+    X: 266
+    Y: 174
+  AdditionalMaps:
+    2@mdtem: true
+- Id: 148
+  Name: Mysterious Ghost Ship
+  TimeLimit: 3600
+  Enter:
+    Map: 1@wtgs
+    X: 86
+    Y: 306
+- Id: 149
+  Name: Final Battle
+  TimeLimit: 1800
+  Enter:
+    Map: 1@ep21b
+    X: 99
+    Y: 30
+- Id: 150
+  Name: Secret Altar
+  TimeLimit: 1800
+  Enter:
+    Map: 1@ep21a
+    X: 61
+    Y: 33
+- Id: 151
+  Name: Silent Sanctuary
+  TimeLimit: 1800
+  Enter:
+    Map: 1@twbs2
+    X: 96
+    Y: 66
+- Id: 151
+  Name: Final Battle(Normal)
+  TimeLimit: 3600
+  Enter:
+    Map: 1@ep21b
+    X: 73
+    Y: 70
+- Id: 152
+  Name: Final Battle(Hard)
+  TimeLimit: 3600
+  Enter:
+    Map: 1@ep21b
+    X: 73
+    Y: 70
+- Id: 120
+  Name: Ominous Dark Whisper
+  TimeLimit: 14400
+  IdleTimeOut: 300
+  Enter:
+    Map: 1@ch1a
+    X: 217
+    Y: 63
+- Id: 121
+  Name: Simulated Dark Whisper
+  TimeLimit: 14400
+  IdleTimeOut: 300
+  Enter:
+    Map: 1@ch1b
+    X: 86
+    Y: 146
+# BEGIN CODEX EPISODE 19 - EP19_Instance.yml
+- Id: 130
+  Name: Maze of Oz
+  TimeLimit: 7200
+  Enter:
+    Map: 1@oz
+    X: 284
+    Y: 167
+- Id: 132
+  Name: Gathering of Wolves
+  TimeLimit: 7200
+  Enter:
+    Map: 1@nyr
+    X: 194
+    Y: 30
+  AdditionalMaps:
+    2@nyr: true
+- Id: 133
+  Name: Pontifex Villa
+  TimeLimit: 7200
+  Enter:
+    Map: 1@adv
+    X: 123
+    Y: 17
+- Id: 135
+  Name: Villa of Deceit
+  TimeLimit: 7200
+  Enter:
+    Map: 1@adv
+    X: 111
+    Y: 19
+- Id: 136
+  Name: Villa of Deceit(Advance)
+  TimeLimit: 7200
+  Enter:
+    Map: 1@adv
+    X: 134
+    Y: 19
+- Id: 138
+  Name: Bagot's Laboratory
+  TimeLimit: 3600
+  Enter:
+    Map: 1@jorlab
+    X: 57
+    Y: 45
+- Id: 139
+  Name: Chaotic Snake Nest
+  TimeLimit: 3600
+  Enter:
+    Map: 1@jorchs
+    X: 272
+    Y: 20
+- Id: 140
+  Name: Airship Sabotage Operation
+  TimeLimit: 3600
+  Enter:
+    Map: 1@whl
+    X: 32
+    Y: 53
+# END CODEX EPISODE 19 - EP19_Instance.yml
+
+# Garden of Time: Lake of Fire and Hall of Life
+- Id: 201
+  Name: Lake of Fire
+  TimeLimit: 3600
+  Enter:
+    Map: 1@f_lake
+    X: 23
+    Y: 192
+- Id: 202
+  Name: Hall of Life
+  TimeLimit: 3600
+  Enter:
+    Map: 1@ba_go
+    X: 53
+    Y: 42

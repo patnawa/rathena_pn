@@ -1,0 +1,108 @@
+Header:
+  Type: ITEM_GROUP_DB
+  Version: 5
+
+Body:
+  - Group: CH1_ZEROCELL_WEAPON_BOX_LV
+    SubGroups:
+      - SubGroup: 1
+        Algorithm: Random
+        List:
+          - Index: 0
+            Item: Encroached_Book
+            Rate: 2
+            RandomOptionGroup: CH1_MAGIC_1H
+          - Index: 1
+            Item: Encroached_Bow
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_2H_CRIT
+          - Index: 2
+            Item: Encroached_Dagger
+            Rate: 1
+            RandomOptionGroup: CH1_MELEE_1H_CRIT
+          - Index: 3
+            Item: Encroached_Rifle
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_2H
+          - Index: 4
+            Item: Encroached_Humma
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_2H
+          - Index: 5
+            Item: Encroached_Katar
+            Rate: 2
+            RandomOptionGroup: CH1_MELEE_2H_CRIT
+          - Index: 6
+            Item: Encroached_Mace
+            Rate: 1
+            RandomOptionGroup: CH1_MELEE_1H
+          - Index: 7
+            Item: Encroached_Staff
+            Rate: 2
+            RandomOptionGroup: CH1_MAGIC_1H
+          - Index: 8
+            Item: Encroached_T_Axe
+            Rate: 2
+            RandomOptionGroup: CH1_MELEE_2H
+          - Index: 9
+            Item: Encroached_T_Spear
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_2H
+          - Index: 10
+            Item: Encroached_T_Staff
+            Rate: 2
+            RandomOptionGroup: CH1_MAGIC_2H
+          - Index: 11
+            Item: Encroached_T_Sword
+            Rate: 2
+            RandomOptionGroup: CH1_MELEE_2H_CRIT
+  - Group: CH1_ZEROCELL_WEAPON_BOX_NA
+    SubGroups:
+      - SubGroup: 1
+        Algorithm: Random
+        List:
+          - Index: 0
+            Item: Encroached_Axe
+            Rate: 2
+            RandomOptionGroup: CH1_MELEE_1H_CRIT
+          - Index: 1
+            Item: Encroached_Book
+            Rate: 2
+            RandomOptionGroup: CH1_MAGIC_1H
+          - Index: 2
+            Item: Encroached_Bow
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_2H_CRIT
+          - Index: 3
+            Item: Encroached_Dagger
+            Rate: 1
+            RandomOptionGroup: CH1_MELEE_1H_CRIT
+          - Index: 4
+            Item: Encroached_Foxtail
+            Rate: 2
+            RandomOptionGroup: CH1_MAGIC_1H
+          - Index: 5
+            Item: Encroached_Instrument
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_1H
+          - Index: 6
+            Item: Encroached_Knuckle
+            Rate: 2
+            RandomOptionGroup: CH1_MELEE_1H
+          - Index: 7
+            Item: Encroached_Mace
+            Rate: 1
+            RandomOptionGroup: CH1_MELEE_1H
+          - Index: 8
+            Item: Encroached_Spear
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_1H_CRIT
+          - Index: 9
+            Item: Encroached_Sword
+            Rate: 2
+            RandomOptionGroup: CH1_MELEE_1H_CRIT
+          - Index: 10
+            Item: Encroached_Whip
+            Rate: 2
+            RandomOptionGroup: CH1_RANGED_1H
+

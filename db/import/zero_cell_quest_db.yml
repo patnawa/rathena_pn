@@ -1,0 +1,75 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 27089
+    Title: Zero Cell Investigation - Robin
+  - Id: 27090
+    Title: Zero Cell Investigation - Find Robin
+  - Id: 27091
+    Title: Zero Cell Investigation - Examine the Trace
+  - Id: 27092
+    Title: Zero Cell Investigation - Report to Robin
+  - Id: 27093
+    Title: Zero Cell Investigation - Newt's Authorization
+  - Id: 27094
+    Title: Clean Up Zero Cell Lux
+    Targets:
+      - Id: 1
+        Count: 300
+        Location: ch1zero1
+        MapMobTargets:
+          CH1_RK: true
+          CH1_MC_M: true
+          CH1_SC: true
+          CH1_RA: true
+          CH1_SO: true
+          CH1_AB: true
+          CH1_MI_D: true
+          CH1_GC_D: true
+  - Id: 27096
+    Title: Clean Up Zero Cell Nox
+    Targets:
+      - Id: 1
+        Count: 300
+        Location: ch1zero2
+        MapMobTargets:
+          CH1_RG: true
+          CH1_MC: true
+          CH1_GN: true
+          CH1_GC: true
+          CH1_MI: true
+          CH1_SR: true
+          CH1_WL: true
+          CH1_WA: true
+  - Id: 27098
+    Title: Clean Up Zero Cell Vita
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: ch1zero3
+        MapMobTargets:
+          CH1_RK_1: true
+          CH1_MC_M_1: true
+          CH1_SC_1: true
+          CH1_RA_1: true
+          CH1_SO_1: true
+          CH1_AB_1: true
+          CH1_MI_D_1: true
+          CH1_GC_D_1: true
+  - Id: 27100
+    Title: Clean Up Zero Cell Ark
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: ch1zero4
+        MapMobTargets:
+          CH1_RG_1: true
+          CH1_MC_1: true
+          CH1_GN_1: true
+          CH1_GC_1: true
+          CH1_MI_1: true
+          CH1_SR_1: true
+          CH1_WL_1: true
+          CH1_WA_1: true

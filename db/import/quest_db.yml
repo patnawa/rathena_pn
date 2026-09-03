@@ -1,0 +1,1642 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+Body:
+- Id: 8882
+  Title: Ivan Wigner's Joyful Missionary Life
+- Id: 8883
+  Title: Lehar's Fulfilling Relief Efforts (1)
+- Id: 8884
+  Title: Lehar's Fulfilling Relief Efforts (2)
+- Id: 8885
+  Title: The Cause of the Family's Ruin!
+- Id: 8886
+  Title: Lehar's Fulfilling Relief Efforts (3)
+- Id: 8887
+  Title: Ghostship Witness (1)
+- Id: 8888
+  Title: Ghostship Witness (2)
+- Id: 8889
+  Title: Ivan's Plan
+- Id: 8890
+  Title: Errand for Ivan
+- Id: 8891
+  Title: Ivan's Regret
+- Id: 8892
+  Title: Ownerless Weapon
+- Id: 8893
+  Title: Cult Infiltration
+- Id: 8894
+  Title: The Receiver of the Letter
+- Id: 12646
+  Title: Final Battle - Wait
+  TimeLimit: 4h
+- Id: 12647
+  Title: Memory Repetition - Wait
+  TimeLimit: 4h
+- Id: 12648
+  Title: Memory Chaos - Wait
+  TimeLimit: 3d 4h
+- Id: 12649
+  Title: Final Battle(Easy)
+- Id: 12650
+  Title: Final Battle(Normal)
+- Id: 12651
+  Title: Final Battle(Hard)
+- Id: 12652
+  Title: Final Battle
+- Id: 12653
+  Title: Final Battle
+- Id: 12654
+  Title: Final Battle
+- Id: 12655
+  Title: Final Battle
+- Id: 12656
+  Title: Final Battle
+- Id: 16802
+  Title: Small Cargo Transportation
+- Id: 16803
+  Title: Small Cargo Transportation
+- Id: 16804
+  Title: Small Cargo Transportation
+- Id: 16805
+  Title: Trivial Task Refusal
+- Id: 16806
+  Title: Thorough Port Cleaning
+- Id: 16807
+  Title: Thorough Port Cleaning
+- Id: 16808
+  Title: Thorough Port Cleaning
+- Id: 16809
+  Title: Thorough Port Cleaning
+- Id: 16810
+  Title: Thorough Port Cleaning
+- Id: 16811
+  Title: Walter Officer Visit
+- Id: 16812
+  Title: Unexpected Letter Delivery
+- Id: 16813
+  Title: Unexpected Letter Delivery
+- Id: 16814
+  Title: Unexpected Letter Delivery
+- Id: 16815
+  Title: News From Lunaforma
+- Id: 16816
+  Title: Mysterious Ghost Ship
+- Id: 16817
+  Title: Ghost Ship Identity
+- Id: 16818
+  Title: Return to Lunaforma
+- Id: 16819
+  Title: Message from a Wizard
+- Id: 16820
+  Title: Diligent Worker of Alberta
+- Id: 16821
+  Title: Remaining Questions
+- Id: 16822
+  Title: Remaining Questions
+- Id: 16823
+  Title: Old Walter Memory Fragments -Wait-
+  TimeLimit: 4h
+- Id: 16824
+  Title: Old Walter Memory Fragments
+- Id: 16825
+  Title: Remaining Questions
+- Id: 16826
+  Title: Old Walter Memory Fragments
+- Id: 17752
+  Title: Cult Infiltration
+- Id: 17753
+  Title: Cult Infiltration
+- Id: 17754
+  Title: Cult Infiltration
+- Id: 17755
+  Title: Cult Infiltration
+- Id: 17756
+  Title: Cult Infiltration
+- Id: 17757
+  Title: Cult Infiltration
+- Id: 17758
+  Title: Recruiting Talent for Success
+- Id: 17759
+  Title: Recruiting Talent for Success
+- Id: 17760
+  Title: Recruiting Talent for Success
+- Id: 17761
+  Title: 2nd Floor Cult Infiltration
+- Id: 17762
+  Title: 2nd Floor Cult Infiltration
+- Id: 17763
+  Title: 2nd Floor Cult Infiltration
+- Id: 17764
+  Title: 2nd Floor Cult Infiltration
+- Id: 17765
+  Title: 2nd Floor Cult Infiltration
+- Id: 17766
+  Title: 2nd Floor Cult Infiltration
+- Id: 17767
+  Title: 2nd Floor Cult Infiltration
+- Id: 17768
+  Title: 2nd Floor Cult Infiltration
+- Id: 17769
+  Title: Ghost Ship Report
+- Id: 17770
+  Title: Lugenburg Brothers
+- Id: 17771
+  Title: Lugenburg Brothers
+- Id: 17772
+  Title: Lugenburg Brothers
+- Id: 17773
+  Title: Lugenburg Brothers
+- Id: 17774
+  Title: Lugenburg Brothers
+- Id: 17775
+  Title: Lugenburg Brothers
+- Id: 17776
+  Title: Lugenburg Brothers
+- Id: 17777
+  Title: Safe Escape Route 1
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: jor_raise2
+    MapName: Northern Raised Land
+- Id: 17778
+  Title: Safe Escape Route 2
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: jor_raise1
+    MapName: Southern Raised Land
+- Id: 17779
+  Title: 'Wait: Safe Escape Route 1'
+  TimeLimit: 4h
+- Id: 17780
+  Title: 'Wait: Safe Escape Route 2'
+  TimeLimit: 4h
+- Id: 17781
+  Title: Supply Procurement
+- Id: 17782
+  Title: Gaebolg Supply Request
+- Id: 17783
+  Title: Nerius Supply Request
+- Id: 17784
+  Title: Nerius Supply Request
+- Id: 17785
+  Title: Heine Supply Request
+- Id: 17786
+  Title: Lugenburg Supply Request
+- Id: 17787
+  Title: Walter Supply Request
+- Id: 17788
+  Title: Richard Supply Request
+- Id: 17789
+  Title: 'Wait: Supply Procurement'
+  TimeLimit: 4h
+- Id: 17790
+  Title: Supply Procurement
+- Id: 18334
+  Title: Detected Rift on the North
+- Id: 18335
+  Title: Rift on Scale Island
+- Id: 18336
+  Title: First Meeting
+- Id: 18337
+  Title: Lunaforma
+- Id: 18338
+  Title: Gathering Eyewitness
+- Id: 18339
+  Title: Eyewitness 1
+- Id: 18340
+  Title: Eyewitness 2
+- Id: 18341
+  Title: Eyewitness 3
+- Id: 18342
+  Title: Gathering Eyewitness Complete!
+- Id: 18343
+  Title: Find Tan and Nadoyo
+- Id: 18344
+  Title: Suspicion Location in the Temple
+- Id: 18345
+  Title: Serpent's Lair?
+- Id: 18346
+  Title: Excluded from the Final Battle
+- Id: 18347
+  Title: I can't miss it!
+- Id: 18348
+  Title: Join the Final Battle
+- Id: 18349
+  Title: Cat Led Adventures
+- Id: 18350
+  Title: Suspicious Book of Gimli
+- Id: 18351
+  Title: Shining Door
+- Id: 18352
+  Title: Finally, A Real Mission!
+- Id: 18353
+  Title: Successfully Blocked the Source
+- Id: 18354
+  Title: Heine's Gift
+- Id: 18355
+  Title: Return to Scale Island
+- Id: 18356
+  Title: Time to Confirm Casualty
+- Id: 18357
+  Title: Settling the Curse
+  TimeLimit: +10mn
+- Id: 18358
+  Title: Lasgand?
+- Id: 18359
+  Title: Butterfly Effect
+- Id: 18360
+  Title: End of the Heroes Era
+- Id: 18361
+  Title: Nyar's Primal Pouch
+- Id: 19184
+  Title: Meeting with Counselor Wool
+- Id: 19185
+  Title: -Wait- People Tormented by Nightmares
+  TimeLimit: 4h
+- Id: 19186
+  Title: Counseling Request
+- Id: 19187
+  Title: Counseling Request
+- Id: 19188
+  Title: Counseling Request
+- Id: 19189
+  Title: Counseling Request
+- Id: 19190
+  Title: Counseling Completed
+- Id: 19191
+  Title: Meeting with Yuctor Pupu
+- Id: 19192
+  Title: Meeting with Totoro Amber
+- Id: 19193
+  Title: Meeting with George Sansha
+- Id: 19194
+  Title: Meeting with Fiery Shield
+- Id: 19195
+  Title: Libra
+- Id: 19196
+  Title: Message Delivered by Scent
+- Id: 19197
+  Title: -Wait- Message Delivered by Scent
+  TimeLimit: 4h
+- Id: 19198
+  Title: Vallen Wok
+- Id: 19199
+  Title: -Wait- Gather Insufficient Food
+  TimeLimit: 4h
+- Id: 19200
+  Title: Food Procurement(Fishing)
+- Id: 19201
+  Title: Food Procurement(Herb Gathering)
+- Id: 19202
+  Title: Food Procurement(Natural Seasoning)
+- Id: 19203
+  Title: Food Procurement(Natural Seasoning)
+- Id: 23240
+  Title: Gaebolg Resistance
+- Id: 23241
+  Title: Gaebolg Resistance
+- Id: 23242
+  Title: Gaebolg Resistance
+- Id: 23243
+  Title: Gaebolg Resistance
+- Id: 23244
+  Title: Calculating Profit and Loss
+- Id: 23245
+  Title: Calculating Profit and Loss
+- Id: 23246
+  Title: Calculating Profit and Loss
+- Id: 23247
+  Title: Calculating Profit and Loss
+  Targets:
+  - Mob: EP21_SKIPSKIPPER
+    Count: 10
+- Id: 23248
+  Title: Calculating Profit and Loss
+- Id: 23249
+  Title: Black-Haired Beast
+- Id: 23250
+  Title: Black-Haired Beast
+- Id: 23251
+  Title: Black-Haired Beast
+- Id: 23252
+  Title: Black-Haired Beast
+- Id: 23253
+  Title: Black-Haired Beast
+- Id: 23254
+  Title: Black-Haired Beast
+- Id: 23255
+  Title: Black-Haired Beast
+- Id: 23256
+  Title: Overlooked Efforts
+- Id: 23257
+  Title: Overlooked Efforts -Wait-
+  TimeLimit: 4h
+- Id: 24000
+  Title: Richard Mercenaries
+- Id: 24001
+  Title: Richard Mercenaries
+- Id: 24002
+  Title: Richard Mercenaries
+- Id: 24003
+  Title: Richard Mercenaries
+- Id: 24004
+  Title: Richard Mercenaries
+- Id: 24005
+  Title: Richard Mercenaries
+- Id: 24006
+  Title: Richard Mercenaries
+- Id: 24007
+  Title: Richard Mercenaries
+- Id: 24008
+  Title: Richard Mercenaries
+- Id: 24009
+  Title: Richard Mercenaries
+- Id: 24010
+  Title: Richard Mercenaries
+- Id: 24011
+  Title: Richard Mercenaries
+- Id: 24012
+  Title: Richard Mercenaries
+- Id: 24013
+  Title: Richard Mercenaries
+- Id: 24014
+  Title: Richard Mercenaries
+- Id: 24015
+  Title: Richard Mercenaries
+- Id: 24016
+  Title: Richard Mercenaries
+- Id: 24017
+  Title: Richard Mercenaries
+- Id: 24018
+  Title: Richard Mercenaries
+- Id: 24019
+  Title: We're the Mercenaries, but...
+- Id: 24020
+  Title: We're the Mercenaries, but...
+- Id: 24021
+  Title: We're the Mercenaries, but...
+- Id: 24022
+  Title: We're the Mercenaries, but...
+- Id: 24023
+  Title: We're the Mercenaries, but...
+- Id: 24024
+  Title: Any Kind of Help!
+- Id: 24025
+  Title: Any Kind of Help!
+- Id: 24026
+  Title: Any Kind of Help!
+- Id: 24027
+  Title: Any Kind of Help!
+- Id: 24028
+  Title: Any Kind of Help!
+- Id: 24029
+  Title: Any Kind of Help!
+- Id: 24030
+  Title: Any Kind of Help!-Wait-
+  TimeLimit: 4h
+- Id: 24031
+  Title: Fresh Food!
+- Id: 24032
+  Title: Fresh Food!-Wait-
+  TimeLimit: 4h
+- Id: 24033
+  Title: Clamshell for Injuries!
+  Targets:
+  - Mob: EP21_SCALLEG
+    Count: 50
+- Id: 24034
+  Title: Clamshell for Injuries!-Wait-
+  TimeLimit: 4h
+- Id: 24035
+  Title: For the Children.
+  Targets:
+  - Mob: EP21_VELELLING
+    Count: 50
+- Id: 24036
+  Title: For the Children.-Wait-
+  TimeLimit: 4h
+- Id: 24037
+  Title: Clean Finish(1)
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: jor_tmple1
+    MapName: Jormungandr Temple Gimli 1st Floor
+- Id: 24038
+  Title: Clean Finish(1)-Wait-
+  TimeLimit: 4h
+- Id: 24039
+  Title: Clean Finish(2)
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: jor_tmple2
+    MapName: Jormungandr Temple Gimli 2nd Floor
+- Id: 24040
+  Title: Clean Finish(2)-Wait-
+  TimeLimit: 4h
+- Id: 8914
+  Title: Unexpected Request
+- Id: 8915
+  Title: Nazar's Eye
+- Id: 8916
+  Title: A Place to Return
+- Id: 24041
+  Title: Call from the mercenaries!
+- Id: 24042
+  Title: Distract Members in Yorscalp's 1st Floor(Daily)
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: jor_sklf1
+    MapName: Yorscalp 1st Floor
+- Id: 24043
+  Title: Distract Members in Yorscalp's 1st Floor(Daily) -Wait-
+  TimeLimit: 4h
+- Id: 24044
+  Title: Distract Members in Yorscalp's 1st Floor(Weekly)
+  Targets:
+  - Id: 1
+    Count: 1500
+    Location: jor_sklf1
+    MapName: Yorscalp 1st Floor
+- Id: 24045
+  Title: Distract Members in Yorscalp's 1st Floor(Weekly) -Wait-
+  TimeLimit: Friday 4h
+- Id: 24046
+  Title: Distract Members in Yorscalp's 2nd Floor(Daily)
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: jor_sklf2
+    MapName: Yorscalp 2nd Floor
+- Id: 24047
+  Title: Distract Members in Yorscalp's 2nd Floor(Daily) -Wait-
+  TimeLimit: 4h
+- Id: 24048
+  Title: Distract Members in Yorscalp's 1st Floor(Weekly)
+  Targets:
+  - Id: 1
+    Count: 1500
+    Location: jor_sklf2
+    MapName: Yorscalp 2nd Floor
+- Id: 24049
+  Title: Distract Members in Yorscalp's 2nd Floor(Weekly) -Wait-
+  TimeLimit: Friday 4h
+- Id: 8955
+  Title: To Brimir
+- Id: 8956
+  Title: The Gray Valkyrie
+- Id: 8957
+  Title: Land Without Divinity
+- Id: 8958
+  Title: Remaining Valkyries
+- Id: 8959
+  Title: Brimir Exploration
+- Id: 8960
+  Title: Meaning of God's Love
+- Id: 8961
+  Title: Severed World
+- Id: 8962
+  Title: Flow of Time
+- Id: 8963
+  Title: To The Plaza
+- Id: 8964
+  Title: What They Want
+  Targets:
+  - Mob: CH1_SHADOW_JAILER
+    Count: 10
+  Drops:
+  - Mob: CH1_SHADOW_JAILER
+    Item: Ch1_Broken_Petal
+    Rate: 5000
+- Id: 8965
+  Title: Before The Flower Blooms (1)
+- Id: 8966
+  Title: Before The Flower Blooms (2)
+- Id: 8967
+  Title: Before The Flower Blooms (3)
+- Id: 8968
+  Title: Colorful Flowers
+- Id: 8969
+  Title: Return to Ashridge
+- Id: 8970
+  Title: Formal Grave
+  Targets:
+  - Mob: CH1_TULIP
+    Count: 50
+  - Mob: CH1_CALENDULA
+    Count: 50
+- Id: 8971
+  Title: Formal Grave - Wait
+  TimeLimit: 4h
+- Id: 8972
+  Title: Formal Grave
+  Targets:
+  - Mob: CH1_TULIP
+    Count: 50
+  - Mob: CH1_CALENDULA
+    Count: 50
+- Id: 8973
+  Title: Cat in a Separate Dimension
+  Targets:
+  - Mob: CH1_NYAISE
+    Count: 20
+- Id: 8974
+  Title: Cat in a Separate Dimension - Wait
+  TimeLimit: 4h
+- Id: 8975
+  Title: Cat in a Separate Dimension
+  Targets:
+  - Mob: CH1_NYAISE
+    Count: 20
+- Id: 8976
+  Title: Remove Them Too
+  Targets:
+  - Mob: CH1_SHADOW_JAILER
+    Count: 10
+- Id: 8977
+  Title: Remove Them Too - Wait
+  TimeLimit: 4h
+- Id: 8978
+  Title: Remove Them Too
+  Targets:
+  - Mob: CH1_SHADOW_JAILER
+    Count: 10
+- Id: 8979
+  Title: Alice's Ears
+- Id: 12660
+  Title: Summoned By The Magic Professor
+- Id: 12661
+  Title: Dark Whisper Simulation - Wait
+  TimeLimit: 3d 4h
+- Id: 12662
+  Title: Finding a Clue
+  Targets:
+  - Mob: CH1_MD_HEMEL
+    Count: 1
+- Id: 12663
+  Title: Destroying the Sky Fortress
+- Id: 12664
+  Title: Battle With The Dark Whisper
+- Id: 12665
+  Title: Return to The Village
+- Id: 12666
+  Title: Disgusting Place's Infiltration
+- Id: 16912
+  Title: Clinic Patients Examination
+- Id: 16913
+  Title: Clinic Patients Examination
+- Id: 16914
+  Title: Clinic Patients Examination
+- Id: 16915
+  Title: Clinic Patients Examination
+- Id: 16916
+  Title: Clinic Patients Examination
+- Id: 16917
+  Title: Soren Syndrome Information
+- Id: 16918
+  Title: Warm Towel
+- Id: 16919
+  Title: Warm Towel
+- Id: 16920
+  Title: Request for Extra Rations
+- Id: 16921
+  Title: Extra Rations
+- Id: 16922
+  Title: Reporting Patients Symptoms
+- Id: 16923
+  Title: Sweet Food in a Dream
+- Id: 16924
+  Title: Sweet Food in Reality
+- Id: 16925
+  Title: Visiting the Acolyte's Clinic
+- Id: 16926
+  Title: Visiting the Wizard's Clinic
+- Id: 16927
+  Title: Research Clue
+- Id: 16928
+  Title: Collecting Patient's Blood
+- Id: 16929
+  Title: Collecting Non-Infected Blood
+- Id: 16930
+  Title: Collecting Recovered Patient's Blood
+- Id: 16931
+  Title: Delivering Patient's Blood
+- Id: 16932
+  Title: Delivering Non-Infected Blood
+- Id: 16933
+  Title: Delivering Recovered Patient's Blood
+- Id: 16934
+  Title: Research's Conclusion
+- Id: 16935
+  Title: Collecting Patient's Blood
+- Id: 16936
+  Title: What Dr.Neumann Doesn't Know
+- Id: 16937
+  Title: What Dr.Neumann is Hiding
+- Id: 16938
+  Title: Something that Dr.Neumann is Hiding
+- Id: 16939
+  Title: To The Clinic
+- Id: 16940
+  Title: The Locked Door, Opened
+- Id: 16941
+  Title: Art of Eavesdropping
+- Id: 16942
+  Title: Urgent Rescue
+- Id: 16943
+  Title: Urgent Rescue
+- Id: 16944
+  Title: Urgent Rescue
+- Id: 16945
+  Title: Urgent Rescue
+- Id: 16946
+  Title: Disturbing Traces
+- Id: 16947
+  Title: Ominous Traces
+- Id: 16948
+  Title: Unsettling Traces
+- Id: 16949
+  Title: What's at the Traces' End
+- Id: 16950
+  Title: Searching for a Better Solution
+- Id: 16951
+  Title: To Ashridge
+- Id: 17891
+  Title: Parallel World Geffen
+- Id: 17892
+  Title: Parallel World Geffen
+- Id: 17893
+  Title: Parallel World Geffen
+- Id: 17894
+  Title: Parallel World Geffen
+- Id: 17895
+  Title: Parallel World Geffen
+- Id: 17896
+  Title: Parallel World Geffen
+- Id: 17897
+  Title: Parallel World Geffen
+- Id: 17898
+  Title: Parallel World Geffen
+- Id: 17899
+  Title: Between Civilization and Barbarism
+- Id: 17900
+  Title: Between Civilization and Barbarism
+- Id: 17901
+  Title: Between Civilization and Barbarism
+- Id: 17902
+  Title: Between Civilization and Barbarism
+- Id: 17903
+  Title: Between Civilization and Barbarism
+- Id: 17904
+  Title: Between Civilization and Barbarism
+- Id: 17905
+  Title: Between Civilization and Barbarism
+- Id: 17906
+  Title: Between Civilization and Barbarism
+- Id: 17907
+  Title: Between Civilization and Barbarism
+- Id: 17908
+  Title: Between Civilization and Barbarism
+- Id: 17909
+  Title: Sky Fortress' Dark Whisper
+- Id: 17910
+  Title: Sky Fortress' Dark Whisper
+- Id: 17911
+  Title: Sky Fortress' Dark Whisper
+- Id: 17912
+  Title: Sky Fortress' Dark Whisper
+- Id: 17913
+  Title: Sky Fortress' Dark Whisper
+- Id: 17914
+  Title: Sky Fortress' Dark Whisper
+- Id: 17915
+  Title: Sky Fortress' Dark Whisper
+- Id: 17916
+  Title: Sky Fortress' Dark Whisper
+- Id: 17917
+  Title: Sky Fortress' Dark Whisper
+- Id: 17918
+  Title: Sky Fortress' Dark Whisper
+- Id: 17919
+  Title: Plague's Essence
+- Id: 17920
+  Title: Plague's Identity
+- Id: 17921
+  Title: Plague's Identity
+- Id: 17922
+  Title: Clover's Dillema
+- Id: 17923
+  Title: Clover's Dillema
+- Id: 17924
+  Title: Clover's Dillema
+- Id: 17925
+  Title: Clover's Dillema
+- Id: 17926
+  Title: Divine's Prescription
+- Id: 17927
+  Title: Divine's Prescription
+- Id: 17928
+  Title: Divine's Prescription
+- Id: 17929
+  Title: Divine's Prescription
+- Id: 17930
+  Title: Divine's Prescription
+- Id: 17931
+  Title: Divine's Prescription
+- Id: 17932
+  Title: Divine's Prescription - Wait
+  TimeLimit: 4h
+- Id: 17933
+  Title: Saving Lives Comes First
+  Targets:
+  - Id: 1
+    Count: 300
+    Location: hem_dun01
+    MapName: Ruined Verus
+- Id: 17934
+  Title: Saving Lives Comes First - Wait
+  TimeLimit: 4h
+- Id: 18368
+  Title: Call of The World Tree (1)
+- Id: 18369
+  Title: Call of The World Tree (2)
+- Id: 18370
+  Title: Call of The World Tree (3)
+- Id: 18371
+  Title: Twisted Land of Darkness
+- Id: 18372
+  Title: To Fallen Geffen
+- Id: 18373
+  Title: Fire Resistance Material
+- Id: 18374
+  Title: Bad News
+- Id: 18375
+  Title: Good News
+- Id: 18376
+  Title: Land of Fire
+- Id: 18377
+  Title: Mysterious Being
+- Id: 18378
+  Title: To Ashridge
+- Id: 18379
+  Title: Hazy Gate
+- Id: 19225
+  Title: Fantasy Series Exploration
+- Id: 19226
+  Title: Completed Fantasy Series Exploration
+- Id: 19227
+  Title: Matthias Ziegler
+- Id: 19228
+  Title: We Met Again.
+- Id: 19229
+  Title: We Met Once Again.
+- Id: 19230
+  Title: Explore? Observe?
+- Id: 19231
+  Title: Bed
+- Id: 19232
+  Title: Water Container
+- Id: 19233
+  Title: Clock
+- Id: 19234
+  Title: Gap
+- Id: 19235
+  Title: Wardrobe
+- Id: 19236
+  Title: Barrel
+- Id: 19237
+  Title: Shelf
+- Id: 19238
+  Title: See You Outside.
+- Id: 19239
+  Title: Farewell Without Promise
+- Id: 19240
+  Title: Unwanted Witness
+- Id: 23271
+  Title: Truth About The Doctor
+- Id: 23272
+  Title: What Kind of Person is The Doctor? 1
+- Id: 23273
+  Title: What Kind of Person is The Doctor? 2
+- Id: 23274
+  Title: What Kind of Person is The Doctor? 3
+- Id: 23275
+  Title: Truth About The Doctor
+- Id: 23276
+  Title: The Epidemic, Doctor, and Nurse
+- Id: 23277
+  Title: The Epidemic, Doctor, and Nurse
+- Id: 23278
+  Title: The Epidemic, Doctor, and Nurse
+- Id: 23279
+  Title: The Epidemic, Doctor, and Nurse
+- Id: 23280
+  Title: The Doctor and Nurse's Story
+- Id: 23281
+  Title: The Doctor and Nurse's Story
+- Id: 23282
+  Title: The Doctor and Nurse's Story
+- Id: 23283
+  Title: The Doctor and Nurse's Story
+- Id: 23284
+  Title: The Doctor and Nurse's Story
+- Id: 23285
+  Title: Cure Creation's Hope
+- Id: 23286
+  Title: Cure Creation's Hope
+- Id: 23287
+  Title: Cure Creation's Hope
+- Id: 23288
+  Title: Cure Creation's Hope
+- Id: 23289
+  Title: Cure Creation
+- Id: 23290
+  Title: Cure Creation
+- Id: 23291
+  Title: Cure Creation
+- Id: 23292
+  Title: Cure Creation
+- Id: 23293
+  Title: Cure Creation
+- Id: 23294
+  Title: Cure Creation
+- Id: 23295
+  Title: Distribution of the Cure 1
+- Id: 23296
+  Title: Distribution of the Cure 2
+- Id: 23297
+  Title: Distribution of the Cure 3
+- Id: 23298
+  Title: Cure Creation
+- Id: 23299
+  Title: Cure Creation
+- Id: 24069
+  Title: Regeneration
+- Id: 24070
+  Title: Regeneration
+- Id: 24071
+  Title: Regeneration
+- Id: 24072
+  Title: Regeneration
+- Id: 24073
+  Title: Regeneration
+- Id: 24074
+  Title: Regeneration
+- Id: 24075
+  Title: Regeneration
+- Id: 24076
+  Title: Regeneration
+- Id: 24077
+  Title: Regeneration
+- Id: 24078
+  Title: Regeneration
+- Id: 24079
+  Title: Regeneration
+- Id: 24080
+  Title: Regeneration
+- Id: 24081
+  Title: Regeneration
+- Id: 24082
+  Title: Regeneration
+- Id: 24083
+  Title: Regeneration
+- Id: 24084
+  Title: Regeneration
+- Id: 24085
+  Title: Regeneration
+- Id: 24086
+  Title: Cool Headed and Warm Feet
+- Id: 24087
+  Title: Cool Headed and Warm Feet
+- Id: 24088
+  Title: Cool Headed and Warm Feet
+- Id: 24089
+  Title: Cool Headed and Warm Feet
+- Id: 24090
+  Title: Cool Headed and Warm Feet
+- Id: 24091
+  Title: Cool Headed and Warm Feet
+- Id: 24092
+  Title: Cool Headed and Warm Feet
+- Id: 24093
+  Title: Cool Headed and Warm Feet
+- Id: 24094
+  Title: Cool Headed and Warm Feet
+- Id: 24095
+  Title: Cool Headed and Warm Feet
+- Id: 24096
+  Title: Cool Headed and Warm Feet
+- Id: 24097
+  Title: Cool Headed and Warm Feet
+- Id: 24098
+  Title: Cool Headed and Warm Feet
+- Id: 24099
+  Title: Cool Headed and Warm Feet
+- Id: 24100
+  Title: Twisted Land of Darkness
+- Id: 24101
+  Title: Twisted Land of Darkness
+- Id: 24102
+  Title: Twisted Land of Darkness
+- Id: 24103
+  Title: Twisted Land of Darkness
+- Id: 24104
+  Title: Help Us! Doctor!
+- Id: 24105
+  Title: Help Us! Doctor!
+- Id: 24106
+  Title: Help Us! Doctor! - Wait
+  TimeLimit: 4h
+- Id: 24107
+  Title: Something To Do
+- Id: 24108
+  Title: Something To Do
+- Id: 24109
+  Title: Something To Do
+- Id: 24110
+  Title: Hal Gathering
+- Id: 24111
+  Title: Hal Gathering - Wait
+  TimeLimit: 4h
+- Id: 24112
+  Title: Is it edible??
+  Targets:
+  - Mob: CH1_VOLIMPET
+    Count: 20
+- Id: 24113
+  Title: Is it edible?? - Wait
+  TimeLimit: 4h
+- Id: 24114
+  Title: Is this important?
+  Targets:
+  - Mob: CH1_FIRAFFLESIA
+    Count: 20
+- Id: 24115
+  Title: Is this important? - Wait
+  TimeLimit: 4h
+- Id: 24116
+  Title: Tricked by a bug!!!
+  Targets:
+  - Mob: CH1_FIRELOOP
+    Count: 20
+- Id: 24117
+  Title: Tricked by a bug!!! - Wait
+  TimeLimit: 4h
+# BEGIN CODEX EPISODE 19 - EP19_Quest.yml
+- Id: 5972
+  Title: Eagle Patrol
+- Id: 5973
+  Title: Eagle Patrol - Wait
+  TimeLimit: 4h
+- Id: 5974
+  Title: Patrol with Iwin(1)
+- Id: 5975
+  Title: Patrol with Iwin(2)
+- Id: 5976
+  Title: Supplier Goril
+- Id: 5977
+  Title: Do Not Feed - Wait
+  TimeLimit: 4h
+- Id: 5978
+  Title: Do Not Feed(1)
+- Id: 5979
+  Title: Do Not Feed(2)
+- Id: 5980
+  Title: Secret Interest
+- Id: 5981
+  Title: Secret Interest - Wait
+  TimeLimit: 4h
+- Id: 5982
+  Title: Secret Interest
+- Id: 5983
+  Title: Experiment 210426 Encounter
+- Id: 5984
+  Title: Rgan Transformation Scroll
+- Id: 5985
+  Title: Lunch's Menu Selection - Wait
+  TimeLimit: 4h
+- Id: 5986
+  Title: Lunch's Menu Selection
+- Id: 5987
+  Title: Lunch's Menu Selection
+- Id: 5988
+  Title: Lunch's Menu Selection
+- Id: 5989
+  Title: Lunch's Menu Selection
+- Id: 5990
+  Title: Lunch's Menu Selection
+- Id: 5991
+  Title: Lunch's Menu Selection
+- Id: 5992
+  Title: Lunch's Menu Selection
+- Id: 5993
+  Title: Lunch's Menu Selection
+- Id: 5994
+  Title: Lunch's Menu Selection
+- Id: 5995
+  Title: Lunch's Menu Selection
+- Id: 8784
+  Title: Helping Moryara Fish
+  Targets:
+    - Mob: EP19_SHINING_SEAWEED
+      Count: 20
+- Id: 8785
+  Title: Helping Moryara Fish - Wait
+  TimeLimit: 4h
+- Id: 8786
+  Title: Helping Moryara Fish
+  Targets:
+    - Mob: EP19_SHINING_SEAWEED
+      Count: 20
+- Id: 8787
+  Title: Happy Lunch With Zoryara
+- Id: 8788
+  Title: Happy Lunch With Zoryara - Wait
+  TimeLimit: 4h
+- Id: 8789
+  Title: Happy Lunch With Zoryara
+- Id: 8790
+  Title: Priest, Have Mercy?
+- Id: 8791
+  Title: Priest, Have Mercy? - Wait
+  TimeLimit: 4h
+- Id: 8792
+  Title: Priest, Have Mercy??
+- Id: 8793
+  Title: Your Question
+- Id: 8794
+  Title: Old Snake
+- Id: 8795
+  Title: Doctrine and Teachings
+- Id: 8796
+  Title: Never Seen Before
+  Targets:
+    - Mob: EP19_RGAN_A
+      Count: 20
+- Id: 8797
+  Title: Rgan's Work - Wait
+  TimeLimit: 4h
+- Id: 8798
+  Title: Rgan's Work
+  Targets:
+    - Mob: EP19_RGAN_A
+      Count: 20
+- Id: 8799
+  Title: Rgan of the Hatchery(1)
+- Id: 8800
+  Title: Rgan of the Hatchery(2)
+- Id: 8801
+  Title: Rgan of the Hatchery(3)
+- Id: 8802
+  Title: 1st Rgan of the Hatchery
+- Id: 8803
+  Title: 2nd Rgan of the Hatchery
+- Id: 8804
+  Title: 3rd Rgan of the Hatchery
+- Id: 11794
+  Title: Saintess Purification
+- Id: 11795
+  Title: Saintess Purification
+- Id: 11796
+  Title: Saintess Purification
+- Id: 11797
+  Title: Saintess Purification
+- Id: 11798
+  Title: Saintess Purification
+- Id: 11799
+  Title: Saintess Purification
+- Id: 11800
+  Title: Saintess Purification
+- Id: 11801
+  Title: Saintess Purification
+- Id: 11802
+  Title: Saintess Purification
+- Id: 11803
+  Title: Saintess Purification
+- Id: 11804
+  Title: Saintess Purification
+- Id: 11805
+  Title: Saintess Purification
+- Id: 11806
+  Title: Saintess Purification
+- Id: 11807
+  Title: Saintess Purification
+- Id: 11808
+  Title: Saintess Purification
+- Id: 11809
+  Title: Saintess Purification
+- Id: 11810
+  Title: Saintess Purification
+- Id: 11811
+  Title: Saintess Purification
+- Id: 11812
+  Title: Friederike's Day
+- Id: 11813
+  Title: Friederike's Day
+  Targets:
+    - Mob: EP19_RGAN_A
+      Count: 10
+    - Mob: EP19_RGAN_B
+      Count: 10
+  Drops:
+    - Mob: EP19_RGAN_A
+      Item: Ep19_Rgan_Core
+      Rate: 5000
+    - Mob: EP19_RGAN_B
+      Item: Ep19_Rgan_Core
+      Rate: 5000
+- Id: 11814
+  Title: Friederike's Day - Wait
+  TimeLimit: 4h
+- Id: 11815
+  Title: Frozen Sea
+- Id: 11816
+  Title: Frozen Sea
+- Id: 11817
+  Title: Frozen Sea
+- Id: 11818
+  Title: Frozen Sea
+- Id: 11819
+  Title: Frozen Sea
+- Id: 11820
+  Title: Frozen Sea
+- Id: 11821
+  Title: Frozen Sea
+- Id: 11822
+  Title: Frozen Sea
+  Targets:
+    - Id: 1
+      Count: 20
+      Location: jor_back2
+      MapName: Frozen Scale Plain
+  Drops:
+    - Mob: EP19_ICE_GANGU
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_ICE_STRAW
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_UNFROST_FLOWER
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_LIMACINA
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11823
+  Title: Frozen Sea
+- Id: 11824
+  Title: Frozen Sea
+- Id: 11825
+  Title: Frozen Sea
+  Targets:
+    - Id: 1
+      Count: 5
+      Location: jor_ab01
+      MapName: Abandoned Pit 1st Floor
+  Drops:
+    - Mob: EP19_CAVE_CALMARING
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_CAVE_FLOWER
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_WASTED_RGAN_A
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_HALLUCIGENIA_BABY
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_RE_RGAN_E
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11826
+  Title: Frozen Sea
+  Targets:
+    - Id: 1
+      Count: 5
+      Location: jor_ab01
+      MapName: Abandoned Pit 1st Floor
+  Drops:
+    - Mob: EP19_CAVE_CALMARING
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_CAVE_FLOWER
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_WASTED_RGAN_A
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_HALLUCIGENIA_BABY
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_RE_RGAN_E
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11827
+  Title: Frozen Sea
+  Targets:
+    - Id: 1
+      Count: 5
+      Location: jor_ab01
+      MapName: Abandoned Pit 1st Floor
+  Drops:
+    - Mob: EP19_CAVE_CALMARING
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_CAVE_FLOWER
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_WASTED_RGAN_A
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_HALLUCIGENIA_BABY
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_RE_RGAN_E
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11828
+  Title: Frozen Sea
+  Targets:
+    - Id: 1
+      Count: 5
+      Location: jor_ab02
+      MapName: Abandoned Pit 2nd Floor
+  Drops:
+    - Mob: EP19_ONE_EYE_DOLLOCARIS
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_HALLUCIGENIA
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_ET_RGAN_D
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_WASTED_RGAN_C
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_DOLLOCARIS
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11829
+  Title: Frozen Sea
+- Id: 11830
+  Title: Abandoned Pit
+- Id: 11831
+  Title: Abandoned Places(1)
+  Targets:
+    - Id: 1
+      Count: 40
+      Location: jor_ab01
+      MapName: Abandoned Pit 1st Floor
+  Drops:
+    - Mob: EP19_CAVE_CALMARING
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_CAVE_FLOWER
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_WASTED_RGAN_A
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_HALLUCIGENIA_BABY
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_RE_RGAN_E
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11832
+  Title: Abandoned Places(1) - Wait
+  TimeLimit: 4h
+- Id: 11833
+  Title: Abandoned Places(2)
+  Targets:
+    - Id: 1
+      Count: 40
+      Location: jor_ab02
+      MapName: Abandoned Pit 2nd Floor
+  Drops:
+    - Mob: EP19_ONE_EYE_DOLLOCARIS
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_HALLUCIGENIA
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_ET_RGAN_D
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_WASTED_RGAN_C
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_DOLLOCARIS
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11834
+  Title: Abandoned Places(2) - Wait
+  TimeLimit: 4h
+- Id: 11835
+  Title: Dig and Dig
+- Id: 11836
+  Title: Dig and Dig
+- Id: 11837
+  Title: Dig and Dig
+- Id: 11838
+  Title: Dig and Dig
+- Id: 11839
+  Title: Dig and Dig
+- Id: 11840
+  Title: Dig and Dig
+- Id: 11841
+  Title: Dig and Dig
+- Id: 11842
+  Title: Dig and Dig
+- Id: 11843
+  Title: Dig and Dig
+- Id: 11844
+  Title: Dig and Dig
+- Id: 11845
+  Title: Dig and Dig
+- Id: 11846
+  Title: Dig and Dig
+- Id: 11847
+  Title: Dig and Dig
+- Id: 11848
+  Title: Dig and Dig
+- Id: 11849
+  Title: Dig and Dig
+- Id: 11850
+  Title: Dig and Dig - Wait
+  TimeLimit: 4h
+- Id: 11851
+  Title: Refrigerator's Necessities
+- Id: 11852
+  Title: Refrigerator's Necessities
+  Targets:
+    - Id: 1
+      Count: 20
+      Location: jor_back2
+      MapName: Frozen Scale Plain
+  Drops:
+    - Mob: EP19_ICE_GANGU
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_ICE_STRAW
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_UNFROST_FLOWER
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+    - Mob: EP19_LIMACINA
+      Item: Ep19_Ice_Meat
+      Rate: 5000
+- Id: 11853
+  Title: Refrigerator's Necessities - Wait
+  TimeLimit: 4h
+- Id: 11854
+  Title: Crisped Tools
+- Id: 11855
+  Title: Crisped Tools
+- Id: 11856
+  Title: Crisped Tools
+- Id: 11857
+  Title: Crisped Tools
+- Id: 11858
+  Title: Crisped Tools
+- Id: 11859
+  Title: Crisped Tools - Wait
+  TimeLimit: 4h
+- Id: 12560
+  Title: Airship Sabotage - Wait
+  TimeLimit: +3d
+- Id: 12561
+  Title: Core Disabling
+  Targets:
+    - Mob: EP19_MD_AQUILA
+      Count: 1
+- Id: 16636
+  Title: Finding Clues - Juncea's Laboratory
+- Id: 16637
+  Title: Finding Clues - Bagot's Laboratory
+- Id: 16638
+  Title: Finding Clues - Rgan Guards
+- Id: 16639
+  Title: Juncea's Laboratory
+- Id: 16640
+  Title: Juncea's Laboratory
+- Id: 16641
+  Title: Bagot's Laboratory
+- Id: 16642
+  Title: Bagot's Laboratory
+- Id: 16643
+  Title: Rgan Guard
+- Id: 16644
+  Title: Rgan Guard
+- Id: 16645
+  Title: Sharing Clues
+- Id: 16646
+  Title: Silent Infiltration
+- Id: 16647
+  Title: Silent Infiltration
+- Id: 16648
+  Title: Silent Infiltration
+- Id: 16649
+  Title: Silent Infiltration
+- Id: 16650
+  Title: Silent Infiltration
+- Id: 16651
+  Title: Silent Infiltration
+- Id: 16652
+  Title: Silent Infiltration    
+- Id: 16653
+  Title: Accumulating Doubts 
+- Id: 16654
+  Title: Accumulating Doubts 
+- Id: 16655
+  Title: Slight Difference
+- Id: 16656
+  Title: Slight Difference
+- Id: 16657
+  Title: Slight Difference
+- Id: 16658
+  Title: Slight Difference
+- Id: 16659
+  Title: Slight Difference
+- Id: 16660
+  Title: Slight Difference
+- Id: 16661
+  Title: Slight Difference
+- Id: 16662
+  Title: Battle Simulation
+  Targets:
+    - Mob: EP19_MD_JUNCEA_S
+      Count: 1
+- Id: 16663
+  Title: Battle Simulation - Wait
+  TimeLimit: 4h
+- Id: 17619
+  Title: Lazy's Plan
+- Id: 17620
+  Title: Snake Nest Infiltration
+- Id: 17621
+  Title: Snake Nest Infiltration
+- Id: 17622
+  Title: Snake Nest Infiltration
+- Id: 17623
+  Title: Snake Nest Infiltration
+- Id: 17624
+  Title: Snake Nest Infiltration
+- Id: 17625
+  Title: Snake Nest Infiltration
+- Id: 17626
+  Title: Snake Nest Infiltration
+- Id: 17627
+  Title: Snake Nest Infiltration
+- Id: 17628
+  Title: Snake Nest Infiltration
+- Id: 17629
+  Title: Snake Nest Infiltration
+- Id: 17630
+  Title: Snake Nest Infiltration
+- Id: 17631
+  Title: Snake Nest Infiltration
+- Id: 17632
+  Title: Infiltration Report
+- Id: 17633
+  Title: Infiltration Report
+- Id: 17634
+  Title: Infiltration Report
+- Id: 17635
+  Title: Infiltration Report
+- Id: 17636
+  Title: Infiltration Report
+- Id: 17637
+  Title: Airship Sabotage Operation
+- Id: 17638
+  Title: Investigating Vulnerabilities
+- Id: 17639
+  Title: Reconnaissance Report
+- Id: 17640
+  Title: Chaotic Snake Nest
+- Id: 17641
+  Title: Chaotic Snake Nest
+- Id: 17642
+  Title: Chaotic Snake Nest
+- Id: 17643
+  Title: Chaotic Snake Nest
+- Id: 17644
+  Title: Chaotic Snake Nest
+- Id: 17645
+  Title: Chaotic Snake Nest
+- Id: 17646
+  Title: Chaotic Snake Nest
+- Id: 17647
+  Title: Chaotic Snake Nest
+- Id: 17648
+  Title: Chaotic Snake Nest
+- Id: 17649
+  Title: Those Who Vanished
+- Id: 17650
+  Title: Underground Entrance Search
+- Id: 17651
+  Title: Underground Entrance Search
+- Id: 17652
+  Title: Underground Entrance Search
+- Id: 17653
+  Title: Underground Entrance Search
+- Id: 17654
+  Title: Underground Entrance Search
+- Id: 17655
+  Title: Underground Entrance Search
+- Id: 17656
+  Title: Underground Entrance Search
+- Id: 17657
+  Title: Underground Entrance Search
+- Id: 17658
+  Title: Underground Entrance Search
+- Id: 17659
+  Title: Underground Entrance Search
+- Id: 17660
+  Title: Underground Entrance Search
+- Id: 17661
+  Title: Underground Entrance Search - Complete
+- Id: 17662
+  Title: Underground Entrance Search - Wait
+  TimeLimit: 4h
+- Id: 18119
+  Title: Visitor on the North Wind 1
+- Id: 18120
+  Title: Visitor on the North Wind 2
+- Id: 18121
+  Title: Guardian Box and Invitation 1
+- Id: 18122
+  Title: Guardian Box and Invitation 2
+- Id: 18123
+  Title: Guardian Box and Invitation 3
+- Id: 18124
+  Title: Guardian Box and Invitation 5
+- Id: 18125
+  Title: Into the Ice Castle
+- Id: 18126
+  Title: Encounter in the Ice Castle
+- Id: 18127
+  Title: Meet the Iwin Scout
+- Id: 18128
+  Title: Meet Voglinde
+- Id: 18129
+  Title: Guardian Box and Invitation 4
+- Id: 18130
+  Title: Research Materials Procurement For Vellgunde
+- Id: 18131
+  Title: Research Materials Procurement For Vellgunde - Wait
+  TimeLimit: 4h
+- Id: 18132
+  Title: In Need of Help
+- Id: 18133
+  Title: Leon's Story
+- Id: 18134
+  Title: Search for Survivors - Frozen Glacier
+- Id: 18135
+  Title: Search for Survivors - Frozen Plains
+- Id: 18136
+  Title: Rescue Completed
+- Id: 18137
+  Title: Search for Survivors - Wait
+  TimeLimit: 4h
+- Id: 18138
+  Title: Special Way of Survival
+  Targets:
+    - Mob: EP19_RGAN_A
+      Count: 10
+    - Mob: EP19_RGAN_B
+      Count: 10
+- Id: 18139
+  Title: Our Precious Food
+- Id: 18140
+  Title: Our Precious Food - Wait
+  TimeLimit: 4h
+- Id: 18141
+  Title: Elegant Hobby
+- Id: 18142
+  Title: Elegant Hobby - Wait
+  TimeLimit: 4h
+- Id: 18143
+  Title: Labor's Safety
+  Targets:
+    - Mob: EP19_LIMACINA
+      Count: 20
+    - Mob: EP19_CALMARING
+      Count: 20
+- Id: 18144
+  Title: Labor's Safety - Wait
+  TimeLimit: 4h
+# BEGIN CODEX EPISODE 20 CLEAR GATE
+- Id: 18233
+  Title: Episode 20 - The Immortal - Completed
+# END CODEX EPISODE 20 CLEAR GATE
+# END CODEX EPISODE 19 - EP19_Quest.yml
