@@ -671,7 +671,8 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Sealed Shrine",I19, "Wolfchev's Laboratory",I20,
 		"Episode 21: Gimli Infiltration",I21, "Episode 21: Mysterious Ghost Ship",I22,
 		"Episode 21: Final Battle",I23, "Episode 21: Secret Altar",I24,
-		"Episode 21: Silent Sanctuary",I25, "Old Glast Heim Challenge",I26;
+		"Episode 21: Silent Sanctuary",I25, "Old Glast Heim Challenge",I26,
+		"Old Glast Heim Beginner",I27;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -721,6 +722,8 @@ I25: Restrict("RE");
 	Go("jor_crk",137,138);
 I26: Restrict("RE");
 	Go("glast_01",143,288);
+I27: Restrict("RE");
+	Go("glast_01",196,235);
 
 // --------------------------------------------------
 	Special:
@@ -1427,6 +1430,7 @@ OnNaviGenerate:
 		naviregisterwarp("Warper > Octopus Cave", "mal_dun01", 152, 230);
 		naviregisterwarp("Warper > Old Glast Heim", "glast_01", 204, 268);
 		naviregisterwarp("Warper > Old Glast Heim Challenge", "glast_01", 143, 288);
+		naviregisterwarp("Warper > Old Glast Heim Beginner", "glast_01", 196, 235);
 		naviregisterwarp("Warper > Sarah and Fenrir", "dali02", 92, 141);
 		naviregisterwarp("Warper > Sara Memory", "dali", 133, 108);
 		naviregisterwarp("Warper > Wolfchev's Laboratory", "lhz_dun04", 148, 269);

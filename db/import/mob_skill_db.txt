@@ -1,4 +1,13 @@
 // Custom Mob Skill Database
+// 1st Commander of Destruction (Beginner Old Glast Heim finale)
+2473,1st Commander of Destruction@SM_MAGNUM,attack,7,9,1000,0,0,yes,self,attackpcge,2,,,,,,,
+2473,1st Commander of Destruction@NPC_POWERUP,chase,349,5,2000,0,100000,yes,self,always,0,,,,,,,
+2473,1st Commander of Destruction@NPC_CRITICALSLASH,attack,170,1,2000,0,5000,yes,target,always,0,,,,,,,
+2473,1st Commander of Destruction@NPC_GRANDDARKNESS,attack,339,10,1000,700,5000,no,self,myhpltmaxrate,30,,,,,,,
+2473,1st Commander of Destruction@NPC_DARKSTRIKE,attack,340,9,500,700,5000,no,target,always,0,,,,,,,
+2473,1st Commander of Destruction@NPC_DARKSTRIKE,chase,340,9,500,700,5000,no,target,always,0,,,,,,,
+2473,1st Commander of Destruction@MG_STONECURSE,attack,16,8,2000,500,5000,no,target,always,0,,,,,,,
+2473,1st Commander of Destruction@MG_STONECURSE,chase,16,8,2000,500,5000,yes,target,always,0,,,,,,,
 //
 // Structure of Database:
 // MobID,Dummy value (info only),State,SkillID,SkillLv,Rate,CastTime,Delay,Cancelable,Target,Condition type,Condition value,val1,val2,val3,val4,val5,Emotion,Chat

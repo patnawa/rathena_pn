@@ -1,0 +1,743 @@
+//===== rAthena Script =======================================
+//= Beginner Old Glast Heim
+//===== Description: =========================================
+//= One-map beginner memorial dungeon entered through the
+//= Unique Clown. Implements the two survivor rescues, corpse
+//= traps, first-floor assault, three Bloody Knight encounters,
+//= 1st Commander of Destruction, Hugin and treasure room.
+//=
+//= References:
+//= https://iro.ragnarokonline.com/news/updatedetail.aspx?id=330
+//= https://irowiki.org/wiki/Beginner_Old_Glast_Heim
+//============================================================
+
+function	script	OGHB_NextWeeklyReset	{
+	// The official reset is Thursday. This returns the next Thursday
+	// at 00:00 in the map-server's local timezone.
+	.@now = gettimetick(2);
+	.@seconds_today = gettime(DT_HOUR) * 3600 + gettime(DT_MINUTE) * 60 + gettime(DT_SECOND);
+	.@days = (THURSDAY - gettime(DT_DAYOFWEEK) + 7) % 7;
+	if (.@days == 0)
+		.@days = 7;
+	return .@now - .@seconds_today + .@days * 86400;
+}
+
+glast_01,196,235,4	script	Unique Clown#oghb	4_M_BARD,{
+	mes "[Unique Clown]";
+	mes "I'm studying a small time gap connected to the fall of old Glast Heim. Adventurers can enter it alone or with a party.";
+	next;
+	if (BaseLevel < 65) {
+		mes "[Unique Clown]";
+		mes "The distortion rejects anyone below Base Level 65. Come back when you are ready.";
+		close;
+	}
+
+	.@party_id = getcharid(1);
+	.@mode = .@party_id ? IM_PARTY : IM_CHAR;
+	.@owner = .@party_id ? .@party_id : getcharid(0);
+	.@iid = instance_id(.@mode);
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) != "Old Glast Heim (Beginner)") {
+		mes "[Unique Clown]";
+		mes "You already own another active instance. Close it before generating this time gap.";
+		close;
+	}
+
+	if (OGHB_Next > gettimetick(2)) {
+		.@minutes = (OGHB_Next - gettimetick(2) + 59) / 60;
+		mes "[Unique Clown]";
+		mes "Your memory is still tied to the previous distortion. The Thursday reset is in about ^FF0000"+.@minutes+" minute(s)^000000.";
+		close;
+	}
+
+	if (!.@iid) {
+		if (.@party_id && !is_party_leader()) {
+			mes "[Unique Clown]";
+			mes "Your party leader must generate the time gap.";
+			close;
+		}
+		if (select("Generate Time Gap.:Cancel.") == 2)
+			close;
+		.@iid = instance_create("Old Glast Heim (Beginner)",.@mode,.@owner);
+		if (.@iid < 1) {
+			mes "[Unique Clown]";
+			mes "The time gap could not be generated. Please try again shortly.";
+			close;
+		}
+		mes "[Unique Clown]";
+		mes "The time gap is open. Speak to me once more to enter it.";
+		close;
+	}
+
+	if (select("Enter Old Glast Heim.:Cancel.") == 2)
+		close;
+	.@result = instance_enter("Old Glast Heim (Beginner)",-1,-1,getcharid(0),.@iid);
+	if (.@result != IE_OK) {
+		mes "[Unique Clown]";
+		mes "The time gap is not ready, or you do not belong to its owner.";
+		close;
+	}
+
+	// Beginner OGH officially cannot be re-entered after leaving.
+	OGHB_Next = callfunc("OGHB_NextWeeklyReset");
+	OGHB_Disguised = 1;
+	disguise 1019;
+	if (isbegin_quest(19990))
+		erasequest 19990;
+	setquest 19990;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 65";
+	end;
+}
+
+// Remove the Peco Peco disguise if a player dies and leaves the instance,
+// or logs out before speaking to Hugin.
+-	script	OGHB_DisguiseCleanup	-1,{
+	end;
+
+OnPCDieEvent:
+	if (OGHB_Disguised) {
+		undisguise;
+		OGHB_Disguised = 0;
+	}
+	end;
+
+OnPCLogoutEvent:
+	if (OGHB_Disguised) {
+		undisguise;
+		OGHB_Disguised = 0;
+	}
+	end;
+}
+
+1@gl_k2,1,1,0	script	#OGHB_Control	HIDDEN_NPC,{
+	end;
+
+OnInstanceInit:
+	'oghb_map$ = instance_mapname("1@gl_k2");
+	'oghb_stage = 0;
+	'oghb_west_kills = 0;
+	'oghb_east_kills = 0;
+	'oghb_north_kills = 0;
+	'oghb_west2_kills = 0;
+	'oghb_east2_kills = 0;
+	'oghb_cracks = 0;
+	'oghb_boss_gid = 0;
+
+	setarray .@hidden$[0],
+		"Heinrich#oghb0","Domun#oghb","Holgren#oghb","Heinrich#oghb1",
+		"First Scene#oghb","Final Scene#oghb","Gerhalt#oghb","Himelmez#oghb",
+		"Hugin#oghb","Hugin#oghb_treasure",
+		"#OGHB_WestIn","#OGHB_WestOut","#OGHB_EastIn","#OGHB_EastOut",
+		"#OGHB_NorthIn","#OGHB_NorthOut","#OGHB_FloorPortal";
+	for (.@i = 0; .@i < getarraysize(.@hidden$); ++.@i)
+		disablenpc instance_npcname(.@hidden$[.@i]);
+	for (.@i = 1; .@i <= 12; ++.@i)
+		disablenpc instance_npcname("Corpse E#oghb"+.@i);
+	for (.@i = 1; .@i <= 8; ++.@i)
+		disablenpc instance_npcname("Corpse N#oghb"+.@i);
+	for (.@i = 1; .@i <= 5; ++.@i)
+		disablenpc instance_npcname("Strange Crack#oghb"+.@i);
+	enablenpc instance_npcname("Varmundt#oghb0");
+	mapannounce 'oghb_map$,"Varmundt is waiting near the southern entrance.",bc_map,0x77AAFF;
+	end;
+
+OnInstanceDestroy:
+	.@count = getmapunits(BL_PC,'oghb_map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@players[.@i])) {
+			if (OGHB_Disguised) {
+				undisguise;
+				OGHB_Disguised = 0;
+			}
+			detachrid;
+		}
+	}
+	end;
+
+OnIntro:
+	if ('oghb_stage != 1)
+		end;
+	'oghb_stage = 2;
+	disablenpc instance_npcname("Heinrich#oghb0");
+	mapannounce 'oghb_map$,"Himelmez: The Heart of Ymir will belong to me.",bc_map,0xFF77AA;
+	monster 'oghb_map$,145,92,"Picky (Shell)",1050,10;
+	monster 'oghb_map$,154,92,"Picky (Shell)",1050,10;
+	initnpctimer;
+	end;
+
+OnTimer4000:
+	if ('oghb_stage == 2)
+		mapannounce 'oghb_map$,"Heinrich: Protect the hall! These creatures are only a distraction.",bc_map,0xFFFF66;
+	end;
+
+OnTimer9000:
+	if ('oghb_stage == 2)
+		mapannounce 'oghb_map$,"Varmundt: The survivors are trapped in the west and east wings.",bc_map,0x77AAFF;
+	end;
+
+OnTimer14000:
+	if ('oghb_stage == 2) {
+		killmonster 'oghb_map$,"";
+		mapannounce 'oghb_map$,"Heinrich cuts down the remaining creatures.",bc_map,0xFFFF66;
+	}
+	end;
+
+OnTimer17000:
+	stopnpctimer;
+	if ('oghb_stage == 2)
+		donpcevent instance_npcname(strnpcinfo(0))+"::OnWestStart";
+	end;
+
+OnWestStart:
+	if ('oghb_stage != 2)
+		end;
+	'oghb_stage = 3;
+	'oghb_west_kills = 0;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnWestDead";
+	areamonster 'oghb_map$,12,6,67,99,"Corrupted Monk",1192,17,.@event$;
+	areamonster 'oghb_map$,32,58,87,137,"Grand Chamberlain in Pain",1036,17,.@event$;
+	areamonster 'oghb_map$,12,6,51,75,"Corrupted Steward",1015,17,.@event$;
+	enablenpc instance_npcname("#OGHB_WestIn");
+	enablenpc instance_npcname("#OGHB_WestOut");
+	mapannounce 'oghb_map$,"A portal has opened to the west. Defeat the corrupted servants and search for a survivor.",bc_map,0xFFFF00;
+	end;
+
+OnWestDead:
+	if ('oghb_stage != 3)
+		end;
+	++'oghb_west_kills;
+	if ('oghb_west_kills >= 36) {
+		'oghb_stage = 4;
+		killmonster 'oghb_map$,instance_npcname(strnpcinfo(0))+"::OnWestDead";
+		enablenpc instance_npcname("Domun#oghb");
+		mapannounce 'oghb_map$,"Himelmez's curse is weakening. Find Altar Boy Domun in the southwest corner.",bc_map,0xFFFFFF;
+	}
+	end;
+
+OnEastStart:
+	if ('oghb_stage != 4)
+		end;
+	'oghb_stage = 5;
+	'oghb_east_kills = 0;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnEastDead";
+	areamonster 'oghb_map$,236,12,288,52,"Decomposed Blacksmith",1015,34,.@event$;
+	areamonster 'oghb_map$,242,71,286,145,"Outraged Refiner",1036,35,.@event$;
+	for (.@i = 1; .@i <= 12; ++.@i)
+		enablenpc instance_npcname("Corpse E#oghb"+.@i);
+	enablenpc instance_npcname("#OGHB_EastIn");
+	enablenpc instance_npcname("#OGHB_EastOut");
+	mapannounce 'oghb_map$,"A portal has opened to the east. Watch the decomposed bodies as you search for Holgren.",bc_map,0xFFFF00;
+	end;
+
+OnEastDead:
+	if ('oghb_stage != 5)
+		end;
+	++'oghb_east_kills;
+	if ('oghb_east_kills >= 57) {
+		'oghb_stage = 6;
+		killmonster 'oghb_map$,instance_npcname(strnpcinfo(0))+"::OnEastDead";
+		enablenpc instance_npcname("Holgren#oghb");
+		mapannounce 'oghb_map$,"The eastern curse is weakening. Find Holgren at the top of the eastern stairs.",bc_map,0xFFFFFF;
+	}
+	end;
+
+OnNorthStart:
+	if ('oghb_stage != 6)
+		end;
+	'oghb_stage = 7;
+	'oghb_north_kills = 0;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnNorthDead";
+	areamonster 'oghb_map$,16,186,89,280,"Corrupted Palace Guard",1163,50,.@event$;
+	areamonster 'oghb_map$,108,215,230,281,"Wandering Archer",1276,50,.@event$;
+	enablenpc instance_npcname("#OGHB_NorthIn");
+	enablenpc instance_npcname("#OGHB_NorthOut");
+	mapannounce 'oghb_map$,"A portal has opened toward the northern wing. Defeat the palace guards and archers.",bc_map,0xFFFF00;
+	end;
+
+OnNorthDead:
+	if ('oghb_stage != 7)
+		end;
+	++'oghb_north_kills;
+	if ('oghb_north_kills >= 86) {
+		'oghb_stage = 8;
+		killmonster 'oghb_map$,instance_npcname(strnpcinfo(0))+"::OnNorthDead";
+		enablenpc instance_npcname("First Scene#oghb");
+		mapannounce 'oghb_map$,"Himelmez is confronting Varmundt and Heinrich at the north end of the hall.",bc_map,0xFF77AA;
+	}
+	end;
+
+OnFirstBossStart:
+	if ('oghb_stage != 8)
+		end;
+	'oghb_stage = 9;
+	disablenpc instance_npcname("First Scene#oghb");
+	monster 'oghb_map$,150,259,"Bloody Knight",1268,1,instance_npcname(strnpcinfo(0))+"::OnFirstBossDead";
+	'oghb_boss_gid = $@mobid[0];
+	mapannounce 'oghb_map$,"A Bloody Knight blocks the passage!",bc_map,0xFF5555;
+	end;
+
+OnFirstBossDead:
+	if ('oghb_stage != 9)
+		end;
+	'oghb_stage = 10;
+	'oghb_boss_gid = 0;
+	enablenpc instance_npcname("#OGHB_FloorPortal");
+	mapannounce 'oghb_map$,"The northern time portal is open. Enter it to follow Heinrich deeper into the memory.",bc_map,0xFFFF00;
+	end;
+
+OnSecondIntro:
+	if ('oghb_stage != 10)
+		end;
+	'oghb_stage = 11;
+	killmonster 'oghb_map$,"";
+	disablenpc instance_npcname("#OGHB_WestIn");
+	disablenpc instance_npcname("#OGHB_WestOut");
+	disablenpc instance_npcname("#OGHB_EastIn");
+	disablenpc instance_npcname("#OGHB_EastOut");
+	disablenpc instance_npcname("#OGHB_NorthIn");
+	disablenpc instance_npcname("#OGHB_NorthOut");
+	for (.@i = 1; .@i <= 12; ++.@i)
+		disablenpc instance_npcname("Corpse E#oghb"+.@i);
+	enablenpc instance_npcname("Heinrich#oghb1");
+	mapannounce 'oghb_map$,"The time gap folds back onto the first floor. Speak with Heinrich near the central hall.",bc_map,0x77AAFF;
+	end;
+
+OnWest2Start:
+	if ('oghb_stage != 11)
+		end;
+	'oghb_stage = 12;
+	'oghb_west2_kills = 0;
+	disablenpc instance_npcname("Heinrich#oghb1");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnWest2Dead";
+	areamonster 'oghb_map$,12,10,88,155,"Corrupted Palace Guard",1163,12,.@event$;
+	areamonster 'oghb_map$,12,10,88,155,"Wandering Archer",1276,10,.@event$;
+	areamonster 'oghb_map$,12,10,88,155,"Suffering Khalitzburg",1132,8,.@event$;
+	areamonster 'oghb_map$,12,10,88,155,"Corrupted Abysmal Knight",1219,6,.@event$;
+	enablenpc instance_npcname("#OGHB_WestIn");
+	enablenpc instance_npcname("#OGHB_WestOut");
+	mapannounce 'oghb_map$,"The western portal is open. Purify the soldiers until their hidden commander appears.",bc_map,0xFFFF00;
+	end;
+
+OnWest2Dead:
+	if ('oghb_stage != 12)
+		end;
+	++'oghb_west2_kills;
+	if ('oghb_west2_kills >= 28) {
+		'oghb_stage = 13;
+		killmonster 'oghb_map$,instance_npcname(strnpcinfo(0))+"::OnWest2Dead";
+		setarray .@xy[0],41,146,58,44,72,118,82,68;
+		.@pick = rand(4) * 2;
+		monster 'oghb_map$,.@xy[.@pick],.@xy[.@pick+1],"Bloody Knight",1268,1,instance_npcname(strnpcinfo(0))+"::OnWestBossDead";
+		'oghb_boss_gid = $@mobid[0];
+		mapannounce 'oghb_map$,"An evil presence has appeared somewhere in the western wing!",bc_map,0xFF5555;
+	}
+	end;
+
+OnWestBossDead:
+	if ('oghb_stage != 13)
+		end;
+	'oghb_boss_gid = 0;
+	donpcevent instance_npcname(strnpcinfo(0))+"::OnEast2Start";
+	end;
+
+OnEast2Start:
+	if ('oghb_stage != 13)
+		end;
+	'oghb_stage = 14;
+	'oghb_east2_kills = 0;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnEast2Dead";
+	areamonster 'oghb_map$,170,10,290,170,"Corrupted Palace Guard",1163,12,.@event$;
+	areamonster 'oghb_map$,170,10,290,170,"Wandering Archer",1276,10,.@event$;
+	areamonster 'oghb_map$,170,10,290,170,"Suffering Khalitzburg",1132,8,.@event$;
+	areamonster 'oghb_map$,170,10,290,170,"Corrupted Abysmal Knight",1219,6,.@event$;
+	enablenpc instance_npcname("#OGHB_EastIn");
+	enablenpc instance_npcname("#OGHB_EastOut");
+	mapannounce 'oghb_map$,"The eastern portal is open. Find the second hidden commander.",bc_map,0xFFFF00;
+	end;
+
+OnEast2Dead:
+	if ('oghb_stage != 14)
+		end;
+	++'oghb_east2_kills;
+	if ('oghb_east2_kills >= 28) {
+		'oghb_stage = 15;
+		killmonster 'oghb_map$,instance_npcname(strnpcinfo(0))+"::OnEast2Dead";
+		setarray .@xy[0],211,45,227,139,245,74,268,137;
+		.@pick = rand(4) * 2;
+		monster 'oghb_map$,.@xy[.@pick],.@xy[.@pick+1],"Bloody Knight",1268,1,instance_npcname(strnpcinfo(0))+"::OnEastBossDead";
+		'oghb_boss_gid = $@mobid[0];
+		mapannounce 'oghb_map$,"A second evil presence has appeared somewhere in the eastern wing!",bc_map,0xFF5555;
+	}
+	end;
+
+OnEastBossDead:
+	if ('oghb_stage != 15)
+		end;
+	'oghb_stage = 16;
+	'oghb_boss_gid = 0;
+	enablenpc instance_npcname("#OGHB_NorthIn");
+	enablenpc instance_npcname("#OGHB_NorthOut");
+	enablenpc instance_npcname("Final Scene#oghb");
+	enablenpc instance_npcname("Gerhalt#oghb");
+	enablenpc instance_npcname("Himelmez#oghb");
+	for (.@i = 1; .@i <= 8; ++.@i)
+		enablenpc instance_npcname("Corpse N#oghb"+.@i);
+	mapannounce 'oghb_map$,"The north passage is open. Heinrich has cornered Himelmez near the last survivor.",bc_map,0xFFFF00;
+	end;
+
+OnFinalBossStart:
+	if ('oghb_stage != 16)
+		end;
+	'oghb_stage = 17;
+	disablenpc instance_npcname("Final Scene#oghb");
+	disablenpc instance_npcname("Himelmez#oghb");
+	specialeffect EF_MAPPILLAR,AREA,instance_npcname("Gerhalt#oghb");
+	disablenpc instance_npcname("Gerhalt#oghb");
+	monster 'oghb_map$,158,255,"1st Commander of Destruction",2473,1,instance_npcname(strnpcinfo(0))+"::OnFinalBossDead";
+	'oghb_boss_gid = $@mobid[0];
+	unittalk 'oghb_boss_gid,"I will destroy every living soul...";
+	mapannounce 'oghb_map$,"Himelmez has transformed the final survivor into the 1st Commander of Destruction!",bc_map,0xFF5555;
+	end;
+
+OnFinalBossDead:
+	if ('oghb_stage != 17)
+		end;
+	'oghb_stage = 18;
+	'oghb_boss_gid = 0;
+	killmonster 'oghb_map$,"";
+	for (.@i = 1; .@i <= 8; ++.@i)
+		disablenpc instance_npcname("Corpse N#oghb"+.@i);
+	enablenpc instance_npcname("Hugin#oghb");
+	enablenpc instance_npcname("Hugin#oghb_treasure");
+	for (.@i = 1; .@i <= 5; ++.@i)
+		enablenpc instance_npcname("Strange Crack#oghb"+.@i);
+	.@count = getmapunits(BL_PC,'oghb_map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@players[.@i])) {
+			if (isbegin_quest(19990) == 1)
+				completequest 19990;
+			dispbottom "Beginner Old Glast Heim complete. Speak with Hugin for the treasure room.";
+			detachrid;
+		}
+	}
+	mapannounce 'oghb_map$,"The memory is stable. Hugin has appeared beside the battlefield.",bc_map,0x77FFAA;
+	end;
+}
+
+1@gl_k2,149,41,5	script(DISABLED)	Varmundt#oghb0	4_M_BARMUND,{
+	mes "[Varmundt]";
+	if ('oghb_stage != 0) {
+		mes "There is no time to waste. Find Heinrich in the central hall.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "I must give these instructions to your party leader.";
+		close;
+	}
+	mes "Are you the adventurer sent to help me? Himelmez is invading the castle to seize a shard of Ymir's Heart.";
+	next;
+	mes "[Varmundt]";
+	mes "Warn Sir Heinrich immediately. He is waiting farther north in the central hall.";
+	close2;
+	'oghb_stage = 1;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Heinrich#oghb0");
+	end;
+}
+
+1@gl_k2,149,100,6	script(DISABLED)	Heinrich#oghb0	4_M_HEINRICH,{
+	mes "[Heinrich]";
+	if ('oghb_stage != 1) {
+		mes "Stay alert. The castle is under attack.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "Your party leader must report Varmundt's warning.";
+		close;
+	}
+	mes "Himelmez is already inside the castle? Then we must protect the survivors and the Heart of Ymir.";
+	next;
+	mes "[Heinrich]";
+	mes "Stand ready. Something is approaching the hall.";
+	close2;
+	donpcevent instance_npcname("#OGHB_Control")+"::OnIntro";
+	end;
+}
+
+1@gl_k2,17,51,3	script(DISABLED)	Domun#oghb	4_M_KID1,{
+	mes "[Altar Boy Domun]";
+	if ('oghb_stage != 4) {
+		mes "Please... save the others.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "Please bring your party leader. I must tell them what happened.";
+		close;
+	}
+	mes "The chamberlains and monks turned into monsters. I hid here because I could do nothing.";
+	next;
+	mes "[Altar Boy Domun]";
+	mes "The middle passage is safe? I will go there. Please look for anyone trapped in the east wing.";
+	close2;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#OGHB_Control")+"::OnEastStart";
+	end;
+}
+
+1@gl_k2,291,145,3	script(DISABLED)	Holgren#oghb	4_F_JOB_BLACKSMITH,{
+	mes "[Holgren the Destroyer]";
+	if ('oghb_stage != 6) {
+		mes "Are you human? Keep those things away from me!";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "Bring your party leader. I know where the invaders went.";
+		close;
+	}
+	mes "I am the only survivor here. I can reach the middle passage by myself.";
+	next;
+	mes "[Holgren the Destroyer]";
+	mes "Himelmez and the remaining soldiers went north. Stop them before it is too late.";
+	close2;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#OGHB_Control")+"::OnNorthStart";
+	end;
+}
+
+1@gl_k2,150,257,4	script(DISABLED)	First Scene#oghb	4_M_HEINRICH,{
+	mes "[Heinrich]";
+	if ('oghb_stage != 8) {
+		mes "The northern passage remains dangerous.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "Your party leader must confront Himelmez with us.";
+		close;
+	}
+	mes "Himelmez! You will not take another life in this castle.";
+	next;
+	mes "[Himelmez]";
+	mes "How touching. Let one of your fallen knights test that resolve.";
+	close2;
+	donpcevent instance_npcname("#OGHB_Control")+"::OnFirstBossStart";
+	end;
+}
+
+1@gl_k2,149,100,6	script(DISABLED)	Heinrich#oghb1	4_M_HEINRICH,{
+	mes "[Heinrich]";
+	if ('oghb_stage != 11) {
+		mes "We must keep moving.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "Your party leader must give the order.";
+		close;
+	}
+	mes "The memory has folded us back through the castle. The remaining soldiers are bound by stone chains hidden in the western and eastern wings.";
+	next;
+	mes "[Heinrich]";
+	mes "Break their formations, find the Bloody Knights commanding them, then pursue Himelmez north.";
+	close2;
+	donpcevent instance_npcname("#OGHB_Control")+"::OnWest2Start";
+	end;
+}
+
+1@gl_k2,150,257,4	script(DISABLED)	Final Scene#oghb	4_M_HEINRICH,{
+	mes "[Heinrich]";
+	if ('oghb_stage != 16) {
+		mes "We cannot let Himelmez escape.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "Your party leader must face this final memory.";
+		close;
+	}
+	mes "Release Gerhalt! You already found the Heart shard. There is no reason for another sacrifice.";
+	next;
+	mes "[Himelmez]";
+	mes "He is the perfect vessel for my newest commander. Witness the destruction of Glast Heim.";
+	next;
+	mes "[Gerhalt]";
+	mes "Commander... please stop what my body is becoming...";
+	close2;
+	donpcevent instance_npcname("#OGHB_Control")+"::OnFinalBossStart";
+	end;
+}
+
+1@gl_k2,158,255,1	script(DISABLED)	Gerhalt#oghb	4_LEVITATEMAN,{
+	mes "[Gerhalt]";
+	mes "Run... before Himelmez finishes the transformation...";
+	close;
+}
+
+1@gl_k2,162,252,1	script(DISABLED)	Himelmez#oghb	4_F_HIMEL,{
+	mes "[Himelmez]";
+	mes "You arrived just in time to meet my new creation.";
+	close;
+}
+
+1@gl_k2,158,241,1	script(DISABLED)	Hugin#oghb	4_M_SAGE_C,{
+	mes "[Hugin]";
+	if ('oghb_stage < 18) {
+		mes "The memory has not reached its conclusion.";
+		close;
+	}
+	mes "You stopped the commander, but this time gap will soon collapse. I can send you to the hidden treasure room or return you to the present.";
+	next;
+	switch(select("Go to the treasure room.:Leave the time gap.:Stay here.")) {
+	case 1:
+		warp 'oghb_map$,149,141;
+		end;
+	case 2:
+		undisguise;
+		OGHB_Disguised = 0;
+		warp "glast_01",196,239;
+		end;
+	default:
+		close;
+	}
+}
+
+1@gl_k2,149,148,4	script(DISABLED)	Hugin#oghb_treasure	4_M_SAGE_C,{
+	mes "[Hugin]";
+	mes "The Strange Cracks contain remnants of this memory. When you are finished, I will return you to the present.";
+	next;
+	if (select("Leave the time gap.:Keep searching.") == 2)
+		close;
+	close2;
+	undisguise;
+	OGHB_Disguised = 0;
+	warp "glast_01",196,239;
+	end;
+}
+
+// Controlled portals. They remain usable for late party members after each
+// stage is opened, while progression itself can only advance once.
+1@gl_k2,96,80,0	script(DISABLED)	#OGHB_WestIn	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if ('oghb_stage >= 3 && 'oghb_stage < 18)
+		warp 'oghb_map$,80,80;
+	end;
+}
+
+1@gl_k2,90,80,0	script(DISABLED)	#OGHB_WestOut	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	warp 'oghb_map$,105,80;
+	end;
+}
+
+1@gl_k2,202,79,0	script(DISABLED)	#OGHB_EastIn	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if ('oghb_stage >= 5 && 'oghb_stage < 18)
+		warp 'oghb_map$,215,79;
+	end;
+}
+
+1@gl_k2,206,79,0	script(DISABLED)	#OGHB_EastOut	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	warp 'oghb_map$,195,79;
+	end;
+}
+
+1@gl_k2,227,216,0	script(DISABLED)	#OGHB_NorthIn	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if ('oghb_stage >= 7 && 'oghb_stage < 18)
+		warp 'oghb_map$,215,216;
+	end;
+}
+
+1@gl_k2,222,216,0	script(DISABLED)	#OGHB_NorthOut	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	warp 'oghb_map$,233,216;
+	end;
+}
+
+1@gl_k2,150,284,0	script(DISABLED)	#OGHB_FloorPortal	HIDDEN_WARP_NPC,2,2,{
+	end;
+OnTouch:
+	if ('oghb_stage == 10)
+		donpcevent instance_npcname("#OGHB_Control")+"::OnSecondIntro";
+	if ('oghb_stage >= 11 && 'oghb_stage < 18)
+		warp 'oghb_map$,150,46;
+	end;
+}
+
+// East-wing corpse traps. The beginner version deliberately summons one
+// Maggot per body, matching the published beginner mechanics.
+1@gl_k2,221,82,3	script(DISABLED)	Corpse E#oghb1	4_M_DIEMAN,3,3,{
+	end;
+OnTouch:
+	if ('oghb_stage != 5)
+		end;
+	getmapxy .@map$,.@x,.@y,BL_NPC;
+	specialeffect EF_VENOMDUST;
+	monster .@map$,.@x,.@y,"Maggot",2467,1;
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@gl_k2,233,123,4	duplicate(Corpse E#oghb1)	Corpse E#oghb2	4_M_DIEMAN,3,3
+1@gl_k2,258,150,2	duplicate(Corpse E#oghb1)	Corpse E#oghb3	4_M_DIEMAN,3,3
+1@gl_k2,255,157,5	duplicate(Corpse E#oghb1)	Corpse E#oghb4	4_M_DIEMAN,3,3
+1@gl_k2,280,167,4	duplicate(Corpse E#oghb1)	Corpse E#oghb5	4_M_DIEMAN,3,3
+1@gl_k2,293,161,2	duplicate(Corpse E#oghb1)	Corpse E#oghb6	4_M_DIEMAN,3,3
+1@gl_k2,249,101,3	duplicate(Corpse E#oghb1)	Corpse E#oghb7	4_M_DIEMAN,3,3
+1@gl_k2,241,86,6	duplicate(Corpse E#oghb1)	Corpse E#oghb8	4_M_DIEMAN,3,3
+1@gl_k2,246,62,0	duplicate(Corpse E#oghb1)	Corpse E#oghb9	4_M_DIEMAN,3,3
+1@gl_k2,240,43,7	duplicate(Corpse E#oghb1)	Corpse E#oghb10	4_M_DIEMAN,3,3
+1@gl_k2,271,19,1	duplicate(Corpse E#oghb1)	Corpse E#oghb11	4_M_DIEMAN,3,3
+1@gl_k2,282,48,5	duplicate(Corpse E#oghb1)	Corpse E#oghb12	4_M_DIEMAN,3,3
+
+// Final corridor corpse traps.
+1@gl_k2,143,236,4	script(DISABLED)	Corpse N#oghb1	4_M_DIEMAN,3,3,{
+	end;
+OnTouch:
+	if ('oghb_stage < 16 || 'oghb_stage > 17)
+		end;
+	getmapxy .@map$,.@x,.@y,BL_NPC;
+	specialeffect EF_VENOMDUST;
+	monster .@map$,.@x,.@y,"Maggot",2467,1;
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@gl_k2,145,222,2	duplicate(Corpse N#oghb1)	Corpse N#oghb2	4_M_DIEMAN,3,3
+1@gl_k2,147,203,5	duplicate(Corpse N#oghb1)	Corpse N#oghb3	4_M_DIEMAN,3,3
+1@gl_k2,167,225,4	duplicate(Corpse N#oghb1)	Corpse N#oghb4	4_M_DIEMAN,3,3
+1@gl_k2,172,233,2	duplicate(Corpse N#oghb1)	Corpse N#oghb5	4_M_DIEMAN,3,3
+1@gl_k2,176,244,3	duplicate(Corpse N#oghb1)	Corpse N#oghb6	4_M_DIEMAN,3,3
+1@gl_k2,130,228,7	duplicate(Corpse N#oghb1)	Corpse N#oghb7	4_M_DIEMAN,3,3
+1@gl_k2,121,197,0	duplicate(Corpse N#oghb1)	Corpse N#oghb8	4_M_DIEMAN,3,3
+
+// Five shared statues/cracks. Each can be opened once per instance.
+1@gl_k2,165,136,3	script(DISABLED)	Strange Crack#oghb1	CLEAR_NPC,{
+	mes "[Strange Crack]";
+	if ('oghb_stage < 18) {
+		mes "The crack is sealed by the unstable memory.";
+		close;
+	}
+	if (!checkweight(6608,1) || !checkweight(909,4)) {
+		mes "You are carrying too much to collect the treasure.";
+		close;
+	}
+	.@jellopy = rand(1,4);
+	getitem 6608,1;
+	getitem 909,.@jellopy;
+	specialeffect EF_SPELLBREAKER;
+	++'oghb_cracks;
+	disablenpc instance_npcname(strnpcinfo(0));
+	mes "You recover one Coagulated Spell and "+.@jellopy+" Jellopy from the memory.";
+	if ('oghb_cracks >= 5)
+		mes "All five treasure cracks have been opened.";
+	close;
+}
+1@gl_k2,159,136,3	duplicate(Strange Crack#oghb1)	Strange Crack#oghb2	CLEAR_NPC
+1@gl_k2,153,136,3	duplicate(Strange Crack#oghb1)	Strange Crack#oghb3	CLEAR_NPC
+1@gl_k2,147,136,3	duplicate(Strange Crack#oghb1)	Strange Crack#oghb4	CLEAR_NPC
+1@gl_k2,141,136,3	duplicate(Strange Crack#oghb1)	Strange Crack#oghb5	CLEAR_NPC

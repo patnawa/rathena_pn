@@ -383,6 +383,7 @@ Body:
       Y: 28
   - Id: 50
     Name: Old Glast Heim (Beginner)
+    TimeLimit: 5400
     Enter:
       Map: 1@gl_k2
       X: 150

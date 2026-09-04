@@ -2,6 +2,13 @@ Header:
   Type: QUEST_DB
   Version: 3
 Body:
+- Id: 19990
+  Title: Beginner Old Glast Heim
+  Targets:
+    - Mob: BLOODY_KNIGHT
+      Count: 3
+    - Mob: MG_M_UNDEAD_KNIGHT
+      Count: 1
 - Id: 8882
   Title: Ivan Wigner's Joyful Missionary Life
 - Id: 8883
