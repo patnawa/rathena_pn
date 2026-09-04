@@ -2,6 +2,13 @@ Header:
   Type: INSTANCE_DB
   Version: 2
 Body:
+- Id: 154
+  Name: Fall of Glast Heim (Scenario)
+  TimeLimit: 3600
+  Enter:
+    Map: 1@gl_prq
+    X: 299
+    Y: 19
 - Id: 147
   Name: Gimli Infiltration
   TimeLimit: 3600

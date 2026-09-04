@@ -390,12 +390,14 @@ Body:
       Y: 20
   - Id: 51
     Name: Fall of Glast Heim (Normal)
+    TimeLimit: 3600
     Enter:
       Map: 1@gl_prq
-      X: 299
-      Y: 19
+      X: 79
+      Y: 22
   - Id: 52
     Name: Fall of Glast Heim (Advanced)
+    TimeLimit: 3600
     Enter:
       Map: 1@gl_prq
       X: 79

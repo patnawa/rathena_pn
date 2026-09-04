@@ -9,6 +9,20 @@ Body:
       Count: 3
     - Mob: MG_M_UNDEAD_KNIGHT
       Count: 1
+- Id: 12457
+  Title: Moment of the Fall
+- Id: 12458
+  Title: The Orb's Origin
+- Id: 12459
+  Title: Rest in the King's Thoughts
+  Targets:
+    - Mob: MD_GH_KING_SCHMIDT_N
+      Count: 1
+- Id: 12462
+  Title: Rest in the King's Thoughts (Advanced)
+  Targets:
+    - Mob: MD_GH_KING_SCHMIDT_H
+      Count: 1
 - Id: 8882
   Title: Ivan Wigner's Joyful Missionary Life
 - Id: 8883

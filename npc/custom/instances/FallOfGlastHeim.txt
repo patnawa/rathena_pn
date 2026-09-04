@@ -1,0 +1,1262 @@
+//===== rAthena Script =======================================
+//= EDDA: Fall of Glast Heim
+//===== Description: =========================================
+//= Story prerequisite, Normal and Advanced purification,
+//= Cursed King Schmidt battle, rewards, equipment exchange,
+//= enchantment/reset, and dismantling machines.
+//=
+//= References:
+//= https://iro.ragnarokonline.com/news/updatedetail.aspx?id=353
+//= https://wiki.muhro.eu/Fall_of_Glastheim
+//= https://wiki.muhro.eu/King_Schmidts_Insignias_Enchants
+//= https://wiki.muhro.eu/King_Schmidts_%26_Young_Leaf
+//============================================================
+
+function	script	FOGH_IsEquipment	{
+	.@id = getarg(0);
+	if (.@id == 15388 || .@id == 15389)
+		return 1;
+	return .@id >= 32228 && .@id <= 32233;
+}
+
+// Recreates the selected equipped artifact while preserving its physical
+// card, refine, grade, identify/broken state, binding, and random options.
+function	script	FOGH_RebuildEquipment	{
+	.@part = getarg(0);
+	.@new1 = getarg(1);
+	.@new2 = getarg(2);
+	.@new3 = getarg(3);
+	switch (.@part) {
+	case EQI_ARMOR:
+		.@mask = EQP_ARMOR;
+		break;
+	case EQI_GARMENT:
+		.@mask = EQP_GARMENT;
+		break;
+	case EQI_ACC_L:
+		.@mask = EQP_ACC_L;
+		break;
+	default:
+		return 0;
+	}
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & .@mask) && callfunc("FOGH_IsEquipment",@inventorylist_id[.@i])) {
+			.@idx = .@i;
+			break;
+		}
+	}
+	if (.@idx < 0)
+		return 0;
+	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
+	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
+	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
+	.@id = @inventorylist_id[.@idx];
+	.@identify = @inventorylist_identify[.@idx];
+	.@refine = @inventorylist_refine[.@idx];
+	.@attribute = @inventorylist_attribute[.@idx];
+	.@grade = @inventorylist_enchantgrade[.@idx];
+	.@bound = @inventorylist_bound[.@idx];
+	.@card0 = @inventorylist_card1[.@idx];
+	delitemidx @inventorylist_idx[.@idx],1;
+	if (.@bound)
+		getitembound4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@bound,.@grade,.@oid,.@oval,.@opar;
+	else
+		getitem4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@grade,.@oid,.@oval,.@opar;
+	return 1;
+}
+
+glast_01,241,290,5	script	Oscar#fogh_gate	4_ED_OSCAR,{
+	mes "[Oscar]";
+	if (BaseLevel < 130) {
+		mes "The dimensional record is too unstable for you. Return at Base Level 130.";
+		close;
+	}
+
+	if (isbegin_quest(12457) == 0) {
+		mes "You can see me? Then you have already crossed enough dimensional gaps to notice their scent.";
+		next;
+		mes "I am Oscar, a collector of records. I want to show you the moment old Glast Heim fell and learn what became of King Schmidt.";
+		next;
+		if (select("Observe the record.:Not now.") == 2)
+			close;
+		setquest 12457;
+		mes "Concentrate on my hand. Speak with me again when you are ready to enter the record.";
+		close;
+	}
+
+	if (isbegin_quest(12457) == 1) {
+		.@name$ = "Fall of Glast Heim (Scenario)";
+		.@iid = instance_id(IM_CHAR);
+		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
+			mes "You already own another active instance. Close it before opening this story record.";
+			close;
+		}
+		if (!.@iid) {
+			mes "This first record must be observed personally. It is a solo scenario, but the purification missions unlocked afterward may be entered with a party.";
+			next;
+			if (select("Open the story record.:Wait.") == 2)
+				close;
+			.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
+			if (.@iid < 1) {
+				mes "The dimensional gap could not be formed. Please try again shortly.";
+				close;
+			}
+		}
+		if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+			mes "The story record is not ready.";
+			close;
+		}
+		end;
+	}
+
+	// Repair quest state for characters that completed the scenario before
+	// the short outside epilogue was added.
+	if (isbegin_quest(12457) == 2 && isbegin_quest(12458) == 0)
+		setquest 12458;
+	if (isbegin_quest(12458) == 1) {
+		mes "Schmidt destroyed the orb, but the death energy remained and his memories scattered through the castle.";
+		next;
+		mes "I can now open two purification records. OSC1052, OSC1127, and OSC1198 will also recognize you.";
+		completequest 12458;
+		close;
+	}
+	if (isbegin_quest(12458) != 2) {
+		mes "The record is incomplete. Finish ^3366FFMoment of the Fall^000000 first.";
+		close;
+	}
+
+	.@party = getcharid(1);
+	.@mode = .@party ? IM_PARTY : IM_CHAR;
+	.@owner = .@party ? .@party : getcharid(0);
+	.@iid = instance_id(.@mode);
+	if (.@iid) {
+		.@name$ = instance_live_info(ILI_NAME,.@iid);
+		if (.@name$ != "Fall of Glast Heim (Normal)" && .@name$ != "Fall of Glast Heim (Advanced)") {
+			mes "Your " + (.@party ? "party" : "character") + " already owns another active instance.";
+			close;
+		}
+		if (FOGH_RunIID != .@iid && FOGH_DailyNext > gettimetick(2)) {
+			mes "You already entered another Fall of Glast Heim record today.";
+			close;
+		}
+		if (.@name$ == "Fall of Glast Heim (Advanced)" && BaseLevel < 170) {
+			mes "The active Advanced record requires Base Level 170.";
+			close;
+		}
+		if (FOGH_RunIID != .@iid && .@name$ == "Fall of Glast Heim (Advanced)" && FOGH_AdvancedNext > gettimetick(2)) {
+			mes "Your Advanced record cooldown has not ended.";
+			close;
+		}
+		mes "The active record is ^3366FF"+.@name$+"^000000.";
+		next;
+		if (select("Re-enter the active record.:Leave.") == 2)
+			close;
+		.@new_run = 0;
+	} else {
+		if (FOGH_DailyNext > gettimetick(2)) {
+			mes "You already entered a Fall of Glast Heim purification record today. Try again in "+((FOGH_DailyNext-gettimetick(2)+59)/60)+" minute(s).";
+			close;
+		}
+		mes "Choose a record. Both share the daily entry limit.";
+		next;
+		.@choice = select("Normal - Base Level 130:Advanced - Base Level 170:Cancel");
+		if (.@choice == 3)
+			close;
+		if (.@choice == 2 && BaseLevel < 170) {
+			mes "The Advanced record requires Base Level 170.";
+			close;
+		}
+		if (.@choice == 2 && FOGH_AdvancedNext > gettimetick(2)) {
+			mes "The Advanced record can be opened again in "+((FOGH_AdvancedNext-gettimetick(2)+59)/60)+" minute(s).";
+			close;
+		}
+		if (.@party && !is_party_leader()) {
+			mes "Your party leader must open the record.";
+			close;
+		}
+		.@name$ = .@choice == 1 ? "Fall of Glast Heim (Normal)" : "Fall of Glast Heim (Advanced)";
+		.@iid = instance_create(.@name$,.@mode,.@owner);
+		if (.@iid < 1) {
+			mes "The dimensional record could not be formed. Please try again shortly.";
+			close;
+		}
+		.@new_run = 1;
+	}
+
+	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+		mes "You do not belong to this record, or its map is not ready.";
+		close;
+	}
+	if (FOGH_RunIID != .@iid) {
+		.@hunt = .@name$ == "Fall of Glast Heim (Advanced)" ? 12462 : 12459;
+		.@wait = .@name$ == "Fall of Glast Heim (Advanced)" ? 12461 : 12460;
+		if (isbegin_quest(.@hunt))
+			erasequest .@hunt;
+		if (isbegin_quest(.@wait))
+			erasequest .@wait;
+		setquest .@hunt;
+		setquest .@wait;
+		FOGH_RunIID = .@iid;
+		FOGH_DailyNext = gettimetick(2) + 86400;
+		if (.@name$ == "Fall of Glast Heim (Advanced)")
+			FOGH_AdvancedNext = gettimetick(2) + 259200;
+	}
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 130";
+	end;
+}
+
+glast_01,245,296,5	script	OSC1052#fogh	2_VENDING_MACHINE1,{
+	if (isbegin_quest(12458) != 2) {
+		mes "[OSC1052]";
+		mes "Access denied. Oscar must authorize this dimensional record first.";
+		close;
+	}
+	mes "[OSC1052 - Exchange]";
+	mes "I exchange preserved remnants from the Fall of Glast Heim for King Schmidt artifacts.";
+	next;
+	.@choice = select("King Schmidt's Suit:King Schmidt's Manteau:King Schmidt's Insignia:Cancel");
+	switch (.@choice) {
+	case 1:
+		.@item = 15388;
+		setarray .@cost[0],25739,5,6607,10;
+		break;
+	case 2:
+		.@item = 15389;
+		setarray .@cost[0],25739,5,6607,10;
+		break;
+	case 3:
+		mes "[OSC1052 - Exchange]";
+		mes "Select the insignia.";
+		next;
+		.@pick = select("Power (STR):Divine Power (INT):Hundred Lucks (LUK):Rigid Body (VIT):Flash (AGI):Celestial (DEX):Cancel");
+		if (.@pick == 7)
+			close;
+		setarray .@insignia[0],32228,32229,32230,32231,32232,32233;
+		.@item = .@insignia[.@pick-1];
+		setarray .@cost[0],25740,10,6755,40;
+		break;
+	default:
+		close;
+	}
+	mes "[OSC1052 - Exchange]";
+	mes "<ITEM>"+getitemname(.@item)+"<INFO>"+.@item+"</INFO></ITEM>";
+	mes "Required: ^3366FF"+.@cost[1]+" "+getitemname(.@cost[0])+"^000000";
+	mes "          ^3366FF"+.@cost[3]+" "+getitemname(.@cost[2])+"^000000";
+	next;
+	if (select("Exchange.:Cancel.") == 2)
+		close;
+	if (countitem(.@cost[0]) < .@cost[1] || countitem(.@cost[2]) < .@cost[3]) {
+		mes "You do not have enough materials.";
+		close;
+	}
+	delitem .@cost[0],.@cost[1];
+	delitem .@cost[2],.@cost[3];
+	getitem .@item,1;
+	mes "Exchange complete.";
+	close;
+
+OnInit:
+	setunittitle getnpcid(0),"[Exchange Machine]";
+	end;
+}
+
+glast_01,243,296,5	script	OSC1127#fogh	2_SLOT_MACHINE,{
+	if (isbegin_quest(12458) != 2) {
+		mes "[OSC1127]";
+		mes "Access denied. Complete Oscar's story record first.";
+		close;
+	}
+	disable_items;
+	mes "[OSC1127 - Enchant]";
+	mes "Equip the King Schmidt artifact you want to process.";
+	next;
+	.@choice = select("Armor:Garment:Left Accessory:Cancel");
+	switch (.@choice) {
+	case 1:
+		.@part = EQI_ARMOR;
+		.@expected = 15388;
+		.@mat1 = 25739;
+		.@amount1 = 5;
+		.@mat2 = 6608;
+		.@amount2 = 10;
+		break;
+	case 2:
+		.@part = EQI_GARMENT;
+		.@expected = 15389;
+		.@mat1 = 25739;
+		.@amount1 = 5;
+		.@mat2 = 6608;
+		.@amount2 = 10;
+		break;
+	case 3:
+		.@part = EQI_ACC_L;
+		.@mat1 = 25740;
+		.@amount1 = 10;
+		.@mat2 = 6755;
+		.@amount2 = 40;
+		break;
+	default:
+		close;
+	}
+	if (!getequipisequiped(.@part)) {
+		mes "[OSC1127 - Enchant]";
+		mes "No artifact is equipped in that position.";
+		close;
+	}
+	.@id = getequipid(.@part);
+	if ((.@part != EQI_ACC_L && .@id != .@expected) || (.@part == EQI_ACC_L && (.@id < 32228 || .@id > 32233))) {
+		mes "[OSC1127 - Enchant]";
+		mes "That is not a compatible King Schmidt artifact.";
+		close;
+	}
+	.@refine = getequiprefinerycnt(.@part);
+	for (.@i = 0; .@i < 4; ++.@i) {
+		.@card[.@i] = getequipcardid(.@part,.@i);
+		.@check[.@i] = .@card[.@i];
+	}
+
+	if (.@card[1] && .@card[2] && .@card[3]) {
+		mes "[OSC1127 - Enchant]";
+		mes "All three enchant slots are filled. I can reset them without harming the physical card, refine, grade, binding, or random options.";
+		mes "Reset cost: ^3366FF"+(.@amount1*5)+" "+getitemname(.@mat1)+"^000000 and ^3366FF"+(.@amount2*5)+" "+getitemname(.@mat2)+"^000000.";
+		next;
+		if (select("Reset all enchants.:Cancel.") == 2)
+			close;
+		if (countitem(.@mat1) < .@amount1*5 || countitem(.@mat2) < .@amount2*5) {
+			mes "You do not have enough materials.";
+			close;
+		}
+		if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@check[0],.@check[1],.@check[2],.@check[3]))
+			end;
+		delitem .@mat1,.@amount1*5;
+		delitem .@mat2,.@amount2*5;
+		if (!callfunc("FOGH_RebuildEquipment",.@part,0,0,0)) {
+			mes "The equipped artifact could not be located. No further processing is possible.";
+			close;
+		}
+		specialeffect2 EF_REPAIRWEAPON;
+		mes "All enchant slots were reset.";
+		close;
+	}
+
+	.@slot = !.@card[3] ? 3 : (!.@card[2] ? 2 : 1);
+	if (.@part == EQI_ARMOR) {
+		if (.@slot == 1)
+			setarray .@pool[0],4702,4712,4722,4732,4742,4752,29302,29303,29304,29305,29306,29307,29308,29309;
+		else
+			setarray .@pool[0],4702,4703,4704,4712,4713,4714,4722,4723,4724,4732,4733,4734,4742,4743,4744,4752,4753,4754;
+	} else if (.@part == EQI_GARMENT) {
+		setarray .@pool[0],4808,4820,4821,4813,4812,4826,4817,4816,4843,4834,4835,4836,4863,4864,4865;
+	} else if (.@slot == 3) {
+		setarray .@pool[0],4702,4703,4704,4712,4713,4714,4722,4723,4724,4732,4733,4734,4742,4743,4744,4752,4753,4754;
+	} else if (.@slot == 2) {
+		setarray .@pool[0],4821,4822,4812,4826,4843,4844,4835,4836,4864,4865;
+	} else {
+		setarray .@pool[0],29587,29588,29589,29590,29591,29592;
+		mes "[OSC1127 - Special Enchant]";
+		mes "The final insignia enchant is selected by you and cannot fail.";
+		mes "Cost: ^3366FF30,000,000 Zeny^000000, ^3366FF50 "+getitemname(25740)+"^000000, ^3366FF200 "+getitemname(6755)+"^000000, and ^3366FF3 "+getitemname(7925)+"^000000.";
+		next;
+		.@special = select("Flash:Power:Celestial:Divine Power:Rigid Body:Hundred Lucks:Cancel");
+		if (.@special == 7)
+			close;
+		.@enchant = .@pool[.@special-1];
+		if (Zeny < 30000000 || countitem(25740) < 50 || countitem(6755) < 200 || countitem(7925) < 3) {
+			mes "You do not have the required Zeny and materials.";
+			close;
+		}
+		if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@check[0],.@check[1],.@check[2],.@check[3]))
+			end;
+		Zeny -= 30000000;
+		delitem 25740,50;
+		delitem 6755,200;
+		delitem 7925,3;
+		.@card[1] = .@enchant;
+		callfunc "FOGH_RebuildEquipment",.@part,.@card[1],.@card[2],.@card[3];
+		specialeffect2 EF_REPAIRWEAPON;
+		mes "The special enchant ^3366FF"+getitemname(.@enchant)+"^000000 was installed.";
+		close;
+	}
+
+	.@position$ = .@slot == 3 ? "fourth" : "third";
+	mes "[OSC1127 - Enchant]";
+	mes "A random enchant will be installed in the "+.@position$+" slot.";
+	mes "Cost: ^3366FF"+.@amount1+" "+getitemname(.@mat1)+"^000000 and ^3366FF"+.@amount2+" "+getitemname(.@mat2)+"^000000.";
+	mes "The process cannot fail or destroy the item.";
+	next;
+	if (select("Enchant.:Cancel.") == 2)
+		close;
+	if (countitem(.@mat1) < .@amount1 || countitem(.@mat2) < .@amount2) {
+		mes "You do not have enough materials.";
+		close;
+	}
+	if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@check[0],.@check[1],.@check[2],.@check[3]))
+		end;
+	.@enchant = .@pool[rand(getarraysize(.@pool))];
+	.@card[.@slot] = .@enchant;
+	delitem .@mat1,.@amount1;
+	delitem .@mat2,.@amount2;
+	callfunc "FOGH_RebuildEquipment",.@part,.@card[1],.@card[2],.@card[3];
+	specialeffect2 EF_REPAIRWEAPON;
+	mes "Installed enchant: ^3366FF"+getitemname(.@enchant)+"^000000.";
+	close;
+
+OnInit:
+	setunittitle getnpcid(0),"[Enchant Machine]";
+	end;
+}
+
+glast_01,241,296,5	script	OSC1198#fogh	2_DROP_MACHINE,{
+	if (isbegin_quest(12458) != 2) {
+		mes "[OSC1198]";
+		mes "Access denied. Complete Oscar's story record first.";
+		close;
+	}
+	disable_items;
+	mes "[OSC1198 - Dismantle]";
+	mes "Equip the artifact you want to dismantle. The item, its card, refine, grade, and enchants will be permanently destroyed.";
+	next;
+	.@choice = select("Armor:Garment:Left Accessory:Cancel");
+	switch (.@choice) {
+	case 1:
+		.@part = EQI_ARMOR;
+		.@expected = 15388;
+		.@material = 25739;
+		break;
+	case 2:
+		.@part = EQI_GARMENT;
+		.@expected = 15389;
+		.@material = 25739;
+		break;
+	case 3:
+		.@part = EQI_ACC_L;
+		.@material = 25740;
+		break;
+	default:
+		close;
+	}
+	if (!getequipisequiped(.@part)) {
+		mes "No item is equipped in that position.";
+		close;
+	}
+	.@id = getequipid(.@part);
+	if ((.@part != EQI_ACC_L && .@id != .@expected) || (.@part == EQI_ACC_L && (.@id < 32228 || .@id > 32233))) {
+		mes "That is not a compatible King Schmidt artifact.";
+		close;
+	}
+	.@refine = getequiprefinerycnt(.@part);
+	.@enchants = 0;
+	for (.@i = 0; .@i < 4; ++.@i) {
+		.@card[.@i] = getequipcardid(.@part,.@i);
+		if (.@i > 0 && .@card[.@i])
+			++.@enchants;
+	}
+	if (!.@enchants) {
+		mes "At least one enchant is required before this machine can recover material.";
+		close;
+	}
+	if (.@material == 25739) {
+		setarray .@minimum[1],3,6,9;
+		setarray .@maximum[1],6,10,15;
+	} else {
+		setarray .@minimum[1],2,4,6;
+		setarray .@maximum[1],6,12,18;
+	}
+	mes "[OSC1198 - Dismantle]";
+	mes "Dismantle ^FF0000"+getitemname(.@id)+"^000000?";
+	mes "Recovery: "+.@minimum[.@enchants]+"-"+.@maximum[.@enchants]+" "+getitemname(.@material)+".";
+	mes "There is also a 3% chance to recover a costume memento.";
+	next;
+	if (select("Permanently dismantle it.:Cancel.") == 2)
+		close;
+	if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@card[0],.@card[1],.@card[2],.@card[3]))
+		end;
+	delequip .@part;
+	.@amount = rand(.@minimum[.@enchants],.@maximum[.@enchants]);
+	getitem .@material,.@amount;
+	mes "Recovered ^3366FF"+.@amount+" "+getitemname(.@material)+"^000000.";
+	if (rand(100) < 3) {
+		setarray .@costume[0],31631,31632,31633;
+		.@bonus = .@costume[rand(3)];
+		getitem .@bonus,1;
+		mes "Memento recovered: ^33AA33"+getitemname(.@bonus)+"^000000!";
+	}
+	close;
+
+OnInit:
+	setunittitle getnpcid(0),"[Dismantle Machine]";
+	end;
+}
+
+//============================================================
+// Shared instance controller
+//============================================================
+
+1@gl_prq,1,1,0	script	#FOGH_Control	HIDDEN_NPC,{
+	end;
+
+OnInstanceInit:
+	'fogh_map$ = instance_mapname("1@gl_prq");
+	'fogh_name$ = instance_live_info(ILI_NAME,instance_id());
+	'fogh_stage = 0;
+	'fogh_survivors = 0;
+	'fogh_survivor_mask = 0;
+	'fogh_retry = 0;
+	'fogh_room_kills = 0;
+	'fogh_boss_gid = 0;
+	'fogh_flame_pattern = 0;
+
+	setarray .@all$[0],
+		"Oscar#fogh_story_guide","Varmundt#fogh_story0","Oscar#fogh_story0","Schmidt#fogh_story0",
+		"Gate#fogh_story","Schmidt#fogh_story1","Heinrich#fogh_story","Varmundt#fogh_story1",
+		"Schmidt#fogh_story2","Oscar#fogh_story1","Varmundt#fogh_story2","Orb#fogh_story",
+		"Oscar#fogh_story2","Oscar#fogh_purify","Oscar#fogh_room1","Oscar#fogh_room2",
+		"Oscar#fogh_room3","Oscar#fogh_room4","Oscar#fogh_reward";
+	for (.@i = 0; .@i < getarraysize(.@all$); ++.@i)
+		disablenpc instance_npcname(.@all$[.@i]);
+	for (.@i = 0; .@i < 8; ++.@i)
+		disablenpc instance_npcname("Knight Survivor#fogh_survivor"+.@i);
+	for (.@i = 0; .@i < 16; ++.@i)
+		disablenpc instance_npcname("Victim#fogh_victim"+.@i);
+
+	if ('fogh_name$ == "Fall of Glast Heim (Scenario)") {
+		enablenpc instance_npcname("Oscar#fogh_story_guide");
+		enablenpc instance_npcname("Varmundt#fogh_story0");
+		mapannounce 'fogh_map$,"Oscar: Speak with Varmundt's illusion near the southern corridor.",bc_map,0x77AAFF;
+		end;
+	}
+	if ('fogh_name$ == "Fall of Glast Heim (Normal)") {
+		'fogh_maid = 20392;
+		'fogh_mad = 20388;
+		'fogh_white = 20390;
+		'fogh_dark = 20394;
+		'fogh_boss = 20386;
+		'fogh_hunt = 12459;
+		'fogh_advanced = 0;
+	} else if ('fogh_name$ == "Fall of Glast Heim (Advanced)") {
+		'fogh_maid = 20392;
+		'fogh_mad = 20389;
+		'fogh_white = 20391;
+		'fogh_dark = 20394;
+		'fogh_boss = 20387;
+		'fogh_hunt = 12462;
+		'fogh_advanced = 1;
+	} else {
+		mapannounce 'fogh_map$,"This dimensional record has an invalid mode and will close.",bc_map,0xFF3333;
+		initnpctimer;
+		end;
+	}
+	enablenpc instance_npcname("Oscar#fogh_purify");
+	mapannounce 'fogh_map$,"Oscar: The purification begins in the old kitchen. Speak with me when everyone is ready.",bc_map,0x77AAFF;
+	end;
+
+OnFinish:
+	initnpctimer;
+	end;
+
+OnTimer5000:
+	stopnpctimer;
+	instance_destroy();
+	end;
+
+OnInstanceDestroy:
+	.@count = getmapunits(BL_PC,'fogh_map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@players[.@i])) {
+			.@mercenary = getmercinfo(8);
+			if (.@mercenary && unitexists(.@mercenary))
+				unitkill .@mercenary;
+			detachrid;
+		}
+	}
+	end;
+}
+
+//============================================================
+// Moment of the Fall - solo story prerequisite
+//============================================================
+
+1@gl_prq,299,20,4	script	Oscar#fogh_story_guide	4_ED_OSCAR,{
+	mes "[Oscar]";
+	mes "This record reacts to your progress. I can return you to the current scene.";
+	next;
+	if (select("Move to the current scene.:Stay here.") == 2)
+		close;
+	if ('fogh_stage <= 0)
+		warp 'fogh_map$,299,27;
+	else if ('fogh_stage == 1)
+		warp 'fogh_map$,280,29;
+	else if ('fogh_stage == 2)
+		warp 'fogh_map$,273,48;
+	else if ('fogh_stage == 3)
+		warp 'fogh_map$,284,70;
+	else if ('fogh_stage == 4)
+		warp 'fogh_map$,284,229;
+	else if ('fogh_stage <= 8)
+		warp 'fogh_map$,299,288;
+	else
+		warp 'fogh_map$,52,263;
+	end;
+}
+
+1@gl_prq,299,30,4	script	Varmundt#fogh_story0	4_M_BARMUND,{
+	if ('fogh_stage != 0) {
+		mes "[Varmundt's Illusion]";
+		mes "Follow the record. Oscar can guide you if you become separated from it.";
+		close;
+	}
+	mes "[Varmundt's Illusion]";
+	mes "The curse of Himmelmez is consuming the castle. No living person should enter, yet the young king refuses to abandon his people.";
+	next;
+	mes "Watch closely. This is the moment duty drew Schmidt into the disaster.";
+	'fogh_stage = 1;
+	enablenpc instance_npcname("Oscar#fogh_story0");
+	specialeffect EF_YELLOBODY,AREA,instance_npcname("Oscar#fogh_story0");
+	close;
+}
+
+1@gl_prq,280,32,3	script	Oscar#fogh_story0	4_ED_OSCAR,{
+	if ('fogh_stage != 1)
+		end;
+	mes "[Oscar]";
+	mes "Varmundt warned Schmidt to leave, but the king considered every soldier and servant his responsibility.";
+	next;
+	mes "Meet Schmidt farther inside. In this record, you will accompany him.";
+	'fogh_stage = 2;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Schmidt#fogh_story0");
+	close;
+}
+
+1@gl_prq,273,51,7	script	Schmidt#fogh_story0	4_ED_SCHMIDT,{
+	if ('fogh_stage != 2)
+		end;
+	mes "[Schmidt]";
+	mes "There are soldiers ahead who have not evacuated. Help me find them before we approach the castle gate.";
+	next;
+	mes "Some minds are already breaking under the curse. Stay near me; they may attack if they no longer recognize their king.";
+	'fogh_stage = 3;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Gate#fogh_story");
+	for (.@i = 0; .@i < 8; ++.@i)
+		enablenpc instance_npcname("Knight Survivor#fogh_survivor"+.@i);
+	for (.@i = 0; .@i < 16; ++.@i)
+		enablenpc instance_npcname("Victim#fogh_victim"+.@i);
+	.@mercenary = getmercinfo(8);
+	if (.@mercenary && unitexists(.@mercenary))
+		unitkill .@mercenary;
+	mercenary_create 20385,300000;
+	mapannounce 'fogh_map$,"Schmidt: Find at least six surviving knights, then meet me at the northern gate.",bc_map,0x77AAFF;
+	close;
+}
+
+1@gl_prq,290,51,7	script	Knight Survivor#fogh_survivor0	4_F_KHALITZBURG,3,3,{
+	if ('fogh_stage != 3)
+		end;
+	.@id = atoi(replacestr(strnpcinfo(2),"fogh_survivor",""));
+	.@bit = 1 << .@id;
+	if ('fogh_survivor_mask & .@bit)
+		end;
+	'fogh_survivor_mask |= .@bit;
+	++'fogh_survivors;
+	mes "[Knight Survivor]";
+	switch (.@id) {
+	case 0:
+		mes "Your Majesty, do not enter the castle. The curse has swallowed the halls.";
+		break;
+	case 1:
+		mes "A strange orb is draining life from everyone nearby. The fallen are rising again.";
+		break;
+	case 2:
+		mes "The outer knights can barely contain the undead. Please order a retreat.";
+		break;
+	case 3:
+		mes "I can hear the orb inside my thoughts... I will evacuate while I still can.";
+		break;
+	case 4:
+		mes "The knights inside have become monsters. I am heading outside now.";
+		break;
+	case 5:
+		mes "Please turn back with us, Your Majesty. This place is already lost.";
+		break;
+	case 6:
+		mes "Leave me alone! You are one of the creatures wearing a human face!";
+		break;
+	default:
+		mes "I only take orders from King Schmidt... No, stay away!";
+		break;
+	}
+	disablenpc instance_npcname(strnpcinfo(0));
+	if (.@id >= 6) {
+		getmapxy(.@map$,.@x,.@y,BL_NPC);
+		monster .@map$,.@x,.@y,"Cursed Survivor",20388,1;
+	}
+	mapannounce 'fogh_map$,"Survivors found: "+'fogh_survivors+" / 6 required.",bc_map,0x77AAFF;
+	close;
+}
+
+1@gl_prq,295,102,5	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor1	4_F_KHALITZBURG,3,3
+1@gl_prq,295,134,3	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor2	4_F_KHALITZBURG,3,3
+1@gl_prq,287,156,4	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor3	4_F_KHALITZBURG,3,3
+1@gl_prq,279,160,7	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor4	4_F_KHALITZBURG,3,3
+1@gl_prq,278,165,6	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor5	4_F_KHALITZBURG,3,3
+1@gl_prq,299,179,1	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor6	4_F_KHALITZBURG,3,3
+1@gl_prq,300,193,2	duplicate(Knight Survivor#fogh_survivor0)	Knight Survivor#fogh_survivor7	4_F_KHALITZBURG,3,3
+
+1@gl_prq,283,54,3	script	Victim#fogh_victim0	4_TOWER_06,5,5,{
+	end;
+
+OnTouch:
+	if ('fogh_stage != 3)
+		end;
+	specialeffect EF_VENOMDUST;
+	disablenpc instance_npcname(strnpcinfo(0));
+	getmapxy(.@map$,.@x,.@y,BL_NPC);
+	monster .@map$,.@x,.@y,"Maggot",2467,1;
+	end;
+}
+
+1@gl_prq,287,78,4	duplicate(Victim#fogh_victim0)	Victim#fogh_victim1	4_TOWER_08,5,5
+1@gl_prq,294,94,2	duplicate(Victim#fogh_victim0)	Victim#fogh_victim2	4_TOWER_11,5,5
+1@gl_prq,291,132,5	duplicate(Victim#fogh_victim0)	Victim#fogh_victim3	4_TOWER_13,5,5
+1@gl_prq,295,149,4	duplicate(Victim#fogh_victim0)	Victim#fogh_victim4	4_TOWER_03,5,5
+1@gl_prq,283,152,2	duplicate(Victim#fogh_victim0)	Victim#fogh_victim5	4_TOWER_01,5,5
+1@gl_prq,278,146,3	duplicate(Victim#fogh_victim0)	Victim#fogh_victim6	4_TOWER_06,5,5
+1@gl_prq,289,167,6	duplicate(Victim#fogh_victim0)	Victim#fogh_victim7	4_TOWER_08,5,5
+1@gl_prq,284,176,8	duplicate(Victim#fogh_victim0)	Victim#fogh_victim8	4_TOWER_11,5,5
+1@gl_prq,287,201,7	duplicate(Victim#fogh_victim0)	Victim#fogh_victim9	4_TOWER_13,5,5
+1@gl_prq,297,209,1	duplicate(Victim#fogh_victim0)	Victim#fogh_victim10	4_TOWER_03,5,5
+1@gl_prq,280,210,5	duplicate(Victim#fogh_victim0)	Victim#fogh_victim11	4_TOWER_01,5,5
+1@gl_prq,299,267,7	duplicate(Victim#fogh_victim0)	Victim#fogh_victim12	4_TOWER_06,5,5
+1@gl_prq,292,283,8	duplicate(Victim#fogh_victim0)	Victim#fogh_victim13	4_TOWER_08,5,5
+1@gl_prq,285,294,8	duplicate(Victim#fogh_victim0)	Victim#fogh_victim14	4_TOWER_11,5,5
+1@gl_prq,297,297,8	duplicate(Victim#fogh_victim0)	Victim#fogh_victim15	4_TOWER_13,5,5
+
+1@gl_prq,284,217,4	script	Gate#fogh_story	4_ED_FENCE,{
+	if ('fogh_stage != 3)
+		end;
+	mes "[Northern Gate]";
+	if ('fogh_survivors < 6) {
+		mes "Schmidt will not continue while survivors remain unaccounted for.";
+		mes "Found: ^FF0000"+'fogh_survivors+" / 6^000000.";
+		close;
+	}
+	.@mercenary = getmercinfo(8);
+	if ((!.@mercenary || !unitexists(.@mercenary)) && !'fogh_retry) {
+		'fogh_retry = 1;
+		'fogh_survivors = 0;
+		'fogh_survivor_mask = 0;
+		killmonsterall 'fogh_map$;
+		for (.@i = 0; .@i < 8; ++.@i)
+			enablenpc instance_npcname("Knight Survivor#fogh_survivor"+.@i);
+		mercenary_create 20385,300000;
+		mes "Schmidt fell before reaching the gate. The record is rewinding to the rescue operation.";
+		next;
+		mes "Find six survivors again. On this second attempt the story will continue even if Schmidt falls.";
+		close2;
+		warp 'fogh_map$,273,60;
+		end;
+	}
+	mes "Schmidt shatters the weakened gate and leads the way into the castle.";
+	'fogh_stage = 4;
+	disablenpc instance_npcname(strnpcinfo(0));
+	for (.@i = 0; .@i < 8; ++.@i)
+		disablenpc instance_npcname("Knight Survivor#fogh_survivor"+.@i);
+	for (.@i = 0; .@i < 16; ++.@i)
+		disablenpc instance_npcname("Victim#fogh_victim"+.@i);
+	killmonsterall 'fogh_map$;
+	enablenpc instance_npcname("Schmidt#fogh_story1");
+	close2;
+	warp 'fogh_map$,284,229;
+	end;
+}
+
+1@gl_prq,286,247,7	script	Schmidt#fogh_story1	4_ED_SCHMIDT,{
+	if ('fogh_stage != 4)
+		end;
+	mes "[Schmidt]";
+	mes "The closer we get, the more this energy drains life and reason. The upper corridors have collapsed, so there is no path but forward.";
+	next;
+	mes "Heinrich should be near the orb. We must reach him now.";
+	.@mercenary = getmercinfo(8);
+	if (.@mercenary && unitexists(.@mercenary))
+		unitkill .@mercenary;
+	'fogh_stage = 5;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Heinrich#fogh_story");
+	close2;
+	warp 'fogh_map$,299,288;
+	end;
+}
+
+1@gl_prq,301,294,3	script	Heinrich#fogh_story	4_M_HEINRICH,{
+	if ('fogh_stage != 5)
+		end;
+	mes "[Heinrich]";
+	mes "Your Majesty! The orb is feeding on every death in the castle. We cannot approach it without being consumed.";
+	next;
+	mes "Varmundt's projection knows more, but even he cannot contain it from afar.";
+	'fogh_stage = 6;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Varmundt#fogh_story1");
+	close;
+}
+
+1@gl_prq,299,297,4	script	Varmundt#fogh_story1	4_M_BARMUND,{
+	if ('fogh_stage != 6)
+		end;
+	mes "[Varmundt's Illusion]";
+	mes "That orb is the curse's catalyst. Destroying it may stop the drain, but the backlash will consume whoever supplies the necessary power.";
+	next;
+	mes "Young king, this is why I begged you to leave.";
+	'fogh_stage = 7;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Schmidt#fogh_story2");
+	close;
+}
+
+1@gl_prq,297,294,5	script	Schmidt#fogh_story2	4_ED_SCHMIDT,{
+	if ('fogh_stage != 7)
+		end;
+	mes "[Schmidt]";
+	mes "A king's life belongs to his people. If my strength can end this curse, there is nothing left to decide.";
+	next;
+	mes "Heinrich, lead those who remain. Do not let my final act become another reason for war.";
+	'fogh_stage = 8;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Oscar#fogh_story1");
+	close;
+}
+
+1@gl_prq,299,297,4	script	Oscar#fogh_story1	4_ED_OSCAR,{
+	if ('fogh_stage != 8)
+		end;
+	mes "[Oscar]";
+	mes "The final fragment lies beyond this break in the record. I will move us beside the orb.";
+	'fogh_stage = 9;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Varmundt#fogh_story2");
+	close2;
+	warp 'fogh_map$,52,263;
+	end;
+}
+
+1@gl_prq,55,281,3	script	Varmundt#fogh_story2	4_M_BARMUND,{
+	if ('fogh_stage != 9)
+		end;
+	mes "[Varmundt's Illusion]";
+	mes "Schmidt pours his remaining life into the dimensional orb. Its surface fractures, but the wave of death energy closes around him.";
+	next;
+	mes "The orb is about to break. Witness its last memory.";
+	'fogh_stage = 10;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Orb#fogh_story");
+	close;
+}
+
+1@gl_prq,52,277,5	script	Orb#fogh_story	4_ED_ORB,{
+	if ('fogh_stage != 10)
+		end;
+	mes "[Dimensional Orb]";
+	mes "The orb cracks. Schmidt's form disappears inside a surge that sweeps across the hall, and then the draining energy stops.";
+	specialeffect EF_MAPPILLAR,AREA;
+	'fogh_stage = 11;
+	disablenpc instance_npcname(strnpcinfo(0));
+	enablenpc instance_npcname("Oscar#fogh_story2");
+	close;
+}
+
+1@gl_prq,52,270,4	script	Oscar#fogh_story2	4_ED_OSCAR,{
+	if ('fogh_stage != 11)
+		end;
+	mes "[Oscar]";
+	mes "Schmidt destroyed the catalyst, but no trace of his soul remained. Only memory fragments and death energy were left behind.";
+	next;
+	mes "You have now seen the Fall of Glast Heim. Speak with me outside to unlock its purification records and artifact machines.";
+	if (isbegin_quest(12457) == 1)
+		completequest 12457;
+	if (isbegin_quest(12458) == 0)
+		setquest 12458;
+	getexp 600000,600000;
+	'fogh_stage = 12;
+	donpcevent instance_npcname("#FOGH_Control")+"::OnFinish";
+	close2;
+	warp "glast_01",244,290;
+	end;
+}
+
+//============================================================
+// Normal / Advanced purification
+//============================================================
+
+1@gl_prq,79,22,4	script	Oscar#fogh_purify	4_ED_OSCAR,{
+	mes "[Oscar]";
+	if (!'fogh_stage) {
+		mes "Four areas are trapped in distorted time. Purify every cursed resident in sequence, avoid the flaming thorns, and then confront Schmidt's memory.";
+		next;
+		if (getcharid(1) && !is_party_leader()) {
+			mes "The party leader must begin the operation after everyone enters.";
+			close;
+		}
+		if (select("Begin purification.:Wait.") == 2)
+			close;
+		'fogh_stage = 1;
+		donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnRoom0";
+		mes "The old kitchen is ahead. Free every Fallen Maid from the curse.";
+		close;
+	}
+	mes "I can return you to the active section of the record.";
+	next;
+	if (select("Join the operation.:Stay here.") == 2)
+		close;
+	if ('fogh_stage == 1)
+		warp 'fogh_map$,79,22;
+	else if ('fogh_stage <= 3)
+		warp 'fogh_map$,123,63;
+	else if ('fogh_stage <= 5)
+		warp 'fogh_map$,148,116;
+	else if ('fogh_stage <= 7)
+		warp 'fogh_map$,76,178;
+	else
+		warp 'fogh_map$,52,244;
+	end;
+}
+
+1@gl_prq,127,63,4	script	Oscar#fogh_room1	4_ED_OSCAR,{
+	if ('fogh_stage != 2)
+		end;
+	mes "[Oscar]";
+	mes "The kitchen is stable. The next chamber held knights resting after duty; the curse took them before they could evacuate.";
+	next;
+	mes "Put every Mad Knight and Dark Knight to rest.";
+	'fogh_stage = 3;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnRoom1";
+	close;
+}
+
+1@gl_prq,148,121,4	script	Oscar#fogh_room2	4_ED_OSCAR,{
+	if ('fogh_stage != 4)
+		end;
+	mes "[Oscar]";
+	mes "This guest area was contaminated through food touched by the curse. The White Knights here are only memory fragments now.";
+	next;
+	mes "Purify the entire chamber.";
+	'fogh_stage = 5;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnRoom2";
+	close;
+}
+
+1@gl_prq,67,176,4	script	Oscar#fogh_room3	4_ED_OSCAR,{
+	if ('fogh_stage != 6)
+		end;
+	mes "[Oscar]";
+	mes "The archive was guarded by the strongest commanders. Their memories retained far more of the curse.";
+	next;
+	mes "Clear the last chamber, then we can approach the king.";
+	'fogh_stage = 7;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnRoom3";
+	close;
+}
+
+1@gl_prq,52,270,4	script	Oscar#fogh_room4	4_ED_OSCAR,{
+	if ('fogh_stage != 8)
+		end;
+	mes "[Oscar]";
+	mes "The figure ahead is not the living Schmidt. It is a cursed memory wearing his form, and the dimensional barrier cannot protect us here.";
+	next;
+	if (select("Confront Cursed King Schmidt.:Prepare longer.") == 2)
+		close;
+	'fogh_stage = 9;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnBoss";
+	close;
+}
+
+1@gl_prq,1,1,0	script	#FOGH_Purification	HIDDEN_NPC,{
+	end;
+
+OnSpawnRoom0:
+	'fogh_room_kills = 0;
+	callsub L_SpawnHazards,0;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom0Dead";
+	setarray .@xy[0],
+		20,41,70,72,62,36,20,57,67,36,20,67,56,72,
+		56,40,26,61,38,36,63,75,20,56,62,36,34,61,
+		64,72,63,47,35,61,64,72,20,57,20,56,61,36;
+	for (.@i = 0; .@i < getarraysize(.@xy); .@i += 2)
+		monster 'fogh_map$,.@xy[.@i],.@xy[.@i+1],"Fallen Maid",'fogh_maid,1,.@event$;
+	mapannounce 'fogh_map$,"Oscar: Purify all 21 Fallen Maids in the old kitchen. Flaming Thorns cannot be destroyed.",bc_map,0xFF66FF;
+	end;
+
+OnRoom0Dead:
+	if ('fogh_stage != 1)
+		end;
+	++'fogh_room_kills;
+	if ('fogh_room_kills < 21)
+		end;
+	'fogh_stage = 2;
+	callsub L_ClearHazards;
+	enablenpc instance_npcname("Oscar#fogh_room1");
+	mapannounce 'fogh_map$,"Oscar: The first area's time flow is stable. Continue east.",bc_map,0x55FFAA;
+	callsub L_WarpAll,123,63;
+	end;
+
+OnSpawnRoom1:
+	'fogh_room_kills = 0;
+	callsub L_SpawnHazards,1;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom1Dead";
+	setarray .@madxy[0],
+		167,47,160,21,167,59,165,66,169,21,144,21,158,66,
+		167,64,134,34,154,49,160,66,158,66,134,43,134,31,
+		134,21,167,62,156,21,134,31,134,47,134,35,134,33,167,47;
+	for (.@i = 0; .@i < getarraysize(.@madxy); .@i += 2)
+		monster 'fogh_map$,.@madxy[.@i],.@madxy[.@i+1],"Mad Knight",'fogh_mad,1,.@event$;
+	monster 'fogh_map$,167,67,"Dark Knight",'fogh_dark,1,.@event$;
+	monster 'fogh_map$,181,67,"Dark Knight",'fogh_dark,1,.@event$;
+	mapannounce 'fogh_map$,"Oscar: Purify 22 Mad Knights and 2 Dark Knights.",bc_map,0xFF66FF;
+	end;
+
+OnRoom1Dead:
+	if ('fogh_stage != 3)
+		end;
+	++'fogh_room_kills;
+	if ('fogh_room_kills < 24)
+		end;
+	'fogh_stage = 4;
+	callsub L_ClearHazards;
+	enablenpc instance_npcname("Oscar#fogh_room2");
+	mapannounce 'fogh_map$,"Oscar: The second area is stable. Continue north into the guest chamber.",bc_map,0x55FFAA;
+	callsub L_WarpAll,148,116;
+	end;
+
+OnSpawnRoom2:
+	'fogh_room_kills = 0;
+	callsub L_SpawnHazards,2;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom2Dead";
+	setarray .@whitexy[0],
+		178,141,165,123,148,139,178,141,171,141,164,173,148,141,
+		131,165,173,123,169,173,131,131,147,173,160,123,164,173,
+		148,172,164,173,159,141,160,141,182,123,185,123,148,145,
+		136,173,140,173,132,173,131,159,171,173,148,150;
+	for (.@i = 0; .@i < getarraysize(.@whitexy); .@i += 2)
+		monster 'fogh_map$,.@whitexy[.@i],.@whitexy[.@i+1],"White Knight",'fogh_white,1,.@event$;
+	monster 'fogh_map$,134,141,"Dark Knight",'fogh_dark,1,.@event$;
+	monster 'fogh_map$,137,141,"Dark Knight",'fogh_dark,1,.@event$;
+	monster 'fogh_map$,131,141,"Dark Knight",'fogh_dark,1,.@event$;
+	mapannounce 'fogh_map$,"Oscar: Purify 27 White Knights and 3 Dark Knights.",bc_map,0xFF66FF;
+	end;
+
+OnRoom2Dead:
+	if ('fogh_stage != 5)
+		end;
+	++'fogh_room_kills;
+	if ('fogh_room_kills < 30)
+		end;
+	'fogh_stage = 6;
+	callsub L_ClearHazards;
+	enablenpc instance_npcname("Oscar#fogh_room3");
+	mapannounce 'fogh_map$,"Oscar: The third area is stable. Continue west into the archive.",bc_map,0x55FFAA;
+	callsub L_WarpAll,76,178;
+	end;
+
+OnSpawnRoom3:
+	'fogh_room_kills = 0;
+	callsub L_SpawnHazards,3;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom3Dead";
+	setarray .@whitexy[0],32,165,37,178,32,163,40,164,41,164;
+	setarray .@darkxy[0],36,178,41,130,55,164,32,141,26,130,25,164,17,164,47,164,42,130,27,130;
+	for (.@i = 0; .@i < getarraysize(.@whitexy); .@i += 2)
+		monster 'fogh_map$,.@whitexy[.@i],.@whitexy[.@i+1],"White Knight",'fogh_white,1,.@event$;
+	for (.@i = 0; .@i < getarraysize(.@darkxy); .@i += 2)
+		monster 'fogh_map$,.@darkxy[.@i],.@darkxy[.@i+1],"Dark Knight",'fogh_dark,1,.@event$;
+	mapannounce 'fogh_map$,"Oscar: Purify 5 White Knights and 10 Dark Knights in the final chamber.",bc_map,0xFF66FF;
+	end;
+
+OnRoom3Dead:
+	if ('fogh_stage != 7)
+		end;
+	++'fogh_room_kills;
+	if ('fogh_room_kills < 15)
+		end;
+	'fogh_stage = 8;
+	callsub L_ClearHazards;
+	enablenpc instance_npcname("Oscar#fogh_room4");
+	mapannounce 'fogh_map$,"Oscar: All four areas are stable. Meet me before the northern throne hall.",bc_map,0x55FFAA;
+	callsub L_WarpAll,52,244;
+	end;
+
+OnSpawnBoss:
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnBossDead";
+	monster 'fogh_map$,52,277,'fogh_advanced ? "Cursed King Schmidt H" : "Cursed King Schmidt",'fogh_boss,1,.@event$;
+	'fogh_boss_gid = $@mobid[0];
+	mapannounce 'fogh_map$,"Oscar: Cursed King Schmidt has materialized. Watch the moving flame patterns!",bc_map,0xFF5555;
+	donpcevent instance_npcname("#FOGH_BossFlames")+"::OnStart";
+	end;
+
+OnBossDead:
+	if ('fogh_stage != 9)
+		end;
+	'fogh_stage = 10;
+	donpcevent instance_npcname("#FOGH_BossFlames")+"::OnStop";
+	callsub L_ClearHazards;
+	.@count = getmapunits(BL_PC,'fogh_map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@players[.@i])) {
+			if (isbegin_quest('fogh_hunt) == 1)
+				completequest 'fogh_hunt;
+			detachrid;
+		}
+	}
+	enablenpc instance_npcname("Oscar#fogh_reward");
+	mapannounce 'fogh_map$,"Oscar: Schmidt's cursed memory is purified. Claim your reward before the record closes in five minutes.",bc_map,0x55FFAA;
+	donpcevent instance_npcname("#FOGH_PurificationCleanup")+"::OnStart";
+	end;
+
+OnHazardDead:
+	end;
+
+L_ClearHazards:
+	killmonster 'fogh_map$,instance_npcname(strnpcinfo(0))+"::OnHazardDead";
+	return;
+
+L_WarpAll:
+	.@x = getarg(0);
+	.@y = getarg(1);
+	.@count = getmapunits(BL_PC,'fogh_map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i)
+		unitwarp .@players[.@i],'fogh_map$,.@x,.@y;
+	return;
+
+L_SpawnHazards:
+	.@room = getarg(0);
+	if (.@room == 0)
+		setarray .@xy[0],45,35,32,41,61,45,70,59,19,62,31,50;
+	else if (.@room == 1)
+		setarray .@xy[0],151,70,161,33,137,57,160,38,138,39,151,54,148,56,139,66;
+	else if (.@room == 2)
+		setarray .@xy[0],136,173,154,148,142,171,181,120,158,161,148,140,178,133,161,157,149,146,143,120;
+	else
+		setarray .@xy[0],59,142,56,177,63,178,24,146,40,147,26,153,45,159,26,162,40,128,20,163,46,128,56,164;
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnHazardDead";
+	for (.@i = 0; .@i < getarraysize(.@xy); .@i += 2) {
+		monster 'fogh_map$,.@xy[.@i],.@xy[.@i+1],"Flaming Thorn",1960,1,.@event$;
+		.@thorn = $@mobid[0];
+		monster 'fogh_map$,.@xy[.@i],.@xy[.@i+1],"Cursed Flame",20426,1,.@event$;
+		.@flame = $@mobid[0];
+		setunitdata .@thorn,UMOB_DMGIMMUNE,true;
+		setunitdata .@flame,UMOB_DMGIMMUNE,true;
+	}
+	return;
+}
+
+1@gl_prq,1,1,0	script	#FOGH_BossFlames	HIDDEN_NPC,{
+	end;
+
+OnStart:
+	'fogh_flame_pattern = 0;
+	initnpctimer;
+	end;
+
+OnTimer3000:
+	if (!unitexists('fogh_boss_gid)) {
+		stopnpctimer;
+		end;
+	}
+	.@event$ = instance_npcname("#FOGH_Purification")+"::OnHazardDead";
+	killmonster 'fogh_map$,.@event$;
+	++'fogh_flame_pattern;
+	if ('fogh_flame_pattern % 2) {
+		.@y1 = 257 + rand(3);
+		.@y2 = 294 - rand(3);
+		for (.@x = 14; .@x <= 92; .@x += 6) {
+			monster 'fogh_map$,.@x,.@y1,"Cursed Flame",20426,1,.@event$;
+			.@gid = $@mobid[0];
+			setunitdata .@gid,UMOB_DMGIMMUNE,true;
+			monster 'fogh_map$,.@x,.@y2,"Cursed Flame",20426,1,.@event$;
+			.@gid = $@mobid[0];
+			setunitdata .@gid,UMOB_DMGIMMUNE,true;
+		}
+	} else {
+		.@x1 = 27 + rand(3);
+		.@x2 = 76 - rand(3);
+		for (.@y = 249; .@y <= 305; .@y += 5) {
+			monster 'fogh_map$,.@x1,.@y,"Cursed Flame",20426,1,.@event$;
+			.@gid = $@mobid[0];
+			setunitdata .@gid,UMOB_DMGIMMUNE,true;
+			monster 'fogh_map$,.@x2,.@y,"Cursed Flame",20426,1,.@event$;
+			.@gid = $@mobid[0];
+			setunitdata .@gid,UMOB_DMGIMMUNE,true;
+		}
+	}
+	initnpctimer;
+	end;
+
+OnStop:
+	stopnpctimer;
+	killmonster 'fogh_map$,instance_npcname("#FOGH_Purification")+"::OnHazardDead";
+	end;
+}
+
+1@gl_prq,1,1,0	script	#FOGH_PurificationCleanup	HIDDEN_NPC,{
+	end;
+
+OnStart:
+	initnpctimer;
+	end;
+
+OnTimer300000:
+	stopnpctimer;
+	instance_destroy();
+	end;
+}
+
+1@gl_prq,52,270,4	script	Oscar#fogh_reward	4_ED_OSCAR,{
+	mes "[Oscar]";
+	.@iid = instance_id();
+	if (FOGH_RewardIID == .@iid) {
+		mes "You already recovered this record's reward. I will return you outside.";
+		close2;
+		warp "glast_01",244,290;
+		end;
+	}
+	if (isbegin_quest('fogh_hunt) != 2) {
+		mes "The king's memory has not been purified for you yet.";
+		close;
+	}
+	if ('fogh_advanced) {
+		if (!checkweight(25740,6) || !checkweight(102551,1)) {
+			mes "You are carrying too much to receive the reward.";
+			close;
+		}
+		getitem 25740,6;
+		getitem 102551,1;
+		mes "Reward: ^3366FF6 "+getitemname(25740)+"^000000 and ^3366FF1 "+getitemname(102551)+"^000000.";
+	} else {
+		if (!checkweight(25739,3) || !checkweight(102550,1)) {
+			mes "You are carrying too much to receive the reward.";
+			close;
+		}
+		getitem 25739,3;
+		getitem 102550,1;
+		mes "Reward: ^3366FF3 "+getitemname(25739)+"^000000 and ^3366FF1 "+getitemname(102550)+"^000000.";
+	}
+	FOGH_RewardIID = .@iid;
+	erasequest 'fogh_hunt;
+	next;
+	mes "The dimensional record is collapsing. I will return you to Glast Heim.";
+	close2;
+	warp "glast_01",244,290;
+	end;
+}
+
+1@gl_prq	mapflag	noreturn
+1@gl_prq	mapflag	nosave	SavePoint
+1@gl_prq	mapflag	nowarp

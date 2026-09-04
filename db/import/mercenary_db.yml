@@ -1,0 +1,31 @@
+Header:
+  Type: MERCENARY_DB
+  Version: 1
+Body:
+- Id: 20385
+  AegisName: MD_GH_KING_SCHMIDT
+  Name: King Schmidt
+  Level: 130
+  Hp: 675000
+  Sp: 1
+  Attack: 1667
+  Attack2: 2778
+  Defense: 82
+  MagicDefense: 155
+  Str: 98
+  Agi: 55
+  Vit: 84
+  Int: 75
+  Dex: 147
+  Luk: 18
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Demihuman
+  Element: Neutral
+  ElementLevel: 2
+  WalkSpeed: 175
+  AttackDelay: 100
+  AttackMotion: 1000
+  DamageMotion: 250

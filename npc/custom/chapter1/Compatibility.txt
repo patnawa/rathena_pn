@@ -52,6 +52,15 @@ function	script	instance_enable	{
 	return;
 }
 
+function	script	instance_hide	{
+	.@npc_name$ = instance_npcname(getarg(0));
+	if (getarg(1))
+		hideonnpc .@npc_name$;
+	else
+		hideoffnpc .@npc_name$;
+	return;
+}
+
 function	script	instance_event	{
 	donpcevent instance_npcname(getarg(0)) + "::" + getarg(1);
 	return;
