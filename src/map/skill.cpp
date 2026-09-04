@@ -404,6 +404,8 @@ uint16 skill_dummy2skill_id(uint16 skill_id) {
 			return GN_SLINGITEM;
 		case RL_R_TRIP_PLUSATK:
 			return RL_R_TRIP;
+		case NPC_LOCKON_LASER_ATK:
+			return NPC_LOCKON_LASER;
 		case NPC_MAXPAIN_ATK:
 			return NPC_MAXPAIN;
 		case SU_CN_METEOR2:
@@ -3921,6 +3923,21 @@ TIMER_FUNC(skill_timerskill){
 				break;
 			switch( skl->skill_id )
 			{
+				case NPC_LOCKON_LASER_ATK: {
+					if (status_isdead(*src))
+						break;
+
+					int32 skill_range = abs(skill_get_range(skl->skill_id, skl->skill_lv));
+
+					// The warning cell only fires while it remains in range and in line of sight.
+					if (!check_distance_blxy(src, skl->x, skl->y, skill_range) ||
+						!path_search_long(nullptr, src->m, src->x, src->y, skl->x, skl->y, CELL_CHKWALL))
+						break;
+
+					target = battle_getenemyarea(src, skl->x, skl->y, 0, BL_CHAR, src->id);
+					if (target != nullptr)
+						skill_castend_damage_id(src, target, skl->skill_id, skl->skill_lv, tick, skl->flag);
+					} break;
 				case GN_CRAZYWEED_ATK:
 					{
 						int32 dummy = 1, i = skill_get_unit_range(skl->skill_id,skl->skill_lv);

@@ -4,8 +4,6 @@
 //= [Walkthrough Conversion]
 //= Episode 17.2 Twilight Garden
 //= Episode 17.2 Hey Sweety
-//= Note:
-// - NPC_LOCKON_LASER skill is currently no implemented.
 //===== Changelog: ===========================================
 //= 1.0 Initial release [crazyarashi]
 //= 1.1 Optimizations and cleanup [Everade]
@@ -230,16 +228,35 @@ OnMobDead:
 	if ('twilight_story == 6) {
 		'guide = getnpcid(0);
 		'twilight_story = 7;
+		'escort_move_started = gettimetick(2);
 		npcspeed 200;
 		npctalk "Then, let us go.";
 		unitwalk 'guide,199,248, instance_npcname("Almond#amond01") + "::OnEvent00";
 		enablenpc instance_npcname("Intruder#sweety02");
 		end;
 	}
-	if ('twilight_story == 7)
+	if ('twilight_story == 7) {
+		if (gettimetick(2) - 'escort_move_started < 30) {
+			npctalk "This way. Stay close to me.";
+			end;
+		}
+		if (!is_party_leader()) {
+			npctalk "Please ask your party leader to help me resume the escort.";
+			end;
+		}
+		mes "[Almond]";
+		mes "I seem to have stopped moving. Shall I resume from the next checkpoint?";
+		if (select("Keep waiting.:Resume the escort.") == 1)
+			close;
+		close2;
+		unitstopwalk 'guide,USW_FORCE_STOP;
+		unitwarp 'guide,'map_bamn$,245,248;
+		donpcevent instance_npcname("Almond#amond01") + "::OnEvent01";
 		end;
+	}
 	if ('twilight_story == 8) {
 		'twilight_story = 9;
+		'escort_move_started = gettimetick(2);
 		unittalk getcharid(3), "" + strcharinfo(0) + " : Tracker : Pyo-o-o-o-o! There!!";
 		setpcblock PCBLOCK_NPC, true;
 		navigateto("1@bamn",242,206);
@@ -256,12 +273,32 @@ OnMobDead:
 		unitwalk 'guide,245,229, instance_npcname("Almond#amond01") + "::OnEvent02";
 		end;
 	}
+	if ('twilight_story == 9) {
+		if (gettimetick(2) - 'escort_move_started < 20) {
+			npctalk "Guest, there is an intruder!";
+			end;
+		}
+		if (!is_party_leader()) {
+			npctalk "Please ask your party leader to help me resume the escort.";
+			end;
+		}
+		mes "[Almond]";
+		mes "I seem to have stopped moving. Shall I resume from the next checkpoint?";
+		if (select("Keep waiting.:Resume the escort.") == 1)
+			close;
+		close2;
+		unitstopwalk 'guide,USW_FORCE_STOP;
+		unitwarp 'guide,'map_bamn$,245,215;
+		'twilight_story = 10;
+		end;
+	}
 	if ('twilight_story == 10 || 'twilight_story == 11 || 'twilight_story == 12) {
 		npctalk "Be careful!";
 		end;
 	}
 	if ('twilight_story == 13) {
 		'twilight_story = 14;
+		'escort_move_started = gettimetick(2);
 		npcspeed 200;
 		setpcblock PCBLOCK_NPC, true;
 		npctalk "Let's go check the repeater.";
@@ -271,8 +308,25 @@ OnMobDead:
 		unitwalk 'guide,244,208, instance_npcname("Almond#amond01") + "::OnEvent04";
 		end;
 	}
-	if ('twilight_story == 14)
+	if ('twilight_story == 14) {
+		if (gettimetick(2) - 'escort_move_started < 45) {
+			npctalk "Let's go check the repeater.";
+			end;
+		}
+		if (!is_party_leader()) {
+			npctalk "Please ask your party leader to help me resume the escort.";
+			end;
+		}
+		mes "[Almond]";
+		mes "I seem to have stopped moving. Shall I resume from the next checkpoint?";
+		if (select("Keep waiting.:Resume the escort.") == 1)
+			close;
+		close2;
+		unitstopwalk 'guide,USW_FORCE_STOP;
+		unitwarp 'guide,'map_bamn$,327,189;
+		donpcevent instance_npcname("Almond#amond01") + "::OnEvent10";
 		end;
+	}
 	if ('twilight_story == 15) {
 		'twilight_story = 16;
 		setpcblock PCBLOCK_NPC, true;
@@ -295,12 +349,30 @@ OnMobDead:
 	if ('twilight_story == 18) {
 		npcspeed 200;
 		'twilight_story = 19;
+		'escort_move_started = gettimetick(2);
 		npctalk "Are you all right, adventurer? Then, we can keep going.";
 		unitwalk 'guide,332,143, instance_npcname("Almond#amond01") + "::OnEvent11";
 		end;
 	}
-	if ('twilight_story == 19)
+	if ('twilight_story == 19) {
+		if (gettimetick(2) - 'escort_move_started < 45) {
+			npctalk "Let's go to the next repeater~";
+			end;
+		}
+		if (!is_party_leader()) {
+			npctalk "Please ask your party leader to help me resume the escort.";
+			end;
+		}
+		mes "[Almond]";
+		mes "I seem to have stopped moving. Shall I resume from the next checkpoint?";
+		if (select("Keep waiting.:Resume the escort.") == 1)
+			close;
+		close2;
+		unitstopwalk 'guide,USW_FORCE_STOP;
+		unitwarp 'guide,'map_bamn$,261,98;
+		donpcevent instance_npcname("Almond#amond01") + "::OnEvent16";
 		end;
+	}
 	if ('twilight_story == 20) {
 		npctalk "Shouldn't you talk to Est? Looks like she've been waiting.";
 		end;
@@ -308,14 +380,20 @@ OnMobDead:
 	end;
 
 OnEvent00:
+	if ('twilight_story != 7)
+		end;
 	npctalk "This way.";
 	sleep 1000;
 	unitwalk 'guide,225,248, instance_npcname("Almond#amond01") + "::OnFollow00";
 	end;
 OnFollow00:
+	if ('twilight_story != 7)
+		end;
 	unitwalk 'guide,245,248, instance_npcname("Almond#amond01") + "::OnEvent01";
 	end;
 OnEvent01:
+	if ('twilight_story != 7)
+		end;
 	npctalk "Let's go see the Repeater that is oftenly hacked.";
 	sleep 2000;
 	npctalk "Huh? What are you carrying right now? Take it out and show it to me.";
@@ -323,14 +401,20 @@ OnEvent01:
 	end;
 
 OnEvent02:
+	if ('twilight_story != 9)
+		end;
 	npctalk "Adventurer, there's an intruder!";
 	unitwalk 'guide,245,215, instance_npcname("Almond#amond01") + "::OnEvent03";
 	end;
 OnEvent03:
+	if ('twilight_story != 9)
+		end;
 	'twilight_story = 10;
 	end;
 
 OnEvent04:
+	if ('twilight_story != 14)
+		end;
 	npctalk "...checking the signal.";
 	sleep 2000;
 	npctalk "...hacking channel checked.";
@@ -346,34 +430,48 @@ OnEvent04:
 	unitwalk 'guide,245,204, instance_npcname("Almond#amond01") + "::OnEvent05";
 	end;
 OnEvent05:
+	if ('twilight_story != 14)
+		end;
 	npctalk "Adventurer. Do you like Almonds? A customer who liked almonds named me. Does it suit me?";
 	sleep 3000;
 	unitwalk 'guide,265,204, instance_npcname("Almond#amond01") + "::OnEvent06";
 	end;
 OnEvent06:
+	if ('twilight_story != 14)
+		end;
 	npctalk "That kid a while ago, I've seen him before.";
 	unitwalk 'guide,285,204, instance_npcname("Almond#amond01") + "::OnEvent07";
 	end;
 OnEvent07:
+	if ('twilight_story != 14)
+		end;
 	npctalk "But he always ran so well, It's the first time I've seen him properly~";
 	unitwalk 'guide,300,204, instance_npcname("Almond#amond01") + "::OnEvent08";
 	end;
 OnEvent08:
+	if ('twilight_story != 14)
+		end;
 	npctalk "The Pitaya's here is cute~ They say Almonds is delicious? Have you eaten almonds before?";
 	sleep 2000;
 	npctalk "This way.";
 	unitwalk 'guide,300,190, instance_npcname("Almond#amond01") + "::OnEvent09";
 	end;
 OnEvent09:
+	if ('twilight_story != 14)
+		end;
 	npctalk "It's been a while since I've been this comfortable~";
 	unitwalk 'guide,327,189, instance_npcname("Almond#amond01") + "::OnEvent10";
 	end;
 OnEvent10:
+	if ('twilight_story != 14)
+		end;
 	npctalk "Adventurer. Is that noisy thing flickering again? Let us check it for a second.";
 	'twilight_story = 15;
 	end;
 
 OnEvent11:
+	if ('twilight_story != 19)
+		end;
 	npctalk "...checking the signal.";
 	sleep 2000;
 	npctalk "...hacking channel checked.";
@@ -389,25 +487,37 @@ OnEvent11:
 	unitwalk 'guide,320,139, instance_npcname("Almond#amond01") + "::OnFollow12";
 	end;
 OnFollow12:
+	if ('twilight_story != 19)
+		end;
 	unitwalk 'guide,300,139, instance_npcname("Almond#amond01") + "::OnEvent12";
 	end;
 OnEvent12:
+	if ('twilight_story != 19)
+		end;
 	npctalk "It's the kid from before, right? He's an intruder. That's weird, kind of like almonds...";
 	unitwalk 'guide,285,139, instance_npcname("Almond#amond01") + "::OnEvent13";
 	end;
 OnEvent13:
+	if ('twilight_story != 19)
+		end;
 	npctalk "Shall we go faster? There's a sound coming from over there...";
 	unitwalk 'guide,285,118, instance_npcname("Almond#amond01") + "::OnEvent14";
 	end;
 OnEvent14:
+	if ('twilight_story != 19)
+		end;
 	npctalk "It's more quiet than I thought. Where did the intruders go?";
 	unitwalk 'guide,285,98, instance_npcname("Almond#amond01") + "::OnEvent15";
 	end;
 OnEvent15:
+	if ('twilight_story != 19)
+		end;
 	npctalk "This way.";
 	unitwalk 'guide,261,98, instance_npcname("Almond#amond01") + "::OnEvent16";
 	end;
 OnEvent16:
+	if ('twilight_story != 19)
+		end;
 	npcspeed 80;
 	npctalk "It's Est!";
 	'twilight_story = 20;
@@ -814,6 +924,19 @@ OnTouch:
 		disablenpc();
 		donpcevent instance_npcname("twilight_daily") + "::OnStart";
 		'sweety = 1;
+		close;
+	}
+	if ('sweety == 2 && checkquest(18022,HUNTING) == 2 && inarray('sweety_rewarded[0],getcharid(0)) < 0) {
+		specialeffect EF_NPC_STOP;
+		mes "[Sweety]";
+		mes "He dropped something while he collapsed.";
+		if (!checkweight(102559,1)) {
+			mes "You are carrying too much. Make room in your inventory and talk to Sweety again.";
+			close;
+		}
+		getitem 102559,1;
+		'sweety_rewarded[getarraysize('sweety_rewarded)] = getcharid(0);
+		mes "You received an ^0000FFAntiquity Mansion (Sweety)^000000.";
 		close;
 	}
 	specialeffect EF_NPC_STOP;

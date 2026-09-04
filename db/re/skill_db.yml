@@ -18073,6 +18073,58 @@ Body:
     HitCount: 1
     Duration1: 60000
     Status: Relieve_off
+  - Id: 773
+    Name: NPC_LOCKON_LASER
+    Description: Lock-On Laser
+    MaxLevel: 5
+    TargetType: Attack
+    DamageFlags:
+      NoDamage: true
+    Flags:
+      IgnoreGtb: true
+      IsNpc: true
+    Range: 11
+    HitCount: 1
+    Duration1:
+      - Level: 1
+        Time: 4000
+      - Level: 2
+        Time: 6000
+      - Level: 3
+        Time: 8000
+      - Level: 4
+        Time: 10000
+      - Level: 5
+        Time: 12000
+    Status: Lockon_Laser
+  - Id: 774
+    Name: NPC_LOCKON_LASER_ATK
+    Description: Lock-On Laser Attack
+    MaxLevel: 5
+    Type: Weapon
+    TargetType: Attack
+    DamageFlags:
+      Splash: true
+      IgnoreAtkCard: true
+      IgnoreElement: true
+      IgnoreDefense: true
+      IgnoreFlee: true
+      IgnoreDefCard: true
+    Flags:
+      IgnoreLandProtector: true
+      IsNpc: true
+    Range: 11
+    Hit: Single
+    HitCount: 1
+    Element: Neutral
+    SplashArea: 3
+    Duration1: 700
+    Unit:
+      Id: Glittering_Greed
+      Interval: -1
+      Target: Enemy
+      Flag:
+        PathCheck: true
   - Id: 776
     Name: NPC_DEADLYCURSE
     Description: Deadly Curse

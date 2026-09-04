@@ -9578,6 +9578,7 @@ static int32 status_get_sc_interval(enum sc_type type)
 		case SC_GRADUAL_GRAVITY:
 		case SC_KILLING_AURA:
 		case SC_BOSSMAPINFO:
+		case SC_LOCKON_LASER:
 			return 1000;
 		case SC_WINKCHARM:
 		case SC_VOICEOFSIREN:
@@ -13008,6 +13009,10 @@ static bool status_change_start_post_delay(block_list* src, block_list* bl, sc_t
 			tick_time = status_get_sc_interval(type);
 			val4 = tick - tick_time; // Remaining time
 			break;
+		case SC_LOCKON_LASER:
+			tick_time = status_get_sc_interval(type);
+			val4 = tick - tick_time; // Remaining time
+			break;
 		case SC_WILD_WALK:
 			val2 = (1 + val1 / 2) * 25;
 			val3 = 50 + 50 * val1;
@@ -15213,6 +15218,27 @@ TIMER_FUNC(status_change_timer){
 			}
 		}
 		break;
+	case SC_LOCKON_LASER: {
+		block_list* src = map_id2bl(sce->val2);
+
+		if (src == nullptr || src->prev == nullptr || status_isdead(*src) || src->m != bl->m) {
+			sce->val4 = 0;
+			break;
+		}
+
+		int32 skill_range = abs(skill_get_range(NPC_LOCKON_LASER, sce->val1));
+
+		if (battle_check_target(src, bl, BCT_ENEMY) <= 0 ||
+			!check_distance_bl(src, bl, skill_range) ||
+			!path_search_long(nullptr, src->m, src->x, src->y, bl->x, bl->y, CELL_CHKWALL))
+			break;
+
+		int16 x = bl->x;
+		int16 y = bl->y;
+
+		if (skill_unitsetting(src, NPC_LOCKON_LASER_ATK, sce->val1, x, y, 0) != nullptr)
+			skill_addtimerskill(src, tick + skill_get_time(NPC_LOCKON_LASER_ATK, sce->val1), 0, x, y, NPC_LOCKON_LASER_ATK, sce->val1, 0, 0);
+		} break;
 	}
 
 	// If status has an interval and there is at least 100ms remaining time, wait for next interval

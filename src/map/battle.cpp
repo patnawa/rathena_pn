@@ -2707,6 +2707,7 @@ static int32 battle_range_type(const block_list* src, const block_list* target, 
 		case MH_THE_ONE_FIGHTER_RISES: // 7 cell cast range.
 		//case ABC_DEFT_STAB: // 2 cell cast range???
 		case NPC_MAXPAIN_ATK:
+		case NPC_LOCKON_LASER_ATK:
 		case SS_SHIMIRU: // 11 cell cast range.
 		case SKE_STAR_LIGHT_KICK: // 7 cell cast range.
 			return BF_SHORT;
@@ -5700,6 +5701,11 @@ static struct Damage battle_calc_weapon_attack(block_list *src, block_list *targ
 			break;
 		case MH_EQC:
 			ATK_ADD(wd.damage, wd.damage2, 6000 * skill_lv + status_get_lv(src)); // !TODO: Confirm base level bonus
+			break;
+		case NPC_LOCKON_LASER_ATK:
+			// Official fixed damage. Defensive status effects are applied later.
+			wd.damage = 30000;
+			wd.damage2 = 0;
 			break;
 		case NPC_MAXPAIN_ATK:
 			if (sc) {

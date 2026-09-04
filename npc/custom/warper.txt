@@ -672,7 +672,8 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Episode 21: Gimli Infiltration",I21, "Episode 21: Mysterious Ghost Ship",I22,
 		"Episode 21: Final Battle",I23, "Episode 21: Secret Altar",I24,
 		"Episode 21: Silent Sanctuary",I25, "Old Glast Heim Challenge",I26,
-		"Old Glast Heim Beginner",I27, "Fall of Glast Heim",I28;
+		"Old Glast Heim Beginner",I27, "Fall of Glast Heim",I28,
+		"Twilight Garden (Story)",I29, "Hey! Sweety",I30;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -726,6 +727,10 @@ I27: Restrict("RE");
 	Go("glast_01",196,235);
 I28: Restrict("RE");
 	Go("glast_01",241,290);
+I29: Restrict("RE");
+	Go("ba_in01",51,157);
+I30: Restrict("RE");
+	Go("ba_in01",32,250);
 
 // --------------------------------------------------
 	Special:
