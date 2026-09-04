@@ -1,0 +1,37 @@
+# GPL-3.0-or-later
+# Official Constellation Tower quest IDs/titles. Quest 12514 is the individual
+# three-day cooldown which expires at the next 04:00 after three days.
+# Integration note: merge/import this uniquely named staging file explicitly;
+# rAthena auto-loads only db/import/quest_db.yml.
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 12513
+    Title: Why the Tower Was Destroyed
+  - Id: 12514
+    Title: Aftereffects of Entering the Tower
+    TimeLimit: 3d 4h
+  - Id: 12515
+    Title: Face to Face with the New Tower Owner
+    Targets:
+      - Mob: MD_BETELGEUSE
+        Count: 1
+  - Id: 12516
+    Title: Secret of the Fountain - Maximum
+    Targets:
+      - Mob: MD_BETELGEUSE
+        Count: 1
+  - Id: 12517
+    Title: Secret of the Fountain - Seal
+    Targets:
+      - Mob: MD_BETELGEUSE
+        Count: 1
+  - Id: 12518
+    Title: An Outcast
+  - Id: 12519
+    Title: Whereabouts of the Original Owner
+    Targets:
+      - Mob: MD_NAGHT_SIEGER
+        Count: 1

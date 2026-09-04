@@ -1,0 +1,61 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+# Airship Crash / Aircraft Crash Site quest IDs from the shipped client.
+#
+# Quest 5909 is intentionally not given a static TimeLimit.  The published
+# rule is one entry every three days, resetting at 04:00; a fixed YAML
+# duration cannot express that wall-clock boundary exactly.  AirshipCrash.txt
+# maintains the character timestamp and uses 5909 as its visible standby
+# marker.
+Body:
+  - Id: 5908
+    Title: Airship Crash Site
+  - Id: 5909
+    Title: Airship Crash Site - Standby
+  - Id: 5910
+    Title: Forgotten Joint Research (1)
+  - Id: 5911
+    Title: Forgotten Joint Research (2)
+  - Id: 5912
+    Title: Joint Monster Hunting Request (50)
+    Targets:
+      - Id: 1
+        Count: 50
+        Location: 1@mjo2
+        MapName: Mjolnir Mountains - Forgotten Cavity
+        MapMobTargets:
+          MD_AIRBOAT_TREE: true
+          MD_AIRBOAT_PORING: true
+          MD_AIRBOAT_WORM: true
+          MD_AIRBOAT_LEECH: true
+          MD_AIRBOAT_MOS: true
+  - Id: 5913
+    Title: Joint Monster Hunting Request (100)
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: 1@mjo2
+        MapName: Mjolnir Mountains - Forgotten Cavity
+        MapMobTargets:
+          MD_AIRBOAT_TREE: true
+          MD_AIRBOAT_PORING: true
+          MD_AIRBOAT_WORM: true
+          MD_AIRBOAT_LEECH: true
+          MD_AIRBOAT_MOS: true
+  - Id: 5914
+    Title: Joint Monster Hunting Request (150)
+    Targets:
+      - Id: 1
+        Count: 150
+        Location: 1@mjo2
+        MapName: Mjolnir Mountains - Forgotten Cavity
+        MapMobTargets:
+          MD_AIRBOAT_TREE: true
+          MD_AIRBOAT_PORING: true
+          MD_AIRBOAT_WORM: true
+          MD_AIRBOAT_LEECH: true
+          MD_AIRBOAT_MOS: true
+  - Id: 5915
+    Title: Compensation for Helping the Wounded

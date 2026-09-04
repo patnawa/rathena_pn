@@ -1,0 +1,687 @@
+//===== rAthena Script =======================================
+//= Constellation Tower
+//===== License: =============================================
+//= Copyright (C) rAthena contributors. GPL-3.0-or-later.
+//===== Clean-room sources: ==================================
+//= Gravity/iRO Constellation Tower update (official):
+//= https://renewal.playragnarok.com/news/updatedetail.aspx?id=386&p=1
+//= Gravity/kRO 75-floor expansion notes (official):
+//= https://ro.gnjoy.com/news/update/View.asp?seq=263&curpage=1
+//= Public factual cross-checks (no script source copied):
+//= https://irowiki.org/wiki/Constellation_Tower
+//= https://www.divine-pride.net/database/map/1@ch_t
+//=
+//= Published rules implemented exactly:
+//= - Base level 240+, party leader reservation, solo party accepted.
+//= - Five minutes to enter (instance idle timeout) and 60 minutes inside.
+//= - Individual 3-day cooldown expiring at 04:00, applied on first entry.
+//= - 75 randomized floors; every fifth floor has an optional astral boss.
+//= - Every fifth floor may skip the next four floors for 50 Powder, with
+//=   the cost increasing by 25 for every skip used in that expedition.
+//= - At floors 25/50 the leader may end at the boss or keep climbing.
+//= - Floor 25: Naght Sieger. Floors 50/75: Betelgeuse.
+//= - Floor 50 difficulty spans 0..600; floor 75 spans 600..1000.
+//= - Five difficulty categories use the published score weights:
+//=   HP 15, Attack 20, Recovery 30, Defense 50, Traps 85 per star.
+//= - Reroll all costs 20 Powder; maximize one category costs 150;
+//=   seal one category costs 300. Maximum/seal unlock after 300/600 clears.
+//=
+//= Transparent compatibility assumptions:
+//= Gravity has not published regular-floor population, actual formulas behind
+//= the five Betelgeuse categories, periodic recovery timing, trap placement,
+//= or chest probabilities. This release therefore uses ten lootless residents
+//= per floor, adds +1% resident HP and +0.5% resident ATK per cleared floor,
+//= scales boss combat conservatively from the factual base record,
+//= represents traps with periodic Dead Souls, and gives deterministic one-unit
+//= clear rewards. No unpublished random rate is invented. The >=400 costume
+//= roll is intentionally not issued because its probability is unpublished.
+//= The 25 physical rooms are cycled three times. Their coordinates were verified
+//= directly against this repository's map cache. Oscar is placed two cells east
+//= of the legacy Endless Tower stone because that existing NPC owns 81,105.
+//============================================================
+
+function	script	F_CTScore	{
+	return getarg(0) * 15 + getarg(1) * 20 + getarg(2) * 30 + getarg(3) * 50 + getarg(4) * 85;
+}
+
+// The existing GPL Endless Tower Captain Janssen at Alberta 214,77 already
+// charges the official 10,000 Zeny fare and transports players to Misty Island.
+e_tower,83,105,4	script	Oscar#ct_gate	4_ED_OSCAR,{
+	.@instance$ = "Constellation Tower";
+	.@party_id = getcharid(1);
+	.@iid = instance_id(IM_PARTY);
+
+	mes "[Oscar]";
+	mes "The shattered tower now reaches toward the constellations.";
+	mes "Only parties whose members are base level ^0000FF240 or higher^000000 may enter.";
+	next;
+
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) == .@instance$) {
+		if (CTower_Reservation != .@iid) {
+			mes "[Oscar]";
+			mes "You were not registered when this expedition was reserved.";
+			close;
+		}
+		.@cooldown = checkquest(12514,PLAYTIME);
+		if (.@cooldown == 2) {
+			erasequest 12514;
+			.@cooldown = -1;
+		}
+		if (.@cooldown != -1 && CTower_ActiveInstance != .@iid) {
+			mes "[Oscar]";
+			mes "The aftereffects of entering the tower have not faded.";
+			close;
+		}
+		if (instance_enter(.@instance$) != IE_OK) {
+			mes "[Oscar]";
+			mes "The dimensional path did not respond.";
+			close;
+		}
+		CTower_ActiveInstance = .@iid;
+		if (.@cooldown == -1)
+			setquest 12514;
+		end;
+	}
+
+	if (.@iid) {
+		mes "[Oscar]";
+		mes "Your party already owns ^0000FF" + instance_live_info(ILI_NAME,.@iid) + "^000000.";
+		close;
+	}
+	if (!.@party_id) {
+		mes "[Oscar]";
+		mes "Form a party first. A one-person party is acceptable.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "[Oscar]";
+		mes "Only the party leader may reserve the tower.";
+		close;
+	}
+	if (BaseLevel < 240) {
+		mes "[Oscar]";
+		mes "Return after reaching base level 240.";
+		close;
+	}
+	.@menu = select("Validate the party and reserve.:Review the rules.:Cancel.");
+	if (.@menu == 2) {
+		mes "[Oscar]";
+		mes "The reservation remains open for five minutes without activity. The expedition itself lasts 60 minutes.";
+		mes "Clear each randomized floor. Optional astral bosses appear every fifth floor and do not gate advancement.";
+		mes "Boss encounters at floors 25 and 50 end the expedition; continuing leads toward floor 75.";
+		close;
+	}
+	if (.@menu == 3)
+		close;
+
+	getpartymember .@party_id,1;
+	.@count = $@partymembercount;
+	copyarray .@cid[0],$@partymembercid[0],.@count;
+	getpartymember .@party_id,2;
+	copyarray .@aid[0],$@partymemberaid[0],.@count;
+	.@caller_aid = getcharid(3);
+	.@invalid$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@invalid$ = "Every party member must be online.";
+			break;
+		}
+		.@cooldown = checkquest(12514,PLAYTIME);
+		if (.@cooldown == 2) {
+			erasequest 12514;
+			.@cooldown = -1;
+		}
+		if (BaseLevel < 240) {
+			.@invalid$ = strcharinfo(0) + " is below base level 240.";
+			break;
+		}
+		if (.@cooldown != -1) {
+			.@invalid$ = strcharinfo(0) + " is still on the three-day cooldown.";
+			break;
+		}
+	}
+	attachrid .@caller_aid;
+	if (.@invalid$ != "") {
+		mes "[Oscar]";
+		mes .@invalid$;
+		close;
+	}
+
+	.@create = instance_create(.@instance$);
+	if (.@create < 1) {
+		mes "[Oscar]";
+		mes "Reservation failed (code " + .@create + ").";
+		close;
+	}
+	setinstancevar 'party_id,.@party_id,.@create;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@aid[.@i])) {
+			CTower_Reservation = .@create;
+			CTower_ActiveInstance = 0;
+		}
+	}
+	attachrid .@caller_aid;
+	mes "[Oscar]";
+	mes "The record is ready. Speak with me again to enter.";
+	close;
+}
+
+// The public equipment exchange appears after a character's first floor-50
+// Betelgeuse clear. Costs are published and therefore reproduced exactly.
+e_tower,78,112,4	script	OSC0007#ct_shop	4_ENERGY_BLUE,{
+	if (!#CTower_ShopUnlocked) {
+		mes "[OSC0007]";
+		mes "No compatible expedition record was found. Defeat Betelgeuse from floor 50 or above first.";
+		close;
+	}
+	mes "[OSC0007]";
+	mes "Select an exchange.";
+	next;
+	switch(select("Basic materials/equipment.:Advanced Nebula armor.:Advanced Stellar seal.:Cancel.")) {
+	case 1:
+		.@pick = select("1 Fragment -> 40 Powder.:50 Powder -> 1 Fragment.:Faint Star Robe.:Faint Star Suit.:Faint Star Armor.:Signet of Star.:Back.");
+		if (.@pick == 1) {
+			if (countitem(1000373) < 1 || !checkweight(1000372,40)) { mes "[OSC0007]"; mes "You lack the material or carrying capacity."; close; }
+			delitem 1000373,1; getitem 1000372,40; close;
+		}
+		if (.@pick == 2) {
+			if (countitem(1000372) < 50 || !checkweight(1000373,1)) { mes "[OSC0007]"; mes "You lack the material or carrying capacity."; close; }
+			delitem 1000372,50; getitem 1000373,1; close;
+		}
+		if (.@pick == 7) close;
+		setarray .@item[0],450166,450167,450168,490131;
+		setarray .@frag[0],50,50,50,100;
+		setarray .@soul[0],5,5,5,10;
+		.@i = .@pick - 3;
+		if (countitem(1000373) < .@frag[.@i] || countitem(1000396) < .@soul[.@i] || !checkweight(.@item[.@i],1)) {
+			mes "[OSC0007]"; mes "Required: " + .@frag[.@i] + " Fragments and " + .@soul[.@i] + " Naght Sieger Souls."; close;
+		}
+		delitem 1000373,.@frag[.@i]; delitem 1000396,.@soul[.@i]; getitem .@item[.@i],1; close;
+	case 2:
+		.@i = select("Power.:Stamina.:Concentration.:Creative.:Spell.:Wisdom.:Back.") - 1;
+		if (.@i == 6) close;
+		setarray .@item[0],450169,450170,450171,450172,450173,450174;
+		setarray .@base[0],450168,450168,450167,450167,450166,450166;
+		if (countitem(1000373) < 50 || countitem(1000398 + .@i) < 30 || countitem(1000397) < 10 || countitem(.@base[.@i]) < 1 || !checkweight(.@item[.@i],1)) {
+			mes "[OSC0007]";
+			mes "Required: base Faint armor, 50 Fragments, 30 matching Powder, and 10 Betelgeuse Souls.";
+			close;
+		}
+		delitem .@base[.@i],1; delitem 1000373,50; delitem 1000398 + .@i,30; delitem 1000397,10; getitem .@item[.@i],1; close;
+	case 3:
+		.@i = select("Power.:Stamina.:Concentration.:Creative.:Spell.:Wisdom.:Back.") - 1;
+		if (.@i == 6) close;
+		setarray .@item[0],490132,490133,490134,490135,490136,490137;
+		if (countitem(1000373) < 250 || countitem(1000398 + .@i) < 50 || countitem(1000397) < 20 || countitem(490131) < 1 || !checkweight(.@item[.@i],1)) {
+			mes "[OSC0007]";
+			mes "Required: Signet of Star, 250 Fragments, 50 matching Powder, and 20 Betelgeuse Souls.";
+			close;
+		}
+		delitem 490131,1; delitem 1000373,250; delitem 1000398 + .@i,50; delitem 1000397,20; getitem .@item[.@i],1; close;
+	default:
+		close;
+	}
+}
+
+1@ch_t,45,183,4	script	Oscar#ct_start	4_ED_OSCAR,{
+	if ('started) {
+		mes "[Oscar]";
+		mes "The expedition is currently on floor " + 'floor + ".";
+		close;
+	}
+	if (getcharid(1) != 'party_id || !is_party_leader()) {
+		mes "[Oscar]";
+		mes "The registered party leader must begin the expedition.";
+		close;
+	}
+	mes "[Oscar]";
+	mes "All 75 floors are unstable. The tower will reuse its 25 surviving chambers as you climb.";
+	mes "Once we begin, you have 60 minutes from the original reservation lifetime.";
+	next;
+	if (select("Begin at floor 1.:Wait.") == 2)
+		close;
+
+	.@caller_aid = getcharid(3);
+	getpartymember 'party_id,1;
+	'member_count = $@partymembercount;
+	copyarray 'member_cid[0],$@partymembercid[0],'member_count;
+	getpartymember 'party_id,2;
+	copyarray 'member_aid[0],$@partymemberaid[0],'member_count;
+	'started = true;
+	'floor = 1;
+	'skip_count = 0;
+	'run_token$ = gettime(DT_YEAR) + "-" + gettime(DT_MONTH) + "-" + gettime(DT_DAYOFMONTH) + "-" + gettime(DT_HOUR) + "-" + instance_id();
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (isloggedin('member_aid[.@i],'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+			if (isbegin_quest(12513) == 0) setquest 12513;
+			if (isbegin_quest(12515) == 0) setquest 12515;
+		}
+	}
+	attachrid .@caller_aid;
+	mes "[Oscar]";
+	mes "The ascent begins.";
+	close2;
+	donpcevent instance_npcname("#CT_Controller") + "::OnSpawnFloor";
+	end;
+}
+
+// One brazier script is duplicated into all 25 verified physical chambers.
+1@ch_t,28,376,4	script	Astral Brazier#ct01	4_ENERGY_BLUE,{
+	if (!'started || !'cleared) {
+		mes "[Astral Brazier]";
+		mes "Its flame remains sealed while required residents survive.";
+		close;
+	}
+	if (!is_party_leader() || getcharid(1) != 'party_id) {
+		mes "[Astral Brazier]";
+		mes "Only the registered party leader may direct the ascent.";
+		close;
+	}
+
+	if ('floor == 25) {
+		.@pick = select("Fight Naght Sieger and end here.:Continue to floor 26.:Skip floors 26-29.:Wait.");
+		if (.@pick == 1) { 'boss_floor = 25; 'boss_kind = 1; donpcevent instance_npcname("#CT_Controller") + "::OnPrepareNaght"; close; }
+		if (.@pick == 4) close;
+		if (.@pick == 3) callsub S_Skip;
+		else callsub S_Next;
+		close;
+	}
+	if ('floor == 50) {
+		.@pick = select("Fight Betelgeuse and end here.:Continue to floor 51.:Skip floors 51-54.:Wait.");
+		if (.@pick == 1) { 'boss_floor = 50; 'boss_kind = 2; donpcevent instance_npcname("#CT_Controller") + "::OnPrepareBetel"; close; }
+		if (.@pick == 4) close;
+		if (.@pick == 3) callsub S_Skip;
+		else callsub S_Next;
+		close;
+	}
+	if ('floor == 75) {
+		if (select("Challenge Betelgeuse.:Wait.") == 2) close;
+		'boss_floor = 75; 'boss_kind = 2;
+		donpcevent instance_npcname("#CT_Controller") + "::OnPrepareBetel";
+		close;
+	}
+	if ('floor % 5 == 0) {
+		.@cost = 50 + 'skip_count * 25;
+		.@pick = select("Continue one floor.:Skip the next four floors (" + .@cost + " Powder).:Wait.");
+		if (.@pick == 2) callsub S_Skip;
+		else if (.@pick == 1) callsub S_Next;
+		close;
+	}
+	callsub S_Next;
+	close;
+
+S_Skip:
+	.@cost = 50 + 'skip_count * 25;
+	if (countitem(1000372) < .@cost) {
+		mes "[Astral Brazier]";
+		mes "You need " + .@cost + " Meteorite Powder.";
+		return;
+	}
+	delitem 1000372,.@cost;
+	++'skip_count;
+	'floor += 5;
+	donpcevent instance_npcname("#CT_Controller") + "::OnSpawnFloor";
+	return;
+S_Next:
+	++'floor;
+	donpcevent instance_npcname("#CT_Controller") + "::OnSpawnFloor";
+	return;
+}
+
+1@ch_t,112,376,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct02	4_ENERGY_BLUE
+1@ch_t,200,376,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct03	4_ENERGY_BLUE
+1@ch_t,286,376,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct04	4_ENERGY_BLUE
+1@ch_t,370,376,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct05	4_ENERGY_BLUE
+1@ch_t,28,292,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct06	4_ENERGY_BLUE
+1@ch_t,112,292,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct07	4_ENERGY_BLUE
+1@ch_t,200,292,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct08	4_ENERGY_BLUE
+1@ch_t,286,292,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct09	4_ENERGY_BLUE
+1@ch_t,370,292,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct10	4_ENERGY_BLUE
+1@ch_t,28,204,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct11	4_ENERGY_BLUE
+1@ch_t,112,204,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct12	4_ENERGY_BLUE
+1@ch_t,200,204,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct13	4_ENERGY_BLUE
+1@ch_t,286,204,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct14	4_ENERGY_BLUE
+1@ch_t,370,204,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct15	4_ENERGY_BLUE
+1@ch_t,28,120,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct16	4_ENERGY_BLUE
+1@ch_t,112,120,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct17	4_ENERGY_BLUE
+1@ch_t,200,120,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct18	4_ENERGY_BLUE
+1@ch_t,286,120,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct19	4_ENERGY_BLUE
+1@ch_t,370,120,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct20	4_ENERGY_BLUE
+1@ch_t,28,34,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct21	4_ENERGY_BLUE
+1@ch_t,112,34,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct22	4_ENERGY_BLUE
+1@ch_t,200,34,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct23	4_ENERGY_BLUE
+1@ch_t,286,34,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct24	4_ENERGY_BLUE
+1@ch_t,370,34,4	duplicate(Astral Brazier#ct01)	Astral Brazier#ct25	4_ENERGY_BLUE
+
+2@ch_t,89,75,4	script(DISABLED)	Naght Battle Sigil#ct	4_ENERGY_RED,{
+	if ('boss_started) { mes "[Battle Sigil]"; mes "The battle has already begun."; close; }
+	if (!is_party_leader()) { mes "[Battle Sigil]"; mes "Only the party leader may begin."; close; }
+	if (select("Challenge Naght Sieger.:Wait.") == 2) close;
+	'boss_started = true;
+	disablenpc instance_npcname(strnpcinfo(0));
+	.@map$ = instance_mapname("2@ch_t");
+	monster .@map$,89,100,"Naght Sieger",20996,1,instance_npcname("#CT_Controller") + "::OnBossDead";
+	'boss_gid = $@mobid[0];
+	monster .@map$,76,91,"Thorny Skeleton",20997,1;
+	monster .@map$,102,91,"Thorny Skeleton",20997,1;
+	monster .@map$,89,80,"Thorny Skeleton",20997,1;
+	monster .@map$,89,108,"Thorny Skeleton",20997,1;
+	mapannounce .@map$,"Naght Sieger has been displaced from his tower. Defeat him to end this route.",bc_map,0xFF7777;
+	close;
+}
+
+3@ch_t,31,80,4	script(DISABLED)	Goddess Fountain#ct	4_ENERGY_BLUE,{
+	if ('boss_started) { mes "[Goddess Fountain]"; mes "The chosen constellation is already fixed."; close; }
+	if (!is_party_leader()) { mes "[Goddess Fountain]"; mes "Only the party leader may alter the expedition record."; close; }
+	callsub S_Show;
+	next;
+	.@pick = select("Reroll all (20 Powder).:Maximize one category (150 Powder).:Seal one category (300 Powder).:Keep these stars.");
+	if (.@pick == 4) close;
+	if (.@pick == 1) {
+		if (countitem(1000372) < 20) { mes "[Goddess Fountain]"; mes "You need 20 Meteorite Powder."; close; }
+		delitem 1000372,20;
+		callsub S_Roll;
+		callsub S_Show;
+		close;
+	}
+	if (.@pick == 2) {
+		if (!#CTower_MaxUnlocked) { mes "[Goddess Fountain]"; mes "Clear Betelgeuse at 300 points or more to unlock this function."; close; }
+		if (countitem(1000372) < 150) { mes "[Goddess Fountain]"; mes "You need 150 Meteorite Powder."; close; }
+		.@stat = select("Health.:Attack.:Recovery.:Defense.:Traps.") - 1;
+		delitem 1000372,150;
+		if (.@stat == 0 && !'seal_hp) 'star_hp = 'star_cap;
+		if (.@stat == 1 && !'seal_atk) 'star_atk = 'star_cap;
+		if (.@stat == 2 && !'seal_rec) 'star_rec = 'star_cap;
+		if (.@stat == 3 && !'seal_def) 'star_def = 'star_cap;
+		if (.@stat == 4 && !'seal_trap) 'star_trap = 'star_cap;
+		callsub S_Show;
+		close;
+	}
+	if (!#CTower_SealUnlocked) { mes "[Goddess Fountain]"; mes "Clear Betelgeuse at 600 points or more to unlock sealing."; close; }
+	if (countitem(1000372) < 300) { mes "[Goddess Fountain]"; mes "You need 300 Meteorite Powder."; close; }
+	.@stat = select("Health.:Attack.:Recovery.:Defense.:Traps.") - 1;
+	delitem 1000372,300;
+	if (.@stat == 0) { 'star_hp = 0; 'seal_hp = true; }
+	if (.@stat == 1) { 'star_atk = 0; 'seal_atk = true; }
+	if (.@stat == 2) { 'star_rec = 0; 'seal_rec = true; }
+	if (.@stat == 3) { 'star_def = 0; 'seal_def = true; }
+	if (.@stat == 4) { 'star_trap = 0; 'seal_trap = true; }
+	callsub S_Show;
+	close;
+
+S_Roll:
+	if (!'seal_hp) 'star_hp = rand('star_min,'star_cap);
+	if (!'seal_atk) 'star_atk = rand('star_min,'star_cap);
+	if (!'seal_rec) 'star_rec = rand('star_min,'star_cap);
+	if (!'seal_def) 'star_def = rand('star_min,'star_cap);
+	if (!'seal_trap) 'star_trap = rand('star_min,'star_cap);
+	return;
+S_Show:
+	.@score = callfunc("F_CTScore",'star_hp,'star_atk,'star_rec,'star_def,'star_trap);
+	mes "[Goddess Fountain]";
+	mes "Floor " + 'boss_floor + " challenge: ^FF0000" + .@score + " points^000000";
+	mes "Health " + 'star_hp + " / Attack " + 'star_atk + " / Recovery " + 'star_rec;
+	mes "Defense " + 'star_def + " / Traps " + 'star_trap;
+	return;
+}
+
+3@ch_t,50,82,4	script(DISABLED)	Betelgeuse Gate#ct	4_ENERGY_RED,{
+	if ('boss_started) { mes "[Astral Gate]"; mes "The battle has already begun."; close; }
+	if (!is_party_leader()) { mes "[Astral Gate]"; mes "Only the party leader may begin."; close; }
+	.@score = callfunc("F_CTScore",'star_hp,'star_atk,'star_rec,'star_def,'star_trap);
+	mes "[Astral Gate]";
+	mes "Current challenge score: ^FF0000" + .@score + "^000000.";
+	next;
+	if (select("Enter the boss arena.:Return to the fountain.") == 2) close;
+	'boss_started = true;
+	disablenpc instance_npcname(strnpcinfo(0));
+	disablenpc instance_npcname("Goddess Fountain#ct");
+	instance_warpall "3@ch_t",155,85,instance_id(),IWA_NOTDEAD;
+	.@map$ = instance_mapname("3@ch_t");
+	monster .@map$,155,125,"Betelgeuse",20994,1,instance_npcname("#CT_Controller") + "::OnBossDead";
+	'boss_gid = $@mobid[0];
+	getunitdata 'boss_gid,.@data;
+	// Compatibility combat formula; scoring itself above is the published rule.
+	setunitdata 'boss_gid,UMOB_ATKMIN,.@data[UMOB_ATKMIN] * (100 + 'star_atk * 10) / 100;
+	setunitdata 'boss_gid,UMOB_ATKMAX,.@data[UMOB_ATKMAX] * (100 + 'star_atk * 10) / 100;
+	setunitdata 'boss_gid,UMOB_DEF,.@data[UMOB_DEF] * (100 + 'star_def * 20) / 100;
+	setunitdata 'boss_gid,UMOB_MDEF,.@data[UMOB_MDEF] * (100 + 'star_def * 20) / 100;
+	setunitdata 'boss_gid,UMOB_DAMAGETAKEN,max(1,10 - 'star_hp);
+	donpcevent instance_npcname("#CT_BetelPulse") + "::OnStart";
+	mapannounce .@map$,"Betelgeuse manifests at " + .@score + " challenge points.",bc_map,0xFF5555;
+	close;
+}
+
+2@ch_t,89,75,4	script(DISABLED)	CT Reward#naght	4_ENERGY_BLUE,{
+	callsub S_Claim,1;
+	end;
+S_Claim:
+	if (!'boss_done || 'boss_kind != getarg(0)) { mes "[Constellation Reward]"; mes "The result has not stabilized."; close; }
+	if (CTower_Reservation != instance_id()) { mes "[Constellation Reward]"; mes "You are not registered to this expedition."; close; }
+	if (#CTower_LastClaim$ == 'run_token$) { mes "[Constellation Reward]"; mes "This account already claimed this result."; close; }
+	setarray .@reward_item[0],1000373,1000396;
+	setarray .@reward_amount[0],1,1;
+	if (!checkweight2(.@reward_item,.@reward_amount)) { mes "[Constellation Reward]"; mes "Make room for both reward items."; close; }
+	#CTower_LastClaim$ = 'run_token$;
+	getitem 1000373,1;
+	getitem 1000396,1;
+	if (isbegin_quest(12518) == 1) completequest 12518;
+	if (isbegin_quest(12519) == 1) completequest 12519;
+	mes "[Constellation Reward]";
+	mes "Deterministic compatibility reward: 1 Meteorite Fragment and 1 Naght Sieger Soul.";
+	next;
+	if (select("Return to Misty Island.:Remain here.") == 1) warp "e_tower",81,105;
+	close;
+}
+
+3@ch_t,155,90,4	script(DISABLED)	CT Reward#betel	4_ENERGY_BLUE,{
+	if (!'boss_done || 'boss_kind != 2) { mes "[Constellation Reward]"; mes "The result has not stabilized."; close; }
+	if (CTower_Reservation != instance_id()) { mes "[Constellation Reward]"; mes "You are not registered to this expedition."; close; }
+	if (#CTower_LastClaim$ == 'run_token$) { mes "[Constellation Reward]"; mes "This account already claimed this result."; close; }
+	.@score = callfunc("F_CTScore",'star_hp,'star_atk,'star_rec,'star_def,'star_trap);
+	.@best = 0; .@value = 'star_hp;
+	if ('star_atk > .@value) { .@best = 1; .@value = 'star_atk; }
+	if ('star_rec > .@value) { .@best = 2; .@value = 'star_rec; }
+	if ('star_def > .@value) { .@best = 3; .@value = 'star_def; }
+	if ('star_trap > .@value) { .@best = 4; .@value = 'star_trap; }
+	// The sixth Wisdom family is used only when all five categories tie.
+	if ('star_hp == 'star_atk && 'star_atk == 'star_rec && 'star_rec == 'star_def && 'star_def == 'star_trap) .@best = 5;
+	.@special = (.@score >= 600 ? 1000442 + .@best : 1000398 + .@best);
+	setarray .@reward_item[0],1000372,1000373,1000397,.@special;
+	setarray .@reward_amount[0],1,1,1,1;
+	if (!checkweight2(.@reward_item,.@reward_amount)) {
+		mes "[Constellation Reward]"; mes "Make room for four items."; close;
+	}
+	#CTower_LastClaim$ = 'run_token$;
+	#CTower_ShopUnlocked = true;
+	getitem 1000372,1;
+	getitem 1000373,1;
+	getitem 1000397,1;
+	getitem .@special,1;
+	if (.@score >= 300) #CTower_MaxUnlocked = true;
+	if (.@score >= 600) #CTower_SealUnlocked = true;
+	if (isbegin_quest(12513) == 1) completequest 12513;
+	if (isbegin_quest(12515) == 1) completequest 12515;
+	if (.@score >= 300 && isbegin_quest(12516) == 1) completequest 12516;
+	if (.@score >= 600 && isbegin_quest(12517) == 1) completequest 12517;
+	mes "[Constellation Reward]";
+	mes "Challenge score: ^FF0000" + .@score + "^000000.";
+	mes "Deterministic compatibility reward: one Powder, Fragment, Betelgeuse Soul, and one aligned special material.";
+	if (.@score >= 400)
+		mes "The official costume roll is withheld because its exact probability is unpublished.";
+	next;
+	if (select("Return to Misty Island.:Remain here.") == 1) warp "e_tower",81,105;
+	close;
+}
+
+1@ch_t,1,1,0	script	#CT_Controller	-1,{
+	end;
+
+OnInstanceInit:
+	setarray 'room_x[0],28,112,200,286,370,28,112,200,286,370,28,112,200,286,370,28,112,200,286,370,28,112,200,286,370;
+	setarray 'room_y[0],370,370,370,370,370,286,286,286,286,286,198,198,198,198,198,114,114,114,114,114,28,28,28,28,28;
+	disablenpc instance_npcname("Naght Battle Sigil#ct");
+	disablenpc instance_npcname("Goddess Fountain#ct");
+	disablenpc instance_npcname("Betelgeuse Gate#ct");
+	disablenpc instance_npcname("CT Reward#naght");
+	disablenpc instance_npcname("CT Reward#betel");
+	end;
+
+OnSpawnFloor:
+	if ('floor < 1 || 'floor > 75) end;
+	.@map$ = instance_mapname("1@ch_t");
+	killmonsterall .@map$;
+	'cleared = false;
+	'remaining = 10;
+	.@room = ('floor - 1) % 25;
+	.@x = 'room_x[.@room];
+	.@y = 'room_y[.@room];
+	instance_warpall "1@ch_t",.@x,.@y - 18,instance_id(),IWA_NOTDEAD;
+	for (.@i = 0; .@i < 'remaining; ++.@i) {
+		.@mob = 20998 + rand(50);
+		areamonster .@map$,.@x - 12,.@y - 12,.@x + 12,.@y + 12,"Tower Resident",.@mob,1,instance_npcname("#CT_Controller") + "::OnRegularDead";
+		// Published behavior is stronger residents each floor; Gravity has not
+		// published the curve, so this conservative linear curve is explicit.
+		getunitdata $@mobid[0],.@data;
+		.@hp = .@data[UMOB_MAXHP] * (100 + 'floor - 1) / 100;
+		setunitdata $@mobid[0],UMOB_MAXHP,.@hp;
+		setunitdata $@mobid[0],UMOB_HP,.@hp;
+		setunitdata $@mobid[0],UMOB_ATKMIN,.@data[UMOB_ATKMIN] * (200 + 'floor - 1) / 200;
+		setunitdata $@mobid[0],UMOB_ATKMAX,.@data[UMOB_ATKMAX] * (200 + 'floor - 1) / 200;
+	}
+	if ('floor % 5 == 0)
+		monster .@map$,.@x - 10,.@y + 8,"Optional Astral Boss",21325 + rand(35),1;
+	mapannounce .@map$,"Constellation Tower floor " + 'floor + ": defeat the ten required residents.",bc_map,0x77AAFF;
+	end;
+
+OnRegularDead:
+	if ('cleared) end;
+	--'remaining;
+	if ('remaining > 0) end;
+	'cleared = true;
+	mapannounce instance_mapname("1@ch_t"),"Floor " + 'floor + " is clear. The Astral Brazier will carry the party onward.",bc_map,0x55FFAA;
+	end;
+
+OnPrepareNaght:
+	.@caller_aid = getcharid(3);
+	killmonsterall instance_mapname("1@ch_t");
+	'boss_started = false;
+	'boss_done = false;
+	enablenpc instance_npcname("Naght Battle Sigil#ct");
+	instance_warpall "2@ch_t",89,75,instance_id(),IWA_NOTDEAD;
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (isloggedin('member_aid[.@i],'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+			if (isbegin_quest(12518) == 0) setquest 12518;
+			if (isbegin_quest(12519) == 0) setquest 12519;
+		}
+	}
+	if (.@caller_aid) attachrid .@caller_aid;
+	end;
+
+OnPrepareBetel:
+	.@caller_aid = getcharid(3);
+	killmonsterall instance_mapname("1@ch_t");
+	'boss_started = false;
+	'boss_done = false;
+	'seal_hp = false; 'seal_atk = false; 'seal_rec = false; 'seal_def = false; 'seal_trap = false;
+	if ('boss_floor == 50) { 'star_min = 0; 'star_cap = 3; }
+	else { 'star_min = 3; 'star_cap = 5; }
+	'star_hp = rand('star_min,'star_cap);
+	'star_atk = rand('star_min,'star_cap);
+	'star_rec = rand('star_min,'star_cap);
+	'star_def = rand('star_min,'star_cap);
+	'star_trap = rand('star_min,'star_cap);
+	// Five categories at three stars total exactly 600 points.
+	enablenpc instance_npcname("Goddess Fountain#ct");
+	enablenpc instance_npcname("Betelgeuse Gate#ct");
+	instance_warpall "3@ch_t",31,70,instance_id(),IWA_NOTDEAD;
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (isloggedin('member_aid[.@i],'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+			if (isbegin_quest(12513) == 0) setquest 12513;
+			if (isbegin_quest(12515) == 0) setquest 12515;
+			if (!#CTower_MaxUnlocked && isbegin_quest(12516) == 0) setquest 12516;
+			if (!#CTower_SealUnlocked && isbegin_quest(12517) == 0) setquest 12517;
+		}
+	}
+	if (.@caller_aid) attachrid .@caller_aid;
+	end;
+
+OnBossDead:
+	'boss_done = true;
+	if ('boss_kind == 1) {
+		enablenpc instance_npcname("CT Reward#naght");
+		mapannounce instance_mapname("2@ch_t"),"Naght Sieger is defeated. Each registered member may claim the stabilized reward.",bc_map,0x55FFAA;
+	} else {
+		donpcevent instance_npcname("#CT_BetelPulse") + "::OnStop";
+		enablenpc instance_npcname("CT Reward#betel");
+		mapannounce instance_mapname("3@ch_t"),"Betelgeuse is defeated. Speak with the reward constellation.",bc_map,0x55FFAA;
+	}
+	end;
+}
+
+// Published categories, compatibility realization: recovery pulses and Dead Souls.
+3@ch_t,1,1,0	script	#CT_BetelPulse	-1,{
+	end;
+OnStart:
+	setnpctimer 0;
+	initnpctimer;
+	end;
+OnStop:
+	stopnpctimer;
+	killmonster instance_mapname("3@ch_t"),instance_npcname("#CT_BetelPulse") + "::OnDeadSoul";
+	end;
+OnTimer15000:
+	if ('boss_kind != 2 || 'boss_done || !unitexists('boss_gid)) {
+		stopnpctimer;
+		end;
+	}
+	getunitdata 'boss_gid,.@data;
+	if ('star_rec > 0) {
+		.@heal = .@data[UMOB_MAXHP] / 500 * 'star_rec;
+		setunitdata 'boss_gid,UMOB_HP,min(.@data[UMOB_MAXHP],.@data[UMOB_HP] + .@heal);
+	}
+	.@map$ = instance_mapname("3@ch_t");
+	killmonster .@map$,instance_npcname("#CT_BetelPulse") + "::OnDeadSoul";
+	setarray .@x[0],139,147,155,163,171;
+	setarray .@y[0],107,119,131,119,107;
+	for (.@i = 0; .@i < 'star_trap; ++.@i)
+		monster .@map$,.@x[.@i],.@y[.@i],"Dead Soul",20995,1,instance_npcname("#CT_BetelPulse") + "::OnDeadSoul";
+	setnpctimer 0;
+	initnpctimer;
+	end;
+OnDeadSoul:
+	end;
+}
+
+// Independent lifetime notices. The instance database's existing defaults are
+// already 3600 seconds total / 300 seconds idle, matching the official limits.
+1@ch_t,2,1,0	script	#CT_RunTimer	-1,{
+	end;
+OnInstanceInit:
+	initnpctimer;
+	end;
+OnTimer3000000:
+	instance_announce instance_id(),"Constellation Tower: ten minutes remain.",bc_map,0xFFCC66;
+	end;
+OnTimer3300000:
+	instance_announce instance_id(),"Constellation Tower: five minutes remain.",bc_map,0xFF9966;
+	end;
+OnTimer3540000:
+	instance_announce instance_id(),"Constellation Tower: one minute remains.",bc_map,0xFF5555;
+	end;
+OnTimer3600000:
+	stopnpctimer;
+	instance_announce instance_id(),"The constellation collapses. The expedition is over.",bc_map,0xFF3333;
+	instance_warpall "e_tower",81,105,instance_id();
+	instance_destroy;
+	end;
+OnInstanceDestroy:
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (isloggedin('member_aid[.@i],'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+			CTower_ActiveInstance = 0;
+			CTower_Reservation = 0;
+			detachrid;
+		}
+	}
+	end;
+}

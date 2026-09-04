@@ -149,3 +149,4 @@ Footer:
   - Path: db/re/skill_db.yml
     Mode: Renewal
   - Path: db/import/skill_db.yml
+  - Path: db/import/garden_of_time_combat_skill_db.yml

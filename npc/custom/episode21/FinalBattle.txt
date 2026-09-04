@@ -241,22 +241,59 @@ OnRepeatBossDead:
 	if (EP21_FB_Crystal_Daily == .@key) {
 		mes "[Giant Serpent Crystal]"; mes "You already extracted this crystal's loot."; close;
 	}
-	EP21_FB_Crystal_Daily = .@key;
 	setarray .@item[0],1001653,1001654,1001655,1001656,1001657,1001658,1001659,1001660,1001661,1001662,1001663,1001664;
 	setarray .@rate[0],26473,14568,9000,26473,14568,9000,26473,14568,9000,26473,14568,9000;
-	for (.@i = 0; .@i < 12; ++.@i) {
-		if (rand(100000) < .@rate[.@i])
-			getitem .@item[.@i],1;
-	}
-	for (.@i = 0; .@i < 3; ++.@i) {
-		if (rand(100000) < 19094)
-			getitem 1001480,1;
-	}
 	setarray .@extra[0],1001034,1001035,1001036,1001037,1000812,1000813,1000814;
-	for (.@i = 0; .@i < 7; ++.@i) {
-		if (rand(100000) < 19094)
-			getitem .@extra[.@i],1;
+	// Persist the roll before checking capacity so retrying with a full inventory
+	// cannot reroll the crystal until a smaller reward set happens to fit.
+	if (EP21_FB_Crystal_RollKey != .@key || EP21_FB_Crystal_RollMode != 1) {
+		EP21_FB_Crystal_RollKey = .@key;
+		EP21_FB_Crystal_RollMode = 1;
+		EP21_FB_Crystal_ItemMask = 0;
+		EP21_FB_Crystal_ExtraMask = 0;
+		EP21_FB_Crystal_BoxCount = 0;
+		for (.@i = 0; .@i < 12; ++.@i)
+			if (rand(100000) < .@rate[.@i])
+				EP21_FB_Crystal_ItemMask = EP21_FB_Crystal_ItemMask | (1 << .@i);
+		for (.@i = 0; .@i < 3; ++.@i)
+			if (rand(100000) < 19094)
+				++EP21_FB_Crystal_BoxCount;
+		for (.@i = 0; .@i < 7; ++.@i)
+			if (rand(100000) < 19094)
+				EP21_FB_Crystal_ExtraMask = EP21_FB_Crystal_ExtraMask | (1 << .@i);
 	}
+	for (.@i = 0; .@i < 12; ++.@i) {
+		if (EP21_FB_Crystal_ItemMask & (1 << .@i)) {
+			.@reward_item[.@reward_count] = .@item[.@i];
+			.@reward_amount[.@reward_count] = 1;
+			++.@reward_count;
+		}
+	}
+	if (EP21_FB_Crystal_BoxCount) {
+		.@reward_item[.@reward_count] = 1001480;
+		.@reward_amount[.@reward_count] = EP21_FB_Crystal_BoxCount;
+		++.@reward_count;
+	}
+	for (.@i = 0; .@i < 7; ++.@i) {
+		if (EP21_FB_Crystal_ExtraMask & (1 << .@i)) {
+			.@reward_item[.@reward_count] = .@extra[.@i];
+			.@reward_amount[.@reward_count] = 1;
+			++.@reward_count;
+		}
+	}
+	if (.@reward_count && !checkweight2(.@reward_item,.@reward_amount)) {
+		mes "[Giant Serpent Crystal]";
+		mes "Make enough inventory room for every material extracted from this crystal.";
+		close;
+	}
+	EP21_FB_Crystal_Daily = .@key;
+	for (.@i = 0; .@i < .@reward_count; ++.@i)
+		getitem .@reward_item[.@i],.@reward_amount[.@i];
+	EP21_FB_Crystal_RollKey = 0;
+	EP21_FB_Crystal_RollMode = 0;
+	EP21_FB_Crystal_ItemMask = 0;
+	EP21_FB_Crystal_ExtraMask = 0;
+	EP21_FB_Crystal_BoxCount = 0;
 	mes "[Giant Serpent Crystal]";
 	mes "You extract every stable fragment. Each listed material uses its published independent Normal-mode chance.";
 	close;
@@ -268,26 +305,60 @@ OnRepeatBossDead:
 	if (EP21_FB_Crystal_Daily == .@key) {
 		mes "[Giant Serpent Crystal]"; mes "You already extracted this crystal's loot."; close;
 	}
-	if (!checkweight(103512,1)) {
-		mes "[Giant Serpent Crystal]"; mes "Make inventory room for the guaranteed Past Heroes Fragment Box."; close;
-	}
-	EP21_FB_Crystal_Daily = .@key;
-	getitem 103512,1;
+	setarray .@reward_item[0],103512;
+	setarray .@reward_amount[0],1;
+	.@reward_count = 1;
 	setarray .@item[0],1001653,1001654,1001655,1001656,1001657,1001658,1001659,1001660,1001661,1001662,1001663,1001664;
 	setarray .@rate[0],40000,23000,14568,40000,23000,14568,40000,23000,14568,40000,23000,14568;
-	for (.@i = 0; .@i < 12; ++.@i) {
-		if (rand(100000) < .@rate[.@i])
-			getitem .@item[.@i],1;
-	}
-	for (.@i = 0; .@i < 3; ++.@i) {
-		if (rand(100000) < 29619)
-			getitem 1001480,1;
-	}
 	setarray .@extra[0],1001034,1001035,1001036,1001037,1000812,1000813,1000814;
-	for (.@i = 0; .@i < 7; ++.@i) {
-		if (rand(100000) < 29619)
-			getitem .@extra[.@i],1;
+	if (EP21_FB_Crystal_RollKey != .@key || EP21_FB_Crystal_RollMode != 2) {
+		EP21_FB_Crystal_RollKey = .@key;
+		EP21_FB_Crystal_RollMode = 2;
+		EP21_FB_Crystal_ItemMask = 0;
+		EP21_FB_Crystal_ExtraMask = 0;
+		EP21_FB_Crystal_BoxCount = 0;
+		for (.@i = 0; .@i < 12; ++.@i)
+			if (rand(100000) < .@rate[.@i])
+				EP21_FB_Crystal_ItemMask = EP21_FB_Crystal_ItemMask | (1 << .@i);
+		for (.@i = 0; .@i < 3; ++.@i)
+			if (rand(100000) < 29619)
+				++EP21_FB_Crystal_BoxCount;
+		for (.@i = 0; .@i < 7; ++.@i)
+			if (rand(100000) < 29619)
+				EP21_FB_Crystal_ExtraMask = EP21_FB_Crystal_ExtraMask | (1 << .@i);
 	}
+	for (.@i = 0; .@i < 12; ++.@i) {
+		if (EP21_FB_Crystal_ItemMask & (1 << .@i)) {
+			.@reward_item[.@reward_count] = .@item[.@i];
+			.@reward_amount[.@reward_count] = 1;
+			++.@reward_count;
+		}
+	}
+	if (EP21_FB_Crystal_BoxCount) {
+		.@reward_item[.@reward_count] = 1001480;
+		.@reward_amount[.@reward_count] = EP21_FB_Crystal_BoxCount;
+		++.@reward_count;
+	}
+	for (.@i = 0; .@i < 7; ++.@i) {
+		if (EP21_FB_Crystal_ExtraMask & (1 << .@i)) {
+			.@reward_item[.@reward_count] = .@extra[.@i];
+			.@reward_amount[.@reward_count] = 1;
+			++.@reward_count;
+		}
+	}
+	if (!checkweight2(.@reward_item,.@reward_amount)) {
+		mes "[Giant Serpent Crystal]";
+		mes "Make enough inventory room for the guaranteed box and every extracted material.";
+		close;
+	}
+	EP21_FB_Crystal_Daily = .@key;
+	for (.@i = 0; .@i < .@reward_count; ++.@i)
+		getitem .@reward_item[.@i],.@reward_amount[.@i];
+	EP21_FB_Crystal_RollKey = 0;
+	EP21_FB_Crystal_RollMode = 0;
+	EP21_FB_Crystal_ItemMask = 0;
+	EP21_FB_Crystal_ExtraMask = 0;
+	EP21_FB_Crystal_BoxCount = 0;
 	mes "[Giant Serpent Crystal]";
 	mes "You receive the guaranteed Past Heroes Fragment Box and every successful Hard-mode material roll.";
 	close;
@@ -302,7 +373,7 @@ OnRepeatBossDead:
 		close;
 	}
 	if ('fb_kind == 3) {
-		if (!checkweight(1001618,50) || !checkweight(103537,1)) {
+		if (!checkweight(1001618,50,103537,1)) {
 			mes "Make room for fifty vouchers and the Hard-mode antiquity.";
 			close;
 		}
@@ -311,7 +382,7 @@ OnRepeatBossDead:
 		.@qid = 12651;
 		.@reward$ = "50 Wigner vouchers and 1 Encroached Tan Hard antiquity";
 	} else if ('fb_kind == 2) {
-		if (!checkweight(1001618,10) || !checkweight(102948,1)) {
+		if (!checkweight(1001618,10,102948,1)) {
 			mes "Make room for ten vouchers and the Normal-mode antiquity.";
 			close;
 		}

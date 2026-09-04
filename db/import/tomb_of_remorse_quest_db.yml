@@ -1,0 +1,70 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+# Tomb of Remorse (kRO/iRO quest IDs mirrored by the shipped client).
+# A TimeLimit of 4h means the next server-clock 04:00 reset in rAthena.
+Body:
+  - Id: 16461
+    Title: Tomb of Remorse
+  - Id: 16462
+    Title: Tomb of Remorse
+  - Id: 16463
+    Title: Tomb of Remorse
+  - Id: 16464
+    Title: Tomb of Remorse
+    TimeLimit: 4h
+  - Id: 16465
+    Title: Broken Bond
+    Targets:
+      - Mob: MD_SAKRAY
+        Count: 1
+        Location: 1@spa2
+        MapName: Tomb of Remorse
+  - Id: 16466
+    Title: Broken Bond - Standby
+    TimeLimit: 4h
+  - Id: 16467
+    Title: Shedding Tears
+    Targets:
+      - Mob: MD_TIARA
+        Count: 1
+        Location: 1@spa2
+        MapName: Tomb of Remorse
+  - Id: 16468
+    Title: Shedding Tears - Standby
+    TimeLimit: 4h
+  - Id: 16469
+    Title: Fragmented Memory
+  - Id: 16470
+    Title: Fragmented Memory - Standby
+    TimeLimit: 4h
+  - Id: 16471
+    Title: Fragmented Past
+  - Id: 16472
+    Title: Fragmented Past - Standby
+    TimeLimit: 4h
+
+# 16473-16482 exist in the official client as silent story-marker quests.
+# They are declared for client/server parity but intentionally not used as
+# collection counters: Gravity has not published their internal trigger map.
+  - Id: 16473
+    Title: Fragment of Memory
+  - Id: 16474
+    Title: Fragment of Memory
+  - Id: 16475
+    Title: Fragment of Memory
+  - Id: 16476
+    Title: Fragment of Memory
+  - Id: 16477
+    Title: Fragment of Memory
+  - Id: 16478
+    Title: Fragment of Memory
+  - Id: 16479
+    Title: Fragment of Memory
+  - Id: 16480
+    Title: Fragment of Memory
+  - Id: 16481
+    Title: Fragment of Memory
+  - Id: 16482
+    Title: Fragment of Memory

@@ -65,4 +65,21 @@ function	script	F_queststatus	{
 		return 2;
 	}
 	end;
-}	
+}
+
+// Return a value referring to the state of every quest in an inclusive range.
+// -1 : At least one quest has a different state
+//  0 : All quests are not in the quest log
+//  1 : All quests are active
+//  2 : All quests are completed
+function	script	F_queststatus_between	{
+	.@start = getarg(0);
+	.@end = getarg(1);
+	.@state = isbegin_quest(.@start);
+
+	for ( .@i = .@start + 1; .@i <= .@end; ++.@i ) {
+		if (isbegin_quest(.@i) != .@state)
+			return -1;
+	}
+	return .@state;
+}

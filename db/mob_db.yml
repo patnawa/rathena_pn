@@ -92,3 +92,8 @@ Footer:
   - Path: db/import/biosphere_mob_db.yml
   - Path: db/import/zero_cell_mob_db.yml
   - Path: db/import/chapter2_mob_db.yml
+  - Path: db/import/geffen_night_mob_db.yml
+  - Path: db/import/tomb_of_remorse_mob_db.yml
+  - Path: db/import/constellation_tower_mob_db.yml
+  - Path: db/import/airship_crash_mob_db.yml
+  - Path: db/import/garden_of_time_combat_mob_db.yml

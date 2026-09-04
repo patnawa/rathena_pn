@@ -459,6 +459,14 @@ que_thr	mapflag	noteleport
 1@ch_u	mapflag	monster_noteleport
 
 //============================================================
+// Varmundt's Garden Memorial Dungeons
+//============================================================
+1@f_lake	mapflag	noteleport
+1@ba_go	mapflag	noteleport
+1@f_lake	mapflag	monster_noteleport
+1@ba_go	mapflag	monster_noteleport
+
+//============================================================
 // Cash Mall
 //============================================================
 itemmall	mapflag	noteleport

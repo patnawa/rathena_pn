@@ -1,0 +1,629 @@
+//===== rAthena Script =======================================
+//= Tomb of Remorse (clean-room first release)
+//===== License: =============================================
+//= GPL-3.0-or-later
+//===== Published behavior: ==================================
+//= Base Lv. 220+, party required (a one-person party is valid),
+//= one entry per character per day resetting at 04:00, and a
+//= 60-minute instance. Princess Tiara starts the access story;
+//= the Marquess offers four daily quests. Their official total
+//= reward is 20 Mineas: Sakray 10, Tiara 8, three memories 1,
+//= and ten past fragments 1.
+//=
+//= No reputation requirement is published or present in the
+//= shipped client quest text, so this implementation has none.
+//=
+//= COMPATIBILITY POLICY -- NOT CANONICAL GRAVITY DATA:
+//= Gravity does not publish the exact room waves, coordinates,
+//= boss skill arrays, normal-monster rewards, or random boss
+//= Mineas rate. This release uses five rooms following the
+//= existing 1@spa2/Ghost Palace geometry, zero mob EXP/drops,
+//= no guessed random boss reward, and strict start/transition
+//= presence checks. Those choices are intentionally isolated
+//= here and in tomb_of_remorse_mob_db.yml for later tuning.
+//=
+//= Official references:
+//= https://ro.gnjoy.com/news/update/View.asp?curpage=3&seq=252
+//= https://ro.gnjoyamericas.com/en/news/notice/368
+//= https://iro.ragnarokonline.com/news/updatedetail.aspx?id=359
+//= https://renewal.playragnarok.com/news/eventdetail.aspx?id=1653
+//============================================================
+
+function	script	F_TombRemorseCleanup	{
+	setarray .@active[0],16465,16467,16469,16471;
+	setarray .@standby[0],16466,16468,16470,16472;
+	for (.@i = 0; .@i < 4; ++.@i) {
+		if (checkquest(.@standby[.@i],PLAYTIME) == 2) {
+			erasequest .@standby[.@i];
+			erasequest .@active[.@i];
+		}
+	}
+	if (checkquest(16464,PLAYTIME) == 2)
+		erasequest 16464;
+	return;
+}
+
+function	script	F_TombRemorsePresence	{
+	.@count = 'member_count;
+	.@party = 'party_id;
+	.@map$ = 'map$;
+	copyarray .@aid[0],'member_aid[0],.@count;
+	copyarray .@cid[0],'member_cid[0],.@count;
+	.@caller = getcharid(3);
+	.@error$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@error$ = "Every starting member must remain online.";
+			break;
+		}
+		if (getcharid(1) != .@party) {
+			.@error$ = strcharinfo(0)+" is no longer in the starting party.";
+			break;
+		}
+		if (strcharinfo(3) != .@map$ || Hp <= 0) {
+			.@error$ = strcharinfo(0)+" must be alive and inside the Tomb.";
+			break;
+		}
+	}
+	attachrid .@caller;
+	return .@error$;
+}
+
+function	script	F_TombRemorseBossCredit	{
+	.@boss = getarg(0);
+	.@count = 'member_count;
+	.@map$ = 'map$;
+	copyarray .@aid[0],'member_aid[0],.@count;
+	copyarray .@cid[0],'member_cid[0],.@count;
+	.@caller = getcharid(3);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i]))
+			continue;
+		if (strcharinfo(3) != .@map$)
+			continue;
+		if (.@boss == 20893 && checkquest(16467) != -1 && checkquest(16468) == -1)
+			TombRemorse_TiaraDone = 1;
+		if (.@boss == 20892 && checkquest(16465) != -1 && checkquest(16466) == -1)
+			TombRemorse_SakrayDone = 1;
+	}
+	attachrid .@caller;
+	return;
+}
+
+function	script	F_TombRemorseCollect	{
+	.@kind = getarg(0); // 0: memory (3), 1: past (10)
+	.@bit = getarg(1);
+	mes "[Lingering Fragment]";
+	if (instance_live_info(ILI_NAME,instance_id()) != "Tomb of Remorse"
+		|| TombRemorse_ActiveInstance != instance_id()) {
+		mes "The fragment does not respond to you.";
+		close;
+	}
+	if (.@kind == 0) {
+		if (checkquest(16469) == -1 || checkquest(16470) != -1) {
+			mes "You have not accepted Fragmented Memory.";
+			close;
+		}
+		.@flag = 1 << .@bit;
+		if (TombRemorse_MemoryMask & .@flag) {
+			mes "You already recovered this memory today.";
+			close;
+		}
+		TombRemorse_MemoryMask |= .@flag;
+		++TombRemorse_MemoryCount;
+		mes "A fractured memory settles into place ("+min(TombRemorse_MemoryCount,3)+"/3).";
+		if (TombRemorse_MemoryCount >= 3)
+			dispbottom "Fragmented Memory is complete. Report to the Marquess.";
+		close;
+	}
+	if (checkquest(16471) == -1 || checkquest(16472) != -1) {
+		mes "You have not accepted Fragmented Past.";
+		close;
+	}
+	.@flag = 1 << .@bit;
+	if (TombRemorse_PastMask & .@flag) {
+		mes "You already recovered this trace of the past today.";
+		close;
+	}
+	TombRemorse_PastMask |= .@flag;
+	++TombRemorse_PastCount;
+	mes "You preserve a fragment of the past ("+min(TombRemorse_PastCount,10)+"/10).";
+	if (TombRemorse_PastCount >= 10)
+		dispbottom "Fragmented Past is complete. Report to the Marquess.";
+	close;
+}
+
+// Official/client discovery point.
+dali,124,88,4	script	Princess Tiara#tor_intro	20893,{
+	mes "[Princess Tiara]";
+	if (BaseLevel < 220) {
+		mes "The memories within the palace would overwhelm you. Return at Base Level 220.";
+		close;
+	}
+	if (TombRemorse_Access) {
+		mes "The Marquess and I are waiting in the Dimensional Gap. Will you come?";
+		next;
+		if (select("Go to the Dimensional Gap.:Not now.") == 1) {
+			close2;
+			warp "dali02",78,116;
+			end;
+		}
+		close;
+	}
+	if (checkquest(16461) == -1)
+		setquest 16461;
+	mes "I am Tiara, a princess from a kingdom that survives only as regret. Sakray and I remain bound to its last memories.";
+	next;
+	mes "Please follow me toward the old passage. I will tell you what happened away from the crowd.";
+	completequest 16461;
+	if (checkquest(16462) == -1)
+		setquest 16462;
+	close;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 220 && !TombRemorse_Access";
+	end;
+}
+
+dali,79,112,4	script	Princess Tiara#tor_story	20893,{
+	mes "[Princess Tiara]";
+	if (BaseLevel < 220) {
+		mes "Return when you have reached Base Level 220.";
+		close;
+	}
+	if (TombRemorse_Access) {
+		mes "The entrance lies beyond this dimensional passage.";
+		close;
+	}
+	if (checkquest(16462) == -1) {
+		mes "Please speak with me first near the Dimensional Gap at dali,124,88.";
+		close;
+	}
+	mes "The palace repeats the moment our bonds broke. Its dead mistake every visitor for another actor in the tragedy.";
+	next;
+	mes "Find me once more inside the Dimensional Gap. There, I can open the way to the Tomb of Remorse.";
+	completequest 16462;
+	if (checkquest(16463) == -1)
+		setquest 16463;
+	close2;
+	warp "dali02",78,116;
+	end;
+}
+
+// Client quest navigation points here for access and cooldown information.
+dali02,78,116,4	script	Princess Tiara#tor_gate	20893,{
+	callfunc "F_TombRemorseCleanup";
+	mes "[Princess Tiara]";
+	if (BaseLevel < 220) {
+		mes "Only adventurers of Base Level 220 or higher may face these memories.";
+		close;
+	}
+	if (!TombRemorse_Access) {
+		if (checkquest(16463) == -1) {
+			mes "Please begin my story at dali,124,88.";
+			close;
+		}
+		mes "Beyond this point, the past will take physical form. Please release us from it.";
+		completequest 16463;
+		TombRemorse_Access = 1;
+		next;
+	}
+	.@party = getcharid(1);
+	if (!.@party) {
+		mes "Form a party first. A one-person party is permitted.";
+		close;
+	}
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) != "Tomb of Remorse") {
+		mes "Your party already owns another active memorial dungeon.";
+		close;
+	}
+	.@returning = (.@iid > 0 && TombRemorse_ActiveInstance == .@iid
+		&& TombRemorse_ActiveUntil > gettimetick(2));
+	if (.@iid && getinstancevar('started,.@iid) && !.@returning) {
+		mes "The expedition has already begun. Only its snapshotted starting members may enter.";
+		close;
+	}
+	if (!.@returning && checkquest(16464,PLAYTIME) != -1) {
+		mes "You have already entered today. The memory resets at 04:00 server time.";
+		close;
+	}
+	if (!.@iid) {
+		if (!is_party_leader()) {
+			mes "Only the party leader may reserve the Tomb.";
+			close;
+		}
+		if (!instance_check_party(.@party,1,220)) {
+			mes "Every online party member must be Base Level 220 or higher.";
+			close;
+		}
+		mes "The Tomb lasts 60 minutes. The daily cooldown is recorded on entry.";
+		next;
+		if (select("Create and enter.:Cancel.") == 2)
+			close;
+		.@iid = instance_create("Tomb of Remorse",IM_PARTY,.@party);
+		if (.@iid < 1) {
+			mes "The Tomb could not be created (error "+.@iid+").";
+			close;
+		}
+	} else {
+		.@choice = select("Enter the active Tomb.:Review the rules.:Cancel.");
+		if (.@choice == 2) {
+			mes "Base Level 220+, party required, once daily at 04:00, with a 60-minute limit.";
+			mes "All starting members must be online, alive, and inside before each passage opens.";
+			close;
+		}
+		if (.@choice == 3)
+			close;
+	}
+	.@result = instance_enter("Tomb of Remorse",-1,-1,getcharid(0),.@iid);
+	if (.@result != IE_OK) {
+		mes "The instance map is not ready (error "+.@result+").";
+		close;
+	}
+	if (!.@returning) {
+		setquest 16464;
+		TombRemorse_ActiveInstance = .@iid;
+		TombRemorse_ActiveUntil = gettimetick(2)+3600;
+	}
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 220 && checkquest(16463) != -1 && !TombRemorse_Access";
+	end;
+}
+
+// The official client names this NPC "Marquess" at exactly 78,112.
+dali02,78,112,4	script	Marquess#tor_daily	4_M_SAKRAYROYAL,{
+	callfunc "F_TombRemorseCleanup";
+	mes "[Marquess]";
+	if (!TombRemorse_Access || BaseLevel < 220) {
+		mes "First hear Princess Tiara's request.";
+		close;
+	}
+	mes "The palace holds four tasks. Their rewards total 20 Mineas each day.";
+	next;
+	switch(select("Accept available tasks.:Report completed tasks.:Reward information.:Leave.")) {
+	case 1:
+		.@accepted = 0;
+		if (checkquest(16465) == -1 && checkquest(16466) == -1) {
+			setquest 16465;
+			TombRemorse_SakrayDone = 0;
+			++.@accepted;
+		}
+		if (checkquest(16467) == -1 && checkquest(16468) == -1) {
+			setquest 16467;
+			TombRemorse_TiaraDone = 0;
+			++.@accepted;
+		}
+		if (checkquest(16469) == -1 && checkquest(16470) == -1) {
+			setquest 16469;
+			TombRemorse_MemoryCount = 0;
+			TombRemorse_MemoryMask = 0;
+			++.@accepted;
+		}
+		if (checkquest(16471) == -1 && checkquest(16472) == -1) {
+			setquest 16471;
+			TombRemorse_PastCount = 0;
+			TombRemorse_PastMask = 0;
+			++.@accepted;
+		}
+		if (.@accepted)
+			mes "All "+.@accepted+" available task(s) have been recorded.";
+		else
+			mes "You already hold every task currently available to you.";
+		close;
+	case 2:
+		.@claims = 0;
+		.@eligible[0] = checkquest(16465) != -1 && checkquest(16466) == -1
+			&& (TombRemorse_SakrayDone || checkquest(16465,HUNTING) == 2);
+		.@eligible[1] = checkquest(16467) != -1 && checkquest(16468) == -1
+			&& (TombRemorse_TiaraDone || checkquest(16467,HUNTING) == 2);
+		.@eligible[2] = checkquest(16469) != -1 && checkquest(16470) == -1
+			&& TombRemorse_MemoryCount >= 3;
+		.@eligible[3] = checkquest(16471) != -1 && checkquest(16472) == -1
+			&& TombRemorse_PastCount >= 10;
+		.@mineas = .@eligible[0] * 10 + .@eligible[1] * 8 + .@eligible[2] + .@eligible[3];
+		if (.@mineas && !checkweight(1000367,.@mineas)) {
+			mes "Make enough inventory room for all " + .@mineas + " Mineas before filing these reports.";
+			close;
+		}
+		if (.@eligible[0]) {
+			completequest 16465;
+			getitem 1000367,10; // Mineas
+			if (checkquest(16466) == -1) setquest 16466;
+			TombRemorse_SakrayDone = 0;
+			++.@claims;
+		}
+		if (.@eligible[1]) {
+			completequest 16467;
+			getitem 1000367,8;
+			if (checkquest(16468) == -1) setquest 16468;
+			TombRemorse_TiaraDone = 0;
+			++.@claims;
+		}
+		if (.@eligible[2]) {
+			completequest 16469;
+			getitem 1000367,1;
+			if (checkquest(16470) == -1) setquest 16470;
+			TombRemorse_MemoryCount = 0;
+			TombRemorse_MemoryMask = 0;
+			++.@claims;
+		}
+		if (.@eligible[3]) {
+			completequest 16471;
+			getitem 1000367,1;
+			if (checkquest(16472) == -1) setquest 16472;
+			TombRemorse_PastCount = 0;
+			TombRemorse_PastMask = 0;
+			++.@claims;
+		}
+		if (.@claims)
+			mes "Your completed reports have been exchanged for Mineas.";
+		else
+			mes "None of your active reports is complete yet.";
+		close;
+	case 3:
+		mes "Broken Bond: defeat Cursed Sakray, ^0000FF10 Mineas^000000.";
+		mes "Shedding Tears: defeat Princess Tiara, ^0000FF8 Mineas^000000.";
+		mes "Fragmented Memory: recover 3 memories, ^0000FF1 Mineas^000000.";
+		mes "Fragmented Past: preserve 10 fragments, ^0000FF1 Mineas^000000.";
+		next;
+		mes "The official notices also describe a random Mineas boss drop. Its rate is unpublished, so this clean-room release does not guess one.";
+		close;
+	case 4:
+		close;
+	}
+
+OnInit:
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"TombRemorse_Access && BaseLevel >= 220";
+	end;
+}
+
+// Instance lifecycle and combat controller.
+1@spa2,1,1,0	script	#TombControl	-1,{
+	end;
+
+OnInstanceInit:
+	'map$ = instance_mapname("1@spa2");
+	'party_id = instance_live_info(ILI_OWNER);
+	'started = 0;
+	'stage = 0;
+	'remaining = 0;
+	initnpctimer;
+	end;
+
+OnStart:
+	'stage = 1;
+	'remaining = 14;
+	.@label$ = instance_npcname("#TombControl")+"::OnStageMobDead";
+	areamonster 'map$,20,183,63,218,"Undead Soldier",20895,6,.@label$;
+	areamonster 'map$,20,183,63,218,"Undead Archer",20896,4,.@label$;
+	areamonster 'map$,20,183,63,218,"Undead Servant",20900,4,.@label$;
+	instance_announce 0,"Tomb of Remorse: First memory - clear the ruined audience hall.",bc_map,0x88CCFF;
+	end;
+
+OnStage2:
+	'stage = 2;
+	'remaining = 14;
+	.@label$ = instance_npcname("#TombControl")+"::OnStageMobDead";
+	areamonster 'map$,110,108,145,136,"Undead Magician",20898,5,.@label$;
+	areamonster 'map$,110,108,145,136,"Undead Wizard",20897,5,.@label$;
+	areamonster 'map$,110,108,145,136,"Undead Noble",20899,4,.@label$;
+	instance_warpall 'map$,114,120,instance_id(),IWA_NOTDEAD;
+	instance_announce 0,"Tomb of Remorse: Second memory - silence the court's magic.",bc_map,0x88CCFF;
+	end;
+
+OnStage3:
+	'stage = 3;
+	'remaining = 11;
+	.@label$ = instance_npcname("#TombControl")+"::OnStageMobDead";
+	areamonster 'map$,20,35,62,66,"Undead Knight",20894,5,.@label$;
+	areamonster 'map$,20,35,62,66,"Undead Soldier",20895,5,.@label$;
+	monster 'map$,39,52,"Princess Tiara",20893,1,instance_npcname("#TombControl")+"::OnTiaraDead";
+	instance_warpall 'map$,60,43,instance_id(),IWA_NOTDEAD;
+	instance_announce 0,"Tomb of Remorse: Third memory - lay the sorrowing princess to rest.",bc_map,0xFF99CC;
+	end;
+
+OnStage4:
+	'stage = 4;
+	'remaining = 14;
+	.@label$ = instance_npcname("#TombControl")+"::OnStageMobDead";
+	areamonster 'map$,185,188,218,219,"Undead Knight",20894,6,.@label$;
+	areamonster 'map$,185,188,218,219,"Undead Wizard",20897,4,.@label$;
+	areamonster 'map$,185,188,218,219,"Undead Noble",20899,4,.@label$;
+	instance_warpall 'map$,218,186,instance_id(),IWA_NOTDEAD;
+	instance_announce 0,"Tomb of Remorse: Fourth memory - break through the fallen guard.",bc_map,0x88CCFF;
+	end;
+
+OnStage5:
+	'stage = 5;
+	'remaining = 11;
+	.@label$ = instance_npcname("#TombControl")+"::OnStageMobDead";
+	areamonster 'map$,185,34,220,62,"Undead Knight",20894,5,.@label$;
+	areamonster 'map$,185,34,220,62,"Undead Noble",20899,5,.@label$;
+	monster 'map$,196,44,"Cursed Sakray",20892,1,instance_npcname("#TombControl")+"::OnSakrayDead";
+	instance_warpall 'map$,186,57,instance_id(),IWA_NOTDEAD;
+	instance_announce 0,"Tomb of Remorse: Final memory - release Cursed Sakray.",bc_map,0xFF6666;
+	end;
+
+OnStageMobDead:
+	--'remaining;
+	if ('remaining > 0)
+		end;
+	donpcevent instance_npcname("#TombControl")+"::OnRoomClear";
+	end;
+
+OnTiaraDead:
+	--'remaining;
+	callfunc "F_TombRemorseBossCredit",20893;
+	instance_announce 0,"Princess Tiara's tears fade into memory.",bc_map,0xFF99CC;
+	if ('remaining <= 0)
+		donpcevent instance_npcname("#TombControl")+"::OnRoomClear";
+	end;
+
+OnSakrayDead:
+	--'remaining;
+	callfunc "F_TombRemorseBossCredit",20892;
+	instance_announce 0,"Cursed Sakray has been released from the broken bond.",bc_map,0xFFCC66;
+	if ('remaining <= 0)
+		donpcevent instance_npcname("#TombControl")+"::OnRoomClear";
+	end;
+
+OnRoomClear:
+	switch('stage) {
+	case 1: enablenpc instance_npcname("Remorse Passage#tor1"); break;
+	case 2: enablenpc instance_npcname("Remorse Passage#tor2"); break;
+	case 3: enablenpc instance_npcname("Remorse Passage#tor3"); break;
+	case 4: enablenpc instance_npcname("Remorse Passage#tor4"); break;
+	case 5:
+		'stage = 6;
+		enablenpc instance_npcname("Released Memory#tor_exit");
+		break;
+	}
+	instance_announce 0,"The room is clear. A passage has opened.",bc_map,0x66FF99;
+	end;
+
+OnTimer3300000:
+	instance_announce 0,"Tomb of Remorse: 5 minutes remain.",bc_map,0xFF6666;
+	end;
+OnTimer3540000:
+	instance_announce 0,"Tomb of Remorse: 1 minute remains.",bc_map,0xFF3333;
+	end;
+OnTimer3600000:
+	instance_announce 0,"The one-hour memory has collapsed.",bc_map,0xFF0000;
+	mapwarp 'map$,"dali02",78,116;
+	instance_destroy;
+	end;
+}
+
+1@spa2,51,197,4	script	Princess Tiara#tor_start	20893,{
+	mes "[Princess Tiara]";
+	if ('started) {
+		mes "The "+'stage+"th memory is already unfolding. Follow the open path.";
+		close;
+	}
+	if (!is_party_leader() || getcharid(1) != 'party_id) {
+		mes "The registered party leader must begin the memory.";
+		close;
+	}
+	.@party = getcharid(1);
+	getpartymember .@party,1;
+	.@count = $@partymembercount;
+	copyarray .@cid[0],$@partymembercid[0],.@count;
+	getpartymember .@party,2;
+	copyarray .@aid[0],$@partymemberaid[0],.@count;
+	.@caller = getcharid(3);
+	.@iid = instance_id();
+	.@invalid$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@invalid$ = "Every party member must be online.";
+			break;
+		}
+		callfunc "F_TombRemorseCleanup";
+		if (BaseLevel < 220) {
+			.@invalid$ = strcharinfo(0)+" is below Base Level 220.";
+			break;
+		}
+		if (strcharinfo(3) != instance_mapname("1@spa2") || Hp <= 0) {
+			.@invalid$ = strcharinfo(0)+" must be alive and inside the Tomb.";
+			break;
+		}
+		if (checkquest(16464,PLAYTIME) == -1 || TombRemorse_ActiveInstance != .@iid) {
+			.@invalid$ = strcharinfo(0)+" did not enter through this expedition's gate.";
+			break;
+		}
+	}
+	attachrid .@caller;
+	if (.@invalid$ != "") {
+		mes "[Princess Tiara]";
+		mes .@invalid$;
+		close;
+	}
+	mes "All starting members must remain online, alive, and inside at every passage. You have 60 minutes.";
+	next;
+	if (select("Begin the memory.:Wait.") == 2)
+		close;
+	'party_id = .@party;
+	'member_count = .@count;
+	copyarray 'member_cid[0],.@cid[0],.@count;
+	copyarray 'member_aid[0],.@aid[0],.@count;
+	'started = 1;
+	donpcevent instance_npcname("#TombControl")+"::OnStart";
+	close;
+}
+
+// Each passage follows the known 1@spa/1@spa2 room transitions.
+1@spa2,41,217,4	script(DISABLED)	Remorse Passage#tor1	4_ENERGY_BLUE,{
+	if ('stage != 1 || 'remaining > 0) end;
+	if (!is_party_leader()) { mes "[Passage]"; mes "The party leader must guide the memory onward."; close; }
+	.@error$ = callfunc("F_TombRemorsePresence");
+	if (.@error$ != "") { mes "[Passage]"; mes .@error$; close; }
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#TombControl")+"::OnStage2";
+	end;
+}
+
+1@spa2,117,137,4	script(DISABLED)	Remorse Passage#tor2	4_ENERGY_BLUE,{
+	if ('stage != 2 || 'remaining > 0) end;
+	if (!is_party_leader()) { mes "[Passage]"; mes "The party leader must guide the memory onward."; close; }
+	.@error$ = callfunc("F_TombRemorsePresence");
+	if (.@error$ != "") { mes "[Passage]"; mes .@error$; close; }
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#TombControl")+"::OnStage3";
+	end;
+}
+
+1@spa2,54,28,4	script(DISABLED)	Remorse Passage#tor3	4_ENERGY_BLUE,{
+	if ('stage != 3 || 'remaining > 0) end;
+	if (!is_party_leader()) { mes "[Passage]"; mes "The party leader must guide the memory onward."; close; }
+	.@error$ = callfunc("F_TombRemorsePresence");
+	if (.@error$ != "") { mes "[Passage]"; mes .@error$; close; }
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#TombControl")+"::OnStage4";
+	end;
+}
+
+1@spa2,178,186,4	script(DISABLED)	Remorse Passage#tor4	4_ENERGY_BLUE,{
+	if ('stage != 4 || 'remaining > 0) end;
+	if (!is_party_leader()) { mes "[Passage]"; mes "The party leader must guide the memory onward."; close; }
+	.@error$ = callfunc("F_TombRemorsePresence");
+	if (.@error$ != "") { mes "[Passage]"; mes .@error$; close; }
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#TombControl")+"::OnStage5";
+	end;
+}
+
+1@spa2,210,28,4	script(DISABLED)	Released Memory#tor_exit	4_ENERGY_BLUE,{
+	mes "[Released Memory]";
+	mes "The palace is quiet. Return to the Marquess to report each completed task.";
+	next;
+	if (select("Leave the Tomb.:Remain here.") == 2)
+		close;
+	close2;
+	warp "dali02",78,116;
+	end;
+}
+
+// Per-character quest objects. Placement is compatibility policy; the counts
+// (three memories and ten past fragments) are the published objectives.
+1@spa2,53,205,4	script	Scattered Memory#tor_m1	4_ENERGY_BLUE,{ callfunc "F_TombRemorseCollect",0,0; end; }
+1@spa2,128,127,4	script	Scattered Memory#tor_m2	4_ENERGY_BLUE,{ callfunc "F_TombRemorseCollect",0,1; end; }
+1@spa2,39,46,4	script	Scattered Memory#tor_m3	4_ENERGY_BLUE,{ callfunc "F_TombRemorseCollect",0,2; end; }
+
+1@spa2,31,193,4	script	Past Fragment#tor_p1	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,0; end; }
+1@spa2,55,211,4	script	Past Fragment#tor_p2	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,1; end; }
+1@spa2,123,117,4	script	Past Fragment#tor_p3	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,2; end; }
+1@spa2,138,129,4	script	Past Fragment#tor_p4	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,3; end; }
+1@spa2,28,44,4	script	Past Fragment#tor_p5	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,4; end; }
+1@spa2,47,58,4	script	Past Fragment#tor_p6	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,5; end; }
+1@spa2,195,198,4	script	Past Fragment#tor_p7	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,6; end; }
+1@spa2,210,212,4	script	Past Fragment#tor_p8	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,7; end; }
+1@spa2,195,49,4	script	Past Fragment#tor_p9	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,8; end; }
+1@spa2,214,38,4	script	Past Fragment#tor_p10	4_ENERGY_RED,{ callfunc "F_TombRemorseCollect",1,9; end; }
+
+// Existing common mapflags already apply partylock/restricted/noteleport/
+// nomemo/nobranch to 1@spa2. This instance-specific save flag is kept here
+// so the implementation remains isolated.
+1@spa2	mapflag	nosave	SavePoint

@@ -69343,6 +69343,20 @@ Body:
       NoGuildStorage: true
       NoMail: true
       NoAuction: true
+    # Current client databases expose the three server-side Base EXP values
+    # (40m/7m/3.5m) but not their branch conditions.  The 231 breakpoint is
+    # explicit in the item description; 240 is the compatibility breakpoint
+    # for the remaining reduced tier.  Cap at the next level exactly so one
+    # potion can never grant more than the published one-level maximum.
+    Script: |
+      if (NextBaseExp <= 0)
+         end;
+      .@gain = (BaseLevel <= 230) ? 40000000 : ((BaseLevel < 240) ? 7000000 : 3500000);
+      .@remaining = NextBaseExp - BaseExp;
+      if (.@gain > .@remaining)
+         .@gain = .@remaining;
+      if (.@gain > 0)
+         getexp .@gain,0;
   - Id: 100462
     AegisName: MD_Airboat_Reward
     Name: Contaminated Card Book
@@ -73185,8 +73199,8 @@ Body:
       NoMail: true
       NoAuction: true
     Script: |
-      transform 21530,1200000; /* Confirm time */
-      bonus_script " bonus2 bAddItemHealRate,1100006,100; ",120,1,1;
+      specialeffect2 EF_CLOAKING;
+      transform 21530,1200000,SC_MTP_W_POTION_100,100;
   - Id: 101166
     AegisName: Kr_B_Special05
     Name: G-Star RO Shop Box

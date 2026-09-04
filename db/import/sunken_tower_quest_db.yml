@@ -1,0 +1,14 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 12540
+    Title: Sunken Tower
+
+  - Id: 12541
+    Title: High Tide Time
+    TimeLimit: 3d 4h
+
+  - Id: 12542
+    Title: Goddess' Blessing

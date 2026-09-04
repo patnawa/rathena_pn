@@ -1,0 +1,107 @@
+# Published Fashion Point stone/enchant pairs absent from this server snapshot.
+# Names/effects: https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
+# Numeric skill IDs: rAthena GPL PR #9765 (Druid/Karnos/Alitea implementation),
+# head commit 92224e78e5f480c648363f07a908ba747436cdff.
+# These exact bonuses are dormant on server builds which do not yet implement
+# skill IDs 6526..6606; no substitute skill or effect is invented here.
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  # Physical stones awarded by the boxes and consumed by the costume enchanter.
+  - Id: 1002625
+    AegisName: FP_Karnos_Stone_Garment
+    Name: Karnos Stone (Garment)
+    Type: Etc
+  - Id: 1002626
+    AegisName: FP_Alitea_Stone_Garment
+    Name: Alitea Stone (Garment)
+    Type: Etc
+  - Id: 1002627
+    AegisName: FP_Druid_Stone_Top
+    Name: Druid Stone (Top)
+    Type: Etc
+  - Id: 1002628
+    AegisName: FP_Druid_Stone_Mid
+    Name: Druid Stone (Mid)
+    Type: Etc
+  - Id: 1002629
+    AegisName: FP_Druid_Stone_Low
+    Name: Druid Stone (Low)
+    Type: Etc
+  - Id: 1002630
+    AegisName: FP_Karnos_Stone_Top
+    Name: Karnos Stone (Top)
+    Type: Etc
+  - Id: 1002631
+    AegisName: FP_Karnos_Stone_Mid
+    Name: Karnos Stone (Mid)
+    Type: Etc
+  - Id: 1002632
+    AegisName: FP_Karnos_Stone_Low
+    Name: Karnos Stone (Low)
+    Type: Etc
+
+  # Enchant records inserted in costume card slots.
+  - Id: 314848
+    AegisName: FP_Karnos_Enchant_Garment
+    Name: Karnos Stone (Garment)
+    Type: Card
+    Script: |
+      bonus2 bSkillAtk,6552,10;
+      bonus2 bSkillAtk,6558,10;
+  - Id: 314849
+    AegisName: FP_Alitea_Enchant_Garment
+    Name: Alitea Stone (Garment)
+    Type: Card
+    Script: |
+      bonus2 bAddEle,Ele_All,getskilllv(6575);
+      bonus2 bMagicAtkEle,Ele_All,getskilllv(6606);
+  - Id: 314850
+    AegisName: FP_Druid_Enchant_Top
+    Name: Druid Stone (Top)
+    Type: Card
+    Script: |
+      bonus bMatk,3*getskilllv(6548);
+      bonus bBaseAtk,2*getskilllv(6530);
+      bonus bBaseAtk,2*getskilllv(6537);
+      bonus2 bSkillAtk,6543,15;
+      bonus2 bSkillAtk,6546,15;
+  - Id: 314851
+    AegisName: FP_Druid_Enchant_Mid
+    Name: Druid Stone (Mid)
+    Type: Card
+    Script: |
+      bonus2 bSkillAtk,6540,15;
+      bonus2 bSkillAtk,6535,15;
+      bonus2 bSkillAtk,6527,15;
+  - Id: 314852
+    AegisName: FP_Druid_Enchant_Low
+    Name: Druid Stone (Low)
+    Type: Card
+    Script: |
+      bonus2 bSkillAtk,6545,15;
+      bonus2 bSkillAtk,6526,15;
+      bonus2 bSkillAtk,6534,15;
+  - Id: 314853
+    AegisName: FP_Karnos_Enchant_Top
+    Name: Karnos Stone (Top)
+    Type: Card
+    Script: |
+      .@rate=2*getskilllv(6572);
+      bonus2 bMagicAtkEle,Ele_Water,.@rate;
+      bonus2 bMagicAtkEle,Ele_Wind,.@rate;
+      bonus2 bMagicAtkEle,Ele_Earth,.@rate;
+  - Id: 314854
+    AegisName: FP_Karnos_Enchant_Mid
+    Name: Karnos Stone (Mid)
+    Type: Card
+    Script: |
+      bonus bShortAtkRate,getskilllv(6554);
+  - Id: 314855
+    AegisName: FP_Karnos_Enchant_Low
+    Name: Karnos Stone (Low)
+    Type: Card
+    Script: |
+      bonus bLongAtkRate,getskilllv(6560);

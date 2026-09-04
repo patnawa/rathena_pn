@@ -1,0 +1,29 @@
+Episode 19 - Issgard, Land of Snow Flowers
+
+Primary implementation source:
+https://github.com/rathena/rathena/pull/8527
+Source revision: 60201913486d0aa8e093b929ae00ae54d593448e
+
+Gameplay validation sources:
+https://www.playragnarok.com/news/updatedetail.aspx?id=405&p=2
+https://www.playragnarok.com/news/updatedetail.aspx?id=409
+https://renewal.playragnarok.com/news/updatedetail.aspx?id=410&p=1
+https://ro.gnjoy.in.th/episode-19-issgard-land-of-snow-flowers-instances-dungeon/
+https://wiki.muhro.eu/19_Issgard_Land_of_Snow_Flowers
+https://wiki.muhro.eu/Airship_Destruction
+https://www.divine-pride.net/database/monster/21531
+https://www.divine-pride.net/database/monster/21588
+https://www.divine-pride.net/database/monster/21589
+https://www.divine-pride.net/database/monster/21590
+https://www.divine-pride.net/database/monster/21853
+https://www.divine-pride.net/database/monster/21854
+
+The scripts are kept under npc/custom so they can be audited and deployed
+without modifying rAthena's stock NPC load lists. Local compatibility and
+gameplay corrections are documented in the repository history. Required
+engine and database dependencies from the implementation source are ported
+alongside the scripts so every referenced skill, status, item group, synthesis
+recipe, monster, instance, and script command is available at runtime.
+The authoritative monster pages above fill known omissions in the open PR's
+Aquila, Limacina, furious Rgan, and storage-stone records. Gravity's regional
+Episode 19 page supplies exact instance EXP, reputation, and material rewards.

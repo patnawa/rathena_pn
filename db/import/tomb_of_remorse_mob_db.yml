@@ -1,0 +1,315 @@
+Header:
+  Type: MOB_DB
+  Version: 5
+
+# Tomb of Remorse monster IDs and sprites are present in the shipped client,
+# and the same IDs are reserved (but commented out) in rAthena's main mob DB.
+#
+# COMPATIBILITY POLICY -- NOT CANONICAL GRAVITY BALANCE DATA:
+# Gravity's public dungeon notices name the monsters, but do not publish their
+# complete stat/skill/drop arrays. These conservative Lv.220-party baselines
+# make the instance playable until a licensed packet/database source is made
+# available. EXP and drops are deliberately zero; the official, known Mineas
+# quest rewards are issued by the NPC script. No unpublished random Mineas or
+# card rate is invented here.
+Body:
+  - Id: 20892
+    AegisName: MD_SAKRAY
+    Name: Cursed Sakray
+    Level: 230
+    Hp: 550000000
+    Sp: 500000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 18500
+    Attack2: 12500
+    Defense: 850
+    MagicDefense: 650
+    Resistance: 400
+    MagicResistance: 400
+    Str: 260
+    Agi: 190
+    Vit: 240
+    Int: 220
+    Dex: 240
+    Luk: 150
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Demihuman
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 150
+    AttackDelay: 700
+    AttackMotion: 600
+    DamageMotion: 480
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
+  - Id: 20893
+    AegisName: MD_TIARA
+    Name: Princess Tiara
+    Level: 230
+    Hp: 400000000
+    Sp: 500000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 12500
+    Attack2: 19000
+    Defense: 650
+    MagicDefense: 850
+    Resistance: 400
+    MagicResistance: 400
+    Str: 190
+    Agi: 210
+    Vit: 210
+    Int: 280
+    Dex: 250
+    Luk: 160
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Demihuman
+    Element: Ghost
+    ElementLevel: 4
+    WalkSpeed: 170
+    AttackDelay: 800
+    AttackMotion: 650
+    DamageMotion: 480
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
+  - Id: 20894
+    AegisName: MD_UNDEAD_KNIGHT
+    Name: Undead Knight
+    Level: 224
+    Hp: 34000000
+    Sp: 20000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 11500
+    Attack2: 3500
+    Defense: 720
+    MagicDefense: 260
+    Resistance: 260
+    MagicResistance: 160
+    Str: 205
+    Agi: 150
+    Vit: 195
+    Int: 100
+    Dex: 185
+    Luk: 90
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Undead
+    Element: Undead
+    ElementLevel: 3
+    WalkSpeed: 170
+    AttackDelay: 850
+    AttackMotion: 700
+    DamageMotion: 480
+    Ai: '04'
+  - Id: 20895
+    AegisName: MD_UNDEAD_SOLDIER
+    Name: Undead Soldier
+    Level: 220
+    Hp: 22000000
+    Sp: 12000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 9000
+    Attack2: 2500
+    Defense: 560
+    MagicDefense: 220
+    Resistance: 220
+    MagicResistance: 140
+    Str: 185
+    Agi: 150
+    Vit: 170
+    Int: 90
+    Dex: 175
+    Luk: 80
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 2
+    WalkSpeed: 180
+    AttackDelay: 900
+    AttackMotion: 700
+    DamageMotion: 480
+    Ai: '04'
+  - Id: 20896
+    AegisName: MD_UNDEAD_ARCHER
+    Name: Undead Archer
+    Level: 221
+    Hp: 18000000
+    Sp: 16000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 9500
+    Attack2: 2800
+    Defense: 420
+    MagicDefense: 260
+    Resistance: 170
+    MagicResistance: 180
+    Str: 140
+    Agi: 190
+    Vit: 130
+    Int: 110
+    Dex: 225
+    Luk: 100
+    AttackRange: 9
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 2
+    WalkSpeed: 200
+    AttackDelay: 1050
+    AttackMotion: 600
+    DamageMotion: 420
+    Ai: '04'
+  - Id: 20897
+    AegisName: MD_UNDEAD_WIZARD
+    Name: Undead Wizard
+    Level: 225
+    Hp: 24000000
+    Sp: 50000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 3500
+    Attack2: 12500
+    Defense: 380
+    MagicDefense: 700
+    Resistance: 160
+    MagicResistance: 280
+    Str: 90
+    Agi: 155
+    Vit: 145
+    Int: 235
+    Dex: 205
+    Luk: 100
+    AttackRange: 6
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Medium
+    Race: Undead
+    Element: Ghost
+    ElementLevel: 3
+    WalkSpeed: 200
+    AttackDelay: 1100
+    AttackMotion: 700
+    DamageMotion: 420
+    Ai: '04'
+  - Id: 20898
+    AegisName: MD_UNDEAD_MAGICIAN
+    Name: Undead Magician
+    Level: 222
+    Hp: 20000000
+    Sp: 40000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 3000
+    Attack2: 10500
+    Defense: 360
+    MagicDefense: 620
+    Resistance: 150
+    MagicResistance: 260
+    Str: 80
+    Agi: 160
+    Vit: 135
+    Int: 220
+    Dex: 195
+    Luk: 95
+    AttackRange: 6
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Medium
+    Race: Undead
+    Element: Ghost
+    ElementLevel: 2
+    WalkSpeed: 205
+    AttackDelay: 1150
+    AttackMotion: 700
+    DamageMotion: 420
+    Ai: '04'
+  - Id: 20899
+    AegisName: MD_UNDEAD_NOBLE
+    Name: Undead Noble
+    Level: 223
+    Hp: 28000000
+    Sp: 24000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 10000
+    Attack2: 6000
+    Defense: 620
+    MagicDefense: 480
+    Resistance: 230
+    MagicResistance: 220
+    Str: 175
+    Agi: 170
+    Vit: 180
+    Int: 170
+    Dex: 190
+    Luk: 120
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 180
+    AttackDelay: 900
+    AttackMotion: 650
+    DamageMotion: 480
+    Ai: '04'
+  - Id: 20900
+    AegisName: MD_UNDEAD_SERVANT
+    Name: Undead Servant
+    Level: 220
+    Hp: 16000000
+    Sp: 10000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 7800
+    Attack2: 2200
+    Defense: 400
+    MagicDefense: 200
+    Resistance: 150
+    MagicResistance: 120
+    Str: 160
+    Agi: 175
+    Vit: 140
+    Int: 80
+    Dex: 170
+    Luk: 75
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Undead
+    Element: Undead
+    ElementLevel: 2
+    WalkSpeed: 170
+    AttackDelay: 800
+    AttackMotion: 600
+    DamageMotion: 420
+    Ai: '04'

@@ -58,3 +58,9 @@ Footer:
   - Path: db/import/quest_db.yml
   - Path: db/import/zero_cell_quest_db.yml
   - Path: db/import/chapter2_quest_db.yml
+  - Path: db/import/sunken_tower_quest_db.yml
+  - Path: db/import/geffen_night_quest_db.yml
+  - Path: db/import/hall_of_life_quest_db.yml
+  - Path: db/import/tomb_of_remorse_quest_db.yml
+  - Path: db/import/constellation_tower_quest_db.yml
+  - Path: db/import/airship_crash_quest_db.yml

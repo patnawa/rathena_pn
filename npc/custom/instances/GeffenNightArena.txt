@@ -1,0 +1,485 @@
+//===== rAthena Script =======================================
+//= Geffen Night Arena (clean-room first release)
+//===== License: =============================================
+//= GPL-3.0-or-later
+//===== Published behavior: ==================================
+//= Base Lv. 210+, party of at least one, 60 minute instance,
+//= ten 60-second rounds, random opponents in rounds 1-9,
+//= Fenrir in round 10, cash-out after each clear, and loss of
+//= all accumulated rewards on a failed round.  Every member
+//= snapshotted at the start must be alive, in the arena and in
+//= the original party or the opponent takes no damage.
+//=
+//= Published reward/cost tables are reproduced as facts.  No
+//= third-party/community script was used.  The exact opponent
+//= weights, HP distribution, intruder chance and explosive
+//= damage are not published.  Transparent fallbacks live in
+//= #GNA_Control::OnInit: uniform no-replacement opponents,
+//= fixed published average HP, 10% intruder chance, and a
+//= documented escalating perimeter percentage hit.
+//============================================================
+
+function	script	GNA_NextReset	{
+	// The third 04:00 server reset: next 04:00 plus two days.
+	.@now = gettimetick(2);
+	.@seconds = (4 - gettime(DT_HOUR)) * 3600
+		- gettime(DT_MINUTE) * 60 - gettime(DT_SECOND);
+	if (.@seconds <= 0) .@seconds += 86400;
+	return .@now + .@seconds + 172800;
+}
+
+function	script	GNA_Exchange	{
+	.@result = getarg(0);
+	.@zeny = getarg(1);
+	.@coin = getarg(2);
+	.@cert = getarg(3);
+	.@champ = getarg(4);
+	.@base = getarg(5,0);
+	.@base_count = getarg(6,0);
+	if (!checkweight(.@result,1)) {
+		mes "Your inventory cannot hold the result.";
+		return 0;
+	}
+	if (Zeny < .@zeny || countitem(1000316) < .@coin
+		|| countitem(1000317) < .@cert || countitem(1000366) < .@champ
+		|| (.@base && countitem(.@base) < .@base_count)) {
+		mes "You do not have all required materials.";
+		return 0;
+	}
+	Zeny -= .@zeny;
+	if (.@coin) delitem 1000316,.@coin;
+	if (.@cert) delitem 1000317,.@cert;
+	if (.@champ) delitem 1000366,.@champ;
+	if (.@base) delitem .@base,.@base_count;
+	getitem .@result,1;
+	mes "You received ^3366FF"+getitemname(.@result)+"^000000.";
+	return 1;
+}
+
+geffen_in,82,62,4	script	Suspicious Looking Man#gna	4_M_GEF_SOLDIER,{
+	mes "[Suspicious Looking Man]";
+	if (BaseLevel < 210) {
+		mes "The fighters beyond this point are far too dangerous. Return at Base Level 210.";
+		close;
+	}
+	if (!GNA_Access) {
+		mes "Beyond this passage is the Geffen Night Arena. A party may challenge ten opponents and withdraw after any victory.";
+		next;
+		mes "Each fight lasts only 60 seconds. If one of the starting members is dead or absent, the opponent cannot be harmed.";
+		next;
+		GNA_Access = 1;
+		if (checkquest(69990) == -1) {
+			setquest 69990;
+			completequest 69990;
+		}
+	}
+	mes "Shall I send you to the arena staging area?";
+	next;
+	if (select("Go to the staging area.:Not yet.") == 2) close;
+	close2;
+	warp "dali02",79,60;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 210";
+	end;
+}
+
+dali02,79,60,4	script	Geffen Night Arena Gate#gna	4_M_GEF_SOLDIER,{
+	mes "[Arena Gatekeeper]";
+	if (!GNA_Access) {
+		mes "Speak with the suspicious-looking man inside Geffen first.";
+		close;
+	}
+	if (BaseLevel < 210) {
+		mes "Only adventurers of Base Level 210 or higher may enter.";
+		close;
+	}
+	.@party = getcharid(1);
+	if (!.@party) {
+		mes "Form a party first. A one-person party is permitted.";
+		close;
+	}
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) != "Geffen Night Arena") {
+		mes "Your party already owns another active instance.";
+		close;
+	}
+	.@now = gettimetick(2);
+	.@returning = (.@iid > 0 && GNA_ActiveInstance == .@iid && GNA_ActiveUntil > .@now);
+	if (!.@returning && GNA_Next > .@now) {
+		mes "You may challenge the arena again after the third 04:00 reset.";
+		mes "Remaining: "+((GNA_Next-.@now+59)/60)+" minute(s).";
+		close;
+	}
+	if (!.@iid) {
+		if (!is_party_leader()) {
+			mes "Only the party leader may create the arena.";
+			close;
+		}
+		if (!instance_check_party(.@party,1,210)) {
+			mes "Every online party member must be Base Level 210 or higher.";
+			close;
+		}
+		mes "The instance lasts 60 minutes. Entering records this character's three-day cooldown.";
+		next;
+		if (select("Create and enter.:Cancel.") == 2) close;
+		.@iid = instance_create("Geffen Night Arena",IM_PARTY,.@party);
+		if (.@iid < 1) {
+			mes "The arena could not be created.";
+			close;
+		}
+	} else {
+		if (select("Enter the active arena.:Cancel.") == 2) close;
+	}
+	.@result = instance_enter("Geffen Night Arena",-1,-1,getcharid(0),.@iid);
+	if (.@result != IE_OK) {
+		mes "The instance map is not ready (error "+.@result+").";
+		close;
+	}
+	if (!.@returning) {
+		GNA_Next = callfunc("GNA_NextReset");
+		GNA_ActiveInstance = .@iid;
+		GNA_ActiveUntil = .@now + 3600;
+	}
+	end;
+}
+
+dali02,85,68,4	script	Geffen Arena Quartermaster#gna	4_M_GEF_SOLDIER,{
+	mes "[Arena Quartermaster]";
+	mes "I exchange official arena rewards. Equipment exchanges consume one copy of the listed base item.";
+	next;
+	switch(select("Base equipment:Upgraded equipment:Enchant catalysts:Arena cards:Leave.")) {
+	case 1:
+		setarray .@item[0],15073,15074,20944,20943,2185,2186,2963,2964;
+		setarray .@cost[0],30,30,30,30,45,45,60,60;
+		.@menu$ = "";
+		for (.@i = 0; .@i < getarraysize(.@item); ++.@i)
+			.@menu$ += getitemname(.@item[.@i])+" ("+.@cost[.@i]+" coins):";
+		.@pick = select(.@menu$)-1;
+		mes "[Arena Quartermaster]";
+		callfunc "GNA_Exchange",.@item[.@pick],0,.@cost[.@pick],0,0;
+		close;
+	case 2:
+		setarray .@result[0],450149,450150,480065,480066,480067,480068,460005,460006,490077,490078;
+		setarray .@base[0],15073,15074,20944,20944,20943,20943,2185,2186,2963,2964;
+		setarray .@cost[0],30,30,30,30,30,30,45,45,60,60;
+		.@menu$ = "";
+		for (.@i = 0; .@i < getarraysize(.@result); ++.@i)
+			.@menu$ += getitemname(.@result[.@i])+" (base + "+.@cost[.@i]+" coins):";
+		.@pick = select(.@menu$)-1;
+		mes "[Arena Quartermaster]";
+		mes "This consumes one "+getitemname(.@base[.@pick])+". Refine, cards and random options on that copy are not transferred.";
+		next;
+		if (select("Exchange.:Cancel.") == 2) close;
+		callfunc "GNA_Exchange",.@result[.@pick],0,.@cost[.@pick],0,0,.@base[.@pick],1;
+		close;
+	case 3:
+		setarray .@result[0],100365,100366,100367,100368;
+		setarray .@zeny[0],150000,150000,100000,200000;
+		setarray .@coin[0],15,15,25,15;
+		.@menu$ = "";
+		for (.@i = 0; .@i < 4; ++.@i)
+			.@menu$ += getitemname(.@result[.@i])+" ("+.@zeny[.@i]+"z, 1 certificate, "+.@coin[.@i]+" coins):";
+		.@pick = select(.@menu$)-1;
+		mes "[Arena Quartermaster]";
+		callfunc "GNA_Exchange",.@result[.@pick],.@zeny[.@pick],.@coin[.@pick],1,0;
+		close;
+	case 4:
+		setarray .@result[0],300177,300178,300179,300180,300181,300182,300183,300184,300185,300186,300187,300188,300189,300190,300191;
+		setarray .@base[0],27249,27250,27253,27251,27252,27254,27255,27256,27257,27258,27260,27259,27261,27263,27262;
+		.@menu$ = "";
+		for (.@i = 0; .@i < 15; ++.@i)
+			.@menu$ += getitemname(.@result[.@i])+":";
+		.@pick = select(.@menu$)-1;
+		mes "[Arena Quartermaster]";
+		mes "Cost: 10 Geffen Arena Championships and 7 "+getitemname(.@base[.@pick])+"s.";
+		next;
+		if (select("Exchange.:Cancel.") == 2) close;
+		callfunc "GNA_Exchange",.@result[.@pick],0,0,0,10,.@base[.@pick],7;
+		close;
+	default:
+		close;
+	}
+}
+
+1@ge_sn,94,48,4	script	Arena Registrar#gna_start	4_M_GEF_SOLDIER,{
+	mes "[Arena Registrar]";
+	if ('gna_state) {
+		mes "This party's challenge has already begun.";
+		close;
+	}
+	if (BaseLevel < 210 || !getcharid(1)) {
+		mes "Only Base Level 210+ party members may begin.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "The party leader must register the starting roster.";
+		close;
+	}
+	mes "I will snapshot every online party member currently inside. All of them must remain alive and present for opponents to take damage.";
+	next;
+	if (select("Begin round 1.:Wait.") == 2) close;
+	'gna_party_id = getcharid(1);
+	.@leader_aid = getcharid(3);
+	getpartymember 'gna_party_id,2,.@aid;
+	getpartymember 'gna_party_id,1,.@cid;
+	'gna_roster_count = 0;
+	for (.@i = 0; .@i < getarraysize(.@aid); ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) continue;
+		if (strcharinfo(3) == instance_mapname("1@ge_sn")
+			&& getcharid(0) == .@cid[.@i]
+			&& getcharid(1) == 'gna_party_id && BaseLevel >= 210) {
+			'gna_roster_aid['gna_roster_count] = .@aid[.@i];
+			'gna_roster_cid['gna_roster_count] = .@cid[.@i];
+			++'gna_roster_count;
+		}
+		detachrid;
+	}
+	attachrid .@leader_aid;
+	if ('gna_roster_count < 1) {
+		mes "No eligible party member was found inside the arena.";
+		close;
+	}
+	'gna_round = 1;
+	'gna_state = 1;
+	'gna_intruder_used = 0;
+	'gna_pool_count = 14;
+	setarray 'gna_pool[0],20856,20857,20858,20859,20860,20861,20862,20863,20864,20865,20866,20867,20868,20869;
+	close2;
+	donpcevent instance_npcname("#GNA_Control")+"::OnSpawnRound";
+	end;
+}
+
+1@ge_sn,109,38,4	script	Arena Referee#gna_decision	4_M_GEF_SOLDIER,{
+	mes "[Arena Referee]";
+	if ('gna_state != 2) {
+		mes "There is no reward decision to make.";
+		close;
+	}
+	if (getcharid(1) != 'gna_party_id || !is_party_leader()) {
+		mes "Only the registered party leader may decide.";
+		close;
+	}
+	mes "Round "+'gna_round+" is clear. Current party reward:";
+	mes "^3366FF"+'gna_reward_coin+" coin(s), "+'gna_reward_cert+" certificate(s), "+'gna_reward_champ+" championship(s)^000000.";
+	next;
+	if ('gna_round >= 10) {
+		mes "Fenrir was defeated. Claim the championship reward.";
+		next;
+		if (select("Claim reward.:Remain here.") == 2) close;
+		close2;
+		donpcevent instance_npcname("#GNA_Control")+"::OnCashOut";
+		end;
+	}
+	switch(select("Continue to round "+('gna_round+1)+".:Cash out now.:Decide later.")) {
+	case 1:
+		++'gna_round;
+		'gna_state = 1;
+		disablenpc instance_npcname(strnpcinfo(0));
+		close2;
+		donpcevent instance_npcname("#GNA_Control")+"::OnSpawnRound";
+		end;
+	case 2:
+		close2;
+		donpcevent instance_npcname("#GNA_Control")+"::OnCashOut";
+		end;
+	default:
+		close;
+	}
+}
+
+1@ge_sn,89,48,4	script	Arena Exit#gna_exit	4_M_GEF_SOLDIER,{
+	mes "[Arena Exit]";
+	mes "Leaving does not pay unclaimed arena rewards.";
+	next;
+	if (select("Leave the arena.:Stay.") == 2) close;
+	close2;
+	warp "dali02",79,60;
+	end;
+}
+
+1@ge_sn,1,1,0	script	#GNA_Control	HIDDEN_NPC,{
+	end;
+
+OnInstanceInit:
+	'gna_map$ = instance_mapname("1@ge_sn");
+	'gna_state = 0;
+	'gna_round = 0;
+	'gna_boss_gid = 0;
+	'gna_roster_blocked = 0;
+	disablenpc instance_npcname("Arena Referee#gna_decision");
+	instance_announce instance_id(),"Geffen Night Arena: speak with the Arena Registrar to snapshot the party and begin.",bc_map,0x77AAFF;
+	end;
+
+OnSpawnRound:
+	if ('gna_state != 1 || 'gna_round < 1 || 'gna_round > 10) end;
+	if ('gna_round == 10) {
+		.@mob = 20872;
+	} else if (!'gna_intruder_used && rand(10000) < .IntruderChance) {
+		.@mob = rand(2) ? 20870 : 20871;
+		'gna_intruder_used = 1;
+	} else {
+		.@pick = rand('gna_pool_count);
+		.@mob = 'gna_pool[.@pick];
+		--'gna_pool_count;
+		'gna_pool[.@pick] = 'gna_pool['gna_pool_count];
+	}
+	.@hp = .RoundHp['gna_round];
+	if (.HpJitterPercent > 0)
+		.@hp = .@hp * rand(100-.HpJitterPercent,100+.HpJitterPercent) / 100;
+	monster 'gna_map$,109,50,getmonsterinfo(.@mob,MOB_NAME),.@mob,1,instance_npcname(strnpcinfo(0))+"::OnOpponentDead";
+	'gna_boss_gid = $@mobid[0];
+	setunitdata 'gna_boss_gid,UMOB_MAXHP,.@hp;
+	setunitdata 'gna_boss_gid,UMOB_HP,.@hp;
+	setunitdata 'gna_boss_gid,UMOB_DAMAGETAKEN,('gna_round == 10 ? 10 : 100);
+	'gna_deadline = gettimetick(2) + 60;
+	'gna_roster_blocked = -1;
+	instance_warpall 'gna_map$,109,43,instance_id(),IWA_NOTDEAD;
+	instance_announce instance_id(),"Round "+'gna_round+": "+getmonsterinfo(.@mob,MOB_NAME)+" - 60 seconds!",bc_map,0xFFAA33;
+	callsub L_CheckRoster;
+	donpcevent instance_npcname(strnpcinfo(0))+"::OnMonitor";
+	end;
+
+OnMonitor:
+	while ('gna_state == 1 && unitexists('gna_boss_gid)) {
+		sleep 1000;
+		if ('gna_state != 1 || !unitexists('gna_boss_gid))
+			end;
+		callsub L_CheckRoster;
+		callsub L_PerimeterHazard;
+		if (gettimetick(2) >= 'gna_deadline) {
+			'gna_state = 4;
+			killmonster 'gna_map$,instance_npcname(strnpcinfo(0))+"::OnOpponentDead";
+			instance_announce instance_id(),"Time expired. All accumulated arena rewards are lost.",bc_map,0xFF4444;
+			sleep 3000;
+			instance_warpall "dali02",79,60,instance_id();
+			instance_destroy;
+			end;
+		}
+	}
+	end;
+
+OnOpponentDead:
+	if ('gna_state != 1) end;
+	'gna_state = 2;
+	'gna_boss_gid = 0;
+	setarray .@coin[1],2,3,4,6,9,14,22,35,56,89;
+	setarray .@cert[1],0,0,0,1,1,2,2,3,4,5;
+	setarray .@champ[1],0,0,0,0,0,0,1,1,2,3;
+	'gna_reward_coin = .@coin['gna_round];
+	'gna_reward_cert = .@cert['gna_round];
+	'gna_reward_champ = .@champ['gna_round];
+	enablenpc instance_npcname("Arena Referee#gna_decision");
+	instance_announce instance_id(),"Round "+'gna_round+" cleared. The party leader must continue or cash out with the referee.",bc_map,0x66FF99;
+	end;
+
+OnCashOut:
+	if ('gna_state != 2) end;
+	setarray .@reward_item[0],1000316;
+	setarray .@reward_amount[0],'gna_reward_coin;
+	.@reward_count = 1;
+	if ('gna_reward_cert) {
+		.@reward_item[.@reward_count] = 1000317;
+		.@reward_amount[.@reward_count] = 'gna_reward_cert;
+		++.@reward_count;
+	}
+	if ('gna_reward_champ) {
+		.@reward_item[.@reward_count] = 1000366;
+		.@reward_amount[.@reward_count] = 'gna_reward_champ;
+		++.@reward_count;
+	}
+	// Validate the combined reward for every eligible member before changing
+	// instance state. A full inventory now leaves the cash-out decision open.
+	for (.@i = 0; .@i < 'gna_roster_count; ++.@i) {
+		if (!isloggedin('gna_roster_aid[.@i],'gna_roster_cid[.@i]))
+			continue;
+		detachrid;
+		if (!attachrid('gna_roster_aid[.@i]))
+			continue;
+		if (getcharid(0) == 'gna_roster_cid[.@i]
+			&& strcharinfo(3) == 'gna_map$ && getcharid(1) == 'gna_party_id
+			&& !checkweight2(.@reward_item,.@reward_amount)) {
+			.@blocked$ = strcharinfo(0);
+			detachrid;
+			instance_announce instance_id(),.@blocked$+" needs enough weight and inventory slots for the full arena reward.",bc_map,0xFFAA33;
+			end;
+		}
+	}
+	detachrid;
+	'gna_state = 3;
+	disablenpc instance_npcname("Arena Referee#gna_decision");
+	for (.@i = 0; .@i < 'gna_roster_count; ++.@i) {
+		if (!isloggedin('gna_roster_aid[.@i],'gna_roster_cid[.@i]) || !attachrid('gna_roster_aid[.@i])) continue;
+		if (getcharid(0) == 'gna_roster_cid[.@i]
+			&& strcharinfo(3) == 'gna_map$ && getcharid(1) == 'gna_party_id) {
+			getitem 1000316,'gna_reward_coin;
+			if ('gna_reward_cert) getitem 1000317,'gna_reward_cert;
+			if ('gna_reward_champ) getitem 1000366,'gna_reward_champ;
+			dispbottom "Geffen Night Arena reward claimed for round "+'gna_round+".";
+			GNA_ActiveInstance = 0;
+			GNA_ActiveUntil = 0;
+		}
+		detachrid;
+	}
+	instance_announce instance_id(),"The round "+'gna_round+" reward has been paid to the registered members present in the arena.",bc_map,0x66FF99;
+	sleep 3000;
+	instance_warpall "dali02",79,60,instance_id();
+	instance_destroy;
+	end;
+
+L_CheckRoster:
+	.@blocked = 0;
+	for (.@i = 0; .@i < 'gna_roster_count; ++.@i) {
+		if (!isloggedin('gna_roster_aid[.@i],'gna_roster_cid[.@i]) || !attachrid('gna_roster_aid[.@i])) {
+			.@blocked = 1;
+			continue;
+		}
+		if (getcharid(0) != 'gna_roster_cid[.@i]
+			|| strcharinfo(3) != 'gna_map$ || getcharid(1) != 'gna_party_id || Hp <= 0)
+			.@blocked = 1;
+		detachrid;
+	}
+	if (unitexists('gna_boss_gid))
+		setunitdata 'gna_boss_gid,UMOB_DMGIMMUNE,.@blocked;
+	if (.@blocked != 'gna_roster_blocked) {
+		'gna_roster_blocked = .@blocked;
+		if (.@blocked)
+			instance_announce instance_id(),"Opponent immunity active: every registered member must be alive, present, and in the original party.",bc_map,0xFF5555;
+		else
+			instance_announce instance_id(),"The full registered roster is ready. Opponent immunity removed.",bc_map,0x55FF88;
+	}
+	return;
+
+L_PerimeterHazard:
+	.@damage = min(95,.HazardBasePercent + ('gna_round-1) * .HazardStepPercent);
+	for (.@i = 0; .@i < 'gna_roster_count; ++.@i) {
+		if (!isloggedin('gna_roster_aid[.@i],'gna_roster_cid[.@i]) || !attachrid('gna_roster_aid[.@i])) continue;
+		if (getcharid(0) == 'gna_roster_cid[.@i] && strcharinfo(3) == 'gna_map$ && Hp > 0) {
+			getmapxy .@map$,.@x,.@y,BL_PC;
+			if ((.@x < 95 || .@x > 123 || .@y < 39 || .@y > 58)
+				&& @GNA_HazardNext <= gettimetick(0)) {
+				percentheal 0-.@damage,0;
+				@GNA_HazardNext = gettimetick(0) + .HazardCooldownMs;
+				dispbottom "The perimeter explosive hits for "+.@damage+"% of your HP.";
+			}
+		}
+		detachrid;
+	}
+	return;
+
+OnInit:
+	// Exact public average HP.  Set HpJitterPercent only if the operator
+	// intentionally wants a disclosed approximation of the unpublished roll.
+	setarray .RoundHp[1],4800000,12400000,34700000,107600000,362400000,516300000,555900000,972300000,1337300000,1416300000;
+	.HpJitterPercent = 0;
+	// Official notes confirm Fei/Alphonse as event intruders but do not publish
+	// the trigger rate.  The first-release fallback is explicitly 10% per round.
+	.IntruderChance = 1000;
+	// Published material describes increasingly dangerous edge explosives but
+	// not damage numbers.  Fallback: 15% max HP +2 points/round, once per 3 sec.
+	.HazardBasePercent = 15;
+	.HazardStepPercent = 2;
+	.HazardCooldownMs = 3000;
+	end;
+}

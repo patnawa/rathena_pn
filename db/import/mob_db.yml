@@ -1269,6 +1269,7 @@ Body:
   AegisName: EP21_YOSTER_E
   Name: Joster Cook
   Level: 241
+  Hp: 30105830
   Attack: 12884
   Attack2: 14244
   Defense: 238
@@ -2573,7 +2574,7 @@ Body:
     StealProtected: true
 - Id: 22420
   AegisName: EP21_YOSCOPUS_B_H
-  Name: Awakened Jorcopus Shaman
+  Name: Awakened J. Shaman
   Level: 264
   Hp: 41778900
   Attack: 13447
@@ -3522,7 +3523,7 @@ Body:
     StealProtected: true
 - Id: 22460
   AegisName: CH1_IMMORTAL_CORPS1
-  Name: Immortal Butcher Soldier
+  Name: Immortal Butcher Guard
   Level: 214
   Hp: 13505500
   BaseExp: 1
@@ -5284,49 +5285,40 @@ Body:
   AegisName: EP19_LIMACINA
   Name: Limacina
   Level: 213
-  Hp: 4631000
-  BaseExp: 302373
-  JobExp: 201678
-  Attack: 6844
-  Attack2: 9765
-  Defense: 240
-  MagicDefense: 168
-  Str: 279
-  Agi: 99
-  Vit: 134
-  Int: 185
-  Dex: 159
-  Luk: 61
-  AttackRange: 1
+  Hp: 9055500
+  BaseExp: 302265
+  JobExp: 208385
+  Attack: 4792
+  Attack2: 1079
+  Defense: 225
+  MagicDefense: 78
+  Resistance: 226
+  MagicResistance: 119
+  Str: 61
+  Agi: 50
+  Vit: 58
+  Int: 61
+  Dex: 75
+  Luk: 58
+  AttackRange: 7
   SkillRange: 10
   ChaseRange: 12
   Size: Large
-  Race: Formless
+  Race: Fish
   Element: Water
   ElementLevel: 2
   WalkSpeed: 175
-  AttackDelay: 388
-  AttackMotion: 576
-  DamageMotion: 1076
-  Ai: 09
+  AttackDelay: 384
+  AttackMotion: 768
+  DamageMotion: 576
+  Ai: 04
   Drops:
     - Item: Fluorescent_Liquid
-      Rate: 500
-    - Item: Ice_Piece
-      Rate: 2000
+      Rate: 5000
     - Item: EP19_Transparency_Shell
-      Rate: 300
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
-    - Item: Etel_Dust
-      Rate: 20
-      StealProtected: true
+      Rate: 2500
+    - Item: Ice_Piece
+      Rate: 1500
     - Item: Limacina_Card
       Rate: 1
       StealProtected: true
@@ -5334,66 +5326,62 @@ Body:
   AegisName: EP19_UNFROST_FLOWER
   Name: Unfrost Flower
   Level: 212
-  Hp: 5215655
-  BaseExp: 304776
-  JobExp: 210449
-  Attack: 6744
-  Attack2: 11241
-  Defense: 180
-  MagicDefense: 130
-  Str: 278
-  Agi: 95
-  Vit: 134
-  Int: 171
-  Dex: 198
-  Luk: 48
+  Hp: 9303920
+  BaseExp: 295309
+  JobExp: 200657
+  Attack: 4715
+  Attack2: 1008
+  Defense: 298
+  MagicDefense: 128
+  Resistance: 197
+  MagicResistance: 116
+  Str: 57
+  Agi: 54
+  Vit: 77
+  Int: 67
+  Dex: 68
+  Luk: 64
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
   Size: Medium
   Race: Fish
   Element: Water
-  ElementLevel: 2
+  ElementLevel: 3
   WalkSpeed: 200
-  AttackDelay: 376
-  AttackMotion: 348
-  DamageMotion: 886
-  Ai: 09
+  AttackDelay: 288
+  AttackMotion: 864
+  DamageMotion: 576
+  Ai: 04
   Drops:
-    - Item: EP19_Bell_Flower
-      Rate: 5
     - Item: Scales_Shell
-      Rate: 200
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
-    - Item: Etel_Dust
-      Rate: 20
+      Rate: 5000
+    - Item: EP19_Bell_Flower
+      Rate: 2700
+    - Item: Round_Shell
+      Rate: 2500
     - Item: Unfrost_Flower_card
       Rate: 1
       StealProtected: true
 - Id: 21522
   AegisName: EP19_CALMARING
-  Name: Calamaring
+  Name: Calmaring
   Level: 209
-  Hp: 5075131
-  BaseExp: 240668
-  JobExp: 356778
-  Attack: 6255
-  Attack2: 8844
-  Defense: 171
-  MagicDefense: 167
-  Str: 266
-  Agi: 85
-  Vit: 104
-  Int: 188
-  Dex: 201
-  Luk: 48
+  Hp: 8261780
+  BaseExp: 275888
+  JobExp: 197122
+  Attack: 5027
+  Attack2: 1282
+  Defense: 238
+  MagicDefense: 127
+  Resistance: 171
+  MagicResistance: 130
+  Str: 86
+  Agi: 70
+  Vit: 82
+  Int: 86
+  Dex: 83
+  Luk: 82
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
@@ -5401,33 +5389,18 @@ Body:
   Race: Plant
   Element: Water
   ElementLevel: 2
-  WalkSpeed: 400
-  AttackDelay: 1245
-  AttackMotion: 672
+  WalkSpeed: 150
+  AttackDelay: 624
+  AttackMotion: 1248
   DamageMotion: 480
-  Ai: 17
-  Modes:
-    Looter: true
-    ChangeTargetMelee: true
-    ChangeTargetChase: true
+  Ai: 04
   Drops:
-    - Item: EP19_Calapy
-      Rate: 500
-    - Item: Zelunium
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
     - Item: Germinating_Sprout
-      Rate: 500
+      Rate: 4000
+    - Item: EP19_Calapy
+      Rate: 2700
     - Item: Sticky_Poison
-      Rate: 500
-    - Item: Etel_Dust
-      Rate: 20
-      StealProtected: true
+      Rate: 5000
     - Item: Calmaring_Card
       Rate: 1
       StealProtected: true
@@ -5435,69 +5408,62 @@ Body:
   AegisName: EP19_ICE_STRAW
   Name: Ice Straw
   Level: 211
-  Hp: 4950092
-  BaseExp: 315446
-  JobExp: 208556
-  Attack: 5688
-  Attack2: 9774
-  Defense: 178
-  MagicDefense: 173
-  Str: 246
-  Agi: 85
-  Vit: 107
-  Int: 184
-  Dex: 206
-  Luk: 36
+  Hp: 7968570
+  BaseExp: 293285
+  JobExp: 198205
+  Attack: 6728
+  Attack2: 1024
+  Defense: 253
+  MagicDefense: 96
+  Resistance: 171
+  MagicResistance: 80
+  Str: 88
+  Agi: 73
+  Vit: 69
+  Int: 56
+  Dex: 75
+  Luk: 73
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
   Size: Small
   Race: Fish
   Element: Water
-  ElementLevel: 3
+  ElementLevel: 1
   WalkSpeed: 200
-  AttackDelay: 900
-  AttackMotion: 532
-  DamageMotion: 600
-  Ai: 09
+  AttackDelay: 576
+  AttackMotion: 1152
+  DamageMotion: 576
+  Ai: 04
   Drops:
     - Item: Ice_Heart
-      Rate: 1000
+      Rate: 4000
     - Item: Ice_Piece
-      Rate: 1500
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
+      Rate: 4000
     - Item: EP19_Thin_Shell
-      Rate: 500
-    - Item: Etel_Dust
-      Rate: 20
-      StealProtected: true
+      Rate: 2700
     - Item: Ice_Straw_Card
       Rate: 1
       StealProtected: true
 - Id: 21524
   AegisName: EP19_SHINING_SEAWEED
   Name: Shining Seaweed
-  Level: 208
-  Hp: 4146957
-  BaseExp: 295446
-  JobExp: 194559
-  Attack: 4078
-  Attack2: 9665
-  Defense: 126
-  MagicDefense: 234
-  Str: 244
-  Agi: 80
-  Vit: 86
-  Int: 188
-  Dex: 224
-  Luk: 63
+  Level: 210
+  Hp: 7302800
+  BaseExp: 282625
+  JobExp: 198038
+  Attack: 5774
+  Attack2: 1509
+  Defense: 242
+  MagicDefense: 130
+  Resistance: 186
+  MagicResistance: 136
+  Str: 92
+  Agi: 75
+  Vit: 88
+  Int: 92
+  Dex: 89
+  Luk: 88
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
@@ -5505,33 +5471,18 @@ Body:
   Race: Plant
   Element: Neutral
   ElementLevel: 2
-  WalkSpeed: 175
-  AttackDelay: 1245
-  AttackMotion: 235
-  DamageMotion: 488
-  Ai: 17
-  Modes:
-    Looter: true
-    ChangeTargetMelee: true
-    ChangeTargetChase: true
+  WalkSpeed: 125
+  AttackDelay: 288
+  AttackMotion: 576
+  DamageMotion: 576
+  Ai: 01
   Drops:
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: EP19_Shiny_Seaweed
-      Rate: 500
-    - Item: Stone_Piece
-      Rate: 300
     - Item: Coral_Reef
-      Rate: 700
-      StealProtected: true
+      Rate: 5000
+    - Item: EP19_Shiny_Seaweed
+      Rate: 2500
+    - Item: Stone_Piece
+      Rate: 4000
     - Item: Shining_Seaweed_Card
       Rate: 1
       StealProtected: true
@@ -5539,48 +5490,42 @@ Body:
   AegisName: EP19_ICE_GANGU
   Name: Ice Gangu
   Level: 208
-  Hp: 4549767
-  BaseExp: 315225
-  JobExp: 208667
-  Attack: 4088
-  Attack2: 6579
-  Defense: 117
-  MagicDefense: 133
-  Str: 204
-  Agi: 156
-  Vit: 76
-  Int: 124
-  Dex: 205
-  Luk: 38
+  Hp: 7285680
+  BaseExp: 269913
+  JobExp: 195432
+  Attack: 5854
+  Attack2: 1158
+  Defense: 170
+  MagicDefense: 84
+  Resistance: 104
+  MagicResistance: 78
+  Str: 82
+  Agi: 96
+  Vit: 54
+  Int: 69
+  Dex: 87
+  Luk: 84
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
   Size: Small
   Race: Insect
   Element: Water
-  ElementLevel: 2
-  WalkSpeed: 150
-  AttackDelay: 1026
+  ElementLevel: 1
+  WalkSpeed: 100
+  AttackDelay: 288
   AttackMotion: 576
-  DamageMotion: 288
-  Ai: 17
+  DamageMotion: 180
+  Ai: 02
   Modes:
-    Looter: true
-    ChangeTargetMelee: true
-    ChangeTargetChase: true
+    Detector: true
   Drops:
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: Fluorescent_Liquid
-      Rate: 500
+    - Item: Insect_Feeler
+      Rate: 7000
+    - Item: Round_Shell
+      Rate: 4000
+    - Item: EP19_Frozen_Shell
+      Rate: 2500
     - Item: Ice_Gangu_Card
       Rate: 1
       StealProtected: true
@@ -5588,19 +5533,21 @@ Body:
   AegisName: EP19_RGAN_A
   Name: Primitive Rgan
   Level: 210
-  Hp: 4385247
-  BaseExp: 304776
-  JobExp: 210449
-  Attack: 5564
-  Attack2: 8112
-  Defense: 202
-  MagicDefense: 192
-  Str: 255
-  Agi: 104
-  Vit: 122
-  Int: 166
-  Dex: 198
-  Luk: 24
+  Hp: 11086768
+  BaseExp: 318751
+  JobExp: 223126
+  Attack: 7416
+  Attack2: 1913
+  Defense: 240
+  MagicDefense: 128
+  Resistance: 175
+  MagicResistance: 132
+  Str: 89
+  Agi: 73
+  Vit: 85
+  Int: 89
+  Dex: 86
+  Luk: 85
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
@@ -5609,28 +5556,15 @@ Body:
   Element: Poison
   ElementLevel: 1
   WalkSpeed: 150
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
+  AttackDelay: 600
+  AttackMotion: 1200
+  DamageMotion: 648
+  Ai: 04
   Drops:
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
     - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-      StealProtected: true
+      Rate: 1875
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 1125
     - Item: Primitive_Rgan_Card
       Rate: 1
       StealProtected: true
@@ -5638,18 +5572,332 @@ Body:
   AegisName: EP19_RGAN_B
   Name: Lowest Rgan
   Level: 212
-  Hp: 4628265
-  BaseExp: 304776
-  JobExp: 210449
-  Attack: 6544
-  Attack2: 8819
-  Defense: 204
-  MagicDefense: 143
-  Str: 254
-  Agi: 105
-  Vit: 88
-  Int: 154
-  Dex: 208
+  Hp: 13446600
+  BaseExp: 333500
+  JobExp: 232056
+  Attack: 6375
+  Attack2: 1542
+  Defense: 323
+  MagicDefense: 139
+  Resistance: 240
+  MagicResistance: 142
+  Str: 79
+  Agi: 76
+  Vit: 107
+  Int: 93
+  Dex: 95
+  Luk: 88
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Earth
+  ElementLevel: 2
+  WalkSpeed: 200
+  AttackDelay: 600
+  AttackMotion: 1200
+  DamageMotion: 864
+  Ai: 04
+  Drops:
+    - Item: Ep19_Rgan_Core_F
+      Rate: 1500
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 1500
+    - Item: EP19_Unknown_Cell
+      Rate: 1500
+    - Item: Lowest_Rgan_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21528
+  AegisName: EP19_RGAN_C
+  Name: Junior Rgan
+  Level: 214
+  Hp: 12284000
+  BaseExp: 346392
+  JobExp: 241262
+  Attack: 10168
+  Attack2: 1736
+  Defense: 278
+  MagicDefense: 105
+  Resistance: 215
+  MagicResistance: 100
+  Str: 128
+  Agi: 107
+  Vit: 101
+  Int: 82
+  Dex: 110
+  Luk: 107
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 3
+  WalkSpeed: 125
+  AttackDelay: 288
+  AttackMotion: 864
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Ep19_Rgan_Core_F
+      Rate: 1500
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 1687
+    - Item: EP19_Unknown_Cell
+      Rate: 1500
+    - Item: Junior_Rgan_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21529
+  AegisName: EP19_RGAN_D
+  Name: Intermediate Rgan
+  Level: 215
+  Hp: 14268460
+  BaseExp: 353963
+  JobExp: 246535
+  Attack: 9051
+  Attack2: 1527
+  Defense: 276
+  MagicDefense: 105
+  Resistance: 210
+  MagicResistance: 98
+  Str: 124
+  Agi: 103
+  Vit: 98
+  Int: 79
+  Dex: 106
+  Luk: 103
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Water
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 336
+  AttackMotion: 1008
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Ep19_Rgan_Core_F
+      Rate: 1125
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 1875
+    - Item: EP19_Unknown_Cell
+      Rate: 1500
+    - Item: Middle_G_Rgan_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21530
+  AegisName: EP19_RGAN_E
+  Name: Rgan
+  Level: 215
+  Hp: 5070800
+  BaseExp: 259786
+  JobExp: 196587
+  Attack: 7460
+  Attack2: 1170
+  Defense: 149
+  MagicDefense: 290
+  Resistance: 117
+  MagicResistance: 267
+  Str: 56
+  Agi: 144
+  Vit: 144
+  Int: 192
+  Dex: 278
+  Luk: 84
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Wind
+  ElementLevel: 2
+  WalkSpeed: 150
+  AttackDelay: 384
+  AttackMotion: 768
+  DamageMotion: 576
+  Ai: 04
+- Id: 21531
+  AegisName: EP19_MD_AQUILA
+  Name: Aquila
+  Level: 210
+  Hp: 500000000
+  BaseExp: 5255640
+  JobExp: 3658840
+  #MvpExp:
+  Attack: 6000
+  Attack2: 1000
+  Defense: 456
+  MagicDefense: 112
+  Resistance: 275
+  MagicResistance: 242
+  Str: 80
+  Agi: 80
+  Vit: 80
+  Int: 80
+  Dex: 80
+  Luk: 80
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Large
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 396
+  AttackMotion: 1584
+  DamageMotion: 480
+  Ai: 21
+  Class: Boss
+  Modes:
+    Mvp: true
+  MvpDrops:
+    - Item: Snow_F_Stone1
+      Rate: 7000
+    - Item: Snow_F_Stone2
+      Rate: 2000
+    - Item: Snow_F_Stone3
+      Rate: 1000
+  Drops:
+    - Item: EP19_Luminant
+      Index: 0
+      Rate: 7000
+    - Item: Snow_F_Stone3
+      Index: 1
+      Rate: 500
+    - Item: Snow_F_Stone2
+      Index: 2
+      Rate: 1000
+    - Item: Snow_F_Stone1
+      Index: 3
+      Rate: 2500
+    - Item: Snow_F_Ore
+      Index: 4
+      Rate: 5000
+    - Item: Snow_F_Ore
+      Index: 5
+      Rate: 3000
+    - Item: Aquila_Card
+      Index: 6
+      Rate: 1
+      StealProtected: true
+- Id: 21532
+  AegisName: EP19_MD_JUNCEA
+  Name: Simulation Juncea
+  Level: 215
+  Hp: 72847380
+  Attack: 8590
+  Attack2: 950
+  Defense: 339
+  MagicDefense: 196
+  Resistance: 376
+  MagicResistance: 131
+  Str: 159
+  Agi: 91
+  Vit: 276
+  Int: 101
+  Dex: 377
+  Luk: 110
+  AttackRange: 2
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Large
+  Race: Demihuman
+  Element: Poison
+  ElementLevel: 4
+  WalkSpeed: 150
+  AttackDelay: 1209
+  AttackMotion: 2016
+  DamageMotion: 576
+  Ai: 21
+- Id: 21533
+  AegisName: EP19_MD_JUNCEA_S
+  Name: Simulation Juncea
+  Level: 215
+  Hp: 225503800
+  BaseExp: 7798710
+  JobExp: 5430080
+  #MvpExp:
+  Attack: 15250
+  Attack2: 2280
+  Defense: 575
+  MagicDefense: 100
+  Resistance: 376
+  MagicResistance: 131
+  Str: 159
+  Agi: 91
+  Vit: 276
+  Int: 101
+  Dex: 377
+  Luk: 110
+  AttackRange: 2
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Large
+  Race: Formless
+  Element: Poison
+  ElementLevel: 4
+  WalkSpeed: 150
+  AttackDelay: 403
+  AttackMotion: 1008
+  DamageMotion: 576
+  DamageTaken: 10
+  Ai: 21
+  Class: Boss
+  Modes:
+    Mvp: true
+  MvpDrops:
+    - Item: Snow_F_Stone1
+      Rate: 7000
+    - Item: Snow_F_Stone2
+      Rate: 2000
+    - Item: Snow_F_Stone3
+      Rate: 1000
+  Drops:
+    - Item: EP19_Sharp_Bone
+      Index: 0
+      Rate: 7000
+    - Item: Snow_F_Stone3
+      Index: 1
+      Rate: 500
+    - Item: Snow_F_Stone2
+      Index: 2
+      Rate: 1000
+    - Item: Snow_F_Stone1
+      Index: 3
+      Rate: 2500
+    - Item: Snow_F_Ore
+      Index: 4
+      Rate: 3500
+    - Item: Snow_F_Ore
+      Index: 5
+      Rate: 1500
+    - Item: Simulation_Juncea_Card
+      Index: 6
+      Rate: 1
+      StealProtected: true
+- Id: 21534
+  AegisName: EP19_MD_RGAN_E
+  Name: Frightened Rgan
+  Level: 213
+  Hp: 5305150
+  Attack: 7678
+  Attack2: 955
+  Defense: 200
+  MagicDefense: 191
+  Resistance: 162
+  MagicResistance: 135
+  Str: 100
+  Agi: 92
+  Vit: 147
+  Int: 114
+  Dex: 223
   Luk: 66
   AttackRange: 1
   SkillRange: 10
@@ -5657,991 +5905,29 @@ Body:
   Size: Medium
   Race: Formless
   Element: Earth
-  ElementLevel: 2
-  WalkSpeed: 150
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-  Drops:
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: Zelunium
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Shadowdecon
-      Rate: 3
-    - Item: Shadowdecon_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: Lowest_Rgan_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21528
-  AegisName: EP19_RGAN_C
-  Name: Lesser Rgan
-  Level: 212
-  Hp: 4973835
-  BaseExp: 304776
-  JobExp: 210449
-  Attack: 5092
-  Attack2: 7492
-  Defense: 292
-  MagicDefense: 183
-  Str: 278
-  Agi: 95
-  Vit: 134
-  Int: 171
-  Dex: 198
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
-  WalkSpeed: 150
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-  Drops:
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: Ep19_Snow_Flower
-      Rate: 20
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Snow_F_Ore
-      Rate: 3
-    - Item: Shadowdecon_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: Junior_Rgan_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21529
-  AegisName: EP19_RGAN_D
-  Name: Intermediate Rgan
-  Level: 214
-  Hp: 5966175
-  BaseExp: 386554
-  JobExp: 315448
-  Attack: 9765
-  Attack2: 11216
-  Defense: 200
-  MagicDefense: 191
-  Str: 278
-  Agi: 141
-  Vit: 134
-  Int: 146
-  Dex: 154
-  Luk: 33
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Water
-  ElementLevel: 3
-  WalkSpeed: 150
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-  Drops:
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: Ep19_Snow_Flower
-      Rate: 20
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: Snow_F_Ore
-      Rate: 3
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Shadowdecon_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: Middle_G_Rgan_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21530
-  AegisName: EP19_RGAN_E
-  Name: Rgan
-  Level: 200
-  Hp: 10
-  Attack: 1
-  Attack2: 1
-  Defense: 1
-  MagicDefense: 1
-  Str: 80
-  Agi: 80
-  Vit: 80
-  Int: 80
-  Dex: 80
-  Luk: 80
-  Size: Small
-  Race: Formless
-  Element: Neutral
   ElementLevel: 1
-  WalkSpeed: 400
-  AttackDelay: 1
-  AttackMotion: 1
-  DamageMotion: 1
-  Ai: 25
-- Id: 21531
-  AegisName: EP19_MD_AQUILA
-  Name: Aquila
-  Level: 215
-  Hp: 300000000
-  Attack: 12884
-  Attack2: 18445
-  Defense: 456
-  MagicDefense: 112
-  Str: 327
-  Agi: 148
-  Vit: 156
-  Int: 214
-  Dex: 288
-  Luk: 146
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
   WalkSpeed: 150
-  AttackDelay: 635
-  AttackMotion: 368
-  DamageMotion: 246
-  Ai: 09
-  Class: Boss
-  Modes:
-    Mvp: true
-  MvpDrops:
-    - Item: Snow_F_Stone2
-      Rate: 4000
-  Drops:
-    - Item: Snow_F_Ore
-      Rate: 5000
-    - Item: Snow_F_Stone2
-      Rate: 5000
-    - Item: EP19_Luminant
-      Rate: 1
-    - Item: Aquila_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21532
-  AegisName: EP19_MD_JUNCEA
-  Name: Monster Juncea
-  Level: 215
-  Hp: 72800000
-  Attack: 5785
-  Attack2: 9865
-  Defense: 471
-  MagicDefense: 194
-  Str: 297
-  Agi: 144
-  Vit: 168
-  Int: 256
-  Dex: 288
-  Luk: 148
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Small
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 2
-  WalkSpeed: 150
-  AttackDelay: 576
-  AttackMotion: 576
-  DamageMotion: 480
-  Ai: 09
-  Class: Boss
-  Modes:
-    Mvp: true
-- Id: 21533
-  AegisName: EP19_MD_JUNCEA_S
-  Name: Simulation Juncea
-  Level: 215
-  Hp: 230000000
-  Attack: 12448
-  Attack2: 16774
-  Defense: 471
-  MagicDefense: 194
-  Str: 297
-  Agi: 144
-  Vit: 168
-  Int: 256
-  Dex: 288
-  Luk: 148
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Small
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 2
-  WalkSpeed: 150
-  AttackDelay: 576
-  AttackMotion: 576
-  DamageMotion: 480
-  Ai: 09
-  Class: Boss
-  Modes:
-    Mvp: true
-  Drops:
-    - Item: Snow_F_Ore
-      Rate: 5000
-    - Item: Snow_F_Stone2
-      Rate: 5000
-    - Item: Simulation_Juncea_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21534
-  AegisName: EP19_MD_RGAN_E
-  Name: Intermediate Rgan
-  Level: 214
-  Hp: 5286316
-  BaseExp: 386554
-  JobExp: 315448
-  Attack: 9765
-  Attack2: 11216
-  Defense: 200
-  MagicDefense: 191
-  Str: 278
-  Agi: 141
-  Vit: 134
-  Int: 146
-  Dex: 154
-  Luk: 33
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
-  WalkSpeed: 150
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
+  AttackDelay: 504
+  AttackMotion: 1008
+  DamageMotion: 576
+  Ai: 04
 - Id: 21535
   AegisName: EP19_MD_RGAN_D
-  Name: Mutated Rgan
-  Level: 214
-  Hp: 5286316
-  BaseExp: 386554
-  JobExp: 315448
-  Attack: 9765
-  Attack2: 11216
-  Defense: 163
-  MagicDefense: 146
-  Str: 278
-  Agi: 141
-  Vit: 134
-  Int: 146
-  Dex: 154
-  Luk: 33
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
-  WalkSpeed: 180
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-- Id: 21536
-  AegisName: EP19_MD_HEARTHUNTER_AT
-  Name: Heart Hunter AT
-  Level: 210
-  Hp: 4275711
-  Attack: 8682
-  Attack2: 9152
-  Defense: 216
-  MagicDefense: 149
-  Str: 299
-  Agi: 146
-  Vit: 98
-  Int: 118
-  Dex: 204
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Demihuman
-  Element: Neutral
-  ElementLevel: 2
-  WalkSpeed: 145
-  AttackDelay: 840
-  AttackMotion: 1268
-  DamageMotion: 480
-  Ai: 04
-- Id: 21537
-  AegisName: EP19_LIMACINA_BOSS
-  Name: Ultra Limacina
-  Level: 213
-  Hp: 48451740
-  BaseExp: 1402373
-  JobExp: 4401678
-  Attack: 15093
-  Attack2: 16533
-  Defense: 340
-  MagicDefense: 168
-  Str: 279
-  Agi: 99
-  Vit: 134
-  Int: 185
-  Dex: 159
-  Luk: 61
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Formless
-  Element: Water
-  ElementLevel: 2
-  WalkSpeed: 150
-  AttackDelay: 238
-  AttackMotion: 576
-  DamageMotion: 1076
-  Ai: 09
-  Class: Boss
-  Modes:
-    Mvp: true
-  Drops:
-    - Item: EP19_Transparency_Shell
-      Rate: 300
-    - Item: Ultra_Limacina_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21538
-  AegisName: EP19_WASTED_RGAN_A
-  Name: Wasted Primitive Rgan
-  Level: 234
-  Hp: 6920300
-  BaseExp: 402887
-  JobExp: 335446
-  Attack: 12446
-  Attack2: 15448
-  Defense: 214
-  MagicDefense: 147
-  Str: 278
-  Agi: 141
-  Vit: 134
-  Int: 146
-  Dex: 154
-  Luk: 33
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
-  WalkSpeed: 180
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-  Drops:
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Snow_F_Ore
-      Rate: 3
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Rotten_Bandage
-      Rate: 2000
-    - Item: Discarded_P_R_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21539
-  AegisName: EP19_WASTED_RGAN_C
-  Name: Discarded Inter Rgan
-  Level: 253
-  Hp: 8453210
-  BaseExp: 544665
-  JobExp: 386445
-  Attack: 15077
-  Attack2: 21645
-  Defense: 316
-  MagicDefense: 201
-  Str: 279
-  Agi: 99
-  Vit: 134
-  Int: 185
-  Dex: 159
-  Luk: 61
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Wind
-  ElementLevel: 3
-  WalkSpeed: 175
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-  Drops:
-    - Item: Discarded_P_R_Card
-      Rate: 1
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: Snow_F_Ore
-      Rate: 3
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Discarded_L_R_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21540
-  AegisName: EP19_CAVE_CALMARING
-  Name: Cave Calamaring
-  Level: 232
-  Hp: 6978561
-  BaseExp: 484665
-  JobExp: 210449
-  Attack: 12092
-  Attack2: 16889
-  Defense: 287
-  MagicDefense: 190
-  Str: 278
-  Agi: 95
-  Vit: 134
-  Int: 171
-  Dex: 198
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Small
-  Race: Plant
-  Element: Dark
-  ElementLevel: 3
-  WalkSpeed: 400
-  AttackDelay: 1245
-  AttackMotion: 672
-  DamageMotion: 480
-  Ai: 17
-  Modes:
-    Looter: true
-    ChangeTargetMelee: true
-    ChangeTargetChase: true
-  Drops:
-    - Item: EP19_CaCalapy
-      Rate: 1000
-    - Item: Sticky_Poison
-      Rate: 500
-    - Item: Fluorescent_Liquid
-      Rate: 800
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Snow_F_Stone1
-      Rate: 5
-    - Item: Cave_Calmaring_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21541
-  AegisName: EP19_CAVE_FLOWER
-  Name: Cave Flower
-  Level: 233
-  Hp: 6739080
-  BaseExp: 524443
-  JobExp: 325446
-  Attack: 13654
-  Attack2: 15884
-  Defense: 219
-  MagicDefense: 150
-  Str: 278
-  Agi: 95
-  Vit: 134
-  Int: 171
-  Dex: 198
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Fish
-  Element: Water
-  ElementLevel: 3
-  WalkSpeed: 200
-  AttackDelay: 376
-  AttackMotion: 348
-  DamageMotion: 886
-  Ai: 09
-  Drops:
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Etel_Dust
-      Rate: 20
-    - Item: EP19_Unknown_Cell
-      Rate: 500
-    - Item: EP19_Bell_Flower
-      Rate: 1000
-    - Item: Snow_F_Stone1
-      Rate: 5
-- Id: 21542
-  AegisName: EP19_HALLUCIGENIA
-  Name: Hallucigenia
-  Level: 252
-  Hp: 8798093
-  BaseExp: 504376
-  JobExp: 481290
-  Attack: 17446
-  Attack2: 19245
-  Defense: 229
-  MagicDefense: 155
-  Str: 228
-  Agi: 185
-  Vit: 100
-  Int: 202
-  Dex: 251
-  Luk: 98
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Insect
-  Element: Water
-  ElementLevel: 2
-  WalkSpeed: 180
-  AttackDelay: 800
-  AttackMotion: 678
-  DamageMotion: 480
-  Ai: 09
-  Drops:
-    - Item: Solid_Shell
-      Rate: 1500
-    - Item: Prickly_Fruit_
-      Rate: 1500
-    - Item: Snow_F_Ore
-      Rate: 10
-    - Item: Snow_F_Stone1
-      Rate: 5
-    - Item: EP19_Prickle_Shell
-      Rate: 500
-    - Item: Sticky_Poison
-      Rate: 1000
-    - Item: Zelunium_Ore
-      Rate: 50
-    - Item: Shadowdecon_Ore
-      Rate: 50
-      StealProtected: true
-    - Item: Hallucigenia_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21543
-  AegisName: EP19_HALLUCIGENIA_BABY
-  Name: Baby Hallucigenia
-  Level: 234
-  Hp: 7169240
-  BaseExp: 468447
-  JobExp: 325667
-  Attack: 13148
-  Attack2: 17549
-  Defense: 240
-  MagicDefense: 161
-  Str: 243
-  Agi: 105
-  Vit: 100
-  Int: 181
-  Dex: 203
-  Luk: 77
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Small
-  Race: Fish
-  Element: Water
-  ElementLevel: 1
-  WalkSpeed: 180
-  AttackDelay: 800
-  AttackMotion: 678
-  DamageMotion: 480
-  Ai: 09
-  Drops:
-    - Item: Prickly_Fruit_
-      Rate: 1500
-    - Item: Solid_Shell
-      Rate: 1500
-    - Item: Sticky_Poison
-      Rate: 1000
-    - Item: Shadowdecon_Ore
-      Rate: 50
-    - Item: Zelunium_Ore
-      Rate: 50
-    - Item: B_Hallucigenia_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21544
-  AegisName: EP19_ONE_EYE_DOLLOCARIS
-  Name: One Eyed Dollocaris
-  Level: 251
-  Hp: 8115484
-  BaseExp: 544844
-  JobExp: 310555
-  Attack: 17092
-  Attack2: 19225
-  Defense: 240
-  MagicDefense: 161
-  Str: 301
-  Agi: 95
-  Vit: 100
-  Int: 254
-  Dex: 244
-  Luk: 13
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Dark
-  ElementLevel: 2
-  Ai: 09
-  Drops:
-    - Item: Scropion's_Nipper
-      Rate: 1500
-    - Item: Nipper
-      Rate: 2000
-    - Item: EP19_Thin_Nipper
-      Rate: 500
-    - Item: Solid_Shell
-      Rate: 500
-    - Item: Snow_F_Stone1
-      Rate: 5
-    - Item: EP19_Unknown_Cell
-      Rate: 500
-    - Item: EP19_Bell_Flower
-      Rate: 1000
-    - Item: Zelunium_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: Shadowdecon_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: One_E_Dollocaris_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21545
-  AegisName: EP19_DOLLOCARIS
-  Name: Two Eyed Dollocaris
-  Level: 253
-  Hp: 8895080
-  BaseExp: 544844
-  JobExp: 310555
-  Attack: 17092
-  Attack2: 19225
-  Defense: 240
-  MagicDefense: 161
-  Str: 301
-  Agi: 95
-  Vit: 100
-  Int: 254
-  Dex: 244
-  Luk: 13
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Formless
-  Element: Earth
-  ElementLevel: 3
-  Ai: 09
-  Drops:
-    - Item: Scropion's_Nipper
-      Rate: 1500
-    - Item: Nipper
-      Rate: 2000
-    - Item: EP19_Thin_Nipper
-      Rate: 500
-    - Item: Solid_Shell
-      Rate: 500
-    - Item: Snow_F_Stone1
-      Rate: 5
-    - Item: EP19_Unknown_Cell
-      Rate: 500
-    - Item: EP19_Bell_Flower
-      Rate: 1000
-    - Item: Zelunium_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: Shadowdecon_Ore
-      Rate: 20
-      StealProtected: true
-    - Item: One_E_Dollocaris_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21546
-  AegisName: MD_COMMON
-  Name: Unknown Monster
-  Level: 200
-  Hp: 10
-  Attack: 1
-  Attack2: 1
-  Defense: 1
-  MagicDefense: 1
-  Str: 80
-  Agi: 80
-  Vit: 80
-  Int: 80
-  Dex: 80
-  Luk: 80
-  Size: Small
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 1
-  WalkSpeed: 400
-  AttackDelay: 1
-  AttackMotion: 1
-  DamageMotion: 1
-  Ai: 25
-- Id: 21588
-  AegisName: EP19_MD_AQUILA_B
-  Name: Aquila
-  Level: 215
-  Str: 287
-  Agi: 148
-  Vit: 156
-  Int: 214
-  Dex: 288
-  Luk: 146
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
-  WalkSpeed: 150
-  AttackDelay: 635
-  AttackMotion: 368
-  DamageMotion: 246
-  Ai: 09
-  Class: Boss
-  Modes:
-    Mvp: true
-  Drops:
-    - Item: Aquila_Card
-      Rate: 1
-    - Item: Snow_F_Ore
-      Rate: 5000
-    - Item: Snow_F_Stone2
-      Rate: 5000
-    - Item: EP19_Luminant
-      Rate: 1
-- Id: 21589
-  AegisName: G_EP19_LIMACINA
-  Name: Limacina
-  Level: 213
-  Hp: 4631000
-  BaseExp: 302373
-  JobExp: 201678
-  Attack: 6844
-  Attack2: 9765
-  Defense: 240
-  MagicDefense: 168
-  Str: 279
-  Agi: 99
-  Vit: 134
-  Int: 185
-  Dex: 159
-  Luk: 61
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Formless
-  Element: Water
-  ElementLevel: 2
-  WalkSpeed: 175
-  AttackDelay: 388
-  AttackMotion: 576
-  DamageMotion: 1076
-  Ai: 09
-- Id: 21590
-  AegisName: EP19_MD_RGAN_ES
-  Name: Furious Rgan
-  Level: 235
-  Hp: 6920300
-  Attack: 15645
-  Attack2: 18441
-  Defense: 256
-  MagicDefense: 173
-  Str: 278
-  Agi: 95
-  Vit: 134
-  Int: 171
-  Dex: 198
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Formless
-  Element: Neutral
-  ElementLevel: 3
-  WalkSpeed: 200
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-- Id: 21599
-  AegisName: EP19_HEARTHUNTER_AT
-  Name: Heart Hunter AT
-  Level: 210
-  Hp: 4275711
-  BaseExp: 304776
-  JobExp: 210449
-  Attack: 8682
-  Attack2: 91145
-  Defense: 216
-  MagicDefense: 149
-  Str: 299
-  Agi: 146
-  Vit: 98
-  Int: 118
-  Dex: 204
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Medium
-  Race: Demihuman
-  Element: Neutral
-  ElementLevel: 2
-  WalkSpeed: 145
-  AttackDelay: 840
-  AttackMotion: 1268
-  DamageMotion: 480
-  Ai: 04
-  Drops:
-    - Item: Vroken_Sword
-      Rate: 500
-    - Item: Heart_Hunter_Seal
-      Rate: 2000
-    - Item: Etel_Dust
-      Rate: 10
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Heart_Hunter_AT_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21600
-  AegisName: EP19_RE_RGAN_E
-  Name: EP19_RE_RGAN_E
-  JapaneseName: Modifed Superior Rgan
-  Level: 234
-  Hp: 7266315
-  BaseExp: 401225
-  JobExp: 230884
-  Attack: 8644
-  Attack2: 14241
-  Defense: 200
-  MagicDefense: 191
-  Str: 278
-  Agi: 95
-  Vit: 134
-  Int: 171
-  Dex: 198
-  Luk: 48
-  AttackRange: 1
-  SkillRange: 10
-  ChaseRange: 12
-  Size: Large
-  Race: Formless
-  Element: Earth
-  ElementLevel: 2
-  WalkSpeed: 150
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
-  Drops:
-    - Item: Ep19_Snow_Flower
-      Rate: 20
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: Snow_F_Ore
-      Rate: 3
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
-    - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Shadowdecon_Ore
-      Rate: 20
-    - Item: R_Superior_Rgan_Card
-      Rate: 1
-      StealProtected: true
-- Id: 21601
-  AegisName: EP19_ET_RGAN_D
-  Name: Mutated Rgan
-  Level: 252
-  Hp: 8261258
-  BaseExp: 511254
-  JobExp: 355841
-  Attack: 17654
-  Attack2: 18114
-  Defense: 163
-  MagicDefense: 146
-  Str: 278
-  Agi: 141
-  Vit: 134
-  Int: 146
-  Dex: 154
-  Luk: 33
+  Name: Split Rgan
+  Level: 211
+  Hp: 4815450
+  Attack: 8257
+  Attack2: 965
+  Defense: 195
+  MagicDefense: 186
+  Resistance: 152
+  MagicResistance: 127
+  Str: 92
+  Agi: 85
+  Vit: 136
+  Int: 105
+  Dex: 208
+  Luk: 62
   AttackRange: 1
   SkillRange: 10
   ChaseRange: 12
@@ -6649,29 +5935,739 @@ Body:
   Race: Formless
   Element: Poison
   ElementLevel: 2
-  WalkSpeed: 180
-  AttackDelay: 802
-  AttackMotion: 802
-  DamageMotion: 384
-  Ai: 09
+  WalkSpeed: 150
+  AttackDelay: 316
+  AttackMotion: 792
+  DamageMotion: 576
+  Ai: 04
+- Id: 21536
+  AegisName: EP19_MD_HEARTHUNTER_AT
+  Name: Modified Heart Hunter
+  Level: 210
+  Hp: 4807050
+  Attack: 9877
+  Attack2: 904
+  Defense: 216
+  MagicDefense: 149
+  Resistance: 173
+  MagicResistance: 101
+  Str: 265
+  Agi: 139
+  Vit: 139
+  Int: 105
+  Dex: 284
+  Luk: 83
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Demihuman
+  Element: Neutral
+  ElementLevel: 1
+  WalkSpeed: 150
+  AttackDelay: 324
+  AttackMotion: 1080
+  DamageMotion: 576
+  Ai: 04
+- Id: 21537
+  AegisName: EP19_LIMACINA_BOSS
+  Name: Ultra Limacina
+  Level: 245
+  Hp: 374848589
+  BaseExp: 8685807
+  JobExp: 6417846
+  #MvpExp:
+  Attack: 13029
+  Attack2: 2614
+  Defense: 529
+  MagicDefense: 509
+  Resistance: 321
+  MagicResistance: 290
+  Str: 198
+  Agi: 174
+  Vit: 253
+  Int: 215
+  Dex: 351
+  Luk: 83
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Large
+  Race: Fish
+  Element: Water
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 312
+  AttackMotion: 780
+  DamageMotion: 576
+  DamageTaken: 10
+  Ai: 21
+  Class: Boss
+  Modes:
+    Mvp: true
+  MvpDrops:
+    - Item: Old_Card_Album
+      Rate: 4000
+    - Item: Yggdrasilberry
+      Rate: 4000
+    - Item: Snow_F_Stone3
+      Rate: 2000
   Drops:
-    - Item: Ep19_Snow_Flower
-      Rate: 20
-    - Item: Ep19_Rgan_Core_F
-      Rate: 1000
-    - Item: Snow_F_Ore
-      Rate: 3
-    - Item: EP19_Shell_Of_Rgan
-      Rate: 200
     - Item: EP19_Unknown_Cell
-      Rate: 200
-    - Item: Zelunium_Ore
-      Rate: 20
-    - Item: Shadowdecon_Ore
-      Rate: 20
+      Rate: 4000
+    - Item: EP19_Luminant
+      Rate: 5000
+    - Item: EP19_Transparency_Shell
+      Rate: 4000
+    - Item: Snow_F_Stone3
+      Rate: 1000
+    - Item: Snow_F_Stone2
+      Rate: 3000
+    - Item: Snow_F_Stone1
+      Rate: 5000
+    - Item: Ultra_Limacina_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21538
+  AegisName: EP19_WASTED_RGAN_A
+  Name: Discarded Prim. Rgan
+  Level: 234
+  Hp: 27506820
+  BaseExp: 525915
+  JobExp: 365942
+  Attack: 9380
+  Attack2: 2486
+  Defense: 468
+  MagicDefense: 203
+  Resistance: 388
+  MagicResistance: 229
+  Str: 111
+  Agi: 107
+  Vit: 151
+  Int: 130
+  Dex: 134
+  Luk: 124
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Poison
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 475
+  AttackMotion: 792
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Rotten_Bandage
+      Rate: 2800
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 2625
+    - Item: EP19_Unknown_Cell
+      Rate: 1500
+    - Item: Ep19_Rgan_Core_F
+      Rate: 1450
+    - Item: Discarded_P_R_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21539
+  AegisName: EP19_WASTED_RGAN_C
+  # Name: Discarded Intermediate Rgan
+  Name: Intermediate Rgan
+  Level: 253
+  Hp: 44256530
+  BaseExp: 729743
+  JobExp: 507770
+  Attack: 11168
+  Attack2: 3438
+  Defense: 585
+  MagicDefense: 256
+  Resistance: 578
+  MagicResistance: 341
+  Str: 185
+  Agi: 179
+  Vit: 252
+  Int: 218
+  Dex: 224
+  Luk: 207
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Wind
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 388
+  AttackMotion: 648
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Rotten_Bandage
+      Rate: 2800
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 1875
+    - Item: EP19_Unknown_Cell
+      Rate: 1500
+    - Item: Ep19_Rgan_Core_F
+      Rate: 1450
+    - Item: Discarded_L_R_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21540
+  AegisName: EP19_CAVE_CALMARING
+  Name: Cave Calmaring
+  Level: 232
+  Hp: 26778990
+  BaseExp: 495027
+  JobExp: 344786
+  Attack: 11215
+  Attack2: 2081
+  Defense: 401
+  MagicDefense: 153
+  Resistance: 350
+  MagicResistance: 164
+  Str: 185
+  Agi: 155
+  Vit: 146
+  Int: 118
+  Dex: 159
+  Luk: 154
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Plant
+  Element: Water
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 576
+  AttackMotion: 576
+  DamageMotion: 478
+  Ai: 04
+  Drops:
+    - Item: EP19_CaCalapy
+      Rate: 1850
+    - Item: Fluorescent_Liquid
+      Rate: 2800
+    - Item: Sticky_Poison
+      Rate: 3000
+    - Item: Cave_Calmaring_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21541
+  AegisName: EP19_CAVE_FLOWER
+  Name: Cave Flower
+  Level: 233
+  Hp: 32110200
+  BaseExp: 511759
+  JobExp: 356093
+  Attack: 7419
+  Attack2: 1920
+  Defense: 458
+  MagicDefense: 199
+  Resistance: 370
+  MagicResistance: 218
+  Str: 104
+  Agi: 100
+  Vit: 141
+  Int: 122
+  Dex: 125
+  Luk: 116
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Fish
+  Element: Water
+  ElementLevel: 3
+  WalkSpeed: 200
+  AttackDelay: 288
+  AttackMotion: 864
+  DamageMotion: 480
+  Ai: 04
+  Drops:
+    - Item: EP19_Unknown_Cell
+      Rate: 1850
+    - Item: EP19_Bell_Flower
+      Rate: 1550
+    - Item: Solid_Shell
+      Rate: 2800
+    - Item: Cave_Un_Flower_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21542
+  AegisName: EP19_HALLUCIGENIA
+  Name: Hallucigenia
+  Level: 252
+  Hp: 42421610
+  BaseExp: 706645
+  JobExp: 493417
+  Attack: 12303
+  Attack2: 3105
+  Defense: 284
+  MagicDefense: 155
+  Resistance: 234
+  MagicResistance: 194
+  Str: 208
+  Agi: 245
+  Vit: 136
+  Int: 175
+  Dex: 224
+  Luk: 215
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Insect
+  Element: Water
+  ElementLevel: 3
+  WalkSpeed: 100
+  AttackDelay: 345
+  AttackMotion: 864
+  DamageMotion: 576
+  Ai: 04
+  Modes:
+    Detector: true
+  Drops:
+    - Item: EP19_Prickle_Shell
+      Rate: 1850
+    - Item: Solid_Shell
+      Rate: 2800
+    - Item: Prickly_Fruit_
+      Rate: 650
+    - Item: Sticky_Poison
+      Rate: 2250
+    - Item: Hallucigenia_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21543
+  AegisName: EP19_HALLUCIGENIA_BABY
+  Name: Hallucigenia Baby
+  Level: 234
+  Hp: 27752300
+  BaseExp: 513505
+  JobExp: 358556
+  Attack: 9842
+  Attack2: 2322
+  Defense: 254
+  MagicDefense: 134
+  Resistance: 190
+  MagicResistance: 153
+  Str: 155
+  Agi: 182
+  Vit: 101
+  Int: 130
+  Dex: 166
+  Luk: 160
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Small
+  Race: Insect
+  Element: Water
+  ElementLevel: 2
+  WalkSpeed: 100
+  AttackDelay: 302
+  AttackMotion: 1008
+  DamageMotion: 576
+  Ai: 04
+  Modes:
+    Detector: true
+  Drops:
+    - Item: EP19_Prickle_Shell
+      Rate: 1850
+    - Item: Prickly_Fruit_
+      Rate: 650
+    - Item: Sticky_Poison
+      Rate: 2500
+    - Item: B_Hallucigenia_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21544
+  AegisName: EP19_ONE_EYE_DOLLOCARIS
+  Name: One Eye Dollocaris
+  Level: 251
+  Hp: 41093320
+  BaseExp: 707510
+  JobExp: 492781
+  Attack: 16339
+  Attack2: 3063
+  Defense: 432
+  MagicDefense: 167
+  Resistance: 386
+  MagicResistance: 181
+  Str: 207
+  Agi: 174
+  Vit: 164
+  Int: 133
+  Dex: 179
+  Luk: 172
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Fish
+  Element: Dark
+  ElementLevel: 3
+  WalkSpeed: 150
+  AttackDelay: 352
+  AttackMotion: 1056
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: EP19_Thin_Nipper
+      Rate: 2437
+    - Item: Scropion's_Nipper
+      Rate: 2750
+    - Item: Solid_Shell
+      Rate: 750
+    - Item: Nipper
+      Rate: 2250
+    - Item: One_E_Dollocaris_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21545
+  AegisName: EP19_DOLLOCARIS
+  Name: Two Eyes Dollocaris
+  Level: 253
+  Hp: 49197540
+  BaseExp: 729743
+  JobExp: 507770
+  Attack: 9791
+  Attack2: 2771
+  Defense: 531
+  MagicDefense: 232
+  Resistance: 476
+  MagicResistance: 282
+  Str: 144
+  Agi: 139
+  Vit: 196
+  Int: 169
+  Dex: 174
+  Luk: 161
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Fish
+  Element: Earth
+  ElementLevel: 3
+  WalkSpeed: 125
+  AttackDelay: 576
+  AttackMotion: 576
+  DamageMotion: 478
+  Ai: 04
+  Drops:
+    - Item: EP19_Thin_Nipper
+      Rate: 2437
+    - Item: Scropion's_Nipper
+      Rate: 2750
+    - Item: Nipper
+      Rate: 2750
+    - Item: Solid_Shell
+      Rate: 1000
+    - Item: Eyes_Dollocaris_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21588
+  AegisName: EP19_MD_AQUILA_B
+  Name: Aquila
+  Level: 210
+  Hp: 500000000
+  Attack: 6000
+  Attack2: 1000
+  Defense: 456
+  MagicDefense: 112
+  Resistance: 275
+  MagicResistance: 242
+  Str: 80
+  Agi: 80
+  Vit: 80
+  Int: 80
+  Dex: 80
+  Luk: 80
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Small
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 1
+  WalkSpeed: 150
+  AttackDelay: 396
+  AttackMotion: 1584
+  DamageMotion: 480
+  DamageTaken: 10
+  Ai: 21
+  Class: Boss
+- Id: 21589
+  AegisName: G_EP19_LIMACINA
+  Name: Limacina
+  Level: 213
+  Hp: 9055500
+  Attack: 4792
+  Attack2: 1079
+  Defense: 225
+  MagicDefense: 78
+  Resistance: 226
+  MagicResistance: 119
+  Str: 61
+  Agi: 50
+  Vit: 58
+  Int: 61
+  Dex: 75
+  Luk: 58
+  AttackRange: 7
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Large
+  Race: Fish
+  Element: Water
+  ElementLevel: 2
+  WalkSpeed: 175
+  AttackDelay: 384
+  AttackMotion: 768
+  DamageMotion: 576
+  Ai: 04
+- Id: 21590
+  AegisName: EP19_MD_RGAN_ES
+  Name: Rgan the furious
+  Level: 213
+  Hp: 6896695
+  Attack: 9981
+  Attack2: 1241
+  Defense: 260
+  MagicDefense: 248
+  Resistance: 210
+  MagicResistance: 179
+  Str: 130
+  Agi: 119
+  Vit: 191
+  Int: 148
+  Dex: 289
+  Luk: 85
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Earth
+  ElementLevel: 2
+  WalkSpeed: 150
+  AttackDelay: 302
+  AttackMotion: 1008
+  DamageMotion: 576
+  Ai: 04
+- Id: 21599
+  AegisName: EP19_HEARTHUNTER_AT
+  Name: Heart Hunter AT
+  Level: 210
+  Hp: 11510680
+  BaseExp: 319499
+  JobExp: 223091
+  Attack: 8432
+  Attack2: 1689
+  Defense: 171
+  MagicDefense: 86
+  Resistance: 106
+  MagicResistance: 80
+  Str: 86
+  Agi: 100
+  Vit: 56
+  Int: 72
+  Dex: 91
+  Luk: 88
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Demihuman
+  Element: Neutral
+  ElementLevel: 1
+  WalkSpeed: 200
+  AttackDelay: 324
+  AttackMotion: 1080
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Heart_Hunter_Seal
+      Index: 0
+      Rate: 2625
+    - Item: Heart_Hunter_Seal
+      Index: 1
+      Rate: 1500
+    - Item: Heart_Hunter_Seal
+      Index: 2
+      Rate: 375
+    - Item: Vroken_Sword
+      Index: 3
+      Rate: 3750
+    - Item: Vroken_Sword
+      Index: 4
+      Rate: 2250
+    - Item: Heart_Hunter_AT_Card
+      Index: 5
+      Rate: 1
+      StealProtected: true
+- Id: 21600
+  AegisName: EP19_RE_RGAN_E
+  Name: Renovated Superior Rgan
+  Level: 234
+  Hp: 28145720
+  BaseExp: 518457
+  JobExp: 361105
+  Attack: 12147
+  Attack2: 2211
+  Defense: 395
+  MagicDefense: 151
+  Resistance: 336
+  MagicResistance: 158
+  Str: 174
+  Agi: 145
+  Vit: 138
+  Int: 111
+  Dex: 150
+  Luk: 145
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Earth
+  ElementLevel: 3
+  WalkSpeed: 175
+  AttackDelay: 504
+  AttackMotion: 1008
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Ep19_Rgan_Core_F
+      Rate: 750
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 2625
+    - Item: EP19_Unknown_Cell
+      Rate: 1250
+    - Item: R_Superior_Rgan_Card
+      Rate: 1
+      StealProtected: true
+- Id: 21601
+  AegisName: EP19_ET_RGAN_D
+  # Name: Entangled Intermediate Rgan
+  Name: Intermediate Rgan
+  Level: 252
+  Hp: 42579000
+  BaseExp: 723723
+  JobExp: 503581
+  Attack: 11444
+  Attack2: 3284
+  Defense: 537
+  MagicDefense: 235
+  Resistance: 489
+  MagicResistance: 289
+  Str: 149
+  Agi: 144
+  Vit: 203
+  Int: 175
+  Dex: 180
+  Luk: 167
+  AttackRange: 1
+  SkillRange: 10
+  ChaseRange: 12
+  Size: Medium
+  Race: Formless
+  Element: Poison
+  ElementLevel: 2
+  WalkSpeed: 175
+  AttackDelay: 316
+  AttackMotion: 792
+  DamageMotion: 576
+  Ai: 04
+  Drops:
+    - Item: Ep19_Rgan_Core_F
+      Rate: 750
+    - Item: EP19_Shell_Of_Rgan
+      Rate: 2625
+    - Item: EP19_Unknown_Cell
+      Rate: 1500
     - Item: E_Inter_Rgan_Card
       Rate: 1
       StealProtected: true
+- Id: 21853
+  AegisName: EP19_MD_BOX1
+  Name: Suspicious Storage Rock
+  Level: 230
+  Hp: 1
+  Attack: 0
+  Attack2: 0
+  Str: 0
+  Agi: 0
+  Vit: 0
+  Int: 0
+  Dex: 0
+  Luk: 0
+  AttackRange: 1
+  SkillRange: 0
+  ChaseRange: 0
+  Size: Small
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 1
+  Class: Boss
+  Drops:
+    - Item: EP19_D_P_Ore
+      Index: 0
+      Rate: 2000
+    - Item: EP19_D_P_Ore
+      Index: 1
+      Rate: 1000
+    - Item: EP19_N_P_Ore
+      Index: 2
+      Rate: 1000
+    - Item: EP19_N_P_Ore
+      Index: 3
+      Rate: 500
+- Id: 21854
+  AegisName: EP19_MD_BOX2
+  Name: Suspicious Storage Rock
+  Level: 230
+  Hp: 1
+  Attack: 0
+  Attack2: 0
+  Str: 0
+  Agi: 0
+  Vit: 0
+  Int: 0
+  Dex: 0
+  Luk: 0
+  AttackRange: 1
+  SkillRange: 0
+  ChaseRange: 0
+  Size: Small
+  Race: Formless
+  Element: Neutral
+  ElementLevel: 1
+  Class: Boss
+  Drops:
+    - Item: EP19_D_P_Ore
+      Index: 0
+      Rate: 2000
+    - Item: EP19_D_P_Ore
+      Index: 1
+      Rate: 1000
+    - Item: EP19_N_P_Ore
+      Index: 2
+      Rate: 1000
+    - Item: EP19_N_P_Ore
+      Index: 3
+      Rate: 500
+    - Item: EP19_D_P_Crystal
+      Index: 4
+      Rate: 300
+    - Item: EP19_N_P_Crystal
+      Index: 5
+      Rate: 150
 # END CODEX EPISODE 19 - EP19_Mob.yml
 
 # Garden of Time instance monsters

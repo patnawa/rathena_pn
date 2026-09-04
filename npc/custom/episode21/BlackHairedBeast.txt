@@ -6,7 +6,9 @@
 //============================================================
 
 function	script	EP21_MainComplete	{
-	return EP21_Main_Complete || isbegin_quest(18360) == 2 || isbegin_quest(18361) == 2;
+	// Quest 18361 is Nyar's Primal Pouch, a side quest, and must not unlock
+	// the Episode 21 finale or its equipment services.
+	return EP21_Main_Complete || isbegin_quest(18360) == 2;
 }
 
 function	script	EP21_EnterInstance	{

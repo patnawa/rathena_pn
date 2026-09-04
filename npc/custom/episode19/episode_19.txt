@@ -1,0 +1,93 @@
+//===== rAthena Script =======================================
+//= Episode 19 utility NPCs.
+//===== Description: =========================================
+//= Dim Glacier weapon services and Isgard storage.
+//===== Source: ==============================================
+//= rAthena pull request #8527, adapted for the custom import.
+//============================================================
+
+icas_in,192,57,3	script	Incineration Furnace#ep19	4_POINT_RED,{
+	mes "There is a brazier where you can feel the heat.";
+	mes "If you have unused Dim Glacier weapons, put them in and melt them.";
+	close2;
+	laphine_synthesis("Dim Glacier Extractor");
+	end;
+}
+
+icas_in,188,60,3	script	Forr#ep19	4_EP19_IWIN,{
+	cutin "ep19_iwin11.png",2;
+	mes "[Forr]";
+	mes "Did you know that weapons are being found in recently abandoned pits?";
+	mes "They are called Dim Glacier weapons because they are imbued with unusual magical power.";
+	next;
+	mes "[Forr]";
+	mes "I've researched them with Vellgunde and found that they hold the magical power of mutated Jormungand.";
+	mes "If you have a Dim Glacier weapon, try adjusting its magic to increase the weapon's performance.";
+	next;
+	mes "[Forr]";
+	mes "I need some unusual refining materials. Would you exchange for what you need?";
+	next;
+	switch (select("Exchange materials.:Awaken a Dim Glacier weapon.:Dispose of an unnecessary weapon.:Cancel.")) {
+	case 1:
+		mes "[Forr]";
+		mes "The amethyst shards brought by Maram helped us make various containers.";
+		mes "They cannot be obtained here, so I may ask for them often.";
+		close2;
+		cutin "",255;
+		callshop "barter_ep19_new_content";
+		end;
+	case 2:
+		mes "[Forr]";
+		mes "I wish you good luck.";
+		close2;
+		cutin "",255;
+		item_enchant(47);
+		end;
+	case 3:
+		mes "[Forr]";
+		mes "Can you see the brazier down there?";
+		mes "I made it to incinerate unnecessary researched objects.";
+		next;
+		mes "[Forr]";
+		mes "If you intend to discard a Dim Glacier weapon, use that incinerator.";
+		mes "Its magical power leaves useful material behind when melted.";
+		close3;
+	default:
+		mes "[Forr]";
+		mes "I will stay here for a while to help Vellgunde.";
+		mes "Come to me whenever you need help.";
+		close3;
+	}
+}
+
+icas_in,169,70,3	script	Storage Cabinet#ep19	4_POINT_BLUE,{
+	.@total_storage = 1;
+
+	cutin "ep19_iwin02.png",2;
+	mes "[Hoyoyo]";
+	mes "Would you like to use the storage cabinet?";
+	mes "Insert 500 Zeny and it will open.";
+	next;
+	cutin "",255;
+	for (.@i = 0; .@i < .@total_storage; ++.@i)
+		.@menu$ += "Storage " + (.@i + 1) + ":";
+	.@menu$ += "Cancel.";
+	.@selection = select(.@menu$) - 1;
+
+	if (.@selection == .@total_storage) {
+		mes "You decide to use it another time.";
+		close;
+	}
+	if (Zeny < 500) {
+		mes "You need 500 Zeny to use the storage cabinet.";
+		close3;
+	}
+	Zeny -= 500;
+	mes "The cabinet opens with a rattling sound.";
+	close2;
+	if (.@selection == 0)
+		openstorage;
+	else
+		openstorage2 .@selection - 1, STOR_MODE_GET|STOR_MODE_PUT;
+	end;
+}

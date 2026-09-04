@@ -107,6 +107,18 @@ function Pick {
 	set .@y, @c[.@i*2+1];
 	deletearray @c[0],getarraysize(@c);
 	@f = false; @d = false;
+	if ((.@map$ == "bl_ice" || .@map$ == "bl_lava" || .@map$ == "bl_grass" || .@map$ == "bl_death" || .@map$ == "bl_soul" || .@map$ == "bl_venom" || .@map$ == "bl_temple") && !callfunc("F_BiosphereAccess"))
+		end;
+	if (.@map$ == "bl_depth1" && !callfunc("F_BiosphereDepth1Access"))
+		end;
+	if ((.@map$ == "ba_chess" || .@map$ == "bl_depth2") && !callfunc("F_BiosphereDepth2Access"))
+		end;
+	if (.@map$ == "bl_depth2")
+		callfunc "F_BiosphereDepth2Purge";
+	if ((.@map$ == "jor_tail" || .@map$ == "jor_crk" || .@map$ == "jor_mbase" || .@map$ == "jor_albe" ||
+		.@map$ == "jor_raise1" || .@map$ == "jor_raise2" || .@map$ == "jor_tmple1" || .@map$ == "jor_tmple2" ||
+		.@map$ == "jor_sklf1" || .@map$ == "jor_sklf2") && !callfunc("EP21_WarperAccess",.@map$))
+		end;
 	Go(.@map$,.@x,.@y);
 }
 function Restrict {
@@ -210,12 +222,16 @@ T44: Restrict("RE");
 T45: Restrict("RE");
 	 Go("ygg_edge",255,240);
 T46: Restrict("RE");
+	 if (!callfunc("EP21_WarperAccess","jor_albe")) end;
 	 Go("jor_albe",191,182);
 T47: Restrict("RE");
+	 if (!callfunc("EP21_GaebolgComplete")) { message strcharinfo(0),"Complete the Gaebolg Resistance assignment first."; end; }
 	 Go("jor_base",240,46);
 T48: Restrict("RE");
+	 if (!callfunc("EP21_WarperAccess","jor_mbase")) end;
 	 Go("jor_mbase",313,106);
 T49: Restrict("RE");
+	 if (!callfunc("EP21_WarperAccess","jor_crk")) end;
 	 Go("jor_crk",137,137);
 
 // --------------------------------------------------
@@ -503,7 +519,7 @@ D51: Restrict("Pre-RE",1,2);
 	 Disp("Carpenter's Shop in the Tree:Passage to a Foreign World:Hvergermil's Fountain");
 	 Pick("","um_dun01","um_dun02","yggdrasil01");
 D52: Restrict("RE");
-	 setarray @c[2],275,21,15,115,15,115,159,27,162,36,159,11,156,33,337,333,156,20,314,64,163,18,337,333,155,15,146,22,53,85,179,179,13,20,190,64;
+	 setarray @c[2],275,21,15,115,15,115,159,27,162,36,159,11,156,33,337,333,36,84,163,17,157,19,315,62,155,15,146,22,53,85,179,179,13,20,190,64;
 	 Disp("Sewage Treatment Plant:1st Power Plant:2nd Power Plant:Large Bath Meditathio:Lost Farm Valley:Library Memory Corridor:Upper Floor of Tartaros Storage:Lower Floor of Tartaros Storage:Biosphere - Ice:Biosphere - Fire:Biosphere - Grass:Biosphere - Death:Biosphere - Soul:Biosphere - Venom:Biosphere - Temple:Biosphere Depth 1:Biosphere Depth 2 Hub:Biosphere Depth 2"); Pick("","ba_pw02","ba_pw01","ba_pw03","ba_bath","ba_lost","ba_lib","ba_2whs01","ba_2whs02","bl_ice","bl_lava","bl_grass","bl_death","bl_soul","bl_venom","bl_temple","bl_depth1","ba_chess","bl_depth2");
 D53: Restrict("RE");
 	 setarray @c[2],244,61,72,20,122,22;
@@ -566,34 +582,34 @@ D58: Restrict("RE");
 		 "Ragsroot",D58_8,
 		 "Distorted Ragsroot",D58_9,
 		 "Flame Branch Workshop",D58_10;
-D58_1: Go("veledor",100,100);
+D58_1: Go("veledor",136,62);
 D58_2:
 	if (CH2_Step<3) { message strcharinfo(0),"Clear the Crossroads of Tangled Mana first."; end; }
-	Go("kindlbrk",100,100);
+	Go("kindlbrk",115,215);
 D58_3:
 	if (CH2_Step<3) { message strcharinfo(0),"Reach Kindlebrook first."; end; }
-	Go("mu_fild02",100,100);
+	Go("mu_fild02",136,65);
 D58_4:
 	if (CH2_Step<3) { message strcharinfo(0),"Reach Kindlebrook first."; end; }
-	Go("mu_fild03",100,100);
+	Go("mu_fild03",136,65);
 D58_5:
 	if (CH2_Step<6) { message strcharinfo(0),"Follow Orion's investigation first."; end; }
-	Go("mu_dun01",100,100);
+	Go("mu_dun01",95,131);
 D58_6:
 	if (CH2_Step<6) { message strcharinfo(0),"Follow Orion's investigation first."; end; }
-	Go("mu_dun02",100,100);
+	Go("mu_dun02",95,131);
 D58_7:
 	if (CH2_Step<5) { message strcharinfo(0),"Help Kindlebrook first."; end; }
-	Go("deadroot",100,100);
+	Go("deadroot",136,62);
 D58_8:
 	if (CH2_Step<8) { message strcharinfo(0),"Stabilize the Primordial Flame first."; end; }
-	Go("ragsruth",100,100);
+	Go("ragsruth",88,58);
 D58_9:
 	if (CH2_Step<10) { message strcharinfo(0),"Restore Nyrholt first."; end; }
-	Go("rgs_dun1",100,100);
+	Go("rgs_dun1",95,131);
 D58_10:
 	if (!callfunc("CH2_Complete")) { message strcharinfo(0),"Finish Chapter 2 to unlock the workshop."; end; }
-	Go("kin_in01",100,100);
+	Go("kin_in01",115,215);
 
 // --------------------------------------------------
 	Castles:
@@ -673,7 +689,11 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Episode 21: Final Battle",I23, "Episode 21: Secret Altar",I24,
 		"Episode 21: Silent Sanctuary",I25, "Old Glast Heim Challenge",I26,
 		"Old Glast Heim Beginner",I27, "Fall of Glast Heim",I28,
-		"Twilight Garden (Story)",I29, "Hey! Sweety",I30;
+		"Twilight Garden (Story)",I29, "Hey! Sweety",I30,
+		"Sunken Tower",I31, "Geffen Night Arena",I32,
+		"Lake of Fire",I33, "Hall of Life",I34,
+		"Tomb of Remorse",I35, "Constellation Tower",I36,
+		"Airship Crash",I37;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -712,14 +732,19 @@ I19: Go("monk_test",306,143);
 I20: Restrict("RE");
 	Go("lhz_dun04",148,269);
 I21: Restrict("RE");
-	Go("jor_tmple1",238,268);
+	if (!callfunc("EP21_InstanceWarperAccess",21)) end;
+	Go("luna_sf2",187,254);
 I22: Restrict("RE");
+	if (!callfunc("EP21_InstanceWarperAccess",22)) end;
 	Go("jor_albe",190,186);
 I23: Restrict("RE");
+	if (!callfunc("EP21_InstanceWarperAccess",23)) end;
 	Go("jor_raise1",132,323);
 I24: Restrict("RE");
+	if (!callfunc("EP21_InstanceWarperAccess",24)) end;
 	Go("jor_crk_p",83,95);
 I25: Restrict("RE");
+	if (!callfunc("EP21_InstanceWarperAccess",25)) end;
 	Go("jor_crk",137,138);
 I26: Restrict("RE");
 	Go("glast_01",143,288);
@@ -731,6 +756,20 @@ I29: Restrict("RE");
 	Go("ba_in01",51,157);
 I30: Restrict("RE");
 	Go("ba_in01",32,250);
+I31: Restrict("RE");
+	Go("alberta",214,74);
+I32: Restrict("RE");
+	Go("dali02",79,60);
+I33: Restrict("RE");
+	Go("t_garden",159,235);
+I34: Restrict("RE");
+	Go("t_garden",172,235);
+I35: Restrict("RE");
+	Go("dali",124,88);
+I36: Restrict("RE");
+	Go("e_tower",83,105);
+I37: Restrict("RE");
+	Go("dali02",137,86);
 
 // --------------------------------------------------
 	Special:

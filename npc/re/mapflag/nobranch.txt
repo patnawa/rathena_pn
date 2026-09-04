@@ -401,6 +401,12 @@ que_thr	mapflag	nobranch
 1@ch_u	mapflag	nobranch
 
 //============================================================
+// Varmundt's Garden Memorial Dungeons
+//============================================================
+1@f_lake	mapflag	nobranch
+1@ba_go	mapflag	nobranch
+
+//============================================================
 // Cash Mall
 //============================================================
 itemmall	mapflag	nobranch

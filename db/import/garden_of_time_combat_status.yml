@@ -1,0 +1,57 @@
+# Garden of Time statuses for NPC skills 785, 788, and 790 and usable item
+# 102434.  Client EFST IDs 1453-1457 already exist in src/map/status.hpp.
+#
+# IMPORTANT: Do not add this file to db/status.yml until the four corresponding
+# SC_* enum values are added to src/map/status.hpp and exported from
+# src/map/script_constants.hpp.
+Header:
+  Type: STATUS_DB
+  Version: 4
+
+Body:
+  - Status: Target_Marker
+    DurationLookup: NPC_TARGET_MARKER
+    Icon: EFST_TARGET_MARKER
+    Flags:
+      BlEffect: true
+      DisplayPc: true
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
+
+  - Status: Block_Seal
+    DurationLookup: NPC_BLOCK_SEAL
+    Icon: EFST_BLOCK_SEAL
+    States:
+      NoMove: true
+      NoCast: true
+      NoAttack: true
+    Flags:
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
+      BlEffect: true
+      DisplayPc: true
+      SetStand: true
+      StopWalking: true
+      StopAttacking: true
+      StopCasting: true
+
+  - Status: Frost_Storm
+    DurationLookup: NPC_FROST_FIELD
+    Icon: EFST_FROST_STORM
+    Flags:
+      BlEffect: true
+      DisplayPc: true
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
+
+  - Status: Warm_Shield
+    Icon: EFST_WARM_SHIELD
+    Flags:
+      BlEffect: true
+      DisplayPc: true
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true

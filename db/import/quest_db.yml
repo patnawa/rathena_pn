@@ -2,6 +2,332 @@ Header:
   Type: QUEST_DB
   Version: 3
 Body:
+# BEGIN CODEX VARMUNDT BIOSPHERE DEPTH
+- Id: 16734
+  Title: Varmundt's Biosphere Depth Guide
+- Id: 16735
+  Title: Depth 1 Sample Research
+  Targets:
+    - Id: 1
+      Count: 300
+      Location: bl_depth1
+      MapName: Biosphere Depth 1
+- Id: 16736
+  Title: 'Standby: Depth 1 Sample Research'
+  TimeLimit: 4h
+- Id: 16737
+  Title: Depth 1 Advanced Research
+  Targets:
+    - Id: 1
+      Count: 2000
+      Location: bl_depth1
+      MapName: Biosphere Depth 1
+- Id: 16738
+  Title: 'Standby: Depth 1 Advanced Research'
+  TimeLimit: Monday 4h
+- Id: 16739
+  Title: Depth 1 Fire Research I
+- Id: 16740
+  Title: 'Standby: Depth 1 Fire Research I'
+  TimeLimit: 4h
+- Id: 16741
+  Title: Depth 1 Fire Research II
+  Targets:
+    - Mob: BIO_LAVA_TOAD
+      Count: 80
+    - Mob: BIO_FIRE_FRILLDORA
+      Count: 80
+- Id: 16742
+  Title: 'Standby: Depth 1 Fire Research II'
+  TimeLimit: 4h
+- Id: 16743
+  Title: Depth 1 Ice Research I
+- Id: 16744
+  Title: 'Standby: Depth 1 Ice Research I'
+  TimeLimit: 4h
+- Id: 16745
+  Title: Depth 1 Ice Research II
+  Targets:
+    - Mob: BIO_ANOLIAN
+      Count: 80
+    - Mob: BIO_KAPHA
+      Count: 80
+- Id: 16746
+  Title: 'Standby: Depth 1 Ice Research II'
+  TimeLimit: 4h
+- Id: 16747
+  Title: Depth 1 Earth Research I
+- Id: 16748
+  Title: 'Standby: Depth 1 Earth Research I'
+  TimeLimit: 4h
+- Id: 16749
+  Title: Depth 1 Earth Research II
+  Targets:
+    - Mob: BIO_STING
+      Count: 80
+    - Mob: BIO_WOOD_GOBLIN
+      Count: 80
+- Id: 16750
+  Title: 'Standby: Depth 1 Earth Research II'
+  TimeLimit: 4h
+- Id: 16751
+  Title: Depth 1 Storm Research I
+- Id: 16752
+  Title: 'Standby: Depth 1 Storm Research I'
+  TimeLimit: 4h
+- Id: 16753
+  Title: Depth 1 Storm Research II
+  Targets:
+    - Mob: BIO_DRAGON_TAIL
+      Count: 80
+    - Mob: BIO_LITTLE_FATUM
+      Count: 80
+- Id: 16754
+  Title: 'Standby: Depth 1 Storm Research II'
+  TimeLimit: 4h
+- Id: 16755
+  Title: Depth 1 Purification Research I
+- Id: 16756
+  Title: 'Standby: Depth 1 Purification Research I'
+  TimeLimit: 4h
+- Id: 16757
+  Title: Depth 1 Purification Research II
+  Targets:
+    - Mob: BIO_HOLY_FRUS
+      Count: 80
+    - Mob: BIO_HOLY_SKOGUL
+      Count: 80
+- Id: 16758
+  Title: 'Standby: Depth 1 Purification Research II'
+  TimeLimit: 4h
+- Id: 16759
+  Title: Depth 1 Corruption Research I
+- Id: 16760
+  Title: 'Standby: Depth 1 Corruption Research I'
+  TimeLimit: 4h
+- Id: 16761
+  Title: Depth 1 Corruption Research II
+  Targets:
+    - Mob: BIO_SKEL_ARCHER
+      Count: 80
+    - Mob: BIO_SKEL_SOLDIER
+      Count: 80
+- Id: 16762
+  Title: 'Standby: Depth 1 Corruption Research II'
+  TimeLimit: 4h
+- Id: 16763
+  Title: Depth 1 Soul Research I
+- Id: 16764
+  Title: 'Standby: Depth 1 Soul Research I'
+  TimeLimit: 4h
+- Id: 16765
+  Title: Depth 1 Soul Research II
+  Targets:
+    - Mob: BIO_EMPATHIZER
+      Count: 80
+    - Mob: BIO_PRAY_GIVER
+      Count: 80
+- Id: 16766
+  Title: 'Standby: Depth 1 Soul Research II'
+  TimeLimit: 4h
+- Id: 16767
+  Title: Depth 1 Venom Research I
+- Id: 16768
+  Title: 'Standby: Depth 1 Venom Research I'
+  TimeLimit: 4h
+- Id: 16769
+  Title: Depth 1 Venom Research II
+  Targets:
+    - Mob: BIO_PINGUICULA_D
+      Count: 80
+    - Mob: BIO_POM_SPIDER
+      Count: 80
+- Id: 16770
+  Title: 'Standby: Depth 1 Venom Research II'
+  TimeLimit: 4h
+- Id: 16771
+  Title: Depth 1 Research Achievement
+- Id: 16778
+  Title: Biosphere Depth Abyss Guidance
+- Id: 16779
+  Title: Depth Abyss Sample Research
+  Targets:
+    - Id: 1
+      Count: 450
+      Location: bl_depth2
+      MapName: Biosphere Depth 2
+- Id: 16780
+  Title: 'Standby: Depth Abyss Sample Research'
+  TimeLimit: 4h
+- Id: 16781
+  Title: Depth Abyss Demi-Human Research
+  Targets:
+    - Mob: BIO_DUNEYRR
+      Count: 25
+- Id: 16782
+  Title: 'Standby: Depth Abyss Demi-Human Research'
+  TimeLimit: 4h
+- Id: 16783
+  Title: Depth Abyss Brute Research
+  Targets:
+    - Mob: BIO_NAGA
+      Count: 25
+- Id: 16784
+  Title: 'Standby: Depth Abyss Brute Research'
+  TimeLimit: 4h
+- Id: 16785
+  Title: Depth Abyss Plant Research
+  Targets:
+    - Mob: BIO_ANCIENT_TREE
+      Count: 25
+- Id: 16786
+  Title: 'Standby: Depth Abyss Plant Research'
+  TimeLimit: 4h
+- Id: 16787
+  Title: Depth Abyss Fish Research
+  Targets:
+    - Mob: BIO_DOLLOCARIS
+      Count: 25
+- Id: 16788
+  Title: 'Standby: Depth Abyss Fish Research'
+  TimeLimit: 4h
+- Id: 16789
+  Title: Depth Abyss Demon Research
+  Targets:
+    - Mob: BIO_ICE_GARGOYLE
+      Count: 25
+- Id: 16790
+  Title: 'Standby: Depth Abyss Demon Research'
+  TimeLimit: 4h
+- Id: 16791
+  Title: Depth Abyss Undead Research
+  Targets:
+    - Mob: BIO_FLAME_GHOST
+      Count: 25
+- Id: 16792
+  Title: 'Standby: Depth Abyss Undead Research'
+  TimeLimit: 4h
+- Id: 16793
+  Title: Depth Abyss Dragon Research
+  Targets:
+    - Mob: BIO_ACIDUS_
+      Count: 25
+- Id: 16794
+  Title: 'Standby: Depth Abyss Dragon Research'
+  TimeLimit: 4h
+- Id: 16795
+  Title: Depth Abyss Angel Research
+  Targets:
+    - Mob: BIO_MOROCC_1
+      Count: 25
+- Id: 16796
+  Title: 'Standby: Depth Abyss Angel Research'
+  TimeLimit: 4h
+- Id: 16797
+  Title: Depth Abyss Formless Research
+  Targets:
+    - Mob: BIO_SALAMANDER
+      Count: 25
+- Id: 16798
+  Title: 'Standby: Depth Abyss Formless Research'
+  TimeLimit: 4h
+- Id: 16799
+  Title: Depth Abyss Insect Research
+  Targets:
+    - Mob: BIO_MOSKILLO
+      Count: 25
+- Id: 16800
+  Title: 'Standby: Depth Abyss Insect Research'
+  TimeLimit: 4h
+- Id: 16801
+  Title: Depth Abyss Research Achievement
+# Current kRO IDs used by MuhRO's four original open-map Biosphere dailies.
+- Id: 17607
+  Title: Varmundt's Biosphere Research Guide
+- Id: 17608
+  Title: Biosphere Severe Cold Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_ice
+      MapName: Biosphere - Severe Cold
+- Id: 17609
+  Title: Biosphere Fire Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_lava
+      MapName: Biosphere - Fire
+- Id: 17610
+  Title: Biosphere Grassland Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_grass
+      MapName: Biosphere - Grassland
+- Id: 17611
+  Title: Biosphere Death Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_death
+      MapName: Biosphere - Death
+- Id: 17612
+  Title: 'Standby: Biosphere Severe Cold Research'
+  TimeLimit: 4h
+- Id: 17613
+  Title: 'Standby: Biosphere Fire Research'
+  TimeLimit: 4h
+- Id: 17614
+  Title: 'Standby: Biosphere Grassland Research'
+  TimeLimit: 4h
+- Id: 17615
+  Title: 'Standby: Biosphere Death Research'
+  TimeLimit: 4h
+# MuhRO extensions not present in the 2025 kRO QuestInfo set.  These IDs live
+# in the server's reserved custom range and are installed client-side by the
+# Biosphere compatibility patch.
+- Id: 900100
+  Title: Biosphere Soul Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_soul
+      MapName: Biosphere - Soul
+- Id: 900101
+  Title: 'Standby: Biosphere Soul Research'
+  TimeLimit: 4h
+- Id: 900102
+  Title: Biosphere Venom Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_venom
+      MapName: Biosphere - Venom
+- Id: 900103
+  Title: 'Standby: Biosphere Venom Research'
+  TimeLimit: 4h
+- Id: 900104
+  Title: Biosphere Temple Research
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: bl_temple
+      MapName: Biosphere - Temple
+- Id: 900105
+  Title: 'Standby: Biosphere Temple Research'
+  TimeLimit: 4h
+- Id: 900106
+  Title: Depth Abyss Extended Research
+  Targets:
+    - Id: 1
+      Count: 3000
+      Location: bl_depth2
+      MapName: Biosphere Depth 2
+- Id: 900107
+  Title: 'Standby: Depth Abyss Extended Research'
+  TimeLimit: 4h
+# END CODEX VARMUNDT BIOSPHERE DEPTH
 - Id: 19990
   Title: Beginner Old Glast Heim
   Targets:
@@ -180,14 +506,14 @@ Body:
   Targets:
   - Id: 1
     Count: 300
-    Location: jor_raise2
+    Location: jor_raise1
     MapName: Northern Raised Land
 - Id: 17778
   Title: Safe Escape Route 2
   Targets:
   - Id: 1
     Count: 300
-    Location: jor_raise1
+    Location: jor_raise2
     MapName: Southern Raised Land
 - Id: 17779
   Title: 'Wait: Safe Escape Route 1'
@@ -1193,7 +1519,7 @@ Body:
   Title: Frozen Sea
   Targets:
     - Id: 1
-      Count: 20
+      Count: 10
       Location: jor_back2
       MapName: Frozen Scale Plain
   Drops:
@@ -1286,7 +1612,7 @@ Body:
   Title: Frozen Sea
   Targets:
     - Id: 1
-      Count: 5
+      Count: 10
       Location: jor_ab02
       MapName: Abandoned Pit 2nd Floor
   Drops:
@@ -1434,7 +1760,7 @@ Body:
   TimeLimit: 4h
 - Id: 12560
   Title: Airship Sabotage - Wait
-  TimeLimit: +3d
+  TimeLimit: 4h
 - Id: 12561
   Title: Core Disabling
   Targets:

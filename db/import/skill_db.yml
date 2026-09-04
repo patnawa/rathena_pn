@@ -1,0 +1,65 @@
+# Custom skills required by enabled episode and instance content.
+Header:
+  Type: SKILL_DB
+  Version: 4
+
+Body:
+  # Episode 19 Airship Destruction visual skill.
+  # Source: rAthena pull request #8527 at
+  # 60201913486d0aa8e093b929ae00ae54d593448e.
+  - Id: 578
+    Name: DE_BERSERKAIZER
+    Description: Berserkaizer
+    MaxLevel: 1
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    HitCount: 1
+    Duration1: -1
+
+  # Existing content invokes these official reserved NPC skill IDs, but the
+  # upstream skill database does not define them yet.
+  - Id: 778
+    Name: NPC_STRIP_SHADOW
+    Description: Strip Shadow Equipment
+    MaxLevel: 10
+    TargetType: Attack
+    DamageFlags:
+      NoDamage: true
+    Flags:
+      IsNpc: true
+    Range: 10
+    Duration1: 1000
+    Status: Shadow_Strip
+  - Id: 792
+    Name: NPC_GROGGY_ON
+    Description: Groggy
+    MaxLevel: 10
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Flags:
+      IsNpc: true
+    HitCount: 1
+    Duration1:
+      - Level: 1
+        Time: 1000
+      - Level: 2
+        Time: 2000
+      - Level: 3
+        Time: 3000
+      - Level: 4
+        Time: 4000
+      - Level: 5
+        Time: 5000
+      - Level: 6
+        Time: 6000
+      - Level: 7
+        Time: 7000
+      - Level: 8
+        Time: 8000
+      - Level: 9
+        Time: 9000
+      - Level: 10
+        Time: 10000
+    Status: Groggy

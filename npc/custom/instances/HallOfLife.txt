@@ -1,0 +1,942 @@
+//===== rAthena Script =======================================
+//= Garden of Time: Hall of Life
+//===== License: =============================================
+//= Copyright (C) rAthena contributors. GPL-3.0-or-later.
+//===== Description: =========================================
+//= Complete party-instance controller for Hall of Life:
+//= access, key consumption, account-shared barrier progress,
+//= failure regression, two Rigel phases, moving portals,
+//= phantom-space illusions, groggy window, sanctuary, and the
+//= published 20-level MuhRO reward table.
+//=
+//= Public rules/rewards (retrieved 2026-09-04):
+//= https://wiki.muhro.eu/Hall_of_Life
+//= https://wiki.muhro.eu/index.php?title=Hall_of_Life&action=raw
+//= Official Gravity reference (mechanics, not MuhRO timers):
+//= https://renewal.playragnarok.com/news/updatedetail.aspx?id=415
+//=
+//= The server target is MuhRO behavior, so the re-entry delay is
+//= one minute and the reward reset is Friday at 09:45 server time.
+//= Gravity iRO currently documents one hour / Monday 04:00.
+//=
+//= Difficulty stat formulas and moving-portal coordinates are
+//= taken from the public implementation by crazyarashi:
+//= https://github.com/hayakawakaki/rathena-script-collection
+//= They are kept separate from the exact published reward table.
+//=
+//= Required existing data: instance "Hall of Life" (ID 202), map
+//= 1@ba_go, mobs 22174/22175/22176/20562, item 1001415,
+//= equipment 420231, enchants 312453-312472, and reward items
+//= 1001456-1001460, 1001593, 1001601.
+//============================================================
+
+function	script	F_PNHoL_ProtectionLevel	{
+	if (getequipid(EQI_HEAD_LOW) != 420231)
+		return 0;
+
+	.@card = getequipcardid(EQI_HEAD_LOW, 3);
+	if (.@card < 312453 || .@card > 312472)
+		return 0;
+	return .@card - 312452;
+}
+
+// Return the next Friday 09:45 in local server time.
+function	script	F_PNHoL_NextReset	{
+	.@now = gettimetick(2);
+	.@today_seconds = gettime(DT_HOUR) * 3600 + gettime(DT_MINUTE) * 60 + gettime(DT_SECOND);
+	.@reset_seconds = 9 * 3600 + 45 * 60;
+	.@days = (FRIDAY - gettime(DT_DAYOFWEEK) + 7) % 7;
+	.@delta = .@days * 86400 + .@reset_seconds - .@today_seconds;
+	if (.@delta <= 0)
+		.@delta += 604800;
+	return .@now + .@delta;
+}
+
+// The barrier rank is account data.  The enchant on the equipped
+// protection is its visible/client representation and is repaired here.
+function	script	F_PNHoL_SyncProtection	{
+	.@item_level = callfunc("F_PNHoL_ProtectionLevel");
+	if (!.@item_level)
+		return 0;
+
+	if (#PNHoL_Level < 1 || #PNHoL_Level > 20)
+		#PNHoL_Level = .@item_level;
+	if (.@item_level == #PNHoL_Level)
+		return #PNHoL_Level;
+
+	if (getequipuniqueid(EQI_HEAD_LOW)) {
+		dispbottom "Hall of Life: unique-ID protections cannot be synchronized safely.";
+		return 0;
+	}
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & EQP_HEAD_LOW) && @inventorylist_id[.@i] == 420231) {
+			.@idx = .@i;
+			break;
+		}
+	}
+	if (.@idx < 0 || @inventorylist_expire[.@idx]) {
+		dispbottom "Hall of Life: rental or unlocatable protections cannot be synchronized safely.";
+		return 0;
+	}
+	setarray .@card[0],@inventorylist_card1[.@idx],@inventorylist_card2[.@idx],@inventorylist_card3[.@idx],@inventorylist_card4[.@idx];
+	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
+	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
+	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
+	.@card[3] = 312452 + #PNHoL_Level;
+	.@identify = @inventorylist_identify[.@idx];
+	.@refine = @inventorylist_refine[.@idx];
+	.@attribute = @inventorylist_attribute[.@idx];
+	.@grade = @inventorylist_enchantgrade[.@idx];
+	.@bound = @inventorylist_bound[.@idx];
+	delequip EQI_HEAD_LOW;
+	if (!delitemidx(@inventorylist_idx[.@idx],1))
+		return 0;
+	if (.@bound)
+		getitembound4 420231,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@bound,.@grade,.@oid,.@oval,.@opar;
+	else
+		getitem4 420231,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@grade,.@oid,.@oval,.@opar;
+	// `equip` selects the first copy by item ID. Only auto-equip when this is the
+	// sole protection; otherwise let the player select the newly ranked copy.
+	if (countitem(420231) != 1) {
+		dispbottom "Hall of Life: the synchronized protection was returned unequipped. Equip the correctly ranked copy and try again.";
+		return 0;
+	}
+	equip 420231;
+	return #PNHoL_Level;
+}
+
+// Apply an unfinished-run penalty once the referenced instance no
+// longer exists.  Reward-locked accounts cannot gain or lose levels.
+function	script	F_PNHoL_CheckFailure	{
+	if (#PNHoL_PendingIID < 1)
+		return 0;
+	if (#PNHoL_RewardUntil > gettimetick(2)) {
+		#PNHoL_PendingIID = 0;
+		#PNHoL_PendingLevel = 0;
+		if (isbegin_quest(12617) > 0)
+			erasequest 12617;
+		return 0;
+	}
+	if (instance_live_info(ILI_NAME, #PNHoL_PendingIID) == "Hall of Life")
+		return 0;
+
+	if (#PNHoL_Level > 1)
+		--#PNHoL_Level;
+	#PNHoL_PendingIID = 0;
+	#PNHoL_PendingLevel = 0;
+	if (isbegin_quest(12617) > 0)
+		erasequest 12617;
+	if (callfunc("F_PNHoL_ProtectionLevel"))
+		callfunc("F_PNHoL_SyncProtection");
+	return 1;
+}
+
+// Exact Hall of Life table from the current MuhRO raw wiki page.
+// Returns 0 without granting anything when inventory capacity is low.
+function	script	F_PNHoL_GrantReward	{
+	.@level = getarg(0);
+	if (.@level < 1 || .@level > 20)
+		return 0;
+
+	setarray .@circulation[1], 15,23,32,42,52,62,72,83,98,118,139,161,183,205,227,250,273,297,321,346;
+	setarray .@birth[1],        0,8,15,20,26,31,37,43,49,55,62,69,77,86,96,106,118,129,142,158;
+	setarray .@extinction[1],   0,8,15,20,26,31,37,43,49,55,62,69,77,86,96,106,118,129,142,158;
+	setarray .@truth[1],        0,0,0,0,0,3,6,21,26,28,31,34,38,42,46,49,53,59,64,70;
+	setarray .@light[1],        0,0,0,0,0,0,0,5,8,9,11,12,13,14,16,17,18,20,22,26;
+	setarray .@genesis[1],      0,0,0,0,0,0,0,0,3,5,7,10,11,12,13,15,16,17,19,22;
+	setarray .@rune[1],         0,0,0,0,0,0,0,0,5,6,7,8,10,11,12,13,15,16,17,20;
+
+	setarray .@all_item[0], 1001456,1001457,1001458,1001459,1001460,1001601,1001593;
+	setarray .@all_amount[0], .@circulation[.@level],.@birth[.@level],.@extinction[.@level],.@truth[.@level],.@light[.@level],.@genesis[.@level],.@rune[.@level];
+	for (.@i = 0; .@i < getarraysize(.@all_item); ++.@i) {
+		if (.@all_amount[.@i] < 1)
+			continue;
+		.@give_item[.@count] = .@all_item[.@i];
+		.@give_amount[.@count] = .@all_amount[.@i];
+		++.@count;
+	}
+	if (!checkweight2(.@give_item, .@give_amount))
+		return 0;
+
+	for (.@i = 0; .@i < .@count; ++.@i)
+		getitem .@give_item[.@i], .@give_amount[.@i];
+	return 1;
+}
+
+// MuhRO entrance: Garden of Time 172,235.
+t_garden,172,235,2	script	Hall of Life#pn_hol	GATE_SKYBLUE,{
+	.@instance$ = "Hall of Life";
+	.@now = gettimetick(2);
+
+	if (#PNHoL_RewardUntil && #PNHoL_RewardUntil <= .@now) {
+		#PNHoL_RewardUntil = 0;
+		if (isbegin_quest(12612) > 0)
+			erasequest 12612;
+	}
+	if (PNHoL_NextEntry && PNHoL_NextEntry <= .@now) {
+		PNHoL_NextEntry = 0;
+		if (isbegin_quest(12619) > 0)
+			erasequest 12619;
+	}
+	.@failed = callfunc("F_PNHoL_CheckFailure");
+
+	mes "[Hall of Life]";
+	if (.@failed) {
+		mes "The unfinished correction was recorded as a failure.";
+		mes "Your account's barrier level is now ^FF0000" + #PNHoL_Level + "^000000.";
+		next;
+	}
+	mes "A Hall Key is consumed only when the party leader creates a new prison.";
+	mes "Re-entry delay: ^0000FF1 minute^000000. Reward reset: ^0000FFFriday 09:45^000000.";
+	next;
+
+	if (BaseLevel < 250) {
+		mes "[Hall of Life]";
+		mes "Only adventurers of Base Level 250 or higher may enter.";
+		close;
+	}
+	if (isbegin_quest(12597) != 2) {
+		mes "[Hall of Life]";
+		mes "Finish the Garden of Time access story and speak with the Sealing Spirit Stone first.";
+		close;
+	}
+	if (!getcharid(1)) {
+		mes "[Hall of Life]";
+		mes "Create a party first. A one-person party is acceptable.";
+		close;
+	}
+	if (!callfunc("F_PNHoL_ProtectionLevel")) {
+		mes "[Hall of Life]";
+		mes "Equip a valid " + mesitemlink(420231) + " in the lower-headgear slot.";
+		mes "The Sealing Spirit Stone at 166,235 can reissue a lost protection.";
+		close;
+	}
+	.@protection_level = callfunc("F_PNHoL_SyncProtection");
+
+	.@iid = instance_id(IM_PARTY);
+	if (#PNHoL_PendingIID > 0 && #PNHoL_PendingIID != .@iid && #PNHoL_RewardUntil <= .@now) {
+		mes "[Hall of Life]";
+		mes "This account is still registered in another active Hall of Life correction.";
+		mes "Finish that correction or wait for its 60-minute lifetime to end.";
+		close;
+	}
+	if (.@iid && instance_live_info(ILI_NAME, .@iid) == .@instance$) {
+		switch(select("Enter the reserved Hall.:Review barrier status.:Cancel.")) {
+		case 1:
+			if (PNHoL_NextEntry > .@now) {
+				mes "[Hall of Life]";
+				mes "The dimensional after-effect remains for " + (PNHoL_NextEntry - .@now) + " more second(s).";
+				close;
+			}
+			if (instance_enter(.@instance$) != IE_OK) {
+				mes "[Hall of Life]";
+				mes "The reserved passage did not respond. Please try again.";
+				close;
+			}
+			PNHoL_NextEntry = .@now + 60;
+			@PNHoL_PhantomToken = 0;
+			if (isbegin_quest(12619) > 0)
+				erasequest 12619;
+			setquest 12619;
+			if (#PNHoL_RewardUntil <= .@now) {
+				#PNHoL_PendingIID = .@iid;
+				#PNHoL_PendingLevel = .@protection_level;
+				if (isbegin_quest(12617) > 0)
+					erasequest 12617;
+				setquest 12617;
+			}
+			end;
+		case 2:
+			mes "[Hall of Life]";
+			mes "Account barrier: ^0000FF" + #PNHoL_Level + "^000000.";
+			if (#PNHoL_RewardUntil > .@now)
+				mes "This account has claimed its weekly reward. Progress is locked until the Friday reset.";
+			else
+				mes "No weekly reward lock is active.";
+			close;
+		case 3:
+			close;
+		}
+	}
+	if (.@iid) {
+		mes "[Hall of Life]";
+		mes "Your party already owns another memorial dungeon: ^0000FF" + instance_live_info(ILI_NAME, .@iid) + "^000000.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "[Hall of Life]";
+		mes "Only the party leader may create the prison. Once it is reserved, every eligible member may enter.";
+		close;
+	}
+	if (countitem(1001415) < 1) {
+		mes "[Hall of Life]";
+		mes "The party leader needs one " + mesitemlink(1001415) + ".";
+		close;
+	}
+	if (select("Use one Hall Key and reserve.:Cancel.") == 2)
+		close;
+
+	.@created = instance_create(.@instance$);
+	if (.@created < 1) {
+		mes "[Hall of Life]";
+		mes "Reservation failed (code " + .@created + ").";
+		close;
+	}
+	setinstancevar 'party_id, getcharid(1), .@created;
+	setinstancevar 'leader_aid, getcharid(3), .@created;
+	delitem 1001415, 1;
+	mes "[Hall of Life]";
+	mes "The Hall is reserved for 60 minutes. Speak to the gate again to enter.";
+	close;
+
+OnInit:
+	initnpctimer;
+	end;
+OnTimer1000:
+	if (getnpcid(0,"Dimension Prison#2"))
+		disablenpc "Dimension Prison#2";
+	if (getnpcid(0,"Dimensional Prison#2"))
+		disablenpc "Dimensional Prison#2";
+	end;
+}
+
+// The party leader's account barrier fixes the instance tier.
+1@ba_go,54,55,4	script	Rigel#pn_hol_start	MD_PRI_RIGEL,1,1,{
+	if ('started) {
+		mes "[Rigel]";
+		mes "The correction is already underway.";
+		close;
+	}
+	if (getcharid(1) != 'party_id || !is_party_leader()) {
+		mes "[Rigel]";
+		mes "The party leader must resonate the protection with the barrier.";
+		close;
+	}
+	if (!callfunc("F_PNHoL_ProtectionLevel")) {
+		mes "[Rigel]";
+		mes "Equip your Constellation's Protection before touching the seal.";
+		close;
+	}
+	.@max_level = callfunc("F_PNHoL_SyncProtection");
+	mes "[Rigel]";
+	mes "The leader's account barrier fixes this correction at ^FF0000level " + .@max_level + "^000000.";
+	if (select("Begin the correction.:Cancel.") == 2)
+		close;
+
+	'level = .@max_level;
+	'started = 1;
+	'party_id = getcharid(1);
+	deletearray 'member_aid;
+	deletearray 'member_cid;
+	getpartymember 'party_id, 1;
+	.@count = $@partymembercount;
+	copyarray .@cid[0], $@partymembercid[0], .@count;
+	getpartymember 'party_id, 2;
+	copyarray .@aid[0], $@partymemberaid[0], .@count;
+	.@caller_aid = getcharid(3);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i], .@cid[.@i]) || !attachrid(.@aid[.@i]))
+			continue;
+		if (strcharinfo(3) == 'map$) {
+			'member_aid['member_count] = .@aid[.@i];
+			'member_cid['member_count] = .@cid[.@i];
+			++'member_count;
+		}
+		detachrid;
+	}
+	attachrid .@caller_aid;
+
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#pn_hol_control") + "::OnStartPhase1";
+	end;
+}
+
+// Main lifecycle and boss-state controller.
+1@ba_go,1,1,0	script	#pn_hol_control	-1,{
+	end;
+
+OnInstanceInit:
+	'map$ = instance_mapname("1@ba_go");
+	'stage = 0;
+	'started = 0;
+	'cleared = 0;
+	'member_count = 0;
+	'dimension = 0;
+	'groggy = 0;
+	'sanctuary = 0;
+	'member_block = 0;
+	'traps_active = 0;
+	'phantom_entries = 0;
+	'death_count = 0;
+	'regen_bonus_pct = 0;
+	'portal_hits = 0;
+	disablenpc instance_npcname("#pn_hol_reward");
+	disablenpc instance_npcname("#pn_hol_phantom_in");
+	disablenpc instance_npcname("#pn_hol_phantom_out");
+	for (.@i = 1; .@i <= 24; ++.@i)
+		disablenpc instance_npcname("#pn_hol_trap_" + .@i);
+	end;
+
+OnStartPhase1:
+	if ('stage || 'level < 1 || 'level > 20)
+		end;
+	'stage = 1;
+	'fight_seconds = 0;
+	instance_announce instance_id(), "Rigel: Energy of life, flow through this place...", BC_MAP, 0xCCFF00;
+	monster 'map$,54,55,"Criminal Rigel",22175,1,instance_npcname(strnpcinfo(0)) + "::OnPhase1Dead";
+	'boss_gid = $@mobid[0];
+	callsub S_ApplyDifficulty, 1;
+	initnpctimer instance_npcname("#pn_hol_pulse");
+	initnpctimer instance_npcname("#pn_hol_traps");
+	end;
+
+OnPhase1Dead:
+	if ('stage != 1)
+		end;
+	'stage = 10;
+	callsub S_StopHazards;
+	instance_warpall 'map$,54,49,instance_id(),IWA_NOTDEAD;
+	instance_announce instance_id(), "Rigel: You cannot kill the Constellation of Life merely by doing this.", BC_MAP, 0xCCFF00;
+	sleep 5000;
+	if ('stage != 10)
+		end;
+	'stage = 2;
+	'fight_seconds = 0;
+	monster 'map$,54,55,"Criminal Rigel",22174,1,instance_npcname(strnpcinfo(0)) + "::OnPhase2Dead";
+	'boss_gid = $@mobid[0];
+	callsub S_ApplyDifficulty, 2;
+	initnpctimer instance_npcname("#pn_hol_pulse");
+	end;
+
+OnPhase2Dead:
+	if ('stage != 2)
+		end;
+	'stage = 3;
+	'cleared = 1;
+	callsub S_StopHazards;
+	enablenpc instance_npcname("#pn_hol_reward");
+	instance_announce instance_id(), "The dimensional prisoner has been corrected. Decide whether to advance or receive the weekly reward.", BC_MAP, 0x33FF99;
+	end;
+
+OnTrapTriggered:
+	if ('stage != 1 || 'groggy || !unitexists('boss_gid))
+		end;
+	getunitdata 'boss_gid, .@data;
+	.@heal = .@data[UMOB_HP] + ('base_hp * 10 / 100);
+	setunitdata 'boss_gid, UMOB_HP, min(.@heal, 'base_hp);
+	.@bonus = 3000 + 200 * 'level;
+	++'portal_hits;
+	setunitdata 'boss_gid, UMOB_ATKMIN, min(.@data[UMOB_ATKMIN] + .@bonus, 65000);
+	setunitdata 'boss_gid, UMOB_ATKMAX, min(.@data[UMOB_ATKMAX] + .@bonus, 65000);
+	setunitdata 'boss_gid, UMOB_MATKMIN, min(.@data[UMOB_MATKMIN] + .@bonus, 65000);
+	setunitdata 'boss_gid, UMOB_MATKMAX, min(.@data[UMOB_MATKMAX] + .@bonus, 65000);
+	unittalk 'boss_gid, "Your mistake only makes me stronger.";
+	end;
+
+OnOpenDimension:
+	if ('stage != 1 || 'dimension || 'groggy || !unitexists('boss_gid))
+		end;
+	'dimension = 1;
+	++'dimension_cycle;
+	'phantom_entries = 0;
+	'regen_bonus_pct += 3;
+	enablenpc instance_npcname("#pn_hol_phantom_in");
+	disablenpc instance_npcname("#pn_hol_phantom_out");
+	killmonster 'map$, instance_npcname(strnpcinfo(0)) + "::OnIllusionDead";
+	setarray .@xy[0],333,68,371,68,371,30,333,30;
+	for (.@i = 0; .@i < 8; .@i += 2) {
+		monster 'map$,.@xy[.@i],.@xy[.@i + 1],"Rigel's Illusion",22176,1,instance_npcname(strnpcinfo(0)) + "::OnIllusionDead";
+		hateffect HAT_EF_WHITEBODY, true, $@mobid[0];
+	}
+	for (.@i = 0; .@i < 'death_count; ++.@i) {
+		areamonster 'map$,333,30,371,68,"Rigel's Illusion",22176,1,instance_npcname(strnpcinfo(0)) + "::OnIllusionDead";
+		hateffect HAT_EF_WHITEBODY, true, $@mobid[0];
+	}
+	instance_announce instance_id(), "A portal to the phantom Hall of Life has opened at the north edge.", BC_MAP, 0x66CCFF;
+	end;
+
+OnIllusionDead:
+	if ('stage != 1 || !'dimension)
+		end;
+	if (mobcount('map$, instance_npcname(strnpcinfo(0)) + "::OnIllusionDead") > 0)
+		end;
+	donpcevent instance_npcname(strnpcinfo(0)) + "::OnGroggy";
+	end;
+
+OnGroggy:
+	if ('stage != 1 || !'dimension || !unitexists('boss_gid))
+		end;
+	'dimension = 0;
+	'groggy = 1;
+	'traps_active = 0;
+	stopnpctimer instance_npcname("#pn_hol_traps");
+	for (.@i = 1; .@i <= 24; ++.@i)
+		disablenpc instance_npcname("#pn_hol_trap_" + .@i);
+	disablenpc instance_npcname("#pn_hol_phantom_in");
+	enablenpc instance_npcname("#pn_hol_phantom_out");
+	setunitdata 'boss_gid, UMOB_ATKMIN, 'base_atkmin;
+	setunitdata 'boss_gid, UMOB_ATKMAX, 'base_atkmax;
+	setunitdata 'boss_gid, UMOB_MATKMIN, 'base_matkmin;
+	setunitdata 'boss_gid, UMOB_MATKMAX, 'base_matkmax;
+	'portal_hits = 0;
+	'regen_bonus_pct = 0;
+	'death_count = 0;
+	setunitdata 'boss_gid, UMOB_DAMAGETAKEN, 100 - 2 * 'level;
+	setunitdata 'boss_gid, UMOB_DMGIMMUNE, false;
+	// Groggy suspends both normal attacks and the Garden mob-skill schedule.
+	setunitdata 'boss_gid, UMOB_MODE, ('boss_mode | MD_NOCAST) & ~(MD_CANMOVE | MD_CANATTACK | MD_AGGRESSIVE);
+	if ('relieve_level)
+		sc_end SC_RELIEVE_ON, 'boss_gid;
+	unitskilluseid 'boss_gid, "NPC_GROGGY_ON", 10, 'boss_gid, -10000;
+	instance_announce instance_id(), "The illusions collapse. Rigel is groggy and vulnerable for 20 seconds!", BC_MAP, 0xCCFF00;
+	sleep 20000;
+	if ('stage != 1 || !unitexists('boss_gid))
+		end;
+	setunitdata 'boss_gid, UMOB_DAMAGETAKEN, 1;
+	setunitdata 'boss_gid, UMOB_MODE, 'boss_mode;
+	if ('relieve_level)
+		sc_start SC_RELIEVE_ON, INFINITE_TICK, 'relieve_level, 10000, SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF, 'boss_gid;
+	'groggy = 0;
+	'phantom_entries = 0;
+	initnpctimer instance_npcname("#pn_hol_traps");
+	end;
+
+OnOpenSanctuary:
+	if ('stage != 2 || 'sanctuary || 'groggy || !unitexists('boss_gid))
+		end;
+	getunitdata 'boss_gid, .@data;
+	'sanctuary = 1;
+	++'sanctuary_token;
+	.@token = 'sanctuary_token;
+	'sanctuary_x = .@data[UMOB_X];
+	'sanctuary_y = .@data[UMOB_Y];
+	for (.@dx = -6; .@dx <= 6; .@dx += 2) {
+		for (.@dy = -6; .@dy <= 6; .@dy += 2) {
+			monster 'map$,'sanctuary_x + .@dx,'sanctuary_y + .@dy,"",20562,1,instance_npcname(strnpcinfo(0)) + "::OnSanctuaryMarkerDead";
+			setunitdata $@mobid[0], UMOB_DMGIMMUNE, true;
+		}
+	}
+	setunitdata 'boss_gid, UMOB_DMGIMMUNE, true;
+	instance_announce instance_id(), "Rigel created a sanctuary. Pull the prisoner outside its boundary!", BC_MAP, 0xFFFF66;
+	.@duration = max(('sanctuary_interval - 3) * 1000, 4000);
+	sleep .@duration;
+	if (.@token != 'sanctuary_token || 'stage != 2)
+		end;
+	callsub S_ClearSanctuary;
+	end;
+
+OnBreakSanctuary:
+	if (!'sanctuary)
+		end;
+	++'sanctuary_token;
+	callsub S_ClearSanctuary;
+	instance_announce instance_id(), "Rigel was pulled out of the sanctuary; its protection has collapsed.", BC_MAP, 0xFFFF66;
+	end;
+
+OnSanctuaryMarkerDead:
+	end;
+
+S_ClearSanctuary:
+	'sanctuary = 0;
+	killmonster 'map$, instance_npcname(strnpcinfo(0)) + "::OnSanctuaryMarkerDead";
+	if (unitexists('boss_gid) && !'member_block && !'groggy)
+		setunitdata 'boss_gid, UMOB_DMGIMMUNE, false;
+	return;
+
+S_StopHazards:
+	stopnpctimer instance_npcname("#pn_hol_pulse");
+	stopnpctimer instance_npcname("#pn_hol_traps");
+	'traps_active = 0;
+	'dimension = 0;
+	'groggy = 0;
+	'sanctuary = 0;
+	++'sanctuary_token;
+	for (.@i = 1; .@i <= 24; ++.@i)
+		disablenpc instance_npcname("#pn_hol_trap_" + .@i);
+	disablenpc instance_npcname("#pn_hol_phantom_in");
+	disablenpc instance_npcname("#pn_hol_phantom_out");
+	killmonster 'map$, instance_npcname(strnpcinfo(0)) + "::OnIllusionDead";
+	killmonster 'map$, instance_npcname(strnpcinfo(0)) + "::OnSanctuaryMarkerDead";
+	return;
+
+S_ApplyDifficulty:
+	.@phase = getarg(0);
+	if ('level <= 3) {
+		.@relieve = 0;
+		'heal_pct = 4;
+		'sanctuary_interval = 15;
+	}
+	else if ('level < 10) {
+		.@relieve = 9;
+		'heal_pct = 5;
+		'sanctuary_interval = 15;
+	}
+	else if ('level < 15) {
+		.@relieve = 9;
+		'heal_pct = 5;
+		'sanctuary_interval = 10;
+	}
+	else if ('level < 18) {
+		.@relieve = 9;
+		'heal_pct = 7;
+		'sanctuary_interval = 10;
+	}
+	else {
+		.@relieve = 9;
+		'heal_pct = 10;
+		'sanctuary_interval = 7;
+	}
+	'next_sanctuary = 'sanctuary_interval;
+	getunitdata 'boss_gid, .@data;
+	'base_hp = (.@phase == 1 ? 450000000 : 100000000) + 50000000 * 'level;
+	setunitdata 'boss_gid, UMOB_MAXHP, 'base_hp;
+	setunitdata 'boss_gid, UMOB_HP, 'base_hp;
+	setunitdata 'boss_gid, UMOB_RES, .@data[UMOB_RES] + 200 * 'level;
+	setunitdata 'boss_gid, UMOB_MRES, .@data[UMOB_MRES] + 200 * 'level;
+	setunitdata 'boss_gid, UMOB_STR, .@data[UMOB_STR] + 10 * 'level;
+	setunitdata 'boss_gid, UMOB_AGI, .@data[UMOB_AGI] + 10 * 'level;
+	setunitdata 'boss_gid, UMOB_VIT, .@data[UMOB_VIT] + 10 * 'level;
+	setunitdata 'boss_gid, UMOB_INT, .@data[UMOB_INT] + 20 * 'level;
+	setunitdata 'boss_gid, UMOB_DEX, .@data[UMOB_DEX] + 20 * 'level;
+	setunitdata 'boss_gid, UMOB_LUK, .@data[UMOB_LUK] + 20 * 'level;
+	'base_atkmin = min(.@data[UMOB_ATKMIN] + 3000 * 'level, 65000);
+	'base_atkmax = min(.@data[UMOB_ATKMAX] + 3000 * 'level, 65000);
+	'base_matkmin = min(.@data[UMOB_MATKMIN] + 3000 * 'level, 65000);
+	'base_matkmax = min(.@data[UMOB_MATKMAX] + 3000 * 'level, 65000);
+	.@carried_bonus = 'portal_hits * (3000 + 200 * 'level);
+	setunitdata 'boss_gid, UMOB_ATKMIN, min('base_atkmin + .@carried_bonus, 65000);
+	setunitdata 'boss_gid, UMOB_ATKMAX, min('base_atkmax + .@carried_bonus, 65000);
+	setunitdata 'boss_gid, UMOB_MATKMIN, min('base_matkmin + .@carried_bonus, 65000);
+	setunitdata 'boss_gid, UMOB_MATKMAX, min('base_matkmax + .@carried_bonus, 65000);
+	'boss_mode = .@data[UMOB_MODE];
+	'relieve_level = .@relieve;
+	if (.@relieve)
+		sc_start SC_RELIEVE_ON, INFINITE_TICK, .@relieve, 10000, SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF, 'boss_gid;
+	return;
+}
+
+// One-second state loop: member/death lock, regeneration, and sanctuary.
+1@ba_go,1,1,0	script	#pn_hol_pulse	-1,{
+	end;
+
+OnTimer1000:
+	stopnpctimer;
+	if (('stage != 1 && 'stage != 2) || !unitexists('boss_gid))
+		end;
+	++'fight_seconds;
+
+	.@blocked = 0;
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (!isloggedin('member_aid[.@i], 'member_cid[.@i]) || !attachrid('member_aid[.@i])) {
+			.@blocked = 1;
+			continue;
+		}
+		.@dead = (Hp < 1);
+		if (strcharinfo(3) != 'map$ || .@dead)
+			.@blocked = 1;
+		if (.@dead && !'member_dead[.@i]) {
+			'member_dead[.@i] = 1;
+			++'death_count;
+			'regen_bonus_pct += 3;
+			if ('stage == 1 && 'dimension) {
+				areamonster 'map$,333,30,371,68,"Rigel's Illusion",22176,1,instance_npcname("#pn_hol_control") + "::OnIllusionDead";
+				hateffect HAT_EF_WHITEBODY, true, $@mobid[0];
+			}
+			instance_announce instance_id(), "A death strengthened Rigel and created another phantom.", BC_MAP, 0xFF6666;
+		}
+		else if (!.@dead)
+			'member_dead[.@i] = 0;
+		detachrid;
+	}
+	if (.@blocked != 'member_block) {
+		'member_block = .@blocked;
+		if (.@blocked)
+			instance_announce instance_id(), "Rigel is invulnerable while a registered member is absent or dead.", BC_MAP, 0xFF6666;
+		else
+			instance_announce instance_id(), "Every registered member is present and alive; Rigel is vulnerable again.", BC_MAP, 0x66FF66;
+	}
+
+	if ('stage == 2 && 'sanctuary) {
+		getunitdata 'boss_gid, .@data;
+		if (.@data[UMOB_X] < 'sanctuary_x - 6 || .@data[UMOB_X] > 'sanctuary_x + 6 || .@data[UMOB_Y] < 'sanctuary_y - 6 || .@data[UMOB_Y] > 'sanctuary_y + 6)
+			donpcevent instance_npcname("#pn_hol_control") + "::OnBreakSanctuary";
+	}
+	if ('groggy)
+		setunitdata 'boss_gid, UMOB_DMGIMMUNE, false;
+	else
+		setunitdata 'boss_gid, UMOB_DMGIMMUNE, ('member_block || 'sanctuary);
+
+	if (!'groggy && 'fight_seconds % 5 == 0) {
+		getunitdata 'boss_gid, .@data;
+		.@pct = 'heal_pct + 'regen_bonus_pct;
+		.@hp = .@data[UMOB_HP] + 'base_hp * .@pct / 100;
+		setunitdata 'boss_gid, UMOB_HP, min(.@hp, 'base_hp);
+	}
+	if ('stage == 2 && !'sanctuary && !'groggy && 'fight_seconds >= 'next_sanctuary) {
+		'next_sanctuary = 'fight_seconds + 'sanctuary_interval;
+		donpcevent instance_npcname("#pn_hol_control") + "::OnOpenSanctuary";
+	}
+	if ('stage == 2 && !'next_sanctuary)
+		'next_sanctuary = 'sanctuary_interval;
+
+	setnpctimer 0;
+	initnpctimer;
+	end;
+}
+
+// Phase-one moving portals.  The third wave opens phantom space.
+1@ba_go,1,1,0	script	#pn_hol_traps	-1,{
+	end;
+
+OnTimer10000:
+	callsub S_Enable, 1, 4;
+	end;
+OnTimer18000:
+	callsub S_Enable, 5, 8;
+	end;
+OnTimer26000:
+	callsub S_Enable, 9, 12;
+	donpcevent instance_npcname("#pn_hol_control") + "::OnOpenDimension";
+	end;
+OnTimer34000:
+	callsub S_Enable, 13, 16;
+	end;
+OnTimer42000:
+	callsub S_Enable, 17, 20;
+	end;
+OnTimer50000:
+	callsub S_Enable, 21, 24;
+	end;
+OnTimer58000:
+	stopnpctimer;
+	end;
+
+S_Enable:
+	if ('stage != 1 || 'groggy || !unitexists('boss_gid))
+		return;
+	'traps_active = 1;
+	for (.@i = getarg(0); .@i <= getarg(1); ++.@i) {
+		enablenpc instance_npcname("#pn_hol_trap_" + .@i);
+		setunitdata getnpcid(0, instance_npcname("#pn_hol_trap_" + .@i)), UNPC_LEVEL, 0;
+		donpcevent instance_npcname("#pn_hol_trap_" + .@i) + "::OnWalk";
+	}
+	return;
+}
+
+// Reusable moving-portal implementation.
+1@ba_go,54,31,5	script(DISABLED)	#pn_hol_trap_1	20TH_GATE_PURPLE_S,1,1,{
+	end;
+
+OnTouch:
+	if ('stage != 1 || !'traps_active || 'groggy)
+		end;
+	.@id = atoi(replacestr(strnpcinfo(2), "pn_hol_trap_", ""));
+	specialeffect2 EF_CLAYMORE;
+	specialeffect2 EF_ACIDDEMON;
+	pushpc rand(1,7), rand(1,2);
+	if (.@id <= 4) {
+		.@damage = (MaxHp / 5) * 'level;
+		if (.@damage >= Hp)
+			unitkill getcharid(3);
+		else
+			Hp -= .@damage;
+		end;
+	}
+	donpcevent instance_npcname("#pn_hol_control") + "::OnTrapTriggered";
+	end;
+
+OnWalk:
+	if ('stage != 1 || !'traps_active || 'groggy)
+		end;
+	.@id = atoi(replacestr(strnpcinfo(2), "pn_hol_trap_", ""));
+	.@npc = getnpcid(0, instance_npcname(strnpcinfo(0)));
+	if (!.@npc)
+		end;
+	getunitdata .@npc, .@data;
+	.@reverse = .@data[UNPC_LEVEL];
+	.@horizontal_forward = (.@id == 1 || .@id == 6 || .@id == 9 || .@id == 14 || .@id == 17 || .@id == 22);
+	.@horizontal_reverse = (.@id == 2 || .@id == 5 || .@id == 10 || .@id == 13 || .@id == 18 || .@id == 21);
+	.@vertical_forward = (.@id == 3 || .@id == 8 || .@id == 11 || .@id == 16 || .@id == 19 || .@id == 24);
+
+	if (.@id <= 4)
+		npcspeed rand(80,100);
+	else
+		npcspeed rand(130 + (.@id - 5) * 20, 150 + (.@id - 5) * 20);
+
+	if (.@horizontal_forward || .@horizontal_reverse) {
+		.@step = (.@horizontal_forward ? 1 : -1);
+		if (.@reverse)
+			.@step = -.@step;
+		if (.@data[UNPC_X] + .@step > 73 || .@data[UNPC_X] + .@step < 35) {
+			.@step = -.@step;
+			setunitdata .@npc, UNPC_LEVEL, !.@reverse;
+		}
+		unitwalk .@npc, .@data[UNPC_X] + .@step, .@data[UNPC_Y], instance_npcname(strnpcinfo(0)) + "::OnWalk";
+	}
+	else {
+		.@step = (.@vertical_forward ? 1 : -1);
+		if (.@reverse)
+			.@step = -.@step;
+		if (.@data[UNPC_Y] + .@step > 68 || .@data[UNPC_Y] + .@step < 30) {
+			.@step = -.@step;
+			setunitdata .@npc, UNPC_LEVEL, !.@reverse;
+		}
+		unitwalk .@npc, .@data[UNPC_X], .@data[UNPC_Y] + .@step, instance_npcname(strnpcinfo(0)) + "::OnWalk";
+	}
+	end;
+}
+
+1@ba_go,54,67,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_2	20TH_GATE_PURPLE_S,1,1
+1@ba_go,36,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_3	20TH_GATE_PURPLE_S,1,1
+1@ba_go,72,41,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_4	20TH_GATE_PURPLE_S,1,1
+1@ba_go,54,34,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_5	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,64,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_6	20TH_GATE_GREEN_S,1,1
+1@ba_go,39,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_7	20TH_GATE_GREEN_S,1,1
+1@ba_go,69,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_8	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,37,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_9	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,61,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_10	20TH_GATE_GREEN_S,1,1
+1@ba_go,42,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_11	20TH_GATE_GREEN_S,1,1
+1@ba_go,66,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_12	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,40,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_13	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,58,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_14	20TH_GATE_GREEN_S,1,1
+1@ba_go,45,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_15	20TH_GATE_GREEN_S,1,1
+1@ba_go,63,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_16	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,43,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_17	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,55,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_18	20TH_GATE_GREEN_S,1,1
+1@ba_go,48,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_19	20TH_GATE_GREEN_S,1,1
+1@ba_go,60,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_20	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,46,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_21	20TH_GATE_GREEN_S,1,1
+1@ba_go,54,52,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_22	20TH_GATE_GREEN_S,1,1
+1@ba_go,51,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_23	20TH_GATE_GREEN_S,1,1
+1@ba_go,57,49,5	duplicate(#pn_hol_trap_1)	#pn_hol_trap_24	20TH_GATE_GREEN_S,1,1
+
+// Phantom-space entrance and return portal.
+1@ba_go,54,68,5	script(DISABLED)	#pn_hol_phantom_in	GATE_SKYBLUE,3,3,{
+	end;
+OnTouch:
+	if (!'dimension || 'stage != 1)
+		end;
+	.@token = instance_id() * 100 + 'dimension_cycle;
+	if (@PNHoL_PhantomToken != .@token) {
+		@PNHoL_PhantomToken = .@token;
+		++'phantom_entries;
+		'regen_bonus_pct += 3;
+	}
+	warp 'map$,352,48;
+	end;
+}
+
+1@ba_go,352,50,5	script(DISABLED)	#pn_hol_phantom_out	GATE_SKYBLUE,2,2,{
+	end;
+OnTouch:
+	if ('dimension)
+		end;
+	warp 'map$,54,49;
+	end;
+}
+
+// Individual post-clear decision.  Rewards and progression are account-wide.
+1@ba_go,54,55,4	script(DISABLED)	#pn_hol_reward	PORTAL,1,1,{
+	if (!'cleared)
+		end;
+	.@aid = getcharid(3);
+	.@registered = 0;
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if ('member_aid[.@i] == .@aid) {
+			.@registered = 1;
+			break;
+		}
+	}
+	mes "[Hall of Life]";
+	if (!.@registered) {
+		mes "Only members registered when the correction began may use this seal.";
+		close;
+	}
+	if (!callfunc("F_PNHoL_ProtectionLevel")) {
+		mes "Equip your Constellation's Protection to use the completion seal.";
+		close;
+	}
+	.@personal_level = callfunc("F_PNHoL_SyncProtection");
+	if (inarray('decided_aid, .@aid) >= 0) {
+		mes "You already made your decision for this correction.";
+		if (select("Return to the Garden.:Stay here.") == 1)
+			warp "t_garden",166,222;
+		close;
+	}
+	if (#PNHoL_RewardUntil > gettimetick(2)) {
+		mes "This account already received its weekly reward. Barrier progress is locked until Friday at 09:45.";
+		if (select("Return to the Garden.:Stay here.") == 1)
+			warp "t_garden",166,222;
+		close;
+	}
+
+	mes "Barrier cleared: ^FF0000level " + 'level + "^000000.";
+	mes "Account barrier: ^0000FFlevel " + .@personal_level + "^000000.";
+	mes "Advance once, or claim the level " + 'level + " weekly reward.";
+	next;
+	switch(select("Decide later.:Advance barrier.:Claim weekly reward.:Return without deciding.")) {
+	case 1:
+		close;
+	case 2:
+		if (.@personal_level >= 20) {
+			mes "[Hall of Life]";
+			mes "Your account is already at the maximum barrier level.";
+			close;
+		}
+		if ('level < .@personal_level) {
+			mes "[Hall of Life]";
+			mes "Clear your current barrier level or a higher one before advancing.";
+			close;
+		}
+		// At the same tier, advance by one.  A helper below the leader's
+		// tier catches up directly to the tier that the party defeated.
+		#PNHoL_Level = ('level > .@personal_level ? 'level : .@personal_level + 1);
+		callfunc("F_PNHoL_SyncProtection");
+		'decided_aid[getarraysize('decided_aid)] = .@aid;
+		if (#PNHoL_PendingIID == instance_id()) {
+			#PNHoL_PendingIID = 0;
+			#PNHoL_PendingLevel = 0;
+		}
+		if (isbegin_quest(12617) > 0)
+			erasequest 12617;
+		mes "[Hall of Life]";
+		mes "Your account barrier advanced to ^0000FFlevel " + #PNHoL_Level + "^000000.";
+		close;
+	case 3:
+		if (!callfunc("F_PNHoL_GrantReward", 'level)) {
+			mes "[Hall of Life]";
+			mes "Your inventory cannot hold the full reward. Free slots and weight, then try again.";
+			close;
+		}
+		#PNHoL_RewardUntil = callfunc("F_PNHoL_NextReset");
+		'decided_aid[getarraysize('decided_aid)] = .@aid;
+		#PNHoL_PendingIID = 0;
+		#PNHoL_PendingLevel = 0;
+		if (isbegin_quest(12617) > 0)
+			erasequest 12617;
+		if (isbegin_quest(12612) > 0)
+			erasequest 12612;
+		setquest 12612;
+		mes "[Hall of Life]";
+		mes "You received the complete level " + 'level + " reward. The account lock resets Friday at 09:45.";
+		close;
+	case 4:
+		if (#PNHoL_PendingIID == instance_id()) {
+			if (#PNHoL_Level > 1)
+				--#PNHoL_Level;
+			#PNHoL_PendingIID = 0;
+			#PNHoL_PendingLevel = 0;
+			callfunc("F_PNHoL_SyncProtection");
+			'decided_aid[getarraysize('decided_aid)] = .@aid;
+			if (isbegin_quest(12617) > 0)
+				erasequest 12617;
+		}
+		mes "[Hall of Life]";
+		mes "Leaving without advancement or reward records a failure. Your account barrier is now level " + #PNHoL_Level + ".";
+		next;
+		warp "t_garden",166,222;
+		end;
+	}
+}

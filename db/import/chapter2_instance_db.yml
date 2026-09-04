@@ -9,21 +9,21 @@ Body:
     IdleTimeOut: 300
     Enter:
       Map: 1@ch2b
-      X: 100
-      Y: 100
+      X: 86
+      Y: 146
   - Id: 302
     Name: Nyrholt
     TimeLimit: 1800
     IdleTimeOut: 300
     Enter:
       Map: 1@ch2a
-      X: 100
-      Y: 100
+      X: 86
+      Y: 146
   - Id: 303
     Name: Phantom of Nyrholt
     TimeLimit: 1800
     IdleTimeOut: 300
     Enter:
       Map: 1@ch2a
-      X: 100
-      Y: 100
+      X: 86
+      Y: 146

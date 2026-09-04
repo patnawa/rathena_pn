@@ -97,3 +97,7 @@ Footer:
   - Path: db/import/item_db.yml
   - Path: db/import/zero_cell_item_db.yml
   - Path: db/import/chapter2_item_db.yml
+  - Path: db/import/hall_of_life_item_db.yml
+  - Path: db/import/fashion_points_box_item_db.yml
+  - Path: db/import/fashion_points_missing_item_db.yml
+  - Path: db/import/garden_of_time_combat_item_db.yml

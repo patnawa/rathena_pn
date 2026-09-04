@@ -1,0 +1,721 @@
+//===== rAthena Script =======================================
+//= Airship Crash / Aircraft Crash Site (clean-room release)
+//===== License: =============================================
+//= GPL-3.0-or-later
+//===== Current published behavior: ==========================
+//= Base Lv. 200+, party required, one entry every three days
+//= resetting at 04:00, and a 40-minute instance.  The crash
+//= site leads to the Forgotten Cavity.  Captain Ferlock asks
+//= the party to rescue the wounded; Professor Taeguto and the
+//= graduate students offer repeatable joint monster research.
+//= The registered party count must equal the count inside when
+//= research is rewarded.  The current quests reward EXP.
+//=
+//= A 2024 revision added one boss that costs no Magical Stones
+//= and lowered a paid boss summon to 7 stones.  Current client
+//= tipbox 6096 supplies the exchange costs used by Rusbald.
+//= No reputation gate is published or present in client quest
+//= 5908-5915, so this implementation intentionally has none.
+//=
+//= COMPATIBILITY POLICY -- NOT CANONICAL GRAVITY BALANCE DATA:
+//= Gravity does not publish full monster/skill arrays, exact
+//= quest EXP, rescue coordinates, paid-form selection, or boss
+//= reward drop chances.  This release therefore uses fixed
+//= conservative mobs, mission EXP of 10m/20m/30m Base and
+//= 7.5m/15m/22.5m Job, a 5m/3.75m rescue reward, a random paid
+//= boss form, and one deterministic existing Airboat Antiquity
+//= container to the killing character.  Direct mob drops/EXP
+//= and unpublished card/stone/diamond rates remain disabled.
+//=
+//= Official / primary evidence:
+//= https://ro.gnjoy.com/news/update/View.asp?curpage=3&seq=251
+//= https://ro.gnjoy.com/news/notice/View.asp?BBSMode=10001&curpage=43&seq=7572
+//= https://ro.gnjoy.com/news/notice/View.asp?BBSMode=10001&curpage=22&seq=7886
+//= https://ro.gnjoy.com/news/devnote/View.asp?category=1&seq=4174299
+//= https://ro.gnjoy.com/news/notice/View.asp?BBSMode=10001&curpage=1&seq=7787
+//= https://probability.gnjoy.com/RO/List1/PAC/0041
+//=
+//= Shipped-client evidence:
+//= SystemEN/RecommendedQuests.lub (entry; its launch-era 215
+//= display is superseded by Gravity's 2022 Level-200 notice),
+//= SystemEN/OngoingQuests.lub (5908-5915 and cooldown text),
+//= SystemEN/tipbox.lub (current Level 200 and 6095-6096 shop),
+//= mapInfo.lub, and the
+//= 1@mjo1/1@mjo2 map assets.  Minimap portals resolve to the
+//= existing instance entry (219,379), crash-site cave (279,254),
+//= and Forgotten Cavity entrance (362,374).
+//============================================================
+
+function	script	F_AirshipCrashCleanup	{
+	if (AirshipCrash_Next && AirshipCrash_Next <= gettimetick(2)) {
+		AirshipCrash_Next = 0;
+		AirshipCrash_ActiveInstance = 0;
+		AirshipCrash_ActiveUntil = 0;
+		if (checkquest(5909) != -1)
+			erasequest 5909;
+	}
+	return;
+}
+
+// Return the third future 04:00 boundary: the next 04:00 plus two days.
+function	script	F_AirshipCrashNextReset	{
+	.@seconds = (4-gettime(DT_HOUR))*3600-gettime(DT_MINUTE)*60-gettime(DT_SECOND);
+	if (.@seconds <= 0)
+		.@seconds += 86400;
+	return gettimetick(2)+.@seconds+172800;
+}
+
+// Strict transition/reward check for the party snapshot made by Ferlock.
+// Returns an empty string on success or a user-facing failure reason.
+function	script	F_AirshipCrashPresence	{
+	.@map$ = getarg(0);
+	.@count = 'member_count;
+	.@party = 'party_id;
+	copyarray .@aid[0],'member_aid[0],.@count;
+	copyarray .@cid[0],'member_cid[0],.@count;
+	.@caller = getcharid(3);
+	.@error$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		detachrid;
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@error$ = "Every registered member must remain online.";
+			break;
+		}
+		if (getcharid(1) != .@party) {
+			.@error$ = strcharinfo(0)+" is no longer in the registered party.";
+			break;
+		}
+		if (strcharinfo(3) != .@map$ || Hp <= 0) {
+			.@error$ = strcharinfo(0)+" must be alive and on the same instance map.";
+			break;
+		}
+	}
+	detachrid;
+	if (!attachrid(.@caller))
+		return "The requesting member disconnected.";
+	if (.@error$ == "" && getmapusers(.@map$) != .@count)
+		.@error$ = "The number inside no longer matches the registered party count.";
+	return .@error$;
+}
+
+function	script	F_AirshipCrashBriefed	{
+	.@count = 'member_count;
+	copyarray .@aid[0],'member_aid[0],.@count;
+	copyarray .@cid[0],'member_cid[0],.@count;
+	.@caller = getcharid(3);
+	.@ready = 1;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		detachrid;
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i]) || checkquest(5911) != 2) {
+			.@ready = 0;
+			break;
+		}
+	}
+	detachrid;
+	if (!attachrid(.@caller))
+		return 0;
+	return .@ready;
+}
+
+function	script	F_AirshipCrashRescueCredit	{
+	.@count = 'member_count;
+	copyarray .@aid[0],'member_aid[0],.@count;
+	copyarray .@cid[0],'member_cid[0],.@count;
+	.@caller = getcharid(3);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		detachrid;
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i]))
+			continue;
+		if (checkquest(5915) == -1)
+			setquest 5915;
+		if (checkquest(5915) != 2) {
+			completequest 5915;
+			getexp 5000000,3750000;
+		}
+	}
+	detachrid;
+	attachrid .@caller;
+	return;
+}
+
+function	script	F_AirshipCrashMissionStart	{
+	.@quest = getarg(0);
+	.@count = getarg(1);
+	.@members = 'member_count;
+	copyarray .@aid[0],'member_aid[0],.@members;
+	copyarray .@cid[0],'member_cid[0],.@members;
+	.@caller = getcharid(3);
+	// Validate every attachment before modifying any member's quest state.
+	for (.@i = 0; .@i < .@members; ++.@i) {
+		detachrid;
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			detachrid;
+			attachrid .@caller;
+			return 0;
+		}
+	}
+	for (.@i = 0; .@i < .@members; ++.@i) {
+		detachrid;
+		if (!attachrid(.@aid[.@i])) {
+			detachrid;
+			attachrid .@caller;
+			return 0;
+		}
+		for (.@q = 5912; .@q <= 5914; ++.@q)
+			if (checkquest(.@q) != -1)
+				erasequest .@q;
+		setquest .@quest;
+	}
+	detachrid;
+	if (!attachrid(.@caller))
+		return 0;
+	'mission_quest = .@quest;
+	'mission_remaining = .@count;
+	'mission_active = 1;
+	'mission_ready = 0;
+	.@each = .@count/5;
+	.@extra = .@count-(.@each*5);
+	.@label$ = instance_npcname("#AirshipCrashControl")+"::OnMissionMobDead";
+	areamonster 'cave_map$,20,20,380,380,"Rotten Tree",20886,.@each+.@extra,.@label$;
+	areamonster 'cave_map$,20,20,380,380,"Melted Poring",20887,.@each,.@label$;
+	areamonster 'cave_map$,20,20,380,380,"Grave Worm",20888,.@each,.@label$;
+	areamonster 'cave_map$,20,20,380,380,"Brain Sucker",20889,.@each,.@label$;
+	areamonster 'cave_map$,20,20,380,380,"Mosquilo",20890,.@each,.@label$;
+	instance_announce 0,"Airship Crash: joint research began - hunt "+.@count+" local monsters.",bc_map,0x88CCFF;
+	return 1;
+}
+
+function	script	F_AirshipCrashMissionReward	{
+	.@quest = 'mission_quest;
+	.@tier = .@quest-5911;
+	setarray .@base[1],10000000,20000000,30000000;
+	setarray .@job[1],7500000,15000000,22500000;
+	.@count = 'member_count;
+	copyarray .@aid[0],'member_aid[0],.@count;
+	copyarray .@cid[0],'member_cid[0],.@count;
+	.@caller = getcharid(3);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		detachrid;
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			detachrid;
+			attachrid .@caller;
+			return 0;
+		}
+	}
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		detachrid;
+		if (!attachrid(.@aid[.@i])) {
+			detachrid;
+			attachrid .@caller;
+			return 0;
+		}
+		completequest .@quest;
+		getexp .@base[.@tier],.@job[.@tier];
+		erasequest .@quest;
+	}
+	detachrid;
+	if (!attachrid(.@caller))
+		return 0;
+	return 1;
+}
+
+// Exact current client exchange costs.  Rusbald calls this with one output.
+function	script	F_AirshipCrashExchange	{
+	.@item = getarg(0);
+	.@stones = getarg(1);
+	.@extra = getarg(2,0);
+	.@extra_amount = getarg(3,0);
+	.@zeny = getarg(4,0);
+	if (countitem(1000363) < .@stones) {
+		mes "You need "+.@stones+" Magical Stones.";
+		return 0;
+	}
+	if (.@extra && countitem(.@extra) < .@extra_amount) {
+		mes "You also need "+.@extra_amount+" "+getitemname(.@extra)+".";
+		return 0;
+	}
+	if (Zeny < .@zeny) {
+		mes "You also need "+.@zeny+" Zeny.";
+		return 0;
+	}
+	if (!checkweight(.@item,1)) {
+		mes "You cannot carry the reward.";
+		return 0;
+	}
+	delitem 1000363,.@stones;
+	if (.@extra)
+		delitem .@extra,.@extra_amount;
+	if (.@zeny)
+		Zeny -= .@zeny;
+	getitem .@item,1;
+	mes "Exchange complete: "+getitemname(.@item)+".";
+	return 1;
+}
+
+// Boss-death labels cannot wait for inventory management. If the slayer cannot
+// carry the antiquity, send exactly one copy through the in-game mail system.
+function	script	F_AirshipCrashBossReward	{
+	if (checkweight(102573,1)) {
+		getitem 102573,1;
+		return 1;
+	}
+	setarray .@mail_item[0],102573;
+	setarray .@mail_amount[0],1;
+	mail getcharid(0),"Dr. Strong","Airship Crash Reward","Your inventory was full when the boss fell, so the crash-site antiquity was delivered by mail.",0,.@mail_item,.@mail_amount;
+	dispbottom "Your inventory was full. The crash-site antiquity was delivered by mail.";
+	return 1;
+}
+
+// Current client navigation points to this exact NPC and coordinate.
+dali02,137,86,4	script	Dr. Strong#acr	4_M_FAIRYANG,{
+	callfunc "F_AirshipCrashCleanup";
+	mes "[Dr. Dry Circle Strong]";
+	if (BaseLevel < 200) {
+		mes "The stabilized rift is restricted to adventurers of Base Level 200 or higher.";
+		close;
+	}
+	if (checkquest(5908) == -1) {
+		mes "A Laphine airship crashed in the Mjolnir Mountains. A second anomaly opened beneath the wreckage.";
+		next;
+		mes "Schwarzwald Academy sent a joint research team, but the site is too dangerous without adventurers.";
+		setquest 5908;
+		completequest 5908;
+		next;
+	}
+	.@party = getcharid(1);
+	if (!.@party) {
+		mes "Form a party first. A one-person party is permitted.";
+		close;
+	}
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid > 0 && instance_live_info(ILI_NAME,.@iid) != "Airship Crash") {
+		mes "Your party already owns a different memorial dungeon.";
+		close;
+	}
+	.@returning = (.@iid > 0 && AirshipCrash_ActiveInstance == .@iid
+		&& AirshipCrash_ActiveUntil > gettimetick(2));
+	if (.@iid > 0 && getinstancevar('started,.@iid) && !.@returning) {
+		mes "That expedition has already begun. Only its registered starting members may return.";
+		close;
+	}
+	if (!.@returning && AirshipCrash_Next > gettimetick(2)) {
+		.@left = AirshipCrash_Next-gettimetick(2);
+		mes "You are still on standby for this three-day expedition.";
+		mes "Remaining: "+(.@left/86400)+" day(s), "+((.@left%86400)/3600)+" hour(s), "+((.@left%3600)/60)+" minute(s).";
+		close;
+	}
+	if (.@iid < 1) {
+		if (!is_party_leader()) {
+			mes "Only the party leader may reserve the crash site.";
+			close;
+		}
+		if (!instance_check_party(.@party,1,200)) {
+			mes "Every online party member must be Base Level 200 or higher.";
+			close;
+		}
+		mes "Current rules: 40-minute limit and one entry every three days at the 04:00 boundary.";
+		next;
+		if (select("Create and enter.:Cancel.") == 2)
+			close;
+		.@iid = instance_create("Airship Crash",IM_PARTY,.@party);
+		if (.@iid < 1) {
+			mes "The crash site could not be created (error "+.@iid+").";
+			close;
+		}
+	} else {
+		.@choice = select("Enter the active crash site.:Review the rules.:Cancel.");
+		if (.@choice == 2) {
+			mes "Base Level 200+, party required, three-day 04:00 cooldown, 40-minute limit.";
+			mes "The party count registered by Professor Taeguto must match everyone inside when rewards are claimed.";
+			close;
+		}
+		if (.@choice == 3)
+			close;
+	}
+	.@result = instance_enter("Airship Crash",-1,-1,getcharid(0),.@iid);
+	if (.@result != IE_OK) {
+		mes "The instance map is not ready (error "+.@result+").";
+		close;
+	}
+	if (!.@returning) {
+		AirshipCrash_Next = callfunc("F_AirshipCrashNextReset");
+		AirshipCrash_ActiveInstance = .@iid;
+		AirshipCrash_ActiveUntil = gettimetick(2)+2400;
+		if (checkquest(5909) == -1)
+			setquest 5909;
+	}
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 200";
+	end;
+}
+
+// Current shipped-client tipbox 6096 prices are used here.  They supersede
+// the higher launch values shown on Gravity's original 2020 image.
+dali02,134,86,4	script	Rusbald#acr	4_M_SCIENCE,{
+	mes "[Rusbald]";
+	mes "I exchange Magical Stones from the crash site for research equipment.";
+	next;
+	switch(select("Purified Growth Elixir - 5 stones.:Purple Storage Device - 25 stones + 10 elixirs.:Unknown Stat Boots - 25 stones.:Magical Beads - 2 stones + 30,000z.:Contaminated Card Book - 25 stones.:Leave.")) {
+	case 1:
+		callfunc "F_AirshipCrashExchange",100460,5;
+		close;
+	case 2:
+		callfunc "F_AirshipCrashExchange",100475,25,100460,10;
+		close;
+	case 3:
+		.@pick = select("Power.:Dexterity.:Life.:Magic Power.:Agility.:Luck.:Cancel.");
+		if (.@pick == 7)
+			close;
+		setarray .@boots[1],470071,470072,470073,470074,470076,470077;
+		callfunc "F_AirshipCrashExchange",.@boots[.@pick],25;
+		close;
+	case 4:
+		callfunc "F_AirshipCrashExchange",100476,2,0,0,30000;
+		close;
+	case 5:
+		callfunc "F_AirshipCrashExchange",100462,25;
+		close;
+	case 6:
+		close;
+	}
+}
+
+// Instance lifecycle controller.
+1@mjo1,1,1,0	script	#AirshipCrashControl	-1,{
+	end;
+
+OnInstanceInit:
+	'crash_map$ = instance_mapname("1@mjo1");
+	'cave_map$ = instance_mapname("1@mjo2");
+	'party_id = instance_live_info(ILI_OWNER);
+	'started = 0;
+	'rescue_mask = 0;
+	'crash_done = 0;
+	'mission_active = 0;
+	'mission_ready = 0;
+	'mission_claims = 0;
+	'boss_active = 0;
+	'free_boss_done = 0;
+	'paid_boss_done = 0;
+	initnpctimer;
+	end;
+
+OnMissionMobDead:
+	if (!'mission_active)
+		end;
+	--'mission_remaining;
+	if ('mission_remaining > 0)
+		end;
+	'mission_remaining = 0;
+	'mission_ready = 1;
+	instance_announce 0,"Airship Crash: the joint monster sample is complete. Report to Professor Taeguto.",bc_map,0x66FF99;
+	end;
+
+OnFreeBossDead:
+	'boss_active = 0;
+	'free_boss_done = 1;
+	callfunc "F_AirshipCrashBossReward"; // deterministic compatibility reward; see file header
+	instance_announce 0,"The unidentified creature collapsed. Its slayer recovered one crash-site antiquity.",bc_map,0xFFCC66;
+	end;
+
+OnPaidBossDead:
+	'boss_active = 0;
+	'paid_boss_done = 1;
+	callfunc "F_AirshipCrashBossReward"; // deterministic compatibility reward; see file header
+	instance_announce 0,"The charged specimen collapsed. Its slayer recovered one crash-site antiquity.",bc_map,0xFFCC66;
+	end;
+
+OnTimer2100000:
+	instance_announce 0,"Airship Crash: 5 minutes remain.",bc_map,0xFF6666;
+	end;
+OnTimer2340000:
+	instance_announce 0,"Airship Crash: 1 minute remains.",bc_map,0xFF3333;
+	end;
+OnTimer2400000:
+	instance_announce 0,"The dimensional rift has closed after 40 minutes.",bc_map,0xFF0000;
+	mapwarp 'crash_map$,"dali02",137,86;
+	mapwarp 'cave_map$,"dali02",137,86;
+	instance_destroy;
+	end;
+}
+
+1@mjo1,222,376,4	script	Captain Ferlock#acr	4_M_REINDEER,{
+	mes "[Captain Ferlock]";
+	if ('started) {
+		if ('rescue_mask != 7)
+			mes "Please locate all three wounded survivors around the wreckage.";
+		else if (!'crash_done)
+			mes "Everyone is accounted for. The party leader may move us into the cavity.";
+		else
+			mes "The research team is waiting inside the Forgotten Cavity.";
+		if ('rescue_mask == 7 && !'crash_done && is_party_leader()) {
+			next;
+			if (select("Enter the Forgotten Cavity together.:Wait.") == 1) {
+				.@error$ = callfunc("F_AirshipCrashPresence",'crash_map$);
+				if (.@error$ != "") {
+					mes "[Captain Ferlock]";
+					mes .@error$;
+					close;
+				}
+				callfunc "F_AirshipCrashRescueCredit";
+				'crash_done = 1;
+				instance_warpall 'cave_map$,358,374,instance_id(),IWA_NOTDEAD;
+				end;
+			}
+		}
+		close;
+	}
+	if (!is_party_leader() || getcharid(1) != 'party_id) {
+		mes "The party leader must register everyone and begin the rescue.";
+		close;
+	}
+	getpartymember 'party_id,1;
+	copyarray .@cid[0],$@partymembercid[0],$@partymembercount;
+	getpartymember 'party_id,2;
+	copyarray .@aid[0],$@partymemberaid[0],$@partymembercount;
+	.@count = $@partymembercount;
+	.@caller = getcharid(3);
+	.@error$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@error$ = "Every party member must be online and enter before registration.";
+			break;
+		}
+		if (strcharinfo(3) != 'crash_map$ || Hp <= 0) {
+			.@error$ = strcharinfo(0)+" must be alive at the crash site.";
+			break;
+		}
+	}
+	attachrid .@caller;
+	if (.@error$ == "" && getmapusers('crash_map$) != .@count)
+		.@error$ = "Only the complete party may be present at registration.";
+	if (.@error$ != "") {
+		mes .@error$;
+		close;
+	}
+	mes "I will register all "+.@count+" member(s). This count must remain unchanged for research rewards.";
+	next;
+	if (select("Register and begin.:Wait.") == 2)
+		close;
+	'member_count = .@count;
+	copyarray 'member_aid[0],.@aid[0],.@count;
+	copyarray 'member_cid[0],.@cid[0],.@count;
+	'started = 1;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		attachrid .@aid[.@i];
+		for (.@q = 5912; .@q <= 5915; ++.@q)
+			if (checkquest(.@q) != -1)
+				erasequest .@q;
+		setquest 5915;
+	}
+	attachrid .@caller;
+	instance_announce 0,"Captain Ferlock: find the three wounded survivors before entering the cavity.",bc_map,0x88CCFF;
+	close;
+}
+
+1@mjo1,250,330,4	script	Wounded#acr1	4_M_REINDEER,{
+	if (!'started) { mes "The survivor needs Captain Ferlock to organize a rescue first."; close; }
+	if ('rescue_mask & 1) { mes "This survivor has already been stabilized."; close; }
+	'rescue_mask |= 1;
+	mes "You stabilize the first wounded survivor and mark the location for Ferlock.";
+	if ('rescue_mask == 7) instance_announce 0,"All wounded survivors have been found. Return to Captain Ferlock.",bc_map,0x66FF99;
+	close;
+}
+
+1@mjo1,100,327,4	script	Wounded#acr2	4_M_REINDEER,{
+	if (!'started) { mes "The survivor needs Captain Ferlock to organize a rescue first."; close; }
+	if ('rescue_mask & 2) { mes "This survivor has already been stabilized."; close; }
+	'rescue_mask |= 2;
+	mes "You stabilize the second wounded survivor and mark the location for Ferlock.";
+	if ('rescue_mask == 7) instance_announce 0,"All wounded survivors have been found. Return to Captain Ferlock.",bc_map,0x66FF99;
+	close;
+}
+
+1@mjo1,80,177,4	script	Wounded#acr3	4_M_REINDEER,{
+	if (!'started) { mes "The survivor needs Captain Ferlock to organize a rescue first."; close; }
+	if ('rescue_mask & 4) { mes "This survivor has already been stabilized."; close; }
+	'rescue_mask |= 4;
+	mes "You stabilize the third wounded survivor and mark the location for Ferlock.";
+	if ('rescue_mask == 7) instance_announce 0,"All wounded survivors have been found. Return to Captain Ferlock.",bc_map,0x66FF99;
+	close;
+}
+
+// The visible crash-site cave entrance found in the shipped minimap.
+1@mjo1,279,254,0	script	Cavity Gate#acr	WARPNPC,1,1,{
+	end;
+OnTouch:
+	if (!'crash_done) {
+		mes "[Cavity Entrance]";
+		mes "Captain Ferlock has not finished accounting for the wounded.";
+		close;
+	}
+	warp 'cave_map$,358,374;
+	end;
+}
+
+1@mjo2,350,360,4	script	Prof. Taeguto#acr	4_M_SCIENCE,{
+	mes "[Professor Taeguto]";
+	if (!'crash_done) {
+		mes "Captain Ferlock must finish accounting for the wounded first.";
+		close;
+	}
+	if (checkquest(5910) == -1) {
+		mes "Our joint team is studying the creatures changed by the crash. Graduate student Marata will explain the cavity first.";
+		setquest 5910;
+		close;
+	}
+	if (checkquest(5911) != 2) {
+		mes "Finish both graduate-student briefings before accepting joint research.";
+		close;
+	}
+	if (!callfunc("F_AirshipCrashBriefed")) {
+		mes "Every registered member must finish Marata and Saseong's briefing.";
+		close;
+	}
+	if ('mission_active) {
+		if (!'mission_ready) {
+			mes "Research is in progress. Remaining sample: "+'mission_remaining+" monster(s).";
+			close;
+		}
+		if (!is_party_leader()) {
+			mes "The registered party leader must submit the joint report.";
+			close;
+		}
+		.@error$ = callfunc("F_AirshipCrashPresence",'cave_map$);
+		if (.@error$ != "") {
+			mes .@error$;
+			close;
+		}
+		// rAthena only mirrors kill credit to party members within AREA_SIZE.
+		// The instance-wide remaining counter is therefore authoritative for
+		// this explicitly joint request; the YAML target remains useful UI for
+		// members fighting together.
+		if (!callfunc("F_AirshipCrashMissionReward")) {
+			mes "A registered member disconnected before the reward could be issued. Try again when everyone is online.";
+			close;
+		}
+		'mission_active = 0;
+		'mission_ready = 0;
+		++'mission_claims;
+		mes "The joint report is complete. Every registered member received the current EXP reward.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "The registered party leader chooses the next joint request.";
+		close;
+	}
+	.@error$ = callfunc("F_AirshipCrashPresence",'cave_map$);
+	if (.@error$ != "") {
+		mes .@error$;
+		close;
+	}
+	mes "Choose a repeatable joint monster request. Rewards require the registered count to match everyone inside.";
+	next;
+	.@pick = select("50 monsters.:100 monsters.:150 monsters.:Cancel.");
+	if (.@pick == 4)
+		close;
+	setarray .@quests[1],5912,5913,5914;
+	setarray .@counts[1],50,100,150;
+	if (!callfunc("F_AirshipCrashMissionStart",.@quests[.@pick],.@counts[.@pick])) {
+		mes "A registered member disconnected before the request could begin. Try again when everyone is online.";
+		close;
+	}
+	close;
+}
+
+1@mjo2,354,360,4	script	Marata#acr	4_M_SCIENCE,{
+	mes "[Graduate Student Marata]";
+	if (checkquest(5910) == -1) {
+		mes "Professor Taeguto should introduce the joint research first.";
+		close;
+	}
+	if (checkquest(5910) != 2) {
+		mes "The crash opened a cavity full of creatures altered by leaking magical power. Any of the five local species counts toward a joint sample.";
+		next;
+		mes "Your whole registered party must remain together when Professor Taeguto evaluates the result.";
+		completequest 5910;
+		if (checkquest(5911) == -1)
+			setquest 5911;
+		close;
+	}
+	mes "Saseong has the final explanation about attracting the cavity's ruler.";
+	close;
+}
+
+1@mjo2,358,360,4	script	Saseong#acr	4_M_SCIENCE,{
+	mes "[Graduate Student Saseong]";
+	if (checkquest(5911) == -1) {
+		mes "Hear Marata's explanation first.";
+		close;
+	}
+	if (checkquest(5911) != 2) {
+		mes "Once the joint team completes a monster sample, the altar at the far end can attract an unidentified creature.";
+		next;
+		mes "One specimen is free under the current protocol. A charged summon consumes 7 Magical Stones.";
+		completequest 5911;
+		close;
+	}
+	mes "Professor Taeguto can register another joint monster sample at any time remaining in the expedition.";
+	close;
+}
+
+1@mjo2,29,31,4	script	Research Altar#acr	CLEAR_NPC,{
+	mes "[Cavity Research Altar]";
+	if ('mission_claims < 1) {
+		mes "The altar does not respond. Complete at least one joint research report first.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "The registered party leader must operate the altar.";
+		close;
+	}
+	if ('boss_active) {
+		mes "An unidentified creature is already active in the lower cavity.";
+		close;
+	}
+	.@error$ = callfunc("F_AirshipCrashPresence",'cave_map$);
+	if (.@error$ != "") {
+		mes .@error$;
+		close;
+	}
+	switch(select("Free research specimen.:Charged specimen - 7 Magical Stones.:Leave.")) {
+	case 1:
+		if ('free_boss_done) {
+			mes "The free specimen has already been called in this expedition.";
+			close;
+		}
+		'boss_active = 1;
+		areamonster 'cave_map$,20,20,80,80,"Unidentified Creature",22378,1,instance_npcname("#AirshipCrashControl")+"::OnFreeBossDead";
+		instance_announce 0,"A free research specimen has emerged in the lower cavity.",bc_map,0xFF6666;
+		close;
+	case 2:
+		if ('paid_boss_done) {
+			mes "The charged specimen has already been called in this expedition.";
+			close;
+		}
+		if (countitem(1000363) < 7) {
+			mes "You need 7 Magical Stones.";
+			close;
+		}
+		delitem 1000363,7;
+		setarray .@boss[0],20891,21061,21062,21063;
+		.@mob = .@boss[rand(4)];
+		'boss_active = 1;
+		areamonster 'cave_map$,20,20,80,80,"Unidentified Creature",.@mob,1,instance_npcname("#AirshipCrashControl")+"::OnPaidBossDead";
+		instance_announce 0,"A charged unidentified creature has emerged in the lower cavity.",bc_map,0xFF3333;
+		close;
+	case 3:
+		close;
+	}
+}
+
+1@mjo2,362,374,0	warp	aircrash_return	1,1,1@mjo1,275,254
+
+1@mjo2,364,374,4	script	Rift Return#acr	CLEAR_NPC,{
+	mes "Return to the Dimensional Rift?";
+	if (select("Return.:Stay.") == 1)
+		warp "dali02",137,86;
+	close;
+}

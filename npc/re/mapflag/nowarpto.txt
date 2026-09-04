@@ -430,6 +430,12 @@ wolfvill	mapflag	nowarpto
 1@ch_u	mapflag	nowarpto
 
 //============================================================
+// Varmundt's Garden Memorial Dungeons
+//============================================================
+1@f_lake	mapflag	nowarpto
+1@ba_go	mapflag	nowarpto
+
+//============================================================
 // Illusion of Twins
 //============================================================
 ant_d02_i	mapflag	nowarpto

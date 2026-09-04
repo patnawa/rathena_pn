@@ -1,0 +1,178 @@
+# Fashion Points enchant-box item shells.
+# Source for IDs/names/categories: https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
+# Compatibility policy: published contents have no published probabilities.
+# These DelayConsume boxes uniformly select one published outcome and consume
+# only after a successful award. Uniformity is not claimed to match MuhRO.
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 41090
+    AegisName: FP_Top_Box_1
+    Name: Top Box 1
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",0,41090;
+  - Id: 41091
+    AegisName: FP_Top_Box_2
+    Name: Top Box 2
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",1,41091;
+  - Id: 41092
+    AegisName: FP_Top_Box_3
+    Name: Top Box 3
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",2,41092;
+  - Id: 41093
+    AegisName: FP_Top_Box_4
+    Name: Top Box 4
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",3,41093;
+  - Id: 41287
+    AegisName: FP_Top_Box_5
+    Name: Top Box 5
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",4,41287;
+  - Id: 41094
+    AegisName: FP_Mid_Box_1
+    Name: Mid Box 1
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",5,41094;
+  - Id: 41095
+    AegisName: FP_Mid_Box_2
+    Name: Mid Box 2
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",6,41095;
+  - Id: 41096
+    AegisName: FP_Mid_Box_3
+    Name: Mid Box 3
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",7,41096;
+  - Id: 41097
+    AegisName: FP_Mid_Box_4
+    Name: Mid Box 4
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",8,41097;
+  - Id: 41288
+    AegisName: FP_Mid_Box_5
+    Name: Mid Box 5
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",9,41288;
+  - Id: 41098
+    AegisName: FP_Low_Box_1
+    Name: Low Box 1
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",10,41098;
+  - Id: 41099
+    AegisName: FP_Low_Box_2
+    Name: Low Box 2
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",11,41099;
+  - Id: 41100
+    AegisName: FP_Low_Box_3
+    Name: Low Box 3
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",12,41100;
+  - Id: 41101
+    AegisName: FP_Low_Box_4
+    Name: Low Box 4
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",13,41101;
+  - Id: 41289
+    AegisName: FP_Low_Box_5
+    Name: Low Box 5
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",14,41289;
+  - Id: 41102
+    AegisName: FP_Garment_Box_1
+    Name: Garment Box 1
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",15,41102;
+  - Id: 41103
+    AegisName: FP_Garment_Box_2
+    Name: Garment Box 2
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",16,41103;
+  - Id: 41104
+    AegisName: FP_Garment_Box_3
+    Name: Garment Box 3
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",17,41104;
+  - Id: 41255
+    AegisName: FP_Garment_Box_4
+    Name: Garment Box 4
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",18,41255;
+  - Id: 41290
+    AegisName: FP_Garment_Box_5
+    Name: Garment Box 5
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",19,41290;
+  - Id: 41105
+    AegisName: FP_Garment_Dual_Box_1
+    Name: Garment 2nd-slot Box 1
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",20,41105;

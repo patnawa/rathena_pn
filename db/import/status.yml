@@ -1,0 +1,31 @@
+# Custom status effects used by enabled episode and instance content.
+Header:
+  Type: STATUS_DB
+  Version: 4
+
+Body:
+  - Status: Groggy
+    DurationLookup: NPC_GROGGY_ON
+    Icon: EFST_GROGGY
+    States:
+      NoMove: true
+      NoCast: true
+      NoAttack: true
+    Flags:
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
+      BlEffect: true
+      DisplayPc: true
+      SetStand: true
+      StopWalking: true
+      StopAttacking: true
+      StopCasting: true
+  - Status: Mtp_W_Potion_100
+    Icon: EFST_MTP_W_POTION_100
+    Flags:
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
+    Script: |
+      bonus2 bAddItemHealRate,1100006,getstatus(SC_MTP_W_POTION_100,1);

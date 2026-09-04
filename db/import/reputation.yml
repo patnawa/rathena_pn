@@ -9,6 +9,20 @@ Header:
   Version: 1
 
 Body:
+# BEGIN CODEX VARMUNDT BIOSPHERE DEPTH
+  - Id: 6
+    Name: Depth 1 Research
+    Variable: RepPoints6
+    Minimum: -5000
+    Maximum: 5000
+    Visibility: Exist
+  - Id: 9
+    Name: Depth Abyss Research
+    Variable: RepPoints9
+    Minimum: -5000
+    Maximum: 5000
+    Visibility: Exist
+# END CODEX VARMUNDT BIOSPHERE DEPTH
 # BEGIN CODEX EPISODE 21 AGE OF HEROES
   - Id: 13
     Name: Gaebolg Resistance

@@ -1,0 +1,98 @@
+# Episode 21 Gaebolg and Yorscalp equipment exchanges.
+# Current published Gaebolg exchange: each piece costs 100 Wigner Merchant
+# Guild Vouchers (Ep21_Wigner_Ticket, item 1001618). The Yorscalp crown
+# materials below are likewise published; no unpublished probability is used.
+Header:
+  Type: BARTER_DB
+  Version: 2
+
+Body:
+  - Name: barter_ep21_gaebolg_equipment
+    Items:
+      - Index: 0
+        Item: Gaebolg_Armor
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 1
+        Item: Gaebolg_Robe
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 2
+        Item: Gaebolg_Boots
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 3
+        Item: Gaebolg_Shoes
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 4
+        Item: Gaebolg_Manteau
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 5
+        Item: Gaebolg_Muffler
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 6
+        Item: Gaebolg_Ring
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 7
+        Item: Gaebolg_Glove
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 8
+        Item: Gaebolg_Earring
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+      - Index: 9
+        Item: Gaebolg_Necklace
+        RequiredItems:
+          - Index: 0
+            Item: Ep21_Wigner_Ticket
+            Amount: 100
+
+  - Name: barter_ep21_yorscalp_crowns
+    Items:
+      - Index: 0
+        Item: Yorscalp_P_Circlet
+        RequiredItems:
+          - Index: 0
+            Item: aegis_103523
+            Amount: 5
+          - Index: 1
+            Item: Yorscalp_Spirit
+            Amount: 100
+          - Index: 2
+            Item: Yorscalp_Symbol
+            Amount: 30
+      - Index: 1
+        Item: Yorscalp_M_Circlet
+        RequiredItems:
+          - Index: 0
+            Item: aegis_103523
+            Amount: 5
+          - Index: 1
+            Item: Yorscalp_Spirit
+            Amount: 100
+          - Index: 2
+            Item: Yorscalp_Symbol
+            Amount: 30

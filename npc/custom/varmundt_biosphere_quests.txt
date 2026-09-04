@@ -1,0 +1,270 @@
+//===== rAthena Script =======================================
+//= Varmundt's Biosphere open-map daily research
+//===== Sources: =============================================
+//= https://wiki.muhro.eu/Varmundt%27s_Biosphere
+//= Current kRO QuestInfo IDs 17607-17615
+//============================================================
+
+// Research Beta offers all seven MuhRO daily hunts from its documented
+// location.  The first four use current kRO IDs; Soul, Venom and Temple use
+// reserved custom IDs because current kRO QuestInfo has no equivalent quests.
+ba_in01,252,353,4	script	Research Admin Beta#biosphere	4_EP17_MASTER_A,{
+	mes "[Research Admin Beta]";
+	if (!callfunc("F_BiosphereAccess"))
+		close;
+
+	setarray .@quest[0],17608,17609,17610,17611,900100,900102,900104;
+	setarray .@wait[0],17612,17613,17614,17615,900101,900103,900105;
+	setarray .@name$[0],"Severe Cold","Fire","Grassland","Death","Soul","Venom","Temple";
+	setarray .@rune[0],1000642,1000641,1000640,1000643,1001182,1001180,1001178;
+	setarray .@essence[0],1001140,1001139,1001138,1001141,1001185,1001184,1001183;
+
+	for (.@i = 0; .@i < 7; ++.@i)
+		callfunc "F_BioExpireWait",.@wait[.@i];
+
+	if (!isbegin_quest(17607)) {
+		setquest 17607;
+		completequest 17607;
+		mes "I coordinate daily cleanup of all seven artificial habitats.";
+		mes "Each habitat assignment requires 100 kills and resets at 04:00.";
+		next;
+	}
+
+	.@i = select("Severe Cold:Fire:Grassland:Death:Soul:Venom:Temple:Leave") - 1;
+	if (.@i == 7)
+		close;
+
+	mes "[Research Admin Beta]";
+	if (isbegin_quest(.@wait[.@i])) {
+		mes "The " + .@name$[.@i] + " assignment is on cooldown until 04:00.";
+		close;
+	}
+	if (!isbegin_quest(.@quest[.@i])) {
+		setquest .@quest[.@i];
+		mes "Hunt 100 monsters inside the " + .@name$[.@i] + " habitat, then report back to me.";
+		close;
+	}
+	if (checkquest(.@quest[.@i],HUNTING) != 2) {
+		mes "The " + .@name$[.@i] + " cleanup is not finished. Check your quest window for the current count.";
+		close;
+	}
+	if (!checkweight(.@rune[.@i],5,.@essence[.@i],2)) {
+		mes "Make room for seven research materials first.";
+		close;
+	}
+	erasequest .@quest[.@i];
+	setquest .@wait[.@i];
+	getitem .@rune[.@i],5;
+	getitem .@essence[.@i],2;
+	mes "Cleanup verified. You received 5 runes and 2 essences from the " + .@name$[.@i] + " habitat.";
+	close;
+}
+
+// Current client navigation places the regular Biosphere service cluster at
+// ba_in01 359-371, 50-55.  The recipes below mirror MuhRO's published economy.
+ba_in01,365,50,4	script	Omega#biosphere_materials	4_EP17_CLEANER,{
+	mes "[Omega]";
+	if (!callfunc("F_BiosphereAccess"))
+		close;
+	mes "I convert Biosphere fragments, runes, essences, and magical water.";
+	next;
+	switch(select("Convert an elemental rune or essence.:Create magical water.:Leave.")) {
+	case 1:
+		.@element = select("Glade:Fire:Ice:Death:Soul:Venom:Temple:Cancel") - 1;
+		if (.@element == 7)
+			close;
+		.@stage = select("10 fragments + 20,000z -> 1 rune:5 runes + 20,000z -> 1 essence:Cancel");
+		if (.@stage == 3)
+			close;
+		setarray .@fragment[0],1000636,1000637,1000638,1000639,1001181,1001179,1001177;
+		setarray .@rune[0],1000640,1000641,1000642,1000643,1001182,1001180,1001178;
+		setarray .@essence[0],1001138,1001139,1001140,1001141,1001185,1001184,1001183;
+		if (.@stage == 1) {
+			.@input = .@fragment[.@element];
+			.@output = .@rune[.@element];
+			.@need = 10;
+		} else {
+			.@input = .@rune[.@element];
+			.@output = .@essence[.@element];
+			.@need = 5;
+		}
+		.@max = countitem(.@input) / .@need;
+		.@zenymax = Zeny / 20000;
+		if (.@max > .@zenymax)
+			.@max = .@zenymax;
+		if (.@max < 1) {
+			mes "[Omega]";
+			mes "You do not have enough materials and Zeny.";
+			close;
+		}
+		mes "[Omega]";
+		mes "How many should I create? Maximum: " + .@max + ".";
+		input .@amount,1,.@max;
+		if (!checkweight(.@output,.@amount)) {
+			mes "Make room for the converted material first.";
+			close;
+		}
+		delitem .@input,.@need * .@amount;
+		Zeny -= 20000 * .@amount;
+		getitem .@output,.@amount;
+		mes "Conversion complete.";
+		close;
+	case 2:
+		.@water_type = select("Soul magical water:Venom magical water:Temple magical water:Cancel") - 1;
+		if (.@water_type == 3)
+			close;
+		setarray .@water[0],1001186,1001189,1001188;
+		setarray .@special_essence[0],1001185,1001184,1001183;
+		.@max = Zeny / 20000;
+		setarray .@common_essence[0],1001138,1001139,1001140,1001141;
+		for (.@i = 0; .@i < 4; ++.@i) {
+			.@have = countitem(.@common_essence[.@i]) / 5;
+			if (.@max > .@have)
+				.@max = .@have;
+		}
+		.@have = countitem(.@special_essence[.@water_type]) / 5;
+		if (.@max > .@have)
+			.@max = .@have;
+		if (.@max < 1) {
+			mes "[Omega]";
+			mes "Each water needs 5 Glade, Fire, Ice, Death, and matching special essences, plus 20,000z.";
+			close;
+		}
+		mes "[Omega]";
+		mes "How many should I create? Maximum: " + .@max + ".";
+		input .@amount,1,.@max;
+		if (!checkweight(.@water[.@water_type],.@amount)) {
+			mes "Make room for the magical water first.";
+			close;
+		}
+		for (.@i = 0; .@i < 4; ++.@i)
+			delitem .@common_essence[.@i],5 * .@amount;
+		delitem .@special_essence[.@water_type],5 * .@amount;
+		Zeny -= 20000 * .@amount;
+		getitem .@water[.@water_type],.@amount;
+		mes "Magical water conversion complete.";
+		close;
+	default:
+		close;
+	}
+}
+
+ba_in01,359,53,4	script	Ellie#biosphere_equipment	4_EP17_ELYUMINA,{
+	mes "[Ellie]";
+	if (!callfunc("F_BiosphereAccess"))
+		close;
+	mes "I imprint the base equipment recovered from each Biosphere habitat.";
+	next;
+	switch(select("Imprint armor, garment, or boots.:Imprint a ring.:Leave.")) {
+	case 1:
+		.@element = select("Glade:Fire:Ice:Death:Cancel") - 1;
+		if (.@element == 4)
+			close;
+		.@piece = select("Armor (30 runes):Garment (20 runes):Boots (15 runes):Cancel") - 1;
+		if (.@piece == 3)
+			close;
+		setarray .@base[0],450199,480144,470107;
+		setarray .@need[0],30,20,15;
+		setarray .@rune[0],1000640,1000641,1000642,1000643;
+		setarray .@result[0],450201,480145,470108,450200,480146,470109,450203,480148,470111,450202,480147,470110;
+		.@output = .@result[.@element * 3 + .@piece];
+		.@input = .@base[.@piece];
+		.@rune_id = .@rune[.@element];
+		.@rune_count = .@need[.@piece];
+		.@price = 300000;
+		break;
+	case 2:
+		.@element = select("Soul:Venom:Temple:Cancel") - 1;
+		if (.@element == 3)
+			close;
+		setarray .@rune[0],1001182,1001180,1001178;
+		setarray .@result[0],490299,490300,490301;
+		.@output = .@result[.@element];
+		.@input = 490297;
+		.@rune_id = .@rune[.@element];
+		.@rune_count = 30;
+		.@price = 100000;
+		break;
+	default:
+		close;
+	}
+	mes "[Ellie]";
+	mes "This exchange consumes item ^3366FF" + .@input + "^000000, " + .@rune_count + " runes, and " + .@price + "z.";
+	next;
+	if (select("Exchange.:Cancel.") == 2)
+		close;
+	if (Zeny < .@price || countitem(.@input) < 1 || countitem(.@rune_id) < .@rune_count) {
+		mes "[Ellie]";
+		mes "You do not have every required item and enough Zeny.";
+		close;
+	}
+	if (!checkweight(.@output,1)) {
+		mes "Make room for the imprinted equipment first.";
+		close;
+	}
+	Zeny -= .@price;
+	delitem .@input,1;
+	delitem .@rune_id,.@rune_count;
+	getitem .@output,1;
+	mes "[Ellie]";
+	mes "The rune imprint is complete.";
+	close;
+}
+
+ba_in01,363,53,4	script	Chirp#biosphere_enchant	4_EP17_BASKET,{
+	mes "[Chirp]";
+	if (!callfunc("F_BiosphereAccess"))
+		close;
+	mes "I enchant the first-stage Varmundt rune equipment. The official interface handles costs, refine requirements, success, and reset rules.";
+	next;
+	.@choice = select("Glade armor set:Fire armor set:Ice armor set:Death armor set:Soul ring:Venom ring:Temple ring:Leave");
+	if (.@choice == 8)
+		close;
+	setarray .@group[1],16,17,18,19,57,58,59;
+	close2;
+	item_enchant .@group[.@choice];
+	end;
+}
+
+// Reform catalysts are interface keys; item_reform.yml charges the complete
+// published recipe and preserves the supported refine/grade/enchant metadata.
+ba_in01,361,53,4	script	Beta#biosphere_reform	4_EP17_MASTER_A,{
+	mes "[Beta]";
+	if (!callfunc("F_BiosphereAccess"))
+		close;
+	mes "Choose a reform interface. The catalyst itself is supplied once; the reform window validates and consumes the full recipe.";
+	next;
+	.@choice = select("Glade armor reform:Fire armor reform:Ice armor reform:Death armor reform:Soul rune-ring reform:Venom rune-ring reform:Temple rune-ring reform:Soul magic-ring reform:Venom magic-ring reform:Temple magic-ring reform:Leave");
+	if (.@choice == 11)
+		close;
+	setarray .@catalyst[1],101769,101771,101772,101770,101933,101934,101935,101936,101937,101938;
+	.@item = .@catalyst[.@choice];
+	if (countitem(.@item)) {
+		mes "[Beta]";
+		mes "You already have that reform catalyst. Use it to open the reform interface.";
+		close;
+	}
+	if (!checkweight(.@item,1)) {
+		mes "Make room for the reform catalyst first.";
+		close;
+	}
+	getitembound .@item,1,BOUND_ACCOUNT;
+	mes "[Beta]";
+	mes "Use the catalyst to open the reform interface.";
+	close;
+}
+
+ba_in01,371,55,4	script	Chirp#biosphere_upgrade_enchant	4_EP17_BASKET,{
+	mes "[Chirp]";
+	if (!callfunc("F_BiosphereAccess"))
+		close;
+	mes "I enchant reformed Varmundt rune equipment.";
+	next;
+	.@choice = select("Glade armor set:Fire armor set:Ice armor set:Death armor set:Soul rings:Venom rings:Temple rings:Leave");
+	if (.@choice == 8)
+		close;
+	setarray .@group[1],52,53,54,55,60,61,62;
+	close2;
+	item_enchant .@group[.@choice];
+	end;
+}

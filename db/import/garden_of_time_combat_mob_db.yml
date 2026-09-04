@@ -1,0 +1,33 @@
+# MuhRO-visible identity correction for the four Lake of Fire bosses.
+# Existing server data has monster 22180 copied as Plant/Wind; the current
+# public database documents Monarch Penguin as Large/Dragon/Water 1.
+# Import this after db/import/mob_db.yml so these partial rows override it.
+Header:
+  Type: MOB_DB
+  Version: 5
+
+Body:
+  # Hall of Life moving barrier sprites. These IDs and Aegis names are present
+  # in the current client, but their upstream mob rows are still placeholders.
+  - Id: 21810
+    AegisName: 20TH_GATE_GREEN_S
+    Name: NPC
+
+  - Id: 21812
+    AegisName: 20TH_GATE_PURPLE_S
+    Name: NPC
+
+  - Id: 22177
+    Name: Floral Pegasus
+
+  - Id: 22178
+    Name: Coral Marine
+
+  - Id: 22179
+    Name: Maple Tree
+
+  - Id: 22180
+    Name: Monarch Penguin
+    Race: Dragon
+    Element: Water
+    ElementLevel: 1

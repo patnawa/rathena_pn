@@ -1,0 +1,39 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Seven family reputation blessings
+//===== Description: =========================================
+//= Each blessing requires 1,000 reputation, costs five Wigner
+//= vouchers, lasts one hour, stacks, and is removed on death.
+//= All seven together cost 40 vouchers.
+//= Source: https://wiki.muhro.eu/21_Age_of_Heroes/en
+//============================================================
+
+jor_mbase,217,172,4	script	Mandel#ep21_blessings	4_M_MANAGER,{
+	mes "[Mandel]";
+	if (!callfunc("EP21_MainComplete")) { mes "Family blessings are available after the Episode 21 campaign."; close; }
+	setarray .@rep[1],13,14,15,16,17,18,19;
+	setarray .@status[1],SC_CONTENTS_4,SC_CONTENTS_5,SC_CONTENTS_6,SC_CONTENTS_7,SC_CONTENTS_8,SC_CONTENTS_9,SC_CONTENTS_10;
+	setarray .@value[1],10,10,15,15,15,15,15;
+	setarray .@family$[1],"Gaebolg","Nerius","Heine","Lugenburg","Walter","Wigner","Richard";
+	mes "A single one-hour blessing costs 5 Wigner vouchers. All seven together cost 40. Every selected family must have 1,000 reputation.";
+	next;
+	.@pick = select("Gaebolg: ATK/MATK +10%.:Nerius: VCT -10%, ASPD +10%.:Heine: Dragon/Plant damage +15%.:Lugenburg: Demon/Undead damage +15%.:Walter: Formless/Fish damage +15%.:Wigner: Brute/Angel damage +15%.:Richard: Demihuman/Insect damage +15%.:All seven blessings.:Leave.");
+	if (.@pick == 9) close;
+	if (.@pick == 8) {
+		for (.@i = 1; .@i <= 7; ++.@i) {
+			if (get_reputation_points(.@rep[.@i]) < 1000) { mes "All seven families must be at 1,000 reputation."; close; }
+		}
+		if (countitem(1001618) < 40) { mes "You need 40 Wigner vouchers."; close; }
+		delitem 1001618,40;
+		for (.@i = 1; .@i <= 7; ++.@i)
+			sc_start .@status[.@i],3600000,.@value[.@i];
+		mes "All seven family blessings will remain for one hour or until death.";
+		close;
+	}
+	if (get_reputation_points(.@rep[.@pick]) < 1000) { mes "You need 1,000 " + .@family$[.@pick] + " reputation."; close; }
+	if (countitem(1001618) < 5) { mes "You need 5 Wigner vouchers."; close; }
+	delitem 1001618,5;
+	sc_start .@status[.@pick],3600000,.@value[.@pick];
+	mes .@family$[.@pick] + " blessing will remain for one hour or until death.";
+	close;
+}
+

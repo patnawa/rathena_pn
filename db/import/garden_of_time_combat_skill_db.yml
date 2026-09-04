@@ -1,0 +1,190 @@
+# Garden of Time NPC skill metadata.
+#
+# Sources:
+# - Current RO client skill IDs/names/scales (ROenglishRE data, 2026-07-27)
+# - Public Garden of Time implementation by crazyarashi for server-side shape,
+#   elements, hit counts, durations, and unit settings
+# - https://wiki.muhro.eu/Lake_of_Fire for the encounter relationships
+#
+# IMPORTANT: Do not add this file to db/skill_db.yml until the matching source
+# handlers and SC_TARGET_MARKER/SC_BLOCK_SEAL/SC_FROST_STORM/SC_WARM_SHIELD
+# constants are compiled into map-server.  The stock engine only reserves these
+# skill IDs; it does not implement their casts.
+Header:
+  Type: SKILL_DB
+  Version: 4
+
+Body:
+  - Id: 775
+    Name: NPC_SEEDTRAP
+    Description: Seed Trap
+    MaxLevel: 5
+    Type: Misc
+    TargetType: Ground
+    Flags:
+      IsNpc: true
+    DamageFlags:
+      IgnoreFlee: true
+      IgnoreDefCard: true
+      Splash: true
+    # The public Hall implementation selects seed targets within ten cells.
+    # An explicit range is required when the skill is driven by mob AI.
+    Range: 10
+    SplashArea:
+      - Level: 1
+        Area: 3
+      - Level: 2
+        Area: 3
+      - Level: 3
+        Area: 5
+      - Level: 4
+        Area: 7
+      - Level: 5
+        Area: 7
+    Hit: Single
+    HitCount: 1
+    Duration1: 1000
+    Unit:
+      Id: Seedtrap
+      Range: 14
+      Interval: 1000
+      Target: Enemy
+      Flag:
+        PathCheck: true
+
+  - Id: 785
+    Name: NPC_TARGET_MARKER
+    Description: Target Marker
+    MaxLevel: 7
+    Type: Magic
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+      Splash: true
+    Flags:
+      IsNpc: true
+    Hit: Single
+    HitCount: 1
+    Duration1: 30000
+    SplashArea:
+      - Level: 1
+        Area: 3
+      - Level: 2
+        Area: 7
+      - Level: 3
+        Area: 11
+      - Level: 4
+        Area: 15
+      - Level: 5
+        Area: 19
+      - Level: 6
+        Area: 21
+      - Level: 7
+        Area: 27
+    Status: Target_Marker
+
+  - Id: 786
+    Name: NPC_AIMED_SHOWER
+    Description: Aimed Shower
+    MaxLevel: 10
+    Type: Weapon
+    TargetType: Self
+    Hit: Multi_Hit
+    HitCount: 5
+    Element: Poison
+    DamageFlags:
+      Splash: true
+    Flags:
+      IsNpc: true
+    SplashArea: 27
+
+  - Id: 787
+    Name: NPC_BLAZING_ERUPTION
+    Description: Blazing Eruption
+    MaxLevel: 10
+    Type: Weapon
+    TargetType: Self
+    Hit: Multi_Hit
+    HitCount: 5
+    Element: Fire
+    DamageFlags:
+      Splash: true
+    Flags:
+      IsNpc: true
+    SplashArea: 27
+
+  - Id: 788
+    Name: NPC_BLOCK_SEAL
+    Description: Seal
+    MaxLevel: 10
+    Type: Magic
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+      Splash: true
+    Flags:
+      IsNpc: true
+    Hit: Single
+    HitCount: 1
+    SplashArea: 27
+    Duration1: 5000
+    Status: Block_Seal
+
+  - Id: 789
+    Name: NPC_BLOCK_EXPLOSION
+    Description: Seal Explosion
+    MaxLevel: 10
+    Type: Magic
+    TargetType: Self
+    Hit: Single
+    HitCount: 1
+    DamageFlags:
+      Splash: true
+    Flags:
+      IsNpc: true
+    SplashArea: 27
+
+  - Id: 790
+    Name: NPC_FROST_FIELD
+    Description: Frost Field
+    MaxLevel: 10
+    Type: Magic
+    TargetType: Self
+    Hit: Single
+    HitCount: 1
+    DamageFlags:
+      NoDamage: true
+      Splash: true
+    Flags:
+      IsNpc: true
+    SplashArea: 27
+    Duration1: 30000
+    Status: Frost_Storm
+
+  - Id: 791
+    Name: NPC_LIGHTNING_JUDGEMENT
+    Description: Lightning Judgment
+    MaxLevel: 10
+    Type: Magic
+    TargetType: Self
+    Hit: Single
+    HitCount: 5
+    Element: Wind
+    DamageFlags:
+      Splash: true
+    Flags:
+      IsNpc: true
+    SplashArea: 27
+
+  - Id: 793
+    Name: NPC_RESET_EFST
+    Description: Effect Off
+    MaxLevel: 1
+    Type: Magic
+    TargetType: Self
+    DamageFlags:
+      NoDamage: true
+    Flags:
+      IsNpc: true
+    Hit: Single
+    HitCount: 1

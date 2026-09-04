@@ -2004,6 +2004,12 @@
 	export_constant(SC_WIND_CHARM_POWER);
 	export_constant(SC_GROUND_CHARM_POWER);
 	export_constant(SC_LOCKON_LASER);
+	export_constant(SC_GROGGY);
+	export_constant(SC_TARGET_MARKER);
+	export_constant(SC_BLOCK_SEAL);
+	export_constant(SC_FROST_STORM);
+	export_constant(SC_WARM_SHIELD);
+	export_constant(SC_MTP_W_POTION_100);
 
 /// Do not modify code below this, until the end of the API hook, since it will be automatically generated again
 /// @APIHOOK_START(EFST_CONST)
@@ -7420,6 +7426,7 @@
 	export_constant(IG_RT_CH01_YGGLEAF_A);
 	export_constant(IG_RT_CH01_YGGLEAF_C);
 	export_constant(IG_RT_CH01_YGGLEAF_3);
+	export_constant(IG_D_GW_EXTRACTOR);
 
 	/* unit stop walking */
 	export_constant(USW_NONE);

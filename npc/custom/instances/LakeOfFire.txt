@@ -1,0 +1,414 @@
+//===== rAthena Script =======================================
+//= Garden of Time: Lake of Fire
+//===== License: =============================================
+//= Copyright (C) rAthena contributors. GPL-3.0-or-later.
+//===== Description: =========================================
+//= Clean-room party-instance controller based on published
+//= MuhRO and official Gravity mechanics:
+//= - Base level 250+, Garden access quest, daily midnight reset.
+//= - One random seasonal divine beast and a 60-minute limit.
+//= - Invulnerable lure phase with eight one-use traps.
+//= - Five-second groggy windows and a final combat arena.
+//= - Bosses take 99% less damage and reject five listed debuffs.
+//= - Per-character exit claim with account-scoped full reward.
+//=
+//= Public references (retrieved 2026-09-04):
+//= https://wiki.muhro.eu/Lake_of_Fire
+//= https://iro.ragnarokonline.com/news/updatedetail.aspx?id=415&p=1
+//=
+//= Seven coordinates are corroborated by public server guides.
+//= The eighth is read from the current MuhRO trap map; it was
+//= added after older seven-trap regional implementations.
+//=
+//= MuhRO's "master account" link is proprietary. In stock
+//= rAthena, #PNLake_FullRewardToken uses the closest native
+//= equivalent: the login-account scope. A site-side master-
+//= account bridge may mirror this variable across linked logins.
+//============================================================
+
+function	script	F_PNLake_NextMidnight	{
+	.@elapsed = gettime(DT_HOUR) * 3600 + gettime(DT_MINUTE) * 60 + gettime(DT_SECOND);
+	return gettimetick(2) + 86400 - .@elapsed;
+}
+
+function	script	F_LakeOfFirePortal	{
+	.@instance$ = "Lake of Fire";
+	.@now = gettimetick(2);
+	.@party = getcharid(1);
+	.@iid = instance_id(IM_PARTY);
+
+	if (BaseLevel < 250) {
+		mes "[Dimension Prison]";
+		mes "Only adventurers of Base Level 250 or higher can stabilize this passage.";
+		close;
+	}
+	if (isbegin_quest(12597) != 2) {
+		mes "[Dimension Prison]";
+		mes "Your name is not yet on the Garden of Time access list.";
+		close;
+	}
+	if (!.@party) {
+		mes "[Dimension Prison]";
+		mes "Form a party first. A one-person party is acceptable.";
+		close;
+	}
+
+	if (PNLake_NextEntry && PNLake_NextEntry <= .@now) {
+		PNLake_NextEntry = 0;
+		if (isbegin_quest(12611) > 0)
+			erasequest 12611;
+	}
+
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) == .@instance$) {
+		.@token = getinstancevar('run_token,.@iid);
+		.@reserved = (PNLake_ReservedInstance == .@iid && PNLake_ReservedToken == .@token);
+		.@returning = (PNLake_ActiveInstance == .@iid && PNLake_ActiveToken == .@token);
+		if (!.@reserved && !.@returning) {
+			mes "[Dimension Prison]";
+			mes "This expedition was reserved before you joined the party.";
+			close;
+		}
+		if (!.@returning && PNLake_NextEntry > .@now) {
+			mes "[Dimension Prison]";
+			mes "The prison will recognize you again after the next server midnight.";
+			close;
+		}
+		if (instance_enter(.@instance$,-1,-1,getcharid(0),.@iid) != IE_OK) {
+			mes "[Dimension Prison]";
+			mes "The passage did not respond. Please try again.";
+			close;
+		}
+		if (!.@returning) {
+			PNLake_ActiveInstance = .@iid;
+			PNLake_ActiveToken = .@token;
+			PNLake_NextEntry = callfunc("F_PNLake_NextMidnight");
+			if (isbegin_quest(12611) > 0)
+				erasequest 12611;
+			setquest 12611;
+			for (.@quest = 12613; .@quest <= 12616; ++.@quest) {
+				if (isbegin_quest(.@quest) > 0)
+					erasequest .@quest;
+			}
+			setquest getinstancevar('boss_quest,.@iid);
+		}
+		end;
+	}
+
+	if (.@iid) {
+		mes "[Dimension Prison]";
+		mes "Your party already owns another memorial dungeon: ^0000FF" + instance_live_info(ILI_NAME,.@iid) + "^000000.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "[Dimension Prison]";
+		mes "Only the party leader may reserve the Lake of Fire.";
+		close;
+	}
+	if (PNLake_NextEntry > .@now) {
+		mes "[Dimension Prison]";
+		mes "You may enter again after the next server midnight.";
+		close;
+	}
+
+	mes "[Dimension Prison]";
+	mes "A random divine beast waits beyond the seal. Lure it through all eight traps before fighting it.";
+	mes "The reservation lasts 60 minutes and entry is limited to the current party roster.";
+	next;
+	.@choice = select("Validate the party and reserve.:Review the rules.:Cancel.");
+	if (.@choice == 2) {
+		mes "[Dimension Prison]";
+		mes "The beast is immune during the lure phase. Each unused trap activates automatically when the beast comes within four cells.";
+		mes "After all eight traps trigger, living party members and the beast move to the northern arena.";
+		mes "Use the exit after victory to receive the individual reward.";
+		close;
+	}
+	if (.@choice == 3)
+		close;
+
+	getpartymember .@party,1;
+	.@count = $@partymembercount;
+	copyarray .@cid[0],$@partymembercid[0],.@count;
+	getpartymember .@party,2;
+	copyarray .@aid[0],$@partymemberaid[0],.@count;
+	.@caller_aid = getcharid(3);
+	.@invalid$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@invalid$ = "Every party member must be online for reservation.";
+			break;
+		}
+		if (getcharid(0) != .@cid[.@i] || getcharid(1) != .@party) {
+			.@invalid$ = "The online party roster changed during validation.";
+			break;
+		}
+		if (BaseLevel < 250) {
+			.@invalid$ = strcharinfo(0) + " is below Base Level 250.";
+			break;
+		}
+		if (isbegin_quest(12597) != 2) {
+			.@invalid$ = strcharinfo(0) + " has not completed Garden access registration.";
+			break;
+		}
+		if (PNLake_NextEntry && PNLake_NextEntry <= .@now) {
+			PNLake_NextEntry = 0;
+			if (isbegin_quest(12611) > 0)
+				erasequest 12611;
+		}
+		if (PNLake_NextEntry > .@now) {
+			.@invalid$ = strcharinfo(0) + " is still on the daily Lake of Fire cooldown.";
+			break;
+		}
+	}
+	attachrid .@caller_aid;
+	if (.@invalid$ != "") {
+		mes "[Dimension Prison]";
+		mes .@invalid$;
+		close;
+	}
+
+	.@created = instance_create(.@instance$,IM_PARTY,.@party);
+	if (.@created < 1) {
+		mes "[Dimension Prison]";
+		mes "The reservation failed (code " + .@created + ").";
+		close;
+	}
+	.@token = gettimetick(2);
+	setinstancevar 'run_token,.@token,.@created;
+	setinstancevar 'party_id,.@party,.@created;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (isloggedin(.@aid[.@i],.@cid[.@i]) && attachrid(.@aid[.@i])) {
+			PNLake_ReservedInstance = .@created;
+			PNLake_ReservedToken = .@token;
+		}
+	}
+	attachrid .@caller_aid;
+	mes "[Dimension Prison]";
+	mes "The Lake of Fire is reserved. Use the gate again to enter.";
+	close;
+}
+
+// Replace the untranslated upstream placeholder gate without editing its
+// legacy non-UTF-8 source: keep it disabled and expose the documented gate.
+t_garden,159,235,2	script	Lake of Fire#pn_gate	GATE_SKYBLUE,{
+	callfunc "F_LakeOfFirePortal";
+	end;
+OnInit:
+	initnpctimer;
+	end;
+OnTimer1000:
+	if (getnpcid(0,"Dimension Prison#1"))
+		disablenpc "Dimension Prison#1";
+	if (getnpcid(0,"Dimensional Prison#1"))
+		disablenpc "Dimensional Prison#1";
+	end;
+}
+
+1@f_lake,16,192,4	script	Imprisoned Beast#pn_lake	4_ENERGY_RED,{
+	if ('stage) {
+		mes "[Seasonal Seal]";
+		mes "The divine beast has already awakened.";
+		close;
+	}
+	if (PNLake_ActiveInstance != instance_id() || PNLake_ActiveToken != 'run_token) {
+		mes "[Seasonal Seal]";
+		mes "The seal does not recognize you as a registered entrant.";
+		close;
+	}
+	mes "[Seasonal Seal]";
+	mes "The " + 'boss_name$ + " is imprisoned here. Once awakened, it cannot be harmed until all eight traps have reduced its protection.";
+	next;
+	if (select("Awaken the divine beast.:Wait.") == 2)
+		close;
+	close2;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#PNLake_Control") + "::OnStart";
+	end;
+
+OnInstanceInit:
+	end;
+}
+
+1@f_lake,25,151,0	script	#PNLake_Trap1	4_ENERGY_RED,{ end; }
+1@f_lake,95,182,0	script	#PNLake_Trap2	4_ENERGY_RED,{ end; }
+1@f_lake,51,93,0	script	#PNLake_Trap3	4_ENERGY_RED,{ end; }
+1@f_lake,91,56,0	script	#PNLake_Trap4	4_ENERGY_RED,{ end; }
+1@f_lake,129,58,0	script	#PNLake_Trap5	4_ENERGY_RED,{ end; }
+1@f_lake,93,35,0	script	#PNLake_Trap6	4_ENERGY_RED,{ end; }
+1@f_lake,43,34,0	script	#PNLake_Trap7	4_ENERGY_RED,{ end; }
+1@f_lake,22,20,0	script	#PNLake_Trap8	4_ENERGY_RED,{ end; }
+
+1@f_lake,1,1,0	script	#PNLake_Control	-1,{
+	end;
+
+OnInstanceInit:
+	'map$ = instance_mapname("1@f_lake");
+	'boss_index = rand(4);
+	setarray .@boss_id[0],22177,22178,22179,22180;
+	setarray .@boss_quest[0],12613,12614,12615,12616;
+	setarray .@energy[0],1001440,1001441,1001442,1001443;
+	setarray .@name$[0],"Floral Pegasus","Coral Marine","Maple Tree","Monarch Penguin";
+	'boss_id = .@boss_id['boss_index];
+	'boss_quest = .@boss_quest['boss_index];
+	'energy_item = .@energy['boss_index];
+	'boss_name$ = .@name$['boss_index];
+	if (!'run_token)
+		'run_token = gettimetick(2);
+	'stage = 0;
+	'trap_mask = 0;
+	'trap_count = 0;
+	disablenpc instance_npcname("Lake Exit#pn_lake");
+	for (.@i = 1; .@i <= 8; ++.@i)
+		disablenpc instance_npcname("#PNLake_Trap" + .@i);
+	initnpctimer;
+	end;
+
+OnStart:
+	if ('stage)
+		end;
+	'stage = 1;
+	monster 'map$,16,192,'boss_name$,'boss_id,1,instance_npcname(strnpcinfo(0)) + "::OnBossDead";
+	'boss_gid = $@mobid[0];
+	getunitdata 'boss_gid,.@data;
+	'boss_mode = .@data[UMOB_MODE];
+	// Seasonal combat begins only after the eight-trap lure is complete.
+	setunitdata 'boss_gid,UMOB_MODE,'boss_mode | MD_NOCAST;
+	setunitdata 'boss_gid,UMOB_DAMAGETAKEN,1;
+	setunitdata 'boss_gid,UMOB_DMGIMMUNE,true;
+	for (.@i = 1; .@i <= 8; ++.@i)
+		enablenpc instance_npcname("#PNLake_Trap" + .@i);
+	instance_announce instance_id(),"The " + 'boss_name$ + " has awakened. Lure it through all eight traps.",bc_map,0xFF7733;
+	donpcevent instance_npcname(strnpcinfo(0)) + "::OnMonitor";
+	end;
+
+OnMonitor:
+	setarray .@tx[0],25,95,51,91,129,93,43,22;
+	setarray .@ty[0],151,182,93,56,58,35,34,20;
+	while (('stage == 1 || 'stage == 2) && unitexists('boss_gid)) {
+		sleep 500;
+		if (('stage != 1 && 'stage != 2) || !unitexists('boss_gid))
+			end;
+		sc_end SC_RAID,'boss_gid;
+		sc_end SC_DARKCROW,'boss_gid;
+		sc_end SC_RUSH_QUAKE1,'boss_gid;
+		sc_end SC_SPORE_EXPLOSION,'boss_gid;
+		sc_end SC_HOLY_OIL,'boss_gid;
+		if ('stage == 2)
+			continue;
+		getunitdata 'boss_gid,.@data;
+		for (.@i = 0; .@i < 8; ++.@i) {
+			if ('trap_mask & (1 << .@i))
+				continue;
+			if (distance(.@data[UMOB_X],.@data[UMOB_Y],.@tx[.@i],.@ty[.@i]) > 4)
+				continue;
+			'trap_mask |= (1 << .@i);
+			++'trap_count;
+			disablenpc instance_npcname("#PNLake_Trap" + (.@i + 1));
+			unitskilluseid 'boss_gid,"NPC_GROGGY_ON",5,'boss_gid,-10000;
+			instance_announce instance_id(),"Trap " + 'trap_count + " of 8 has broken part of the divine protection.",bc_map,0x66FFCC;
+			if ('trap_count == 8) {
+				'stage = 2;
+				sc_end SC_GROGGY,'boss_gid;
+				setunitdata 'boss_gid,UMOB_DMGIMMUNE,false;
+				setunitdata 'boss_gid,UMOB_DAMAGETAKEN,1;
+				setunitdata 'boss_gid,UMOB_MODE,'boss_mode;
+				instance_warpall 'map$,176,155,instance_id(),IWA_NOTDEAD;
+				unitwarp 'boss_gid,'map$,176,163;
+				instance_announce instance_id(),"All eight traps are active. The beast is vulnerable in the northern arena.",bc_map,0x66FF66;
+				break;
+			}
+			break;
+		}
+	}
+	end;
+
+OnBossDead:
+	if ('stage < 2)
+		end;
+	'stage = 3;
+	'boss_gid = 0;
+	enablenpc instance_npcname("Lake Exit#pn_lake");
+	instance_announce instance_id(),"The " + 'boss_name$ + " has fallen. Use the exit in the northern arena to claim your reward.",bc_map,0xFFFF66;
+	end;
+
+OnTimer3300000:
+	instance_announce instance_id(),"Lake of Fire: 5 minutes remain.",bc_map,0xFFAA33;
+	end;
+
+OnTimer3540000:
+	instance_announce instance_id(),"Lake of Fire: 1 minute remains.",bc_map,0xFF3333;
+	end;
+
+OnTimer3600000:
+	instance_announce instance_id(),"The dimensional passage has collapsed.",bc_map,0xFF3333;
+	instance_warpall "t_garden",159,231,instance_id();
+	instance_destroy;
+	end;
+}
+
+1@f_lake,176,166,4	script	Lake Exit#pn_lake	PORTAL,{
+	if ('stage != 3) {
+		mes "[Dimensional Exit]";
+		mes "The exit is still sealed.";
+		close;
+	}
+	if (PNLake_ActiveInstance != instance_id() || PNLake_ActiveToken != 'run_token) {
+		mes "[Dimensional Exit]";
+		mes "Only a registered entrant may use this reward passage.";
+		close;
+	}
+	if (PNLake_ClaimToken == 'run_token) {
+		mes "[Dimensional Exit]";
+		mes "You already claimed this expedition's reward.";
+		next;
+		if (select("Leave the instance.:Stay.") == 1) {
+			PNLake_ActiveInstance = 0;
+			PNLake_ActiveToken = 0;
+			PNLake_ReservedInstance = 0;
+			PNLake_ReservedToken = 0;
+			warp "t_garden",159,231;
+		}
+		close;
+	}
+	.@full = (#PNLake_FullRewardToken != 'run_token);
+	if (.@full) {
+		setarray .@item[0],1001415,1001414,'energy_item;
+		setarray .@amount[0],1,30,15;
+	} else {
+		setarray .@item[0],1001414,'energy_item;
+		setarray .@amount[0],10,5;
+	}
+	if (!checkweight2(.@item,.@amount)) {
+		mes "[Dimensional Exit]";
+		mes "Make enough inventory room and weight capacity for the reward, then try again.";
+		close;
+	}
+	mes "[Dimensional Exit]";
+	mes "Leave the Lake of Fire and receive your " + (.@full ? "full" : "additional-account-character") + " reward?";
+	next;
+	if (select("Claim and leave.:Stay.") == 2)
+		close;
+	for (.@i = 0; .@i < getarraysize(.@item); ++.@i)
+		getitem .@item[.@i],.@amount[.@i];
+	if (.@full)
+		#PNLake_FullRewardToken = 'run_token;
+	PNLake_ClaimToken = 'run_token;
+	if (isbegin_quest('boss_quest) == 1)
+		completequest 'boss_quest;
+	PNLake_ActiveInstance = 0;
+	PNLake_ActiveToken = 0;
+	PNLake_ReservedInstance = 0;
+	PNLake_ReservedToken = 0;
+	close2;
+	warp "t_garden",159,231;
+	end;
+
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+1@f_lake	mapflag	nosave	SavePoint
+1@f_lake	mapflag	nomobloot
+1@f_lake	mapflag	nomvploot
+1@f_lake	mapflag	nopenalty
+1@f_lake	mapflag	nobranch

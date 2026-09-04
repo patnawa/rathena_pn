@@ -494,6 +494,12 @@ wolfvill	mapflag	nomemo
 1@ch_u	mapflag	nomemo
 
 //============================================================
+// Varmundt's Garden Memorial Dungeons
+//============================================================
+1@f_lake	mapflag	nomemo
+1@ba_go	mapflag	nomemo
+
+//============================================================
 // Illusion of Twins
 //============================================================
 ant_d02_i	mapflag	nomemo

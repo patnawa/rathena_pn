@@ -1,0 +1,12 @@
+# Episode 19 reputation identifier.
+Header:
+  Type: CONSTANT_DB
+  Version: 1
+
+Body:
+  - Name: REPUTATION_EP19
+    Value: 4
+  - Name: REPUTATION_BIOSPHERE_DEPTH1
+    Value: 6
+  - Name: REPUTATION_BIOSPHERE_DEPTH2
+    Value: 9

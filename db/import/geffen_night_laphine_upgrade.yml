@@ -1,0 +1,34 @@
+# Copyright (c) 2026 rAthena contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+Header:
+  Type: LAPHINE_UPGRADE_DB
+  Version: 1
+
+Body:
+  - Item: MD_Geffen_Rarmor
+    RandomOptionGroup: GEFFEN_NIGHT_ARMOR
+    CardsAllowed: true
+    TargetItems:
+      - Item: MD_Geffen_Suits
+      - Item: MD_Geffen_Robe
+  - Item: MD_Geffen_Rhood
+    RandomOptionGroup: GEFFEN_NIGHT_GARMENT
+    CardsAllowed: true
+    TargetItems:
+      - Item: MD_Geffen_Hood
+      - Item: MD_Geffen_Hood2
+      - Item: MD_Geffen_Hood3
+      - Item: MD_Geffen_Hood4
+  - Item: MD_Geffen_Racc
+    RandomOptionGroup: GEFFEN_NIGHT_ACCESSORY
+    CardsAllowed: true
+    TargetItems:
+      - Item: MD_Geffen_Ring
+      - Item: MD_Geffen_Ring2
+  - Item: MD_Geffen_Rsheild
+    RandomOptionGroup: GEFFEN_NIGHT_SHIELD
+    CardsAllowed: true
+    TargetItems:
+      - Item: MD_Geffen_Shield
+      - Item: MD_Geffen_Shield2

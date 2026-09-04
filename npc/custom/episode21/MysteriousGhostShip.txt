@@ -132,7 +132,7 @@ jor_albe,195,179,4	script	Nillem#ep21gs_daily	4_M_SAGE_C,{
 	.@key = callfunc("EP21_DailyKey");
 
 	if (isbegin_quest(16822) == 1) {
-		if (!checkweight(1001618,10) || !checkweight(102947,1)) {
+		if (!checkweight(1001618,10,102947,1)) {
 			mes "Make room for ten vouchers and the Ghost Ship antiquity before I file the report.";
 			close;
 		}

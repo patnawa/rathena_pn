@@ -44,3 +44,5 @@ Footer:
   - Path: db/re/laphine_upgrade.yml
     Mode: Renewal
   - Path: db/import/laphine_upgrade.yml
+  - Path: db/import/geffen_night_laphine_upgrade.yml
+  - Path: db/import/airship_crash_laphine_upgrade.yml

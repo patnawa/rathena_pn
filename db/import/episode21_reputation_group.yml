@@ -1,0 +1,20 @@
+# Episode 21 reputation group mirrored from the current client metadata.
+# This only controls reputation-window grouping; point storage remains in
+# db/import/reputation.yml.
+Header:
+  Type: REPUTATION_GROUP_DB
+  Version: 1
+
+Body:
+  - Id: 6
+    ScriptName: Lunaporma
+    Name: Lunaforma
+    ReputeList:
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+

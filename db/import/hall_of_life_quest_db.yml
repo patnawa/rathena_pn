@@ -1,0 +1,17 @@
+# MuhRO timing overrides for Hall of Life.
+# Source: https://wiki.muhro.eu/Hall_of_Life (retrieved 2026-09-04).
+# The account variables in HallOfLife.txt remain authoritative; these quest
+# entries make the client quest timers display the same policy.
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 12612
+    Title: Rewarded
+    TimeLimit: Friday 9h45mn
+  - Id: 12617
+    Title: Dimensional Criminal Correction
+  - Id: 12619
+    Title: Take a break
+    TimeLimit: +1mn

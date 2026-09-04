@@ -1,0 +1,14 @@
+# Copyright (c) 2026 rAthena contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# The exact three-day, 04:00 reset is timestamp-driven in the NPC script.  The
+# quest entry records the one-time access introduction and is not used as a
+# drifting relative cooldown timer.
+
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 69990
+    Title: Geffen Night Arena Access

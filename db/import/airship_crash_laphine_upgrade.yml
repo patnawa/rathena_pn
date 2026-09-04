@@ -1,0 +1,22 @@
+# Copyright (c) 2026 rAthena contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Target/refine constraints are from the shipped LapineUpgradeBox.lub.
+
+Header:
+  Type: LAPHINE_UPGRADE_DB
+  Version: 1
+
+Body:
+  - Item: MD_Airboat_Random
+    RandomOptionGroup: AIRSHIP_CRASH_YMIR_BEADS
+    MinimumRefine: 0
+    MaximumRefine: 20
+    RequiredRandomOptions: 0
+    TargetItems:
+      - Item: MD_Airboat_Boots
+      - Item: MD_Airboat_Boots2
+      - Item: MD_Airboat_Boots3
+      - Item: MD_Airboat_Boots4
+      - Item: MD_Airboat_Boots5
+      - Item: MD_Airboat_Boots6

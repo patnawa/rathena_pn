@@ -1,0 +1,434 @@
+//===== rAthena Script =======================================
+//= Fashion Points / Gold Points
+//===== License / provenance =================================
+//= Clean-room implementation from the published player-facing rules at:
+//= https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
+//= Costume application itself remains handled by rAthena's GPL script:
+//= npc/re/merchants/malangdo_costume.txt
+//============================================================
+//= Published rules implemented here:
+//= * 1 Gold Point per 3 minutes online; balance cap 50.
+//= * 1 Gold Point exchanges to 1 Fashion Point.
+//= * Costume trade: 15 Fashion Points; Bio5/Tomb costume: 1 point.
+//= * Listed enchant-stone trade: 10 Fashion Points.
+//= * Removing one recoverable stone costs 30 Fashion Points, 10 of
+//=   item 50000 (Muh Coin), or 1,000,000 Zeny.
+//= * Top/Mid/Low/Garment-slot-1 boxes cost 50 points; Garment-slot-2
+//=   costs 300 points.
+//============================================================
+//= Compatibility policy / intentionally unpublished behavior:
+//= * rAthena has no "master account" above a login account. #FP_* are
+//=   login-account variables, so linked login accounts do not share points.
+//= * This repository has mal_in01 but not MuhRO's main_office/mal_in maps.
+//=   The service NPCs are therefore grouped by the stock Malangdo costume
+//=   NPCs. This placement is compatibility policy, not a published coordinate.
+//= * The wiki publishes box contents but not per-item probabilities. Per the
+//=   requested clean-room compatibility policy, each box selects uniformly
+//=   from its published outcomes. This is NOT claimed to be MuhRO's rate table.
+//= * The wiki does not publish Fashion Point prices for the costume catalogue;
+//=   the catalogue is view-only here rather than assigning invented prices.
+//= * Druid/Karnos/Alitea item effects use numeric skill IDs from the upstream
+//=   rAthena GPL implementation PR #9765. This server has not implemented those
+//=   jobs yet, so those bonuses remain dormant until the skills exist.
+//= * The local GPL Malangdo enchanters map 196 of the 366 published pairs.
+//=   All 170 newer physical stone IDs (1000375 and above in these box lists)
+//=   can be awarded/traded/recovered, but cannot be applied by that old script.
+//=   Its missing application tables are not guessed in this subsystem.
+//============================================================
+
+function	script	FP_LoadBox	{
+	deletearray @FP_BoxStone[0],128;
+	deletearray @FP_BoxEnchant[0],128;
+	switch (getarg(0)) {
+	case 0:  .@d$="6636,4700,6740,4930,6944,29030,25172,29156,6637,4710,6741,4805,6999,29013,25304,29359,6638,4730,6790,4936,25000,29032,1000375,310325,6639,4720,6791,4937,25068,4807,1000377,310327,6640,4740,6792,4938,25069,29053,1000528,310664,6641,4750,6943,29028,25171,29159,1001168,311921,1002396,314662"; break;
+	case 1:  .@d$="25413,29428,25453,29468,25706,29513,25846,29655,25843,29651,25417,29432,25490,29477,25710,29517,25850,29659,25859,29668,25445,29460,25494,29481,25714,29521,25855,29664,25409,29423,25450,29464,25498,29485,1001327,312403,1002627,314850"; break;
+	case 2:  .@d$="1000008,310000,1000214,310181,1000297,310258,25800,29613,1000012,310004,1000218,310187,1000301,310262,25804,29617,1000016,310008,1000222,310191,1000305,310266,25808,29621"; break;
+	case 3:  .@d$="1000610,310881,1000857,311356,1001044,311460,1000613,310884,1000860,311359,1001047,311463,1000616,310887,1000863,311362,1001050,311466,1000666,311005,1000968,311427,1001159,311912,1000669,311008,1000971,311430,1001162,311915,1000672,311011,1000974,311433,1001165,311918,1002630,314853"; break;
+	case 4:  .@d$="1002096,314021,1002100,314025,1002104,314029,1002273,314181,1002277,314185,1002281,314189,1002408,314670,1002411,314673,1002414,314676,1001939,313726,1001942,313729,1001945,313732"; break;
+	case 5:  .@d$="6642,4882,6947,4730,25004,29022,25141,29145,6643,4883,6948,4720,25005,29016,25173,29157,6742,4931,6949,4740,25006,29020,25175,29155,6743,4861,6950,4750,25007,29018,1000378,310328,6744,4929,25001,29026,25060,29047,1000529,310665,6945,4700,25002,29024,25061,29048,1001169,311922,6946,4710,25003,29014,25070,29054,1002397,314663"; break;
+	case 6:  .@d$="25410,29424,25451,29465,25499,29486,25860,29669,25844,29652,25414,29429,25454,29469,25707,29514,25856,29665,25847,29656,25418,29433,25491,29478,25711,29518,25495,29482,25851,29660,25446,29461,25715,29522,1001328,312404,1002628,314851"; break;
+	case 7:  .@d$="25799,29612,1000009,310001,1000219,310186,25803,29616,1000013,310005,1000223,310190,25807,29620,1000306,310267,1000298,310259,1000017,310009,1000215,310182,1000302,310263"; break;
+	case 8:  .@d$="1000611,310882,1000858,311357,1001045,311461,1000614,310885,1000861,311360,1001048,311464,1000617,310888,1000864,311363,1001051,311467,1000667,311006,1000969,311428,1001160,311913,1000670,311009,1000972,311431,1001163,311916,1000673,311012,1000975,311434,1001166,311919,1002631,314854"; break;
+	case 9:  .@d$="1002097,314022,1002101,314026,1002105,314030,1002274,314182,1002278,314186,1002282,314190,1002409,314671,1002412,314674,1002415,314677,1001940,313727,1001943,313730,1001946,313733"; break;
+	case 10: .@d$="6644,4884,25012,29015,25064,29050,25228,29229,6645,4859,25013,29017,25065,29051,25229,29228,6745,4932,25014,29033,25066,29052,25305,29360,6951,4861,25015,29027,25071,29055,1000376,310326,25008,29021,25016,29029,25072,29057,1000379,310329,25009,29023,25017,29031,25139,29146,1000530,310666,25010,29019,25062,29046,25174,29158,1001170,311923,25011,29025,25063,29049,25227,29227,1002398,314664"; break;
+	case 11: .@d$="25411,29425,25447,29462,25492,29479,25708,29515,25857,29666,25415,29430,25452,29466,25496,29483,25712,29519,25861,29670,25419,29434,25455,29470,25500,29487,25716,29523,25848,29657,25852,29661,25845,29653,1001329,312405,1002629,314852"; break;
+	case 12: .@d$="25798,29611,1000307,310268,1000014,310006,1000224,310189,25802,29615,1000010,310002,1000018,310010,1000299,310260,25806,29619,1000220,310185,1000216,310183,1000303,310264"; break;
+	case 13: .@d$="1000612,310883,1000859,311358,1001046,311462,1000615,310886,1000862,311361,1001049,311465,1000618,310889,1000865,311364,1001052,311468,1000668,311007,1000970,311429,1001161,311914,1000671,311010,1000973,311432,1001164,311917,1000674,311013,1000976,311435,1001167,311920,1002632,314855"; break;
+	case 14: .@d$="1002098,314023,1002102,314027,1002106,314031,1002275,314183,1002279,314187,1002283,314191,1002410,314672,1002413,314675,1002416,314678,1001941,313728,1001947,313734,1001944,313731"; break;
+	case 15: .@d$="6908,4807,25067,29056,25303,29361,1001053,311469,6963,4992,25170,29154,25306,29358,6964,4993,25302,29362,1000922,311426,1001054,311470,1001171,311924,1001938,313725,1002399,314665,1002404,314666"; break;
+	case 16: .@d$="25412,29426,25448,29463,25493,29480,25709,29516,25416,29431,25449,29467,25497,29484,25713,29520,25420,29435,25456,29471,25501,29488,25717,29524,25854,29663,25858,29667,25862,29671,25842,29654,25849,29658,25853,29662,1001326,312402,1002625,314848"; break;
+	case 17: .@d$="25797,29427,1000011,310003,1000213,310180,1000296,310257,25801,29614,1000015,310007,1000217,310184,1000300,310261,25805,29618,1000019,310011,1000221,310188,1000304,310265"; break;
+	case 18: .@d$="1001419,312476,1001420,312477,1001421,312478,1001322,312398,1001323,312399,1001324,312400,1001325,312401,1001487,312692,1001488,312693,1001603,313060,1001604,313059,1001605,313061,1001737,313324,1001738,313325,1001739,313326,1001787,313359,1001788,313360,1001789,313361,1001489,312694,1002626,314849"; break;
+	case 19: .@d$="1002099,314024,1002103,314028,1002107,314032,1002276,314184,1002280,314188,1002284,314192,1002405,314667,1002406,314668,1002407,314669,1001948,313735,1001949,313736,1001950,313737"; break;
+	case 20: .@d$="1000520,310654,1000675,311014,1000855,311354,1000676,311015,1000527,310667,1000856,311355,1000526,310662,1000521,310658,1000921,311425,1000525,310663,1000524,310661,1001055,311471,1000523,310660,1000522,310659,1001172,311925,1002395,314661"; break;
+	default: return 0;
+	}
+	explode .@p$,.@d$,",";
+	for (.@i = 0; .@i < getarraysize(.@p$); .@i += 2) {
+		@FP_BoxStone[.@i / 2] = atoi(.@p$[.@i]);
+		@FP_BoxEnchant[.@i / 2] = atoi(.@p$[.@i + 1]);
+	}
+	return getarraysize(@FP_BoxStone);
+}
+
+function	script	FP_StoneKnown	{
+	.@needle = getarg(0);
+	for (.@box = 0; .@box < 21; ++.@box) {
+		.@n = callfunc("FP_LoadBox",.@box);
+		for (.@i = 0; .@i < .@n; ++.@i)
+			if (@FP_BoxStone[.@i] == .@needle) return 1;
+	}
+	return 0;
+}
+
+function	script	FP_StoneFromEnchant	{
+	.@needle = getarg(0);
+	for (.@box = 0; .@box < 21; ++.@box) {
+		.@n = callfunc("FP_LoadBox",.@box);
+		for (.@i = 0; .@i < .@n; ++.@i)
+			if (@FP_BoxEnchant[.@i] == .@needle) return @FP_BoxStone[.@i];
+	}
+	return 0;
+}
+
+function	script	FP_IsTombCostume	{
+	// Stock kRO Bio5 costume versions of Old Headgears.
+	.@id = getarg(0);
+	return (.@id >= 19961 && .@id <= 19974);
+}
+
+function	script	FP_OpenBox	{
+	.@box_index=getarg(0);
+	.@box_item=getarg(1);
+	.@n=callfunc("FP_LoadBox",.@box_index);
+	deletearray .@available[0],128;
+	.@count=0;
+	for (.@i=0; .@i<.@n; ++.@i) {
+		// Require both the physical stone and its matching enchant database
+		// record. Enchanter support is a separate compatibility concern: this
+		// snapshot's stock Malangdo script predates the newest published pairs.
+		if (getiteminfo(@FP_BoxStone[.@i],ITEMINFO_TYPE) < 0 || getiteminfo(@FP_BoxEnchant[.@i],ITEMINFO_TYPE) < 0) continue;
+		.@available[.@count++]=@FP_BoxStone[.@i];
+	}
+	if (!.@count) {
+		dispbottom "This Fashion box has no supported published outcomes. It was not consumed.";
+		return 0;
+	}
+	.@reward=.@available[rand(.@count)];
+	if (countitem(.@box_item) < 1 || !checkweight(.@reward,1)) {
+		dispbottom "The Fashion box was not consumed. Make room in your inventory and try again.";
+		return 0;
+	}
+	// DelayConsume: consume only after every validation and immediately before
+	// the successful award.
+	delitem .@box_item,1;
+	getitem .@reward,1;
+	dispbottom "The Fashion box awarded " + getitemname(.@reward) + ". (Uniform compatibility selection.)";
+	return 1;
+}
+
+// Account login + online-only Gold Point clock.
+-	script	FashionPointClock	FAKE_NPC,{
+	end;
+
+OnInit:
+	bindatcmd "activity",strnpcinfo(3) + "::OnAtActivity",0,99;
+	end;
+
+OnPCLoginEvent:
+	if (#FP_Gold >= 50) {
+		#FP_Gold = 50;
+		dispbottom "Gold Points are capped at 50. Visit the Fashion Point Manager to exchange them.";
+		@FP_TimerRunning = 0;
+		end;
+	}
+	@FP_TimerRunning = 1;
+	addtimer 180000,strnpcinfo(3) + "::OnGoldTick";
+	end;
+
+OnGoldTick:
+	@FP_TimerRunning = 0;
+	if (#FP_Gold < 50) ++#FP_Gold;
+	if (#FP_Gold >= 50) {
+		#FP_Gold = 50;
+		dispbottom "Gold Points reached the cap of 50. Exchange them for Fashion Points.";
+		end;
+	}
+	@FP_TimerRunning = 1;
+	addtimer 180000,strnpcinfo(3) + "::OnGoldTick";
+	end;
+
+OnAtActivity:
+	dispbottom "Gold Points: " + #FP_Gold + "/50 | Fashion Points: " + #FP_Fashion;
+	end;
+}
+
+// Compatibility placement beside stock Designer Heidam.
+mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
+	mes "[Gold Point Manager]";
+	mes "Gold Points: ^ff8800" + #FP_Gold + "/50^000000";
+	mes "Fashion Points: ^cc33cc" + #FP_Fashion + "^000000";
+	next;
+	.@choice=select("Exchange Gold Points 1:1:About account scope:Leave");
+	if (.@choice == 3) close;
+	if (.@choice == 2) {
+		mes "[Gold Point Manager]";
+		mes "This implementation stores points on your rAthena login account. MuhRO's published 'master account' can span linked game accounts, but stock rAthena has no equivalent relationship.";
+		close;
+	}
+	if (#FP_Gold < 1) {
+		mes "[Gold Point Manager]";
+		mes "You do not have any Gold Points to exchange.";
+		close;
+	}
+	mes "[Gold Point Manager]";
+	mes "How many? (1-" + #FP_Gold + ")";
+	input .@amount,1,#FP_Gold;
+	#FP_Gold -= .@amount;
+	#FP_Fashion += .@amount;
+	if (!@FP_TimerRunning) {
+		@FP_TimerRunning = 1;
+		addtimer 180000,"FashionPointClock::OnGoldTick";
+	}
+	mes "[Gold Point Manager]";
+	mes "Exchanged ^ff8800" + .@amount + " Gold Points^000000 for ^cc33cc" + .@amount + " Fashion Points^000000.";
+	close;
+}
+
+// Current wiki points to main_office,62,278; this server has no main_office map.
+mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
+	mes "[Designer Heidam]";
+	mes "Fashion Points: ^cc33cc" + #FP_Fashion + "^000000";
+	next;
+	switch (select("Trade a costume:Trade enchant stones:Trade rules:Leave")) {
+	case 1:
+		disable_items;
+		getinventorylist;
+		.@found = 0;
+		for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+			.@id = @inventorylist_id[.@i];
+			.@loc = getiteminfo(.@id,ITEMINFO_LOCATIONS);
+			if (getiteminfo(.@id,ITEMINFO_TYPE) != IT_ARMOR || !(.@loc & (EQP_COSTUME_HEAD_TOP|EQP_COSTUME_HEAD_MID|EQP_COSTUME_HEAD_LOW|EQP_COSTUME_GARMENT))) continue;
+			if (@inventorylist_equip[.@i] || @inventorylist_expire[.@i]) continue;
+			if (@inventorylist_refine[.@i] || @inventorylist_enchantgrade[.@i] || @inventorylist_card1[.@i] || @inventorylist_card2[.@i] || @inventorylist_card3[.@i] || @inventorylist_card4[.@i]) continue;
+			.@found = 1;
+			.@points = callfunc("FP_IsTombCostume",.@id) ? 1 : 15;
+			mes "[Designer Heidam]";
+			mes "Trade ^0000ff" + getitemname(.@id) + "^000000 for ^cc33cc" + .@points + " Fashion Points^000000?";
+			next;
+			switch (select("Trade it:Skip it:Stop")) {
+			case 1:
+				if (@inventorylist_id[.@i] != .@id) close;
+				delitemidx @inventorylist_idx[.@i],1;
+				#FP_Fashion += .@points;
+				mes "[Designer Heidam]";
+				mes "Trade complete. Balance: ^cc33cc" + #FP_Fashion + "^000000.";
+				close;
+			case 2: break;
+			default: close;
+			}
+		}
+		mes "[Designer Heidam]";
+		mes .@found ? "No other eligible costume was selected." : "No eligible unequipped, permanent, unenchanted costume was found.";
+		close;
+	case 2:
+		disable_items;
+		getinventorylist;
+		.@found = 0;
+		for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+			.@id = @inventorylist_id[.@i];
+			if (!callfunc("FP_StoneKnown",.@id)) continue;
+			.@found = 1;
+			mes "[Designer Heidam]";
+			mes "Trade ^0000ff" + getitemname(.@id) + "^000000? You have " + @inventorylist_amount[.@i] + ". Each is worth ^cc33cc10 Fashion Points^000000.";
+			next;
+			switch (select("Trade:Skip:Stop")) {
+			case 1:
+				.@amount = 1;
+				if (@inventorylist_amount[.@i] > 1) {
+					mes "[Designer Heidam]";
+					mes "How many?";
+					input .@amount,1,@inventorylist_amount[.@i];
+				}
+				if (countitem(.@id) < .@amount) close;
+				delitem .@id,.@amount;
+				#FP_Fashion += 10 * .@amount;
+				mes "[Designer Heidam]";
+				mes "Trade complete. Balance: ^cc33cc" + #FP_Fashion + "^000000.";
+				close;
+			case 2: break;
+			default: close;
+			}
+		}
+		mes "[Designer Heidam]";
+		mes .@found ? "No other stone was selected." : "No enchant stone from the published box lists was found.";
+		close;
+	case 3:
+		mes "[Designer Heidam]";
+		mes "Ordinary costume: ^cc33cc15 points^000000.";
+		mes "Bio5/Tomb costume IDs 19961-19974: ^cc33cc1 point^000000.";
+		mes "Published enchant stone: ^cc33cc10 points^000000.";
+		mes "Equipped, rental, refined, graded, or enchanted costumes are refused to prevent accidental loss.";
+		mes "Apply every published stone through the Complete Fashion Enchanter at mal_in01 (25,113).";
+		close;
+	default:
+		close;
+	}
+}
+
+// Missing stock Gregio NPC is used for the published recovery service.
+mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
+	disable_items;
+	setarray .@part[0],EQI_COSTUME_HEAD_TOP,EQI_COSTUME_HEAD_MID,EQI_COSTUME_HEAD_LOW,EQI_COSTUME_GARMENT;
+	setarray .@mask[0],EQP_COSTUME_HEAD_TOP,EQP_COSTUME_HEAD_MID,EQP_COSTUME_HEAD_LOW,EQP_COSTUME_GARMENT;
+	setarray .@part_name$[0],"upper costume","middle costume","lower costume","costume garment";
+	.@menu$="";
+	.@count=0;
+	for (.@i=0; .@i<4; ++.@i) {
+		.@id=getequipid(.@part[.@i]);
+		if (.@id < 1) continue;
+		.@parts[.@count]=.@part[.@i];
+		.@masks[.@count]=.@mask[.@i];
+		.@names$[.@count]=.@part_name$[.@i];
+		.@menu$ += getitemname(.@id) + ":";
+		++.@count;
+	}
+	mes "[Gregio Grumani]";
+	if (!.@count) {
+		mes "Equip a costume whose stone you want recovered.";
+		close;
+	}
+	mes "I can remove one recognized enchant and return its stone.";
+	next;
+	.@pick=select(.@menu$)-1;
+	.@part=.@parts[.@pick];
+	.@mask=.@masks[.@pick];
+	.@equip_id=getequipid(.@part);
+	.@menu$="";
+	.@count=0;
+	for (.@slot=0; .@slot<4; ++.@slot) {
+		.@enchant=getequipcardid(.@part,.@slot);
+		.@stone=callfunc("FP_StoneFromEnchant",.@enchant);
+		if (!.@stone || getiteminfo(.@stone,ITEMINFO_TYPE) < 0) continue;
+		.@slots[.@count]=.@slot;
+		.@stones[.@count]=.@stone;
+		.@enchants[.@count]=.@enchant;
+		.@menu$ += "Slot " + (.@slot+1) + ": " + getitemname(.@enchant) + ":";
+		++.@count;
+	}
+	if (!.@count) {
+		mes "[Gregio Grumani]";
+		mes "That " + .@names$[.@pick] + " has no recoverable enchant from the published mappings.";
+		close;
+	}
+	mes "[Gregio Grumani]";
+	mes "Which enchant should I remove?";
+	next;
+	.@pick=select(.@menu$)-1;
+	.@slot=.@slots[.@pick];
+	.@stone=.@stones[.@pick];
+	.@enchant=.@enchants[.@pick];
+	if (getequipuniqueid(.@part)) {
+		mes "[Gregio Grumani]";
+		mes "This costume has a unique ID that script commands cannot preserve safely, so it was refused.";
+		close;
+	}
+	mes "[Gregio Grumani]";
+	mes "Recover ^0000ff" + getitemname(.@stone) + "^000000 from slot " + (.@slot+1) + ".";
+	mes "Choose the published per-stone payment.";
+	next;
+	.@coin_ok=(getiteminfo(50000,ITEMINFO_TYPE) >= 0);
+	.@pay=select("30 Fashion Points:" + (.@coin_ok ? "10 Muh Coins:" : "^77777710 Muh Coins (item 50000 unavailable):") + "1,000,000 Zeny:Cancel");
+	if (.@pay == 4) close;
+	if (.@pay == 1 && #FP_Fashion < 30) { mes "[Gregio Grumani]"; mes "You need 30 Fashion Points."; close; }
+	if (.@pay == 2 && (!.@coin_ok || countitem(50000) < 10)) { mes "[Gregio Grumani]"; mes "The Muh Coin option is unavailable or you have fewer than 10."; close; }
+	if (.@pay == 3 && Zeny < 1000000) { mes "[Gregio Grumani]"; mes "You need 1,000,000 Zeny."; close; }
+	if (!checkweight(.@stone,1)) { mes "[Gregio Grumani]"; mes "Make room for the returned stone."; close; }
+	if (getequipid(.@part) != .@equip_id || getequipcardid(.@part,.@slot) != .@enchant) close;
+	getinventorylist;
+	.@idx=-1;
+	for (.@i=0; .@i<@inventorylist_count; ++.@i)
+		if ((@inventorylist_equip[.@i] & .@mask) && @inventorylist_id[.@i] == .@equip_id) { .@idx=.@i; break; }
+	if (.@idx < 0) { mes "[Gregio Grumani]"; mes "I could not locate that equipped item safely."; close; }
+	if (@inventorylist_expire[.@idx]) {
+		mes "[Gregio Grumani]";
+		mes "Rental costumes cannot use recovery because their expiry metadata cannot be recreated safely.";
+		close;
+	}
+	setarray .@card[0],@inventorylist_card1[.@idx],@inventorylist_card2[.@idx],@inventorylist_card3[.@idx],@inventorylist_card4[.@idx];
+	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
+	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
+	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
+	.@card[.@slot]=0;
+	if (.@pay == 1) #FP_Fashion -= 30;
+	else if (.@pay == 2) delitem 50000,10;
+	else Zeny -= 1000000;
+	.@bound=@inventorylist_bound[.@idx];
+	delequip .@part;
+	delitemidx @inventorylist_idx[.@idx],1;
+	if (.@bound)
+		getitembound4 .@equip_id,1,@inventorylist_identify[.@idx],@inventorylist_refine[.@idx],@inventorylist_attribute[.@idx],.@card[0],.@card[1],.@card[2],.@card[3],.@bound,@inventorylist_enchantgrade[.@idx],.@oid,.@oval,.@opar;
+	else
+		getitem4 .@equip_id,1,@inventorylist_identify[.@idx],@inventorylist_refine[.@idx],@inventorylist_attribute[.@idx],.@card[0],.@card[1],.@card[2],.@card[3],@inventorylist_enchantgrade[.@idx],.@oid,.@oval,.@opar;
+	getitem .@stone,1;
+	mes "[Gregio Grumani]";
+	mes "The stone was recovered. Your costume was returned unequipped with all other item data preserved.";
+	close;
+}
+
+// Compatibility placement near the stock enchanters. The current wiki's actual
+// point-shop coordinate (main_office,62,283) cannot load on this server.
+mal_in01,27,120,4	script	Fashion Box Shop#FP	4_F_KAFRA1,{
+	setarray .@box[0],41090,41091,41092,41093,41287,41094,41095,41096,41097,41288,41098,41099,41100,41101,41289,41102,41103,41104,41255,41290,41105;
+	setarray .@name$[0],"Top Box 1","Top Box 2","Top Box 3","Top Box 4","Top Box 5","Mid Box 1","Mid Box 2","Mid Box 3","Mid Box 4","Mid Box 5","Low Box 1","Low Box 2","Low Box 3","Low Box 4","Low Box 5","Garment Box 1","Garment Box 2","Garment Box 3","Garment Box 4","Garment Box 5","Garment 2nd-slot Box 1";
+	mes "[Fashion Box Shop]";
+	mes "Fashion Points: ^cc33cc" + #FP_Fashion + "^000000";
+	mes "The published costs are 50 points for boxes 1-20 and 300 points for the garment second-slot box.";
+	mes "^ff0000MuhRO outcome rates are unpublished. This clean-room implementation selects uniformly from the listed contents.^000000";
+	next;
+	.@menu$="";
+	for (.@i=0; .@i<21; ++.@i) .@menu$ += .@name$[.@i] + " - " + ((.@i==20)?300:50) + " FP:";
+	.@i=select(.@menu$)-1;
+	.@cost=(.@i==20)?300:50;
+	if (getiteminfo(.@box[.@i],ITEMINFO_TYPE) < 0) {
+		mes "[Fashion Box Shop]";
+		mes "This box ID is not installed. Import fashion_points_box_item_db.yml first.";
+		close;
+	}
+	if (#FP_Fashion < .@cost) {
+		mes "[Fashion Box Shop]";
+		mes "You need " + .@cost + " Fashion Points.";
+		close;
+	}
+	if (!checkweight(.@box[.@i],1)) { mes "[Fashion Box Shop]"; mes "Make room in your inventory."; close; }
+	mes "[Fashion Box Shop]";
+	mes "Buy ^0000ff" + .@name$[.@i] + "^000000 for ^cc33cc" + .@cost + " Fashion Points^000000?";
+	next;
+	if (select("Buy:Cancel") == 2) close;
+	#FP_Fashion -= .@cost;
+	getitem .@box[.@i],1;
+	mes "[Fashion Box Shop]";
+	mes "Purchase complete. Double-click the box to receive one uniformly selected published stone.";
+	close;
+}
+
+mal_in01,27,123,4	script	Fashion Catalogue#FP	4_BOARD3,{
+	setarray .@cat$[0],
+		"20596,480177,61487,61534,61490,420271,61496,61537,420132,480235",
+		"60942,20454,40236,410286,40277,20532,40256,60951,480117,60958",
+		"400343,40339,31899,31495,19740,420034,19855,31531,40100,31040",
+		"61026,40206,40371,400057,31375,40036,21206,420091,410277,19293,400073,31383",
+		"19670,61024,31315,5909,420165,400056,400055,400149,480362,480207,410171",
+		"410081,410132,420107,420047,400214,400272,19605,436008,436006,440010";
+	mes "[Fashion Catalogue]";
+	mes "The current published catalogue has six categories, but publishes no per-costume Fashion Point prices. Purchase is view-only until those values are known.";
+	next;
+	.@cat=select("Category 1:Category 2:Category 3:Category 4:Category 5:Category 6")-1;
+	explode .@id$,.@cat$[.@cat],",";
+	mes "[Fashion Catalogue - Category " + (.@cat+1) + "]";
+	for (.@i=0; .@i<getarraysize(.@id$); ++.@i) {
+		.@item=atoi(.@id$[.@i]);
+		mes ((getiteminfo(.@item,ITEMINFO_TYPE) < 0) ? ("Unavailable item ID " + .@item) : getitemname(.@item));
+	}
+	close;
+}

@@ -1,0 +1,67 @@
+# Exact set effects published for the Druid/Karnos/Alitea costume enchants.
+# Skill IDs follow rAthena GPL PR #9765; see fashion_points_missing_item_db.yml.
+Header:
+  Type: COMBO_DB
+  Version: 1
+
+Body:
+  - Combos:
+      - Combo:
+          - FP_Karnos_Enchant_Garment
+          - FP_Druid_Enchant_Top
+    Script: |
+      bonus2 bSkillAtk,6549,10;
+      bonus2 bSkillAtk,6557,10;
+  - Combos:
+      - Combo:
+          - FP_Karnos_Enchant_Garment
+          - FP_Druid_Enchant_Mid
+    Script: |
+      bonus2 bSkillAtk,6570,10;
+      bonus2 bSkillAtk,6556,10;
+  - Combos:
+      - Combo:
+          - FP_Karnos_Enchant_Garment
+          - FP_Druid_Enchant_Low
+    Script: |
+      bonus2 bSkillAtk,6562,10;
+      bonus2 bSkillAtk,6550,10;
+  - Combos:
+      - Combo:
+          - FP_Karnos_Enchant_Garment
+          - FP_Karnos_Enchant_Top
+    Script: |
+      bonus2 bSkillAtk,6565,10;
+  - Combos:
+      - Combo:
+          - FP_Karnos_Enchant_Garment
+          - FP_Karnos_Enchant_Mid
+    Script: |
+      bonus2 bSkillAtk,6551,10;
+  - Combos:
+      - Combo:
+          - FP_Karnos_Enchant_Garment
+          - FP_Karnos_Enchant_Low
+    Script: |
+      bonus2 bSkillAtk,6555,10;
+  - Combos:
+      - Combo:
+          - FP_Alitea_Enchant_Garment
+          - FP_Karnos_Enchant_Top
+    Script: |
+      bonus2 bSkillAtk,6594,15;
+      bonus2 bSkillAtk,6603,15;
+  - Combos:
+      - Combo:
+          - FP_Alitea_Enchant_Garment
+          - FP_Karnos_Enchant_Mid
+    Script: |
+      bonus bCritical,5;
+      bonus2 bSkillAtk,6580,15;
+  - Combos:
+      - Combo:
+          - FP_Alitea_Enchant_Garment
+          - FP_Karnos_Enchant_Low
+    Script: |
+      bonus bCritical,5;
+      bonus2 bSkillAtk,6588,15;

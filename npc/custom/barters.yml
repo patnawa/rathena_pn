@@ -45,3 +45,8 @@
 Header:
   Type: BARTER_DB
   Version: 2
+
+Footer:
+  Imports:
+  - Path: npc/custom/episode19/barters.yml
+  - Path: npc/custom/episode21/barters.yml

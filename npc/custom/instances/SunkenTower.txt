@@ -1,0 +1,556 @@
+//===== rAthena Script =======================================
+//= Sunken Tower
+//===== License: =============================================
+//= Copyright (C) rAthena contributors. GPL-3.0-or-later.
+//===== Description: =========================================
+//= Clean-room first release based on published official rules:
+//= - Base level 40-249, party entry, same 20-level rank.
+//= - Three-day/04:00-style cooldown quest, 30-minute run.
+//= - Five rooms repeated without a terminal floor.
+//= - Clear every room, then use its device to continue.
+//= - Individual blessing claim on every fifth floor.
+//= - No bosses and no monster loot; EXP is script-controlled.
+//=
+//= Compatibility policy (not published/canonical data):
+//= All monster stat/EXP baselines, difficulty multipliers,
+//= population sizes, floor-growth caps, and dust chances below
+//= are conservative server policy. They are intentionally kept
+//= in OnInit arrays so operators can tune them independently.
+//============================================================
+
+function	script	F_SunkenTowerRank	{
+	.@level = getarg(0);
+	if (.@level < 40 || .@level > 249)
+		return -1;
+	return min((.@level - 40) / 20, 10);
+}
+
+// Leticia: official entrance location is Alberta 214,74.
+alberta,214,74,4	script	Leticia#sunken_tower	4_4JOB_LETICIA,{
+	.@instance$ = "Sunken Tower";
+	.@party_id = getcharid(1);
+	.@rank = callfunc("F_SunkenTowerRank", BaseLevel);
+	.@iid = instance_id(IM_PARTY);
+
+	mes "[Leticia]";
+	mes "A tower beneath the sea keeps sinking, yet its stairs never end.";
+	mes "Parties of base level ^0000FF40 through 249^000000 may enter. Every member must be in the same rank band.";
+	next;
+
+	if (.@iid && instance_live_info(ILI_NAME, .@iid) == .@instance$) {
+		switch(select("Enter the reserved tower.:Review the rules.:Cancel.")) {
+		case 1:
+			if (.@rank < 0) {
+				mes "[Leticia]";
+				mes "The tower accepts only adventurers from base level 40 through 249.";
+				close;
+			}
+			if (.@rank != getinstancevar('rank, .@iid)) {
+				mes "[Leticia]";
+				mes "Your current level no longer matches this reservation's rank.";
+				close;
+			}
+			if (getinstancevar('started, .@iid)) {
+				if (SunkenTower_ActiveInstance != .@iid) {
+					mes "[Leticia]";
+					mes "The expedition has already begun. Only its registered members may re-enter.";
+					close;
+				}
+			}
+			if (instance_enter(.@instance$) != IE_OK) {
+				mes "[Leticia]";
+				mes "The passage did not respond. Please try again.";
+				close;
+			}
+			end;
+		case 2:
+			mes "[Leticia]";
+			mes "You have 30 minutes after starting. Clear every monster, then use the room's device.";
+			mes "Every fifth floor grants an individual blessing. All registered members must be online, alive, inside, and claimed before the leader continues.";
+			mes "Monsters have no item drops. There is no final boss or last floor.";
+			close;
+		case 3:
+			close;
+		}
+	}
+
+	if (.@iid) {
+		mes "[Leticia]";
+		mes "Your party already owns a different memorial dungeon: ^0000FF" + instance_live_info(ILI_NAME, .@iid) + "^000000.";
+		close;
+	}
+	if (!.@party_id) {
+		mes "[Leticia]";
+		mes "Form a party first. A one-person party is acceptable.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "[Leticia]";
+		mes "Only the party leader may reserve the tower.";
+		close;
+	}
+	if (.@rank < 0) {
+		mes "[Leticia]";
+		mes "The tower accepts only adventurers from base level 40 through 249.";
+		close;
+	}
+
+	if (select("Validate the party and reserve.:Cancel.") == 2)
+		close;
+
+	getpartymember .@party_id, 1;
+	.@count = $@partymembercount;
+	copyarray .@cid[0], $@partymembercid[0], .@count;
+	getpartymember .@party_id, 2;
+	copyarray .@aid[0], $@partymemberaid[0], .@count;
+	.@caller_aid = getcharid(3);
+	.@invalid$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i], .@cid[.@i])) {
+			.@invalid$ = "Every party member must be online.";
+			break;
+		}
+		if (!attachrid(.@aid[.@i])) {
+			.@invalid$ = "A party member could not be inspected.";
+			break;
+		}
+		.@member_rank = callfunc("F_SunkenTowerRank", BaseLevel);
+		if (.@member_rank != .@rank) {
+			.@invalid$ = strcharinfo(0) + " is outside the leader's rank band.";
+			break;
+		}
+		.@cooldown = checkquest(12541, PLAYTIME);
+		if (.@cooldown == 2) {
+			erasequest 12541;
+			.@cooldown = -1;
+		}
+		if (.@cooldown != -1) {
+			.@invalid$ = strcharinfo(0) + " is still affected by High Tide Time.";
+			break;
+		}
+	}
+	attachrid .@caller_aid;
+	if (.@invalid$ != "") {
+		mes "[Leticia]";
+		mes .@invalid$;
+		close;
+	}
+
+	.@create = instance_create(.@instance$);
+	if (.@create < 1) {
+		mes "[Leticia]";
+		mes "The Sunken Tower reservation failed (code " + .@create + ").";
+		close;
+	}
+	setinstancevar 'rank, .@rank, .@create;
+	setinstancevar 'party_id, .@party_id, .@create;
+	mes "[Leticia]";
+	mes "The passage is stable. Speak to me again to enter.";
+	close;
+}
+
+// Start attendant. The published mechanic permits 10 Meteorite Powder
+// to select a harder setting before combat begins.
+1@ch_u,8,55,4	script	Leticia#st_start	4_4JOB_LETICIA,{
+	if ('started) {
+		mes "[Leticia]";
+		mes "Floor " + 'floor + " is active. Follow the announcement and clear its room.";
+		close;
+	}
+	if (getcharid(1) != 'party_id || !is_party_leader()) {
+		mes "[Leticia]";
+		mes "The registered party leader must begin the expedition.";
+		close;
+	}
+	mes "[Leticia]";
+	mes "Difficulty 1 is free. Selecting difficulty 2 through 5 consumes ^FF000010 Meteorite Powder^000000 from the leader.";
+	mes "The setting cannot be changed after the tower begins.";
+	next;
+	.@difficulty = select("Difficulty 1.:Difficulty 2 (10 Powder).:Difficulty 3 (10 Powder).:Difficulty 4 (10 Powder).:Difficulty 5 (10 Powder).:Cancel.");
+	if (.@difficulty == 6)
+		close;
+
+	.@party_id = getcharid(1);
+	getpartymember .@party_id, 1;
+	.@count = $@partymembercount;
+	copyarray .@cid[0], $@partymembercid[0], .@count;
+	getpartymember .@party_id, 2;
+	copyarray .@aid[0], $@partymemberaid[0], .@count;
+	.@caller_aid = getcharid(3);
+	.@invalid$ = "";
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i], .@cid[.@i]) || !attachrid(.@aid[.@i])) {
+			.@invalid$ = "Every party member must be online.";
+			break;
+		}
+		if (callfunc("F_SunkenTowerRank", BaseLevel) != 'rank) {
+			.@invalid$ = strcharinfo(0) + " is outside the reserved rank band.";
+			break;
+		}
+		.@cooldown = checkquest(12541, PLAYTIME);
+		if (.@cooldown == 2) {
+			erasequest 12541;
+			.@cooldown = -1;
+		}
+		if (.@cooldown != -1) {
+			.@invalid$ = strcharinfo(0) + " is still affected by High Tide Time.";
+			break;
+		}
+		if (strcharinfo(3) != instance_mapname("1@ch_u") || Hp <= 0) {
+			.@invalid$ = strcharinfo(0) + " must be alive and inside the tower.";
+			break;
+		}
+	}
+	attachrid .@caller_aid;
+	if (.@invalid$ != "") {
+		mes "[Leticia]";
+		mes .@invalid$;
+		close;
+	}
+	if (.@difficulty > 1 && countitem(1000372) < 10) {
+		mes "[Leticia]";
+		mes "You do not have 10 Meteorite Powder.";
+		close;
+	}
+	if (.@difficulty > 1)
+		delitem 1000372, 10;
+
+	'difficulty = .@difficulty;
+	'member_count = .@count;
+	copyarray 'member_aid[0], .@aid[0], .@count;
+	copyarray 'member_cid[0], .@cid[0], .@count;
+	'started = true;
+	'floor = 1;
+	'cleared = false;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@aid[.@i])) {
+			SunkenTower_ActiveInstance = instance_id();
+			if (isbegin_quest(12540))
+				erasequest 12540;
+			setquest 12540;
+			if (checkquest(12541, PLAYTIME) == -1)
+				setquest 12541;
+			if (isbegin_quest(12542))
+				erasequest 12542;
+			setquest 12542;
+		}
+	}
+	attachrid .@caller_aid;
+	mes "[Leticia]";
+	mes "The tower accepts your party. You now have 30 minutes.";
+	close2;
+	disablenpc instance_npcname(strnpcinfo(0));
+	donpcevent instance_npcname("#ST_Controller") + "::OnStart";
+	end;
+
+OnInstanceInit:
+	end;
+}
+
+// A single device implementation is duplicated at the five published rooms.
+1@ch_u,48,16,4	script	Sunken Device#st1	4_ENERGY_RED,{
+	if (!'started || !'cleared) {
+		mes "[Sunken Device]";
+		mes "The device remains sealed while monsters survive.";
+		close;
+	}
+	.@registered = false;
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if ('member_cid[.@i] == getcharid(0)) {
+			.@registered = true;
+			break;
+		}
+	}
+	if (!.@registered) {
+		mes "[Sunken Device]";
+		mes "You were not registered when this expedition began.";
+		close;
+	}
+
+	if ('floor % 5 == 0 && (SunkenTower_ClaimInstance != instance_id() || SunkenTower_ClaimFloor != 'floor)) {
+		// Compatibility policy: unpublished checkpoint EXP and dust chances.
+		setarray .@base_exp[0], 15000,35000,80000,180000,450000,1200000,3000000,6500000,9000000,10500000,10800000;
+		setarray .@job_exp[0], 12000,28000,64000,144000,360000,960000,2400000,5200000,7200000,8400000,8640000;
+		setarray .@checkpoint_mult[0], 100,150,225,335,500;
+		setarray .@dust_chance[0], 0,0,0,0,0,0,0,0,1000,1500,2000;
+		.@step = min(('floor / 5) - 1, 100);
+		.@floor_mult = 100 + .@step * 20;
+		.@bexp = .@base_exp['rank] * .@checkpoint_mult['difficulty - 1] / 100;
+		.@jexp = .@job_exp['rank] * .@checkpoint_mult['difficulty - 1] / 100;
+		.@bexp = min(2000000000, .@bexp * .@floor_mult / 100);
+		.@jexp = min(2000000000, .@jexp * .@floor_mult / 100);
+		.@chance = .@dust_chance['rank] + ('difficulty - 1) * 200;
+		// Check before rolling so a full inventory cannot reroll a successful
+		// Powder result by speaking to the device repeatedly.
+		if (.@chance > 0 && !checkweight(1000372,1)) {
+			mes "[Sunken Device]";
+			mes "Make room for a possible Meteorite Powder before claiming this checkpoint.";
+			close;
+		}
+		.@dust_reward = .@chance > 0 && rand(10000) < .@chance;
+		getexp .@bexp, .@jexp;
+		SunkenTower_ClaimInstance = instance_id();
+		SunkenTower_ClaimFloor = 'floor;
+		if (isbegin_quest(12542) == 1)
+			completequest 12542;
+		if (.@dust_reward) {
+			getitem 1000372, 1;
+			dispbottom "The blessing left behind 1 Meteorite Powder.";
+		}
+		dispbottom "Goddess' Blessing claimed for floor " + 'floor + ".";
+	}
+
+	if (!is_party_leader()) {
+		mes "[Sunken Device]";
+		if ('floor % 5 == 0)
+			mes "Your blessing is recorded. The party leader must activate the next floor.";
+		else
+			mes "The party leader must activate the next floor.";
+		close;
+	}
+
+	// Published presence gate: every registered member must be online,
+	// alive, and on the instance map. Checkpoints also require each claim.
+	.@caller_aid = getcharid(3);
+	.@missing$ = "";
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (!isloggedin('member_aid[.@i], 'member_cid[.@i]) || !attachrid('member_aid[.@i])) {
+			.@missing$ = "A registered member is offline.";
+			break;
+		}
+		if (strcharinfo(3) != instance_mapname("1@ch_u") || Hp <= 0) {
+			.@missing$ = strcharinfo(0) + " is not alive inside the tower.";
+			break;
+		}
+		if ('floor % 5 == 0 && (SunkenTower_ClaimInstance != instance_id() || SunkenTower_ClaimFloor != 'floor)) {
+			.@missing$ = strcharinfo(0) + " has not claimed this checkpoint blessing.";
+			break;
+		}
+	}
+	attachrid .@caller_aid;
+	if (.@missing$ != "") {
+		mes "[Sunken Device]";
+		mes .@missing$;
+		close;
+	}
+	mes "[Sunken Device]";
+	mes "Advance from floor " + 'floor + " to floor " + ('floor + 1) + "?";
+	next;
+	if (select("Advance.:Wait.") == 2)
+		close;
+	close2;
+	'cleared = false;
+	++'floor;
+	// Rearm the individual blessing quest after a completed checkpoint.
+	if ('floor % 5 == 1) {
+		.@caller_aid = getcharid(3);
+		for (.@i = 0; .@i < 'member_count; ++.@i) {
+			if (isloggedin('member_aid[.@i], 'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+				if (isbegin_quest(12542))
+					erasequest 12542;
+				setquest 12542;
+			}
+		}
+		attachrid .@caller_aid;
+	}
+	donpcevent instance_npcname("#ST_Controller") + "::OnSpawnFloor";
+	end;
+
+OnInstanceInit:
+	end;
+}
+
+1@ch_u,132,16,4	duplicate(Sunken Device#st1)	Sunken Device#st2	4_ENERGY_RED
+1@ch_u,220,16,4	duplicate(Sunken Device#st1)	Sunken Device#st3	4_ENERGY_RED
+1@ch_u,306,16,4	duplicate(Sunken Device#st1)	Sunken Device#st4	4_ENERGY_RED
+1@ch_u,390,16,4	duplicate(Sunken Device#st1)	Sunken Device#st5	4_ENERGY_RED
+
+1@ch_u,1,1,0	script	#ST_Controller	HIDDEN_NPC,{
+	end;
+
+OnInit:
+	// Compatibility policy, not official balance data.
+	setarray .rank_level[0], 50,70,90,110,130,150,170,190,210,230,245;
+	setarray .rank_hp[0], 8000,25000,60000,150000,350000,800000,2000000,4000000,7000000,10000000,14000000;
+	setarray .rank_atk[0], 180,300,500,800,1200,1800,2600,3600,4800,6200,8000;
+	setarray .rank_def[0], 20,30,40,50,60,70,80,90,100,120,150;
+	setarray .rank_mdef[0], 10,15,20,25,30,35,40,50,60,75,90;
+	setarray .rank_bexp[0], 500,900,1800,3500,7000,18000,65000,150000,274092,320000,525000;
+	setarray .rank_jexp[0], 400,700,1400,2800,5600,14400,52000,120000,191100,225000,420000;
+	setarray .difficulty_hp[0], 100,125,150,175,200;
+	setarray .difficulty_atk[0], 100,125,150,175,200;
+	setarray .difficulty_taken[0], 90,80,70,60,50;
+	setarray .difficulty_population[0], 20,25,30,35,40;
+	setarray .difficulty_exp[0], 100,115,135,160,190;
+	setarray .mob_pool[0],
+		1013,1016,1023,1026,1029,1032,1034,1035,1036,1037,
+		1040,1041,1042,1044,1045,1058,1061,1064,1065,1066,
+		1067,1069,1070,1071,1073,1074,1099,1100,1101,1108,
+		1110,1111,1114,1116,1119,1121,1122,1123,1124,1125,
+		1126,1127,1129,1130,1138,1139,1140,1141,1144,1146,
+		1149,1151,1152,1153,1154,1156,1158,1164,1165,1166,
+		1169,1170,1177,1178,1179,1180,1186,1188,1189,1191,
+		1192,1195,1211,1212,1214,1243,1244,1248,1250,1254,
+		1258,1260,1261,1264,1266,1271,1273,1274,1277,1278,
+		1279,1280,1281,1308,1313,1317,1323,1369,1380,1381,
+		1391,1392,1400,1409,1415,1493,1494,1495,1497,1498,
+		1499,1500,1584,1586,1587,1629,1664,1665,1666,1667,
+		1686,1687,1861,2002,2069,2070,2072,2073,2074,3517,3636;
+	end;
+
+OnInstanceInit:
+	'map$ = instance_mapname("1@ch_u");
+	'started = false;
+	'cleared = false;
+	for (.@i = 1; .@i <= 5; ++.@i)
+		disablenpc instance_npcname("Sunken Device#st" + .@i);
+	end;
+
+OnStart:
+	initnpctimer;
+	instance_announce instance_id(), "Sunken Tower has begun. Thirty minutes remain.", bc_map, 0x66CCFF;
+	donpcevent instance_npcname(strnpcinfo(0)) + "::OnSpawnFloor";
+	end;
+
+OnSpawnFloor:
+	setarray .@x1[0], 4,88,176,262,346;
+	setarray .@y1[0], 14,14,14,14,14;
+	setarray .@x2[0], 51,135,223,309,393;
+	setarray .@y2[0], 63,63,63,63,63;
+	setarray .@entry_x[0], 13,97,185,271,355;
+	setarray .@entry_y[0], 59,59,59,59,59;
+	setarray .@theme$[0], "Water", "Earth", "Fire", "Wind";
+	setarray .@element[0], ELE_WATER, ELE_EARTH, ELE_FIRE, ELE_WIND;
+	.@room = ('floor - 1) % 5;
+	.@theme = ('floor - 1) % 4;
+	'cleared = false;
+	for (.@i = 1; .@i <= 5; ++.@i)
+		disablenpc instance_npcname("Sunken Device#st" + .@i);
+	killmonster 'map$, "";
+	instance_warpall 'map$, .@entry_x[.@room], .@entry_y[.@room], instance_id(), IWA_NOTDEAD;
+	instance_announce instance_id(), "Floor " + 'floor + " - " + .@theme$[.@theme] + " energy dominates this room.", bc_map, 0xFFFF66;
+
+	// Infinite numbering with capped growth is a compatibility safeguard.
+	.@floor_steps = min('floor - 1, 900);
+	.@floor_mult = 100 + .@floor_steps * 8;
+	.@level = min(275, .rank_level['rank] + ('floor - 1) / 5);
+	.@maxhp = .rank_hp['rank] * .difficulty_hp['difficulty - 1] / 100;
+	.@maxhp = min(2000000000, .@maxhp * .@floor_mult / 100);
+	.@atk = .rank_atk['rank] * .difficulty_atk['difficulty - 1] / 100;
+	.@atk = min(1500000, .@atk * .@floor_mult / 100);
+	.@def = min(5000, .rank_def['rank] + ('floor - 1) / 2);
+	.@mdef = min(5000, .rank_mdef['rank] + ('floor - 1) / 2);
+	'mobs_left = .difficulty_population['difficulty - 1];
+	.@label$ = instance_npcname(strnpcinfo(0)) + "::OnMobDead";
+	.@pool_size = getarraysize(.mob_pool);
+	for (.@i = 0; .@i < 'mobs_left; ++.@i) {
+		.@mob = .mob_pool[rand(.@pool_size)];
+		areamonster 'map$, .@x1[.@room], .@y1[.@room], .@x2[.@room], .@y2[.@room], "Sunken Echo", .@mob, 1, .@label$;
+		.@gid = $@mobid[0];
+		setunitdata .@gid, UMOB_LEVEL, .@level;
+		setunitdata .@gid, UMOB_MAXHP, .@maxhp;
+		setunitdata .@gid, UMOB_HP, .@maxhp;
+		setunitdata .@gid, UMOB_ATKMIN, .@atk;
+		setunitdata .@gid, UMOB_ATKMAX, .@atk * 12 / 10;
+		setunitdata .@gid, UMOB_MATKMIN, .@atk;
+		setunitdata .@gid, UMOB_MATKMAX, .@atk * 12 / 10;
+		setunitdata .@gid, UMOB_DEF, .@def;
+		setunitdata .@gid, UMOB_MDEF, .@mdef;
+		setunitdata .@gid, UMOB_HIT, .@level * 4 + 100;
+		setunitdata .@gid, UMOB_FLEE, .@level * 3 + 50;
+		setunitdata .@gid, UMOB_ELETYPE, .@element[.@theme];
+		setunitdata .@gid, UMOB_ELELEVEL, 2;
+		setunitdata .@gid, UMOB_DAMAGETAKEN, .difficulty_taken['difficulty - 1];
+	}
+	end;
+
+OnMobDead:
+	if (!'started || 'cleared)
+		end;
+	--'mobs_left;
+	// Compatibility policy: natural monster EXP is disabled by mapflag.
+	// Each living registered member on-map receives a fixed share per kill.
+	.@bexp = .rank_bexp['rank] * .difficulty_exp['difficulty - 1] / 100;
+	.@jexp = .rank_jexp['rank] * .difficulty_exp['difficulty - 1] / 100;
+	.@growth = 100 + min('floor - 1, 100) * 5;
+	.@bexp = .@bexp * .@growth / 100 / .difficulty_population['difficulty - 1];
+	.@jexp = .@jexp * .@growth / 100 / .difficulty_population['difficulty - 1];
+	.@killer_aid = getcharid(3);
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (isloggedin('member_aid[.@i], 'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+			if (strcharinfo(3) == 'map$ && Hp > 0)
+				getexp .@bexp, .@jexp;
+		}
+	}
+	if (.@killer_aid)
+		attachrid .@killer_aid;
+	else
+		detachrid;
+	if ('mobs_left > 0)
+		end;
+	'cleared = true;
+	.@room = (('floor - 1) % 5) + 1;
+	enablenpc instance_npcname("Sunken Device#st" + .@room);
+	if ('floor % 5 == 0)
+		instance_announce instance_id(), "Floor " + 'floor + " cleared. Each member must claim Goddess' Blessing at the device.", bc_map, 0x66FF99;
+	else
+		instance_announce instance_id(), "Floor " + 'floor + " cleared. The party leader may use the device.", bc_map, 0x66FF99;
+	end;
+
+OnTimer1200000:
+	instance_announce instance_id(), "Ten minutes remain.", bc_map, 0xFFCC66;
+	end;
+OnTimer1260000:
+	instance_announce instance_id(), "Nine minutes remain.", bc_map, 0xFFCC66;
+	end;
+OnTimer1320000:
+	instance_announce instance_id(), "Eight minutes remain.", bc_map, 0xFFCC66;
+	end;
+OnTimer1380000:
+	instance_announce instance_id(), "Seven minutes remain.", bc_map, 0xFFCC66;
+	end;
+OnTimer1440000:
+	instance_announce instance_id(), "Six minutes remain.", bc_map, 0xFFCC66;
+	end;
+OnTimer1500000:
+	instance_announce instance_id(), "Five minutes remain.", bc_map, 0xFF9966;
+	end;
+OnTimer1560000:
+	instance_announce instance_id(), "Four minutes remain.", bc_map, 0xFF9966;
+	end;
+OnTimer1620000:
+	instance_announce instance_id(), "Three minutes remain.", bc_map, 0xFF6666;
+	end;
+OnTimer1680000:
+	instance_announce instance_id(), "Two minutes remain.", bc_map, 0xFF6666;
+	end;
+OnTimer1740000:
+	instance_announce instance_id(), "One minute remains.", bc_map, 0xFF3333;
+	end;
+OnTimer1800000:
+	stopnpctimer;
+	instance_announce instance_id(), "High tide has swallowed the tower. The expedition is over.", bc_map, 0xFF3333;
+	instance_warpall "alberta", 214, 79, instance_id();
+	instance_destroy;
+	end;
+
+OnInstanceDestroy:
+	// Quest 12541 deliberately remains as the entry cooldown.
+	for (.@i = 0; .@i < 'member_count; ++.@i) {
+		if (isloggedin('member_aid[.@i], 'member_cid[.@i]) && attachrid('member_aid[.@i])) {
+			SunkenTower_ActiveInstance = 0;
+			if (isbegin_quest(12540) == 1)
+				completequest 12540;
+			if (isbegin_quest(12542))
+				erasequest 12542;
+			detachrid;
+		}
+	}
+	end;
+}
+
+// Explicit loot/EXP policy for all copies of the instance map.
+1@ch_u	mapflag	noexp
+1@ch_u	mapflag	nomobloot
+1@ch_u	mapflag	nomvploot
+1@ch_u	mapflag	nosave	SavePoint

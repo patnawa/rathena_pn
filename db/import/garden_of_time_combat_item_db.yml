@@ -1,0 +1,35 @@
+# Missing scripts for the two Lake of Fire counter-items.
+#
+# MuhRO and current client metadata specify a 60-second Warm Shield.  The older
+# public community patch used 30 seconds and did not clear an already-active
+# Frost Storm; this overlay follows the current documented behavior instead.
+#
+# IMPORTANT: Do not add this file to db/item_db.yml until SC_BLOCK_SEAL,
+# SC_FROST_STORM, and SC_WARM_SHIELD are compiled/exported by map-server.
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 102433
+    AegisName: Unsealing_Scroll
+    Name: Unsealing Scroll
+    Type: Usable
+    Weight: 100
+    Flags:
+      BuyingStore: true
+    Script: |
+      if (getstatus(SC_BLOCK_SEAL))
+        sc_end SC_BLOCK_SEAL;
+
+  - Id: 102434
+    AegisName: Warm_Shield_Scroll
+    Name: Warm Shield Scroll
+    Type: Usable
+    Weight: 100
+    Flags:
+      BuyingStore: true
+    Script: |
+      if (getstatus(SC_FROST_STORM))
+        sc_end SC_FROST_STORM;
+      sc_start SC_WARM_SHIELD,60000,0;

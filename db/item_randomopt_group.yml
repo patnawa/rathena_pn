@@ -51,3 +51,5 @@ Footer:
     Mode: Renewal
   - Path: db/import/item_randomopt_group.yml
   - Path: db/import/zero_cell_item_randomopt_group.yml
+  - Path: db/import/geffen_night_item_randomopt_group.yml
+  - Path: db/import/airship_crash_item_randomopt_group.yml

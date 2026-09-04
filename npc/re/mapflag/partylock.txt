@@ -261,3 +261,9 @@
 // Sunken Tower
 //============================================================
 1@ch_u	mapflag	partylock
+
+//============================================================
+// Varmundt's Garden Memorial Dungeons
+//============================================================
+1@f_lake	mapflag	partylock
+1@ba_go	mapflag	partylock

@@ -1,12 +1,14 @@
 // Chapter 2 story and repeatable instances.
 
-1@ch2b,100,100,4	script	#ch2_crossroads	-1,{
+// The compatibility maps contain disconnected regions. Keep every required
+// encounter in the same verified-walkable arena as the instance entrance.
+1@ch2b,1,1,4	script	#ch2_crossroads	-1,{
 	end;
 OnInstanceInit:
 	.@map$ = instance_mapname("1@ch2b");
 	instance_announce instance_id(),"The Tangled Mana core is condensing at the crossroads.",bc_map,0x55AAFF;
-	monster .@map$,0,0,"Tangled Dragon Clam",22674,8,instance_npcname(strnpcinfo(0))+"::OnMinionDead";
-	monster .@map$,0,0,"Tangled Flame Bull",22685,8,instance_npcname(strnpcinfo(0))+"::OnMinionDead";
+	areamonster .@map$,72,136,99,153,"Tangled Dragon Clam",22674,8,instance_npcname(strnpcinfo(0))+"::OnMinionDead";
+	areamonster .@map$,72,136,99,153,"Tangled Flame Bull",22685,8,instance_npcname(strnpcinfo(0))+"::OnMinionDead";
 	'kills = 0;
 	end;
 OnMinionDead:
@@ -14,28 +16,28 @@ OnMinionDead:
 	if ('kills < 16) end;
 	.@map$ = instance_mapname("1@ch2b");
 	instance_announce instance_id(),"The mana core has appeared!",bc_map,0xFF8800;
-	monster .@map$,120,100,"Tangled Mana Core",22686,1,instance_npcname(strnpcinfo(0))+"::OnBossDead";
+	monster .@map$,86,157,"Tangled Mana Core",22686,1,instance_npcname(strnpcinfo(0))+"::OnBossDead";
 	end;
 OnBossDead:
 	CH2_Crossroads = 1;
 	instance_announce instance_id(),"The Crossroads of Tangled Mana has been cleared.",bc_map,0x66FF66;
-	getitem 1002700,3;
+	callfunc "CH2_GiveInstanceItem",1002700,3;
 	end;
 }
 
-1@ch2a,100,100,4	script	#ch2_nyrholt	-1,{
+1@ch2a,1,1,4	script	#ch2_nyrholt	-1,{
 	end;
 OnInstanceInit:
 	.@map$ = instance_mapname("1@ch2a");
 	.@name$ = instance_live_info(ILI_NAME,instance_id());
 	if (.@name$ == "Nyrholt") {
 		instance_announce instance_id(),"Frozen memories guard Nyrholt's heart.",bc_map,0x88CCFF;
-		monster .@map$,0,0,"Frozen Alpuring",22699,10,instance_npcname(strnpcinfo(0))+"::OnStoryMinion";
-		monster .@map$,0,0,"Frozen Icy Blast",22700,10,instance_npcname(strnpcinfo(0))+"::OnStoryMinion";
+		areamonster .@map$,72,136,99,153,"Frozen Alpuring",22699,10,instance_npcname(strnpcinfo(0))+"::OnStoryMinion";
+		areamonster .@map$,72,136,99,153,"Frozen Icy Blast",22700,10,instance_npcname(strnpcinfo(0))+"::OnStoryMinion";
 		'kills = 0;
 	} else {
 		instance_announce instance_id(),"The Phantom of Nyrholt has manifested.",bc_map,0xFF6688;
-		monster .@map$,120,100,"Phantom Snapdragon",22706,1,instance_npcname(strnpcinfo(0))+"::OnPhantomDead";
+		monster .@map$,86,157,"Phantom Snapdragon",22706,1,instance_npcname(strnpcinfo(0))+"::OnPhantomDead";
 	}
 	end;
 OnStoryMinion:
@@ -43,20 +45,32 @@ OnStoryMinion:
 	if ('kills < 20) end;
 	.@map$ = instance_mapname("1@ch2a");
 	instance_announce instance_id(),"Frost Morbang is defending the seal!",bc_map,0x88CCFF;
-	monster .@map$,120,100,"Nyrholt's Frost Morbang",22698,1,instance_npcname(strnpcinfo(0))+"::OnStoryBoss";
+	monster .@map$,86,157,"Nyrholt's Frost Morbang",22698,1,instance_npcname(strnpcinfo(0))+"::OnStoryBoss";
 	end;
 OnStoryBoss:
 	CH2_Nyrholt = 1;
 	instance_announce instance_id(),"Nyrholt's living seal has been restored.",bc_map,0x66FF66;
-	getitem 1002700,5;
+	callfunc "CH2_GiveInstanceItem",1002700,5;
 	end;
 OnPhantomDead:
 	CH2_Phantom = 1;
 	CH2_DailyPhantom = 1;
 	instance_announce instance_id(),"Phantom Snapdragon has dissolved into a crystal.",bc_map,0x66FF66;
-	getitem 106441,1;
+	callfunc "CH2_GiveInstanceItem",106441,1;
 	end;
 }
 
-1@ch2a,104,100,0	script	#ch2_instance_exit_a	WARPNPC,1,1,{ warp "ch2safe4",100,100; end; }
-1@ch2b,104,100,0	script	#ch2_instance_exit_b	WARPNPC,1,1,{ warp "veledor",100,100; end; }
+1@ch2a,86,136,0	script	#ch2_instance_exit_a	WARPNPC,1,1,{
+	.@name$ = instance_live_info(ILI_NAME,instance_id());
+	if (.@name$ == "Nyrholt") {
+		warp "ragsruth",88,55;
+		end;
+	}
+	if (CH2_Step >= 12) {
+		warp "kindlbrk",119,212;
+		end;
+	}
+	warp "ch2safe4",86,142;
+	end;
+}
+1@ch2b,86,136,0	script	#ch2_instance_exit_b	WARPNPC,1,1,{ warp "veledor",136,62; end; }

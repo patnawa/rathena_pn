@@ -335,7 +335,7 @@ Body:
     AttackDelay: 575
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Drops:
       - Item: Flame_Barmund_Rune
@@ -637,7 +637,7 @@ Body:
     AttackDelay: 658
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Drops:
       - Item: Ice_Barmund_Rune
@@ -939,7 +939,7 @@ Body:
     AttackDelay: 719
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Drops:
       - Item: Death_Barmund_Rune
@@ -1241,7 +1241,7 @@ Body:
     AttackDelay: 168
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Drops:
       - Item: Temple_Barmund_Rune
@@ -1472,7 +1472,7 @@ Body:
         Rate: 300
   - Id: 21927
     AegisName: ECO_RANDGRIS
-    Name: Temple Valkyrie Randgris
+    Name: Temple Randgris
     Level: 260
     Hp: 291553526
     BaseExp: 1853337
@@ -1543,7 +1543,7 @@ Body:
     AttackDelay: 168
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Drops:
       - Item: Venom_Barmund_Rune
@@ -1845,7 +1845,7 @@ Body:
     AttackDelay: 408
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Drops:
       - Item: Soul_Barmund_Rune
@@ -2147,9 +2147,24 @@ Body:
     AttackDelay: 901
     AttackMotion: 500
     DamageMotion: 500
-    DamageTaken: 10
+    DamageTaken: 1
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Ic_Energy
+        Rate: 500
+      - Item: Bar_D_Ic_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Ice_Barmund_Rune
+        Rate: 80
+      - Item: Ice_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Ice_Essence
+        Rate: 30
+      - Item: Bar_D_Ic_Specimen
+        Rate: 2500
   - Id: 22141
     AegisName: BIO_SKEL_ARCHER
     Name: Depth Skeleton Archer
@@ -2183,6 +2198,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Co_Energy
+        Rate: 500
+      - Item: Bar_D_Co_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Death_Barmund_Rune
+        Rate: 80
+      - Item: Death_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Death_Essence
+        Rate: 30
+      - Item: Bar_D_Co_Specimen
+        Rate: 2500
   - Id: 22142
     AegisName: BIO_DRAGON_TAIL
     Name: Depth Dragon Tail
@@ -2216,6 +2246,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_St_Energy
+        Rate: 500
+      - Item: Bar_D_St_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Plain_Barmund_Rune
+        Rate: 80
+      - Item: Plain_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Plain_Essence
+        Rate: 30
+      - Item: Bar_D_St_Specimen
+        Rate: 2500
   - Id: 22143
     AegisName: BIO_LAVA_TOAD
     Name: Depth Lava Toad
@@ -2249,6 +2294,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Fl_Energy
+        Rate: 500
+      - Item: Bar_D_Fl_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Flame_Barmund_Rune
+        Rate: 80
+      - Item: Flame_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Flame_Essence
+        Rate: 30
+      - Item: Bar_D_Fl_Specimen
+        Rate: 2500
   - Id: 22144
     AegisName: BIO_LITTLE_FATUM
     Name: Depth Little Fatum
@@ -2282,6 +2342,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_St_Energy
+        Rate: 500
+      - Item: Bar_D_St_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Plain_Barmund_Rune
+        Rate: 80
+      - Item: Plain_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Plain_Essence
+        Rate: 30
+      - Item: Bar_D_St_Specimen
+        Rate: 2500
   - Id: 22145
     AegisName: BIO_STING
     Name: Depth Sting
@@ -2315,6 +2390,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Ea_Energy
+        Rate: 500
+      - Item: Bar_D_Ea_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Plain_Barmund_Rune
+        Rate: 80
+      - Item: Plain_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Plain_Essence
+        Rate: 30
+      - Item: Bar_D_Ea_Specimen
+        Rate: 2500
   - Id: 22146
     AegisName: BIO_EMPATHIZER
     Name: Depth Empathizer
@@ -2348,6 +2438,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_So_Energy
+        Rate: 500
+      - Item: Bar_D_So_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Soul_Barmund_Rune
+        Rate: 80
+      - Item: Soul_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Soul_Essence
+        Rate: 30
+      - Item: Bar_D_So_Specimen
+        Rate: 2500
   - Id: 22147
     AegisName: BIO_FIRE_FRILLDORA
     Name: Depth Fire Frilldora
@@ -2381,6 +2486,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Fl_Energy
+        Rate: 500
+      - Item: Bar_D_Fl_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Flame_Barmund_Rune
+        Rate: 80
+      - Item: Flame_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Flame_Essence
+        Rate: 30
+      - Item: Bar_D_Fl_Specimen
+        Rate: 2500
   - Id: 22148
     AegisName: BIO_HOLY_FRUS
     Name: Depth Holy Frus
@@ -2414,6 +2534,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Pu_Energy
+        Rate: 500
+      - Item: Bar_D_Pu_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Temple_Barmund_Rune
+        Rate: 80
+      - Item: Temple_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Temple_Essence
+        Rate: 30
+      - Item: Bar_D_Pu_Specimen
+        Rate: 2500
   - Id: 22149
     AegisName: BIO_HOLY_SKOGUL
     Name: Depth Holy Skogul
@@ -2447,6 +2582,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Pu_Energy
+        Rate: 500
+      - Item: Bar_D_Pu_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Temple_Barmund_Rune
+        Rate: 80
+      - Item: Temple_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Temple_Essence
+        Rate: 30
+      - Item: Bar_D_Pu_Specimen
+        Rate: 2500
   - Id: 22150
     AegisName: BIO_KAPHA
     Name: Depth Kapha
@@ -2480,6 +2630,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Ic_Energy
+        Rate: 500
+      - Item: Bar_D_Ic_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Ice_Barmund_Rune
+        Rate: 80
+      - Item: Ice_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Ice_Essence
+        Rate: 30
+      - Item: Bar_D_Ic_Specimen
+        Rate: 2500
   - Id: 22151
     AegisName: BIO_SKEL_SOLDIER
     Name: Depth Skeleton Soldier
@@ -2513,6 +2678,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Co_Energy
+        Rate: 500
+      - Item: Bar_D_Co_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Death_Barmund_Rune
+        Rate: 80
+      - Item: Death_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Death_Essence
+        Rate: 30
+      - Item: Bar_D_Co_Specimen
+        Rate: 2500
   - Id: 22152
     AegisName: BIO_PINGUICULA_D
     Name: Depth Dark Pinguicula
@@ -2546,6 +2726,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Po_Energy
+        Rate: 500
+      - Item: Bar_D_Po_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Venom_Barmund_Rune
+        Rate: 80
+      - Item: Venom_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Venom_Essence
+        Rate: 30
+      - Item: Bar_D_Po_Specimen
+        Rate: 2500
   - Id: 22153
     AegisName: BIO_POM_SPIDER
     Name: Depth Pom Spider
@@ -2579,6 +2774,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Po_Energy
+        Rate: 500
+      - Item: Bar_D_Po_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Venom_Barmund_Rune
+        Rate: 80
+      - Item: Venom_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Venom_Essence
+        Rate: 30
+      - Item: Bar_D_Po_Specimen
+        Rate: 2500
   - Id: 22154
     AegisName: BIO_PRAY_GIVER
     Name: Depth Pray Giver
@@ -2612,6 +2822,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_So_Energy
+        Rate: 500
+      - Item: Bar_D_So_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Soul_Barmund_Rune
+        Rate: 80
+      - Item: Soul_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Soul_Essence
+        Rate: 30
+      - Item: Bar_D_So_Specimen
+        Rate: 2500
   - Id: 22155
     AegisName: BIO_WOOD_GOBLIN
     Name: Depth Wood Goblin
@@ -2645,6 +2870,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Bar_D_Ea_Energy
+        Rate: 500
+      - Item: Bar_D_Ea_Crystal
+        Rate: 50
+      - Item: Etel_Dust
+        Rate: 150
+      - Item: Plain_Barmund_Rune
+        Rate: 80
+      - Item: Plain_Barmund_Rune2
+        Rate: 20
+      - Item: Barmund_Plain_Essence
+        Rate: 30
+      - Item: Bar_D_Ea_Specimen
+        Rate: 2500
   - Id: 22252
     AegisName: BIO_DUNEYRR
     Name: Depth Duneyrr
@@ -2678,6 +2918,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Fur
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22253
     AegisName: BIO_NAGA
     Name: Depth Naga
@@ -2711,6 +2966,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Scales_Shell
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22254
     AegisName: BIO_ANCIENT_TREE
     Name: Bio Ancient Tree
@@ -2744,6 +3014,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Elder_Branch
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22255
     AegisName: BIO_DOLLOCARIS
     Name: Depth Dollocaris
@@ -2777,6 +3062,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Scropion's_Nipper
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22256
     AegisName: BIO_ICE_GARGOYLE
     Name: Depth Frozen Gargoyle
@@ -2810,6 +3110,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Petite_DiablOfs_Wing
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22257
     AegisName: BIO_FLAME_GHOST
     Name: Depth Flame Ghost
@@ -2843,6 +3158,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Skull
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22258
     AegisName: BIO_ACIDUS_
     Name: Depth Acidus
@@ -2876,9 +3206,24 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Dragon_Canine
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22259
     AegisName: BIO_MOROCC_1
-    Name: Depth Morroc Incarnation
+    Name: Depth Morroc Incarn.
     Level: 265
     Hp: 155392230
     BaseExp: 6652134
@@ -2909,6 +3254,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Dark_Debris
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22260
     AegisName: BIO_SALAMANDER
     Name: Depth Salamander
@@ -2942,6 +3302,21 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Burning_Heart
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25
   - Id: 22261
     AegisName: BIO_MOSKILLO
     Name: Depth Moskillro
@@ -2975,3 +3350,18 @@ Body:
     DamageTaken: 10
     Ai: 04
     Class: Boss
+    Drops:
+      - Item: Round_Shell
+        Rate: 1500
+      - Item: Etel_Dust
+        Rate: 200
+      - Item: Abyss_Jewel_Fragment
+        Rate: 350
+      - Item: Time_Dim_J_Fragment
+        Rate: 350
+      - Item: Abyss_Magic_Jewel
+        Rate: 75
+      - Item: Time_Dimension_Jewel
+        Rate: 75
+      - Item: Abyss_Rune_Ore
+        Rate: 25

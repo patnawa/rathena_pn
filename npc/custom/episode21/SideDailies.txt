@@ -1,0 +1,235 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Published side quests and daily services
+//===== Sources: =============================================
+//= https://wiki.muhro.eu/21_Age_of_Heroes/en
+//= https://ratemyragnarok.com/episodes/21/side-quests/
+//============================================================
+
+function	script	EP21_DailyReward	{
+	.@tickets = getarg(0);
+	.@rep = getarg(1);
+	if (!checkweight(1001618,.@tickets)) {
+		mes "Make room for " + .@tickets + " Wigner Merchant Guild Vouchers.";
+		return false;
+	}
+	getitem 1001618,.@tickets;
+	callfunc "EP21_AddReputation",.@rep;
+	return true;
+}
+
+// Lugenburg Brothers: unlocked after the Gimli report.
+jor_mbase,140,201,4	script	Wilhelm#ep21_lugenburg	22305,{
+	mes "[Wilhelm]";
+	if (!callfunc("EP21_GimliComplete")) { mes "There is no time for family matters until Gimli is secure."; close; }
+	if (EP21_LugenburgDone || isbegin_quest(17776) == 2) goto L_Daily;
+	if (!callfunc("EP21_QuestInRange",17770,17776)) {
+		mes "Reinhardt and I have unfinished business. Speak with him inside the central barracks.";
+		setquest 17770;
+		close;
+	}
+	if (isbegin_quest(17771) == 1) { mes "I searched for him for years. I need to know why he chose the cult."; changequest 17771,17772; close; }
+	if (isbegin_quest(17775) == 1) { mes "I cannot forgive everything, but I will hear him out. Tell Tris we are ready."; changequest 17775,17776; close; }
+	mes "Speak with Reinhardt and Tris. This cannot be resolved by one brother alone.";
+	close;
+
+L_Daily:
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_RaisedDaily == .@key) { mes "Today's Raised Land patrol is complete."; close; }
+	if (EP21_RaisedQuest == 17777 || EP21_RaisedQuest == 17778) {
+		.@qid = EP21_RaisedQuest;
+		if (checkquest(.@qid,HUNTING) != 2) { mes "Defeat 300 monsters on the assigned Raised Land map."; close; }
+		if (!callfunc("EP21_DailyReward",10,10)) close;
+		completequest .@qid;
+		EP21_RaisedDaily = .@key;
+		EP21_RaisedQuest = 0;
+		mes "Patrol complete. Reward: 10 vouchers and 10 Gaebolg Command reputation.";
+		close;
+	}
+	mes "Choose today's patrol.";
+	next;
+	.@pick = select("Northern Raised Land patrol.:Southern Raised Land patrol.:Leave.");
+	if (.@pick == 3) close;
+	.@qid = (.@pick == 1) ? 17777 : 17778;
+	if (isbegin_quest(.@qid)) erasequest .@qid;
+	setquest .@qid;
+	EP21_RaisedQuest = .@qid;
+	mes "Defeat 300 monsters on the map named in your quest log, then report here.";
+	close;
+}
+
+mbase_in,118,186,4	script	Reinhardt#ep21_lugenburg	22304,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17770) == 1 || isbegin_quest(17772) == 1 || isbegin_quest(17774) == 1";
+	mes "[Reinhardt]";
+	if (isbegin_quest(17770) == 1) { mes "I joined the cult believing I could protect people from within. Tell Wilhelm I will answer him honestly."; changequest 17770,17771; close; }
+	if (isbegin_quest(17772) == 1) { mes "Good intentions do not erase the harm I caused. Tris should decide whether I can still serve here."; changequest 17772,17773; close; }
+	if (isbegin_quest(17774) == 1) { mes "I do not expect forgiveness, only the chance to repair what I broke. Tell Wilhelm."; changequest 17774,17775; close; }
+	mes "The brothers are learning to speak plainly again.";
+	close;
+}
+
+jor_mbase,197,277,4	script	Tris#ep21_lugenburg	22301,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17773) == 1 || isbegin_quest(17776) == 1";
+	mes "[Tris]";
+	if (isbegin_quest(17773) == 1) { mes "Reinhardt can help, but trust must be rebuilt. Let him speak once more."; changequest 17773,17774; close; }
+	if (isbegin_quest(17776) == 1) {
+		if (!checkweight(1001618,10)) { mes "Make room for ten vouchers."; close; }
+		completequest 17776;
+		getitem 1001618,10;
+		callfunc "EP21_AddReputation",5;
+		getexp 91298960,59995050;
+		EP21_LugenburgDone = 1;
+		mes "The brothers will work together. Reward: 10 vouchers, 5 reputation, and experience. Raised Land patrols are unlocked at Wilhelm.";
+		close;
+	}
+	mes "Family wounds take patience to heal.";
+	close;
+}
+
+// Nyar's Primal Pouch: unlocks free access to storages 1-3.
+jor_mbase,310,110,4	script	Nyar#ep21_storage	22006,{
+	mes "[Nyar]";
+	if (!callfunc("EP21_GaebolgComplete")) { mes "Help the resistance first, and I will stabilize access to your storage."; close; }
+	if (!EP21_NyarStorage) {
+		mes "I anchored three storage routes to this point. You may use them freely once per visit.";
+		EP21_NyarStorage = 1;
+	}
+	next;
+	.@pick = select("Storage 1.:Storage 2.:Storage 3.:Leave.");
+	if (.@pick == 4) close;
+	close2;
+	openstorage2 .@pick - 1,STOR_MODE_GET|STOR_MODE_PUT;
+	end;
+}
+
+// Food procurement side unlock and daily. Only published acceptable items are
+// offered; Long Grass and Lunaforma Oyster are intentionally rejected.
+jor_mbase,211,280,4	script	Volunteer Vallen Wok#ep21	4_M_MANAGER,{
+	mes "[Vallen Wok]";
+	if (!callfunc("EP21_GaebolgComplete")) { mes "The food program is only open to registered resistance helpers."; close; }
+	if (!EP21_FoodUnlocked) {
+		mes "Lunaforma never has enough fresh food. Will you help gather fish or herbs?";
+		next;
+		if (select("I will help.:Not now.") == 2) close;
+		EP21_FoodUnlocked = 1;
+		if (!isbegin_quest(19198)) { setquest 19198; completequest 19198; }
+		mes "Food procurement dailies are now unlocked.";
+		close;
+	}
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_FoodDaily == .@key) { mes "Today's food delivery is complete."; close; }
+	setarray .@items[0],1001619,1001620,1001621,1001622,1001625;
+	setarray .@names$[0],"Lunaforma Shrimp","Lunaforma Calamari","Lunaforma Seaweed","Lunaforma Fish","Wide Grass";
+	if (!EP21_FoodItem) {
+		.@i = rand(5);
+		EP21_FoodItem = .@items[.@i];
+		EP21_FoodQuest = (.@i == 4) ? 19201 : 19200;
+		if (isbegin_quest(EP21_FoodQuest)) erasequest EP21_FoodQuest;
+		setquest EP21_FoodQuest;
+	}
+	for (.@i = 0; .@i < 5; ++.@i) if (.@items[.@i] == EP21_FoodItem) .@name$ = .@names$[.@i];
+	mes "Bring 10 " + .@name$ + " (item " + EP21_FoodItem + ").";
+	next;
+	if (select("Deliver.:Leave.") == 2) close;
+	if (countitem(EP21_FoodItem) < 10) { mes "You do not have all ten."; close; }
+	if (!callfunc("EP21_DailyReward",3,3)) close;
+	delitem EP21_FoodItem,10;
+	completequest EP21_FoodQuest;
+	EP21_FoodDaily = .@key;
+	EP21_FoodItem = 0;
+	EP21_FoodQuest = 0;
+	mes "Delivery complete. Reward: 3 vouchers and 3 reputation.";
+	close;
+}
+
+// Mercenary side quest and the five daily jobs whose objectives and rewards
+// are publicly documented.
+mbase_in,304,123,4	script	Valdaris#ep21_tasks	4_M_REBELLION3,{
+	mes "[Valdaris]";
+	if (!callfunc("EP21_MainComplete")) { mes "Finish the war against the cult before taking mercenary contracts."; close; }
+	if (!EP21_MercenaryUnlocked) {
+		if (!isbegin_quest(24019)) {
+			mes "Speak with four mercenaries around Lunaforma and learn what each can contribute.";
+			setquest 24019;
+			EP21_MercenaryMask = 0;
+			close;
+		}
+		if (EP21_MercenaryMask != 15) { mes "Speak with all four members: west, north, east, and near the barracks."; close; }
+		if (!callfunc("EP21_DailyReward",10,5)) close;
+		completequest 24019;
+		getexp 91298960,5995000;
+		EP21_MercenaryUnlocked = 1;
+		mes "You understand the company. Reward: 10 vouchers, 5 reputation, and experience. Daily contracts are unlocked.";
+		close;
+	}
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_MercDaily == .@key) { mes "Today's mercenary contract is complete."; close; }
+	if (!EP21_MercQuest) {
+		mes "Choose one documented contract for today.";
+		next;
+		.@pick = select("Fresh Food - materials.:Clamshells - 50 Scalleg.:For the Children - 50 Velelling.:Clean Temple Floor 1 - 300 monsters.:Clean Temple Floor 2 - 300 monsters.:Leave.");
+		if (.@pick == 6) close;
+		setarray .@quests[1],24031,24033,24035,24037,24039;
+		EP21_MercQuest = .@quests[.@pick];
+		if (isbegin_quest(EP21_MercQuest)) erasequest EP21_MercQuest;
+		setquest EP21_MercQuest;
+		mes "Contract registered in your quest log.";
+		close;
+	}
+	.@qid = EP21_MercQuest;
+	.@tickets = (.@qid == 24037 || .@qid == 24039) ? 10 : 5;
+	.@rep = .@tickets;
+	if (.@qid == 24031) {
+		if (countitem(1001644) < 10 || countitem(1001647) < 10) { mes "Bring 10 Skipskipper Fins and 10 Thick Flesh."; close; }
+	} else if (checkquest(.@qid,HUNTING) != 2) {
+		mes "The hunting objective in your quest log is not complete.";
+		close;
+	}
+	if (!callfunc("EP21_DailyReward",.@tickets,.@rep)) close;
+	if (.@qid == 24031) { delitem 1001644,10; delitem 1001647,10; }
+	completequest .@qid;
+	EP21_MercDaily = .@key;
+	EP21_MercQuest = 0;
+	mes "Contract complete. Reward: " + .@tickets + " vouchers and " + .@rep + " reputation.";
+	close;
+}
+
+jor_mbase,300,151,4	script	Mercenary Member#ep21_1	4_M_REBELLION2,{ if (isbegin_quest(24019) == 1) EP21_MercenaryMask = EP21_MercenaryMask | 1; mes "[Mercenary]"; mes "A scout must report what is actually there, not what the commander hopes to find."; close; }
+jor_mbase,198,251,4	script	Mercenary Member#ep21_2	4_F_REBELLION3,{ if (isbegin_quest(24019) == 1) EP21_MercenaryMask = EP21_MercenaryMask | 2; mes "[Mercenary]"; mes "I keep our supply lines moving when the roads turn dangerous."; close; }
+jor_mbase,133,128,4	script	Mercenary Member#ep21_3	4_M_REBELLION3,{ if (isbegin_quest(24019) == 1) EP21_MercenaryMask = EP21_MercenaryMask | 4; mes "[Mercenary]"; mes "Protecting civilians comes before chasing glory."; close; }
+jor_mbase,248,103,4	script	Mercenary Member#ep21_4	4_F_REBELLION2,{ if (isbegin_quest(24019) == 1) EP21_MercenaryMask = EP21_MercenaryMask | 8; mes "[Mercenary]"; mes "A good contract has a clear objective and a safe way home."; close; }
+
+// Remaining documented single-objective dailies.
+mbase_in,21,168,4	script	Heine Tablet#ep21_daily	4_VR_BOOK_BLUE,{
+	mes "[Heine Tablet]";
+	if (!callfunc("EP21_MainComplete")) { mes "The tablet remains dormant."; close; }
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_HeineDaily == .@key) { mes "Today's effort has already been recorded."; close; }
+	mes "Bring 3 Bright Eyes (item 1001641).";
+	if (countitem(1001641) < 3) close;
+	if (!callfunc("EP21_DailyReward",5,3)) close;
+	delitem 1001641,3;
+	EP21_HeineDaily = .@key;
+	mes "Reward: 5 vouchers and 3 reputation.";
+	close;
+}
+
+jor_albe,160,137,4	script	Counselor Wool#ep21_daily	4_M_SAGE_C,{
+	mes "[Counselor Wool]";
+	if (!callfunc("EP21_AlbertaAccess")) { mes "I only counsel members of the village network."; close; }
+	.@key = callfunc("EP21_DailyKey");
+	if (EP21_WoolDaily == .@key) { mes "Today's counseling request is complete."; close; }
+	if (!EP21_WoolStep) { mes "Someone at the western harbor needs a listener. Speak with them at (jor_albe 50, 241)."; EP21_WoolStep = 1; close; }
+	if (EP21_WoolStep == 1) { mes "Please speak with the villager before returning."; close; }
+	if (!callfunc("EP21_DailyReward",3,2)) close;
+	EP21_WoolDaily = .@key;
+	EP21_WoolStep = 0;
+	mes "Thank you for helping. Reward: 3 vouchers and 2 reputation.";
+	close;
+}
+jor_albe,50,241,4	script	Troubled Villager#ep21	4_F_TELEPORTER,{
+	mes "[Troubled Villager]";
+	if (EP21_WoolStep == 1) { mes "The nightmares are memories of the cult, but talking about them makes the harbor feel real again."; EP21_WoolStep = 2; close; }
+	mes "The sea is calm today.";
+	close;
+}
+

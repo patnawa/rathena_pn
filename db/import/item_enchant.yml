@@ -666,3 +666,1441 @@ Body:
                 Amount: 100
               - Material: Ch2_Kindle_Hal_Y
                 Amount: 5
+
+# BEGIN CODEX BIOSPHERE CROWN ENCHANT 132
+  - Id: 132
+    TargetItems:
+      Time_DM_R_Crown_DK: true
+      Time_DM_R_Crown_IG: true
+      Time_DM_R_Crown_MT: true
+      Time_DM_R_Crown_BO: true
+      Time_DM_R_Crown_SHC: true
+      Time_DM_R_Crown_ABC: true
+      Time_DM_R_Crown_AG: true
+      Time_DM_R_Crown_EM: true
+      Time_DM_R_Crown_CD: true
+      Time_DM_R_Crown_IQ: true
+      Time_DM_R_Crown_WH: true
+      Time_DM_R_Crown_TR: true
+      Time_DM_R_Crown_SS: true
+      Time_DM_R_Crown_NW: true
+      Time_DM_R_Crown_SKE: true
+      Time_DM_R_Crown_SOA: true
+      Time_DM_R_Crown_HN: true
+      Time_DM_R_Crown_SH: true
+    Reset:
+      Chance: 100000
+      Materials:
+        - Material: Zelunium
+          Amount: 15
+        - Material: Shadowdecon
+          Amount: 15
+        - Material: Etel_Dust
+          Amount: 30
+    Order:
+      - Slot: 3
+        Upgrades:
+          - Enchant: Strength1
+            Upgrade: Strength2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Strength2
+            Upgrade: Strength3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Strength3
+            Upgrade: Strength4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Strength4
+            Upgrade: Strength5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+          - Enchant: Inteligence1
+            Upgrade: Inteligence2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Inteligence2
+            Upgrade: Inteligence3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Inteligence3
+            Upgrade: Inteligence4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Inteligence4
+            Upgrade: Inteligence5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+          - Enchant: Vitality1
+            Upgrade: Vitality2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Vitality2
+            Upgrade: Vitality3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Vitality3
+            Upgrade: Vitality4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Vitality4
+            Upgrade: Vitality5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+          - Enchant: Luck1
+            Upgrade: Luck2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Luck2
+            Upgrade: Luck3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Luck3
+            Upgrade: Luck4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Luck4
+            Upgrade: Luck5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        Materials:
+          - Material: Abyss_Rune
+            Amount: 5
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 1
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 2
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 3
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 4
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+        Upgrades:
+          - Enchant: Strength1
+            Upgrade: Strength2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Strength2
+            Upgrade: Strength3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Strength3
+            Upgrade: Strength4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Strength4
+            Upgrade: Strength5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+          - Enchant: Inteligence1
+            Upgrade: Inteligence2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Inteligence2
+            Upgrade: Inteligence3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Inteligence3
+            Upgrade: Inteligence4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Inteligence4
+            Upgrade: Inteligence5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+          - Enchant: Vitality1
+            Upgrade: Vitality2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Vitality2
+            Upgrade: Vitality3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Vitality3
+            Upgrade: Vitality4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Vitality4
+            Upgrade: Vitality5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+          - Enchant: Luck1
+            Upgrade: Luck2
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 10
+              - Material: Time_Dimension_Jewel
+                Amount: 10
+              - Material: Abyss_Rune
+                Amount: 10
+              - Material: Time_D_Ma_Rune
+                Amount: 2
+          - Enchant: Luck2
+            Upgrade: Luck3
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 20
+              - Material: Time_Dimension_Jewel
+                Amount: 20
+              - Material: Abyss_Rune
+                Amount: 20
+              - Material: Time_D_Ma_Rune
+                Amount: 5
+          - Enchant: Luck3
+            Upgrade: Luck4
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 40
+              - Material: Time_Dimension_Jewel
+                Amount: 40
+              - Material: Abyss_Rune
+                Amount: 40
+              - Material: Time_D_Ma_Rune
+                Amount: 10
+          - Enchant: Luck4
+            Upgrade: Luck5
+            Materials:
+              - Material: Abyss_Magic_Jewel
+                Amount: 125
+              - Material: Time_Dimension_Jewel
+                Amount: 125
+              - Material: Abyss_Rune
+                Amount: 125
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+      - Slot: 2
+        Materials:
+          - Material: Abyss_Rune
+            Amount: 10
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 1
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 2
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 3
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 4
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+      - Slot: 1
+        Materials:
+          - Material: Time_D_Ma_Rune
+            Amount: 2
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: Sharp1
+                Chance: 7500
+              - Item: Expert_Archer1
+                Chance: 7500
+              - Item: Attack_Delay_1
+                Chance: 7500
+              - Item: Spell1
+                Chance: 7500
+              - Item: Sharp3
+                Chance: 4500
+              - Item: Expert_Archer3
+                Chance: 4500
+              - Item: Attack_Delay_3
+                Chance: 4500
+              - Item: Spell3
+                Chance: 4500
+              - Item: Acute_Jewel_1
+                Chance: 1600
+              - Item: Mettle_Jewel_1
+                Chance: 1600
+              - Item: Tenacity_Jewel_1
+                Chance: 1600
+              - Item: Master_A_Jewel_1
+                Chance: 1600
+              - Item: Magic_E_Jewel_1
+                Chance: 1600
+              - Item: Spell_Jewel_1
+                Chance: 1600
+              - Item: Adamatine_Jewel_1
+                Chance: 1600
+              - Item: Affection_Jewel_1
+                Chance: 1600
+              - Item: Fierce_A_Jewel_1
+                Chance: 1600
+              - Item: Great_C_Jewel_1
+                Chance: 1600
+              - Item: Sharp4
+                Chance: 3000
+              - Item: Expert_Archer4
+                Chance: 3000
+              - Item: Attack_Delay_4
+                Chance: 3000
+              - Item: Spell4
+                Chance: 3000
+              - Item: Sharp2
+                Chance: 6000
+              - Item: Expert_Archer2
+                Chance: 6000
+              - Item: Attack_Delay_2
+                Chance: 6000
+              - Item: Spell2
+                Chance: 6000
+          - Enchantgrade: 1
+            Items:
+              - Item: Sharp1
+                Chance: 7500
+              - Item: Expert_Archer1
+                Chance: 7500
+              - Item: Attack_Delay_1
+                Chance: 7500
+              - Item: Spell1
+                Chance: 7500
+              - Item: Sharp3
+                Chance: 4500
+              - Item: Expert_Archer3
+                Chance: 4500
+              - Item: Attack_Delay_3
+                Chance: 4500
+              - Item: Spell3
+                Chance: 4500
+              - Item: Acute_Jewel_1
+                Chance: 1600
+              - Item: Mettle_Jewel_1
+                Chance: 1600
+              - Item: Tenacity_Jewel_1
+                Chance: 1600
+              - Item: Master_A_Jewel_1
+                Chance: 1600
+              - Item: Magic_E_Jewel_1
+                Chance: 1600
+              - Item: Spell_Jewel_1
+                Chance: 1600
+              - Item: Adamatine_Jewel_1
+                Chance: 1600
+              - Item: Affection_Jewel_1
+                Chance: 1600
+              - Item: Fierce_A_Jewel_1
+                Chance: 1600
+              - Item: Great_C_Jewel_1
+                Chance: 1600
+              - Item: Sharp4
+                Chance: 3000
+              - Item: Expert_Archer4
+                Chance: 3000
+              - Item: Attack_Delay_4
+                Chance: 3000
+              - Item: Spell4
+                Chance: 3000
+              - Item: Sharp2
+                Chance: 6000
+              - Item: Expert_Archer2
+                Chance: 6000
+              - Item: Attack_Delay_2
+                Chance: 6000
+              - Item: Spell2
+                Chance: 6000
+          - Enchantgrade: 2
+            Items:
+              - Item: Sharp1
+                Chance: 7500
+              - Item: Expert_Archer1
+                Chance: 7500
+              - Item: Attack_Delay_1
+                Chance: 7500
+              - Item: Spell1
+                Chance: 7500
+              - Item: Sharp3
+                Chance: 4500
+              - Item: Expert_Archer3
+                Chance: 4500
+              - Item: Attack_Delay_3
+                Chance: 4500
+              - Item: Spell3
+                Chance: 4500
+              - Item: Acute_Jewel_1
+                Chance: 1600
+              - Item: Mettle_Jewel_1
+                Chance: 1600
+              - Item: Tenacity_Jewel_1
+                Chance: 1600
+              - Item: Master_A_Jewel_1
+                Chance: 1600
+              - Item: Magic_E_Jewel_1
+                Chance: 1600
+              - Item: Spell_Jewel_1
+                Chance: 1600
+              - Item: Adamatine_Jewel_1
+                Chance: 1600
+              - Item: Affection_Jewel_1
+                Chance: 1600
+              - Item: Fierce_A_Jewel_1
+                Chance: 1600
+              - Item: Great_C_Jewel_1
+                Chance: 1600
+              - Item: Sharp4
+                Chance: 3000
+              - Item: Expert_Archer4
+                Chance: 3000
+              - Item: Attack_Delay_4
+                Chance: 3000
+              - Item: Spell4
+                Chance: 3000
+              - Item: Sharp2
+                Chance: 6000
+              - Item: Expert_Archer2
+                Chance: 6000
+              - Item: Attack_Delay_2
+                Chance: 6000
+              - Item: Spell2
+                Chance: 6000
+          - Enchantgrade: 3
+            Items:
+              - Item: Sharp1
+                Chance: 7500
+              - Item: Expert_Archer1
+                Chance: 7500
+              - Item: Attack_Delay_1
+                Chance: 7500
+              - Item: Spell1
+                Chance: 7500
+              - Item: Sharp3
+                Chance: 4500
+              - Item: Expert_Archer3
+                Chance: 4500
+              - Item: Attack_Delay_3
+                Chance: 4500
+              - Item: Spell3
+                Chance: 4500
+              - Item: Acute_Jewel_1
+                Chance: 1600
+              - Item: Mettle_Jewel_1
+                Chance: 1600
+              - Item: Tenacity_Jewel_1
+                Chance: 1600
+              - Item: Master_A_Jewel_1
+                Chance: 1600
+              - Item: Magic_E_Jewel_1
+                Chance: 1600
+              - Item: Spell_Jewel_1
+                Chance: 1600
+              - Item: Adamatine_Jewel_1
+                Chance: 1600
+              - Item: Affection_Jewel_1
+                Chance: 1600
+              - Item: Fierce_A_Jewel_1
+                Chance: 1600
+              - Item: Great_C_Jewel_1
+                Chance: 1600
+              - Item: Sharp4
+                Chance: 3000
+              - Item: Expert_Archer4
+                Chance: 3000
+              - Item: Attack_Delay_4
+                Chance: 3000
+              - Item: Spell4
+                Chance: 3000
+              - Item: Sharp2
+                Chance: 6000
+              - Item: Expert_Archer2
+                Chance: 6000
+              - Item: Attack_Delay_2
+                Chance: 6000
+              - Item: Spell2
+                Chance: 6000
+          - Enchantgrade: 4
+            Items:
+              - Item: Sharp1
+                Chance: 7500
+              - Item: Expert_Archer1
+                Chance: 7500
+              - Item: Attack_Delay_1
+                Chance: 7500
+              - Item: Spell1
+                Chance: 7500
+              - Item: Sharp3
+                Chance: 4500
+              - Item: Expert_Archer3
+                Chance: 4500
+              - Item: Attack_Delay_3
+                Chance: 4500
+              - Item: Spell3
+                Chance: 4500
+              - Item: Acute_Jewel_1
+                Chance: 1600
+              - Item: Mettle_Jewel_1
+                Chance: 1600
+              - Item: Tenacity_Jewel_1
+                Chance: 1600
+              - Item: Master_A_Jewel_1
+                Chance: 1600
+              - Item: Magic_E_Jewel_1
+                Chance: 1600
+              - Item: Spell_Jewel_1
+                Chance: 1600
+              - Item: Adamatine_Jewel_1
+                Chance: 1600
+              - Item: Affection_Jewel_1
+                Chance: 1600
+              - Item: Fierce_A_Jewel_1
+                Chance: 1600
+              - Item: Great_C_Jewel_1
+                Chance: 1600
+              - Item: Sharp4
+                Chance: 3000
+              - Item: Expert_Archer4
+                Chance: 3000
+              - Item: Attack_Delay_4
+                Chance: 3000
+              - Item: Spell4
+                Chance: 3000
+              - Item: Sharp2
+                Chance: 6000
+              - Item: Expert_Archer2
+                Chance: 6000
+              - Item: Attack_Delay_2
+                Chance: 6000
+              - Item: Spell2
+                Chance: 6000
+        PerfectEnchants:
+          - Item: Acute_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Mettle_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Tenacity_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Master_A_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Magic_E_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Spell_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Adamatine_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Affection_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Fierce_A_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+          - Item: Great_C_Jewel_1
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 125
+        Upgrades:
+          - Enchant: Mettle_Jewel_1
+            Upgrade: Mettle_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Mettle_Jewel_2
+            Upgrade: Mettle_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Mettle_Jewel_3
+            Upgrade: Mettle_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Mettle_Jewel_4
+            Upgrade: Mettle_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Tenacity_Jewel_1
+            Upgrade: Tenacity_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Tenacity_Jewel_2
+            Upgrade: Tenacity_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Tenacity_Jewel_3
+            Upgrade: Tenacity_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Tenacity_Jewel_4
+            Upgrade: Tenacity_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Master_A_Jewel_1
+            Upgrade: Master_A_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Master_A_Jewel_2
+            Upgrade: Master_A_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Master_A_Jewel_3
+            Upgrade: Master_A_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Master_A_Jewel_4
+            Upgrade: Master_A_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Acute_Jewel_1
+            Upgrade: Acute_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Acute_Jewel_2
+            Upgrade: Acute_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Acute_Jewel_3
+            Upgrade: Acute_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Acute_Jewel_4
+            Upgrade: Acute_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Magic_E_Jewel_1
+            Upgrade: Magic_E_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Magic_E_Jewel_2
+            Upgrade: Magic_E_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Magic_E_Jewel_3
+            Upgrade: Magic_E_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Magic_E_Jewel_4
+            Upgrade: Magic_E_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Spell_Jewel_1
+            Upgrade: Spell_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Spell_Jewel_2
+            Upgrade: Spell_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Spell_Jewel_3
+            Upgrade: Spell_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Spell_Jewel_4
+            Upgrade: Spell_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Adamatine_Jewel_1
+            Upgrade: Adamatine_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Adamatine_Jewel_2
+            Upgrade: Adamatine_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Adamatine_Jewel_3
+            Upgrade: Adamatine_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Adamatine_Jewel_4
+            Upgrade: Adamatine_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Affection_Jewel_1
+            Upgrade: Affection_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Affection_Jewel_2
+            Upgrade: Affection_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Affection_Jewel_3
+            Upgrade: Affection_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Affection_Jewel_4
+            Upgrade: Affection_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Fierce_A_Jewel_1
+            Upgrade: Fierce_A_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Fierce_A_Jewel_2
+            Upgrade: Fierce_A_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Fierce_A_Jewel_3
+            Upgrade: Fierce_A_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Fierce_A_Jewel_4
+            Upgrade: Fierce_A_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Great_C_Jewel_1
+            Upgrade: Great_C_Jewel_2
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Great_C_Jewel_2
+            Upgrade: Great_C_Jewel_3
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Great_C_Jewel_3
+            Upgrade: Great_C_Jewel_4
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Great_C_Jewel_4
+            Upgrade: Great_C_Jewel_5
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+# END CODEX BIOSPHERE CROWN ENCHANT 132

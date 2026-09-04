@@ -1,58 +1,113 @@
 // Varmundt's Biosphere entrances, exits, and official open-map spawns.
 // Source: wiki.muhro.eu/Varmundt's_Biosphere and current kRO map data.
 
+function	script	F_BiosphereAccess	{
+	if (BaseLevel < 240) {
+		dispbottom "Varmundt's Biosphere requires Base Level 240.";
+		return false;
+	}
+	return true;
+}
+
+function	script	F_BiosphereDepth1Access	{
+	if (BaseLevel < 250) {
+		dispbottom "Biosphere Depth 1 requires Base Level 250.";
+		return false;
+	}
+	if (ep17_2_main < 33) {
+		dispbottom "Complete the Episode 17.2 main story before entering Biosphere Depth 1.";
+		return false;
+	}
+	return true;
+}
+
+function	script	F_BiosphereDepth2Access	{
+	if (BaseLevel < 250) {
+		dispbottom "Biosphere Depth 2 requires Base Level 250.";
+		return false;
+	}
+	if (ep17_2_main < 33) {
+		dispbottom "Complete the Episode 17.2 main story before entering Biosphere Depth 2.";
+		return false;
+	}
+	if (get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1) < 2000) {
+		dispbottom "Biosphere Depth 2 requires 2,000 Depth 1 Research reputation.";
+		return false;
+	}
+	return true;
+}
+
+function	script	F_BiosphereDepth2Purge	{
+	// Official Depth Abyss entry removes these persistent combat buffs.
+	sc_end SC_COMPETENTIA;
+	sc_end SC_MUSICAL_INTERLUDE;
+	sc_end SC_MOONLITSERENADE;
+	sc_end SC_TALISMAN_OF_PROTECTION;
+	sc_end SC_TALISMAN_OF_WARRIOR;
+	sc_end SC_TALISMAN_OF_MAGICIAN;
+	sc_end SC_HEAVEN_AND_EARTH;
+	sc_end SC_TALISMAN_OF_FIVE_ELEMENTS;
+	sc_end SC_SPELL_ENCHANTING;
+	sc_end SC_D_MACHINE;
+	return;
+}
+
+// Depth maps are deliberately not valid relog destinations.  The nosave
+// mapflag protects future position saves; this guard also handles characters
+// whose position was persisted before the flag or during an interrupted save.
+-	script	Biosphere Relog Guard#depth	-1,{
+	end;
+OnPCLoginEvent:
+	.@map$ = strcharinfo(3);
+	if (.@map$ == "bl_depth1" || .@map$ == "bl_depth2") {
+		dispbottom "Relogging inside Biosphere Depth is not allowed. Returning to your save point.";
+		warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+	}
+	end;
+}
+
 // Mansion entrances (Base Level 240 required).
 ba_in01,310,38,0	script	#biosphere_ice_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
-    warp "bl_ice",156,20;
+    warp "bl_ice",36,84;
     end;
 }
 
 ba_in01,311,56,0	script	#biosphere_fire_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
-    warp "bl_lava",314,64;
+    warp "bl_lava",163,17;
     end;
 }
 
 ba_in01,325,56,0	script	#biosphere_grass_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
-    warp "bl_grass",163,18;
+    warp "bl_grass",157,19;
     end;
 }
 
 ba_in01,339,56,0	script	#biosphere_death_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
-    warp "bl_death",337,333;
+    warp "bl_death",315,62;
     end;
 }
 
 ba_in01,201,300,0	script	#biosphere_soul_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
     warp "bl_soul",155,15;
     end;
 }
@@ -60,10 +115,8 @@ OnTouch:
 ba_in01,216,300,0	script	#biosphere_venom_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
     warp "bl_venom",146,22;
     end;
 }
@@ -71,10 +124,8 @@ OnTouch:
 ba_in01,229,300,0	script	#biosphere_temple_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 240) {
-        dispbottom "Varmundt's Biosphere requires Base Level 240.";
+    if (!callfunc("F_BiosphereAccess"))
         end;
-    }
     warp "bl_temple",53,85;
     end;
 }
@@ -92,10 +143,8 @@ bl_temple,53,82,0	warp	#biosphere_temple_out	2,2,ba_in01,229,296
 bl_death,65,121,0	script	#biosphere_depth1_death	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",251,107;
     end;
 }
@@ -103,10 +152,8 @@ OnTouch:
 bl_grass,131,365,0	script	#biosphere_depth1_grass	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",251,251;
     end;
 }
@@ -114,10 +161,8 @@ OnTouch:
 bl_ice,198,268,0	script	#biosphere_depth1_ice	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",283,180;
     end;
 }
@@ -125,10 +170,8 @@ OnTouch:
 bl_lava,151,263,0	script	#biosphere_depth1_fire	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",177,289;
     end;
 }
@@ -136,10 +179,8 @@ OnTouch:
 bl_soul,300,292,0	script	#biosphere_depth1_soul	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",107,253;
     end;
 }
@@ -147,10 +188,8 @@ OnTouch:
 bl_temple,272,331,0	script	#biosphere_depth1_temple	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",108,109;
     end;
 }
@@ -158,10 +197,8 @@ OnTouch:
 bl_venom,182,250,0	script	#biosphere_depth1_venom	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 1 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth1Access"))
         end;
-    }
     warp "bl_depth1",73,178;
     end;
 }
@@ -173,10 +210,8 @@ bl_depth1,179,179,0	warp	#biosphere_depth1_out	2,2,ba_in01,296,104
 ba_maison,242,122,0	script	#biosphere_depth2_hub_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 2 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth2Access"))
         end;
-    }
     warp "ba_chess",13,20;
     end;
 }
@@ -184,10 +219,9 @@ ba_chess,13,16,0	warp	#biosphere_depth2_hub_out	2,2,ba_maison,242,119
 ba_chess,13,36,0	script	#biosphere_depth2_in	HIDDEN_WARP_NPC,1,1,{
     end;
 OnTouch:
-    if (BaseLevel < 250) {
-        dispbottom "Biosphere Depth 2 requires Base Level 250.";
+    if (!callfunc("F_BiosphereDepth2Access"))
         end;
-    }
+    callfunc "F_BiosphereDepth2Purge";
     warp "bl_depth2",190,64;
     end;
 }
@@ -213,7 +247,7 @@ bl_grass,0,0,0,0	monster	Verdant Rocker	21551,40,5000,0
 bl_grass,0,0,0,0	monster	Verdant Savage	21552,40,5000,0
 bl_grass,0,0,0,0	monster	Verdant Flora	21553,25,5000,0
 bl_grass,0,0,0,0	monster	Verdant Hill Wind	21554,45,5000,0
-bl_grass,0,0,0,0	monster	Verdant Mistress	21555,1,5000,0
+bl_grass,0,0,0,0	monster	Verdant Mistress	21555,1,21600000,0
 
 // bl_lava
 bl_lava,0,0,0,0	monster	Blazing Explosion	21556,40,5000,0
@@ -223,7 +257,7 @@ bl_lava,0,0,0,0	monster	Blazing Lava Golem	21559,35,5000,0
 bl_lava,0,0,0,0	monster	Blazing Majoruros	21560,30,5000,0
 bl_lava,0,0,0,0	monster	Blazing Hydro	21561,15,5000,0
 bl_lava,0,0,0,0	monster	Blazing Acidus	21562,35,5000,0
-bl_lava,0,0,0,0	monster	Blazing Detale	21563,1,5000,0
+bl_lava,0,0,0,0	monster	Blazing Detale	21563,1,21600000,0
 
 // bl_ice
 bl_ice,0,0,0,0	monster	Glacial Ice Titan	21564,35,5000,0
@@ -233,7 +267,7 @@ bl_ice,0,0,0,0	monster	Glacial Centipede	21567,35,5000,0
 bl_ice,0,0,0,0	monster	Glacial Aqua Elemental	21568,45,5000,0
 bl_ice,0,0,0,0	monster	Glacial Angelgolt	21569,25,5000,0
 bl_ice,0,0,0,0	monster	Glacial Rhyncho	21570,15,5000,0
-bl_ice,0,0,0,0	monster	Glacial Ktullanux	21571,1,5000,0
+bl_ice,0,0,0,0	monster	Glacial Ktullanux	21571,1,21600000,0
 
 // bl_death
 bl_death,0,0,0,0	monster	Grave Ancient Mummy	21572,30,5000,0
@@ -243,7 +277,7 @@ bl_death,0,0,0,0	monster	Grave Wraith	21575,35,5000,0
 bl_death,0,0,0,0	monster	Grave Flame Skull	21576,35,5000,0
 bl_death,0,0,0,0	monster	Grave Banshee	21577,45,5000,0
 bl_death,0,0,0,0	monster	Grave Knight of Abyss	21578,15,5000,0
-bl_death,0,0,0,0	monster	Grave Lord of Death	21579,1,5000,0
+bl_death,0,0,0,0	monster	Grave Lord of Death	21579,1,21600000,0
 
 // bl_temple
 bl_temple,0,0,0,0	monster	Temple Rudo	21920,35,5000,0
@@ -253,7 +287,7 @@ bl_temple,0,0,0,0	monster	Temple Plasma	21923,25,5000,0
 bl_temple,0,0,0,0	monster	Temple Solace	21924,40,5000,0
 bl_temple,0,0,0,0	monster	Temple Anopheles	21925,10,5000,0
 bl_temple,0,0,0,0	monster	Temple Gryphon	21926,20,5000,0
-bl_temple,0,0,0,0	monster	Temple Valkyrie Randgris	21927,1,5000,0
+bl_temple,0,0,0,0	monster	Temple Valkyrie Randgris	21927,1,21600000,0
 
 // bl_venom
 bl_venom,0,0,0,0	monster	Venom Comodo	21928,30,5000,0
@@ -263,7 +297,7 @@ bl_venom,0,0,0,0	monster	Venom Cramp	21931,30,5000,0
 bl_venom,0,0,0,0	monster	Venom Kukre	21932,30,5000,0
 bl_venom,0,0,0,0	monster	Venom Nepenthes	21933,40,5000,0
 bl_venom,0,0,0,0	monster	Venom Angra Mantis	21934,30,5000,0
-bl_venom,0,0,0,0	monster	Venom Enhanced Chimera	21935,1,5000,0
+bl_venom,0,0,0,0	monster	Venom Enhanced Chimera	21935,1,21600000,0
 
 // bl_soul
 bl_soul,0,0,0,0	monster	Soul Nightmare	21936,35,5000,0
@@ -273,7 +307,7 @@ bl_soul,0,0,0,0	monster	Soul Noxious	21939,10,5000,0
 bl_soul,0,0,0,0	monster	Soul The Paper	21940,25,5000,0
 bl_soul,0,0,0,0	monster	Soul Gajomart	21941,35,5000,0
 bl_soul,0,0,0,0	monster	Soul Odium	21942,35,5000,0
-bl_soul,0,0,0,0	monster	Soul Gloom Under Night	21943,1,5000,0
+bl_soul,0,0,0,0	monster	Soul Gloom Under Night	21943,1,21600000,0
 
 // bl_depth1
 bl_depth1,0,0,0,0	monster	Depth Anolian	22140,25,5000,0

@@ -1,0 +1,738 @@
+//===== rAthena Script =======================================
+//= Varmundt's Biosphere Depth 1 and Depth 2 progression
+//===== Sources: =============================================
+//= https://wiki.muhro.eu/Varmundt%27s_Biosphere_Depth
+//= https://wiki.muhro.eu/Varmundt%27s_Biosphere_Depth_2
+//= Current kRO quest, reputation, item-enchant and reform data
+//============================================================
+
+function	script	F_BioDepthQuestAccess	{
+	if (BaseLevel < 250) {
+		mes "This research program requires Base Level 250.";
+		return false;
+	}
+	if (ep17_2_main < 33) {
+		mes "Complete the Episode 17.2 mansion story before joining the Depth research program.";
+		return false;
+	}
+	return true;
+}
+
+function	script	F_BioExpireWait	{
+	.@quest = getarg(0);
+	if (checkquest(.@quest,PLAYTIME) == 2)
+		erasequest .@quest;
+	return isbegin_quest(.@quest);
+}
+
+// Daily and weekly all-monster research.
+ba_in01,286,104,4	script	Depth 1 Research Manager#bio_d1	4_EP17_MASTER_A,{
+	mes "[Depth 1 Research Manager]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+
+	callfunc "F_BioExpireWait",16736;
+	callfunc "F_BioExpireWait",16738;
+	if (!isbegin_quest(16734)) {
+		setquest 16734;
+		completequest 16734;
+		mes "You are now registered for Varmundt's Biosphere Depth research.";
+	}
+	mes "Depth 1 Research reputation: ^3366FF" + get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1) + " / 5000^000000";
+	next;
+	switch(select("Daily: hunt 300 monsters.:Weekly: hunt 2,000 monsters.:Element research assignments.:Leave.")) {
+	case 1:
+		.@quest = 16735;
+		.@wait = 16736;
+		.@count = 4;
+		goto L_Mission;
+	case 2:
+		.@quest = 16737;
+		.@wait = 16738;
+		.@count = 12;
+		goto L_Mission;
+	case 3:
+		mes "[Depth 1 Research Manager]";
+		mes "Each element administrator offers two independent daily assignments: collect 30 samples, or hunt 80 of each paired monster.";
+		mes "Fire/Ice/Earth/Storm administrators stand to the east. Purification/Corruption/Soul/Venom administrators stand to the west.";
+		close;
+	default:
+		close;
+	}
+
+L_Mission:
+	mes "[Depth 1 Research Manager]";
+	if (isbegin_quest(.@wait)) {
+		mes "That assignment is on cooldown. Check the quest window for its next reset.";
+		close;
+	}
+	if (!isbegin_quest(.@quest)) {
+		setquest .@quest;
+		mes "Assignment registered. All kills must be made on Biosphere Depth 1.";
+		close;
+	}
+	if (checkquest(.@quest,HUNTING) != 2) {
+		mes "The hunt is not complete yet. Your quest window shows the current count.";
+		close;
+	}
+	if (!checkweight(1001289,.@count,102716,1)) {
+		mes "Make room for the research documents and Deep Rune Box first.";
+		close;
+	}
+	erasequest .@quest;
+	setquest .@wait;
+	getitem 1001289,.@count;
+	getitem 102716,1;
+	mes "Research accepted. You received ^3366FF" + .@count + " Depth 1 Research Documents^000000 and ^3366FF1 Deep Rune Box^000000.";
+	close;
+}
+
+// MuhRO maps the eight I quests to 30-sample submissions and the eight II
+// quests to 80+80 monster hunts. This intentionally differs from stock kRO's
+// combined QuestInfo wording; see SOURCE_INFO.txt for the required client text.
+function	script	F_BioD1ElementResearch	{
+	.@i = getarg(0);
+	setarray .@name$[0],"Fire","Ice","Earth","Storm","Purification","Corruption","Soul","Venom";
+	setarray .@sample[0],1001330,1001332,1001331,1001333,1001335,1001336,1001334,1001337;
+	setarray .@sample_q[0],16739,16743,16747,16751,16755,16759,16763,16767;
+	setarray .@sample_wait[0],16740,16744,16748,16752,16756,16760,16764,16768;
+	setarray .@hunt_q[0],16741,16745,16749,16753,16757,16761,16765,16769;
+	setarray .@hunt_wait[0],16742,16746,16750,16754,16758,16762,16766,16770;
+
+	mes "[" + .@name$[.@i] + " Research Administrator]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	callfunc "F_BioExpireWait",.@sample_wait[.@i];
+	callfunc "F_BioExpireWait",.@hunt_wait[.@i];
+	mes "I handle the " + .@name$[.@i] + " research assignments.";
+	next;
+	switch(select("Submit 30 samples (2 documents).:Hunt 80 of each paired monster (3 documents).:Leave.")) {
+	case 1:
+		.@quest = .@sample_q[.@i];
+		.@wait = .@sample_wait[.@i];
+		if (isbegin_quest(.@wait)) {
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "The sample assignment is on cooldown until 04:00.";
+			close;
+		}
+		if (!isbegin_quest(.@quest)) {
+			setquest .@quest;
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "Collect 30 units of item ^3366FF" + .@sample[.@i] + "^000000 and bring them here.";
+			close;
+		}
+		if (countitem(.@sample[.@i]) < 30) {
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "You need 30 samples. You currently have " + countitem(.@sample[.@i]) + ".";
+			close;
+		}
+		if (!checkweight(1001289,2)) {
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "Make room for two research documents first.";
+			close;
+		}
+		delitem .@sample[.@i],30;
+		erasequest .@quest;
+		setquest .@wait;
+		getitem 1001289,2;
+		mes "[" + .@name$[.@i] + " Research Administrator]";
+		mes "Submission accepted. You received 2 Depth 1 Research Documents.";
+		close;
+	case 2:
+		.@quest = .@hunt_q[.@i];
+		.@wait = .@hunt_wait[.@i];
+		if (isbegin_quest(.@wait)) {
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "The hunting assignment is on cooldown until 04:00.";
+			close;
+		}
+		if (!isbegin_quest(.@quest)) {
+			setquest .@quest;
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "Hunt 80 of each paired " + .@name$[.@i] + " monster on Biosphere Depth 1.";
+			close;
+		}
+		if (checkquest(.@quest,HUNTING) != 2) {
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "The paired hunt is not complete yet. Check your quest window.";
+			close;
+		}
+		if (!checkweight(1001289,3)) {
+			mes "[" + .@name$[.@i] + " Research Administrator]";
+			mes "Make room for three research documents first.";
+			close;
+		}
+		erasequest .@quest;
+		setquest .@wait;
+		getitem 1001289,3;
+		mes "[" + .@name$[.@i] + " Research Administrator]";
+		mes "Hunt verified. You received 3 Depth 1 Research Documents.";
+		close;
+	default:
+		close;
+	}
+}
+
+ba_in01,286,114,4	script	Fire Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",0;
+}
+ba_in01,286,116,4	script	Ice Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",1;
+}
+ba_in01,286,118,4	script	Earth Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",2;
+}
+ba_in01,286,120,4	script	Storm Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",3;
+}
+ba_in01,283,114,2	script	Purification Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",4;
+}
+ba_in01,283,116,2	script	Corruption Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",5;
+}
+ba_in01,283,118,2	script	Soul Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",6;
+}
+ba_in01,283,120,2	script	Venom Research Administrator#bio_d1	4_EP17_BASIC_B,{
+	callfunc "F_BioD1ElementResearch",7;
+}
+
+// Research documents become reputation at a fixed 2:3 ratio.
+ba_in01,292,104,4	script	Depth Research Administrator#bio_d1	4_EP17_MASTER_A,{
+	mes "[Depth Research Administrator]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	.@rep = get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1);
+	mes "I exchange every 2 Depth 1 Research Documents for 3 research reputation.";
+	mes "Current reputation: ^3366FF" + .@rep + " / 5000^000000";
+	if (.@rep >= 5000) {
+		mes "Your Depth 1 research reputation is already at its maximum.";
+		close;
+	}
+	.@max = countitem(1001289) / 2;
+	.@limit = (5000 - .@rep + 2) / 3;
+	if (.@max > .@limit)
+		.@max = .@limit;
+	if (.@max < 1) {
+		mes "Bring at least 2 Depth 1 Research Documents.";
+		close;
+	}
+	next;
+	mes "[Depth Research Administrator]";
+	mes "How many pairs should I process? Maximum: " + .@max + ".";
+	input .@amount,1,.@max;
+	delitem 1001289,.@amount * 2;
+	.@gain = .@amount * 3;
+	if (.@gain > 5000 - .@rep)
+		.@gain = 5000 - .@rep;
+	add_reputation_points REPUTATION_BIOSPHERE_DEPTH1,.@gain;
+	mes "Research registered. You gained ^33AA33" + .@gain + " Depth 1 reputation^000000.";
+	close;
+}
+
+// Eight-element material fusion.
+ba_in01,293,119,4	script	Ellie#bio_d1_fusion	4_EP17_TABLET,{
+	mes "[Ellie]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	setarray .@name$[0],"Fire","Earth","Ice","Storm","Soul","Purification","Corruption","Poison";
+	mes "I can stabilize Depth energy into crystals, runes, and essences.";
+	next;
+	.@i = select("Fire:Earth:Ice:Storm:Soul:Purification:Corruption:Poison:Leave") - 1;
+	if (.@i == 8)
+		close;
+	.@stage = select("10 Energy + 30,000z -> 1 Crystal:5 Crystals + 50,000z -> 1 Rune:10 Runes + 100,000z -> 1 Essence:Leave");
+	if (.@stage == 4)
+		close;
+	.@input = 1001290 + .@i + ((.@stage - 1) * 8);
+	.@output = .@input + 8;
+	setarray .@need[1],10,5,10;
+	setarray .@cost[1],30000,50000,100000;
+	.@max = countitem(.@input) / .@need[.@stage];
+	.@zenymax = Zeny / .@cost[.@stage];
+	if (.@max > .@zenymax)
+		.@max = .@zenymax;
+	if (.@max < 1) {
+		mes "[Ellie]";
+		mes "You do not have enough " + .@name$[.@i] + " materials and Zeny for that fusion.";
+		close;
+	}
+	mes "[Ellie]";
+	mes "How many should I create? Maximum: " + .@max + ".";
+	input .@amount,1,.@max;
+	if (!checkweight(.@output,.@amount)) {
+		mes "Make room for the fused material first.";
+		close;
+	}
+	delitem .@input,.@need[.@stage] * .@amount;
+	Zeny -= .@cost[.@stage] * .@amount;
+	getitem .@output,.@amount;
+	mes "Fusion complete. You received " + .@amount + " unit(s) of item ^3366FF" + .@output + "^000000.";
+	close;
+}
+
+// Armor purchase, native enchant UI, and native reform catalysts.
+ba_in01,293,116,4	script	Chirp#bio_d1_gear	4_EP17_BASKET,{
+	mes "[Chirp]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	.@rep = get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1);
+	mes "Depth 1 Research reputation: ^3366FF" + .@rep + " / 5000^000000";
+	mes "Armor 500 / Enchant 1000 / Engrave 1500 / Depth 2 2000 / Unengrave 3500.";
+	next;
+	switch(select("Purchase rune armor.:Enchant rune armor.:Receive engraving catalyst.:Receive unengraving catalyst.:Leave.")) {
+	case 1:
+		if (.@rep < 500) {
+			mes "[Chirp]"; mes "Armor purchases require 500 reputation."; close;
+		}
+		setarray .@armor[0],450274,450279,450280,450281;
+		setarray .@name$[0],"Fiery Earth Rune Armor","Icy Storm Rune Suit","Soul Purifying Rune Robe","Corrupted Poison Rune Cloth";
+		.@i = select("Fiery Earth Rune Armor:Icy Storm Rune Suit:Soul Purifying Rune Robe:Corrupted Poison Rune Cloth:Leave") - 1;
+		if (.@i == 4)
+			close;
+		.@rune1 = 1001306 + .@i * 2;
+		.@rune2 = .@rune1 + 1;
+		.@ess1 = 1001314 + .@i * 2;
+		.@ess2 = .@ess1 + 1;
+		mes "[Chirp]";
+		mes .@name$[.@i] + " costs 1,000,000z, 45 of each rune, and 30 of each essence.";
+		next;
+		if (select("Craft it.:Cancel.") == 2)
+			close;
+		if (Zeny < 1000000 || countitem(.@rune1) < 45 || countitem(.@rune2) < 45 || countitem(.@ess1) < 30 || countitem(.@ess2) < 30) {
+			mes "[Chirp]"; mes "You do not have all required materials and Zeny."; close;
+		}
+		if (!checkweight(.@armor[.@i],1)) {
+			mes "[Chirp]"; mes "Make room for the armor first."; close;
+		}
+		Zeny -= 1000000;
+		delitem .@rune1,45;
+		delitem .@rune2,45;
+		delitem .@ess1,30;
+		delitem .@ess2,30;
+		getitem .@armor[.@i],1;
+		mes "[Chirp]"; mes "Crafting complete."; close;
+	case 2:
+		if (.@rep < 1000) {
+			mes "[Chirp]"; mes "Rune armor enchanting requires 1,000 reputation."; close;
+		}
+		mes "[Chirp]"; mes "Choose the armor family to open its official enchant interface.";
+		next;
+		.@i = select("Fiery Earth:Icy Storm:Soul Purification:Corruption Poison:Leave");
+		if (.@i == 5)
+			close;
+		close2;
+		item_enchant 98 + .@i;
+		end;
+	case 3:
+		if (.@rep < 1500) {
+			mes "[Chirp]"; mes "Engraving requires 1,500 reputation."; close;
+		}
+		if (countitem(102373)) {
+			mes "[Chirp]"; mes "Use the Deep Runic Armor Inscription already in your inventory."; close;
+		}
+		getitembound 102373,1,BOUND_ACCOUNT;
+		mes "[Chirp]"; mes "Use the inscription to open the official reform interface. Refine, grade, cards, and enchants are retained."; close;
+	case 4:
+		if (.@rep < 3500) {
+			mes "[Chirp]"; mes "Removing an engraving requires 3,500 reputation."; close;
+		}
+		if (countitem(102374)) {
+			mes "[Chirp]"; mes "Use the unengraving catalyst already in your inventory."; close;
+		}
+		getitembound 102374,1,BOUND_ACCOUNT;
+		mes "[Chirp]"; mes "Use the catalyst to open the official reverse-reform interface."; close;
+	default:
+		close;
+	}
+}
+
+// Depth 2 daily research: one 450-kill mission plus ten independent species missions.
+ba_chess,25,13,4	script	Depth Abyss Research Manager#bio_d2	4_EP17_MASTER_A,{
+	mes "[Depth Abyss Research Manager]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	if (get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1) < 2000) {
+		mes "You need 2,000 Depth 1 Research reputation before joining Depth Abyss research.";
+		close;
+	}
+	setarray .@quest[0],16779,900106,16781,16783,16785,16787,16789,16791,16793,16795,16797,16799;
+	setarray .@wait[0],16780,900107,16782,16784,16786,16788,16790,16792,16794,16796,16798,16800;
+	setarray .@name$[0],"Any 450 monsters","Any 3,000 monsters","Depth Duneyrr","Depth Naga","Bio Ancient Tree","Depth Dollocaris","Depth Frozen Gargoyle","Depth Flame Ghost","Depth Acidus","Depth Morroc Incarnation","Depth Salamander","Depth Moskillro";
+	for (.@i = 0; .@i < 12; ++.@i)
+		callfunc "F_BioExpireWait",.@wait[.@i];
+	if (!isbegin_quest(16778)) {
+		setquest 16778;
+		completequest 16778;
+		mes "You are now registered for Biosphere Depth Abyss research.";
+	}
+	mes "Depth Abyss reputation: ^3366FF" + get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2) + " / 5000^000000";
+	next;
+	.@i = select("Hunt any 450 monsters.:Hunt any 3,000 monsters.:Depth Duneyrr (25):Depth Naga (25):Bio Ancient Tree (25):Depth Dollocaris (25):Depth Frozen Gargoyle (25):Depth Flame Ghost (25):Depth Acidus (25):Depth Morroc Incarnation (25):Depth Salamander (25):Depth Moskillro (25):Leave") - 1;
+	if (.@i == 12)
+		close;
+	mes "[Depth Abyss Research Manager]";
+	if (isbegin_quest(.@wait[.@i])) {
+		mes "The " + .@name$[.@i] + " assignment is on cooldown until 04:00.";
+		close;
+	}
+	if (!isbegin_quest(.@quest[.@i])) {
+		setquest .@quest[.@i];
+		mes "Assignment registered: " + .@name$[.@i] + ".";
+		close;
+	}
+	if (checkquest(.@quest[.@i],HUNTING) != 2) {
+		mes "That hunt is not complete yet. Check your quest window.";
+		close;
+	}
+	if (.@i == 0) {
+		.@reward = 1001556;
+		.@points = 20;
+	} else if (.@i == 1) {
+		.@reward = 102717;
+		.@points = 100;
+	} else {
+		.@reward = 1001554;
+		.@points = 2;
+	}
+	if (!checkweight(.@reward,1)) {
+		mes "Make room for the research reward first.";
+		close;
+	}
+	erasequest .@quest[.@i];
+	setquest .@wait[.@i];
+	getitem .@reward,1;
+	add_reputation_points REPUTATION_BIOSPHERE_DEPTH2,.@points;
+	if (.@quest[.@i] == 16779 && !isbegin_quest(16801)) {
+		setquest 16801;
+		completequest 16801;
+	}
+	mes "Research accepted. You received item ^3366FF" + .@reward + "^000000 and ^33AA33" + .@points + " Depth Abyss reputation^000000.";
+	close;
+}
+
+// Rebuilds the equipped Time Dimensions Rune Crown after a scripted reroll or
+// probabilistic upgrade. Physical card, other enchants, refine, grade, binding,
+// identify/broken state, and random options are preserved.
+function	script	F_BioD2RebuildCrown	{
+	.@new1 = getarg(0);
+	.@new2 = getarg(1);
+	.@new3 = getarg(2);
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] >= 400529 && @inventorylist_id[.@i] <= 400546) {
+			.@idx = .@i;
+			break;
+		}
+	}
+	if (.@idx < 0)
+		return 0;
+	// Script item constructors cannot retain rental expiry or a unique ID.
+	// Refuse those crowns so a rebuild can never make a rental permanent or
+	// silently replace a uniquely tracked item.
+	if (@inventorylist_expire[.@idx] || getequipuniqueid(EQI_HEAD_TOP))
+		return 0;
+	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
+	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
+	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
+	.@id = @inventorylist_id[.@idx];
+	.@identify = @inventorylist_identify[.@idx];
+	.@refine = @inventorylist_refine[.@idx];
+	.@attribute = @inventorylist_attribute[.@idx];
+	.@grade = @inventorylist_enchantgrade[.@idx];
+	.@bound = @inventorylist_bound[.@idx];
+	.@card0 = @inventorylist_card1[.@idx];
+	delitemidx @inventorylist_idx[.@idx],1;
+	if (.@bound)
+		getitembound4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@bound,.@grade,.@oid,.@oval,.@opar;
+	else
+		getitem4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@grade,.@oid,.@oval,.@opar;
+	return 1;
+}
+
+// Depth Abyss conversion, crown crafting, and native enchant interfaces.
+ba_chess,22,16,4	script	Abyss Researcher#bio_d2	4_EP17_BASIC_B,{
+	mes "[Abyss Researcher]";
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	if (get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1) < 2000) {
+		mes "Depth Abyss research requires 2,000 Depth 1 Research reputation.";
+		close;
+	}
+	.@rep = get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2);
+	mes "I process materials and equipment recovered from Biosphere Depth 2.";
+	mes "Depth 2 reputation: ^3366FF" + .@rep + " / 5000^000000";
+	next;
+	switch(select("Convert Depth 2 materials.:Craft a Time Dimensions Rune Crown (500 reputation).:Enchant a Dimension weapon (750 reputation).:Enchant a Time Dimensions Rune Crown (1,500 reputation).:Random-upgrade a Crown special jewel.:Reroll a Crown stat line.:Leave.")) {
+	case 1:
+		goto L_Convert;
+	case 2:
+		if (.@rep < 500) {
+			mes "[Abyss Researcher]";
+			mes "Crown crafting requires 500 Depth 2 reputation.";
+			close;
+		}
+		goto L_Crown;
+	case 3:
+		if (.@rep < 750) {
+			mes "[Abyss Researcher]";
+			mes "Dimension weapon enchanting requires 750 Depth 2 reputation.";
+			close;
+		}
+		close2;
+		item_enchant 133;
+		end;
+	case 4:
+		if (.@rep < 1500) {
+			mes "[Abyss Researcher]";
+			mes "Crown enchanting requires 1,500 Depth 2 reputation.";
+			close;
+		}
+		close2;
+		item_enchant 132;
+		end;
+	case 5:
+		if (.@rep < 1500) {
+			mes "[Abyss Researcher]";
+			mes "Crown enchant upgrades require 1,500 Depth 2 reputation.";
+			close;
+		}
+		goto L_RandomUpgrade;
+	case 6:
+		if (.@rep < 1500) {
+			mes "[Abyss Researcher]";
+			mes "Crown stat rerolls require 1,500 Depth 2 reputation.";
+			close;
+		}
+		goto L_StatReroll;
+	default:
+		close;
+	}
+
+L_Crown:
+	mes "[Abyss Researcher]";
+	mes "Every crown costs 50 Abyss Magic Jewels, 50 Time Dimension Magic Jewels, and 75 Temporal Gemstones.";
+	next;
+	.@crown = select("Dragon Knight:Imperial Guard:Meister:Biolo:Shadow Cross:Abyss Chaser:Arch Mage:Elemental Master:Cardinal:Inquisitor:Windhawk:Troubadour / Trouvere:Shinkiro / Shiranui:Night Watch:Sky Emperor:Soul Ascetic:Hyper Novice:Spirit Handler:Cancel") - 1;
+	if (.@crown == 18)
+		close;
+	.@result = 400529 + .@crown;
+	mes "[Abyss Researcher]";
+	mes "Create item ^3366FF" + .@result + "^000000?";
+	next;
+	if (select("Craft it.:Cancel.") == 2)
+		close;
+	if (countitem(1001552) < 50 || countitem(1001553) < 50 || countitem(25865) < 75) {
+		mes "[Abyss Researcher]";
+		mes "You do not have all required materials.";
+		close;
+	}
+	if (!checkweight(.@result,1)) {
+		mes "Make room for the crown first.";
+		close;
+	}
+	delitem 1001552,50;
+	delitem 1001553,50;
+	delitem 25865,75;
+	getitem .@result,1;
+	mes "[Abyss Researcher]";
+	mes "Crown crafting complete.";
+	close;
+
+L_RandomUpgrade:
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] >= 400529 && @inventorylist_id[.@i] <= 400546) {
+			.@idx = .@i;
+			break;
+		}
+	}
+	if (.@idx < 0) {
+		mes "[Abyss Researcher]";
+		mes "Equip the Time Dimensions Rune Crown you want to upgrade.";
+		close;
+	}
+	.@current = @inventorylist_card2[.@idx];
+	.@keep2 = @inventorylist_card3[.@idx];
+	.@keep3 = @inventorylist_card4[.@idx];
+	setarray .@base[0],312719,312729,312739,312749,312759,312769,312779,312789,314249,314259;
+	.@family = -1;
+	for (.@i = 0; .@i < 10; ++.@i) {
+		if (.@current >= .@base[.@i] && .@current <= .@base[.@i] + 9) {
+			.@family = .@i;
+			.@level = .@current - .@base[.@i] + 1;
+			break;
+		}
+	}
+	if (.@family < 0) {
+		mes "[Abyss Researcher]";
+		mes "The equipped crown does not have a supported special jewel in slot 2.";
+		close;
+	}
+	if (.@level >= 10) {
+		mes "[Abyss Researcher]";
+		mes "That special jewel is already level 10.";
+		close;
+	}
+	setarray .@chance[1],80,65,50,35,25,20,10,7,5;
+	setarray .@cost[1],5,10,20,35,55,80,110,145,185;
+	mes "[Abyss Researcher]";
+	mes "Level " + .@level + " -> " + (.@level + 1) + ": ^3366FF" + .@chance[.@level] + "% success^000000, " + .@cost[.@level] + " Time Dimension Magic Runes.";
+	if (.@level == 1)
+		mes "Failure keeps the enchant at level 1.";
+	else
+		mes "Failure downgrades the enchant by one level.";
+	next;
+	if (select("Attempt upgrade.:Cancel.") == 2)
+		close;
+	if (countitem(1001556) < .@cost[.@level]) {
+		mes "[Abyss Researcher]";
+		mes "You do not have enough Time Dimension Magic Runes.";
+		close;
+	}
+	delitem 1001556,.@cost[.@level];
+	if (rand(100) < .@chance[.@level]) {
+		.@new = .@current + 1;
+		.@success = 1;
+	} else {
+		.@new = (.@level > 1) ? .@current - 1 : .@current;
+		.@success = 0;
+	}
+	if (!callfunc("F_BioD2RebuildCrown",.@new,.@keep2,.@keep3)) {
+		// This can only occur if external state removed the equipped crown between
+		// validation and reconstruction; refund rather than consume materials.
+		getitem 1001556,.@cost[.@level];
+		mes "[Abyss Researcher]";
+		mes "The equipped crown changed, so the upgrade was cancelled and refunded.";
+		close;
+	}
+	mes "[Abyss Researcher]";
+	if (.@success)
+		mes "Upgrade successful. The special jewel is now level " + (.@level + 1) + ".";
+	else if (.@level > 1)
+		mes "Upgrade failed. The special jewel fell to level " + (.@level - 1) + ".";
+	else
+		mes "Upgrade failed. The level 1 jewel was preserved.";
+	close;
+
+L_StatReroll:
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] >= 400529 && @inventorylist_id[.@i] <= 400546) {
+			.@idx = .@i;
+			break;
+		}
+	}
+	if (.@idx < 0) {
+		mes "[Abyss Researcher]";
+		mes "Equip the Time Dimensions Rune Crown whose slot 4 stat you want to reroll.";
+		close;
+	}
+	.@keep1 = @inventorylist_card2[.@idx];
+	.@keep2 = @inventorylist_card3[.@idx];
+	.@old = @inventorylist_card4[.@idx];
+	setarray .@stat_id[0],4700,4701,4702,4703,4704,4710,4711,4712,4713,4714,4740,4741,4742,4743,4744,4750,4751,4752,4753,4754;
+	.@valid = 0;
+	for (.@i = 0; .@i < 20; ++.@i) {
+		if (.@old == .@stat_id[.@i]) {
+			.@valid = 1;
+			break;
+		}
+	}
+	if (!.@valid) {
+		mes "[Abyss Researcher]";
+		mes "The equipped crown does not have a supported stat enchant in slot 4.";
+		close;
+	}
+	mes "[Abyss Researcher]";
+	mes "Rerolling only slot 4 costs 180 Abyss Magic Runes. The published normal-enchant probabilities are used.";
+	next;
+	if (select("Reroll slot 4.:Cancel.") == 2)
+		close;
+	if (countitem(1001555) < 180) {
+		mes "[Abyss Researcher]";
+		mes "You need 180 Abyss Magic Runes.";
+		close;
+	}
+	setarray .@stat_weight[0],11500,8000,3500,1500,500,11500,8000,3500,1500,500,11500,8000,3500,1500,500,11500,8000,3500,1500,500;
+	.@roll = rand(100000);
+	.@total = 0;
+	for (.@i = 0; .@i < 20; ++.@i) {
+		.@total += .@stat_weight[.@i];
+		if (.@roll < .@total) {
+			.@new = .@stat_id[.@i];
+			break;
+		}
+	}
+	delitem 1001555,180;
+	if (!callfunc("F_BioD2RebuildCrown",.@keep1,.@keep2,.@new)) {
+		getitem 1001555,180;
+		mes "[Abyss Researcher]";
+		mes "The equipped crown changed, so the reroll was cancelled and refunded.";
+		close;
+	}
+	mes "[Abyss Researcher]";
+	mes "Slot 4 was rerolled successfully.";
+	close;
+
+L_Convert:
+	mes "[Abyss Researcher]";
+	.@recipe = select("10 Abyss Jewel Fragments + 10,000z -> Abyss Magic Jewel:10 Time Dimension Jewel Fragments + 10,000z -> Time Dimension Magic Jewel:10 of each Magic Jewel + 20,000z -> Abyss Magic Rune Ore:5 Rune Ore + 5 Temporal Crystals + 30,000z -> Abyss Magic Rune:5 Abyss Runes + spell materials + 50,000z -> Time Dimension Magic Rune:Leave");
+	if (.@recipe == 6)
+		close;
+	switch(.@recipe) {
+	case 1:
+		setarray .@mat[0],1001550;
+		setarray .@need[0],10;
+		.@matcount = 1; .@result = 1001552; .@cost = 10000;
+		break;
+	case 2:
+		setarray .@mat[0],1001551;
+		setarray .@need[0],10;
+		.@matcount = 1; .@result = 1001553; .@cost = 10000;
+		break;
+	case 3:
+		setarray .@mat[0],1001552,1001553;
+		setarray .@need[0],10,10;
+		.@matcount = 2; .@result = 1001554; .@cost = 20000;
+		break;
+	case 4:
+		setarray .@mat[0],1001554,6607;
+		setarray .@need[0],5,5;
+		.@matcount = 2; .@result = 1001555; .@cost = 30000;
+		break;
+	case 5:
+		setarray .@mat[0],1001555,6608,6755,25866;
+		setarray .@need[0],5,5,5,3;
+		.@matcount = 4; .@result = 1001556; .@cost = 50000;
+		break;
+	}
+	.@max = Zeny / .@cost;
+	for (.@i = 0; .@i < .@matcount; ++.@i) {
+		.@have = countitem(.@mat[.@i]) / .@need[.@i];
+		if (.@max > .@have)
+			.@max = .@have;
+	}
+	if (.@max < 1) {
+		mes "[Abyss Researcher]";
+		mes "You do not have all required materials and Zeny.";
+		close;
+	}
+	mes "[Abyss Researcher]";
+	mes "How many should I create? Maximum: " + .@max + ".";
+	input .@amount,1,.@max;
+	if (!checkweight(.@result,.@amount)) {
+		mes "Make room for the converted material first.";
+		close;
+	}
+	for (.@i = 0; .@i < .@matcount; ++.@i)
+		delitem .@mat[.@i],.@need[.@i] * .@amount;
+	Zeny -= .@cost * .@amount;
+	getitem .@result,.@amount;
+	mes "Conversion complete. You received " + .@amount + " unit(s) of item ^3366FF" + .@result + "^000000.";
+	close;
+}

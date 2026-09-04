@@ -8771,6 +8771,14 @@ This command will make a <GID> stop attacking.
 
 ---------------------------------------
 
+*unitisforcewalk <GID>;
+
+Returns 1 when the unit has a pending forced walk but is currently idle, or 0
+otherwise. This can be used to detect and recover a scripted unit whose forced
+walk stopped before it reached its destination.
+
+---------------------------------------
+
 *unitstopwalk <GID>{,<flag>};
 
 This command will make a <GID> stop moving.

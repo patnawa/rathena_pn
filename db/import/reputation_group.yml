@@ -1,0 +1,12 @@
+# Varmundt's Biosphere reputation group from current client metadata.
+Header:
+  Type: REPUTATION_GROUP_DB
+  Version: 1
+
+Body:
+  - Id: 4
+    ScriptName: BioSphere
+    Name: Biosphere
+    ReputeList:
+      - 6
+      - 9

@@ -85,7 +85,7 @@ function	script	ZC_DailyQuest	{
 		mes "The cleanup is still in progress. Check your quest window for the remaining count.";
 		close;
 	}
-	if (!checkweight(.@reward, 1) || !checkweight(1001996, .@rings)) {
+	if (!checkweight(.@reward, 1, 1001996, .@rings)) {
 		mes "[Robin]";
 		mes "Please make room in your inventory before receiving the reward.";
 		close;

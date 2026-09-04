@@ -15,10 +15,20 @@ function	script	EP21_AllFamilyReputation	{
 }
 
 jor_mbase,219,315,4	script	Mandel#ep21_reputation	4_M_MANAGER,{
-	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && EP21_Supply_Daily != EP21_DailyKey()";
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_Supply_Daily != EP21_DailyKey()";
 	mes "[Mandel]";
-	if (!callfunc("EP21_GhostShipUnlocked")) {
-		mes "The resistance has not approved supply contracts for you yet. Finish the Ghost Ship report first.";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "Supply Procurement opens after the Episode 21 campaign is complete.";
+		close;
+	}
+	if (!EP21_SupplyUnlocked) {
+		mes "The seven families each need specific supplies. You may accept one family procurement request per day.";
+		if (!isbegin_quest(17781)) {
+			setquest 17781;
+			completequest 17781;
+		}
+		EP21_SupplyUnlocked = 1;
+		mes "Daily Supply Procurement is now unlocked.";
 		close;
 	}
 

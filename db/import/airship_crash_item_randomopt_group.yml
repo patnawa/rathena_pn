@@ -1,0 +1,45 @@
+# Copyright (c) 2026 rAthena contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Airship Crash / Ymir Beads published enchant ranges:
+# https://wiki.gemstonero.com/doku.php?id=guides:muhro:airship_crash
+# The shipped LapineUpgradeBox.lub confirms that item 100476 applies to all
+# six Unknown Stat Boots and always supplies up to two option lines.
+
+Header:
+  Type: RANDOM_OPTION_GROUP
+  Version: 1
+
+Body:
+  - Id: 9300
+    Group: AIRSHIP_CRASH_YMIR_BEADS
+    Slots:
+      - Slot: 1
+        Options:
+          - Option: VAR_MAXHPPERCENT
+            MinValue: 1
+            MaxValue: 10
+          - Option: VAR_MAXSPPERCENT
+            MinValue: 1
+            MaxValue: 10
+      - Slot: 2
+        Options:
+          - Option: VAR_HPACCELERATION
+            MinValue: 25
+            MaxValue: 50
+          - Option: VAR_SPACCELERATION
+            MinValue: 25
+            MaxValue: 50
+          - Option: VAR_MAXHPAMOUNT
+            MinValue: 50
+            MaxValue: 1000
+          - Option: VAR_MAXSPAMOUNT
+            MinValue: 10
+            MaxValue: 300
+          - Option: VAR_PLUSASPDPERCENT
+            MinValue: 1
+            MaxValue: 7
+          - Option: DEC_SPELL_CAST_TIME
+            MinValue: 1
+            MaxValue: 10
+    MaxRandom: 0

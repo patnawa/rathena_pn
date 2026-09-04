@@ -13,6 +13,11 @@ function	script	EP21_GimliComplete	{
 function	script	EP21_EnterGimli	{
 	.@name$ = "Gimli Infiltration";
 	.@party_id = getcharid(1);
+	if (!.@party_id) {
+		mes "[Gimli Infiltration]";
+		mes "This is a party operation. Form a party before entering.";
+		close;
+	}
 	if (.@party_id) {
 		.@iid = instance_id(IM_PARTY);
 		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
@@ -28,15 +33,6 @@ function	script	EP21_EnterGimli	{
 			}
 			.@iid = instance_create(.@name$,IM_PARTY,.@party_id);
 		}
-	} else {
-		.@iid = instance_id(IM_CHAR);
-		if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
-			mes "[Gimli Infiltration]";
-			mes "You already own another active solo instance.";
-			close;
-		}
-		if (!.@iid)
-			.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
 	}
 	if (.@iid < 1) {
 		mes "[Gimli Infiltration]";
@@ -53,8 +49,8 @@ function	script	EP21_EnterGimli	{
 
 // Quest 17764 is the official final infiltration state immediately before
 // this memorial dungeon. Episode 21 characters may enter from Base Level 230.
-jor_tmple1,238,268,4	script	Disguised Temple Guard#ep21gimli	22366,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && !EP21_GimliComplete() && isbegin_quest(17764) == 0";
+luna_sf2,187,254,4	script	Disguised Temple Guard#ep21gimli	22366,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && !EP21_GimliComplete() && isbegin_quest(17764) == 1";
 	mes "[Disguised Temple Guard]";
 	if (BaseLevel < 230) {
 		mes "Only experienced operatives may enter the restricted prayer rooms. Return at Base Level 230.";
@@ -65,10 +61,8 @@ jor_tmple1,238,268,4	script	Disguised Temple Guard#ep21gimli	22366,{
 		mes "The infiltration report is complete. Maristella is preparing the Ghost Ship expedition in Fishing Village Alberta.";
 		close;
 	}
-	if (isbegin_quest(17764) == 2) {
-		erasequest 17764;
-		setquest 17765;
-		mes "Your unit returned safely. Report to Nadoyo through the northern safe spot at ^3366FF(jor_raise1 322, 69)^000000.";
+	if (isbegin_quest(17764) != 1) {
+		mes "Nadoyo has not authorized you for the Gimli operation. Complete Cult Infiltration first.";
 		close;
 	}
 	mes "Nadoyo registered your group under false names. Carmigand's escape plan was exposed, so every prisoner must be found before the cult moves them.";
@@ -81,8 +75,6 @@ jor_tmple1,238,268,4	script	Disguised Temple Guard#ep21gimli	22366,{
 	}
 	if (.@choice == 3)
 		close;
-	if (!isbegin_quest(17764))
-		setquest 17764;
 	callfunc "EP21_EnterGimli";
 }
 
@@ -97,9 +89,17 @@ jor_raise1,322,69,0	script	#EP21_GimliSafeSpot	WARPNPC,2,2,{
 }
 luna_sf1,48,259,0	script	#EP21_GimliSafeExit	WARPNPC,2,2,{ warp "jor_raise1",322,72; end; }
 
-jor_mbase,203,190,0	script	#EP21_CentralBarrackIn	WARPNPC,2,2,{ warp "mbase_in",92,123; end; }
+jor_mbase,203,190,0	script	#EP21_CentralBarrackIn	WARPNPC,2,2,{
+	if (!callfunc("EP21_LunaformaAccess")) { message strcharinfo(0),"The resistance has not admitted you to the barracks."; end; }
+	warp "mbase_in",92,123;
+	end;
+}
 mbase_in,94,120,0	script	#EP21_CentralBarrackOut	WARPNPC,2,2,{ warp "jor_mbase",203,186; end; }
-jor_albe,120,146,0	script	#EP21_AlbertaOfficeIn	WARPNPC,2,2,{ warp "jalbe_in",68,42; end; }
+jor_albe,120,146,0	script	#EP21_AlbertaOfficeIn	WARPNPC,2,2,{
+	if (!callfunc("EP21_GaebolgComplete")) { message strcharinfo(0),"The Alberta office is not open to you yet."; end; }
+	warp "jalbe_in",68,42;
+	end;
+}
 jalbe_in,68,39,0	script	#EP21_AlbertaOfficeOut	WARPNPC,2,2,{ warp "jor_albe",120,142; end; }
 
 luna_sf1,48,265,4	script	Nadoyo#ep21gimli_report	22303,{
@@ -123,8 +123,22 @@ luna_sf1,48,265,4	script	Nadoyo#ep21gimli_report	22303,{
 }
 
 jor_mbase,143,272,4	script	Tris#ep21gimli_report	22301,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17766) == 1";
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17763) == 1 || isbegin_quest(17766) == 1";
 	mes "[Tris]";
+	if (isbegin_quest(17763) == 1) {
+		if (!checkweight(1001618,15)) {
+			mes "Make room for fifteen Wigner vouchers first.";
+			close;
+		}
+		completequest 17763;
+		setquest 17764;
+		getitem 1001618,15;
+		callfunc "EP21_AddReputation",15;
+		EP21_Cult_Complete = 1;
+		mes "Cult Infiltration complete. Reward: 15 vouchers and 15 Gaebolg Command reputation.";
+		mes "Use Safe Spot 4 at ^3366FF(jor_tmple1 238, 268)^000000, then speak to the disguised guard at ^3366FF(luna_sf2 187, 254)^000000.";
+		close;
+	}
 	if (isbegin_quest(17766) != 1) {
 		mes "Every person who escaped Gimli gives the resistance another chance.";
 		close;
@@ -167,8 +181,19 @@ mbase_in,120,186,4	script	Reinhardt#ep21gimli_report	22304,{
 }
 
 jalbe_in,68,46,4	script	Maristella Walter#ep21gimli_report	22306,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17769) == 1";
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17756) == 1 || isbegin_quest(17769) == 1";
 	mes "[Maristella Walter]";
+	if (isbegin_quest(17756) == 1) {
+		if (!checkweight(1001618,10)) {
+			mes "Make room for ten Wigner vouchers first.";
+			close;
+		}
+		changequest 17756,17757;
+		getitem 1001618,10;
+		callfunc "EP21_AddReputation",5;
+		mes "This manifest proves the cult fears a Walter ghost ship. Reward: 10 vouchers and 5 reputation. Report to Ivan.";
+		close;
+	}
 	if (isbegin_quest(17769) != 1) {
 		mes "We are still comparing old Walter shipping records.";
 		close;

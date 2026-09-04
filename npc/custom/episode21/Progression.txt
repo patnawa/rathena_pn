@@ -1,0 +1,558 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Age of Heroes progression and access gates
+//===== Description: =========================================
+//= Clean-room reconstruction of the published pre-Gimli route.
+//= Requires Base Level 230 and Episode 20 quest 18233 complete.
+//= Sources:
+//= https://wiki.muhro.eu/21_Age_of_Heroes/en
+//= https://ratemyragnarok.com/episodes/21/yorscalp/
+//= https://rockragnarok.com/rockwiki/index.php?title=Episode_21_Age_Of_Heroes
+//============================================================
+
+function	script	EP21_QuestInRange	{
+	for (.@qid = getarg(0); .@qid <= getarg(1); ++.@qid) {
+		if (isbegin_quest(.@qid))
+			return true;
+	}
+	return false;
+}
+
+function	script	EP21_EntryRequirement	{
+	return BaseLevel >= 230 && isbegin_quest(18233) == 2;
+}
+
+function	script	EP21_Started	{
+	return EP21_StoryStage || callfunc("EP21_QuestInRange",18334,18361) ||
+		callfunc("EP21_QuestInRange",23240,23255) ||
+		callfunc("EP21_QuestInRange",17752,17769) || EP21_Main_Complete;
+}
+
+function	script	EP21_LunaformaAccess	{
+	return EP21_Lunaforma_Access || callfunc("EP21_QuestInRange",23240,23255) ||
+		callfunc("EP21_QuestInRange",17752,17769) ||
+		callfunc("EP21_QuestInRange",16816,16826) ||
+		callfunc("EP21_QuestInRange",18338,18361) || EP21_Main_Complete;
+}
+
+function	script	EP21_GaebolgComplete	{
+	return EP21_Gaebolg_Complete || isbegin_quest(23248) == 2 ||
+		callfunc("EP21_QuestInRange",17752,17769) ||
+		callfunc("EP21_QuestInRange",16816,16826) ||
+		callfunc("EP21_QuestInRange",18338,18361) || EP21_Main_Complete;
+}
+
+function	script	EP21_AlbertaAccess	{
+	// The warper to Alberta is a Gaebolg Resistance completion reward; the
+	// village introduction itself is tracked separately by EP21_Alberta_Complete.
+	return callfunc("EP21_GaebolgComplete");
+}
+
+function	script	EP21_TempleAccess	{
+	return EP21_Temple_Access || callfunc("EP21_QuestInRange",17761,17769) ||
+		callfunc("EP21_QuestInRange",16816,16826) ||
+		callfunc("EP21_QuestInRange",18338,18361) || EP21_Main_Complete;
+}
+
+function	script	EP21_CultComplete	{
+	return EP21_Cult_Complete || isbegin_quest(17764) ||
+		callfunc("EP21_QuestInRange",17765,17769) ||
+		callfunc("EP21_QuestInRange",16816,16826) ||
+		callfunc("EP21_QuestInRange",18338,18361) || EP21_Main_Complete;
+}
+
+function	script	EP21_WarperAccess	{
+	.@map$ = getarg(0);
+	if (.@map$ == "jor_tail" || .@map$ == "jor_crk") {
+		if (callfunc("EP21_EntryRequirement") || callfunc("EP21_Started"))
+			return true;
+		message strcharinfo(0),"Episode 21 requires Base Level 230 and completion of Episode 20: The Immortal.";
+		return false;
+	}
+	if (.@map$ == "jor_mbase") {
+		if (callfunc("EP21_LunaformaAccess")) return true;
+		message strcharinfo(0),"Reach Lunaforma through Shufapa's Episode 21 investigation first.";
+		return false;
+	}
+	if (.@map$ == "jor_albe") {
+		if (callfunc("EP21_AlbertaAccess")) return true;
+		message strcharinfo(0),"Complete the Gaebolg Resistance and Old Alberta introduction first.";
+		return false;
+	}
+	if (.@map$ == "jor_raise1" || .@map$ == "jor_raise2") {
+		if (callfunc("EP21_GaebolgComplete")) return true;
+		message strcharinfo(0),"Complete the Gaebolg Resistance assignment first.";
+		return false;
+	}
+	if (.@map$ == "jor_tmple1" || .@map$ == "jor_tmple2") {
+		if (callfunc("EP21_TempleAccess")) return true;
+		message strcharinfo(0),"The Jormungandr Temple route has not been opened by the resistance.";
+		return false;
+	}
+	if (.@map$ == "jor_sklf1" || .@map$ == "jor_sklf2") {
+		if (callfunc("EP21_MainComplete")) return true;
+		message strcharinfo(0),"Complete Episode 21 before entering the cult's end-game floors.";
+		return false;
+	}
+	return true;
+}
+
+function	script	EP21_InstanceWarperAccess	{
+	switch (getarg(0)) {
+	case 21:
+		if (isbegin_quest(17764) == 1) return true;
+		message strcharinfo(0),"Complete Cult Infiltration and receive Nadoyo's Gimli operation first.";
+		return false;
+	case 22:
+		if (callfunc("EP21_GimliComplete")) return true;
+		message strcharinfo(0),"Complete Gimli Infiltration first.";
+		return false;
+	case 23:
+		if (isbegin_quest(18347) || isbegin_quest(18348) || isbegin_quest(18349) || callfunc("EP21_MainComplete")) return true;
+		message strcharinfo(0),"Advance the Black-Haired Beast investigation to the Final Battle.";
+		return false;
+	case 24:
+		if (isbegin_quest(18350) || isbegin_quest(18351) || isbegin_quest(18352) || callfunc("EP21_MainComplete")) return true;
+		message strcharinfo(0),"Reach the Suspicious Book and Shining Door first.";
+		return false;
+	case 25:
+		if (isbegin_quest(18358) || isbegin_quest(18359) || isbegin_quest(18360) || callfunc("EP21_MainComplete")) return true;
+		message strcharinfo(0),"Reach the Lasgand investigation before entering Silent Sanctuary.";
+		return false;
+	}
+	return false;
+}
+
+// The official start. Quest 18233 is the local Episode 20 clear marker.
+jor_tail,233,41,4	script	Shufapa#ep21_start	4_EP19_IWIN_DIVER,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && isbegin_quest(18233) == 2 && !EP21_Started()";
+	mes "[Shufapa]";
+	if (BaseLevel < 230) {
+		mes "The mana survey is too dangerous below Base Level 230.";
+		close;
+	}
+	if (isbegin_quest(18233) != 2) {
+		mes "Finish the Episode 20 investigation, The Immortal, before joining this expedition.";
+		close;
+	}
+	if (callfunc("EP21_Started")) {
+		mes "The investigation is already underway. Follow your Episode 21 quest log.";
+		close;
+	}
+	mes "An unusual mana wavelength is coming from Scale Island. Nillem's team needs an experienced adventurer.";
+	next;
+	if (select("Join the investigation.:Not yet.") == 2) close;
+	setquest 18334;
+	changequest 18334,18335;
+	EP21_StoryStage = 1;
+	warp "jor_crk",105,108;
+	end;
+}
+
+jor_crk,105,108,4	script	Nyar#ep21_rift_now	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18335) == 1";
+	mes "[Nyar]";
+	if (isbegin_quest(18335) != 1) { mes "The rift is unstable. Shufapa is coordinating the expedition at Frozen Tail."; close; }
+	mes "This rift crosses dimensions and time. It reaches the era when Lasgand received his power.";
+	next;
+	mes "We can enter the past and trace that source, but every action there may alter history.";
+	changequest 18335,18336;
+	EP21_StoryStage = 2;
+	warp "jor_crk_p",105,108;
+	end;
+}
+
+jor_crk_p,105,108,4	script	Nyar#ep21_rift_past	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18336) == 1";
+	mes "[Nyar]";
+	if (isbegin_quest(18336) != 1) { mes "This is the Scale Island of the distant past."; close; }
+	mes "We arrived before Rune-Midgarts was founded. People nearby are resisting the Jormungandr cult.";
+	changequest 18336,18337;
+	EP21_StoryStage = 3;
+	close;
+}
+
+jor_crk_p,100,95,4	script	Ivan#ep21_first_meeting	22311,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18337) == 1";
+	mes "[Ivan]";
+	if (isbegin_quest(18337) != 1) { mes "The resistance watches every stranger who approaches the rift."; close; }
+	mes "I am Ivan Wigner. If you truly oppose the cult, come to the resistance camp and explain yourselves.";
+	completequest 18337;
+	setquest 23240;
+	EP21_StoryStage = 4;
+	warp "luna_sf1",258,151;
+	end;
+}
+
+luna_sf1,258,151,4	script	Ivan#ep21_safe_arrival	22311,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23240) == 1";
+	mes "[Ivan]";
+	if (isbegin_quest(23240) != 1) { mes "This safe place connects to Lunaforma."; close; }
+	mes "The Gaebolg resistance will decide whether to trust you. Speak with the soldier and Tris at the west gate.";
+	changequest 23240,23241;
+	EP21_Lunaforma_Access = 1;
+	EP21_ResistanceStep = 1;
+	warp "jor_mbase",54,155;
+	end;
+}
+
+jor_mbase,54,155,4	script	Resistance Soldier#ep21_prog	4_M_KNIGHT_SILVER,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23241) == 1 || isbegin_quest(23242) == 1";
+	mes "[Resistance Soldier]";
+	if (isbegin_quest(23241) == 1) {
+		mes "Tris commands this camp. He is beside me.";
+		changequest 23241,23242;
+		close;
+	}
+	if (isbegin_quest(23243) == 1 && EP21_ResistanceStep == 2) {
+		mes "Libra has begun carrying messages for the resistance. Tan is waiting nearby.";
+		EP21_ResistanceStep = 3;
+		close;
+	}
+	mes "Stay alert. The cult is always looking for our camp.";
+	close;
+}
+
+jor_mbase,56,152,4	script	Tris#ep21_arrival	22301,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23242) == 1";
+	mes "[Tris]";
+	if (isbegin_quest(23242) != 1) { mes "Lunaforma shelters everyone willing to resist the cult."; close; }
+	mes "Ivan trusts you, but we need more than words. Hear Tan's assessment and meet our mercenaries.";
+	changequest 23242,23243;
+	EP21_ResistanceStep = 2;
+	close;
+}
+
+jor_mbase,57,150,4	script	Tan#ep21_arrival	22302,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 1 && EP21_ResistanceStep == 3";
+	mes "[Tan]";
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep < 3) { mes "The camp is still deciding what to do with the newcomers."; close; }
+	mes "Meet me at the eastern tent. Valdaris can explain what this resistance needs.";
+	EP21_ResistanceStep = 4;
+	warp "jor_mbase",313,106;
+	end;
+}
+
+jor_mbase,313,106,4	script	Tan#ep21_east_tent	22302,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 1 && EP21_ResistanceStep == 4";
+	mes "[Tan]";
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep != 4) { mes "The eastern tent is reserved for resistance planning."; close; }
+	mes "Inspect the documents and speak with Valdaris inside. Then meet Richard and Lee in the central barracks.";
+	EP21_ResistanceStep = 5;
+	warp "mbase_in",289,124;
+	end;
+}
+
+mbase_in,299,126,4	script	Pile of Documents#ep21	4_VR_BOOK_BLUE,{
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep != 5) { message strcharinfo(0),"The reports are written in an unfamiliar military code."; end; }
+	mes "The reports list shortages, missing scouts, and cult movements around the Raised Lands.";
+	EP21_ResistanceStep = 6;
+	close;
+}
+
+mbase_in,302,123,4	script	Valdaris#ep21_resistance	4_M_REBELLION3,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 1 && EP21_ResistanceStep == 6";
+	mes "[Valdaris]";
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep != 6) { mes "Mercenaries survive by understanding the battlefield before accepting a contract."; close; }
+	mes "The resistance needs people who can act without waiting for a noble title. Richard and Lee can show you how Lunaforma works.";
+	EP21_ResistanceStep = 7;
+	warp "mbase_in",167,128;
+	end;
+}
+
+mbase_in,167,128,4	script	Richard#ep21_resistance	22308,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 1 && EP21_ResistanceStep == 7";
+	mes "[Richard]";
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep != 7) { mes "Every family contributes something to the resistance."; close; }
+	mes "We fight for people, not banners. Lee will take you back outside.";
+	EP21_ResistanceStep = 8;
+	close;
+}
+
+mbase_in,167,79,4	script	Lee#ep21_resistance_in	4_M_REBELLION2,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 1 && EP21_ResistanceStep == 8";
+	mes "[Lee]";
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep != 8) { mes "The central barracks are open to approved resistance members."; close; }
+	EP21_ResistanceStep = 9;
+	warp "jor_mbase",163,196;
+	end;
+}
+
+jor_mbase,163,196,4	script	Lee#ep21_resistance_out	4_M_REBELLION2,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 1 && EP21_ResistanceStep == 9";
+	mes "[Lee]";
+	if (isbegin_quest(23243) != 1 || EP21_ResistanceStep != 9) { mes "Lunaforma is safer now that you are helping."; close; }
+	if (!checkweight(1001618,30)) { mes "Make room for thirty Wigner Merchant Guild Vouchers."; close; }
+	completequest 23243;
+	getitem 1001618,30;
+	callfunc "EP21_AddReputation",30;
+	getexp 547793770,239980220;
+	EP21_ResistanceStep = 10;
+	mes "The resistance accepts you. Reward: 30 vouchers and 30 Gaebolg Command reputation.";
+	mes "Tris has an assignment at ^3366FF(jor_mbase 168, 200)^000000.";
+	close;
+}
+
+jor_mbase,168,200,4	script	Tris#ep21_profit	22301,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23243) == 2 && !EP21_GaebolgComplete()";
+	mes "[Tris]";
+	if (callfunc("EP21_GaebolgComplete")) { mes "The supply route to Alberta is open."; close; }
+	if (isbegin_quest(23243) != 2) { mes "Finish your introduction to the resistance first."; close; }
+	if (!isbegin_quest(23247)) {
+		mes "Hunt 10 Skipskippers in the Southern Raised Land and bring one Bright Eye (item 1001641).";
+		setquest 23247;
+		close;
+	}
+	if (checkquest(23247,HUNTING) != 2 || countitem(1001641) < 1) {
+		mes "The assignment requires 10 Skipskippers and one Bright Eye.";
+		close;
+	}
+	if (!checkweight(1001618,35)) { mes "Make room for thirty-five vouchers."; close; }
+	delitem 1001641,1;
+	completequest 23247;
+	setquest 23248;
+	completequest 23248;
+	getitem 1001618,35;
+	callfunc "EP21_AddReputation",35;
+	getexp 547793770,239980220;
+	EP21_Gaebolg_Complete = 1;
+	mes "Gaebolg Resistance complete. Reward: 35 vouchers and 35 reputation.";
+	mes "Fishing Village Alberta is now available. Meet Nillem at ^3366FF(jor_albe 192, 209)^000000.";
+	close;
+}
+
+// Old Fishing Village Alberta. Its chores are tracked by persistent variables
+// because the public quest database does not expose a distinct quest-ID block.
+jor_albe,192,209,4	script	Nillem#ep21_alberta	4_M_SAGE_C,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_GaebolgComplete() && !EP21_Alberta_Complete";
+	mes "[Nillem]";
+	if (!callfunc("EP21_GaebolgComplete")) { mes "The resistance must open the sea route before we can work here."; close; }
+	if (EP21_Alberta_Complete) { mes "Alberta's connection with Lunaforma is secure."; close; }
+	mes "The old village is overwhelmed. Yohan needs help with cargo, cleanup, and deliveries.";
+	EP21_AlbertaStep = 1;
+	close;
+}
+
+jor_albe,239,115,4	script	Yohan#ep21_alberta	22307,{
+	mes "[Yohan]";
+	if (EP21_AlbertaStep == 1) {
+		mes "Two Walter sailors are waiting for cargo: one at the harbor and one inside the office.";
+		EP21_AlbertaStep = 2;
+		close;
+	}
+	if (EP21_AlbertaStep == 2 && EP21_AlbertaCargo == 3) {
+		mes "Now clear the four dirt piles around the village.";
+		EP21_AlbertaStep = 3;
+		close;
+	}
+	if (EP21_AlbertaStep == 3 && EP21_AlbertaDirt == 15) {
+		mes "Iana Operta in the office has two final letters to deliver.";
+		EP21_AlbertaStep = 4;
+		close;
+	}
+	mes "Please finish the current village task.";
+	close;
+}
+
+jor_albe,148,235,4	script	Walter Sailor#ep21_cargo1	4_M_MANAGER,{
+	if (EP21_AlbertaStep != 2) { mes "[Walter Sailor]"; mes "The dock inventory is under control."; close; }
+	EP21_AlbertaCargo = EP21_AlbertaCargo | 1;
+	mes "[Walter Sailor]"; mes "Cargo received. The other delivery belongs inside the office."; close;
+}
+jalbe_in,22,63,4	script	Walter Sailor#ep21_cargo2	4_M_MANAGER,{
+	if (EP21_AlbertaStep != 2) { mes "[Walter Sailor]"; mes "The office inventory is under control."; close; }
+	EP21_AlbertaCargo = EP21_AlbertaCargo | 2;
+	mes "[Walter Sailor]"; mes "Cargo received. Report to Yohan."; close;
+}
+
+jor_albe,151,210,0	script	Dirt Pile#ep21_1	CLEAR_NPC,2,2,{ if (EP21_AlbertaStep == 3) { EP21_AlbertaDirt = EP21_AlbertaDirt | 1; message strcharinfo(0),"You clear away the first dirt pile."; } end; }
+jor_albe,211,136,0	script	Dirt Pile#ep21_2	CLEAR_NPC,2,2,{ if (EP21_AlbertaStep == 3) { EP21_AlbertaDirt = EP21_AlbertaDirt | 2; message strcharinfo(0),"You clear away another dirt pile."; } end; }
+jor_albe,167,139,0	script	Dirt Pile#ep21_3	CLEAR_NPC,2,2,{ if (EP21_AlbertaStep == 3) { EP21_AlbertaDirt = EP21_AlbertaDirt | 4; message strcharinfo(0),"You clear away another dirt pile."; } end; }
+jor_albe,190,175,0	script	Dirt Pile#ep21_4	CLEAR_NPC,2,2,{ if (EP21_AlbertaStep == 3) { EP21_AlbertaDirt = EP21_AlbertaDirt | 8; message strcharinfo(0),"All four dirt piles are clear."; } end; }
+
+jalbe_in,67,95,4	script	Iana Operta#ep21_letters	4_F_TELEPORTER,{
+	mes "[Iana Operta]";
+	if (EP21_AlbertaStep == 4) {
+		mes "Deliver one letter to Patissier Edel and one to Professor Sanguin.";
+		EP21_AlbertaStep = 5;
+		close;
+	}
+	if (EP21_AlbertaStep == 5 && EP21_AlbertaLetters == 3) {
+		if (!checkweight(1001618,40)) { mes "Make room for forty vouchers."; close; }
+		getitem 1001618,40;
+		callfunc "EP21_AddReputation",40;
+		EP21_Alberta_Complete = 1;
+		EP21_AlbertaStep = 6;
+		mes "Old Alberta is connected to Lunaforma again. Reward: 40 vouchers and 40 reputation.";
+		mes "Ivan is waiting at ^3366FF(jor_mbase 233, 277)^000000.";
+		close;
+	}
+	mes "The village mail is quiet.";
+	close;
+}
+
+jalbe_in,126,54,4	script	Patissier Edel#ep21_letter	4_F_TELEPORTER,{
+	if (EP21_AlbertaStep == 5) { EP21_AlbertaLetters = EP21_AlbertaLetters | 1; mes "[Patissier Edel]"; mes "Thank you. I have been waiting for this letter."; close; }
+	mes "[Patissier Edel]"; mes "Fresh bread will be ready soon."; close;
+}
+jalbe_in,29,28,4	script	Professor Sanguin#ep21_letter	4_M_SAGE_C,{
+	if (EP21_AlbertaStep == 5) { EP21_AlbertaLetters = EP21_AlbertaLetters | 2; mes "[Professor Sanguin]"; mes "The letter arrived intact. Excellent."; close; }
+	mes "[Professor Sanguin]"; mes "These waters contain fascinating evidence of mana displacement."; close;
+}
+
+// Cult Infiltration bridge. The route uses the published quest-ID blocks and
+// rewards, while compressing dialogue-only intermediate stops.
+jor_mbase,233,277,4	script	Ivan#ep21_cult	22311,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_Alberta_Complete && !isbegin_quest(17752) && !EP21_CultComplete()";
+	mes "[Ivan]";
+	if (!EP21_Alberta_Complete && !callfunc("EP21_QuestInRange",17752,17769)) { mes "Finish helping Old Alberta first."; close; }
+	if (callfunc("EP21_CultComplete")) { mes "Nadoyo's Gimli operation is ready."; close; }
+	if (!isbegin_quest(17752)) {
+		mes "We need information from inside the Jormungandr temple. Speak with Lehar and Lyriq, then examine Wigner records in Alberta.";
+		setquest 17752;
+		EP21_CultStep = 1;
+		close;
+	}
+	if (isbegin_quest(17757) == 1) {
+		if (!checkweight(1001618,40)) { mes "Make room for forty vouchers."; close; }
+		completequest 17757;
+		getitem 1001618,40;
+		callfunc "EP21_AddReputation",40;
+		EP21_CultStep = 10;
+		mes "The records confirm a human network inside the cult. Reward: 40 vouchers and 40 reputation.";
+		mes "Meet Tan by the small boat at ^3366FF(jor_mbase 124, 27)^000000.";
+		setquest 17758;
+		close;
+	}
+	mes "Continue the investigation with Lehar, Lyriq, and the Wigner archive.";
+	close;
+}
+
+jor_mbase,214,316,4	script	Lehar#ep21_cult	4_M_SAGE_C,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17752) == 1";
+	mes "[Lehar]";
+	if (isbegin_quest(17752) != 1) { mes "Ivan is collecting accounts of the cult."; close; }
+	mes "The cult moves supplies through old merchant families. Lyriq heard the same story from refugees.";
+	changequest 17752,17753;
+	close;
+}
+
+jor_mbase,185,311,4	script	Lyriq#ep21_cult	4_F_KAFRA9,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17753) == 1";
+	mes "[Lyriq]";
+	if (isbegin_quest(17753) != 1) { mes "The refugee lists are still being organized."; close; }
+	mes "The Wigner archive in Old Alberta may identify the cult's route.";
+	changequest 17753,17754;
+	close;
+}
+
+jalbe_in,56,138,4	script	Lalaila Wigner#ep21	4_F_TELEPORTER,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17754) == 1";
+	mes "[Lalaila Wigner]";
+	if (isbegin_quest(17754) != 1) { mes "The old records are fragile."; close; }
+	mes "Search the dusty box upstairs. It contains manifests from before the village was abandoned.";
+	changequest 17754,17755;
+	close;
+}
+
+jalbe_in,73,187,0	script	Dusty Box#ep21	4_TREASURE_BOX,2,2,{
+	if (isbegin_quest(17755) != 1) { message strcharinfo(0),"The box is locked."; end; }
+	mes "You find a Walter manifest bearing a symbol used by the Jormungandr cult.";
+	changequest 17755,17756;
+	close;
+}
+
+jor_mbase,124,27,4	script	Small Boat#ep21_recruit	4_M_MANAGER,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17758) == 1";
+	mes "[Boatman]";
+	if (isbegin_quest(17758) != 1) { mes "The boat travels only on resistance orders."; close; }
+	mes "Tan and Ivan are waiting on Scale Island.";
+	changequest 17758,17759;
+	warp "jor_crk_p",71,86;
+	end;
+}
+
+jor_crk_p,71,86,4	script	Tan#ep21_recruit	22302,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17759) == 1";
+	mes "[Tan]";
+	if (isbegin_quest(17759) != 1) { mes "We need the right disguise before entering the temple."; close; }
+	mes "Nadoyo needs someone tall with long black hair to impersonate a high priest. Ivan knows who fits.";
+	changequest 17759,17760;
+	warp "jor_mbase",166,302;
+	end;
+}
+
+jor_mbase,166,302,4	script	Ivan#ep21_recruit	22311,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17760) == 1";
+	mes "[Ivan]";
+	if (isbegin_quest(17760) != 1) { mes "Wilhelm agreed to help for reasons of his own."; close; }
+	if (!checkweight(1001618,15)) { mes "Make room for fifteen vouchers."; close; }
+	completequest 17760;
+	setquest 17761;
+	getitem 1001618,15;
+	callfunc "EP21_AddReputation",15;
+	EP21_Temple_Access = 1;
+	mes "Wilhelm accepted. Reward: 15 vouchers and 15 reputation. Enter the temple from Northern Raised Land.";
+	close;
+}
+
+// Four published temple safe spots. They advance reconnaissance without
+// allowing direct access to the Gimli instance until quest 17764 is active.
+jor_tmple1,186,72,0	script	#EP21_TempleSafe1	WARPNPC,2,2,{
+	if (isbegin_quest(17761) != 1) { message strcharinfo(0),"The resistance has not marked this safe spot for you."; end; }
+	changequest 17761,17762;
+	warp "luna_sf2",113,257;
+	end;
+}
+luna_sf2,113,257,4	script	Ivan#ep21_temple_safe1	22311,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17762) == 1";
+	mes "[Ivan]";
+	if (isbegin_quest(17762) != 1) { mes "The first prayer room revealed little."; close; }
+	mes "Search the other prayer rooms and listen to the believers.";
+	close;
+}
+jor_tmple1,110,190,0	script	#EP21_TempleSafe2	WARPNPC,2,2,{
+	if (isbegin_quest(17762) != 1) { message strcharinfo(0),"The resistance has not marked this safe spot for you."; end; }
+	warp "luna_sf2",45,152;
+	end;
+}
+luna_sf2,45,152,4	script	Believer#ep21_safe2	4_M_MONK,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17762) == 1 && EP21_TempleReports == 0";
+	mes "[Believer]";
+	if (isbegin_quest(17762) != 1) { mes "I cannot speak while the priests are watching."; close; }
+	EP21_TempleReports = 1;
+	mes "The priests who register second-floor believers disappeared. The cult is hiding something.";
+	close;
+}
+jor_tmple1,186,228,0	script	#EP21_TempleSafe3	WARPNPC,2,2,{
+	if (isbegin_quest(17762) != 1 || EP21_TempleReports < 1) { message strcharinfo(0),"Gather the first believer's account before moving deeper."; end; }
+	warp "luna_sf2",118,265;
+	end;
+}
+luna_sf2,118,265,4	script	Believer#ep21_safe3	4_M_MONK,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17762) == 1 && EP21_TempleReports == 1";
+	mes "[Believer]";
+	if (isbegin_quest(17762) != 1 || EP21_TempleReports != 1) { mes "Keep your voice down."; close; }
+	EP21_TempleReports = 2;
+	mes "Humans on the second floor want to escape, but the restricted rooms require a high priest.";
+	close;
+}
+jor_tmple1,238,268,0	script	#EP21_TempleSafe4	WARPNPC,2,2,{
+	// Returning for Gimli after Tris authorizes quest 17764 must remain
+	// possible; the earlier branch is the reconnaissance visit.
+	if (isbegin_quest(17764) == 1) {
+		warp "luna_sf2",187,254;
+		end;
+	}
+	if (isbegin_quest(17762) != 1 || EP21_TempleReports < 2) { message strcharinfo(0),"The fourth safe route is still unverified."; end; }
+	warp "luna_sf2",196,257;
+	end;
+}
+luna_sf2,196,257,4	script	Believer#ep21_safe4	4_M_MONK,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17762) == 1 && EP21_TempleReports == 2";
+	mes "[Believer]";
+	if (isbegin_quest(17762) != 1 || EP21_TempleReports != 2) { mes "The guards inspect every name on the second-floor list."; close; }
+	changequest 17762,17763;
+	EP21_TempleReports = 3;
+	mes "Return to Tris. Your reports prove that a high-priest disguise can open the restricted floor.";
+	close;
+}

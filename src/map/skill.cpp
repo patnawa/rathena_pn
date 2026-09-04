@@ -2129,6 +2129,9 @@ bool skill_strip_equip(block_list *src, block_list *target, uint16 skill_id, uin
 			rate = 50 * (skill_lv + 3) + 2 * (sstatus->dex - tstatus->dex);
 			mod = 1000;
 			break;
+		case NPC_STRIP_SHADOW:
+			rate = 10 * skill_lv;
+			break;
 		default:
 			return false;
 	}
@@ -2139,6 +2142,7 @@ bool skill_strip_equip(block_list *src, block_list *target, uint16 skill_id, uin
 	switch (skill_id) { // Duration
 		case SC_STRIPACCESSARY:
 		case GS_DISARM:
+		case NPC_STRIP_SHADOW:
 			time = skill_get_time(skill_id, skill_lv);
 			break;
 		case WL_EARTHSTRAIN:
@@ -2185,6 +2189,7 @@ bool skill_strip_equip(block_list *src, block_list *target, uint16 skill_id, uin
 			location = EQP_ACC;
 			break;
 		case ABC_STRIP_SHADOW:
+		case NPC_STRIP_SHADOW:
 			location = EQP_SHADOW_GEAR;
 			break;
 	}
@@ -4250,6 +4255,24 @@ int32 skill_castend_damage_id (block_list* src, block_list *bl, uint16 skill_id,
 			}
 		}
 		break;
+	case NPC_AIMED_SHOWER:
+	case NPC_BLAZING_ERUPTION:
+		// These attacks only resolve on cells previously tagged by Target Marker.
+		if (tsc == nullptr || tsc->getSCE(SC_TARGET_MARKER) == nullptr)
+			break;
+		status_change_end(bl, SC_TARGET_MARKER);
+		skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag);
+		break;
+	case NPC_BLOCK_EXPLOSION:
+		// The explosion consumes Block Seal. Unsealed targets are safe.
+		if (tsc == nullptr || tsc->getSCE(SC_BLOCK_SEAL) == nullptr)
+			break;
+		status_change_end(bl, SC_BLOCK_SEAL);
+		skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag);
+		break;
+	case NPC_LIGHTNING_JUDGEMENT:
+		skill_attack(skill_get_type(skill_id), src, src, bl, skill_id, skill_lv, tick, flag);
+		break;
 	default:
 		if (std::shared_ptr<s_skill_db> skill = skill_db.find(skill_id); skill != nullptr && skill->impl != nullptr) {
 			skill->impl->castendDamageId(src, bl, skill_lv, tick, flag);
@@ -4599,6 +4622,80 @@ int32 skill_castend_nodamage_id (block_list *src, block_list *bl, uint16 skill_i
 				src,skill_id,skill_lv,tick, flag|BCT_ENEMY|SD_PREAMBLE|1,
 				skill_castend_nodamage_id);
 		}
+		break;
+	case NPC_TARGET_MARKER:
+		if (flag & 1) {
+			status_change_start(src, bl, SC_TARGET_MARKER, 10000, skill_lv, 0, 0, 0,
+				skill_get_time(skill_id, skill_lv),
+				SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF);
+		} else {
+			clif_skill_nodamage(src, *src, skill_id, skill_lv);
+			map_foreachinallrange(skill_area_sub, src, skill_get_splash(skill_id, skill_lv), BL_CHAR,
+				src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 1, skill_castend_nodamage_id);
+		}
+		break;
+	case NPC_BLOCK_SEAL:
+		if (flag & 1) {
+			if (tsc == nullptr || tsc->getSCE(SC_TARGET_MARKER) == nullptr)
+				break;
+			status_change_end(bl, SC_TARGET_MARKER);
+			status_change_start(src, bl, SC_BLOCK_SEAL, 10000, skill_lv, 0, 0, 0,
+				skill_get_time(skill_id, skill_lv),
+				SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF);
+		} else {
+			clif_skill_nodamage(src, *src, skill_id, skill_lv);
+			map_foreachinallrange(skill_area_sub, src, skill_get_splash(skill_id, skill_lv), BL_CHAR,
+				src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 1, skill_castend_nodamage_id);
+		}
+		break;
+	case NPC_FROST_FIELD:
+		if (flag & 1) {
+			if (tsc == nullptr || tsc->getSCE(SC_WARM_SHIELD) == nullptr) {
+				status_change_start(src, bl, SC_FROST_STORM, 10000, skill_lv, 0, 0, 0,
+					skill_get_time(skill_id, skill_lv),
+					SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF);
+			}
+		} else {
+			clif_skill_nodamage(src, *src, skill_id, skill_lv);
+			map_foreachinallrange(skill_area_sub, src, skill_get_splash(skill_id, skill_lv), BL_CHAR,
+				src, skill_id, skill_lv, tick, flag | BCT_ENEMY | 1, skill_castend_nodamage_id);
+		}
+		break;
+	case NPC_AIMED_SHOWER:
+	case NPC_BLAZING_ERUPTION:
+	case NPC_BLOCK_EXPLOSION:
+	case NPC_LIGHTNING_JUDGEMENT:
+		clif_skill_nodamage(src, *src, skill_id, skill_lv);
+		map_foreachinallrange(skill_area_sub, src, skill_get_splash(skill_id, skill_lv), BL_CHAR,
+			src, skill_id, skill_lv, tick, flag | BCT_ENEMY | SD_SPLASH | 1, skill_castend_damage_id);
+		break;
+	case NPC_RESET_EFST:
+		clif_skill_nodamage(src, *bl, skill_id, skill_lv);
+		if (tsc == nullptr || tsc->empty())
+			break;
+		// Garden bosses periodically shed effects, preserving statuses explicitly
+		// protected from Clearance (for example Groggy and Relieve).
+		for (const auto& entry : status_db) {
+			const sc_type status = static_cast<sc_type>(entry.first);
+
+			if (tsc->getSCE(status) == nullptr || entry.second->flag[SCF_NOCLEARANCE])
+				continue;
+			status_change_end(bl, status);
+		}
+		break;
+	case NPC_STRIP_SHADOW: {
+		const bool success = skill_strip_equip(src, bl, skill_id, skill_lv);
+		clif_skill_nodamage(src, *bl, skill_id, skill_lv, success);
+		break;
+	}
+	case NPC_GROGGY_ON:
+		status_change_start(src, bl, type, 10000, skill_lv, 0, 0, 0,
+			skill_get_time(skill_id, skill_lv),
+			SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF);
+		clif_skill_nodamage(src, *bl, skill_id, skill_lv);
+		break;
+	case DE_BERSERKAIZER:
+		clif_skill_nodamage(src, *bl, skill_id, skill_lv);
 		break;
 	default: {
 		std::shared_ptr<s_skill_db> skill = skill_db.find(skill_id);
@@ -5455,7 +5552,9 @@ int32 skill_castend_pos2(block_list* src, int32 x, int32 y, uint16 skill_id, uin
 				clif_skill_poseffect( *src, skill_id, skill_lv, x, y, tick );
 	}
 
-	if (std::shared_ptr<s_skill_db> skill = skill_db.find(skill_id); skill != nullptr && skill->impl != nullptr) {
+	if (skill_id == NPC_SEEDTRAP) {
+		skill_unitsetting(src, skill_id, skill_lv, x, y, flag);
+	} else if (std::shared_ptr<s_skill_db> skill = skill_db.find(skill_id); skill != nullptr && skill->impl != nullptr) {
 		skill->impl->castendPos2(src, x, y, skill_lv, tick, flag);
 	}else{
 		ShowWarning("skill_castend_pos2: Unknown skill used:%d\n",skill_id);
@@ -11432,6 +11531,17 @@ int32 skill_trap_splash(block_list *bl, va_list ap)
 		case UNT_REVERBERATION: // For proper skill delay animation when used with Dominion Impulse
 			skill_addtimerskill(ss, tick + 50, bl->id, 0, 0, NPC_REVERBERATION_ATK, sg->skill_lv, BF_WEAPON, 0);
 			break;
+		case UNT_SEEDTRAP: {
+			// The seed detonates from its own cell and pushes nearby enemies away.
+			if (skill_attack(skill_get_type(sg->skill_id), ss, src, bl, sg->skill_id, sg->skill_lv, tick, sg->val1 | SD_LEVEL)) {
+				const int32 cell_distance = distance_bl(src, bl);
+				const int32 knockback = max(0, 7 - cell_distance);
+
+				if (knockback > 0)
+					skill_blown(src, bl, knockback, -1, BLOWN_NONE);
+			}
+			break;
+		}
 		case UNT_FIRINGTRAP:
 		case UNT_ICEBOUNDTRAP:
 			if( src->id == bl->id ) break;
@@ -12337,6 +12447,15 @@ static int32 skill_unit_timer_sub(DBKey key, DBData *data, va_list ap)
 				group->limit = DIFF_TICK(tick,group->tick) + 1000;
 				unit->limit = DIFF_TICK(tick,group->tick) + 1000;
 				group->unit_id = UNT_USED_TRAPS;
+				break;
+
+			case UNT_SEEDTRAP:
+				// Seed Trap is a timed bomb: detonate once when its one-second
+				// warning unit expires, then remove the unit immediately.
+				clif_changetraplook(bl, UNT_USED_TRAPS);
+				map_foreachinrange(skill_trap_splash, bl,
+					skill_get_splash(group->skill_id, group->skill_lv), group->bl_flag, bl, tick);
+				skill_delunit(unit);
 				break;
 
 			case UNT_FEINTBOMB: {

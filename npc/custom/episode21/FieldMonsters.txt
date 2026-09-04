@@ -1,0 +1,79 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Age of Heroes field and dungeon populations
+//===== Description: =========================================
+//= The class-to-map roster, population counts and instant respawn behavior
+//= follow the current kRO map data. Drop rates remain controlled by mob_db.
+//============================================================
+
+// Northern Rising Land
+jor_raise1,0,0	monster	Seawind	22313,70
+jor_raise1,0,0	monster	Scalleg	22314,70
+jor_raise1,0,0	monster	Velelling	22315,70
+jor_raise1,0,0	monster	Letterster	22316,70
+jor_raise1,0,0	monster	Rockstriker	22317,70
+jor_raise1,0,0	monster	Yoster Cleaner	22323,30
+jor_raise1,0,0	monster	Yoster Collector	22325,30
+jor_raise1,0,0	monster	Yoster Cooker	22327,30
+
+// Southern Rising Land
+jor_raise2,0,0	monster	Seawind	22313,100
+jor_raise2,0,0	monster	Ice Seahorse	22318,130
+jor_raise2,0,0	monster	Skipskipper	22319,130
+jor_raise2,0,0	monster	Cliolima	22320,100
+jor_raise2,0,0	boss_monster	Icehorn	22362,1
+
+// Jornville
+jor_base,0,0	monster	Seawind	22313,50
+jor_base,0,0	monster	Yorker Worker	22321,230
+jor_base,0,0	monster	Yorker Religious Worker	22322,230
+jor_base,0,0	monster	Yoster Fixer	22324,30
+jor_base,0,0	monster	Yoster Negotiator	22326,30
+
+// Jormungandr Church Temple, first floor
+jor_tmple1,0,0	monster	Yoster Cleaner	22323,70
+jor_tmple1,0,0	monster	Yoster Fixer	22324,70
+jor_tmple1,0,0	monster	Yoster Collector	22325,70
+jor_tmple1,0,0	monster	Yoster Negotiator	22326,70
+jor_tmple1,0,0	monster	Yoster Cooker	22327,70
+jor_tmple1,0,0	monster	Yormi	22353,75
+jor_tmple1,0,0	monster	Yormi Missionary	22354,75
+jor_tmple1,0,0	monster	Yordos Investigator	22355,20
+jor_tmple1,0,0	monster	Yordos Judge	22356,20
+jor_tmple1,0,0	monster	Yordos Executor	22357,20
+jor_tmple1,0,0	boss_monster	Yortus Arbiter	22363,1
+
+// Jormungandr Church Temple, second floor
+jor_tmple2,0,0	monster	Yordos Investigator	22355,80
+jor_tmple2,0,0	monster	Yordos Judge	22356,80
+jor_tmple2,0,0	monster	Yordos Executor	22357,80
+jor_tmple2,0,0	monster	Yoscopus Guardian	22358,70
+jor_tmple2,0,0	monster	Yoscopus Sorcerer	22359,70
+jor_tmple2,0,0	monster	Yortus Bishop	22360,60
+jor_tmple2,0,0	monster	Yortus Conjurator	22361,60
+jor_tmple2,0,0	boss_monster	Yortus Bailiff	22364,1
+
+// Yorscalp annex
+// The current kRO map data exposes exact populations and immediate respawns:
+// 100 of each normal monster on F1; 100 of each primary and 35 of each
+// lower-tier Jordos monster on F2; one floor boss on each map.
+// Teleport is disabled in the published dungeon rules.
+jor_sklf1	mapflag	noteleport
+jor_sklf2	mapflag	noteleport
+
+// Yorscalp first floor (recommended level 240)
+jor_sklf1,0,0	monster	Awakened J. Inquisitor	22416,100
+jor_sklf1,0,0	monster	Awakened Jordos Judge	22415,100
+jor_sklf1,0,0	monster	Awakened J. Executioner	22414,100
+jor_sklf1,0,0	monster	Awaked Jormi	22417,100
+jor_sklf1,0,0	monster	Awaked Jormi Evangelist	22418,100
+jor_sklf1,0,0	boss_monster	Jortus Judge	22421,1
+
+// Yorscalp second floor (recommended level 250)
+jor_sklf2,0,0	monster	Awakened J. Guardian	22419,100
+jor_sklf2,0,0	monster	Awakened J. Shaman	22420,100
+jor_sklf2,0,0	monster	Awakened Jortus Bishop	22412,100
+jor_sklf2,0,0	monster	Awakened Jortus Warlock	22413,100
+jor_sklf2,0,0	monster	Awakened J. Executioner	22414,35
+jor_sklf2,0,0	monster	Awakened Jordos Judge	22415,35
+jor_sklf2,0,0	monster	Awakened J. Inquisitor	22416,35
+jor_sklf2,0,0	boss_monster	Jortus Executioner	22422,1

@@ -1,0 +1,142 @@
+//===== rAthena Script =======================================
+//= Episode 21 - Gaebolg and Yorscalp equipment services
+//===== Description: =========================================
+//= Clean-room service wiring around rAthena's existing item reform and
+//= enchant databases. Published coordinates, prices, material costs and
+//= reputation gates are enforced here; the databases perform the actual
+//= item mutation and material validation.
+//============================================================
+
+mbase_in,220,123,4	script	Wigner Merchant Popo#ep21_gear	4_M_MANAGER,{
+	mes "[Wigner Merchant Popo]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "The equipment counter is available after completing Episode 21.";
+		close;
+	}
+	mes "Every Gaebolg equipment piece costs 100 Wigner Merchant Guild Vouchers.";
+	next;
+	callshop "barter_ep21_gaebolg_equipment";
+	close;
+}
+
+mbase_in,220,127,4	script	Wigner Merchant Popo#ep21_hammer	4_M_MANAGER,{
+	mes "[Wigner Merchant Popo]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "The refine-hammer counter is available after completing Episode 21.";
+		close;
+	}
+	mes "Which Gaebolg refine hammer do you need?";
+	next;
+	switch (select("+9 to +10 hammer - 50 vouchers.:+10 to +11 hammer - 4,000,000 Zeny and 100 vouchers.:Leave.")) {
+	case 1:
+		if (countitem(1001618) < 50) {
+			mes "You need 50 Wigner Merchant Guild Vouchers.";
+			close;
+		}
+		if (!checkweight(102881,1)) {
+			mes "You cannot carry the hammer.";
+			close;
+		}
+		delitem 1001618,50;
+		getitem 102881,1;
+		mes "Use the hammer on eligible +9 Gaebolg armor.";
+		close;
+	case 2:
+		if (get_reputation_points(13) < 1000) {
+			mes "This hammer requires 1,000 Gaebolg Resistance reputation.";
+			close;
+		}
+		if (Zeny < 4000000 || countitem(1001618) < 100) {
+			mes "You need 4,000,000 Zeny and 100 Wigner Merchant Guild Vouchers.";
+			close;
+		}
+		if (!checkweight(102882,1)) {
+			mes "You cannot carry the hammer.";
+			close;
+		}
+		Zeny -= 4000000;
+		delitem 1001618,100;
+		getitem 102882,1;
+		mes "Use the hammer on eligible +10 Gaebolg armor.";
+		close;
+	default:
+		close;
+	}
+}
+
+jor_mbase,217,263,4	script	Brave Dog#ep21_hammer	4_M_DOGTRAVELER,{
+	mes "[Brave Dog]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "Complete Episode 21 first.";
+		close;
+	}
+	if (!callfunc("EP21_AllFamilyReputation")) {
+		mes "I only trade this hammer to an adventurer trusted by all seven families.";
+		close;
+	}
+	mes "A +11 to +12 Gaebolg refine hammer costs 7,000,000 Zeny and 200 Wigner Merchant Guild Vouchers.";
+	next;
+	if (select("Buy it.:Leave.") == 2)
+		close;
+	if (Zeny < 7000000 || countitem(1001618) < 200) {
+		mes "You need 7,000,000 Zeny and 200 vouchers.";
+		close;
+	}
+	if (!checkweight(102883,1)) {
+		mes "You cannot carry the hammer.";
+		close;
+	}
+	Zeny -= 7000000;
+	delitem 1001618,200;
+	getitem 102883,1;
+	mes "Use the hammer on eligible +11 Gaebolg armor.";
+	close;
+}
+
+mbase_in,228,129,4	script	Mage Lobelia#ep21_enchant	4_F_01,{
+	mes "[Mage Lobelia]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "Gaebolg enchanting is available after completing Episode 21.";
+		close;
+	}
+	mes "Choose the Gaebolg equipment category to enchant.";
+	next;
+	switch (select("Armor and robe.:Manteau and muffler.:Boots and shoes.:Accessories.:Leave.")) {
+	case 1: close2; item_enchant(143); end;
+	case 2: close2; item_enchant(144); end;
+	case 3: close2; item_enchant(145); end;
+	case 4: close2; item_enchant(146); end;
+	default: close;
+	}
+}
+
+mbase_in,230,125,4	script	Blacksmith Sansan#ep21_yorscalp	4_M_REPAIR,{
+	mes "[Blacksmith Sansan]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "Yorscalp equipment services are available after completing Episode 21.";
+		close;
+	}
+	mes "I can reform Gaebolg equipment or enchant Yorscalp equipment.";
+	next;
+	switch (select("Reform Gaebolg into Yorscalp.:Enchant armor or robe.:Enchant manteau or muffler.:Enchant boots or shoes.:Enchant accessories.:Enchant a crown.:Leave.")) {
+	case 1: close2; item_reform("Yorscalp_Scroll_A"); end;
+	case 2: close2; item_enchant(152); end;
+	case 3: close2; item_enchant(153); end;
+	case 4: close2; item_enchant(154); end;
+	case 5: close2; item_enchant(155); end;
+	case 6: close2; item_enchant(156); end;
+	default: close;
+	}
+}
+
+mbase_in,231,122,4	script	Wigner Merchant Operator#ep21_crown	4_F_01,{
+	mes "[Wigner Merchant Operator]";
+	if (!callfunc("EP21_MainComplete")) {
+		mes "Yorscalp equipment exchange is available after completing Episode 21.";
+		close;
+	}
+	mes "Each crown costs 5 Encroached Fruits, 100 Spirits of Yorscalp, and 30 Symbols of Curse.";
+	next;
+	callshop "barter_ep21_yorscalp_crowns";
+	close;
+}

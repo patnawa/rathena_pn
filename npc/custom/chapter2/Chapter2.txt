@@ -39,6 +39,11 @@ function	script	CH2_Instance	{
 function	script	CH2_GiveReward	{
 	.@quest = getarg(0);
 	.@coins = getarg(1);
+	if (!checkweight(1002700,.@coins)) {
+		mes "[Flame Branch Mission]";
+		mes "Make room for " + .@coins + " Flame Coins before filing this mission.";
+		close;
+	}
 	completequest .@quest;
 	setd("CH2_Daily_CD_"+.@quest,gettimetick(2)+14400);
 	getitem 1002700,.@coins;
@@ -53,6 +58,10 @@ function	script	CH2_RecreateItem	{
 	.@idx = getarg(0);
 	.@newid = getarg(1);
 	.@newref = getarg(2);
+	.@part = getarg(3);
+	if (.@idx < 0 || .@idx >= @inventorylist_count || !@inventorylist_equip[.@idx]
+		|| @inventorylist_expire[.@idx] || getequipuniqueid(.@part))
+		return 0;
 	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
 	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
 	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
@@ -61,8 +70,30 @@ function	script	CH2_RecreateItem	{
 	.@c1 = @inventorylist_card1[.@idx]; .@c2 = @inventorylist_card2[.@idx];
 	.@c3 = @inventorylist_card3[.@idx]; .@c4 = @inventorylist_card4[.@idx];
 	.@grade = @inventorylist_enchantgrade[.@idx];
-	delitemidx @inventorylist_idx[.@idx],1;
-	getitem4 .@newid,1,.@identify,.@newref,.@attribute,.@c1,.@c2,.@c3,.@c4,.@grade,.@oid,.@oval,.@opar;
+	.@bound = @inventorylist_bound[.@idx];
+	delequip .@part;
+	if (!delitemidx(@inventorylist_idx[.@idx],1))
+		return 0;
+	if (.@bound)
+		getitembound4 .@newid,1,.@identify,.@newref,.@attribute,.@c1,.@c2,.@c3,.@c4,.@bound,.@grade,.@oid,.@oval,.@opar;
+	else
+		getitem4 .@newid,1,.@identify,.@newref,.@attribute,.@c1,.@c2,.@c3,.@c4,.@grade,.@oid,.@oval,.@opar;
+	return 1;
+}
+
+// Monster-death labels cannot pause for inventory management. Deliver their
+// one-item rewards by mail when the killer cannot carry them immediately.
+function	script	CH2_GiveInstanceItem	{
+	.@item = getarg(0);
+	.@amount = getarg(1,1);
+	if (checkweight(.@item,.@amount)) {
+		getitem .@item,.@amount;
+		return 1;
+	}
+	setarray .@mail_item[0],.@item;
+	setarray .@mail_amount[0],.@amount;
+	mail getcharid(0),"Flame Branch","Chapter 2 Reward","Your inventory was full when the instance reward was issued, so it was delivered by mail.",0,.@mail_item,.@mail_amount;
+	dispbottom "Your inventory was full. The Chapter 2 reward was delivered by mail.";
 	return 1;
 }
 
@@ -70,7 +101,7 @@ ygg_edge,156,179,4	script	Guardian El#ch2start	4_F_FAIRYKID5,{
 	if (CH2_Complete()) {
 		mes "[Guardian El]";
 		mes "Veledor and Kindlebrook still need their guardian. Shall I open the route?";
-		if (select("Travel to Veledor:Stay here") == 1) warp "veledor",100,100;
+		if (select("Travel to Veledor:Stay here") == 1) warp "veledor",136,62;
 		close;
 	}
 	if (BaseLevel < 225) {
@@ -96,10 +127,10 @@ ygg_edge,156,179,4	script	Guardian El#ch2start	4_F_FAIRYKID5,{
 		setquest 27101;
 		CH2_Step = 1;
 		CH2_Reputation = 10;
-		warp "veledor",100,100;
+		warp "veledor",136,62;
 		end;
 	}
-	warp "veledor",100,100;
+	warp "veledor",136,62;
 	end;
 
 OnInit:
@@ -107,7 +138,9 @@ OnInit:
 	end;
 }
 
-veledor,100,100,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
+// Coordinates below are centered on open rooms in the compatibility maps
+// documented by client-patch/chapter2/resnametable_chapter2.txt.
+veledor,136,65,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
 	if (!CH2_Step) { mes "[Guardian El]"; mes "Meet me at Ashridge first."; close; }
 	if (CH2_Step == 1) {
 		mes "[Guardian El]"; mes "A knot of corrupted mana blocks the road. Enter the Crossroads and untangle it.";
@@ -119,11 +152,12 @@ veledor,100,100,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
 		mes "[Guardian El]"; mes "The path has opened. Kindlebrook's people are sheltering beyond it.";
 		CH2_Step = 3;
 		CH2_Reputation += 10;
-		warp "kindlbrk",100,100;
+		warp "kindlbrk",115,212;
 		end;
 	}
 	if (CH2_Step >= 12 && !CH2_Complete()) {
 		if (!CH2_Phantom) { mes "[Guardian El]"; mes "The Phantom of Nyrholt remains."; close; }
+		if (!checkweight(1002700,30)) { mes "[Guardian El]"; mes "Make room for 30 Flame Coins first."; close; }
 		mes "[Guardian El]"; mes "You restored the severed Flame Branch and gave every refuge a future.";
 		next;
 		mes "Your reputation now grants access to the Flame Branch exchange and all Chapter 2 routes.";
@@ -137,52 +171,52 @@ veledor,100,100,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
 	close;
 }
 
-veledor,104,100,4	script	Tangled Mana Gate#ch2	4_ENERGY_BLUE,{
+veledor,140,65,4	script	Tangled Mana Gate#ch2	4_ENERGY_BLUE,{
 	if (CH2_Step != 2) { mes "The Crossroads is stable for now."; close; }
 	callfunc "CH2_Instance","Crossroads of Tangled Mana";
 }
 
-kindlbrk,100,100,4	script	Karilon#ch2main	4_M_REPAIR,{
+kindlbrk,115,215,4	script	Karilon#ch2main	4_M_REPAIR,{
 	if (CH2_Step == 3) {
 		mes "[Karilon]"; mes "Shadow Jailers cut off Kindlebrook. Destroy twenty and bring back a path for our refugees.";
 		setquest 27102; CH2_Step = 4;
-		warp "ch1_sf02",160,160;
+		warp "uknw_ruin2",33,246;
 		end;
 	}
 	if (CH2_Step == 4) {
 		if (checkquest(27102,HUNTING) != 2) { mes "[Karilon]"; mes "Destroy 20 Shadow Jailers."; close; }
 		completequest 27102; CH2_Step = 5; CH2_Reputation += 10;
 		mes "[Karilon]"; mes "The refugees can move. Orion waits at the Root of Death.";
-		close2; warp "deadroot",100,100; end;
+		close2; warp "deadroot",136,62; end;
 	}
 	mes "[Karilon]"; mes "Kindlebrook endures because the Flame Branch still remembers warmth."; close;
 }
 
-deadroot,100,100,4	script	Orion#ch2main	4_M_DEWOLDMAN,{
+deadroot,136,65,4	script	Orion#ch2main	4_M_DEWOLDMAN,{
 	if (CH2_Step == 5) {
 		mes "[Orion]"; mes "The Root of Death is frozen from within. We traced the fracture to the Primordial Flame.";
 		CH2_Step = 6; CH2_Reputation += 10;
-		close2; warp "mu_dun01",100,100; end;
+		close2; warp "mu_dun01",95,128; end;
 	}
 	mes "[Orion]"; mes "Cold mana preserves memories, but it also traps them."; close;
 }
 
-mu_dun01,100,100,4	script	Flame Researcher#ch2main	4_F_SCIENCE,{
+mu_dun01,95,131,4	script	Flame Researcher#ch2main	4_F_SCIENCE,{
 	if (CH2_Step == 6) {
 		mes "[Flame Researcher]"; mes "A second wave of Shadow Jailers feeds on the Primordial Flame. Eliminate twenty.";
 		setquest 27103; CH2_Step = 7;
-		close2; warp "ch1_sf02",160,160; end;
+		close2; warp "uknw_ruin2",33,246; end;
 	}
 	if (CH2_Step == 7) {
 		if (checkquest(27103,HUNTING) != 2) { mes "[Flame Researcher]"; mes "Destroy 20 Shadow Jailers."; close; }
 		completequest 27103; CH2_Step = 8; CH2_Reputation += 10;
 		mes "[Flame Researcher]"; mes "The flame is free. Take its spark to Nyrholt in Ragsroot.";
-		close2; warp "ragsruth",100,100; end;
+		close2; warp "ragsruth",88,55; end;
 	}
 	mes "[Flame Researcher]"; mes "Primordial Flame readings are stable."; close;
 }
 
-ragsruth,100,100,4	script	Nyrholt Keeper#ch2main	4_M_ROKI2,{
+ragsruth,88,58,4	script	Nyrholt Keeper#ch2main	4_M_ROKI2,{
 	if (CH2_Step == 8) {
 		if (countitem(512) < 5) { mes "[Nyrholt Keeper]"; mes "The seal requires 5 Apples, symbols of living renewal."; close; }
 		delitem 512,5;
@@ -194,24 +228,24 @@ ragsruth,100,100,4	script	Nyrholt Keeper#ch2main	4_M_ROKI2,{
 		if (!CH2_Nyrholt) { mes "[Nyrholt Keeper]"; mes "Nyrholt's guardian still holds the seal."; next; if(select("Enter Nyrholt:Leave")==1) callfunc "CH2_Instance","Nyrholt"; close; }
 		mes "[Nyrholt Keeper]"; mes "The seal is restored, but Ragsroot's reflection is still distorted. Defeat 100 creatures there.";
 		setquest 27104; CH2_Step = 10; CH2_Reputation += 15;
-		close2; warp "rgs_dun1",100,100; end;
+		close2; warp "rgs_dun1",95,128; end;
 	}
 	mes "[Nyrholt Keeper]"; mes "The living Nyrholt and its phantom now overlap."; close;
 }
 
-rgs_dun1,100,100,4	script	Ragsroot Scout#ch2main	4_M_REBELLION2,{
+rgs_dun1,95,131,4	script	Ragsroot Scout#ch2main	4_M_REBELLION2,{
 	if (CH2_Step == 10) {
 		if (checkquest(27104,HUNTING) != 2) { mes "[Ragsroot Scout]"; mes "Defeat 100 Folnir creatures in Distorted Ragsroot."; close; }
 		completequest 27104; CH2_Step = 11; CH2_Reputation += 15;
 		mes "[Ragsroot Scout]"; mes "The distortion has collapsed into one Phantom. Return to the Nyrholt Keeper.";
-		close2; warp "ch2safe4",100,100; end;
+		close2; warp "ch2safe4",86,138; end;
 	}
 	mes "[Ragsroot Scout]"; mes "Keep the distortion contained."; close;
 }
 
-ch2safe4,100,100,4	script	Phantom Gate#ch2main	4_ENERGY_RED,{
+ch2safe4,86,146,4	script	Phantom Gate#ch2main	4_ENERGY_RED,{
 	if (CH2_Step == 11) {
-		if (CH2_Phantom) { CH2_Step = 12; mes "The Phantom is gone. Report to Guardian El in Veledor."; close2; warp "veledor",100,100; end; }
+		if (CH2_Phantom) { CH2_Step = 12; mes "The Phantom is gone. Report to Guardian El in Veledor."; close2; warp "veledor",136,62; end; }
 		mes "The Phantom of Nyrholt is beyond this gate.";
 		next;
 		if (select("Enter:Leave") == 1) callfunc "CH2_Instance","Phantom of Nyrholt";
@@ -220,7 +254,7 @@ ch2safe4,100,100,4	script	Phantom Gate#ch2main	4_ENERGY_RED,{
 	mes "The gate responds only to Chapter 2's final resonance."; close;
 }
 
-kindlbrk,104,100,4	script	Chapter 2 Expedition Guide	4_F_KAFRA5,{
+kindlbrk,119,215,4	script	Chapter 2 Expedition Guide	4_F_KAFRA5,{
 	mes "[Expedition Guide]";
 	mes "Chapter stage: ^0055ff"+CH2_Step+"^000000 / 12";
 	mes "Flame Branch reputation: ^33aa33"+CH2_Reputation+"^000000 (Level "+callfunc("CH2_RepLevel")+")";
@@ -241,24 +275,24 @@ kindlbrk,104,100,4	script	Chapter 2 Expedition Guide	4_F_KAFRA5,{
 }
 
 // Travel network. Each gate checks story progression before exposing later areas.
-veledor,108,100,0	script	#ch2_to_kindle	WARPNPC,1,1,{ if (CH2_Step < 3) end; warp "kindlbrk",96,100; end; }
-kindlbrk,96,100,0	script	#ch2_to_veledor	WARPNPC,1,1,{ warp "veledor",106,100; end; }
-kindlbrk,108,100,0	script	#ch2_to_plains	WARPNPC,1,1,{ if (CH2_Step < 3) end; warp "mu_fild02",100,100; end; }
-mu_fild02,96,100,0	script	#ch2_to_kindle2	WARPNPC,1,1,{ warp "kindlbrk",106,100; end; }
-mu_fild02,108,100,0	script	#ch2_to_forest	WARPNPC,1,1,{ warp "mu_fild03",100,100; end; }
-mu_fild03,96,100,0	script	#ch2_to_plains2	WARPNPC,1,1,{ warp "mu_fild02",106,100; end; }
-mu_fild03,108,100,0	script	#ch2_to_flame	WARPNPC,1,1,{ if (CH2_Step < 6) end; warp "mu_dun01",96,100; end; }
-mu_dun01,96,100,0	script	#ch2_to_forest2	WARPNPC,1,1,{ warp "mu_fild03",106,100; end; }
-mu_dun01,108,100,0	script	#ch2_to_flame2	WARPNPC,1,1,{ warp "mu_dun02",100,100; end; }
-mu_dun02,96,100,0	script	#ch2_to_flame1	WARPNPC,1,1,{ warp "mu_dun01",106,100; end; }
-kindlbrk,100,108,0	script	#ch2_to_workshop	WARPNPC,1,1,{ warp "kin_in01",100,100; end; }
-kin_in01,100,96,0	script	#ch2_to_kindle3	WARPNPC,1,1,{ warp "kindlbrk",100,106; end; }
-kindlbrk,100,96,0	script	#ch2_to_deadroot	WARPNPC,1,1,{ if (CH2_Step < 5) end; warp "deadroot",96,100; end; }
-deadroot,96,100,0	script	#ch2_to_kindle4	WARPNPC,1,1,{ warp "kindlbrk",100,98; end; }
-deadroot,108,100,0	script	#ch2_to_rags	WARPNPC,1,1,{ if (CH2_Step < 8) end; warp "ragsruth",96,100; end; }
-ragsruth,96,100,0	script	#ch2_to_deadroot2	WARPNPC,1,1,{ warp "deadroot",106,100; end; }
-ragsruth,108,100,0	script	#ch2_to_distorted	WARPNPC,1,1,{ if (CH2_Step < 10) end; warp "rgs_dun1",96,100; end; }
-rgs_dun1,96,100,0	script	#ch2_to_rags2	WARPNPC,1,1,{ warp "ragsruth",106,100; end; }
+veledor,154,65,0	script	#ch2_to_kindle	WARPNPC,1,1,{ if (CH2_Step < 3) end; warp "kindlbrk",109,215; end; }
+kindlbrk,107,215,0	script	#ch2_to_veledor	WARPNPC,1,1,{ warp "veledor",152,65; end; }
+kindlbrk,123,215,0	script	#ch2_to_plains	WARPNPC,1,1,{ if (CH2_Step < 3) end; warp "mu_fild02",120,65; end; }
+mu_fild02,118,65,0	script	#ch2_to_kindle2	WARPNPC,1,1,{ warp "kindlbrk",121,215; end; }
+mu_fild02,154,65,0	script	#ch2_to_forest	WARPNPC,1,1,{ warp "mu_fild03",120,65; end; }
+mu_fild03,118,65,0	script	#ch2_to_plains2	WARPNPC,1,1,{ warp "mu_fild02",152,65; end; }
+mu_fild03,154,65,0	script	#ch2_to_flame	WARPNPC,1,1,{ if (CH2_Step < 6) end; warp "mu_dun01",93,131; end; }
+mu_dun01,91,131,0	script	#ch2_to_forest2	WARPNPC,1,1,{ warp "mu_fild03",152,65; end; }
+mu_dun01,103,131,0	script	#ch2_to_flame2	WARPNPC,1,1,{ warp "mu_dun02",95,131; end; }
+mu_dun02,91,131,0	script	#ch2_to_flame1	WARPNPC,1,1,{ warp "mu_dun01",101,131; end; }
+kindlbrk,115,223,0	script	#ch2_to_workshop	WARPNPC,1,1,{ warp "kin_in01",115,215; end; }
+kin_in01,115,211,0	script	#ch2_to_kindle3	WARPNPC,1,1,{ warp "kindlbrk",115,221; end; }
+kindlbrk,115,211,0	script	#ch2_to_deadroot	WARPNPC,1,1,{ if (CH2_Step < 5) end; warp "deadroot",134,65; end; }
+deadroot,132,65,0	script	#ch2_to_kindle4	WARPNPC,1,1,{ warp "kindlbrk",115,213; end; }
+deadroot,140,65,0	script	#ch2_to_rags	WARPNPC,1,1,{ if (CH2_Step < 8) end; warp "ragsruth",82,58; end; }
+ragsruth,84,58,0	script	#ch2_to_deadroot2	WARPNPC,1,1,{ warp "deadroot",138,65; end; }
+ragsruth,96,58,0	script	#ch2_to_distorted	WARPNPC,1,1,{ if (CH2_Step < 10) end; warp "rgs_dun1",93,131; end; }
+rgs_dun1,91,131,0	script	#ch2_to_rags2	WARPNPC,1,1,{ warp "ragsruth",94,58; end; }
 
 // Chapter 2 field populations and the four published two-hour bosses.
 mu_fild02,0,0,0,0	monster	Dragon Clam	22674,45,5000,5000
@@ -287,7 +321,7 @@ rgs_dun1,0,0,0,0	monster	Folnir Hre	22704,45,5000,5000
 rgs_dun1,0,0,0,0	monster	Feeos	22705,1,7200000,7200000
 
 // Daily mission board: cooldown begins on turn-in and expires after four hours.
-kindlbrk,106,104,4	script	Flame Branch Mission Board	4_BOARD3,{
+kindlbrk,121,219,4	script	Flame Branch Mission Board	4_BOARD3,{
 	if (!CH2_Complete()) { mes "Finish the Chapter 2 main story first."; close; }
 	mes "[Flame Branch Mission Board]";
 	mes "Every mission has an independent four-hour standby timer.";
@@ -304,6 +338,11 @@ kindlbrk,106,104,4	script	Flame Branch Mission Board	4_BOARD3,{
 	if (isbegin_quest(.@qid) == 0) {
 		setquest .@qid;
 		mes "Mission accepted. Return to this board when its kills and materials are complete.";
+		close;
+	}
+	.@reward_coins = (.@pick == 4 || .@pick == 10) ? 3 : 6;
+	if (!checkweight(1002700,.@reward_coins)) {
+		mes "Make room for " + .@reward_coins + " Flame Coins before filing this mission.";
 		close;
 	}
 	if (.@pick == 1) {
@@ -349,7 +388,7 @@ kindlbrk,106,104,4	script	Flame Branch Mission Board	4_BOARD3,{
 	close;
 }
 
-kin_in01,104,100,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
+kin_in01,119,215,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
 	if (callfunc("CH2_RepLevel") < 1) { mes "[Flame Coin Exchanger]"; mes "Flame Branch Reputation Level 1 is required. Finish the Chapter 2 story."; close; }
 	mes "[Flame Coin Exchanger]"; mes "Reputation Level "+callfunc("CH2_RepLevel")+". What do you need?";
 	next;
@@ -358,6 +397,7 @@ kin_in01,104,100,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
 	case 2: .@item=1001996; .@coin=1; .@zeny=50000; break;
 	case 3:
 		if (countitem(1001996)<1 || Zeny<30000) { mes "Need 1 Mana Ring and 30,000 Zeny."; close; }
+		if (!checkweight(1002700,1)) { mes "You are carrying too much."; close; }
 		delitem 1001996,1; Zeny-=30000; getitem 1002700,1; close;
 	case 4:
 		.@p=select("Armor:Robe:Manteau:Muffler:Boots:Shoes:Shield:Ring:Brooch:Earring:Necklace:Cancel");
@@ -377,7 +417,7 @@ kin_in01,104,100,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
 	mes "Exchange complete."; close;
 }
 
-kin_in01,108,100,4	script	Cardron#ch2craft	4_M_03,{
+kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
 	if (callfunc("CH2_RepLevel") < 1) { mes "Complete Chapter 2 to use this workshop."; close; }
 	mes "[Cardron]"; mes "I handle perfect enchants, Mangmahal refinement and Azure-to-Blaze reform.";
 	next;
@@ -392,16 +432,25 @@ kin_in01,108,100,4	script	Cardron#ch2craft	4_M_03,{
 		.@idx=-1;
 		for(.@i=0;.@i<@inventorylist_count;.@i++) {
 			.@id=@inventorylist_id[.@i]; .@r=@inventorylist_refine[.@i];
-			if((.@id==450531||.@id==450532||.@id==480751||.@id==480752||.@id==470420||.@id==470421||.@id==460147||.@id==450533||.@id==450534||.@id==480753||.@id==480754||.@id==470422||.@id==470423||.@id==460148) && .@r>=9 && .@r<=11) { .@idx=.@i; break; }
+			if(@inventorylist_equip[.@i] && (.@id==450531||.@id==450532||.@id==480751||.@id==480752||.@id==470420||.@id==470421||.@id==460147||.@id==450533||.@id==450534||.@id==480753||.@id==480754||.@id==470422||.@id==470423||.@id==460148) && .@r>=9 && .@r<=11) { .@idx=.@i; break; }
 		}
-		if(.@idx<0) { mes "Carry an eligible +9, +10 or +11 Azure/Blaze armor piece."; close; }
+		if(.@idx<0) { mes "Equip an eligible +9, +10 or +11 Azure/Blaze armor piece."; close; }
+		.@mask=@inventorylist_equip[.@idx]; .@part=-1;
+		if(.@mask & EQP_ARMOR) .@part=EQI_ARMOR;
+		else if(.@mask & EQP_GARMENT) .@part=EQI_GARMENT;
+		else if(.@mask & EQP_SHOES) .@part=EQI_SHOES;
+		else if(.@mask & EQP_HAND_L) .@part=EQI_HAND_L;
+		if(.@part<0 || @inventorylist_expire[.@idx] || getequipuniqueid(.@part)) { mes "Rental and unique-ID equipment cannot be recreated safely."; close; }
 		.@r=@inventorylist_refine[.@idx];
 		if(.@r==9) { .@z=75; .@s=75; .@b=10; .@red=0; .@y=0; }
 		if(.@r==10) { .@z=100; .@s=100; .@b=10; .@red=20; .@y=0; }
 		if(.@r==11) { .@z=150; .@s=150; .@b=10; .@red=20; .@y=30; }
 		if(countitem(25731)<.@z||countitem(25729)<.@s||countitem(1002751)<.@b||countitem(1002752)<.@red||countitem(1002753)<.@y) { mes "Missing Zelunium, Shadowdecon or Kindle Hals for this guaranteed refinement."; close; }
 		delitem 25731,.@z; delitem 25729,.@s; delitem 1002751,.@b; if(.@red)delitem 1002752,.@red; if(.@y)delitem 1002753,.@y;
-		callfunc "CH2_RecreateItem",.@idx,@inventorylist_id[.@idx],.@r+1;
+		if (!callfunc("CH2_RecreateItem",.@idx,@inventorylist_id[.@idx],.@r+1,.@part)) {
+			getitem 25731,.@z; getitem 25729,.@s; getitem 1002751,.@b; if(.@red)getitem 1002752,.@red; if(.@y)getitem 1002753,.@y;
+			mes "The equipped item changed, so the refinement was cancelled and its materials were refunded."; close;
+		}
 		mes "Guaranteed refinement complete."; close;
 	case 7:
 		getinventorylist; .@idx=-1; .@new=0;
@@ -409,28 +458,41 @@ kin_in01,108,100,4	script	Cardron#ch2craft	4_M_03,{
 		setarray .@next[0],450533,450534,480753,480754,470422,470423,460148,490934,490935,490936,490937;
 		for(.@i=0;.@i<@inventorylist_count && .@idx<0;.@i++) {
 			for(.@j=0;.@j<11;.@j++) {
-				if(@inventorylist_id[.@i]==.@old[.@j] && (.@j>=7 || @inventorylist_refine[.@i]>=11)) {
+				if(@inventorylist_equip[.@i] && @inventorylist_id[.@i]==.@old[.@j] && (.@j>=7 || @inventorylist_refine[.@i]>=11)) {
 					.@idx=.@i; .@new=.@next[.@j]; .@access=(.@j>=7); .@j=11;
 				}
 			}
 		}
-		if(.@idx<0) { mes "Carry a +11 Azure armor piece or any Azure accessory."; close; }
+		if(.@idx<0) { mes "Equip a +11 Azure armor piece or any Azure accessory."; close; }
+		.@mask=@inventorylist_equip[.@idx]; .@part=-1;
+		if(.@mask & EQP_ARMOR) .@part=EQI_ARMOR;
+		else if(.@mask & EQP_GARMENT) .@part=EQI_GARMENT;
+		else if(.@mask & EQP_SHOES) .@part=EQI_SHOES;
+		else if(.@mask & EQP_HAND_L) .@part=EQI_HAND_L;
+		else if(.@mask & EQP_ACC_L) .@part=EQI_ACC_L;
+		else if(.@mask & EQP_ACC_R) .@part=EQI_ACC_R;
+		if(.@part<0 || @inventorylist_expire[.@idx] || getequipuniqueid(.@part)) { mes "Rental and unique-ID equipment cannot be recreated safely."; close; }
 		.@coin=(.@access?250:125); .@ring=(.@access?150:75); .@hal=(.@access?25:15);
 		if(countitem(1002700)<.@coin||countitem(1001996)<.@ring||countitem(1002751)<.@hal||countitem(1002752)<.@hal||countitem(1002753)<.@hal) { mes "Missing Flame Coins, Mana Rings or Kindle Hals."; close; }
 		if(!checkweight(.@new,1)) { mes "You are carrying too much."; close; }
 		delitem 1002700,.@coin; delitem 1001996,.@ring; delitem 1002751,.@hal; delitem 1002752,.@hal; delitem 1002753,.@hal;
 		.@newref=@inventorylist_refine[.@idx]-(.@access?0:2);
-		callfunc "CH2_RecreateItem",.@idx,.@new,.@newref;
+		if (!callfunc("CH2_RecreateItem",.@idx,.@new,.@newref,.@part)) {
+			getitem 1002700,.@coin; getitem 1001996,.@ring; getitem 1002751,.@hal; getitem 1002752,.@hal; getitem 1002753,.@hal;
+			mes "The equipped item changed, so the reform was cancelled and its materials were refunded."; close;
+		}
 		mes "Azure equipment reformed into Blaze equipment. Cards, enchants, grade and random options were preserved."; close;
 	default: close;
 	}
 }
 
 // Kindle Hal vendor prices from the published Chapter 2 economy.
-kin_in01,112,100,4	script	Kindle Hal Merchant#ch2	4_F_02,{
+kin_in01,127,215,4	script	Kindle Hal Merchant#ch2	4_F_02,{
 	mes "Blue: 200,000 Zeny. Red: 400,000 Zeny. Yellow: 700,000 Zeny.";
 	next;
 	.@p=select("Blue Kindle Hal:Red Kindle Hal:Yellow Kindle Hal:Cancel"); if(.@p==4)close;
 	setarray .@id[0],1002751,1002752,1002753; setarray .@z[0],200000,400000,700000;
-	if(Zeny<.@z[.@p-1]){mes "Not enough Zeny.";close;} Zeny-=.@z[.@p-1]; getitem .@id[.@p-1],1; close;
+	if(Zeny<.@z[.@p-1]){mes "Not enough Zeny.";close;}
+	if(!checkweight(.@id[.@p-1],1)){mes "You are carrying too much.";close;}
+	Zeny-=.@z[.@p-1]; getitem .@id[.@p-1],1; close;
 }

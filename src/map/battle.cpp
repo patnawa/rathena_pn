@@ -4470,6 +4470,15 @@ static int32 battle_calc_attack_skill_ratio(struct Damage* wd, block_list *src,b
 		skill->impl->calculateSkillRatio(wd, src, target, skill_lv, skillratio, 0);
 	}
 
+	switch (skill_id) {
+		case NPC_AIMED_SHOWER:
+		case NPC_BLAZING_ERUPTION:
+			// Gravity has not published the ratio. This compatibility value is
+			// the established public Garden implementation: 4000% + 200%/level.
+			skillratio += 3900 + 200 * skill_lv;
+			break;
+	}
+
 	return skillratio;
 }
 
@@ -5989,6 +5998,21 @@ struct Damage battle_calc_magic_attack(block_list *src,block_list *target,uint16
 					skill->impl->calculateSkillRatio(&ad, src, target, skill_lv, skillratio, mflag);
 				}
 
+				switch (skill_id) {
+					case NPC_BLOCK_EXPLOSION:
+						// Compatibility ratio: 3000% + 200%/level.
+						skillratio += 2900 + 200 * skill_lv;
+						break;
+					case NPC_LIGHTNING_JUDGEMENT:
+						// Compatibility ratio: 2000% + 200%/level. The published
+						// relationship only establishes that Frost Storm amplifies it;
+						// the additional 3000 percentage points are compatibility data.
+						skillratio += 1900 + 200 * skill_lv;
+						if (tsc != nullptr && tsc->getSCE(SC_FROST_STORM) != nullptr)
+							skillratio += 3000;
+						break;
+				}
+
 				if (sc) {// Insignia's increases the damage of offensive magic by a fixed percentage depending on the element.
 					if ((sc->getSCE(SC_FIRE_INSIGNIA) && sc->getSCE(SC_FIRE_INSIGNIA)->val1 == 3 && s_ele == ELE_FIRE) ||
 						(sc->getSCE(SC_WATER_INSIGNIA) && sc->getSCE(SC_WATER_INSIGNIA)->val1 == 3 && s_ele == ELE_WATER) ||
@@ -6355,6 +6379,11 @@ struct Damage battle_calc_misc_attack(block_list *src,block_list *target,uint16 
 			break;
 		case NPC_KILLING_AURA:
 			md.damage = 10000;
+			break;
+		case NPC_SEEDTRAP:
+			// Gravity has not published this fixed-damage curve. Retain the
+			// established Garden compatibility range in documented form.
+			md.damage = 10000 + 10000 * skill_lv - 5000 * (rnd() % (skill_lv + 2));
 			break;
 #ifdef RENEWAL
 		case HT_LANDMINE:

@@ -1,0 +1,383 @@
+Header:
+  Type: MOB_DB
+  Version: 5
+
+# The IDs/Aegis names below are reserved by rAthena's main MOB_DB and their
+# sprites are present in the shipped client.  Gravity's public notices state
+# that the 2022 revision lowered monster levels, made HP independent of party
+# size, and increased EXP, but do not publish complete stat/skill/drop arrays.
+#
+# COMPATIBILITY POLICY -- NOT CANONICAL GRAVITY BALANCE DATA:
+# These are fixed Base-Lv.-200-party baselines.  Direct EXP and drops are zero
+# to avoid inventing undocumented rates; known research EXP and the modern
+# antiquity container are controlled by AirshipCrash.txt.  No guessed card,
+# stone, diamond, or equipment probability is added here.
+Body:
+  - Id: 20886
+    AegisName: MD_AIRBOAT_TREE
+    Name: Rotten Tree
+    Level: 210
+    Hp: 9000000
+    Sp: 10000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 6500
+    Attack2: 9000
+    Defense: 470
+    MagicDefense: 105
+    Resistance: 250
+    MagicResistance: 375
+    Str: 255
+    Agi: 230
+    Vit: 330
+    Int: 35
+    Dex: 185
+    Luk: 305
+    AttackRange: 7
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Plant
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 1000
+    AttackDelay: 1200
+    AttackMotion: 360
+    DamageMotion: 480
+    Ai: '21'
+    Modes:
+      CastSensorIdle: true
+      KnockBackImmune: true
+  - Id: 20887
+    AegisName: MD_AIRBOAT_PORING
+    Name: Melted Poring
+    Level: 210
+    Hp: 7500000
+    Sp: 10000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 5800
+    Attack2: 8200
+    Defense: 390
+    MagicDefense: 180
+    Resistance: 220
+    MagicResistance: 300
+    Str: 215
+    Agi: 250
+    Vit: 280
+    Int: 160
+    Dex: 220
+    Luk: 260
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Poison
+    ElementLevel: 3
+    WalkSpeed: 180
+    AttackDelay: 900
+    AttackMotion: 500
+    DamageMotion: 400
+    Ai: '21'
+    Modes:
+      CastSensorIdle: true
+      KnockBackImmune: true
+  - Id: 20888
+    AegisName: MD_AIRBOAT_WORM
+    Name: Grave Worm
+    Level: 210
+    Hp: 8200000
+    Sp: 10000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 6200
+    Attack2: 8700
+    Defense: 430
+    MagicDefense: 120
+    Resistance: 275
+    MagicResistance: 260
+    Str: 240
+    Agi: 190
+    Vit: 310
+    Int: 90
+    Dex: 235
+    Luk: 180
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Insect
+    Element: Undead
+    ElementLevel: 3
+    WalkSpeed: 170
+    AttackDelay: 1050
+    AttackMotion: 480
+    DamageMotion: 420
+    Ai: '21'
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+  - Id: 20889
+    AegisName: MD_AIRBOAT_LEECH
+    Name: Brain Sucker
+    Level: 210
+    Hp: 8000000
+    Sp: 20000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 6000
+    Attack2: 8500
+    Defense: 410
+    MagicDefense: 220
+    Resistance: 230
+    MagicResistance: 340
+    Str: 210
+    Agi: 220
+    Vit: 270
+    Int: 270
+    Dex: 250
+    Luk: 160
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Demon
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 160
+    AttackDelay: 950
+    AttackMotion: 500
+    DamageMotion: 420
+    Ai: '21'
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+  - Id: 20890
+    AegisName: MD_AIRBOAT_MOS
+    Name: Mosquilo
+    Level: 210
+    Hp: 7000000
+    Sp: 15000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 5600
+    Attack2: 8000
+    Defense: 360
+    MagicDefense: 150
+    Resistance: 200
+    MagicResistance: 280
+    Str: 200
+    Agi: 300
+    Vit: 230
+    Int: 150
+    Dex: 290
+    Luk: 220
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Insect
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 130
+    AttackDelay: 780
+    AttackMotion: 420
+    DamageMotion: 360
+    Ai: '21'
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+  - Id: 20891
+    AegisName: MD_AIRBOAT_BOSS
+    Name: Unidentified Creature
+    Level: 220
+    Hp: 800000000
+    Sp: 500000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 10500
+    Attack2: 16000
+    Defense: 665
+    MagicDefense: 80
+    Resistance: 465
+    MagicResistance: 155
+    Str: 475
+    Agi: 195
+    Vit: 405
+    Int: 150
+    Dex: 260
+    Luk: 140
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 830
+    AttackMotion: 700
+    DamageMotion: 400
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
+  - Id: 21061
+    AegisName: MD_AIRBOAT_BOSS2
+    Name: Arcane Crash Creature
+    Level: 220
+    Hp: 800000000
+    Sp: 500000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 7800
+    Attack2: 11500
+    Defense: 410
+    MagicDefense: 150
+    Resistance: 190
+    MagicResistance: 410
+    Str: 175
+    Agi: 165
+    Vit: 150
+    Int: 475
+    Dex: 235
+    Luk: 405
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 830
+    AttackMotion: 700
+    DamageMotion: 400
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
+  - Id: 21062
+    AegisName: MD_AIRBOAT_BOSS3
+    Name: Agile Crash Creature
+    Level: 220
+    Hp: 800000000
+    Sp: 500000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 9200
+    Attack2: 13600
+    Defense: 585
+    MagicDefense: 95
+    Resistance: 480
+    MagicResistance: 135
+    Str: 175
+    Agi: 300
+    Vit: 240
+    Int: 185
+    Dex: 405
+    Luk: 245
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 3
+    WalkSpeed: 140
+    AttackDelay: 760
+    AttackMotion: 650
+    DamageMotion: 380
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
+  - Id: 21063
+    AegisName: MD_AIRBOAT_BOSS4
+    Name: Extreme Crash Creature
+    Level: 220
+    Hp: 1100000000
+    Sp: 500000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 12400
+    Attack2: 18200
+    Defense: 885
+    MagicDefense: 135
+    Resistance: 470
+    MagicResistance: 410
+    Str: 490
+    Agi: 205
+    Vit: 415
+    Int: 215
+    Dex: 300
+    Luk: 270
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 4
+    WalkSpeed: 150
+    AttackDelay: 830
+    AttackMotion: 700
+    DamageMotion: 400
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
+  - Id: 22378
+    AegisName: MD_Airboat_Boss5
+    Name: Free Crash Creature
+    Level: 210
+    Hp: 350000000
+    Sp: 250000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 8500
+    Attack2: 12500
+    Defense: 600
+    MagicDefense: 100
+    Resistance: 350
+    MagicResistance: 250
+    Str: 350
+    Agi: 190
+    Vit: 330
+    Int: 200
+    Dex: 250
+    Luk: 150
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 850
+    AttackMotion: 700
+    DamageMotion: 400
+    Ai: '21'
+    Class: Boss
+    Modes:
+      CastSensorIdle: true
+      Detector: true
+      KnockBackImmune: true
+      Mvp: true
