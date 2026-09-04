@@ -1,0 +1,713 @@
+//===== rAthena Script =======================================
+//= Old Glast Heim - Challenge Mode
+//===== Description: =========================================
+//= Complete playable implementation of the selectable level
+//= 1-10 challenge, both wings, corruption-root timing phase,
+//= boss mechanics, rewards, exchanges and Temporal Circlet
+//= enchantment. Values follow the published MuhRO tables.
+//= References:
+//= https://wiki.muhro.eu/Old_Glast_Heim_Challenge_Mode
+//= https://wiki.muhro.eu/Temporal_Circlet
+//============================================================
+
+function	script	OGHCM_MaxLevel	{
+	.@points = getarg(0);
+	setarray .@need[1],0,5,11,18,26,35,45,60,80,100;
+	.@level = 1;
+	for (.@i = 2; .@i <= 10; ++.@i)
+		if (.@points >= .@need[.@i]) .@level = .@i;
+	return .@level;
+}
+
+function	script	OGHCM_ScaleMob	{
+	.@gid = getarg(0);
+	.@level = getarg(1);
+	if (!unitexists(.@gid)) return 0;
+	getunitdata .@gid,.@data;
+	setunitdata .@gid,UMOB_ATKMIN,min(65000,.@data[UMOB_ATKMIN] * .@level);
+	setunitdata .@gid,UMOB_ATKMAX,min(65000,.@data[UMOB_ATKMAX] * .@level);
+	return 1;
+}
+
+function	script	OGHCM_IsCirclet	{
+	.@id = getarg(0);
+	return .@id >= 19474 && .@id <= 19492;
+}
+
+function	script	OGHCM_IsSpecialEnchant	{
+	.@id = getarg(0);
+	setarray .@base[0],29706,29061,29111,29101,29091,29071,29081;
+	for (.@i = 0; .@i < getarraysize(.@base); ++.@i)
+		if (.@id >= .@base[.@i] && .@id <= .@base[.@i] + 9)
+			return .@base[.@i];
+	return 0;
+}
+
+// Rebuilds the equipped circlet while preserving refine, grade, physical card,
+// identification, break status and all five random options.
+function	script	OGHCM_RebuildCirclet	{
+	.@new0 = getarg(0); .@new1 = getarg(1);
+	.@new2 = getarg(2); .@new3 = getarg(3);
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && callfunc("OGHCM_IsCirclet",@inventorylist_id[.@i])) {
+			.@idx = .@i;
+			break;
+		}
+	}
+	if (.@idx < 0) return 0;
+	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
+	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
+	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
+	.@id = @inventorylist_id[.@idx];
+	.@identify = @inventorylist_identify[.@idx];
+	.@refine = @inventorylist_refine[.@idx];
+	.@attribute = @inventorylist_attribute[.@idx];
+	.@grade = @inventorylist_enchantgrade[.@idx];
+	delitemidx @inventorylist_idx[.@idx],1;
+	getitem4 .@id,1,.@identify,.@refine,.@attribute,.@new0,.@new1,.@new2,.@new3,.@grade,.@oid,.@oval,.@opar;
+	return 1;
+}
+
+glast_01,143,288,4	script	Oscar#oghcm_gate	4_ED_OSCAR,{
+	mes "[Oscar]";
+	mes "This unstable Glast Heim has no Varmundt or Heinrich. Choose a contamination level, divide the party, and stop the expanding time distortion.";
+	next;
+	if (BaseLevel < 170) {
+		mes "[Oscar]";
+		mes "Only adventurers of Base Level 170 or higher can withstand this distortion.";
+		close;
+	}
+	.@party = getcharid(1);
+	.@mode = .@party ? IM_PARTY : IM_CHAR;
+	.@owner = .@party ? .@party : getcharid(0);
+	.@iid = instance_id(.@mode);
+	if (.@iid && instance_live_info(ILI_NAME,.@iid) != "Old Glast Heim (Challenge Mode)") {
+		mes "[Oscar]";
+		mes "You already own another active instance. Close it before opening this distortion.";
+		close;
+	}
+	.@max = callfunc("OGHCM_MaxLevel",#OGHCM_Points);
+	mes "Account progression: ^3366FF"+#OGHCM_Points+" points^000000 (level "+.@max+" unlocked).";
+	if (!.@iid && OGHCM_Next > gettimetick(2)) {
+		mes "The distortion is still cooling down for "+((OGHCM_Next-gettimetick(2)+59)/60)+" minute(s).";
+		close;
+	}
+	if (.@party && !.@iid && !is_party_leader()) {
+		mes "Your party leader must create the distortion first.";
+		close;
+	}
+	if (!.@iid) {
+		if (select("Create and enter.:Leave.") == 2) close;
+		.@iid = instance_create("Old Glast Heim (Challenge Mode)",.@mode,.@owner);
+		if (.@iid < 1) {
+			mes "The distortion could not be created. Please try again shortly.";
+			close;
+		}
+	} else {
+		if (select("Enter the active instance.:Leave.") == 2) close;
+	}
+	if (instance_enter("Old Glast Heim (Challenge Mode)",-1,-1,getcharid(0),.@iid) != IE_OK) {
+		mes "The instance map is not ready.";
+		close;
+	}
+	OGHCM_Next = gettimetick(2) + 86400;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 170";
+	end;
+}
+
+1@gl_he,150,42,4	script	Oscar#oghcm_start	4_ED_OSCAR,{
+	mes "[Oscar]";
+	if ('ogh_stage) {
+		mes "The challenge is already running. I can move late arrivals to the current operation.";
+		next;
+		if (select("Join the operation.:Remain here.") == 2) close;
+		if ('ogh_stage == 1)
+			warp instance_mapname("1@gl_he"),rand(2) ? 70 : 230,150;
+		else if ('ogh_stage == 2)
+			warp instance_mapname("1@gl_he"),150,220;
+		else
+			warp instance_mapname("1@gl_he"),145,270;
+		end;
+	}
+	if (BaseLevel < 170) {
+		mes "Only adventurers of Base Level 170 or higher can withstand this distortion.";
+		close;
+	}
+	if (getcharid(1) && !is_party_leader()) {
+		mes "The party leader must select the contamination level.";
+		close;
+	}
+	.@max = callfunc("OGHCM_MaxLevel",#OGHCM_Points);
+	.@menu$ = "";
+	for (.@i = 1; .@i <= .@max; ++.@i)
+		.@menu$ += "Contamination Level "+.@i+":";
+	mes "Select any contamination level unlocked by your account's "+#OGHCM_Points+" progression points.";
+	next;
+	.@level = select(.@menu$);
+	mes "Level "+.@level+" multiplies every monster's attack, raises boss HP and regeneration, and improves all rewards.";
+	next;
+	if (select("Begin level "+.@level+".:Reconsider.") == 2) close;
+	'ogh_level = .@level;
+	'ogh_stage = 1;
+	'ogh_left_kills = 0; 'ogh_right_kills = 0;
+	'ogh_left_open = 0; 'ogh_right_open = 0;
+	'ogh_root_started = 0; 'ogh_root_done = 0; 'ogh_root_kills = 0;
+	'ogh_slave_kills = 0; 'ogh_boss_reset = 0;
+	mapannounce instance_mapname("1@gl_he"),"Oscar: The party will be divided between the west and east wings. Defeat at least 47 enemies on each side!",bc_map,0x77AAFF;
+	close2;
+	donpcevent instance_npcname("#OGHCM_Control")+"::OnSpawnWings";
+	end;
+}
+
+1@gl_he,1,1,0	script	#OGHCM_Control	HIDDEN_NPC,{
+	end;
+
+OnInstanceInit:
+	'ogh_stage = 0;
+	'ogh_map$ = instance_mapname("1@gl_he");
+	'ogh_token$ = "OGHCM:"+instance_id()+":"+gettimetick(2);
+	disablenpc instance_npcname("West Gate#oghcm");
+	disablenpc instance_npcname("East Gate#oghcm");
+	disablenpc instance_npcname("Oscar#oghcm_center");
+	disablenpc instance_npcname("Oscar#oghcm_boss");
+	disablenpc instance_npcname("Temporal Treasure#oghcm");
+	disablenpc instance_npcname("Oscar#oghcm_reward");
+	disablenpc instance_npcname("Exit Distortion#oghcm");
+	mapannounce 'ogh_map$,"Old Glast Heim Challenge: speak with Oscar to select the contamination level.",bc_map,0x77AAFF;
+	end;
+
+OnSpawnWings:
+	if ('ogh_stage != 1) end;
+	setarray .@mobs[0],20574,20576,20577,20578,20579,20580;
+	.@left_event$ = instance_npcname(strnpcinfo(0))+"::OnLeftDead";
+	.@right_event$ = instance_npcname(strnpcinfo(0))+"::OnRightDead";
+	for (.@i = 0; .@i < 50; ++.@i) {
+		areamonster 'ogh_map$,35,45,130,260,"Distorted Glast Heim Soldier",.@mobs[rand(getarraysize(.@mobs))],1,.@left_event$;
+		callfunc "OGHCM_ScaleMob",$@mobid[0],'ogh_level;
+		areamonster 'ogh_map$,170,45,265,260,"Distorted Glast Heim Soldier",.@mobs[rand(getarraysize(.@mobs))],1,.@right_event$;
+		callfunc "OGHCM_ScaleMob",$@mobid[0],'ogh_level;
+	}
+	.@count = getmapunits(BL_PC,'ogh_map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i)
+		unitwarp .@players[.@i],'ogh_map$,rand(2) ? 70 : 230,150;
+	end;
+
+OnLeftDead:
+	if ('ogh_stage != 1) end;
+	++'ogh_left_kills;
+	if ('ogh_left_kills == 47) {
+		'ogh_left_open = 1;
+		enablenpc instance_npcname("West Gate#oghcm");
+		mapannounce 'ogh_map$,"Oscar: The west wing is stable. Its return gate is now open!",bc_map,0x55FFAA;
+		if (!'ogh_root_started) donpcevent instance_npcname(strnpcinfo(0))+"::OnRootStart";
+		callsub L_TryCenter;
+	}
+	end;
+
+OnRightDead:
+	if ('ogh_stage != 1) end;
+	++'ogh_right_kills;
+	if ('ogh_right_kills == 47) {
+		'ogh_right_open = 1;
+		enablenpc instance_npcname("East Gate#oghcm");
+		mapannounce 'ogh_map$,"Oscar: The east wing is stable. Its return gate is now open!",bc_map,0x55FFAA;
+		if (!'ogh_root_started) donpcevent instance_npcname(strnpcinfo(0))+"::OnRootStart";
+		callsub L_TryCenter;
+	}
+	end;
+
+OnRootStart:
+	if ('ogh_root_started) end;
+	'ogh_root_started = 1;
+	.@maximum = ('ogh_level >= 8) ? 4 : (('ogh_level >= 6) ? 3 : (('ogh_level >= 4) ? 2 : 1));
+	'ogh_root_active = rand(1,.@maximum);
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRootDead";
+	for (.@i = 0; .@i < 'ogh_root_active; ++.@i) {
+		monster 'ogh_map$,142 + (.@i % 2) * 16,178 + (.@i / 2) * 14,"Prime Corruption Root",20575,1,.@event$;
+		callfunc "OGHCM_ScaleMob",$@mobid[0],'ogh_level;
+	}
+	mapannounce 'ogh_map$,"Oscar: Prime Corruption Roots appeared in the center! You have 30 seconds before they erupt!",bc_map,0xFF5555;
+	sleep 30000;
+	if ('ogh_root_done || 'ogh_stage != 1) end;
+	'ogh_root_timeout = 1;
+	'ogh_root_done = 1;
+	'ogh_root_active = 0;
+	.@count = getareaunits(BL_PC,'ogh_map$,125,160,175,210,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i)
+		unitkill .@players[.@i];
+	killmonster 'ogh_map$,.@event$;
+	mapannounce 'ogh_map$,"Oscar destroys the unstable roots. Anyone caught near the center is consumed by the eruption!",bc_map,0xFF3333;
+	callsub L_TryCenter;
+	end;
+
+OnRootDead:
+	if ('ogh_root_timeout || 'ogh_stage != 1) end;
+	++'ogh_root_kills;
+	--'ogh_root_active;
+	if ('ogh_root_active <= 0) {
+		'ogh_root_done = 1;
+		mapannounce 'ogh_map$,"All Prime Corruption Roots were destroyed before the eruption.",bc_map,0x55FFAA;
+		callsub L_TryCenter;
+	}
+	end;
+
+OnBossStart:
+	if ('ogh_stage != 3 || 'ogh_boss) end;
+	.@bossid = (rand(100) < 5 * 'ogh_level) ? 20572 : 20573;
+	'ogh_himmelmez = (.@bossid == 20572);
+	monster 'ogh_map$,155,280,'ogh_himmelmez ? "Phantom Himmelmez" : "Phantom Amdarais",.@bossid,1,instance_npcname(strnpcinfo(0))+"::OnBossDead";
+	'ogh_boss = $@mobid[0];
+	setarray .@hp[1],600000000,750000000,900000000,1050000000,1200000000,1350000000,1500000000,1650000000,1800000000,2050000000;
+	'ogh_boss_maxhp = .@hp['ogh_level];
+	setunitdata 'ogh_boss,UMOB_MAXHP,'ogh_boss_maxhp;
+	setunitdata 'ogh_boss,UMOB_HP,'ogh_boss_maxhp;
+	callfunc "OGHCM_ScaleMob",'ogh_boss,'ogh_level;
+	'ogh_phase = 0; 'ogh_outside = 0; 'ogh_boss_tick = 0;
+	.@thorn_event$ = instance_npcname(strnpcinfo(0))+"::OnThornDead";
+	setarray .@tx[0],125,135,145,155,165,175,125,175,125,175,125,135,145,155,165,175;
+	setarray .@ty[0],255,255,255,255,255,255,265,265,280,280,295,295,295,295,295,295;
+	for (.@i = 0; .@i < getarraysize(.@tx); ++.@i) {
+		monster 'ogh_map$,.@tx[.@i],.@ty[.@i],"Mutated Thorn",20581,1,.@thorn_event$;
+		setunitdata $@mobid[0],UMOB_MAXHP,5 + 'ogh_level * 4;
+		setunitdata $@mobid[0],UMOB_HP,5 + 'ogh_level * 4;
+	}
+	mapannounce 'ogh_map$,'ogh_himmelmez ? "Phantom Himmelmez tears through the distortion!" : "Phantom Amdarais rises from the distortion!",bc_map,0xFF7777;
+	donpcevent instance_npcname(strnpcinfo(0))+"::OnBossMonitor";
+	end;
+
+OnBossMonitor:
+	while ('ogh_stage == 3 && unitexists('ogh_boss)) {
+		sleep 2000;
+		if ('ogh_stage != 3 || !unitexists('ogh_boss)) end;
+		getunitdata 'ogh_boss,.@data;
+		.@newhp = min('ogh_boss_maxhp,.@data[UMOB_HP] + 300000 * 'ogh_level);
+		if (.@newhp > .@data[UMOB_HP]) setunitdata 'ogh_boss,UMOB_HP,.@newhp;
+		if (.@data[UMOB_X] < 120 || .@data[UMOB_X] > 182 || .@data[UMOB_Y] < 250 || .@data[UMOB_Y] > 298)
+			'ogh_outside += 2;
+		else
+			'ogh_outside = 0;
+		if ('ogh_outside >= 30) {
+			'ogh_boss_reset = 1;
+			'ogh_outside = 0;
+			'ogh_phase = 0;
+			unitwarp 'ogh_boss,'ogh_map$,155,280;
+			setunitdata 'ogh_boss,UMOB_HP,'ogh_boss_maxhp;
+			mapannounce 'ogh_map$,"Oscar: The boss left the arena too long. The battle has reset at full health!",bc_map,0xFF3333;
+			continue;
+		}
+		.@percent = .@data[UMOB_HP] / max(1,'ogh_boss_maxhp / 100);
+		if ('ogh_phase == 0 && .@percent <= 70) { 'ogh_phase = 1; callsub L_SpawnSlaves,20583; }
+		if ('ogh_phase == 1 && .@percent <= 50) { 'ogh_phase = 2; callsub L_SpawnSlaves,20584; }
+		if ('ogh_phase == 2 && .@percent <= 30) { 'ogh_phase = 3; callsub L_SpawnSlaves,20585; }
+		++'ogh_boss_tick;
+		if ('ogh_level >= 3 && 'ogh_boss_tick % 15 == 0) {
+			mapannounce 'ogh_map$,"The phantom gathers every wound into Max Pain!",bc_map,0xFF55FF;
+			unitskilluseid 'ogh_boss,"NPC_MAXPAIN",min(10,'ogh_level),'ogh_boss,-10000;
+		}
+		if ('ogh_level >= 9 && 'ogh_boss_tick % 10 == 0) {
+			unitskilluseid 'ogh_boss,"NPC_WIDECURSE",5,'ogh_boss,-10000;
+			unitskilluseid 'ogh_boss,"NPC_WIDEBLEEDING",5,'ogh_boss,-10000;
+		}
+	}
+	end;
+
+OnBossDead:
+	if ('ogh_stage != 3) end;
+	'ogh_stage = 4;
+	'ogh_boss = 0;
+	killmonster 'ogh_map$,"All";
+	enablenpc instance_npcname("Temporal Treasure#oghcm");
+	enablenpc instance_npcname("Oscar#oghcm_reward");
+	enablenpc instance_npcname("Exit Distortion#oghcm");
+	mapannounce 'ogh_map$,"The distortion collapses. Claim the Temporal Treasure and report to Oscar.",bc_map,0xFFDD77;
+	end;
+
+OnSlaveDead:
+	if ('ogh_stage == 3) ++'ogh_slave_kills;
+	end;
+
+OnThornDead:
+	end;
+
+L_TryCenter:
+	if ('ogh_stage == 1 && 'ogh_left_open && 'ogh_right_open && 'ogh_root_done) {
+		'ogh_stage = 2;
+		enablenpc instance_npcname("Oscar#oghcm_center");
+		mapannounce 'ogh_map$,"Both wings and the center are stable. Meet Oscar at the north end of the central hall.",bc_map,0x55FFAA;
+	}
+	return;
+
+L_SpawnSlaves:
+	.@mob = getarg(0);
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnSlaveDead";
+	for (.@i = 0; .@i < 34; ++.@i) {
+		areamonster 'ogh_map$,128,258,178,294,"Phantom Guard",.@mob,1,.@event$;
+		callfunc "OGHCM_ScaleMob",$@mobid[0],'ogh_level;
+	}
+	mapannounce 'ogh_map$,"A regiment of phantom guards answers the boss!",bc_map,0xFFAA55;
+	return;
+}
+
+1@gl_he,137,151,0	script(DISABLED)	West Gate#oghcm	WARPNPC,2,2,{
+	if (!'ogh_left_open) end;
+	if ('ogh_right_open) {
+		warp instance_mapname("1@gl_he"),145,190;
+		end;
+	}
+	warp instance_mapname("1@gl_he"),230,150;
+	end;
+}
+1@gl_he,163,151,0	script(DISABLED)	East Gate#oghcm	WARPNPC,2,2,{
+	if (!'ogh_right_open) end;
+	if ('ogh_left_open) {
+		warp instance_mapname("1@gl_he"),155,190;
+		end;
+	}
+	warp instance_mapname("1@gl_he"),70,150;
+	end;
+}
+
+1@gl_he,150,225,4	script(DISABLED)	Oscar#oghcm_center	4_ED_OSCAR,{
+	if ('ogh_stage != 2) end;
+	mes "[Oscar]";
+	mes "The boss waits in the northern arena. Mutated Thorns mark its boundary; keeping the boss outside for 30 seconds resets the fight.";
+	next;
+	if (select("Move everyone to the arena.:Wait.") == 2) close;
+	'ogh_stage = 3;
+	disablenpc();
+	enablenpc instance_npcname("Oscar#oghcm_boss");
+	close2;
+	instance_warpall "1@gl_he",145,270,instance_id();
+	end;
+}
+
+1@gl_he,145,270,4	script(DISABLED)	Oscar#oghcm_boss	4_ED_OSCAR,{
+	if ('ogh_stage != 3 || 'ogh_boss) end;
+	mes "[Oscar]";
+	mes "The phantom regenerates ^FF5555"+(300000*'ogh_level)+" HP every two seconds^000000. Level 3 and above uses Max Pain; level 9 adds wide curse and bleeding.";
+	next;
+	if (select("Summon the phantom.:Wait.") == 2) close;
+	disablenpc();
+	close2;
+	donpcevent instance_npcname("#OGHCM_Control")+"::OnBossStart";
+	end;
+}
+
+1@gl_he,148,282,4	script(DISABLED)	Temporal Treasure#oghcm	4_TREASURE_BOX,{
+	if ('ogh_stage != 4) end;
+	if (OGHCM_ChestToken$ == 'ogh_token$) {
+		mes "[Temporal Treasure]"; mes "You already claimed this distortion's treasure."; close;
+	}
+	setarray .@sealed_min[1],1,1,2,2,3,3,4,4,5,5;
+	setarray .@sealed_max[1],6,8,10,12,14,16,17,18,19,20;
+	setarray .@gem_min[1],0,0,1,1,1,1,2,2,2,2;
+	setarray .@gem_max[1],0,0,4,6,7,9,10,12,13,15;
+	setarray .@spell_min[1],0,0,0,0,1,3,5,8,11,14;
+	setarray .@spell_max[1],0,0,0,0,4,9,14,20,27,34;
+	setarray .@frag_min[1],1,1,1,1,2,2,3,3,4,4;
+	setarray .@frag_max[1],16,24,31,38,40,42,44,46,48,50;
+	.@sealed = rand(.@sealed_min['ogh_level],.@sealed_max['ogh_level]);
+	.@gem = rand(.@gem_min['ogh_level],.@gem_max['ogh_level]);
+	.@spell = rand(.@spell_min['ogh_level],.@spell_max['ogh_level]);
+	.@fragment = rand(.@frag_min['ogh_level],.@frag_max['ogh_level]);
+	if (!checkweight(25864,.@sealed) || (.@gem && !checkweight(25865,.@gem)) || (.@spell && !checkweight(25866,.@spell)) || !checkweight(25867,.@fragment)) {
+		mes "[Temporal Treasure]"; mes "Make room in your inventory before claiming the treasure."; close;
+	}
+	OGHCM_ChestToken$ = 'ogh_token$;
+	getitem 25864,.@sealed;
+	if (.@gem) getitem 25865,.@gem;
+	if (.@spell) getitem 25866,.@spell;
+	getitem 25867,.@fragment;
+	mes "[Temporal Treasure]";
+	mes "You received "+.@sealed+" Sealed Circlet(s), "+.@gem+" Gemstone(s), "+.@spell+" Spell(s), and "+.@fragment+" Fragment(s).";
+	close;
+}
+
+1@gl_he,160,282,4	script(DISABLED)	Oscar#oghcm_reward	4_ED_OSCAR,{
+	if ('ogh_stage != 4) end;
+	if (#OGHCM_OscarToken$ == 'ogh_token$) {
+		mes "[Oscar]"; mes "This account already recorded the result of this distortion."; close;
+	}
+	setarray .@min_a[1],1,1,1,1,2,2,2,3,3,3;
+	setarray .@max_a[1],1,2,3,4,5,6,7,8,9,10;
+	setarray .@min_h[1],1,1,1,2,2,2,3,3,4,4;
+	setarray .@max_h[1],2,3,4,5,6,7,8,9,10,11;
+	.@sealed = 'ogh_himmelmez ? rand(.@min_h['ogh_level],.@max_h['ogh_level]) : rand(.@min_a['ogh_level],.@max_a['ogh_level]);
+	if ('ogh_root_kills > 0) ++.@sealed;
+	if ('ogh_slave_kills >= 100) ++.@sealed;
+	if (!'ogh_boss_reset) ++.@sealed;
+	.@spell = ('ogh_level >= 8);
+	.@antiquity = 'ogh_himmelmez ? 102553 : 102552;
+	if (!checkweight(25864,.@sealed) || (.@spell && !checkweight(25866,.@spell)) || !checkweight(.@antiquity,1)) {
+		mes "[Oscar]"; mes "Make room for your performance rewards first."; close;
+	}
+	#OGHCM_OscarToken$ = 'ogh_token$;
+	#OGHCM_Points += 'ogh_level;
+	getitem 25864,.@sealed;
+	if (.@spell) getitem 25866,1;
+	getitem .@antiquity,1;
+	mes "[Oscar]";
+	mes "Challenge level "+'ogh_level+" recorded: ^3366FF+"+'ogh_level+" account progression points^000000.";
+	mes "Performance reward: "+.@sealed+" Sealed Temporal Circlet(s)"+(.@spell ? ", 1 Temporal Spell" : "")+", and the boss antiquity.";
+	close;
+}
+
+1@gl_he,140,282,0	script(DISABLED)	Exit Distortion#oghcm	WARPNPC,2,2,{
+	warp "glast_01",143,285;
+	end;
+}
+
+//============================================================
+//= Temporal material exchange
+//============================================================
+
+glast_01,141,291,4	script	HUGINN2001#oghcm	4_M_HUGRANFA,{
+	mes "[HUGINN2001]";
+	mes "I exchange sealed circlets and Temporal Spells.";
+	next;
+	switch(select("Choose a Temporal Circlet (5 sealed).:Convert 1 sealed circlet.:White Knight Card (50 spells).:Khalitzburg Card (70 spells).:Mutated White Knight Egg (100 spells).:Leave.")) {
+	case 1:
+		if (countitem(25864) < 5) { mes "You need 5 Sealed Temporal Circlets."; close; }
+		.@menu$ = "";
+		for (.@i = 19474; .@i <= 19492; ++.@i) .@menu$ += getitemname(.@i)+":";
+		mes "Choose the circlet carefully.";
+		next;
+		.@item = 19473 + select(.@menu$);
+		mes "Exchange for "+getitemname(.@item)+"?";
+		next;
+		if (select("Exchange.:Cancel.") == 2) close;
+		if (countitem(25864) < 5) close;
+		delitem 25864,5; getitem .@item,1;
+		mes "Exchange complete."; close;
+	case 2:
+		if (countitem(25864) < 1) { mes "You need a Sealed Temporal Circlet."; close; }
+		delitem 25864,1;
+		.@roll = rand(100000);
+		.@count = (.@roll < 61160) ? 1 : ((.@roll < 98480) ? 2 : 3);
+		for (.@i = 0; .@i < .@count; ++.@i) {
+			.@reward = rand(10000);
+			if (.@reward < 7893) { getitem 25867,4; .@result$ += "4 Temporal Fragments"; }
+			else if (.@reward < 9021) { getitem 25867,8; .@result$ += "8 Temporal Fragments"; }
+			else if (.@reward < 9163) { getitem 25867,12; .@result$ += "12 Temporal Fragments"; }
+			else if (.@reward < 9204) { getitem 25867,16; .@result$ += "16 Temporal Fragments"; }
+			else if (.@reward < 9791) { getitem 25865,1; .@result$ += "1 Temporal Gemstone"; }
+			else if (.@reward < 9926) { getitem 25865,2; .@result$ += "2 Temporal Gemstones"; }
+			else if (.@reward < 9960) { getitem 25865,3; .@result$ += "3 Temporal Gemstones"; }
+			else if (.@reward < 9967) { getitem 25865,4; .@result$ += "4 Temporal Gemstones"; }
+			else if (.@reward < 9987) { getitem 25866,1; .@result$ += "1 Temporal Spell"; }
+			else if (.@reward < 9994) { getitem 25866,2; .@result$ += "2 Temporal Spells"; }
+			else { getitem 25866,3; .@result$ += "3 Temporal Spells"; }
+			if (.@i + 1 < .@count) .@result$ += ", ";
+		}
+		mes "The seal yielded "+.@count+" conversion reward(s): "+.@result$+"."; close;
+	case 3:
+		.@cost=50; .@item=27384; break;
+	case 4:
+		.@cost=70; .@item=27385; break;
+	case 5:
+		.@cost=100; .@item=9133; break;
+	default:
+		close;
+	}
+	if (countitem(25866) < .@cost) { mes "You need "+.@cost+" Temporal Spells."; close; }
+	delitem 25866,.@cost; getitem .@item,1;
+	mes "You received "+getitemname(.@item)+".";
+	close;
+}
+
+glast_01,139,291,4	script	MUNINN2003#oghcm	4_F_HUGRANMA,{
+	setarray .weapons[0],1336,18191,21055,28141,32027,32353,1870,2060,13347,18198,26165,26166,26172,26216,28046,28636,28774,28775,28776,32111,32304,32401,32402,32403;
+	mes "[MUNINN2003]";
+	mes "Royal and Guardian weapons retain the power of old Glast Heim.";
+	next;
+	switch(select("Random weapon (2 sealed + 20 fragments).:Choose weapon (10 spells).:Leave.")) {
+	case 1:
+		if (countitem(25864) < 2 || countitem(25867) < 20) { mes "Bring 2 Sealed Temporal Circlets and 20 Temporal Fragments."; close; }
+		delitem 25864,2; delitem 25867,20;
+		.@item = .weapons[rand(getarraysize(.weapons))];
+		getitem .@item,1;
+		mes "You received "+getitemname(.@item)+"."; close;
+	case 2:
+		if (countitem(25866) < 10) { mes "Bring 10 Temporal Spells."; close; }
+		.@menu$ = "";
+		for (.@i = 0; .@i < getarraysize(.weapons); ++.@i) .@menu$ += getitemname(.weapons[.@i])+":";
+		mes "Choose one weapon.";
+		next;
+		.@item = .weapons[select(.@menu$)-1];
+		mes "Exchange for "+getitemname(.@item)+"?";
+		next;
+		if (select("Exchange.:Cancel.") == 2) close;
+		if (countitem(25866) < 10) close;
+		delitem 25866,10; getitem .@item,1;
+		mes "Exchange complete."; close;
+	default:
+		close;
+	}
+}
+
+//============================================================
+//= Temporal Circlet enchantment
+//============================================================
+
+glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
+	.@item = getequipid(EQI_HEAD_TOP);
+	mes "[OSC0005]";
+	if (!callfunc("OGHCM_IsCirclet",.@item)) {
+		mes "Equip a Temporal Circlet in the upper-head slot before asking me to work on it.";
+		close;
+	}
+	setarray .@card[0],getequipcardid(EQI_HEAD_TOP,0),getequipcardid(EQI_HEAD_TOP,1),getequipcardid(EQI_HEAD_TOP,2),getequipcardid(EQI_HEAD_TOP,3);
+	if (!.@card[3]) {
+		mes "First enchant: 10 Temporal Fragments for the fourth slot. Success is guaranteed.";
+		next;
+		if (select("Enchant.:Cancel.") == 2) close;
+		if (countitem(25867) < 10) { mes "Bring 10 Temporal Fragments."; close; }
+		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,3)) close;
+		setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753;
+		.@card[3] = .@pool[rand(getarraysize(.@pool))];
+		delitem 25867,10;
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "The fourth slot received "+getitemname(.@card[3])+"."; close;
+	}
+	if (!.@card[2]) {
+		mes "Second enchant: choose normal (20 Fragments) or special (2 Gemstones). Success is guaranteed.";
+		next;
+		.@choice = select("Normal enchant.:Special Temporal Jewel.:Cancel.");
+		if (.@choice == 3) close;
+		if (.@choice == 1) {
+			if (countitem(25867) < 20) { mes "Bring 20 Temporal Fragments."; close; }
+			setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753,29672,29673,29674,29675,29676,29677,29678,29679,29680,29681,29682,29683,29684,29685,29686,29687,29688,29689;
+			.@card[2] = .@pool[rand(getarraysize(.@pool))];
+			if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,2)) close;
+			delitem 25867,20;
+		} else {
+			if (countitem(25865) < 2) { mes "Bring 2 Temporal Gemstones."; close; }
+			.@card[2] = rand(29672,29689);
+			if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,2)) close;
+			delitem 25865,2;
+		}
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "The third slot received "+getitemname(.@card[2])+"."; close;
+	}
+	if (!.@card[1]) {
+		mes "Third enchant: 2 Temporal Spells for the second slot. Success is guaranteed.";
+		next;
+		if (select("Enchant.:Cancel.") == 2) close;
+		if (countitem(25866) < 2) { mes "Bring 2 Temporal Spells."; close; }
+		setarray .@pool[0],4818,4817,4816,4843,4832,4833,4834,4835,4869,4872,4873,4881,4815,4814,4813,4812,29706,29061,29111,29101,29091,29071,29081;
+		.@card[1] = .@pool[rand(getarraysize(.@pool))];
+		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,1)) close;
+		delitem 25866,2;
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "The second slot received "+getitemname(.@card[1])+"."; close;
+	}
+	mes "Current enchants: "+getitemname(.@card[1])+" / "+getitemname(.@card[2])+" / "+getitemname(.@card[3])+".";
+	next;
+	switch(select("Upgrade special enchant.:Choose desired special enchant.:Guaranteed upgrade to Lv5.:Reroll fourth slot.:Reroll third slot.:Reset all enchants.:Leave.")) {
+	case 1:
+		.@base = callfunc("OGHCM_IsSpecialEnchant",.@card[1]);
+		if (!.@base) { mes "The second slot is not a levelled special enchant."; close; }
+		.@level = .@card[1] - .@base + 1;
+		if (.@level >= 10) { mes "That enchant is already level 10."; close; }
+		setarray .@cost[1],4,6,8,10,12,16,20,28,40;
+		setarray .@chance[1],80,70,50,20,20,20,20,20,20;
+		mes "Upgrade Lv"+.@level+" to Lv"+(.@level+1)+" for "+.@cost[.@level]+" Temporal Spells at "+.@chance[.@level]+"%?";
+		next;
+		if (select("Attempt.:Cancel.") == 2) close;
+		if (countitem(25866) < .@cost[.@level]) { mes "You do not have enough Temporal Spells."; close; }
+		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,1) != .@card[1]) close;
+		delitem 25866,.@cost[.@level];
+		if (rand(100) < .@chance[.@level]) { ++.@card[1]; .@success = 1; }
+		else if (.@level > 1) --.@card[1];
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes .@success ? "Upgrade successful: "+getitemname(.@card[1])+"." : "Upgrade failed. "+((.@level > 1) ? "The enchant dropped one level." : "The level remains unchanged.");
+		close;
+	case 2:
+		if (countitem(25866) < 40 || Zeny < 5000000) { mes "This requires 5,000,000 zeny and 40 Temporal Spells."; close; }
+		setarray .@special[0],29706,29061,29111,29101,29091,29071,29081;
+		.@menu$ = "Tenacity Lv1:Mettle Lv1:Affection Lv1:Adamantine Lv1:Master Archer Lv1:Magic Essence Lv1:Acute Lv1:";
+		mes "Choose the special enchant.";
+		next;
+		.@card[1] = .@special[select(.@menu$)-1];
+		if (getequipid(EQI_HEAD_TOP) != .@item) close;
+		Zeny -= 5000000; delitem 25866,40;
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "The second slot is now "+getitemname(.@card[1])+"."; close;
+	case 3:
+		.@base = callfunc("OGHCM_IsSpecialEnchant",.@card[1]);
+		if (!.@base) { mes "The second slot is not a levelled special enchant."; close; }
+		.@level = .@card[1] - .@base + 1;
+		if (.@level >= 5) { mes "Guaranteed upgrading is only available through level 5."; close; }
+		setarray .@cost[1],20,30,40,50;
+		setarray .@zeny[1],3500000,5000000,8000000,14000000;
+		if (countitem(25866) < .@cost[.@level] || Zeny < .@zeny[.@level]) { mes "You need "+.@zeny[.@level]+" zeny and "+.@cost[.@level]+" Temporal Spells."; close; }
+		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,1) != .@card[1]) close;
+		Zeny -= .@zeny[.@level]; delitem 25866,.@cost[.@level]; ++.@card[1];
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "Guaranteed upgrade successful: "+getitemname(.@card[1])+"."; close;
+	case 4:
+		if (countitem(25867) < 50) { mes "Bring 50 Temporal Fragments."; close; }
+		setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753;
+		.@card[3] = .@pool[rand(getarraysize(.@pool))];
+		if (getequipid(EQI_HEAD_TOP) != .@item) close;
+		delitem 25867,50;
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "Fourth slot rerolled to "+getitemname(.@card[3])+"."; close;
+	case 5:
+		mes "Choose a normal reroll (100 Fragments) or special Temporal Jewel reroll (10 Gemstones).";
+		next;
+		.@kind = select("Normal.:Special.:Cancel.");
+		if (.@kind == 3) close;
+		if (.@kind == 1) {
+			if (countitem(25867) < 100) { mes "Bring 100 Temporal Fragments."; close; }
+			setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753,29672,29673,29674,29675,29676,29677,29678,29679,29680,29681,29682,29683,29684,29685,29686,29687,29688,29689;
+			.@card[2] = .@pool[rand(getarraysize(.@pool))];
+			if (getequipid(EQI_HEAD_TOP) != .@item) close;
+			delitem 25867,100;
+		} else {
+			if (countitem(25865) < 10) { mes "Bring 10 Temporal Gemstones."; close; }
+			.@card[2] = rand(29672,29689);
+			if (getequipid(EQI_HEAD_TOP) != .@item) close;
+			delitem 25865,10;
+		}
+		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		mes "Third slot rerolled to "+getitemname(.@card[2])+"."; close;
+	case 6:
+		mes "Reset all three enchant slots. The physical card in the first slot is preserved.";
+		mes "500,000 zeny: 70% success; failure destroys the circlet. Two Nyangvine Fruits: guaranteed.";
+		next;
+		.@kind = select("500,000 zeny (70%).:2 Nyangvine Fruits (100%).:Cancel.");
+		if (.@kind == 3) close;
+		if (.@kind == 1) {
+			if (Zeny < 500000) { mes "You need 500,000 zeny."; close; }
+			if (getequipid(EQI_HEAD_TOP) != .@item) close;
+			Zeny -= 500000;
+			if (rand(100) >= 70) {
+				getinventorylist;
+				for (.@i = 0; .@i < @inventorylist_count; ++.@i)
+					if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] == .@item) { delitemidx @inventorylist_idx[.@i],1; break; }
+				mes "The reset failed and the Temporal Circlet was destroyed."; close;
+			}
+		} else {
+			if (countitem(6909) < 2) { mes "Bring 2 Nyangvine Fruits."; close; }
+			if (getequipid(EQI_HEAD_TOP) != .@item) close;
+			delitem 6909,2;
+		}
+		callfunc "OGHCM_RebuildCirclet",.@card[0],0,0,0;
+		mes "All Temporal Circlet enchants were reset."; close;
+	default:
+		close;
+	}
+}
+
+1@gl_he	mapflag	noreturn
+1@gl_he	mapflag	noteleport
+1@gl_he	mapflag	nomemo
+1@gl_he	mapflag	nosave	SavePoint
+1@gl_he	mapflag	nowarp
+1@gl_he	mapflag	nowarpto
