@@ -215,22 +215,32 @@ har_in01,17,74,7	script	Contraband Processor#pa	4_DR_SOLDIER,{
 		mes "I charge 2 Rock Ridge Coins for this service. Bring them to me.";
 		close;
 	}
-	delitem 25250,2;// Rock_Ridge_Coin
-
 	// anti-hack
 	if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipRefineHack", .@part, .@refine) || callfunc("F_IsEquipCardHack", .@part, .@tmp_card[0], .@tmp_card[1], .@tmp_card[2], .@tmp_card[3]))
 		close;
 
-	delequip .@part;
+	delitem 25250,2;// Rock_Ridge_Coin
 	if (rand(100) < .@chance_of_breaking_on_reset) {
+		if (!deleteequipitem(.@part,.@equip_id,.@refine,
+			.@tmp_card[0],.@tmp_card[1],.@tmp_card[2],.@tmp_card[3])) {
+			getitem 25250,2;
+			mes "The equipped item changed, so the process was cancelled and your Rock Ridge Coins were returned.";
+			close;
+		}
 		specialeffect2 EF_LORD;
 		mes "[Contraband Processor]";
 		mes "Ah, that didn't turn out well.";
 		mes "Well, just my luck.";
 		close;
 	}
+	if (!modifyequipenchantstate(.@part,.@equip_id,.@refine,
+		.@tmp_card[0],.@tmp_card[1],.@tmp_card[2],.@tmp_card[3],
+		.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+		getitem 25250,2;
+		mes "The equipped item changed, so the process was cancelled and your Rock Ridge Coins were returned.";
+		close;
+	}
 	specialeffect2 EF_REPAIRWEAPON;
-	getitem2 .@equip_id,1,1,.@refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
 	mes "[Contraband Processor]";
 	mes "Done. Check it out.";
 	close;

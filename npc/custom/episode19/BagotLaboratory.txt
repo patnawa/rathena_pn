@@ -47,8 +47,13 @@ jor_dun03,57,63,3	script(CLOAKED)	Juncea#ep19re2	4_EP19_JUNCEA,{
 				mes "I can only open the secret passage for party leaders. Please have your party leader talk to me.";
 				close;
 			}
+			.@instance_id = instance_create(.@md_name$);
+			if (.@instance_id < 1) {
+				mes "[Juncea]";
+				mes "The secret passage could not be prepared. Please try again shortly.";
+				close;
+			}
 			mes "- ^0000ffPreparation for entry has started. After you are ready, press the button to enter " + .@md_name$ + ".^000000 -";
-			instance_create(.@md_name$);
 			close;
 		case 2:
 			if (is_party_leader() == false) {
@@ -406,8 +411,13 @@ jor_nest,66,260,3	script	Arorong#ep19re2	4_EP19_IWIN,{
 	cutin "",255;
 	switch( select( .@menu$, "Enter the simulation", "Do not challenge" ) ) {
 	case 1:
+		.@instance_id = instance_create(.@md_name$);
+		if (.@instance_id < 1) {
+			mes "[Arorong]";
+			mes "The simulation could not be prepared. Please try again shortly.";
+			close;
+		}
 		mes "- ^0000ffPreparation has started. Select Enter the simulation when the memorial dungeon is ready.^000000 -";
-		instance_create(.@md_name$);
 		close;
 	case 2:
 		switch( instance_enter(.@md_name$) ) {

@@ -43,33 +43,6 @@ function	script	OGHCM_IsSpecialEnchant	{
 	return 0;
 }
 
-// Rebuilds the equipped circlet while preserving refine, grade, physical card,
-// identification, break status and all five random options.
-function	script	OGHCM_RebuildCirclet	{
-	.@new0 = getarg(0); .@new1 = getarg(1);
-	.@new2 = getarg(2); .@new3 = getarg(3);
-	getinventorylist;
-	.@idx = -1;
-	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && callfunc("OGHCM_IsCirclet",@inventorylist_id[.@i])) {
-			.@idx = .@i;
-			break;
-		}
-	}
-	if (.@idx < 0) return 0;
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@id = @inventorylist_id[.@idx];
-	.@identify = @inventorylist_identify[.@idx];
-	.@refine = @inventorylist_refine[.@idx];
-	.@attribute = @inventorylist_attribute[.@idx];
-	.@grade = @inventorylist_enchantgrade[.@idx];
-	delitemidx @inventorylist_idx[.@idx],1;
-	getitem4 .@id,1,.@identify,.@refine,.@attribute,.@new0,.@new1,.@new2,.@new3,.@grade,.@oid,.@oval,.@opar;
-	return 1;
-}
-
 glast_01,143,288,4	script	Oscar#oghcm_gate	4_ED_OSCAR,{
 	mes "[Oscar]";
 	mes "This unstable Glast Heim has no Varmundt or Heinrich. Choose a contamination level, divide the party, and stop the expanding time distortion.";
@@ -415,7 +388,23 @@ L_SpawnSlaves:
 	.@gem = rand(.@gem_min['ogh_level],.@gem_max['ogh_level]);
 	.@spell = rand(.@spell_min['ogh_level],.@spell_max['ogh_level]);
 	.@fragment = rand(.@frag_min['ogh_level],.@frag_max['ogh_level]);
-	if (!checkweight(25864,.@sealed) || (.@gem && !checkweight(25865,.@gem)) || (.@spell && !checkweight(25866,.@spell)) || !checkweight(25867,.@fragment)) {
+	.@reward_count = 0;
+	.@reward_item[.@reward_count] = 25864;
+	.@reward_amount[.@reward_count] = .@sealed;
+	++.@reward_count;
+	if (.@gem) {
+		.@reward_item[.@reward_count] = 25865;
+		.@reward_amount[.@reward_count] = .@gem;
+		++.@reward_count;
+	}
+	if (.@spell) {
+		.@reward_item[.@reward_count] = 25866;
+		.@reward_amount[.@reward_count] = .@spell;
+		++.@reward_count;
+	}
+	.@reward_item[.@reward_count] = 25867;
+	.@reward_amount[.@reward_count] = .@fragment;
+	if (!checkweight2(.@reward_item,.@reward_amount)) {
 		mes "[Temporal Treasure]"; mes "Make room in your inventory before claiming the treasure."; close;
 	}
 	OGHCM_ChestToken$ = 'ogh_token$;
@@ -443,7 +432,13 @@ L_SpawnSlaves:
 	if (!'ogh_boss_reset) ++.@sealed;
 	.@spell = ('ogh_level >= 8);
 	.@antiquity = 'ogh_himmelmez ? 102553 : 102552;
-	if (!checkweight(25864,.@sealed) || (.@spell && !checkweight(25866,.@spell)) || !checkweight(.@antiquity,1)) {
+	setarray .@reward_item[0],25864,.@antiquity;
+	setarray .@reward_amount[0],.@sealed,1;
+	if (.@spell) {
+		.@reward_item[2] = 25866;
+		.@reward_amount[2] = 1;
+	}
+	if (!checkweight2(.@reward_item,.@reward_amount)) {
 		mes "[Oscar]"; mes "Make room for your performance rewards first."; close;
 	}
 	#OGHCM_OscarToken$ = 'ogh_token$;
@@ -458,7 +453,7 @@ L_SpawnSlaves:
 }
 
 1@gl_he,140,282,0	script(DISABLED)	Exit Distortion#oghcm	WARPNPC,2,2,{
-	warp "glast_01",143,285;
+	warp "glast_01",143,286;
 	end;
 }
 
@@ -482,28 +477,48 @@ glast_01,141,291,4	script	HUGINN2001#oghcm	4_M_HUGRANFA,{
 		next;
 		if (select("Exchange.:Cancel.") == 2) close;
 		if (countitem(25864) < 5) close;
+		if (!checkweight(.@item,1)) { mes "Make room for the circlet before exchanging."; close; }
 		delitem 25864,5; getitem .@item,1;
 		mes "Exchange complete."; close;
 	case 2:
 		if (countitem(25864) < 1) { mes "You need a Sealed Temporal Circlet."; close; }
-		delitem 25864,1;
 		.@roll = rand(100000);
 		.@count = (.@roll < 61160) ? 1 : ((.@roll < 98480) ? 2 : 3);
 		for (.@i = 0; .@i < .@count; ++.@i) {
 			.@reward = rand(10000);
-			if (.@reward < 7893) { getitem 25867,4; .@result$ += "4 Temporal Fragments"; }
-			else if (.@reward < 9021) { getitem 25867,8; .@result$ += "8 Temporal Fragments"; }
-			else if (.@reward < 9163) { getitem 25867,12; .@result$ += "12 Temporal Fragments"; }
-			else if (.@reward < 9204) { getitem 25867,16; .@result$ += "16 Temporal Fragments"; }
-			else if (.@reward < 9791) { getitem 25865,1; .@result$ += "1 Temporal Gemstone"; }
-			else if (.@reward < 9926) { getitem 25865,2; .@result$ += "2 Temporal Gemstones"; }
-			else if (.@reward < 9960) { getitem 25865,3; .@result$ += "3 Temporal Gemstones"; }
-			else if (.@reward < 9967) { getitem 25865,4; .@result$ += "4 Temporal Gemstones"; }
-			else if (.@reward < 9987) { getitem 25866,1; .@result$ += "1 Temporal Spell"; }
-			else if (.@reward < 9994) { getitem 25866,2; .@result$ += "2 Temporal Spells"; }
-			else { getitem 25866,3; .@result$ += "3 Temporal Spells"; }
+			if (.@reward < 7893) { .@fragments += 4; .@result$ += "4 Temporal Fragments"; }
+			else if (.@reward < 9021) { .@fragments += 8; .@result$ += "8 Temporal Fragments"; }
+			else if (.@reward < 9163) { .@fragments += 12; .@result$ += "12 Temporal Fragments"; }
+			else if (.@reward < 9204) { .@fragments += 16; .@result$ += "16 Temporal Fragments"; }
+			else if (.@reward < 9791) { .@gemstones += 1; .@result$ += "1 Temporal Gemstone"; }
+			else if (.@reward < 9926) { .@gemstones += 2; .@result$ += "2 Temporal Gemstones"; }
+			else if (.@reward < 9960) { .@gemstones += 3; .@result$ += "3 Temporal Gemstones"; }
+			else if (.@reward < 9967) { .@gemstones += 4; .@result$ += "4 Temporal Gemstones"; }
+			else if (.@reward < 9987) { .@spells += 1; .@result$ += "1 Temporal Spell"; }
+			else if (.@reward < 9994) { .@spells += 2; .@result$ += "2 Temporal Spells"; }
+			else { .@spells += 3; .@result$ += "3 Temporal Spells"; }
 			if (.@i + 1 < .@count) .@result$ += ", ";
 		}
+		.@reward_count = 0;
+		if (.@fragments) {
+			.@reward_item[.@reward_count] = 25867;
+			.@reward_amount[.@reward_count] = .@fragments;
+			++.@reward_count;
+		}
+		if (.@gemstones) {
+			.@reward_item[.@reward_count] = 25865;
+			.@reward_amount[.@reward_count] = .@gemstones;
+			++.@reward_count;
+		}
+		if (.@spells) {
+			.@reward_item[.@reward_count] = 25866;
+			.@reward_amount[.@reward_count] = .@spells;
+			++.@reward_count;
+		}
+		if (!checkweight2(.@reward_item,.@reward_amount)) { mes "Make room for every conversion reward before exchanging."; close; }
+		delitem 25864,1;
+		for (.@i = 0; .@i < .@reward_count; ++.@i)
+			getitem .@reward_item[.@i],.@reward_amount[.@i];
 		mes "The seal yielded "+.@count+" conversion reward(s): "+.@result$+"."; close;
 	case 3:
 		.@cost=50; .@item=27384; break;
@@ -515,6 +530,7 @@ glast_01,141,291,4	script	HUGINN2001#oghcm	4_M_HUGRANFA,{
 		close;
 	}
 	if (countitem(25866) < .@cost) { mes "You need "+.@cost+" Temporal Spells."; close; }
+	if (!checkweight(.@item,1)) { mes "Make room for the reward before exchanging."; close; }
 	delitem 25866,.@cost; getitem .@item,1;
 	mes "You received "+getitemname(.@item)+".";
 	close;
@@ -528,8 +544,9 @@ glast_01,139,291,4	script	MUNINN2003#oghcm	4_F_HUGRANMA,{
 	switch(select("Random weapon (2 sealed + 20 fragments).:Choose weapon (10 spells).:Leave.")) {
 	case 1:
 		if (countitem(25864) < 2 || countitem(25867) < 20) { mes "Bring 2 Sealed Temporal Circlets and 20 Temporal Fragments."; close; }
-		delitem 25864,2; delitem 25867,20;
 		.@item = .weapons[rand(getarraysize(.weapons))];
+		if (!checkweight(.@item,1)) { mes "Make room for the weapon before exchanging."; close; }
+		delitem 25864,2; delitem 25867,20;
 		getitem .@item,1;
 		mes "You received "+getitemname(.@item)+"."; close;
 	case 2:
@@ -543,6 +560,7 @@ glast_01,139,291,4	script	MUNINN2003#oghcm	4_F_HUGRANMA,{
 		next;
 		if (select("Exchange.:Cancel.") == 2) close;
 		if (countitem(25866) < 10) close;
+		if (!checkweight(.@item,1)) { mes "Make room for the weapon before exchanging."; close; }
 		delitem 25866,10; getitem .@item,1;
 		mes "Exchange complete."; close;
 	default:
@@ -555,6 +573,7 @@ glast_01,139,291,4	script	MUNINN2003#oghcm	4_F_HUGRANMA,{
 //============================================================
 
 glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
+	disable_items;
 	.@item = getequipid(EQI_HEAD_TOP);
 	mes "[OSC0005]";
 	if (!callfunc("OGHCM_IsCirclet",.@item)) {
@@ -571,7 +590,10 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753;
 		.@card[3] = .@pool[rand(getarraysize(.@pool))];
 		delitem 25867,10;
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,3,0,.@card[3])) {
+			getitem 25867,10;
+			mes "The equipped circlet changed. Your Temporal Fragments were refunded."; close;
+		}
 		mes "The fourth slot received "+getitemname(.@card[3])+"."; close;
 	}
 	if (!.@card[2]) {
@@ -585,13 +607,20 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 			.@card[2] = .@pool[rand(getarraysize(.@pool))];
 			if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,2)) close;
 			delitem 25867,20;
+			.@refund_item = 25867;
+			.@refund_amount = 20;
 		} else {
 			if (countitem(25865) < 2) { mes "Bring 2 Temporal Gemstones."; close; }
 			.@card[2] = rand(29672,29689);
 			if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,2)) close;
 			delitem 25865,2;
+			.@refund_item = 25865;
+			.@refund_amount = 2;
 		}
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,2,0,.@card[2])) {
+			getitem .@refund_item,.@refund_amount;
+			mes "The equipped circlet changed. Your materials were refunded."; close;
+		}
 		mes "The third slot received "+getitemname(.@card[2])+"."; close;
 	}
 	if (!.@card[1]) {
@@ -603,7 +632,10 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		.@card[1] = .@pool[rand(getarraysize(.@pool))];
 		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,1)) close;
 		delitem 25866,2;
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,1,0,.@card[1])) {
+			getitem 25866,2;
+			mes "The equipped circlet changed. Your Temporal Spells were refunded."; close;
+		}
 		mes "The second slot received "+getitemname(.@card[1])+"."; close;
 	}
 	mes "Current enchants: "+getitemname(.@card[1])+" / "+getitemname(.@card[2])+" / "+getitemname(.@card[3])+".";
@@ -621,10 +653,14 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		if (select("Attempt.:Cancel.") == 2) close;
 		if (countitem(25866) < .@cost[.@level]) { mes "You do not have enough Temporal Spells."; close; }
 		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,1) != .@card[1]) close;
+		.@old_enchant = .@card[1];
 		delitem 25866,.@cost[.@level];
 		if (rand(100) < .@chance[.@level]) { ++.@card[1]; .@success = 1; }
 		else if (.@level > 1) --.@card[1];
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,1,.@old_enchant,.@card[1])) {
+			getitem 25866,.@cost[.@level];
+			mes "The equipped circlet changed. Your Temporal Spells were refunded."; close;
+		}
 		mes .@success ? "Upgrade successful: "+getitemname(.@card[1])+"." : "Upgrade failed. "+((.@level > 1) ? "The enchant dropped one level." : "The level remains unchanged.");
 		close;
 	case 2:
@@ -633,10 +669,14 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		.@menu$ = "Tenacity Lv1:Mettle Lv1:Affection Lv1:Adamantine Lv1:Master Archer Lv1:Magic Essence Lv1:Acute Lv1:";
 		mes "Choose the special enchant.";
 		next;
+		.@old_enchant = .@card[1];
 		.@card[1] = .@special[select(.@menu$)-1];
 		if (getequipid(EQI_HEAD_TOP) != .@item) close;
 		Zeny -= 5000000; delitem 25866,40;
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,1,.@old_enchant,.@card[1])) {
+			Zeny += 5000000; getitem 25866,40;
+			mes "The equipped circlet changed. Your fee was refunded."; close;
+		}
 		mes "The second slot is now "+getitemname(.@card[1])+"."; close;
 	case 3:
 		.@base = callfunc("OGHCM_IsSpecialEnchant",.@card[1]);
@@ -647,16 +687,24 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		setarray .@zeny[1],3500000,5000000,8000000,14000000;
 		if (countitem(25866) < .@cost[.@level] || Zeny < .@zeny[.@level]) { mes "You need "+.@zeny[.@level]+" zeny and "+.@cost[.@level]+" Temporal Spells."; close; }
 		if (getequipid(EQI_HEAD_TOP) != .@item || getequipcardid(EQI_HEAD_TOP,1) != .@card[1]) close;
+		.@old_enchant = .@card[1];
 		Zeny -= .@zeny[.@level]; delitem 25866,.@cost[.@level]; ++.@card[1];
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,1,.@old_enchant,.@card[1])) {
+			Zeny += .@zeny[.@level]; getitem 25866,.@cost[.@level];
+			mes "The equipped circlet changed. Your fee was refunded."; close;
+		}
 		mes "Guaranteed upgrade successful: "+getitemname(.@card[1])+"."; close;
 	case 4:
 		if (countitem(25867) < 50) { mes "Bring 50 Temporal Fragments."; close; }
 		setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753;
+		.@old_enchant = .@card[3];
 		.@card[3] = .@pool[rand(getarraysize(.@pool))];
 		if (getequipid(EQI_HEAD_TOP) != .@item) close;
 		delitem 25867,50;
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,3,.@old_enchant,.@card[3])) {
+			getitem 25867,50;
+			mes "The equipped circlet changed. Your Temporal Fragments were refunded."; close;
+		}
 		mes "Fourth slot rerolled to "+getitemname(.@card[3])+"."; close;
 	case 5:
 		mes "Choose a normal reroll (100 Fragments) or special Temporal Jewel reroll (10 Gemstones).";
@@ -666,16 +714,25 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		if (.@kind == 1) {
 			if (countitem(25867) < 100) { mes "Bring 100 Temporal Fragments."; close; }
 			setarray .@pool[0],4710,4711,4712,4713,4700,4701,4702,4703,4740,4741,4742,4743,4750,4751,4752,4753,29672,29673,29674,29675,29676,29677,29678,29679,29680,29681,29682,29683,29684,29685,29686,29687,29688,29689;
+			.@old_enchant = .@card[2];
 			.@card[2] = .@pool[rand(getarraysize(.@pool))];
 			if (getequipid(EQI_HEAD_TOP) != .@item) close;
 			delitem 25867,100;
+			.@refund_item = 25867;
+			.@refund_amount = 100;
 		} else {
 			if (countitem(25865) < 10) { mes "Bring 10 Temporal Gemstones."; close; }
+			.@old_enchant = .@card[2];
 			.@card[2] = rand(29672,29689);
 			if (getequipid(EQI_HEAD_TOP) != .@item) close;
 			delitem 25865,10;
+			.@refund_item = 25865;
+			.@refund_amount = 10;
 		}
-		callfunc "OGHCM_RebuildCirclet",.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,2,.@old_enchant,.@card[2])) {
+			getitem .@refund_item,.@refund_amount;
+			mes "The equipped circlet changed. Your materials were refunded."; close;
+		}
 		mes "Third slot rerolled to "+getitemname(.@card[2])+"."; close;
 	case 6:
 		mes "Reset all three enchant slots. The physical card in the first slot is preserved.";
@@ -687,6 +744,7 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 			if (Zeny < 500000) { mes "You need 500,000 zeny."; close; }
 			if (getequipid(EQI_HEAD_TOP) != .@item) close;
 			Zeny -= 500000;
+			.@refund_zeny = 500000;
 			if (rand(100) >= 70) {
 				getinventorylist;
 				for (.@i = 0; .@i < @inventorylist_count; ++.@i)
@@ -697,8 +755,14 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 			if (countitem(6909) < 2) { mes "Bring 2 Nyangvine Fruits."; close; }
 			if (getequipid(EQI_HEAD_TOP) != .@item) close;
 			delitem 6909,2;
+			.@refund_item = 6909;
+			.@refund_amount = 2;
 		}
-		callfunc "OGHCM_RebuildCirclet",.@card[0],0,0,0;
+		if (!resetequipenchants(EQI_HEAD_TOP,.@item,.@card[0],.@card[1],.@card[2],.@card[3])) {
+			if (.@refund_zeny) Zeny += .@refund_zeny;
+			if (.@refund_item) getitem .@refund_item,.@refund_amount;
+			mes "The equipped circlet changed. Your reset fee was refunded."; close;
+		}
 		mes "All Temporal Circlet enchants were reset."; close;
 	default:
 		close;

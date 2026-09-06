@@ -412,44 +412,30 @@ ba_chess,25,13,4	script	Depth Abyss Research Manager#bio_d2	4_EP17_MASTER_A,{
 	close;
 }
 
-// Rebuilds the equipped Time Dimensions Rune Crown after a scripted reroll or
-// probabilistic upgrade. Physical card, other enchants, refine, grade, binding,
-// identify/broken state, and random options are preserved.
-function	script	F_BioD2RebuildCrown	{
+// Changes exactly one synthetic enchant slot on the equipped Time Dimensions
+// Rune Crown. The original inventory record and all unrelated metadata remain
+// intact, including its unique ID, expiry, binding, grade and random options.
+function	script	F_BioD2ModifyCrown	{
 	.@new1 = getarg(0);
 	.@new2 = getarg(1);
 	.@new3 = getarg(2);
-	getinventorylist;
-	.@idx = -1;
-	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] >= 400529 && @inventorylist_id[.@i] <= 400546) {
-			.@idx = .@i;
-			break;
-		}
+	.@id = getequipid(EQI_HEAD_TOP);
+	if (.@id < 400529 || .@id > 400546)
+		return 0;
+	setarray .@old[0],getequipcardid(EQI_HEAD_TOP,1),getequipcardid(EQI_HEAD_TOP,2),getequipcardid(EQI_HEAD_TOP,3);
+	setarray .@next[0],.@new1,.@new2,.@new3;
+	.@changes = 0;
+	for (.@i = 0; .@i < 3; ++.@i) {
+		if (.@old[.@i] == .@next[.@i])
+			continue;
+		.@slot = .@i + 1;
+		++.@changes;
 	}
-	if (.@idx < 0)
+	if (!.@changes)
+		return 1;
+	if (.@changes != 1)
 		return 0;
-	// Script item constructors cannot retain rental expiry or a unique ID.
-	// Refuse those crowns so a rebuild can never make a rental permanent or
-	// silently replace a uniquely tracked item.
-	if (@inventorylist_expire[.@idx] || getequipuniqueid(EQI_HEAD_TOP))
-		return 0;
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@id = @inventorylist_id[.@idx];
-	.@identify = @inventorylist_identify[.@idx];
-	.@refine = @inventorylist_refine[.@idx];
-	.@attribute = @inventorylist_attribute[.@idx];
-	.@grade = @inventorylist_enchantgrade[.@idx];
-	.@bound = @inventorylist_bound[.@idx];
-	.@card0 = @inventorylist_card1[.@idx];
-	delitemidx @inventorylist_idx[.@idx],1;
-	if (.@bound)
-		getitembound4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@bound,.@grade,.@oid,.@oval,.@opar;
-	else
-		getitem4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@grade,.@oid,.@oval,.@opar;
-	return 1;
+	return modifyequipitem(EQI_HEAD_TOP,.@id,0,-1,.@slot,.@old[.@slot-1],.@next[.@slot-1]);
 }
 
 // Depth Abyss conversion, crown crafting, and native enchant interfaces.
@@ -601,7 +587,7 @@ L_RandomUpgrade:
 		.@new = (.@level > 1) ? .@current - 1 : .@current;
 		.@success = 0;
 	}
-	if (!callfunc("F_BioD2RebuildCrown",.@new,.@keep2,.@keep3)) {
+	if (!callfunc("F_BioD2ModifyCrown",.@new,.@keep2,.@keep3)) {
 		// This can only occur if external state removed the equipped crown between
 		// validation and reconstruction; refund rather than consume materials.
 		getitem 1001556,.@cost[.@level];
@@ -669,7 +655,7 @@ L_StatReroll:
 		}
 	}
 	delitem 1001555,180;
-	if (!callfunc("F_BioD2RebuildCrown",.@keep1,.@keep2,.@new)) {
+	if (!callfunc("F_BioD2ModifyCrown",.@keep1,.@keep2,.@new)) {
 		getitem 1001555,180;
 		mes "[Abyss Researcher]";
 		mes "The equipped crown changed, so the reroll was cancelled and refunded.";

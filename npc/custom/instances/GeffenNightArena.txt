@@ -132,6 +132,26 @@ dali02,79,60,4	script	Geffen Night Arena Gate#gna	4_M_GEF_SOLDIER,{
 	} else {
 		if (select("Enter the active arena.:Cancel.") == 2) close;
 	}
+	// Revalidate after the dialog yield, then reject anyone who was not in the
+	// CID roster snapshotted when round 1 began.
+	if (instance_live_info(ILI_NAME,.@iid) != "Geffen Night Arena") {
+		mes "The active arena is no longer available.";
+		close;
+	}
+	if (getinstancevar('gna_state,.@iid)) {
+		.@registered = 0;
+		.@roster_count = getinstancevar('gna_roster_count,.@iid);
+		for (.@i = 0; .@i < .@roster_count; ++.@i) {
+			if (getinstancevar('gna_roster_cid[.@i],.@iid) == getcharid(0)) {
+				.@registered = 1;
+				break;
+			}
+		}
+		if (!.@registered) {
+			mes "The match has already begun. Only its registered starting members may enter.";
+			close;
+		}
+	}
 	.@result = instance_enter("Geffen Night Arena",-1,-1,getcharid(0),.@iid);
 	if (.@result != IE_OK) {
 		mes "The instance map is not ready (error "+.@result+").";
@@ -225,6 +245,7 @@ dali02,85,68,4	script	Geffen Arena Quartermaster#gna	4_M_GEF_SOLDIER,{
 	getpartymember 'gna_party_id,2,.@aid;
 	getpartymember 'gna_party_id,1,.@cid;
 	'gna_roster_count = 0;
+	deletearray 'gna_roster_paid;
 	for (.@i = 0; .@i < getarraysize(.@aid); ++.@i) {
 		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i])) continue;
 		if (strcharinfo(3) == instance_mapname("1@ge_sn")
@@ -376,6 +397,7 @@ OnOpponentDead:
 
 OnCashOut:
 	if ('gna_state != 2) end;
+	.@iid = instance_id();
 	setarray .@reward_item[0],1000316;
 	setarray .@reward_amount[0],'gna_reward_coin;
 	.@reward_count = 1;
@@ -389,40 +411,73 @@ OnCashOut:
 		.@reward_amount[.@reward_count] = 'gna_reward_champ;
 		++.@reward_count;
 	}
-	// Validate the combined reward for every eligible member before changing
-	// instance state. A full inventory now leaves the cash-out decision open.
+	// Treat cash-out as a full-roster transaction. Nothing is awarded and the
+	// decision stays open until every original member can receive all rewards.
 	for (.@i = 0; .@i < 'gna_roster_count; ++.@i) {
-		if (!isloggedin('gna_roster_aid[.@i],'gna_roster_cid[.@i]))
-			continue;
-		detachrid;
-		if (!attachrid('gna_roster_aid[.@i]))
-			continue;
-		if (getcharid(0) == 'gna_roster_cid[.@i]
-			&& strcharinfo(3) == 'gna_map$ && getcharid(1) == 'gna_party_id
-			&& !checkweight2(.@reward_item,.@reward_amount)) {
-			.@blocked$ = strcharinfo(0);
-			detachrid;
-			instance_announce instance_id(),.@blocked$+" needs enough weight and inventory slots for the full arena reward.",bc_map,0xFFAA33;
+		.@aid = 'gna_roster_aid[.@i];
+		.@cid = 'gna_roster_cid[.@i];
+		if (!isloggedin(.@aid,.@cid)) {
+			instance_announce .@iid,"Cash-out paused: every registered member must be online and inside the arena.",bc_map,0xFFAA33;
 			end;
 		}
+		detachrid;
+		if (!attachrid(.@aid)) {
+			instance_announce .@iid,"Cash-out paused: a registered member could not be attached. Please try again.",bc_map,0xFFAA33;
+			end;
+		}
+		.@member_name$ = strcharinfo(0);
+		if (getcharid(0) != .@cid || strcharinfo(3) != 'gna_map$ || getcharid(1) != 'gna_party_id) {
+			detachrid;
+			instance_announce .@iid,"Cash-out paused: "+.@member_name$+" must be on the arena map with the registered party.",bc_map,0xFFAA33;
+			end;
+		}
+		if (!'gna_roster_paid[.@i] && !checkweight2(.@reward_item,.@reward_amount)) {
+			detachrid;
+			instance_announce .@iid,"Cash-out paused: "+.@member_name$+" needs enough weight and inventory slots for the full arena reward.",bc_map,0xFFAA33;
+			end;
+		}
+		detachrid;
 	}
 	detachrid;
-	'gna_state = 3;
-	disablenpc instance_npcname("Arena Referee#gna_decision");
+
+	// No command below yields to another script. The paid markers are a final
+	// safeguard against duplicate rewards if an attachment still fails mid-pass.
 	for (.@i = 0; .@i < 'gna_roster_count; ++.@i) {
-		if (!isloggedin('gna_roster_aid[.@i],'gna_roster_cid[.@i]) || !attachrid('gna_roster_aid[.@i])) continue;
-		if (getcharid(0) == 'gna_roster_cid[.@i]
-			&& strcharinfo(3) == 'gna_map$ && getcharid(1) == 'gna_party_id) {
+		.@aid = 'gna_roster_aid[.@i];
+		.@cid = 'gna_roster_cid[.@i];
+		if (!isloggedin(.@aid,.@cid)) {
+			instance_announce .@iid,"Cash-out paused: a registered member disconnected before payout. Please try again.",bc_map,0xFFAA33;
+			end;
+		}
+		if (!attachrid(.@aid)) {
+			instance_announce .@iid,"Cash-out paused: a registered member could not be attached during payout. Please try again.",bc_map,0xFFAA33;
+			end;
+		}
+		.@member_name$ = strcharinfo(0);
+		if (getcharid(0) != .@cid || strcharinfo(3) != 'gna_map$ || getcharid(1) != 'gna_party_id) {
+			detachrid;
+			instance_announce .@iid,"Cash-out paused: "+.@member_name$+" left the arena before payout. Please try again.",bc_map,0xFFAA33;
+			end;
+		}
+		if (!'gna_roster_paid[.@i]) {
+			if (!checkweight2(.@reward_item,.@reward_amount)) {
+				detachrid;
+				instance_announce .@iid,"Cash-out paused: "+.@member_name$+" can no longer carry the full arena reward. Please try again.",bc_map,0xFFAA33;
+				end;
+			}
 			getitem 1000316,'gna_reward_coin;
 			if ('gna_reward_cert) getitem 1000317,'gna_reward_cert;
 			if ('gna_reward_champ) getitem 1000366,'gna_reward_champ;
+			'gna_roster_paid[.@i] = 1;
 			dispbottom "Geffen Night Arena reward claimed for round "+'gna_round+".";
-			GNA_ActiveInstance = 0;
-			GNA_ActiveUntil = 0;
 		}
+		GNA_ActiveInstance = 0;
+		GNA_ActiveUntil = 0;
 		detachrid;
 	}
-	instance_announce instance_id(),"The round "+'gna_round+" reward has been paid to the registered members present in the arena.",bc_map,0x66FF99;
+	'gna_state = 3;
+	disablenpc instance_npcname("Arena Referee#gna_decision");
+	instance_announce .@iid,"The round "+'gna_round+" reward has been paid to the full registered roster.",bc_map,0x66FF99;
 	sleep 3000;
 	instance_warpall "dali02",79,60,instance_id();
 	instance_destroy;

@@ -1,0 +1,73 @@
+// Preserve legacy Moscovia quest progress after Episode 19 reused the
+// official 18119-18121 quest-state slots.
+-	script	MoscoviaQuestCompat	-1,{
+OnPCLoginEvent:
+	// mos_whale_edq is authoritative. The Gusli story has two mutually
+	// exclusive quest paths: 35-37 uses the first quest, 38 uses the second,
+	// 39/40 completes only the first path, and 41 completes only the second.
+	// Rebuild those exact states and repair characters touched by the earlier
+	// cumulative migration, which incorrectly completed both quests.
+	if (mos_whale_edq >= 35 && mos_whale_edq <= 37) {
+		if (isbegin_quest(900201))
+			erasequest 900201;
+		if (isbegin_quest(900200) != 1) {
+			if (isbegin_quest(900200))
+				erasequest 900200;
+			setquest 900200;
+		}
+	} else if (mos_whale_edq == 38) {
+		if (isbegin_quest(900200))
+			erasequest 900200;
+		if (isbegin_quest(900201) != 1) {
+			if (isbegin_quest(900201))
+				erasequest 900201;
+			setquest 900201;
+		}
+	} else if (mos_whale_edq == 39 || mos_whale_edq == 40) {
+		if (isbegin_quest(900201))
+			erasequest 900201;
+		if (isbegin_quest(900200) != 2) {
+			if (isbegin_quest(900200))
+				erasequest 900200;
+			setquest 900200;
+			completequest 900200;
+		}
+	} else if (mos_whale_edq >= 41) {
+		if (isbegin_quest(900200))
+			erasequest 900200;
+		if (isbegin_quest(900201) != 2) {
+			if (isbegin_quest(900201))
+				erasequest 900201;
+			setquest 900201;
+			completequest 900201;
+		}
+	}
+
+	if (mos_whale_edq >= 35) {
+
+		// These states belong to Episode 19 only while its matching step is
+		// active. Otherwise they are stale Moscovia states and must not block it.
+		if (ep19_main != 1 && isbegin_quest(18119) != 0)
+			erasequest 18119;
+		if (ep19_main != 2 && isbegin_quest(18120) != 0)
+			erasequest 18120;
+	}
+
+	// Copy the legacy Shafka state exactly once, before Episode 19 can erase
+	// its colliding 18121 record. A character already at Episode 19 step 3 is
+	// inherently ambiguous, so retain the Shafka state rather than lose real
+	// quest history; all later Episode 19 uses are excluded by this marker.
+	if (!MoscoviaCompat_ShafkaV2) {
+		.@legacy_shafka = isbegin_quest(18121);
+		if (.@legacy_shafka != 0) {
+			if (isbegin_quest(900202) == 0)
+				setquest 900202;
+			if (.@legacy_shafka == 2 && isbegin_quest(900202) == 1)
+				completequest 900202;
+			if (ep19_main != 3)
+				erasequest 18121;
+		}
+		MoscoviaCompat_ShafkaV2 = 1;
+	}
+	end;
+}

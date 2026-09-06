@@ -5742,6 +5742,13 @@ from the item found in the specified equipment slot of the invoking character,
 create new card items and give them to the character.
 If any cards were removed in this manner, it will also show a success effect.
 
+The equipment is modified in place, preserving its unique ID, refine, grade,
+binding, expiry, random options, and synthetic enchant slots. The command first
+checks the complete card output, then unequips and compare-and-swaps the exact
+inventory record. It returns 1 after a completed operation (including a no-card
+no-op), or 0 if validation, output capacity, or the compare-and-swap fails. On a
+0 result, neither the equipment nor any cards are consumed or duplicated.
+
 ---------------------------------------
 
 *failedremovecards <equipment slot>,<type>;
@@ -5754,7 +5761,15 @@ item and the cards:
  1 - will keep the item, but destroy the cards.
  2 - will keep the cards, but destroy the item.
 
-Whatever the type is, it will also show a failure effect on screen.
+Any other type is a harmless failure that changes neither the item nor cards.
+When cards are present, a completed outcome shows a failure effect on screen.
+
+Retained equipment is modified in place with all metadata and its unique ID
+preserved. Card-return capacity and the exact equipped inventory record are
+validated before commit. The command returns 1 after a completed outcome
+(including a no-card no-op), or 0 if validation, capacity, or compare-and-swap
+fails. A 0 result leaves the equipment/cards unchanged so a caller can safely
+refund any separately charged service cost.
 
 ---------------------------------------
 
@@ -5799,6 +5814,115 @@ This command will downgrade an item in the specified equipment slot of the invok
 character by -1, or a count if given. For a list of equipment slots see 'getequipid'.
 This command will also display a 'refine failure' effect on the character and put
 appropriate messages into their chat window.
+
+---------------------------------------
+
+*modifyequipitem(<equipment slot>,<expected item id>,<new item id|0>,<new refine|-1>,<card slot|-1>,<expected card id>,<new enchant card id|0>{,<char_id>});
+
+This command safely changes selected fields of one equipped inventory item in place.
+It returns 1 when the requested state was applied (or was already present) and 0
+when validation failed. A new item ID of 0, new refine of -1, or card slot of -1
+leaves that field unchanged. When card slot is -1, both card ID arguments must be 0.
+
+The expected item and card IDs use compare-and-swap semantics: the command refuses
+the operation if the equipped item changed after the script inspected it. Item ID
+changes are allowed only between existing weapon, armor, or shadow-equipment records
+with identical type and equip-location mask. An intrinsic slot-count change is
+allowed only when every card-array index crossing the physical/synthetic boundary
+is and remains empty; this prevents an enchant from becoming a physical card, or the reverse. The
+resulting weight must fit the character's maximum weight. Card changes are allowed
+only in a synthetic enchant slot at or above the original equipment's intrinsic slot
+count. A nonzero new card must exist with item type Card and subtype Enchant. Forged,
+created, and pet special-card metadata is never modified.
+
+The same inventory record is retained, including its unique ID, binding, expiry,
+favorite flag, identify/broken state, enchant grade, unrelated cards, and random
+options. The server force-unequips the item, logs the old and new states, refreshes
+the inventory entry, and attempts to restore the original equip position. If the
+item can no longer be equipped, the mutation still returns 1 and the item remains
+safely unequipped in inventory.
+
+Examples:
+
+	// Add an enchant to synthetic card slot 0 of an upper costume.
+	modifyequipitem(EQI_COSTUME_HEAD_TOP, .@item_id, 0, -1, 0, 0, .@enchant_id);
+
+	// Change an equipped item ID and refine while retaining all other metadata.
+	modifyequipitem(EQI_ARMOR, .@old_id, .@new_id, .@new_refine, -1, 0, 0);
+
+---------------------------------------
+
+*resetequipenchants(<equipment slot>,<expected item id>,<expected card 0>,<expected card 1>,<expected card 2>,<expected card 3>{,<char_id>});
+
+This command atomically clears every synthetic enchant slot on one equipped item.
+All four expected card IDs are compare-and-swap guards and must exactly match the
+equipped item. Physical card slots below the item's intrinsic slot count are
+retained. Every nonzero synthetic slot must contain an existing Card item with
+subtype Enchant; forged, created, pet, or otherwise non-enchant metadata is refused.
+
+It returns 1 when the reset was applied (or no synthetic enchant was present) and
+0 when validation failed. The original inventory record and unique ID are retained,
+as are refine, grade, binding, expiry, favorite state, identify/broken state,
+physical cards, and random options. The item is refreshed and re-equipped using the
+same rules as 'modifyequipitem'.
+
+Example:
+
+	resetequipenchants(EQI_HEAD_TOP, .@item_id,
+		.@card[0], .@card[1], .@card[2], .@card[3]);
+
+---------------------------------------
+
+*deleteequipitem(<equipment slot>,<expected item id>,<expected refine>,<expected card 0>,<expected card 1>,<expected card 2>,<expected card 3>{,<char_id>});
+
+This command intentionally destroys exactly one equipped item only when its item
+ID, refine, and all four card fields match the expected values. It returns 1 when
+the guarded item was deleted and 0 on rejection. A normal rejection does not end
+the calling script.
+
+The server saves the complete inventory record, force-unequips it, and then checks
+the full record byte-for-byte after any unequip scripts have run. A mismatch leaves
+the current record untouched. A successful operation logs and deletes that one
+record directly; it never recreates or substitutes another item.
+
+Example:
+
+	deleteequipitem(.@part, .@item_id, .@refine,
+		.@card[0], .@card[1], .@card[2], .@card[3]);
+
+---------------------------------------
+
+*modifyequipenchantstate(<equipment slot>,<expected item id>,<expected refine>,<expected card 0>,<expected card 1>,<expected card 2>,<expected card 3>,<new refine|-1>,<new card 0>,<new card 1>,<new card 2>,<new card 3>,<clear random options>{,<char_id>});
+
+This command atomically replaces the refine and complete four-card enchant state
+of one equipped item without replacing its inventory record. A new refine of -1
+keeps the expected refine. 'clear random options' must be 0 or 1; 1 clears all
+random-option ID, value, and parameter fields, while 0 preserves them.
+
+The expected item ID, expected refine, and four expected card fields must exactly
+match. Weapon, armor, and shadow equipment are supported. Every physical card slot
+below the item's intrinsic slot count must have the same expected and new value, so
+compounded cards cannot be moved, copied, or removed with this command. A changed,
+nonzero synthetic slot must resolve to an existing item of type Card and subtype
+Enchant. Clearing a synthetic slot to zero is allowed. Forged, created, and pet
+special-card metadata is rejected.
+
+The server force-unequips the item and performs a second byte-for-byte comparison
+of the complete saved inventory record before committing. It logs the old and new
+states, refreshes the client inventory entry, and attempts to restore the original
+equip position. The same unique ID, item ID, binding, expiry, grade, favorite flag,
+attribute, identify state, and every other field remain unchanged unless refine,
+cards, or random-option clearing explicitly changes them. If re-equipping fails,
+the mutation still returns 1 and the original record remains safely unequipped.
+Validation or compare-and-swap failure returns 0 without modifying the record or
+ending the calling script. An already-matching request returns 1 as a no-op.
+
+Example:
+
+	// Shift/reset synthetic slots and discard legacy random options atomically.
+	modifyequipenchantstate(.@part, .@item_id, .@refine,
+		.@old[0], .@old[1], .@old[2], .@old[3], -1,
+		.@old[0], .@new[1], .@new[2], 0, 1);
 
 ---------------------------------------
 

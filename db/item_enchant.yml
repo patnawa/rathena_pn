@@ -60,7 +60,10 @@
 #               Amount         Amount of the required item. (Default: 1)
 #       Upgrades:              Available enchant upgrades for this slot. (Default: null)
 #         - Enchant            Item name of the enchant item available for upgrade.
-#           Upgrade            Item name of the enchant it can be upgrade to.
+#           Upgrade            Item name of the deterministic upgrade result. Mutually exclusive with RandomUpgrades.
+#           RandomUpgrades:    Weighted upgrade results. Chances must total 100000. Mutually exclusive with Upgrade.
+#             - Upgrade        Item name of a possible upgrade result.
+#               Chance         Chance to receive this upgrade result.
 #           Price              Price required for this enchant upgrade. (Default: 0)
 #           Materials:         Items required for this enchant upgrade (Default: null)
 #             - Material       Item name of the required item.

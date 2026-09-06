@@ -1,0 +1,27 @@
+// Parser-only fixtures for the guarded native equipment safety commands.
+// This file is loaded exclusively by npc/scripts_test.conf; the functions are
+// never called by production scripts.
+
+function	script	F_TestModifyEquipItemSignature	{
+	// Positive runtime fixture: RWC drilling may move an empty index across the
+	// intrinsic slot boundary (2966 Slots:0 -> 2967 Slots:1).
+	.@result = modifyequipitem(EQI_ACC_L, 2966, 2967, -1, -1, 0, 0);
+	// Negative runtime fixture: the same call must return 0 if card[0] is not
+	// empty. That condition is supplied by the equipped test item, not arguments.
+	.@result = modifyequipitem(EQI_ACC_L, 2968, 2969, -1, -1, 0, 0, getcharid(0));
+	return .@result;
+}
+
+function	script	F_TestDeleteEquipItemSignature	{
+	.@result = deleteequipitem(EQI_ARMOR, 1, 0, 0, 0, 0, 0);
+	.@result = deleteequipitem(EQI_ARMOR, 1, 0, 0, 0, 0, 0, getcharid(0));
+	return .@result;
+}
+
+function	script	F_TestModifyEquipEnchantStateSignature	{
+	.@result = modifyequipenchantstate(EQI_ARMOR, 1, 0,
+		0, 0, 0, 0, -1, 0, 0, 0, 0, 0);
+	.@result = modifyequipenchantstate(EQI_ARMOR, 1, 0,
+		0, 0, 0, 0, -1, 0, 0, 0, 0, 1, getcharid(0));
+	return .@result;
+}

@@ -1,0 +1,539 @@
+//===== rAthena Script =======================================
+//= Episode 20 story and repeatable instances
+//===== Sources: =============================================
+//= https://wiki.muhro.eu/20_The_Immortal
+//= https://renewal.playragnarok.com/news/updatedetail.aspx?id=424
+//============================================================
+
+// Canyon Exploration: official two-map story expedition.
+1@20cn1,150,122,0	script	#EP20_Canyon_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration") end;
+	'ep20_canyon_stage = 0;
+	enablenpc instance_npcname("Lehar#ep20_canyon_start");
+	mapannounce instance_mapname("1@20cn1"),"Canyon Exploration: speak with Lehar.",bc_map,0x77AAFF;
+	end;
+OnFirstAreaDead:
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage != 1) end;
+	if (mobcount(instance_mapname("1@20cn1"),instance_npcname(strnpcinfo(0))+"::OnFirstAreaDead") > 0) end;
+	'ep20_canyon_stage = 2;
+	enablenpc instance_npcname("Canyon Passage#ep20");
+	mapannounce instance_mapname("1@20cn1"),"The false Iwin patrol fled through the canyon.",bc_map,0x55FFAA;
+	end;
+OnSecondAreaDead:
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage != 3) end;
+	if (mobcount(instance_mapname("1@20cn2"),instance_npcname(strnpcinfo(0))+"::OnSecondAreaDead") > 0) end;
+	'ep20_canyon_stage = 4;
+	enablenpc instance_npcname("White Cat#ep20_canyon_end");
+	mapannounce instance_mapname("1@20cn2"),"The White Cat opened an escape. Speak with it.",bc_map,0x55FFAA;
+	end;
+}
+
+1@20cn1,146,126,4	script(DISABLED)	Lehar#ep20_canyon_start	4_M_REPAIR,{
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage != 0) end;
+	mes "[Lehar]";
+	mes "The Iwin patrol is acting strangely. Approach carefully and defend yourself if their disguise breaks.";
+	close2;
+	'ep20_canyon_stage = 1;
+	disablenpc;
+	.@map$ = instance_mapname("1@20cn1");
+	.@event$ = instance_npcname("#EP20_Canyon_Control")+"::OnFirstAreaDead";
+	monster .@map$,160,125,"Fake Iwin Soldier",21974,2,.@event$;
+	monster .@map$,164,129,"Fake Iwin Soldier",21975,2,.@event$;
+	monster .@map$,168,124,"Fake Iwin Soldier",21976,2,.@event$;
+	end;
+}
+
+1@20cn1,154,126,4	script(DISABLED)	Canyon Passage#ep20	4_ENERGY_BLUE,{
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage != 2) end;
+	mes "[Canyon Passage]";
+	mes "Bagot's prison lies beyond this crack. Cross while the route is stable.";
+	close2;
+	'ep20_canyon_stage = 3;
+	disablenpc;
+	.@map$ = instance_mapname("1@20cn2");
+	.@event$ = instance_npcname("#EP20_Canyon_Control")+"::OnSecondAreaDead";
+	monster .@map$,145,205,"Jormungandr Guardian",21991,4,.@event$;
+	monster .@map$,155,205,"Jormungandr Guardian",21992,4,.@event$;
+	monster .@map$,150,195,"Rgan Warlock",21993,4,.@event$;
+	warp .@map$,135,208;
+	end;
+}
+
+1@20cn2,134,208,4	script(DISABLED)	White Cat#ep20_canyon_end	22006,{
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage != 4) end;
+	mes "[White Cat]";
+	if (isbegin_quest(16701) == 1) {
+		callfunc "EP20_MoveQuest",16701,16702;
+		mes "The cat tears open a path back to Ice Castle. Report to Miriam.";
+	} else {
+		mes "The escape remains open.";
+	}
+	close2;
+	warp "icas_in",259,200;
+	end;
+}
+
+// Drift Ice Zone: story instance entered from the Shaky Wall.
+1@twsd,196,200,0	script	#EP20_Drift_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) != "Drift Ice Zone") end;
+	'ep20_drift_stage = 0;
+	enablenpc instance_npcname("Bagot Device#ep20_drift_start");
+	mapannounce instance_mapname("1@twsd"),"Drift Ice Zone: inspect Bagot's device.",bc_map,0x77AAFF;
+	end;
+OnWaveDead:
+	if (instance_live_info(ILI_NAME) != "Drift Ice Zone" || 'ep20_drift_stage != 1) end;
+	if (mobcount(instance_mapname("1@twsd"),instance_npcname(strnpcinfo(0))+"::OnWaveDead") > 0) end;
+	'ep20_drift_stage = 2;
+	enablenpc instance_npcname("Nyar#ep20_drift_end");
+	mapannounce instance_mapname("1@twsd"),"The defenders are gone. Follow the White Cat.",bc_map,0x55FFAA;
+	end;
+}
+
+1@twsd,197,201,4	script(DISABLED)	Bagot Device#ep20_drift_start	4_ENERGY_RED,{
+	if (instance_live_info(ILI_NAME) != "Drift Ice Zone" || 'ep20_drift_stage != 0) end;
+	mes "[Bagot's Device]";
+	mes "The device exposes your disguise. Defeat the Heart Hunter and Rgan guards blocking the drifting ice.";
+	close2;
+	'ep20_drift_stage = 1;
+	disablenpc;
+	.@map$ = instance_mapname("1@twsd");
+	.@event$ = instance_npcname("#EP20_Drift_Control")+"::OnWaveDead";
+	monster .@map$,185,200,"Jormungandr Guardian",21991,4,.@event$;
+	monster .@map$,200,215,"Jormungandr Guardian",21992,4,.@event$;
+	monster .@map$,215,217,"Rgan Warlock",21993,4,.@event$;
+	monster .@map$,183,186,"Heart Hunter",21994,4,.@event$;
+	monster .@map$,200,205,"Rgan Chief Cleaner",21980,1,.@event$;
+	end;
+}
+
+1@twsd,198,203,4	script(DISABLED)	Nyar#ep20_drift_end	22006,{
+	if (instance_live_info(ILI_NAME) != "Drift Ice Zone" || 'ep20_drift_stage != 2) end;
+	mes "[Nyar]";
+	if (isbegin_quest(17707) == 1) {
+		callfunc "EP20_MoveQuest",17707,17708;
+		mes "The White Cat scatters Lasgand's group and carries you from the collapsing zone.";
+	} else {
+		mes "The stable trace leads outside.";
+	}
+	close2;
+	warp "jor_sanct",150,150;
+	end;
+}
+
+// Nest of Small Branches: story instance in the hidden World Tree nest.
+1@twig,140,145,0	script	#EP20_Twig_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) != "Nest of Small Branches") end;
+	'ep20_twig_stage = 0;
+	enablenpc instance_npcname("Lehar#ep20_twig_start");
+	mapannounce instance_mapname("1@twig"),"Nest of Small Branches: speak with Lehar.",bc_map,0x77AAFF;
+	end;
+OnTwigDead:
+	if (instance_live_info(ILI_NAME) != "Nest of Small Branches" || 'ep20_twig_stage != 1) end;
+	if (mobcount(instance_mapname("1@twig"),instance_npcname(strnpcinfo(0))+"::OnTwigDead") > 0) end;
+	'ep20_twig_stage = 2;
+	enablenpc instance_npcname("Aurelie#ep20_twig_end");
+	mapannounce instance_mapname("1@twig"),"The nest is secure. Speak with Aurelie.",bc_map,0x55FFAA;
+	end;
+}
+
+1@twig,139,145,4	script(DISABLED)	Lehar#ep20_twig_start	4_M_REPAIR,{
+	if (instance_live_info(ILI_NAME) != "Nest of Small Branches" || 'ep20_twig_stage != 0) end;
+	mes "[Lehar]";
+	mes "Follow the traces and clear the creatures that entered this protected nest.";
+	close2;
+	'ep20_twig_stage = 1;
+	disablenpc;
+	.@map$ = instance_mapname("1@twig");
+	.@event$ = instance_npcname("#EP20_Twig_Control")+"::OnTwigDead";
+	monster .@map$,0,0,"Jormungandr Guardian",21997,6,.@event$;
+	monster .@map$,0,0,"Elite Rgan Guardian",21989,6,.@event$;
+	monster .@map$,0,0,"Elite Rgan Cleaner",21990,4,.@event$;
+	end;
+}
+
+1@twig,143,144,4	script(DISABLED)	Aurelie#ep20_twig_end	4_F_SCIENCE,{
+	if (instance_live_info(ILI_NAME) != "Nest of Small Branches" || 'ep20_twig_stage != 2) end;
+	mes "[Aurelie]";
+	if (isbegin_quest(23106) == 1) {
+		if (!callfunc("EP20_CheckReward",10)) close;
+		callfunc "EP20_MoveQuest",23106,23107;
+		callfunc "EP20_Reward",10,70,0,0;
+		mes "This World Tree nest sustains Isgard's barrier. We must keep its location from Lasgand.";
+	} else {
+		mes "The World Tree nest is safe.";
+	}
+	close2;
+	warp "jor_twice",161,243;
+	end;
+}
+
+// Separated Sanctuary story instance. It ends quest 18232 and awards the
+// Heart Fragment; quest 18233 is completed only by Voglinde outside.
+1@twas,80,80,0	script	#EP20_StorySanct_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary") end;
+	'ep20_story_sanct_stage = 0;
+	enablenpc instance_npcname("Aurelie#ep20_sanct_start");
+	mapannounce instance_mapname("1@twas"),"Separated Sanctuary: speak with Aurelie.",bc_map,0x77AAFF;
+	end;
+OnGuardDead:
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage != 1) end;
+	if (mobcount(instance_mapname("1@twas"),instance_npcname(strnpcinfo(0))+"::OnGuardDead") > 0) end;
+	'ep20_story_sanct_stage = 2;
+	enablenpc instance_npcname("Dimensional Tear#ep20_sanct");
+	mapannounce instance_mapname("1@twas"),"The dimensional tear leading to Lasgand is open.",bc_map,0x55FFAA;
+	end;
+OnBossDead:
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage != 3) end;
+	if (mobcount(instance_mapname("1@twbs"),instance_npcname(strnpcinfo(0))+"::OnBossDead") > 0) end;
+	'ep20_story_sanct_stage = 4;
+	enablenpc instance_npcname("Aurelie#ep20_heart");
+	mapannounce instance_mapname("1@twbs"),"Lasgand is suppressed. Recover the corrupted Heart Fragment.",bc_map,0x55FFAA;
+	end;
+}
+
+1@twas,80,79,4	script(DISABLED)	Aurelie#ep20_sanct_start	4_F_SCIENCE,{
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage != 0) end;
+	mes "[Aurelie]";
+	mes "Nyar is holding Lasgand apart from the world. Clear the manifestations and reach the inner seal.";
+	close2;
+	'ep20_story_sanct_stage = 1;
+	disablenpc;
+	.@map$ = instance_mapname("1@twas");
+	.@event$ = instance_npcname("#EP20_StorySanct_Control")+"::OnGuardDead";
+	monster .@map$,0,0,"Jormungandr Guardian",21991,5,.@event$;
+	monster .@map$,0,0,"Jormungandr Guardian",21992,5,.@event$;
+	monster .@map$,0,0,"Rgan Warlock",21993,5,.@event$;
+	end;
+}
+
+1@twas,82,80,4	script(DISABLED)	Dimensional Tear#ep20_sanct	4_ENERGY_RED,{
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage != 2) end;
+	mes "[Dimensional Tear]";
+	mes "Lasgand waits beyond the unstable boundary.";
+	close2;
+	'ep20_story_sanct_stage = 3;
+	disablenpc;
+	.@map$ = instance_mapname("1@twbs");
+	.@event$ = instance_npcname("#EP20_StorySanct_Control")+"::OnBossDead";
+	monster .@map$,80,93,"Immortal Lasgand",21981,1,.@event$;
+	warp .@map$,80,80;
+	end;
+}
+
+1@twbs,80,81,4	script(DISABLED)	Aurelie#ep20_heart	4_F_SCIENCE,{
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage != 4) end;
+	mes "[Aurelie]";
+	if (isbegin_quest(18232) == 1) {
+		.@heart = countitem(1001254) ? 0 : 1;
+		if (.@heart && !callfunc("EP20_CheckReward",0,1001254,1)) close;
+		if (.@heart) getitem 1001254,1;
+		callfunc "EP20_MoveQuest",18232,18233;
+		mes "Lasgand cannot be killed, but the tainted Heart Fragment is separated from him. Report outside.";
+	} else {
+		mes "Nyar continues to suppress Lasgand.";
+	}
+	close2;
+	warp "jor_twig",138,152;
+	end;
+}
+
+// Sticky Sea / Escargo. Story completion is reported to Lalaha outside;
+// repeat rewards are committed only after the capacity check succeeds.
+1@slug,196,200,0	script	#EP20_Sticky_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) != "Sticky Sea") end;
+	'ep20_sticky_stage = 0;
+	enablenpc instance_npcname("Koko#ep20_sticky_start");
+	mapannounce instance_mapname("1@slug"),"Sticky Sea: speak with Koko.",bc_map,0x77AAFF;
+	end;
+OnStickyDead:
+	if (instance_live_info(ILI_NAME) != "Sticky Sea" || 'ep20_sticky_stage < 1 || 'ep20_sticky_stage > 3) end;
+	if (mobcount(instance_mapname("1@slug"),instance_npcname(strnpcinfo(0))+"::OnStickyDead") > 0) end;
+	'ep20_sticky_stage++;
+	.@map$ = instance_mapname("1@slug");
+	.@event$ = instance_npcname(strnpcinfo(0))+"::OnStickyDead";
+	if ('ep20_sticky_stage == 2) {
+		monster .@map$,0,0,"Snow Rabbit Iceslug",21969,6,.@event$;
+		monster .@map$,0,0,"Angel Iceslug",21983,6,.@event$;
+		mapannounce .@map$,"A second group emerges from the sticky current.",bc_map,0xFF8888;
+		end;
+	}
+	if ('ep20_sticky_stage == 3) {
+		monster .@map$,196,202,"Fallen Angel Iceslug",21982,1,.@event$;
+		mapannounce .@map$,"The Fallen Angel Iceslug appears!",bc_map,0xFF5555;
+		end;
+	}
+	'ep20_sticky_stage = 4;
+	enablenpc instance_npcname("Rescued Copo#ep20_sticky_end");
+	mapannounce .@map$,"The trapped Copos are safe. Speak with them.",bc_map,0x55FFAA;
+	end;
+}
+
+1@slug,195,200,4	script(DISABLED)	Koko#ep20_sticky_start	22006,{
+	if (instance_live_info(ILI_NAME) != "Sticky Sea" || 'ep20_sticky_stage != 0) end;
+	mes "[Koko]";
+	mes "Drive away the hostile slugs and rescue the Copos caught in the sticky current.";
+	close2;
+	'ep20_sticky_stage = 1;
+	disablenpc;
+	.@map$ = instance_mapname("1@slug");
+	.@event$ = instance_npcname("#EP20_Sticky_Control")+"::OnStickyDead";
+	monster .@map$,0,0,"Melibe Iceslug",21970,6,.@event$;
+	monster .@map$,0,0,"Icebear",21971,6,.@event$;
+	end;
+}
+
+1@slug,196,201,4	script(DISABLED)	Rescued Copo#ep20_sticky_end	22006,{
+	if (instance_live_info(ILI_NAME) != "Sticky Sea" || 'ep20_sticky_stage != 4) end;
+	mes "[Rescued Copo]";
+	if (isbegin_quest(11946) == 1) {
+		callfunc "EP20_MoveQuest",11946,11947;
+		mes "Rorohyu and his friend are safe. Report to Lalaha in Ice Castle.";
+		close2;
+		warp "icecastle",70,213;
+		end;
+	}
+	if (isbegin_quest(11949) == 1 || isbegin_quest(11951) == 1) {
+		.@reward = callfunc("EP20_DailyWhiskers",3);
+		if (!callfunc("EP20_CheckReward",.@reward,102566,1)) close;
+		if (isbegin_quest(11949) == 1) completequest 11949;
+		if (isbegin_quest(11951) == 1) completequest 11951;
+		EP20_StickyNext = callfunc("EP20_NextReset");
+		setd("EP20_DailyNext_11951",EP20_StickyNext);
+		getitem 102566,1;
+		callfunc "EP20_Reward",.@reward,5,13500000,9500000;
+		mes "Escargo and Dangerous complete. The Antiquity Issgard reward and daily cooldown are recorded.";
+		close2;
+		warp "icecastle",70,213;
+		end;
+	}
+	mes "The rescue is already recorded.";
+	close2;
+	warp "icecastle",70,213;
+	end;
+}
+
+// The Undying: post-story repeat, 30 minutes, Normal and High independently
+// rewardable once per 04:00 reset. The instance remains rewardable per player.
+jor_twice,50,325,4	script	White Cat#ep20_undying_route	22006,{
+	mes "[White Cat]";
+	if (!callfunc("EP20_MainComplete")) {
+		mes "The Sanctuary Twig Nest opens after Episode 20: The Immortal is complete.";
+		close;
+	}
+	mes "I can open the route into the Sanctuary Twig Nest. Follow the branch to the Undying One's seal.";
+	next;
+	if (select("Enter the Sanctuary Twig Nest.:Stay here.") == 2) close;
+	close2;
+	warp "jor_twig",187,198;
+	end;
+}
+
+jor_twig,117,145,4	script	World Tree Branch#ep20_undying	4_ENERGY_RED,{
+	mes "[World Tree Branch]";
+	if (!callfunc("EP20_MainComplete")) {
+		mes "Neutralize Lasgand in the Episode 20 main story first.";
+		close;
+	}
+	mes "The branch reaches the seal around the Undying One. Normal and High mode each have a separate daily reward.";
+	next;
+	if (select("Enter The Undying.:Wait.") == 2) close;
+	callfunc "EP20_EnterInstance","The Undying";
+}
+
+1@twbs,78,80,0	script	#EP20_Undying_Control	HIDDEN_NPC,{
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME) != "The Undying") end;
+	'ep20_undying_stage = 0;
+	'ep20_undying_mode = 0;
+	enablenpc instance_npcname("Lasgand#ep20_undying_start");
+	mapannounce instance_mapname("1@twbs"),"The Undying: choose a mode at Lasgand.",bc_map,0x77AAFF;
+	end;
+OnTimer3000:
+	stopnpctimer;
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1) end;
+	if (unitexists('ep20_undying_gid)) {
+		setunitdata 'ep20_undying_gid,UMOB_DAMAGETAKEN,('ep20_undying_mode == 2 ? 1 : 10);
+		setunitdata 'ep20_undying_gid,UMOB_MODE,'ep20_undying_boss_mode;
+	}
+	end;
+OnBossDead:
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1) end;
+	if (mobcount(instance_mapname("1@twbs"),instance_npcname(strnpcinfo(0))+"::OnBossDead") > 0) end;
+	'ep20_undying_stage = 2;
+	enablenpc instance_npcname("Mysterious Storage#ep20");
+	enablenpc instance_npcname("White Cat#ep20_undying_exit");
+	mapannounce instance_mapname("1@twbs"),"Lasgand is suppressed. The Mysterious Storage has appeared.",bc_map,0x55FFAA;
+	end;
+}
+
+1@twbs,80,79,4	script(DISABLED)	Lasgand#ep20_undying_start	21981,{
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 0) end;
+	mes "[Lasgand]";
+	.@choice = select("Normal Mode.:High Mode.:Leave him sealed.");
+	if (.@choice == 3) close;
+	.@now = gettimetick(2);
+	if (.@choice == 1 && EP20_UndyingNormalNext > .@now) { mes "Normal Mode's reward is on cooldown until the next 04:00 reset."; close; }
+	if (.@choice == 2 && EP20_UndyingHighNext > .@now) { mes "High Mode's reward is on cooldown until the next 04:00 reset."; close; }
+	close2;
+	'ep20_undying_mode = .@choice;
+	'ep20_undying_stage = 1;
+	disablenpc;
+	.@gid = monster(instance_mapname("1@twbs"),80,93,"The Undying Lasgand",21981,1,instance_npcname("#EP20_Undying_Control")+"::OnBossDead");
+	'ep20_undying_gid = .@gid;
+	if ('ep20_undying_mode == 2) {
+		setunitdata .@gid,UMOB_MAXHP,2000000000;
+		setunitdata .@gid,UMOB_HP,2000000000;
+	}
+	// Both modes share the documented three-second positioning window.
+	// rAthena's integer DamageTaken field represents the 99.9% opening
+	// reduction as its closest safe value, 1%.
+	getunitdata .@gid,.@unit;
+	'ep20_undying_boss_mode = .@unit[UMOB_MODE];
+	setunitdata .@gid,UMOB_DAMAGETAKEN,1;
+	setunitdata .@gid,UMOB_MODE,('ep20_undying_boss_mode | MD_NOCAST) & ~(MD_CANMOVE | MD_CANATTACK | MD_AGGRESSIVE);
+	mapannounce instance_mapname("1@twbs"),('ep20_undying_mode == 2 ? "High Mode Lasgand breaks the seal!" : "Lasgand breaks the seal!"),bc_map,0xFF5555;
+	// Use the instance controller's NPC timer so Lasgand always activates even
+	// if the player who selected the mode disconnects during the opening.
+	.@control$ = instance_npcname("#EP20_Undying_Control");
+	setnpctimer 0,.@control$;
+	initnpctimer .@control$;
+	end;
+}
+
+1@twbs,82,81,4	script(DISABLED)	Mysterious Storage#ep20	4_ENERGY_BLUE,{
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 2) end;
+	mes "[Mysterious Storage]";
+	.@now = gettimetick(2);
+	if ('ep20_undying_mode == 1) {
+		if (EP20_UndyingNormalNext > .@now) { mes "You already claimed today's Normal Mode storage."; close; }
+		.@token = 102567;
+		setarray .@rates[0],4000,4000,4990,3387,3387,4000,0,0,1000,1000,1000,1000,1000,1000;
+	} else if ('ep20_undying_mode == 2) {
+		if (EP20_UndyingHighNext > .@now) { mes "You already claimed today's High Mode storage."; close; }
+		.@token = 102568;
+		setarray .@rates[0],5773,5773,6957,4990,4990,5773,4990,900,2000,2000,2000,2000,2000,2000;
+	} else {
+		mes "The storage is inert.";
+		close;
+	}
+	// Keep this order synchronized with .@rates. MuHRO's 2026-08-11
+	// Suspicious Storage table lists these as independent rolls, including
+	// the Pure materials that can also drop directly from Lasgand.
+	setarray .@pool[0],1001029,1001030,1001248,1001031,1001032,1001249,1001250,1001251,450270,470197,480283,480284,450271,470198;
+	if (getarraysize(.@pool) != 14 || getarraysize(.@rates) != 14) {
+		debugmes "Episode 20: Suspicious Storage pool/rate array mismatch.";
+		mes "The storage seal is unstable. Please report this to a Game Master.";
+		close;
+	}
+	.@count = 0;
+	for (.@i = 0; .@i < getarraysize(.@pool); ++.@i) {
+		if (rand(10000) < .@rates[.@i]) {
+			.@items[.@count] = .@pool[.@i];
+			.@amounts[.@count] = 1;
+			++.@count;
+		}
+	}
+	.@items[.@count] = .@token;
+	.@amounts[.@count] = 1;
+	++.@count;
+	if (!checkweight2(.@items,.@amounts)) {
+		mes "Make enough inventory room for every storage reward.";
+		close;
+	}
+	for (.@i = 0; .@i < .@count; ++.@i)
+		getitem .@items[.@i],.@amounts[.@i];
+	callfunc "EP20_Reward",0,20,42000000,29500000;
+	if ('ep20_undying_mode == 1)
+		EP20_UndyingNormalNext = callfunc("EP20_NextReset");
+	else
+		EP20_UndyingHighNext = callfunc("EP20_NextReset");
+	mes "The storage yields its sealed materials and this mode's Antiquity Issgard. This mode resets at 04:00.";
+	close;
+}
+
+1@twbs,78,81,4	script(DISABLED)	White Cat#ep20_undying_exit	22006,{
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 2) end;
+	mes "[White Cat]";
+	mes "Return to the World Tree branches?";
+	next;
+	if (select("Leave.:Stay.") == 2) close;
+	close2;
+	warp "jor_twig",117,145;
+	end;
+}
+
+// Instance map policy.
+1@20cn1	mapflag	noteleport
+1@20cn1	mapflag	monster_noteleport
+1@20cn1	mapflag	nomemo
+1@20cn1	mapflag	nobranch
+1@20cn1	mapflag	partylock
+1@20cn1	mapflag	noreturn
+1@20cn1	mapflag	nowarp
+1@20cn1	mapflag	nowarpto
+1@20cn1	mapflag	nosave	SavePoint
+1@20cn2	mapflag	noteleport
+1@20cn2	mapflag	monster_noteleport
+1@20cn2	mapflag	nomemo
+1@20cn2	mapflag	nobranch
+1@20cn2	mapflag	partylock
+1@20cn2	mapflag	noreturn
+1@20cn2	mapflag	nowarp
+1@20cn2	mapflag	nowarpto
+1@20cn2	mapflag	nosave	SavePoint
+1@twsd	mapflag	noteleport
+1@twsd	mapflag	monster_noteleport
+1@twsd	mapflag	nomemo
+1@twsd	mapflag	nobranch
+1@twsd	mapflag	partylock
+1@twsd	mapflag	noreturn
+1@twsd	mapflag	nowarp
+1@twsd	mapflag	nowarpto
+1@twsd	mapflag	nosave	SavePoint
+1@twig	mapflag	noteleport
+1@twig	mapflag	monster_noteleport
+1@twig	mapflag	nomemo
+1@twig	mapflag	nobranch
+1@twig	mapflag	partylock
+1@twig	mapflag	noreturn
+1@twig	mapflag	nowarp
+1@twig	mapflag	nowarpto
+1@twig	mapflag	nosave	SavePoint
+1@twas	mapflag	noteleport
+1@twas	mapflag	monster_noteleport
+1@twas	mapflag	nomemo
+1@twas	mapflag	nobranch
+1@twas	mapflag	partylock
+1@twas	mapflag	noreturn
+1@twas	mapflag	nowarp
+1@twas	mapflag	nowarpto
+1@twas	mapflag	nosave	SavePoint
+1@twbs	mapflag	noteleport
+1@twbs	mapflag	monster_noteleport
+1@twbs	mapflag	nomemo
+1@twbs	mapflag	nobranch
+1@twbs	mapflag	partylock
+1@twbs	mapflag	noreturn
+1@twbs	mapflag	nowarp
+1@twbs	mapflag	nowarpto
+1@twbs	mapflag	nosave	SavePoint
+1@slug	mapflag	noteleport
+1@slug	mapflag	monster_noteleport
+1@slug	mapflag	nomemo
+1@slug	mapflag	nobranch
+1@slug	mapflag	partylock
+1@slug	mapflag	noreturn
+1@slug	mapflag	nowarp
+1@slug	mapflag	nowarpto
+1@slug	mapflag	nosave	SavePoint

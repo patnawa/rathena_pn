@@ -3,6 +3,7 @@
 
 #include "itemdb.hpp"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
@@ -10,6 +11,7 @@
 #include <iostream>
 #include <map>
 #include <unordered_map>
+#include <utility>
 
 #include <common/nullpo.hpp>
 #include <common/random.hpp>
@@ -2643,9 +2645,17 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 
 					std::shared_ptr<s_item_enchant_upgrade> enchant_upgrade = util::umap_find( enchant_slot->upgrade.enchants, enchant_item->nameid );
 					bool enchant_upgrade_exists = enchant_upgrade != nullptr;
+					bool has_upgrade = this->nodeExists( upgradeNode, "Upgrade" );
+					bool has_random_upgrades = this->nodeExists( upgradeNode, "RandomUpgrades" );
+
+					if( has_upgrade && has_random_upgrades ){
+						this->invalidWarning( upgradeNode, "Upgrade and RandomUpgrades cannot be defined together.\n" );
+						return 0;
+					}
 
 					if( !enchant_upgrade_exists ){
-						if( !this->nodesExist( upgradeNode, { "Upgrade" } ) ){
+						if( !has_upgrade && !has_random_upgrades ){
+							this->invalidWarning( upgradeNode, "Either Upgrade or RandomUpgrades is required.\n" );
 							return 0;
 						}
 
@@ -2653,7 +2663,7 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 						enchant_upgrade->enchant_item_id = enchant_item->nameid;
 					}
 
-					if( this->nodeExists( upgradeNode, "Upgrade" ) ){
+					if( has_upgrade ){
 						std::string upgrade_name;
 
 						if( !this->asString( upgradeNode, "Upgrade", upgrade_name ) ){
@@ -2668,6 +2678,63 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 						}
 
 						enchant_upgrade->upgrade_item_id = upgrade_item->nameid;
+						enchant_upgrade->random_upgrades.clear();
+					}
+
+					if( has_random_upgrades ){
+						std::vector<s_item_enchant_random_upgrade> random_upgrades;
+						uint64 total_chance = 0;
+
+						for( const ryml::NodeRef& randomUpgradeNode : upgradeNode["RandomUpgrades"] ){
+							if( !this->nodesExist( randomUpgradeNode, { "Upgrade", "Chance" } ) ){
+								return 0;
+							}
+
+							std::string upgrade_name;
+
+							if( !this->asString( randomUpgradeNode, "Upgrade", upgrade_name ) ){
+								return 0;
+							}
+
+							std::shared_ptr<item_data> upgrade_item = item_db.search_aegisname( upgrade_name.c_str() );
+
+							if( upgrade_item == nullptr ){
+								this->invalidWarning( randomUpgradeNode["Upgrade"], "Unknown item \"%s\".\n", upgrade_name.c_str() );
+								return 0;
+							}
+
+							if( std::any_of( random_upgrades.begin(), random_upgrades.end(), [upgrade_item]( const s_item_enchant_random_upgrade& random_upgrade ){ return random_upgrade.item_id == upgrade_item->nameid; } ) ){
+								this->invalidWarning( randomUpgradeNode["Upgrade"], "Random upgrade item \"%s\" is already in the list.\n", upgrade_name.c_str() );
+								return 0;
+							}
+
+							uint32 chance;
+
+							if( !this->asUInt32Rate( randomUpgradeNode, "Chance", chance, 100000 ) ){
+								return 0;
+							}
+
+							if( chance == 0 ){
+								this->invalidWarning( randomUpgradeNode["Chance"], "Random upgrade chance must be greater than zero.\n" );
+								return 0;
+							}
+
+							random_upgrades.push_back( { upgrade_item->nameid, chance } );
+							total_chance += chance;
+						}
+
+						if( random_upgrades.empty() ){
+							this->invalidWarning( upgradeNode["RandomUpgrades"], "RandomUpgrades must contain at least one outcome.\n" );
+							return 0;
+						}
+
+						if( total_chance != 100000 ){
+							this->invalidWarning( upgradeNode["RandomUpgrades"], "Random upgrade chances must total 100000, but total %" PRIu64 ".\n", total_chance );
+							return 0;
+						}
+
+						enchant_upgrade->upgrade_item_id = 0;
+						enchant_upgrade->random_upgrades = std::move( random_upgrades );
 					}
 
 					if( this->nodeExists( upgradeNode, "Price" ) ){

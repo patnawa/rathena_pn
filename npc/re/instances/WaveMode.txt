@@ -7,18 +7,25 @@
 //    (NPC_SUMMONSLAVE, at least). NPC_EMOTION and
 //    NPC_EMOTION_ON have been blocked since it disrupts the
 //    walk system of the instance on rAthena.
-//- Note: The instance is currently disabled on KRO.
+//- Forest and Sky are cyclic survival modes. There is no
+//    invented clear condition: they run until 20 monsters
+//    escape or the one-hour instance lifetime expires.
 //===== Changelogs: ==========================================
 //= 1.0 First version. [Capuche]
+//= 1.1 Completed reservation, cooldown, pathing, shutdown,
+//=     re-entry, and per-character return handling. [PN]
 //============================================================
 
-// Simple function to move the monster when idle.
-// Move the monster to the next coordinates + end the script on successful; kill the monster + return on failure
-// callfunc( "F_mobidle", <npc name + idle label>, <size coord>, <defined x array>, <x shift>,  <defined y array>, <defined spot-spot distance array> );
-function	script	F_mobidle	{
-	sleep2 1000;	// stop if no RID
-
+// Move an idle Wave Mode unit along its route. Return true only
+// when the unit reaches the finish line and must count as escaped.
+function	script	F_WaveModeMobIdle	{
 	.@game_id = getattachedrid();
+	if (!unitexists(.@game_id))
+		return false;
+	sleep2 1000;
+	if (!unitexists(.@game_id))
+		return false;
+
 	.@dist_min = 300;
 	.@size = getarg(1);
 	.@dx = getarg(3);
@@ -35,8 +42,8 @@ function	script	F_mobidle	{
 	if (.@dist_min <= 1) {
 		.@index++;
 		if (.@index >= .@size) {
-			unitskilluseid .@game_id,301,1,.@game_id,1,false,41;	// SA_INSTANTDEATH
-			return;
+			unitkill .@game_id;
+			return true;
 		}
 	}
 	else if (.@index < (.@size -1)) {
@@ -48,35 +55,89 @@ function	script	F_mobidle	{
 
 	if (.@dist_to_spot[.@index] > 14) {
 		unitkill .@game_id;
-		end;
+		return false;
 	}
 	if (!.@data[UMOB_TARGETID]) {
 		unitwalk .@game_id, (getelementofarray( getarg(2),.@index ) + .@dx), getelementofarray( getarg(4),.@index );
 		sleep2 50;	// for now a delay between unitwalk and mob_setidleevent is needed
 	}
-	mob_setidleevent .@game_id, getarg(0);
+	if (unitexists(.@game_id))
+		mob_setidleevent .@game_id, getarg(0);
+	return false;
+}
+
+// Clear stale daily standby quests at their official 04:00 reset.
+function	script	F_WaveModeCooldownReady	{
+	.@quest = getarg(0);
+	.@state = checkquest(.@quest,PLAYTIME);
+	if (.@state == 2) {
+		erasequest .@quest;
+		return true;
+	}
+	return (.@state == -1);
+}
+
+// Each entrant returns to the exact Zonda representative used to enter.
+function	script	F_WaveModeReturn	{
+	.@map$ = wave_mode_map$;
+	.@x = wave_mode_x;
+	.@y = wave_mode_y;
+	wave_mode_map$ = "";
+	wave_mode_x = wave_mode_y = 0;
+	WaveMode_ActiveInstance = 0;
+	WaveMode_ActiveToken = 0;
+	if (.@map$ == "") {
+		.@map$ = "prontera";
+		.@x = 146;
+		.@y = 75;
+	}
+	warp .@map$, .@x, .@y;
+	return;
+}
+
+// Return every online player before an instance is destroyed. Offline
+// characters are protected by the nosave mapflag below on their next login.
+function	script	F_WaveModeReturnAll	{
+	.@map$ = getarg(0);
+	.@count = getmapunits(BL_PC,.@map$,.@players[0]);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (attachrid(.@players[.@i]))
+			callfunc "F_WaveModeReturn";
+	}
+	detachrid;
+	return;
+}
+
+// If an instance disappears while a character is offline, nosave moves the
+// character to their save point. Restore the recorded Zonda origin on login.
+-	script	WaveModeSafety#pn	-1,{
+	end;
+OnPCLoginEvent:
+	if (WaveMode_ActiveInstance < 1)
+		end;
+	.@iid = WaveMode_ActiveInstance;
+	.@name$ = instance_live_info(ILI_NAME,.@iid);
+	// rAthena evaluates both sides of logical operators. Validate the live
+	// instance before getinstancevar so a stale ID can never reach that command.
+	if (.@name$ != "Wave Mode - Forest" && .@name$ != "Wave Mode - Sky") {
+		callfunc "F_WaveModeReturn";
+		end;
+	}
+	if (instance_live_info(ILI_OWNER,.@iid) != getcharid(1)) {
+		callfunc "F_WaveModeReturn";
+		end;
+	}
+	if (getinstancevar('run_token,.@iid) == WaveMode_ActiveToken)
+		end;
+	callfunc "F_WaveModeReturn";
 	end;
 }
 
 prontera,146,75,1	script	Zonda Rep#pron	4_F_ZONDAGIRL,{
-	.@player_name$ = strcharinfo(0);
-	getmapxy .@map_name$,.@x,.@y, BL_PC;
-
-	if (is_party_leader() == true) {
-		.@party_id = getcharid(1);
-		getpartymember .@party_id, 1;
-		getpartymember .@party_id, 2;
-		for ( .@i = 0; .@i < $@partymembercount; .@i++ ) {
-			if (isloggedin($@partymemberaid[.@i], $@partymembercid[.@i]) == 1)
-				.@count_online++;
-		}
-		.@menu_entry$ = "Request entry.";
-	}
-
 	mes "[Belka]";
 	mes "Welcome to Zonda, where innovation begins. What can I do for you?";
 	next;
-	switch( select( "Why are you here?", .@menu_entry$, "Enter ^6B9900<Wave Mode - Forest>^000000.", "Enter ^6B9900<Wave Mode - Sky>^000000.", "Cancel." ) ) {
+	switch( select( "Why are you here?", "Request entry.", "Enter ^6B9900<Wave Mode - Forest>^000000.", "Enter ^6B9900<Wave Mode - Sky>^000000.", "Cancel." ) ) {
 	case 1:
 		mes "[Belka]";
 		mes "We now offer a new service. Have you heard about the dimensional rifts?";
@@ -98,18 +159,18 @@ prontera,146,75,1	script	Zonda Rep#pron	4_F_ZONDAGIRL,{
 			case 1:
 				mes "[Belka]";
 				mes "The ^6B9900<Wave Mode - Forest>^000000";
-				mes "Introducing the first Wave Mode service, Zonda's objective is to work with your party members to keep monster waves from reaching the other side of the bridge.";
+				mes "Work with your party to keep waves from crossing the bridge. Normal waves contain 20 monsters; every fifth wave has champions.";
 				next;
 				mes "[Belka]";
-				mes "Monsters will advance without fighting, but the party will fail if 20 monsters are let go..";
+				mes "The 70-wave roster repeats until the one-hour service closes. The run fails if 20 monsters escape. Forest can be used once per day.";
 				break;
 			case 2:
 				mes "[Belka]";
 				mes "The ^6B9900<Wave Mode - Sky>^000000";
-				mes "Available once a day. Like the other Wave Mode, keep the monsters away from reaching the other side of the map.";
+				mes "Sky sends 10-monster waves, with Zonda mercenaries advancing from the opposite side. Every fifth wave replaces monsters with treasure boxes.";
 				next;
 				mes "[Belka]";
-				mes "Feel free to come back with your party.";
+				mes "The 10-wave roster repeats for up to one hour, fails after 20 escapes, and can be used once per day.";
 				break;
 			case 3:
 				mes "[Belka]";
@@ -121,66 +182,178 @@ prontera,146,75,1	script	Zonda Rep#pron	4_F_ZONDAGIRL,{
 			mes "Any other questions?";
 		}
 	case 2:
+		.@party_id = getcharid(1);
+		if (.@party_id < 1) {
+			mes "[Belka]";
+			mes "You must form a party first. A one-person party is acceptable.";
+			close;
+		}
+		if (!is_party_leader()) {
+			mes "[Belka]";
+			mes "Only the current party leader can request a reservation.";
+			close;
+		}
 		mes "[Belka]";
 		mes "Which Wave Mode would you like to enter: Forest or Sky?";
 		next;
-		.@s = select( "Enter ^6B9900<Wave Mode - Forest>^000000.", "Enter ^6B9900<Wave Mode - Sky>^000000." ) - 1;
+		.@s = select( "Reserve ^6B9900<Wave Mode - Forest>^000000.", "Reserve ^6B9900<Wave Mode - Sky>^000000.", "Cancel." ) - 1;
+		if (.@s == 2)
+			close;
 		setarray .@instance_name$[0], "Wave Mode - Forest", "Wave Mode - Sky";
-		mes "[Belka]";
-		mes "" + .@count_online + " party " + (.@count_online == 1 ? "member" : "members") + " found " + .@player_name$ + ", right? To enter the ^6B9900<" + .@instance_name$[.@s] + ">^000000, please sign here.";
-		next;
-		select("Sign.");
-		mes "[Belka]";
-		mes "" + .@player_name$ + " has requested to enter the ^6B9900<" + .@instance_name$[.@s] + ">^000000. Please come back when it's your turn to enter.";
-		if (instance_create(.@instance_name$[.@s]) < 0) {
-			mes "Party Name: " + getpartyname( getcharid(1) );
-			mes "Party Leader: " + strcharinfo(0);
-			mes "^0000ff" + .@instance_name$[.@s] + " ^000000 - Reservation Failed.";
+		setarray .@cooldown[0],5228,5299;
+		if (!callfunc("F_WaveModeCooldownReady",.@cooldown[.@s])) {
+			mes "[Belka]";
+			mes "You have already entered this mode today. Reservations reset at 04:00 server time.";
 			close;
 		}
+		.@existing = instance_id(IM_PARTY);
+		if (.@existing > 0) {
+			mes "[Belka]";
+			mes "Your party already owns ^0000FF" + instance_live_info(ILI_NAME,.@existing) + "^000000.";
+			mes "Use its entry option, or have the party leader destroy it before reserving another dungeon.";
+			close;
+		}
+		getpartymember .@party_id,1,.@member_cid;
+		.@member_count = $@partymembercount;
+		getpartymember .@party_id,2,.@member_aid;
+		.@count_online = 0;
+		for (.@i = 0; .@i < .@member_count; ++.@i) {
+			if (isloggedin(.@member_aid[.@i],.@member_cid[.@i]))
+				.@count_online++;
+		}
+		mes "[Belka]";
+		mes .@member_count + " registered party " + (.@member_count == 1 ? "member" : "members") + " found (" + .@count_online + " online).";
+		mes "The service can run for up to one hour. An empty reservation closes after five minutes.";
+		mes "Only members on the current roster may enter.";
+		next;
+		if (select("Sign and reserve.:Cancel.") == 2)
+			close;
+
+		// Revalidate after the dialog pause, then snapshot the final roster
+		// without yielding before instance creation.
+		if (getcharid(1) != .@party_id || !is_party_leader()) {
+			mes "[Belka]";
+			mes "Your party or its leader changed. Please request the reservation again.";
+			close;
+		}
+		if (instance_id(IM_PARTY) > 0) {
+			mes "[Belka]";
+			mes "Your party obtained another memorial dungeon while we were confirming the roster.";
+			close;
+		}
+		if (!callfunc("F_WaveModeCooldownReady",.@cooldown[.@s])) {
+			mes "[Belka]";
+			mes "Your daily eligibility changed. Please try again after the next 04:00 reset.";
+			close;
+		}
+		getpartymember .@party_id,1,.@member_cid;
+		.@member_count = $@partymembercount;
+		if (.@member_count < 1) {
+			mes "[Belka]";
+			mes "The party roster could not be read. Please form the party again.";
+			close;
+		}
+		.@roster$ = ",";
+		for (.@i = 0; .@i < .@member_count; ++.@i)
+			.@roster$ += .@member_cid[.@i] + ",";
+
+		.@created = instance_create(.@instance_name$[.@s],IM_PARTY,.@party_id);
+		if (.@created < 1) {
+			mes "[Belka]";
+			mes "Party: " + getpartyname(.@party_id);
+			mes "^0000FF" + .@instance_name$[.@s] + "^000000 - reservation failed (code " + .@created + ").";
+			close;
+		}
+		.@token = getinstancevar('run_token,.@created);
+		if (!.@token) {
+			.@token = gettimetick(2);
+			setinstancevar 'run_token,.@token,.@created;
+		}
+		setinstancevar 'party_id,.@party_id,.@created;
+		setinstancevar 'member_roster$,.@roster$,.@created;
+		mes "[Belka]";
+		mes "^0000FF" + .@instance_name$[.@s] + "^000000 is ready. Every registered member may now use the matching entry option.";
 		close;
 	case 3:
-		switch( instance_enter("Wave Mode - Forest") ) {
-		case IE_OTHER:
-			mes "[Belka]";
-			mes "An unknown error has occurred.";
-			close;
-		case IE_NOINSTANCE:
-		case IE_NOMEMBER:
-			mes "[Belka]";
-			mes "Please wait for ^6B9900<Wave Mode - Forest>^000000 stabilization.";
-			close;
-		case IE_OK:
-			mapannounce .@map_name$, "" + .@player_name$ + " of the party " + getpartyname(getcharid(1)) + " is entering <Wave Mode - Forest>.", bc_map,0xFF99;
-			// warp "1@def01",50,21;
-			break;
-		}
-		break;
+		callsub S_Enter,"Wave Mode - Forest",5228;
+		end;
 	case 4:
-		switch( instance_enter("Wave Mode - Sky") ) {
-		case IE_OTHER:
-			mes "[Belka]";
-			mes "An unknown error has occurred.";
-			close;
-		case IE_NOINSTANCE:
-		case IE_NOMEMBER:
-			mes "[Belka]";
-			mes "Currently the ^6B9900<Wave Mode - Sky>^000000 is being stabilized for your convenience. Please wait.";
-			close;
-		case IE_OK:
-			mapannounce .@map_name$, "" + .@player_name$ + " of the party " + getpartyname(getcharid(1)) + " is entering <Wave Mode - Sky>.", bc_map,0xFF99;
-			// warp "1@def02",29,35;
-			break;
-		}
-		break;
+		callsub S_Enter,"Wave Mode - Sky",5299;
+		end;
 	case 5:
 		mes "[Belka]";
 		mes "Thank you for visiting Zonda, where innovation begins.";
 		close;
 	}
-	wave_mode_map$ = .@map_name$;
-	wave_mode_x = .@x;
-	wave_mode_y = .@y;
+	end;
+
+S_Enter:
+	.@instance_name$ = getarg(0);
+	.@cooldown = getarg(1);
+	.@party_id = getcharid(1);
+	if (.@party_id < 1) {
+		mes "[Belka]";
+		mes "You must be in the party that reserved this Wave Mode.";
+		close;
+	}
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid < 1) {
+		mes "[Belka]";
+		mes "Your party has no active reservation. Ask its leader to request one first.";
+		close;
+	}
+	if (instance_live_info(ILI_NAME,.@iid) != .@instance_name$) {
+		mes "[Belka]";
+		mes "Your party's active dungeon is ^0000FF" + instance_live_info(ILI_NAME,.@iid) + "^000000, not this Wave Mode.";
+		close;
+	}
+	.@token = getinstancevar('run_token,.@iid);
+	.@roster$ = getinstancevar('member_roster$,.@iid);
+	if (!.@token || .@roster$ == "" || !compare(.@roster$,"," + getcharid(0) + ",")) {
+		mes "[Belka]";
+		mes "You were not on the party roster when this Wave Mode was reserved.";
+		close;
+	}
+	.@returning = (WaveMode_ActiveInstance == .@iid && WaveMode_ActiveToken == .@token);
+	if (!.@returning) {
+		if (!callfunc("F_WaveModeCooldownReady",.@cooldown)) {
+			mes "[Belka]";
+			mes "You have already entered this mode today. It becomes available again at 04:00 server time.";
+			close;
+		}
+	}
+
+	getmapxy .@origin_map$,.@origin_x,.@origin_y,BL_PC;
+	.@player_name$ = strcharinfo(0);
+	.@party_name$ = getpartyname(.@party_id);
+	.@result = instance_enter(.@instance_name$,-1,-1,getcharid(0),.@iid);
+	switch (.@result) {
+	case IE_NOINSTANCE:
+		mes "[Belka]";
+		mes "That reservation has expired. Ask the party leader to create it again.";
+		close;
+	case IE_NOMEMBER:
+		mes "[Belka]";
+		mes "Only a member of the reserving party may enter.";
+		close;
+	case IE_OTHER:
+		mes "[Belka]";
+		mes "The dimensional rift did not respond. Please try again.";
+		close;
+	case IE_OK:
+		if (!.@returning) {
+			wave_mode_map$ = .@origin_map$;
+			wave_mode_x = .@origin_x;
+			wave_mode_y = .@origin_y;
+			WaveMode_ActiveInstance = .@iid;
+			WaveMode_ActiveToken = .@token;
+			if (isbegin_quest(.@cooldown) > 0)
+				erasequest .@cooldown;
+			setquest .@cooldown;
+		}
+		mapannounce .@origin_map$,.@player_name$ + " of party " + .@party_name$ + " entered <" + .@instance_name$ + ">.",bc_map,0x00FF99;
+		end;
+	}
 	end;
 }
 payon,166,98,1	duplicate(Zonda Rep#pron)	Zonda Rep#pay	4_F_ZONDAGIRL
@@ -192,6 +365,9 @@ morocc,168,271,4	duplicate(Zonda Rep#pron)	Zonda Rep#mor	4_F_ZONDAGIRL
 1@def01,50,21,0	script	#wave_mode_forest_entrance	HIDDEN_WARP_NPC,1,1,{
 	end;
 OnTouch:
+	if ('started || 'failed)
+		end;
+	'started = 1;
 	disablenpc instance_npcname("#wave_mode_forest_entrance");
 	initnpctimer;
 	end;
@@ -216,9 +392,16 @@ OnTimer22000:
 1@def01,1,1,0	script	#wave_mode_forest_system	-1,{
 	end;
 OnStart:
+	if ('failed || 'system_running)
+		end;
+	'system_running = 1;
 	initnpctimer;
 	end;
 OnTimer1000:
+	if ('failed) {
+		stopnpctimer;
+		end;
+	}
 	mapannounce 'map_def01$, "3", bc_map;
 	end;
 OnTimer2000:
@@ -228,18 +411,31 @@ OnTimer3000:
 	mapannounce 'map_def01$, "1", bc_map;
 	end;
 OnTimer4000:
+	if ('failed) {
+		stopnpctimer;
+		end;
+	}
 	'wave++;
 	if ('wave % 5)
 		mapannounce 'map_def01$, "-- Wave " + 'wave + " --", bc_map;
 	else
-		mapannounce 'map_def01$, "!! Champions summoned !!", bc_map;
+		mapannounce 'map_def01$, "!! Wave " + 'wave + ": champions summoned !!", bc_map;
 	donpcevent 'npc_name$ + "::OnSpawn";
 	end;
-OnTimer24000:
+OnTimer16000:
+	if ('failed)
+		end;
 	mapannounce 'map_def01$, "Next monsters will come out soon. Get ready.", bc_map;
+	end;
+OnTimer20000:
+	if ('failed) {
+		stopnpctimer;
+		end;
+	}
 	initnpctimer;
 	end;
 OnStop:
+	'system_running = 0;
 	stopnpctimer;
 	end;
 }
@@ -247,6 +443,8 @@ OnStop:
 1@def01,1,1,0	script	#wave_mode_forest_spawn	-1,{
 	end;
 OnSpawn:
+	if ('failed)
+		end;
 	switch( 'wave % 70 ) {
 	case 1:
 		'mob_id = 2401;	// G_PORING
@@ -476,6 +674,8 @@ OnSpawn:
 	end;
 OnTimer1000:
 	stopnpctimer;
+	if ('failed)
+		end;
 	if (('wave % 5) == 0) {	// champion
 		donpcevent 'npc_name$ + "::OnSpawn0";
 		donpcevent 'npc_name$ + "::OnSpawn1";
@@ -488,11 +688,15 @@ OnTimer1000:
 		.@dx = 3;
 	else
 		.@dx = 2;
-	for ( .@i = 0; .@i < 24; .@i++ ) {
+	for ( .@i = 0; .@i < 20; .@i++ ) {
+		if ('failed)
+			end;
 		donpcevent 'npc_name$ + "::OnSpawn" + .@dx;
 		sleep 300;
 	}
-	// total ~7 secs
+	end;
+OnStop:
+	stopnpctimer;
 	end;
 OnSpawn0: callsub( S_Spawn, 0 );
 OnSpawn1: callsub( S_Spawn, 1 );
@@ -500,6 +704,8 @@ OnSpawn2: callsub( S_Spawn, 2 );
 OnSpawn3: callsub( S_Spawn, 3 );
 OnSpawn4: callsub( S_Spawn, 4 );
 S_Spawn:
+	if ('failed)
+		end;
 	.@x = 48 + getarg(0);
 	monster 'map_def01$,.@x,74, "Invader!", 'mob_id,1;
 	.@gid = $@mobid[0];
@@ -514,11 +720,17 @@ OnIdle2: callsub( S_Idle, 2 );
 OnIdle3: callsub( S_Idle, 3 );
 OnIdle4: callsub( S_Idle, 4 );
 S_Idle:
-	callfunc( "F_mobidle", ('npc_name$ + "::OnIdle" + getarg(0)), 'size_coord, 'x_mob, getarg(0), 'y_mob, 'dist_spot_AZ );
+	if ('failed) {
+		if (unitexists(getattachedrid()))
+			unitkill getattachedrid();
+		end;
+	}
+	if (!callfunc("F_WaveModeMobIdle",('npc_name$ + "::OnIdle" + getarg(0)),'size_coord,'x_mob,getarg(0),'y_mob,'dist_spot_AZ))
+		end;
 	'mob_escaped++;
 	if ('mob_escaped <= 20)
 		mapannounce 'map_def01$, "" + 'mob_escaped + " " + ('mob_escaped == 1 ? "monster has" : "monsters have") + " escaped.", bc_map;
-	if ('mob_escaped == 20)
+	if ('mob_escaped >= 20)
 		donpcevent instance_npcname("#wave_mode_forest_out") + "::OnFail";
 	end;
 }
@@ -527,20 +739,19 @@ S_Idle:
 1@def01,50,30,0	script	#wave_mode_forest_warp	WARPNPC,2,2,{// official warp out
 	end;
 OnTouch:
-	if (wave_mode_map$ == "")
-		warp "prontera",0,0;
-	else {
-		warp wave_mode_map$, wave_mode_x, wave_mode_y;
-		wave_mode_map$ = "";
-		wave_mode_x = wave_mode_y = 0;
-	}
+	callfunc "F_WaveModeReturn";
 	end;
 }
 
 1@def01,1,1,0	script	#wave_mode_forest_out	-1,{
 	end;
 OnFail:
+	if ('failed)
+		end;
+	'failed = 1;
 	donpcevent instance_npcname("#wave_mode_forest_system") + "::OnStop";
+	donpcevent instance_npcname("#wave_mode_forest_spawn") + "::OnStop";
+	killmonsterall 'map_def01$;
 
 	mapannounce 'map_def01$, "You have failed the <Wave mode - Forest> challenge.", bc_map;
 	enablenpc instance_npcname("#wave_mode_forest_warp");
@@ -553,27 +764,54 @@ OnTimer30000:
 	stopnpctimer;
 	instance_destroy();
 	end;
+}
 
+// The database supplies the canonical one-hour lifetime. This controller
+// provides warnings, deterministic timeout cleanup, and safe manual/idle
+// destruction handling without adding a false completion reward.
+1@def01,1,2,0	script	#wave_mode_forest_lifetime	-1,{
+	end;
 OnInstanceInit:
-	'wave = 'mob_escaped = 0;
+	'wave = 'mob_escaped = 'started = 'failed = 'system_running = 0;
 
 	'map_def01$ = instance_mapname("1@def01");
 	'npc_name$ = instance_npcname("#wave_mode_forest_spawn");
+	'party_id = instance_live_info(ILI_OWNER);
+	if (!'run_token)
+		'run_token = gettimetick(2);
 
-	disablenpc instance_npcname("#wave_mode_forest_system");
+	enablenpc instance_npcname("#wave_mode_forest_entrance");
 	disablenpc instance_npcname("#wave_mode_forest_warp");
-	disablenpc instance_npcname("#wave_mode_forest_out");
 
 	setarray 'x_mob[0], 48, 48, 48, 48, 48, 48, 48;
 	setarray 'y_mob[0], 74, 65, 56, 48, 40, 31, 23;
 
 	'size_coord = getarraysize('y_mob);
-	for ( .@i = 0; .@i < 'size_coord -1; .@i++ ) {
-		.@dist_mob[.@i+1] = distance( 'x_mob[.@i], 'y_mob[.@i], 'x_mob[.@i+1], 'y_mob[.@i+1] );
-		.@total_mob += .@dist_mob[.@i+1];
+	'dist_spot_AZ['size_coord - 1] = 0;
+	for (.@i = 'size_coord - 2; .@i >= 0; --.@i) {
+		'dist_spot_AZ[.@i] = 'dist_spot_AZ[.@i + 1]
+			+ distance('x_mob[.@i],'y_mob[.@i],'x_mob[.@i + 1],'y_mob[.@i + 1]);
 	}
-	for ( .@i = 0; .@i < 'size_coord -1; .@i++ )
-		'dist_spot_AZ[.@i] = .@total_mob - .@dist_mob[.@i];
+	initnpctimer;
+	end;
+OnTimer3300000:
+	if (!'failed)
+		mapannounce 'map_def01$,"Wave Mode - Forest: 5 minutes remain.",bc_map,0xFF6666;
+	end;
+OnTimer3540000:
+	if (!'failed)
+		mapannounce 'map_def01$,"Wave Mode - Forest: 1 minute remains.",bc_map,0xFF3333;
+	end;
+OnTimer3598000:
+	if (!'failed)
+		mapannounce 'map_def01$,"Wave Mode - Forest will close in a few seconds.",bc_map,0xFF0000;
+	end;
+OnInstanceDestroy:
+	'failed = 1;
+	donpcevent instance_npcname("#wave_mode_forest_system") + "::OnStop";
+	donpcevent instance_npcname("#wave_mode_forest_spawn") + "::OnStop";
+	killmonsterall 'map_def01$;
+	callfunc "F_WaveModeReturnAll",'map_def01$;
 	end;
 }
 
@@ -582,36 +820,37 @@ OnInstanceInit:
 1@def02,30,35,0	script	#wave_mode_sky_entrance	WARPNPC,1,1,{
 	end;
 OnTouch:
-	if ('status_instance == 1)
+	if ('failed) {
+		callfunc "F_WaveModeReturn";
 		end;
-	else if ('status_instance == 0) {
-		'status_instance = 1;
-		initnpctimer;
-		disablenpc instance_npcname("#wave_mode_sky_entrance");
 	}
-	else if ('status_instance == 2) {
-		if (wave_mode_map$ == "")
-			warp "prontera",0,0;
-		else {
-			warp wave_mode_map$, wave_mode_x, wave_mode_y;
-			wave_mode_map$ = "";
-			wave_mode_x = wave_mode_y = 0;
-		}
-	}
+	if ('started)
+		end;
+	'started = 1;
+	initnpctimer;
+	disablenpc instance_npcname("#wave_mode_sky_entrance");
 	end;
 OnTimer4000:
 	stopnpctimer;
-	donpcevent instance_npcname("#wave_mode_sky_system") + "::OnStart";
+	if (!'failed)
+		donpcevent instance_npcname("#wave_mode_sky_system") + "::OnStart";
 	end;
 }
 
 1@def02,1,1,0	script	#wave_mode_sky_system	-1,{
 	end;
 OnStart:
+	if ('failed || 'system_running)
+		end;
+	'system_running = 1;
 	initnpctimer;
-	mapannounce 'map_def02$, "We would like to thank all costumers who always use Zonda Agency.", bc_map;
+	mapannounce 'map_def02$, "We would like to thank all customers who use the Zonda Agency.", bc_map;
 	end;
 OnTimer1000:
+	if ('failed) {
+		stopnpctimer;
+		end;
+	}
 	mapannounce 'map_def02$, "3", bc_map;
 	end;
 OnTimer2000:
@@ -621,6 +860,10 @@ OnTimer3000:
 	mapannounce 'map_def02$, "1", bc_map;
 	end;
 OnTimer4000:
+	if ('failed) {
+		stopnpctimer;
+		end;
+	}
 	'wave_num++;
 	if ('wave_num % 5) {
 		donpcevent 'npc_name_mob$ + "::OnSpawn";
@@ -631,11 +874,20 @@ OnTimer4000:
 		donpcevent 'npc_name_treasure$ + "::OnStart";
 	}
 	end;
-OnTimer24000:
+OnTimer16000:
+	if ('failed)
+		end;
 	mapannounce 'map_def02$, "Next monster wave will come out soon. Get ready.", bc_map;
+	end;
+OnTimer20000:
+	if ('failed) {
+		stopnpctimer;
+		end;
+	}
 	initnpctimer;
 	end;
 OnStop:
+	'system_running = 0;
 	stopnpctimer;
 	end;
 }
@@ -643,9 +895,11 @@ OnStop:
 1@def02,1,1,0	script	#wave_mode_sky_treasure	-1,{
 	end;
 OnStart:
+	if ('failed)
+		end;
 	if ('treasure_num < 5)
 		'treasure_num++;
-	mapannounce 'map_def02$, "!! " + 'treasure_num + " treasure box appeared !!", bc_map;
+	mapannounce 'map_def02$, "!! Wave " + 'wave_num + ": " + 'treasure_num + " treasure " + ('treasure_num == 1 ? "box" : "boxes") + " appeared !!", bc_map;
 	for ( .@i = 0; .@i < 'treasure_num; .@i++ ) {
 		monster 'map_def02$,0,0, "Treasure box",3075,1;	// WA_TREASURE
 		'treasure_gid[.@i] = $@mobid[0];
@@ -658,9 +912,9 @@ OnTimer18500: callsub( S_Dice, ET_DICE1 );
 OnTimer19500:
 	for ( .@i = 0; .@i < 'treasure_num; .@i++ ) {
 		if (unitexists('treasure_gid[.@i]))
-			unitskilluseid 'treasure_gid[.@i],301,1,'treasure_gid[.@i],-1;	// SA_INSTANTDEATH
+			unitkill 'treasure_gid[.@i];
 	}
-	donpcevent 'npc_name_treasure$ + "::OnStop";
+	callsub S_Stop;
 	end;
 
 S_Dice:
@@ -672,14 +926,20 @@ S_Dice:
 	end;
 
 OnStop:
-	deletearray 'treasure_gid[0], 'treasure_num;
-	stopnpctimer;
+	callsub S_Stop;
 	end;
+S_Stop:
+	if ('treasure_num > 0)
+		deletearray 'treasure_gid[0], 'treasure_num;
+	stopnpctimer;
+	return;
 }
 
 1@def02,1,1,0	script	#wave_mode_sky_mercenary	-1,{
 	end;
 OnStart:
+	if ('failed)
+		end;
 	monster 'map_def02$,29,35, "Mercenary", 3086,1, "",0,AI_WAVEMODE;	// WA_MERCENARY
 	.@gid = $@mobid[0];
 	emotion ET_SURPRISE, .@gid;
@@ -687,17 +947,24 @@ OnStart:
 	mob_setidleevent .@gid, 'npc_name_mercenary$ + "::OnIdle";
 	sleep 45000;
 	if (unitexists(.@gid))
-		unitskilluseid .@gid,301,1,.@gid,1,false;	// SA_INSTANTDEATH
+		unitkill .@gid;
 	end;
 
 OnIdle:
-	callfunc( "F_mobidle", ('npc_name_mercenary$ + "::OnIdle"), 'size_coord, 'x_merc, 0, 'y_merc, 'dist_spot_ZA );
+	if ('failed) {
+		if (unitexists(getattachedrid()))
+			unitkill getattachedrid();
+		end;
+	}
+	callfunc "F_WaveModeMobIdle",('npc_name_mercenary$ + "::OnIdle"),'size_coord,'x_merc,0,'y_merc,'dist_spot_ZA;
 	end;
 }
 
 1@def02,1,1,0	script	#wave_mode_sky_mob_spawn	-1,{
 	end;
 OnSpawn:
+	if ('failed)
+		end;
 	mapannounce 'map_def02$, "-- Wave " + 'wave_num + " --", bc_map;
 
 	.@i = ('wave_num % 10) - 1;
@@ -725,32 +992,39 @@ OnTimer4000: callsub( S_Spawn, true );
 OnTimer4500: callsub( S_Spawn, false );
 OnTimer5000: callsub( S_Spawn, true );
 OnTimer5500: callsub( S_Spawn, false );
-OnTimer6000: callsub( S_Spawn, true );
-OnTimer6500: callsub( S_Spawn, false );
-OnTimer7000: callsub( S_Spawn, true );
-OnTimer7500: callsub( S_Spawn, false );
-OnTimer8000: callsub( S_Spawn, true );
-OnTimer8500:
+OnTimer6000:
+	stopnpctimer;
+	end;
+OnStop:
 	stopnpctimer;
 	end;
 
 S_Spawn:
+	if ('failed)
+		end;
 	monster 'map_def02$,48,67, "Go!", 'mob_id,1;
-	if (getarg(0) == true)
-		setunitdata $@mobid[0], UMOB_MODE, ( MD_CANMOVE|MD_NORANDOMWALK|MD_AGGRESSIVE|MD_CANATTACK );
 	.@gid = $@mobid[0];
+	.@mode = MD_CANMOVE|MD_NORANDOMWALK|MD_CANATTACK;
+	if (getarg(0))
+		.@mode |= MD_AGGRESSIVE;
+	setunitdata .@gid,UMOB_MODE,.@mode;
 	emotion ET_SURPRISE, .@gid;
 	setunitdata .@gid, UMOB_IGNORE_CELL_STACK_LIMIT, true;
 	mob_setidleevent .@gid, 'npc_name_mob$ + "::OnIdle";
 	end;
 
 OnIdle:
-	// monster are walking to the nearest next spot
-	callfunc( "F_mobidle", ('npc_name_mob$ + "::OnIdle"), 'size_coord, 'x_mob, 0, 'y_mob, 'dist_spot_AZ );
+	if ('failed) {
+		if (unitexists(getattachedrid()))
+			unitkill getattachedrid();
+		end;
+	}
+	if (!callfunc("F_WaveModeMobIdle",('npc_name_mob$ + "::OnIdle"),'size_coord,'x_mob,0,'y_mob,'dist_spot_AZ))
+		end;
 	'mob_escaped++;
 	if ('mob_escaped <= 20)
 		mapannounce 'map_def02$, "" + 'mob_escaped + " " + ('mob_escaped == 1 ? "monster has" : "monsters have") + " escaped.", bc_map;
-	if ('mob_escaped == 20)
+	if ('mob_escaped >= 20)
 		donpcevent instance_npcname("#wave_mode_sky_out") + "::OnFail";
 	end;
 }
@@ -759,11 +1033,15 @@ OnIdle:
 1@def02,1,1,0	script	#wave_mode_sky_out	-1,{
 	end;
 OnFail:
-	// monsters timers continue
+	if ('failed)
+		end;
+	'failed = 1;
 	donpcevent instance_npcname("#wave_mode_sky_system") + "::OnStop";
+	donpcevent instance_npcname("#wave_mode_sky_mob_spawn") + "::OnStop";
+	donpcevent instance_npcname("#wave_mode_sky_treasure") + "::OnStop";
+	killmonsterall 'map_def02$;
 
 	mapannounce 'map_def02$, "You have failed the <Wave mode - Sky> challenge.", bc_map;
-	'status_instance = 2;
 	enablenpc instance_npcname("#wave_mode_sky_entrance");
 	initnpctimer;
 	end;
@@ -774,18 +1052,23 @@ OnTimer30000:
 	stopnpctimer;
 	instance_destroy();
 	end;
+}
 
+1@def02,1,2,0	script	#wave_mode_sky_lifetime	-1,{
+	end;
 OnInstanceInit:
-	deletearray 'treasure_gid[0], 'treasure_num;
-	'wave_num = 'treasure_num = 'status_instance = 'mob_escaped = 0;
+	'wave_num = 'treasure_num = 'mob_escaped = 'started = 'failed = 'system_running = 0;
 
 	'map_def02$ = instance_mapname("1@def02");
 
 	'npc_name_mob$ = instance_npcname("#wave_mode_sky_mob_spawn");
 	'npc_name_treasure$ = instance_npcname("#wave_mode_sky_treasure");
 	'npc_name_mercenary$ = instance_npcname("#wave_mode_sky_mercenary");
+	'party_id = instance_live_info(ILI_OWNER);
+	if (!'run_token)
+		'run_token = gettimetick(2);
 
-	disablenpc instance_npcname("#wave_mode_sky_out");
+	enablenpc instance_npcname("#wave_mode_sky_entrance");
 
 	setarray 'x_mob[0], 48, 38, 30, 30, 29, 38, 47, 51, 50, 42, 33, 29;
 	setarray 'y_mob[0], 67, 67, 64, 58, 52, 52, 51, 45, 36, 36, 36, 35;
@@ -794,15 +1077,40 @@ OnInstanceInit:
 	setarray 'y_merc[0], 35, 36, 36, 36, 45, 51, 52, 52, 58, 64, 67, 67;
 
 	'size_coord = getarraysize('x_mob);
-	for ( .@i = 0; .@i < 'size_coord -1; .@i++ ) {
-		.@dist_mob[.@i+1] = distance( 'x_mob[.@i], 'y_mob[.@i], 'x_mob[.@i+1], 'y_mob[.@i+1] );
-		.@total_mob += .@dist_mob[.@i+1];
-		.@dist_merc[.@i+1] = distance( 'x_merc[.@i], 'y_merc[.@i], 'x_merc[.@i+1], 'y_merc[.@i+1] );
-		.@total_merc += .@dist_merc[.@i+1];
+	'dist_spot_AZ['size_coord - 1] = 0;
+	'dist_spot_ZA['size_coord - 1] = 0;
+	for (.@i = 'size_coord - 2; .@i >= 0; --.@i) {
+		'dist_spot_AZ[.@i] = 'dist_spot_AZ[.@i + 1]
+			+ distance('x_mob[.@i],'y_mob[.@i],'x_mob[.@i + 1],'y_mob[.@i + 1]);
+		'dist_spot_ZA[.@i] = 'dist_spot_ZA[.@i + 1]
+			+ distance('x_merc[.@i],'y_merc[.@i],'x_merc[.@i + 1],'y_merc[.@i + 1]);
 	}
-	for ( .@i = 0; .@i < 'size_coord -1; .@i++ ) {
-		'dist_spot_AZ[.@i] = .@total_mob - .@dist_mob[.@i];
-		'dist_spot_ZA[.@i] = .@total_merc - .@dist_merc[.@i];
-	}
+	initnpctimer;
+	end;
+OnTimer3300000:
+	if (!'failed)
+		mapannounce 'map_def02$,"Wave Mode - Sky: 5 minutes remain.",bc_map,0xFF6666;
+	end;
+OnTimer3540000:
+	if (!'failed)
+		mapannounce 'map_def02$,"Wave Mode - Sky: 1 minute remains.",bc_map,0xFF3333;
+	end;
+OnTimer3598000:
+	if (!'failed)
+		mapannounce 'map_def02$,"Wave Mode - Sky will close in a few seconds.",bc_map,0xFF0000;
+	end;
+OnInstanceDestroy:
+	'failed = 1;
+	donpcevent instance_npcname("#wave_mode_sky_system") + "::OnStop";
+	donpcevent instance_npcname("#wave_mode_sky_mob_spawn") + "::OnStop";
+	donpcevent instance_npcname("#wave_mode_sky_treasure") + "::OnStop";
+	killmonsterall 'map_def02$;
+	callfunc "F_WaveModeReturnAll",'map_def02$;
 	end;
 }
+
+// Instance safety flags not covered by the shared Renewal mapflag files.
+1@def01	mapflag	nosave	SavePoint
+1@def02	mapflag	nosave	SavePoint
+1@def01	mapflag	noreturn
+1@def02	mapflag	noreturn

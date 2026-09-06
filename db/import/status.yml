@@ -29,3 +29,19 @@ Body:
       NoClearance: true
     Script: |
       bonus2 bAddItemHealRate,1100006,getstatus(SC_MTP_W_POTION_100,1);
+  - Status: Contents_37
+    Icon: EFST_CONTENTS_37
+    Flags:
+      NoRemoveOnDead: true
+      NoClearbuff: true
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true
+  - Status: Contents_38
+    Icon: EFST_CONTENTS_38
+    Flags:
+      NoRemoveOnDead: true
+      NoClearbuff: true
+      NoDispell: true
+      NoBanishingBuster: true
+      NoClearance: true

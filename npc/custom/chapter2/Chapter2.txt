@@ -14,19 +14,77 @@ function	script	CH2_RepLevel	{
 
 function	script	CH2_Instance	{
 	.@name$ = getarg(0);
-	.@iid = instance_id(IM_CHAR);
+	.@party_id = getcharid(1);
+	if (.@party_id < 1) {
+		mes "[Chapter 2 Expedition]";
+		mes "Form a party first. A one-person party is allowed, but every expedition is party-owned.";
+		close;
+	}
+
+	.@iid = instance_id(IM_PARTY);
 	if (.@iid && instance_live_info(ILI_NAME,.@iid) != .@name$) {
 		mes "[Chapter 2 Expedition]";
-		mes "You already own another active instance. Close it from the instance window before creating this one.";
+		mes "Your party already owns ^0055ff"+instance_live_info(ILI_NAME,.@iid)+"^000000.";
+		mes "Finish or have the leader destroy that expedition first.";
 		close;
 	}
 	if (!.@iid) {
-		.@iid = instance_create(.@name$,IM_CHAR,getcharid(0));
-		if (.@iid < 0) {
+		if (!is_party_leader()) {
 			mes "[Chapter 2 Expedition]";
-			mes "The instance could not be created. Please try again shortly.";
+			mes "The party leader must create ^0055ff"+.@name$+"^000000. Return after the reservation is ready and choose Enter.";
 			close;
 		}
+		mes "[Chapter 2 Expedition]";
+		mes "Create ^0055ff"+.@name$+"^000000 for your current party?";
+		mes "Only members on the roster at creation may enter or receive clear credit.";
+		next;
+		if (select("Create and enter:Cancel") == 2)
+			close;
+		// Dialogs yield. Revalidate party ownership and snapshot the final roster
+		// without another yield before creating the memorial dungeon.
+		if (getcharid(1) != .@party_id || !is_party_leader() || instance_id(IM_PARTY)) {
+			mes "[Chapter 2 Expedition]";
+			mes "The party or its active reservation changed. Please try again.";
+			close;
+		}
+		getpartymember .@party_id,1,.@member_cid;
+		.@member_count = $@partymembercount;
+		if (.@member_count < 1) {
+			mes "[Chapter 2 Expedition]";
+			mes "The party roster could not be read.";
+			close;
+		}
+		.@roster$ = ",";
+		for (.@i = 0; .@i < .@member_count; ++.@i)
+			.@roster$ += .@member_cid[.@i]+",";
+		.@iid = instance_create(.@name$,IM_PARTY,.@party_id);
+		if (.@iid < 0) {
+			mes "[Chapter 2 Expedition]";
+			mes "The instance could not be created (error "+.@iid+"). Please try again shortly.";
+			close;
+		}
+		setinstancevar 'ch2_party_id,.@party_id,.@iid;
+		setinstancevar 'ch2_roster$,.@roster$,.@iid;
+		setinstancevar 'ch2_run_token,gettimetick(2),.@iid;
+	} else {
+		.@roster$ = getinstancevar('ch2_roster$,.@iid);
+		if (.@roster$ == "" || !compare(.@roster$,","+getcharid(0)+",")) {
+			mes "[Chapter 2 Expedition]";
+			mes "You were not on the party roster when this expedition was created.";
+			close;
+		}
+		mes "[Chapter 2 Expedition]";
+		mes "^0055ff"+.@name$+"^000000 is already active for your party.";
+		next;
+		if (select("Enter:Cancel") == 2)
+			close;
+	}
+	if (getcharid(1) != .@party_id || instance_id(IM_PARTY) != .@iid ||
+		instance_live_info(ILI_NAME,.@iid) != .@name$ ||
+		!compare(getinstancevar('ch2_roster$,.@iid),","+getcharid(0)+",")) {
+		mes "[Chapter 2 Expedition]";
+		mes "The reservation changed before entry. Please try again.";
+		close;
 	}
 	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
 		mes "[Chapter 2 Expedition]";
@@ -54,31 +112,17 @@ function	script	CH2_GiveReward	{
 	close;
 }
 
-function	script	CH2_RecreateItem	{
+function	script	CH2_ModifyItem	{
 	.@idx = getarg(0);
 	.@newid = getarg(1);
 	.@newref = getarg(2);
 	.@part = getarg(3);
-	if (.@idx < 0 || .@idx >= @inventorylist_count || !@inventorylist_equip[.@idx]
-		|| @inventorylist_expire[.@idx] || getequipuniqueid(.@part))
+	if (.@idx < 0 || .@idx >= @inventorylist_count || !@inventorylist_equip[.@idx])
 		return 0;
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@identify = @inventorylist_identify[.@idx];
-	.@attribute = @inventorylist_attribute[.@idx];
-	.@c1 = @inventorylist_card1[.@idx]; .@c2 = @inventorylist_card2[.@idx];
-	.@c3 = @inventorylist_card3[.@idx]; .@c4 = @inventorylist_card4[.@idx];
-	.@grade = @inventorylist_enchantgrade[.@idx];
-	.@bound = @inventorylist_bound[.@idx];
-	delequip .@part;
-	if (!delitemidx(@inventorylist_idx[.@idx],1))
+	.@oldid = @inventorylist_id[.@idx];
+	if (getequipid(.@part) != .@oldid)
 		return 0;
-	if (.@bound)
-		getitembound4 .@newid,1,.@identify,.@newref,.@attribute,.@c1,.@c2,.@c3,.@c4,.@bound,.@grade,.@oid,.@oval,.@opar;
-	else
-		getitem4 .@newid,1,.@identify,.@newref,.@attribute,.@c1,.@c2,.@c3,.@c4,.@grade,.@oid,.@oval,.@opar;
-	return 1;
+	return modifyequipitem(.@part,.@oldid,.@newid,.@newref,-1,0,0);
 }
 
 // Monster-death labels cannot pause for inventory management. Deliver their
@@ -95,6 +139,21 @@ function	script	CH2_GiveInstanceItem	{
 	mail getcharid(0),"Flame Branch","Chapter 2 Reward","Your inventory was full when the instance reward was issued, so it was delivered by mail.",0,.@mail_item,.@mail_amount;
 	dispbottom "Your inventory was full. The Chapter 2 reward was delivered by mail.";
 	return 1;
+}
+
+// Current public guides list only the possible Phantom Crystal materials, not
+// their official bundle quantities or weights. The compatibility implementation
+// therefore exposes a deterministic one-crystal/one-material choice instead of
+// inventing a hidden random table.
+function	script	CH2_OpenPhantomCrystal	{
+	mes "[Snapdragon's Phantom Crystal]";
+	mes "Choose one documented material. The crystal is consumed when opened.";
+	next;
+	.@choice = select("Frontier Magic Dust:Chaotic Rune Ore:Disparate Rune Ore:Azure Illusion Fragment:Sunset Illusion Fragment:Teal Illusion Fragment:Jet Black Illusion Fragment");
+	setarray .@material[0],1001997,1002011,1002014,1001999,1002000,1002001,1002002;
+	getitem .@material[.@choice-1],1;
+	mes "The crystal releases your selected material.";
+	close;
 }
 
 ygg_edge,156,179,4	script	Guardian El#ch2start	4_F_FAIRYKID5,{
@@ -157,13 +216,13 @@ veledor,136,65,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
 	}
 	if (CH2_Step >= 12 && !CH2_Complete()) {
 		if (!CH2_Phantom) { mes "[Guardian El]"; mes "The Phantom of Nyrholt remains."; close; }
-		if (!checkweight(1002700,30)) { mes "[Guardian El]"; mes "Make room for 30 Flame Coins first."; close; }
+		if (!checkweight(1002700,10)) { mes "[Guardian El]"; mes "Make room for 10 Flame Coins first."; close; }
 		mes "[Guardian El]"; mes "You restored the severed Flame Branch and gave every refuge a future.";
 		next;
 		mes "Your reputation now grants access to the Flame Branch exchange and all Chapter 2 routes.";
 		completequest 27101;
 		CH2_Reputation = max(CH2_Reputation,100);
-		getitem 1002700,30;
+		getitem 1002700,10;
 		getexp 80000000,56000000;
 		close;
 	}
@@ -173,6 +232,7 @@ veledor,136,65,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
 
 veledor,140,65,4	script	Tangled Mana Gate#ch2	4_ENERGY_BLUE,{
 	if (CH2_Step != 2) { mes "The Crossroads is stable for now."; close; }
+	if (CH2_Crossroads) { mes "The mana core is already gone. Report to Guardian El."; close; }
 	callfunc "CH2_Instance","Crossroads of Tangled Mana";
 }
 
@@ -251,6 +311,40 @@ ch2safe4,86,146,4	script	Phantom Gate#ch2main	4_ENERGY_RED,{
 		if (select("Enter:Leave") == 1) callfunc "CH2_Instance","Phantom of Nyrholt";
 		close;
 	}
+	if (callfunc("CH2_Complete")) {
+		.@state = isbegin_quest(27119);
+		if (.@state == 2 && gettimetick(2) >= getd("CH2_Daily_CD_27119")) {
+			erasequest 27119;
+			CH2_DailyPhantom = 0;
+			.@state = 0;
+		}
+		if (.@state == 2) {
+			mes "[Phantom of Artea]";
+			mes "The Phantom expedition is on its four-hour standby timer.";
+			close;
+		}
+		if (.@state == 1 && CH2_DailyPhantom) {
+			mes "[Phantom of Artea]";
+			mes "The Snapdragon Phantom has fallen. Claim the 3 Flame Coin clear reward?";
+			next;
+			if (select("Claim reward:Later") == 1) {
+				CH2_DailyPhantom = 0;
+				callfunc "CH2_GiveReward",27119,3;
+			}
+			close;
+		}
+		if (.@state == 0) {
+			mes "[Phantom of Artea]";
+			mes "The repeatable Phantom of Nyrholt expedition is ready. Its standby timer begins when you claim the clear reward.";
+			next;
+			if (select("Accept and continue:Leave") == 2)
+				close;
+			setquest 27119;
+			CH2_DailyPhantom = 0;
+		}
+		callfunc "CH2_Instance","Phantom of Nyrholt";
+		end;
+	}
 	mes "The gate responds only to Chapter 2's final resonance."; close;
 }
 
@@ -285,7 +379,14 @@ mu_fild03,154,65,0	script	#ch2_to_flame	WARPNPC,1,1,{ if (CH2_Step < 6) end; war
 mu_dun01,91,131,0	script	#ch2_to_forest2	WARPNPC,1,1,{ warp "mu_fild03",152,65; end; }
 mu_dun01,103,131,0	script	#ch2_to_flame2	WARPNPC,1,1,{ warp "mu_dun02",95,131; end; }
 mu_dun02,91,131,0	script	#ch2_to_flame1	WARPNPC,1,1,{ warp "mu_dun01",101,131; end; }
-kindlbrk,115,223,0	script	#ch2_to_workshop	WARPNPC,1,1,{ warp "kin_in01",115,215; end; }
+kindlbrk,115,223,0	script	#ch2_to_workshop	WARPNPC,1,1,{
+	if (CH2_Step < 3) {
+		message strcharinfo(0),"Reach Kindlebrook in Chapter 2 before entering its interior.";
+		end;
+	}
+	warp "kin_in01",115,215;
+	end;
+}
 kin_in01,115,211,0	script	#ch2_to_kindle3	WARPNPC,1,1,{ warp "kindlbrk",115,221; end; }
 kindlbrk,115,211,0	script	#ch2_to_deadroot	WARPNPC,1,1,{ if (CH2_Step < 5) end; warp "deadroot",134,65; end; }
 deadroot,132,65,0	script	#ch2_to_kindle4	WARPNPC,1,1,{ warp "kindlbrk",115,213; end; }
@@ -330,13 +431,17 @@ kindlbrk,121,219,4	script	Flame Branch Mission Board	4_BOARD3,{
 	if (.@pick == 11) close;
 	.@qid = 27109+.@pick;
 	if (isbegin_quest(.@qid) == 2 && gettimetick(2) >= getd("CH2_Daily_CD_"+.@qid))
+	{
 		erasequest .@qid;
+		if (.@qid == 27119) CH2_DailyPhantom = 0;
+	}
 	if (isbegin_quest(.@qid) == 2) {
 		mes "This mission is on standby. Try again after its four-hour timer expires.";
 		close;
 	}
 	if (isbegin_quest(.@qid) == 0) {
 		setquest .@qid;
+		if (.@qid == 27119) CH2_DailyPhantom = 0;
 		mes "Mission accepted. Return to this board when its kills and materials are complete.";
 		close;
 	}
@@ -389,10 +494,19 @@ kindlbrk,121,219,4	script	Flame Branch Mission Board	4_BOARD3,{
 }
 
 kin_in01,119,215,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
-	if (callfunc("CH2_RepLevel") < 1) { mes "[Flame Coin Exchanger]"; mes "Flame Branch Reputation Level 1 is required. Finish the Chapter 2 story."; close; }
-	mes "[Flame Coin Exchanger]"; mes "Reputation Level "+callfunc("CH2_RepLevel")+". What do you need?";
+	.@complete = callfunc("CH2_Complete");
+	mes "[Flame Coin Exchanger]";
+	if (.@complete)
+		mes "Chapter 2 is complete. Every exchange category is available.";
+	else
+		mes "Before Chapter 2 is complete, only Traveler's Leaf is available.";
 	next;
-	switch(select("Traveler's Leaf:Mana Ring:Flame Coin:Azure equipment:Dreamweave Mangmahal:Cancel")) {
+	.@service = select("Traveler's Leaf:Mana Ring:Flame Coin:Azure equipment:Dreamweave Mangmahal:Cancel");
+	if (.@service > 1 && .@service < 6 && !.@complete) {
+		mes "Complete Chapter 2 to unlock that exchange category.";
+		close;
+	}
+	switch(.@service) {
 	case 1: .@item=106440; .@coin=1; .@zeny=5000; break;
 	case 2: .@item=1001996; .@coin=1; .@zeny=50000; break;
 	case 3:
@@ -418,7 +532,7 @@ kin_in01,119,215,4	script	Flame Coin Exchanger#ch2	4_F_KAFRA8,{
 }
 
 kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
-	if (callfunc("CH2_RepLevel") < 1) { mes "Complete Chapter 2 to use this workshop."; close; }
+	if (!callfunc("CH2_Complete")) { mes "Complete Chapter 2 to use this workshop."; close; }
 	mes "[Cardron]"; mes "I handle perfect enchants, Mangmahal refinement and Azure-to-Blaze reform.";
 	next;
 	switch(select("Armor/Robe enchant:Garment enchant:Shoes enchant:Shield enchant:Accessory enchant:Mangmahal refinement:Azure-to-Blaze reform:Cancel")) {
@@ -440,14 +554,14 @@ kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
 		else if(.@mask & EQP_GARMENT) .@part=EQI_GARMENT;
 		else if(.@mask & EQP_SHOES) .@part=EQI_SHOES;
 		else if(.@mask & EQP_HAND_L) .@part=EQI_HAND_L;
-		if(.@part<0 || @inventorylist_expire[.@idx] || getequipuniqueid(.@part)) { mes "Rental and unique-ID equipment cannot be recreated safely."; close; }
+		if(.@part<0) { mes "The equipped item is in an unsupported slot."; close; }
 		.@r=@inventorylist_refine[.@idx];
 		if(.@r==9) { .@z=75; .@s=75; .@b=10; .@red=0; .@y=0; }
 		if(.@r==10) { .@z=100; .@s=100; .@b=10; .@red=20; .@y=0; }
 		if(.@r==11) { .@z=150; .@s=150; .@b=10; .@red=20; .@y=30; }
 		if(countitem(25731)<.@z||countitem(25729)<.@s||countitem(1002751)<.@b||countitem(1002752)<.@red||countitem(1002753)<.@y) { mes "Missing Zelunium, Shadowdecon or Kindle Hals for this guaranteed refinement."; close; }
 		delitem 25731,.@z; delitem 25729,.@s; delitem 1002751,.@b; if(.@red)delitem 1002752,.@red; if(.@y)delitem 1002753,.@y;
-		if (!callfunc("CH2_RecreateItem",.@idx,@inventorylist_id[.@idx],.@r+1,.@part)) {
+		if (!callfunc("CH2_ModifyItem",.@idx,@inventorylist_id[.@idx],.@r+1,.@part)) {
 			getitem 25731,.@z; getitem 25729,.@s; getitem 1002751,.@b; if(.@red)getitem 1002752,.@red; if(.@y)getitem 1002753,.@y;
 			mes "The equipped item changed, so the refinement was cancelled and its materials were refunded."; close;
 		}
@@ -471,13 +585,12 @@ kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
 		else if(.@mask & EQP_HAND_L) .@part=EQI_HAND_L;
 		else if(.@mask & EQP_ACC_L) .@part=EQI_ACC_L;
 		else if(.@mask & EQP_ACC_R) .@part=EQI_ACC_R;
-		if(.@part<0 || @inventorylist_expire[.@idx] || getequipuniqueid(.@part)) { mes "Rental and unique-ID equipment cannot be recreated safely."; close; }
+		if(.@part<0) { mes "The equipped item is in an unsupported slot."; close; }
 		.@coin=(.@access?250:125); .@ring=(.@access?150:75); .@hal=(.@access?25:15);
 		if(countitem(1002700)<.@coin||countitem(1001996)<.@ring||countitem(1002751)<.@hal||countitem(1002752)<.@hal||countitem(1002753)<.@hal) { mes "Missing Flame Coins, Mana Rings or Kindle Hals."; close; }
-		if(!checkweight(.@new,1)) { mes "You are carrying too much."; close; }
 		delitem 1002700,.@coin; delitem 1001996,.@ring; delitem 1002751,.@hal; delitem 1002752,.@hal; delitem 1002753,.@hal;
 		.@newref=@inventorylist_refine[.@idx]-(.@access?0:2);
-		if (!callfunc("CH2_RecreateItem",.@idx,.@new,.@newref,.@part)) {
+		if (!callfunc("CH2_ModifyItem",.@idx,.@new,.@newref,.@part)) {
 			getitem 1002700,.@coin; getitem 1001996,.@ring; getitem 1002751,.@hal; getitem 1002752,.@hal; getitem 1002753,.@hal;
 			mes "The equipped item changed, so the reform was cancelled and its materials were refunded."; close;
 		}
@@ -488,6 +601,7 @@ kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
 
 // Kindle Hal vendor prices from the published Chapter 2 economy.
 kin_in01,127,215,4	script	Kindle Hal Merchant#ch2	4_F_02,{
+	if (!callfunc("CH2_Complete")) { mes "Complete Chapter 2 before buying Kindle Hals."; close; }
 	mes "Blue: 200,000 Zeny. Red: 400,000 Zeny. Yellow: 700,000 Zeny.";
 	next;
 	.@p=select("Blue Kindle Hal:Red Kindle Hal:Yellow Kindle Hal:Cancel"); if(.@p==4)close;
@@ -495,4 +609,15 @@ kin_in01,127,215,4	script	Kindle Hal Merchant#ch2	4_F_02,{
 	if(Zeny<.@z[.@p-1]){mes "Not enough Zeny.";close;}
 	if(!checkweight(.@id[.@p-1],1)){mes "You are carrying too much.";close;}
 	Zeny-=.@z[.@p-1]; getitem .@id[.@p-1],1; close;
+}
+
+-	script	Chapter2Compatibility#pn	-1,{
+OnPCLoginEvent:
+	// Characters that completed the published quest before this compatibility
+	// controller was installed retain full travel and exchange access.
+	if (isbegin_quest(27101) == 2) {
+		if (CH2_Step < 12) CH2_Step = 12;
+		if (CH2_Reputation < 100) CH2_Reputation = 100;
+	}
+	end;
 }

@@ -161,7 +161,12 @@ icecastle,23,115,8	script	Captain#iws	EP19_NPC_IWIN_SR,{
 				mes "Didn't I tell you to make a party even if you're going alone? Have you never done it? Then you've done it now, so let's go and make a party.";
 				close;
 			}
-			instance_create(.@md_name$);
+			.@instance_id = instance_create(.@md_name$);
+			if (.@instance_id < 1) {
+				mes "[Captain of Patrol]";
+				mes "The patrol route could not be registered. No patrol was recorded, so please try again shortly.";
+				close;
+			}
 			getpartymember getcharid(1), 2;
 			mes "[Captain of Patrol]";
 			mes "I have registered the number of patrol members as " + $@partymembercount + ". It is not necessary to register all of them, but we will check the number of people when we go out on patrol, so please join us.";
@@ -202,7 +207,12 @@ icecastle,23,115,8	script	Captain#iws	EP19_NPC_IWIN_SR,{
 			mes "Didn't I tell you to make a party even if you're going alone? Have you never done it? Then you've done it now, so let's go and make a party.";
 			close;
 		}
-		instance_create(.@md_name$);
+		.@instance_id = instance_create(.@md_name$);
+		if (.@instance_id < 1) {
+			mes "[Captain of Patrol]";
+			mes "The patrol route could not be registered. No patrol was recorded, so please try again shortly.";
+			close;
+		}
 		getpartymember getcharid(1), 2;
 		mes "[Captain of Patrol]";
 		mes "I have registered the number of patrol members as " + $@partymembercount + ". It is not necessary to register all of them, but we will check the number of people when we go out on patrol, so please join us.";
@@ -1143,12 +1153,16 @@ OnTouch:
 			mes "I don't know if you guys know about our patrol area.";
 			close;
 		case 1:
+			.@reward = 2 + (get_reputation_points(REPUTATION_EP19) + 5 >= 3000);
+			if (!checkweight(1000608,.@reward)) {
+				mes "[Captain of Patrol]";
+				mes "Make enough room for "+.@reward+" Snow Flowers before I record today's patrol.";
+				close;
+			}
 			erasequest 5975;
 			setquest 5973;
 			add_reputation_points( REPUTATION_EP19, 5 );
-			getitem 1000608,2;	// Ep19_Snow_Flower
-			if (get_reputation_points(4) >= 3000)
-				getitem 1000608,1;	// Ep19_Snow_Flower
+			getitem 1000608,.@reward;	// Ep19_Snow_Flower
 			getexp2 52243795,0;
 			getexp 0,3000000;
 			mes "[Captain of Patrol]";

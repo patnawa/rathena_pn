@@ -736,17 +736,30 @@ verus04,71,106,5	script	Mass Charleston#2	4_F_CHARLESTON01,{
 		.@card[.@slot-1] = .@en_name;
 		delitem 6752,1;	// Charleston_Parts
 		Zeny -= 100000;
-		delequip .@part;
 
 		switch(.@en_name) {
 		case 0:
+			if (!modifyequipenchantstate(.@part,.@item_id,.@refine,
+				.@card_saved[0],.@card_saved[1],.@card_saved[2],.@card_saved[3],
+				.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+				getitem 6752,1;
+				Zeny += 100000;
+				mes "The equipped item changed, so the upgrade was cancelled and your payment was returned.";
+				close3;
+			}
 			cutin "dalle02.bmp",2;
 			specialeffect2 EF_SHIELDCHARGE;
 			mes "[Mass Charleston]";
 			mes "Since the balance of power does not match, the given existing ability has been destroyed. It is unfortunate but please try again next time.";// unknown text
-			getitem2 .@item_id,1,1,.@refine,0, .@card[0], .@card[1], .@card[2], .@card[3];
 			close3;
 		case 9:
+			if (!deleteequipitem(.@part,.@item_id,.@refine,
+				.@card_saved[0],.@card_saved[1],.@card_saved[2],.@card_saved[3])) {
+				getitem 6752,1;
+				Zeny += 100000;
+				mes "The equipped item changed, so the upgrade was cancelled and your payment was returned.";
+				close3;
+			}
 			cutin "dalle04.bmp",2;
 			specialeffect2 EF_SUI_EXPLOSION;
 			mes "[Mass Charleston]";
@@ -754,10 +767,17 @@ verus04,71,106,5	script	Mass Charleston#2	4_F_CHARLESTON01,{
 			mes "I'm sorry but the equipment has been destroyed.";// unknown text
 			close3;
 		default:
+			if (!modifyequipenchantstate(.@part,.@item_id,.@refine,
+				.@card_saved[0],.@card_saved[1],.@card_saved[2],.@card_saved[3],
+				.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+				getitem 6752,1;
+				Zeny += 100000;
+				mes "The equipped item changed, so the upgrade was cancelled and your payment was returned.";
+				close3;
+			}
 			specialeffect2 EF_REPAIRWEAPON;
 			mes "[Mass Charleston]";
 			mes "^990000Socket" + .@slot + "^000000 will be Upgrade.";
-			getitem2 .@item_id,1,1,.@refine,0, .@card[0], .@card[1], .@card[2], .@card[3];
 			close3;
 		}
 	case 2:	// Reset
@@ -771,8 +791,14 @@ verus04,71,106,5	script	Mass Charleston#2	4_F_CHARLESTON01,{
 		mes "Reset the product's abilities.";
 		delitem 6752,1;	// Charleston_Parts
 		Zeny -= 100000;
-		delequip .@part;
-		getitem2 .@item_id,1,1,.@refine,0, .@card[0], .@card[1], .@card[2], .@card[3];
+		if (!modifyequipenchantstate(.@part,.@item_id,.@refine,
+			.@card_saved[0],.@card_saved[1],.@card_saved[2],.@card_saved[3],
+			.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+			getitem 6752,1;
+			Zeny += 100000;
+			mes "The equipped item changed, so the reset was cancelled and your payment was returned.";
+			close3;
+		}
 		close3;
 	dfault:
 		mes "[Mass Charleston]";
@@ -1384,6 +1410,7 @@ verus04,165,217,4	script	MARS_01#pa0829	4_SCR_MT_ROBOTS,{
 	if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 		close;
 
+	copyarray .@old_card[0],.@card[0],4;
 	if (.@card[3] == 0) {
 		.@enchant_count = 1;
 		.@card[3] = .@item_enchant_id;
@@ -1409,7 +1436,12 @@ verus04,165,217,4	script	MARS_01#pa0829	4_SCR_MT_ROBOTS,{
 		mes "For additional performance equipment^990000 ^000000 upgrade.";	// never displayed
 
 	delitem .@item_req, 1;
-	delequip .@part;
-	getitem2 .@equip_id,1,1,.@equip_refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
+	if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+		.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3],
+		.@equip_refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+		getitem .@item_req,1;
+		mes "The equipped item changed, so the upgrade was cancelled and your design was returned.";
+		close;
+	}
 	close;
 }

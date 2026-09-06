@@ -11183,13 +11183,20 @@ rebel_in,90,40,5	script	Hogar#pa0829	4_M_MASKMAN,{
 		.@size = getarraysize(.@enhance);
 
 		if (.@card[3] == 0)
-			.@card[3] = .@enhance[ rand(.@size) ];
+			.@card_index = 3;
 		else if (.@card[2] == 0)
-			.@card[2] = .@enhance[ rand(.@size) ];
+			.@card_index = 2;
+		copyarray .@old_card[0],.@card[0],4;
+		.@card[.@card_index] = .@enhance[rand(.@size)];
 
 		delitem 25155,20;	// Swz_Honor_Token
-		delequip EQI_ARMOR;
-		getitem2 .@equip_id,1,1,.@refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipenchantstate(EQI_ARMOR,.@equip_id,.@refine,
+			.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3],
+			.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+			getitem 25155,20;
+			mes "The equipped robe changed, so upgrading was cancelled and your Honor Tokens were returned.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Hogar]";
 		mes "Hmm, it's been done well. Check your item.";
@@ -11204,6 +11211,7 @@ rebel_in,90,40,5	script	Hogar#pa0829	4_M_MASKMAN,{
 			close;
 		}
 		.@equip_id = getequipid(EQI_ACC_L);
+		.@refine = getequiprefinerycnt(EQI_ACC_L);
 		setarray .@card[0],
 			getequipcardid(EQI_ACC_L,0),
 			getequipcardid(EQI_ACC_L,1),
@@ -11251,13 +11259,20 @@ rebel_in,90,40,5	script	Hogar#pa0829	4_M_MASKMAN,{
 		.@size = getarraysize(.@enhance);
 
 		if (.@card[3] == 0)
-			.@card[3] = .@enhance[ rand(.@size) ];
+			.@card_index = 3;
 		else if (.@card[2] == 0)
-			.@card[2] = .@enhance[ rand(.@size) ];
+			.@card_index = 2;
+		copyarray .@old_card[0],.@card[0],4;
+		.@card[.@card_index] = .@enhance[rand(.@size)];
 
 		delitem 25155,5;	// Swz_Honor_Token
-		delequip EQI_ACC_L;
-		getitem2 .@equip_id,1,1,0,0,.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipenchantstate(EQI_ACC_L,.@equip_id,.@refine,
+			.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3],
+			.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+			getitem 25155,5;
+			mes "The equipped ring changed, so upgrading was cancelled and your Honor Tokens were returned.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Hogar]";
 		mes "Hmm, it's been done well. Check your item.";
@@ -11303,8 +11318,12 @@ rebel_in,90,40,5	script	Hogar#pa0829	4_M_MASKMAN,{
 			close;
 		}
 		delitem 25155,10;	// Swz_Honor_Token
-		delequip EQI_ARMOR;
-		getitem2 .@equip_id,1,1,.@refine,0,.@card[0],0,0,0;
+		if (!resetequipenchants(EQI_ARMOR,.@equip_id,
+			.@card[0],.@card[1],.@card[2],.@card[3])) {
+			getitem 25155,10;
+			mes "The equipped robe changed, so initialization was cancelled and your Honor Tokens were returned.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Hogar]";
 		mes "Hmm, it's been done well. Check your item.";
@@ -11330,6 +11349,7 @@ rebel_in,90,40,5	script	Hogar#pa0829	4_M_MASKMAN,{
 			close;
 		}
 		.@equip_id = getequipid(EQI_ACC_L);
+		.@refine = getequiprefinerycnt(EQI_ACC_L);
 		setarray .@card[0],
 			getequipcardid(EQI_ACC_L,0),
 			getequipcardid(EQI_ACC_L,1),
@@ -11360,14 +11380,24 @@ rebel_in,90,40,5	script	Hogar#pa0829	4_M_MASKMAN,{
 			close;
 		}
 		delitem 25155,10;	// Swz_Honor_Token
-		delequip EQI_ACC_L;
 		if (rand(100) < 20) {
+			if (!deleteequipitem(EQI_ACC_L,.@equip_id,.@refine,
+				.@card[0],.@card[1],.@card[2],.@card[3])) {
+				getitem 25155,10;
+				mes "The equipped ring changed, so initialization was cancelled and your Honor Tokens were returned.";
+				close;
+			}
 			specialeffect2 EF_LORD;
 			mes "[Hogar]";
 			mes "Oh, you are unlucky today. Your gear has been badly damaged.";
 			close;
 		}
-		getitem2 .@equip_id,1,1,0,0,.@card[0],0,0,0;
+		if (!resetequipenchants(EQI_ACC_L,.@equip_id,
+			.@card[0],.@card[1],.@card[2],.@card[3])) {
+			getitem 25155,10;
+			mes "The equipped ring changed, so initialization was cancelled and your Honor Tokens were returned.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Hogar]";
 		mes "Hmm, it's been done well. Check your item.";

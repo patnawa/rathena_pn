@@ -1,0 +1,22 @@
+# GPL-3.0-or-later
+# Modern Memory of Thanatos hunt quests. Quest 18028 already exists in the
+# shipped renewal quest database and is deliberately not overridden here.
+#
+# Integration note: this staging fragment must be merged into or explicitly
+# imported by db/import/quest_db.yml.
+
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 18026
+    Title: Memories of Thanatos
+    Targets:
+      - Mob: MD_THANATOS
+        Count: 1
+  - Id: 18027
+    Title: Memories of Thanatos
+    Targets:
+      - Mob: MD_BROKEN_THANATOS
+        Count: 1

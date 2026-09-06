@@ -328,6 +328,14 @@ Body:
   Title: 'Standby: Depth Abyss Extended Research'
   TimeLimit: 4h
 # END CODEX VARMUNDT BIOSPHERE DEPTH
+# Legacy Moscovia compatibility IDs. The modern Episode 19 chain owns the
+# original 18119-18121 IDs, so Moscovia must use independent quest-state slots.
+- Id: 900200
+  Title: Gusli
+- Id: 900201
+  Title: Gusli
+- Id: 900202
+  Title: Shafka
 - Id: 19990
   Title: Beginner Old Glast Heim
   Targets:

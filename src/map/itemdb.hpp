@@ -3715,9 +3715,15 @@ struct s_item_enchant_perfect{
 	std::unordered_map<t_itemid, uint16> materials;
 };
 
+struct s_item_enchant_random_upgrade{
+	t_itemid item_id;
+	uint32 chance;
+};
+
 struct s_item_enchant_upgrade{
 	t_itemid enchant_item_id;
 	t_itemid upgrade_item_id;
+	std::vector<s_item_enchant_random_upgrade> random_upgrades;
 	uint32 zeny;
 	std::unordered_map<t_itemid, uint16> materials;
 };

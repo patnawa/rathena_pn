@@ -249,14 +249,17 @@ rachel,177,139,3	script	Temple Item Manager#0hmoon	4_M_TRAINEE,{
 				mes "You need to have your necklace enchanted with " + mesitemlink(.@enhance_a[.@s], false) + " first.";
 				close;
 			}
+			delitem 25088,.@cost; //Fragment of Dream
+			if (!modifyequipitem(.@part,28387,0,-1,3,.@card,.@enchant)) {
+				getitem 25088,.@cost;
+				mes "The equipped necklace changed before the enchantment could be applied. Your fragments were returned.";
+				close;
+			}
 			specialeffect2 182;
 			specialeffect2 205;
 			specialeffect2 102;
 			specialeffect2 104;
 			mes "The necklace has been enchanted according to your specifications.";
-			delitem 25088,.@cost; //Fragment of Dream
-			delequip .@part;
-			getitem2 28387,1,1,0,0,0,0,0,.@enchant; //Priest's Necklace
 			close;
 		case 3:
 			break;

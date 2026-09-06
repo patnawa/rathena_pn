@@ -1,0 +1,115 @@
+// Instance-map containment gaps not covered by rAthena's central mapflag lists.
+// Keep this as an overlay: source-map flags are copied into each instance map.
+
+// Episode 20 instances.
+1@20cn1	mapflag	restricted	6
+1@20cn2	mapflag	restricted	6
+1@slug	mapflag	restricted	6
+1@twas	mapflag	restricted	6
+1@twbs	mapflag	restricted	6
+1@twig	mapflag	restricted	6
+1@twsd	mapflag	restricted	6
+
+// Chapter 1 and Chapter 2 instances.
+1@ch1a	mapflag	monster_noteleport
+1@ch1a	mapflag	nowarp
+1@ch1a	mapflag	nowarpto
+1@ch1a	mapflag	restricted	6
+1@ch1b	mapflag	monster_noteleport
+1@ch1b	mapflag	nowarp
+1@ch1b	mapflag	nowarpto
+1@ch1b	mapflag	restricted	6
+1@ch2a	mapflag	partylock
+1@ch2a	mapflag	restricted	6
+1@ch2b	mapflag	partylock
+1@ch2b	mapflag	restricted	6
+
+// Episode 19 instances that were shipped without containment mapflags.
+1@iwp	mapflag	nosave	SavePoint
+1@iwp	mapflag	noteleport
+1@iwp	mapflag	monster_noteleport
+1@iwp	mapflag	nomemo
+1@iwp	mapflag	nobranch
+1@iwp	mapflag	partylock
+1@iwp	mapflag	nowarp
+1@iwp	mapflag	nowarpto
+1@iwp	mapflag	restricted	6
+1@jorchs	mapflag	nosave	SavePoint
+1@jorchs	mapflag	noteleport
+1@jorchs	mapflag	monster_noteleport
+1@jorchs	mapflag	nomemo
+1@jorchs	mapflag	nobranch
+1@jorchs	mapflag	partylock
+1@jorchs	mapflag	nowarp
+1@jorchs	mapflag	nowarpto
+1@jorchs	mapflag	restricted	6
+1@jorlab	mapflag	nosave	SavePoint
+1@jorlab	mapflag	noteleport
+1@jorlab	mapflag	monster_noteleport
+1@jorlab	mapflag	nomemo
+1@jorlab	mapflag	nobranch
+1@jorlab	mapflag	partylock
+1@jorlab	mapflag	nowarp
+1@jorlab	mapflag	nowarpto
+1@jorlab	mapflag	restricted	6
+1@whl	mapflag	nosave	SavePoint
+1@whl	mapflag	noteleport
+1@whl	mapflag	monster_noteleport
+1@whl	mapflag	nomemo
+1@whl	mapflag	nobranch
+1@whl	mapflag	partylock
+1@whl	mapflag	nowarp
+1@whl	mapflag	nowarpto
+1@whl	mapflag	restricted	6
+
+// Episode 21 instances.
+1@ep21a	mapflag	nobranch
+1@ep21a	mapflag	partylock
+1@ep21a	mapflag	restricted	6
+1@ep21b	mapflag	nobranch
+1@ep21b	mapflag	partylock
+1@ep21b	mapflag	restricted	6
+1@mdtem	mapflag	nobranch
+1@mdtem	mapflag	partylock
+1@mdtem	mapflag	restricted	6
+2@mdtem	mapflag	nobranch
+2@mdtem	mapflag	partylock
+2@mdtem	mapflag	restricted	6
+1@twbs2	mapflag	nobranch
+1@twbs2	mapflag	partylock
+1@twbs2	mapflag	restricted	6
+1@wtgs	mapflag	nobranch
+1@wtgs	mapflag	partylock
+1@wtgs	mapflag	restricted	6
+
+// Enabled stock instances omitted from one or more central lists.
+1@infi	mapflag	partylock
+1@md_gef	mapflag	monster_noteleport
+1@md_pay	mapflag	monster_noteleport
+1@pop1	mapflag	nosave	SavePoint
+1@pop1	mapflag	noteleport
+1@pop1	mapflag	monster_noteleport
+1@pop1	mapflag	nomemo
+1@pop1	mapflag	nobranch
+1@pop1	mapflag	partylock
+1@pop1	mapflag	nowarp
+1@pop1	mapflag	nowarpto
+1@pop1	mapflag	restricted	6
+1@pop2	mapflag	nosave	SavePoint
+1@pop2	mapflag	noteleport
+1@pop2	mapflag	monster_noteleport
+1@pop2	mapflag	nomemo
+1@pop2	mapflag	nobranch
+1@pop2	mapflag	partylock
+1@pop2	mapflag	nowarp
+1@pop2	mapflag	nowarpto
+1@pop2	mapflag	restricted	6
+1@pop3	mapflag	nosave	SavePoint
+1@pop3	mapflag	noteleport
+1@pop3	mapflag	monster_noteleport
+1@pop3	mapflag	nomemo
+1@pop3	mapflag	nobranch
+1@pop3	mapflag	partylock
+1@pop3	mapflag	nowarp
+1@pop3	mapflag	nowarpto
+1@pop3	mapflag	restricted	6

@@ -4548,7 +4548,7 @@ wolfvill,140,112,5	script(CLOAKED)	Suad#sms01	4_EP18_SUAD,{
 		next;
 		cutin "ep18_maram_01.png",2;
 		mes "[Maram]";
-		mes "Let's go together. I know where it is! <NAVI>[¾îµğ¿¡]<INFO>wolfvill,131,257,0,101,0</INFO></NAVI>Adventure, come with us. I have a feeling that we might need a third-party witness!";
+		mes "Let's go together. I know where it is! <NAVI>[ì–´ë””ì—]<INFO>wolfvill,131,257,0,101,0</INFO></NAVI>Adventure, come with us. I have a feeling that we might need a third-party witness!";
 		erasequest 16580;
 		setquest 17517;
 		ep18_main = 48;
@@ -5051,7 +5051,7 @@ rachel,116,200,5	script	Niren#sms01	4_F_MADAME,{
 		next;
 		cutin "ep18_miriam_01.png",1;
 		mes "[Miriam]";
-		mes "Let's go, adventurer. Before heading to the villa, there's someone who will accompany us. Let's meet at <NAVI>[¿ÀÁîÀÇ ¹Ì·Î]<INFO>oz_dun01,223,116,0,101,0</INFO></NAVI>";
+		mes "Let's go, adventurer. Before heading to the villa, there's someone who will accompany us. Let's meet at <NAVI>[ì˜¤ì¦ˆì˜ ë¯¸ë¡œ]<INFO>oz_dun01,223,116,0,101,0</INFO></NAVI>";
 		erasequest 17521;
 		setquest 17525;
 		ep18_main = 53;
@@ -7866,7 +7866,7 @@ wolfvill,180,204,3	script	Amira#ep18	4_F_DESERT,{
 		mes "[Amira]";
 		mes "...So, um, what was the name? I don't remember well, but anyway, the important thing is...";
 		completequest 16556;
-		if (isbegin_quest(1655) == 2 && isbegin_quest(16557) == 2) {
+		if (isbegin_quest(16555) == 2 && isbegin_quest(16557) == 2) {
 			unittalk getcharid(3), "" + strcharinfo(0) + " : I've written down all three stories. Let's return to Gudra.", bc_self;
 			setquest 16558;
 		}
@@ -12174,7 +12174,7 @@ rachel,72,133,4	script(CLOAKED)	Half Flower#E18_6	4_EP18_HALFFLOWER,{
 		next;
 		npctalk "Mejai: Shall we start by cutting the stems of the Half Flowers?", "Mejai#E18_5", bc_self;
 		next;
-		if (select( "Cut at 10¡Æ angle.", "Cut at 20¡Æ angle.", "Cut at 30¡Æ angle.", "Cut at 40¡Æ angle." ) != .@good_answer[0])
+		if (select( "Cut at 10Â° angle.", "Cut at 20Â° angle.", "Cut at 30Â° angle.", "Cut at 40Â° angle." ) != .@good_answer[0])
 			.@time /= 2;
 		progressbar "FFFF00",1;
 		npctalk "Mejai: Thank you for your decision. Let's start by cutting the stem first.", "Mejai#E18_5", bc_self;
@@ -12411,7 +12411,7 @@ gw_fild01,325,376,1	script	Half Flower#EP18_R01	4_EP18_HALFFLOWER,7,7,{
 	next;
 	unittalk getcharid(3), "" + strcharinfo(0) + " : What angle should I cut the stem?", bc_self;
 	next;
-	if (select("Cut at 10¡Æ angle", "Cut at 20¡Æ angle", "Cut at 30¡Æ angle", "Cut at 40¡Æ angle" ) != .@good_answer[0])
+	if (select("Cut at 10Â° angle", "Cut at 20Â° angle", "Cut at 30Â° angle", "Cut at 40Â° angle" ) != .@good_answer[0])
 		.@time /= 2;
 	progressbar "FFFF00",1;
 	unittalk getcharid(3), "" + strcharinfo(0) + " : How many leaves should I leave?", bc_self;

@@ -1,0 +1,322 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  # Episode 20 main story. Titles follow SystemEN/OngoingQuests.lub.
+  - Id: 16691
+    Title: "Expand Exploration Range"
+  - Id: 16692
+    Title: "The Natives of the Ancient Ice Canyon"
+  - Id: 16693
+    Title: "Exploration of the Ancient Ice Canyon"
+  - Id: 16694
+    Title: "Evidence and Return"
+  - Id: 16695
+    Title: "Suspicious Signs"
+  - Id: 16696
+    Title: "Military Camp Investigation"
+  - Id: 16697
+    Title: "Lodge Investigation"
+  - Id: 16698
+    Title: "Back Alley Exploration"
+  - Id: 16699
+    Title: "Suspicious Signs?"
+  - Id: 16700
+    Title: "Identity of the Suspicious Device"
+  - Id: 16701
+    Title: "Canyon Exploration"
+  - Id: 16702
+    Title: "Return to Ice Castle"
+  - Id: 16703
+    Title: "Recent Events"
+  - Id: 16704
+    Title: "Era of Cold War and Espionage"
+
+  - Id: 17690
+    Title: "A New Exploration Site"
+  - Id: 17691
+    Title: "Infiltrating the Lair of Lergan"
+  - Id: 17692
+    Title: "Infiltrating the Lair of Lergan"
+  - Id: 17693
+    Title: "Infiltrating the Lair of Lergan"
+    Targets:
+      - Mob: EP20_RGAN_WARLOCK
+        Count: 5
+      - Mob: EP20_JORGAN_WARLOCK
+        Count: 5
+  - Id: 17694
+    Title: "Infiltrating the Lair of Lergan"
+  - Id: 17695
+    Title: "Infiltrating the Lair of Lergan"
+  - Id: 17696
+    Title: "Sacred and Divine"
+  - Id: 17697
+    Title: "Sacred and Divine"
+  - Id: 17698
+    Title: "Sacred and Divine"
+  - Id: 17699
+    Title: "Sacred and Divine"
+  - Id: 17700
+    Title: "Sacred and Divine"
+  - Id: 17701
+    Title: "Earning Lergan's Trust"
+  - Id: 17702
+    Title: "Heading Towards the End of the Maze"
+  - Id: 17703
+    Title: "Heading Towards the End of the Maze"
+    Targets:
+      - Mob: EP20_JORMUNGUARD1
+        Count: 2
+      - Mob: EP20_JORMUNGUARD2
+        Count: 1
+  - Id: 17704
+    Title: "Heading Towards the End of the Maze"
+  - Id: 17705
+    Title: "Heading Towards the End of the Maze"
+  - Id: 17706
+    Title: "Heading Towards the End of the Maze"
+  - Id: 17707
+    Title: "Unexpected Reunion"
+  - Id: 17708
+    Title: "Unexpected Reunion"
+  - Id: 17709
+    Title: "Report on Infiltration"
+
+  - Id: 23100
+    Title: "Ancient Deep Sea"
+  - Id: 23101
+    Title: "No Matter How Deep, I Can Find It 1"
+    Targets:
+      - Mob: EP19_ICE_GANGU
+        Count: 5
+  - Id: 23102
+    Title: "No Matter How Deep, I Can Find It 2"
+    Targets:
+      - Mob: EP19_SHINING_SEAWEED
+        Count: 5
+  - Id: 23103
+    Title: "Hidden in the Ice"
+  - Id: 23104
+    Title: "Hidden in the Ice"
+  - Id: 23105
+    Title: "Hidden in the Ice"
+  - Id: 23106
+    Title: "A Nest of Small Branches"
+  - Id: 23107
+    Title: "A Nest of Small Branches"
+  - Id: 23108
+    Title: "Across the Iceberg and the Frozen Sea"
+  - Id: 23109
+    Title: "Across the Iceberg and the Frozen Sea"
+    Targets:
+      - Mob: EP20_JORGAN_WARLOCK
+        Count: 5
+  - Id: 23112
+    Title: "The Serpent's Maze"
+  - Id: 23113
+    Title: "Gathering Rumors Among Yormungands 1"
+  - Id: 23114
+    Title: "Gathering Rumors Among Yormungands 2"
+  - Id: 23115
+    Title: "Gathering Rumors Among Yormungands 3"
+  - Id: 23116
+    Title: "The Cat at the End of the Maze"
+  - Id: 23117
+    Title: "The Cat at the End of the Maze"
+  - Id: 23118
+    Title: "The Cat at the End of the Maze"
+
+  - Id: 18220
+    Title: "To the Ice Castle"
+  - Id: 18221
+    Title: "Finding Lehrar...!"
+  - Id: 18222
+    Title: "Investigation, Investigation, Investigation"
+  - Id: 18223
+    Title: "Lehrar's Mark 1"
+  - Id: 18224
+    Title: "Lehrar's Mark 2"
+  - Id: 18225
+    Title: "Lehrar's Mark 3"
+  - Id: 18226
+    Title: "It's Just a Hoax. The Next Location."
+  - Id: 18227
+    Title: "Investigating the Sacred Roots"
+  - Id: 18228
+    Title: "Nyar's Call"
+  - Id: 18229
+    Title: "Step on the Cats' Backs and Run!"
+  - Id: 18230
+    Title: "Was Everyone Here?"
+  - Id: 18231
+    Title: "So, What Happened?"
+  - Id: 18232
+    Title: "Separated Sanctuary"
+  # Quest 18233 (The Undying One) is already defined in db/import/quest_db.yml.
+
+  # Side story: Spy Countermeasure Meeting.
+  - Id: 19158
+    Title: "More Professional Than Any Awin"
+  - Id: 19159
+    Title: "Briefing"
+  - Id: 19160
+    Title: "Spy Countermeasure Meeting"
+  - Id: 19161
+    Title: "Mission Explanation"
+
+  # Side story: A New Beginning.
+  - Id: 17712
+    Title: "A New Beginning"
+  - Id: 17713
+    Title: "A New Beginning"
+  - Id: 17714
+    Title: "A New Beginning"
+  - Id: 17715
+    Title: "A New Beginning"
+  - Id: 17716
+    Title: "A New Beginning"
+
+  # Side story: Koko's Secret Base.
+  - Id: 11928
+    Title: "Koko's Secret Base"
+  - Id: 11929
+    Title: "Koko's Secret Base"
+  - Id: 11930
+    Title: "Koko's Secret Base"
+  - Id: 11931
+    Title: "Koko's Secret Base"
+  - Id: 11932
+    Title: "Koko's Secret Base"
+  - Id: 11933
+    Title: "Koko's Secret Base"
+  - Id: 11934
+    Title: "Koko's Secret Base"
+  - Id: 11935
+    Title: "Koko's Secret Base"
+  - Id: 11936
+    Title: "Koko's Secret Base"
+  - Id: 11937
+    Title: "Koko's Secret Base"
+  - Id: 11938
+    Title: "Koko's Secret Base"
+  - Id: 11939
+    Title: "Koko's Secret Base"
+  - Id: 11940
+    Title: "Koko's Secret Base"
+  - Id: 11941
+    Title: "Koko's Secret Base"
+  - Id: 11942
+    Title: "Koko's Secret Base"
+  - Id: 11943
+    Title: "Koko's Secret Base"
+  - Id: 11944
+    Title: "Koko's Secret Base"
+  - Id: 11945
+    Title: "Koko's Secret Base"
+  - Id: 11946
+    Title: "Koko's Secret Base"
+  - Id: 11947
+    Title: "Koko's Secret Base"
+
+  # Side story: I Probably Have a Lunch Box / soft delicacies.
+  - Id: 8854
+    Title: "I probably have a lunch box"
+  - Id: 8855
+    Title: "Collection of Soft Delicacies"
+    Targets:
+      - Mob: EP20_ANGEL_ICESLUG
+        Count: 20
+      - Mob: EP20_RABBIT_ICESLUG
+        Count: 20
+
+  # Nine daily categories (categories with choices retain their official IDs).
+  - Id: 19164
+    Title: "Spy Search Success"
+  - Id: 19166
+    Title: "Completion of Espionage Info Retrieval"
+  - Id: 18234
+    Title: "Awin's Awin Worry"
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: jor_root3
+        MapMobTargets:
+          EP20_ICEBEAR: true
+          EP20_MELIBE_ICESLUG: true
+          EP20_JORGAN_CLEANER: true
+  - Id: 23111
+    Title: "Pulling Out Yormungand's Roots"
+    Targets:
+      - Mob: EP20_JORGAN_WARLOCK
+        Count: 15
+  - Id: 18236
+    Title: "Boclinde's Extermination Operation 1"
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: jor_root1
+        MapMobTargets:
+          EP20_JORMUNGUARD1: true
+          EP20_JORMUNGUARD2: true
+          EP20_RGAN_WARLOCK: true
+          EP20_RGAN_HEALER: true
+          EP20_JORGAN_GUARDIAN: true
+  - Id: 18238
+    Title: "Boclinde's Extermination Operation 2"
+    Targets:
+      - Id: 1
+        Count: 100
+        Location: jor_root2
+        MapMobTargets:
+          EP20_JORMUNGUARD1: true
+          EP20_JORMUNGUARD2: true
+          EP20_JORGAN_WARLOCK: true
+          EP20_JORGAN_HEALER: true
+          EP20_JORGAN_GUARDIAN: true
+  - Id: 17718
+    Title: "Taste of Leisure"
+  - Id: 8845
+    Title: "Example of Silent Answer"
+  - Id: 8853
+    Title: "I've come this far"
+  - Id: 11948
+    Title: "Escargo!"
+  - Id: 11949
+    Title: "Escargo!"
+  - Id: 11951
+    Title: "It's Dangerous!"
+  - Id: 11953
+    Title: "I Hope They Reconcile (1)"
+    Targets:
+      - Mob: EP20_ICEWIND1
+        Count: 10
+  - Id: 11955
+    Title: "I Hope They Reconcile (2)"
+    Targets:
+      - Mob: EP20_ICEWIND2
+        Count: 10
+  - Id: 8857
+    Title: "Salty and Sweet Flavors"
+    Targets:
+      - Mob: EP20_ANGEL_ICESLUG
+        Count: 20
+      - Mob: EP20_RABBIT_ICESLUG
+        Count: 20
+  - Id: 8858
+    Title: "Salty, Sweet and Sour"
+    Targets:
+      - Mob: EP20_ANGEL_ICESLUG
+        Count: 20
+      - Mob: EP20_RABBIT_ICESLUG
+        Count: 20
+      - Mob: EP20_MELIBE_ICESLUG
+        Count: 20
+  - Id: 17710
+    Title: "Cleaning the Serpent's Maze"
+    Targets:
+      - Mob: EP20_JORMUNGUARD1
+        Count: 10
+      - Mob: EP20_JORMUNGUARD2
+        Count: 10

@@ -404,8 +404,9 @@ gef_tower,57,167,3	script	Amateur Collector#pa0829	1_F_01,{
 
 	.@slot = F_equip_menu();
 	.@equip_id = getequipid(.@slot);
+	.@equip_refine = getequiprefinerycnt(.@slot);
 	setarray .@equip_card[0], getequipcardid(.@slot,0), getequipcardid(.@slot,1), getequipcardid(.@slot,2), getequipcardid(.@slot,3);
-    copyarray .@card[0], .@equip_card[0], 4;
+	copyarray .@card[0], .@equip_card[0], 4;
 	
 	switch( .@equip_id ) {
 	case 0:
@@ -596,14 +597,26 @@ gef_tower,57,167,3	script	Amateur Collector#pa0829	1_F_01,{
 			Zeny -= 100000;
 
 			// anti-hack
-			if (callfunc("F_IsEquipIDHack", .@slot, .@equip_id) || callfunc("F_IsEquipCardHack", .@slot, .@card[0], .@card[1], .@card[2], .@card[3]))
-				end;
+			if (callfunc("F_IsEquipIDHack", .@slot, .@equip_id) || callfunc("F_IsEquipCardHack", .@slot, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@slot, .@equip_refine)) {
+				getitem 25235,10;
+				Zeny += 100000;
+				mes "[Amateur Collector]";
+				mes "The equipped accessory changed during the process. Your materials were returned.";
+				close;
+			}
 
-			delequip .@slot;
+			if (!modifyequipenchantstate(.@slot,.@equip_id,.@equip_refine,
+				.@card[0],.@card[1],.@card[2],.@card[3],-1,
+				.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],1)) {
+				getitem 25235,10;
+				Zeny += 100000;
+				mes "[Amateur Collector]";
+				mes "The equipped accessory changed before the enchantment could finish. Your materials were returned.";
+				close;
+			}
 			specialeffect2 EF_REPAIRWEAPON;
 			mes "[Amateur Collector]";
 			mes "The " + mesitemlink(.@equip_id, false) + " has been enchanted!!";
-			getitem2 .@equip_id,1,1,0,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
 			close;
 
 		default:	// Normal Accessory Enchantment
@@ -633,15 +646,28 @@ gef_tower,57,167,3	script	Amateur Collector#pa0829	1_F_01,{
 			Zeny -= 100000;
 
 			// anti-hack
-			if (callfunc("F_IsEquipIDHack", .@slot, .@equip_id) || callfunc("F_IsEquipCardHack", .@slot, .@card[0], .@card[1], .@card[2], .@card[3]))
-				end;
+			if (callfunc("F_IsEquipIDHack", .@slot, .@equip_id) || callfunc("F_IsEquipCardHack", .@slot, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@slot, .@equip_refine)) {
+				getitem 25235,10;
+				Zeny += 100000;
+				mes "[Amateur Collector]";
+				mes "The equipped accessory changed during the process. Your materials were returned.";
+				close;
+			}
 
-			delequip .@slot;
 			.@enchant = F_enchant(1);
+			.@equip_card[3] = .@enchant;
+			if (!modifyequipenchantstate(.@slot,.@equip_id,.@equip_refine,
+				.@card[0],.@card[1],.@card[2],.@card[3],-1,
+				.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],1)) {
+				getitem 25235,10;
+				Zeny += 100000;
+				mes "[Amateur Collector]";
+				mes "The equipped accessory changed before the enchantment could finish. Your materials were returned.";
+				close;
+			}
 			specialeffect2 EF_REPAIRWEAPON;
 			mes "[Amateur Collector]";
 			mes "The " + mesitemlink(.@equip_id, false) + " has been enchanted with " + mesitemlink(.@enchant, false) + ".";
-			getitem2 .@equip_id,1,1,0,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@enchant;
 			close;
 		}
 		end;
@@ -680,22 +706,41 @@ gef_tower,57,167,3	script	Amateur Collector#pa0829	1_F_01,{
 		Zeny -= 100000;
 
 		// anti-hack
-		if (callfunc("F_IsEquipIDHack", .@slot, .@equip_id) || callfunc("F_IsEquipCardHack", .@slot, .@card[0], .@card[1], .@card[2], .@card[3]))
-			end;
+		if (callfunc("F_IsEquipIDHack", .@slot, .@equip_id) || callfunc("F_IsEquipCardHack", .@slot, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@slot, .@equip_refine)) {
+			getitem 25235,10;
+			Zeny += 100000;
+			mes "[Amateur Collector]";
+			mes "The equipped accessory changed during the process. Your materials were returned.";
+			close;
+		}
 
-		delequip .@slot;
 		if (rand(100) > .@success) {
+			if (!deleteequipitem(.@slot,.@equip_id,.@equip_refine,.@card[0],.@card[1],.@card[2],.@card[3])) {
+				getitem 25235,10;
+				Zeny += 100000;
+				mes "[Amateur Collector]";
+				mes "The accessory changed before the failed reset could finish. Your materials were returned.";
+				close;
+			}
 			specialeffect2 EF_SUI_EXPLOSION;
 			mes "[Amateur Collector]";
 			mes "Darn it...";
 			mes "I have failed and the accessory has been destroyed. I'm so sorry.";
 			close;
 		}
+		if (!modifyequipenchantstate(.@slot,.@equip_id,.@equip_refine,
+			.@card[0],.@card[1],.@card[2],.@card[3],-1,
+			.@equip_card[0],.@equip_card[1],0,0,1)) {
+			getitem 25235,10;
+			Zeny += 100000;
+			mes "[Amateur Collector]";
+			mes "The equipped accessory changed before initialization could finish. Your materials were returned.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Amateur Collector]";
 		mes "I have succeeded.";
 		mes "The " + mesitemlink(.@equip_id, false) + " has been initialized.";
-		getitem2 .@equip_id,1,1,0,0,.@equip_card[0],.@equip_card[1],0,0;
 		close;
 	}
 	end;

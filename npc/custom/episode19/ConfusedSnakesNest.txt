@@ -133,9 +133,14 @@ jor_que,32,37,5	script	Lehar#i19ms21	EP19_RGAN_D,5,5,{
 		next;
 		switch( select( "Yes, signal.", "I'll go in.", "I need to get ready." ) ) {
 		case 1:
+			.@instance_id = instance_create(.@md_name$);
+			if (.@instance_id < 1) {
+				mes "[Lehar]";
+				mes "The entrance signal failed and no expedition was registered. Please try again shortly.";
+				close;
+			}
 			mes "[Lehar]";
 			mes "I will open the entrance as soon as there is a traffic signal. Please wait a moment.";
-			instance_create(.@md_name$);
 			close;
 		case 2:
 			switch( instance_enter(.@md_name$) ) {

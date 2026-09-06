@@ -6187,7 +6187,7 @@ morocc,54,190,5	script	Reward Coordinator	4_M_SAGE_C,{
 
 	if (countitem(6688) > 0)
 		delitem 6688, countitem(6688);	// Wood_
-	if (countitem(6688) > 0)
+	if (countitem(6687) > 0)
 		delitem 6687, countitem(6687);	// LongRopes
 	if (countitem(6686) > 0)
 		delitem 6686, countitem(6686);	// Brick

@@ -460,18 +460,25 @@ xmas,240,294,3	script	Black Beard Joe#pa0829	4_M_05,{
 		delitem 7642,15;// Bloody_Coin
 
 		// anti-hack
-		if (callfunc("F_IsEquipIDHack", .@eq_num, .@item_id) || callfunc("F_IsEquipCardHack", .@eq_num, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@eq_num, .@refine))
+		if (callfunc("F_IsEquipIDHack", .@eq_num, .@item_id) || callfunc("F_IsEquipCardHack", .@eq_num, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@eq_num, .@refine)) {
+			getitem 7642,15;
+			mes "The equipped item changed during the process. Your Bloody Coins were returned.";
 			close;
+		}
 
-		delequip .@eq_num;
 		if (.@enchant == 0) {
+			// This advertised failure destroys the revalidated equipment.
+			delequip .@eq_num;
 			mes "Ouch! Poor you, the enchantment has failed and your gear is broken, Geez!";
 			close2;
 			specialeffect2 EF_LORD;
 			end;
 		}
-		.@card[ .@index_slot ] = .@enchant;
-		getitem2 .@item_id,1,1,.@refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(.@eq_num,.@item_id,0,-1,.@index_slot,.@card[.@index_slot],.@enchant)) {
+			getitem 7642,15;
+			mes "The equipped item changed before the enchantment could be applied. Your Bloody Coins were returned.";
+			close;
+		}
 		mes "Hmm.. It was successful. Take a look at it.";
 		specialeffect2 EF_REPAIRWEAPON;
 		close;

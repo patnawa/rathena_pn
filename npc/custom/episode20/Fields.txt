@@ -1,0 +1,97 @@
+//===== rAthena Script =======================================
+//= Episode 20 field population
+//===== Source: ==============================================
+//= https://wiki.muhro.eu/20_The_Immortal#Fields.2FDungeons_with_Monsters
+//= https://divine-pride.net/database/monster (kROM spawn records)
+//============================================================
+
+// Frozen Scale Beach.
+jor_back4,0,0,0,0	monster	Snow Rabbit Iceslug	21969,50,5000,0
+jor_back4,0,0,0,0	monster	Angel Iceslug	21983,50,5000,0
+jor_back4,0,0,0,0	monster	Fake Iwin Soldier (Blue)	21976,30,5000,0
+jor_back4,0,0,0,0	monster	Fake Iwin Soldier (Green)	21977,30,5000,0
+jor_back4,0,0,0,0	monster	Fake Iwin Soldier (Red)	21978,20,5000,0
+jor_back4,0,0,0,0	boss_monster	Snow Angel	21996,1,21600000,0
+
+// Eastern Ancient Ice Canyon.
+jor_back5,0,0,0,0	monster	Icewind Egg	21984,10,5000,0
+jor_back5,0,0,0,0	monster	Copo	21965,40,5000,0
+jor_back5,0,0,0,0	monster	Copo Egg	21968,40,5000,0
+jor_back5,0,0,0,0	monster	Grey Icewind	21966,60,5000,0
+jor_back5,0,0,0,0	monster	Fake Iwin Soldier	21974,20,5000,0
+jor_back5,0,0,0,0	monster	Fake Iwin Soldier	21975,20,5000,0
+
+// Western Ancient Ice Canyon.
+jor_back6,0,0,0,0	monster	Fake Iwin Soldier	21978,20,5000,0
+jor_back6,0,0,0,0	monster	Icebear	21971,75,5000,0
+jor_back6,0,0,0,0	monster	Armored Copo	23060,55,5000,0
+jor_back6,0,0,0,0	monster	Icewind	21967,100,5000,0
+
+// Icy Zone.
+jor_twice,0,0,0,0	monster	Snow Rabbit Iceslug	21969,60,5000,0
+jor_twice,0,0,0,0	monster	Jormungandr Guardian P	21972,20,5000,0
+jor_twice,0,0,0,0	monster	Jormungandr Guardian Y	21973,20,5000,0
+jor_twice,0,0,0,0	monster	Angel Iceslug	21983,60,5000,0
+jor_twice,0,0,0,0	monster	Elite Rgan Warlock	21987,40,5000,0
+
+// Serpent's Maze.
+jor_maze,0,0,0,0	monster	Jormungandr Guardian P	21972,35,5000,0
+jor_maze,0,0,0,0	monster	Jormungandr Guardian Y	21973,35,5000,0
+jor_maze,0,0,0,0	monster	Elite Rgan Guardian	21989,30,5000,0
+
+// Snake God's Root F1.
+jor_root1,0,0,0,0	monster	Jormungandr Guardian P	21972,20,5000,0
+jor_root1,0,0,0,0	monster	Jormungandr Guardian Y	21973,10,5000,0
+jor_root1,0,0,0,0	monster	Superior Rgan Warlock	21985,80,5000,0
+jor_root1,0,0,0,0	monster	Superior Rgan Healer	21986,70,5000,0
+jor_root1,0,0,0,0	monster	Elite Rgan Guardian	21989,20,5000,0
+
+// Snake God's Root F2.
+jor_root2,0,0,0,0	monster	Jormungandr Guardian P	21972,5,5000,0
+jor_root2,0,0,0,0	monster	Jormungandr Guardian Y	21973,15,5000,0
+jor_root2,0,0,0,0	monster	Elite Rgan Guardian	21989,60,5000,0
+jor_root2,0,0,0,0	monster	Elite Rgan Warlock	21987,40,5000,0
+jor_root2,0,0,0,0	monster	Elite Rgan Healer	21988,30,5000,0
+
+// Deep Roots Cave and Small Twig Nest.
+jor_root3,0,0,0,0	boss_monster	Rgan Chief Cleaner	21980,1,21600000,0
+jor_root3,0,0,0,0	monster	Icebear	21971,30,5000,0
+jor_root3,0,0,0,0	monster	Melibe Iceslug	21970,110,5000,0
+jor_root3,0,0,0,0	monster	Elite Rgan Cleaner	21990,130,5000,0
+jor_twig,0,0,0,0	monster	Jormungandr Guardian	21997,20,5000,0
+
+// Episode areas cannot be memorized, branched, or entered by generic warp
+// skills. Scripted progression portals and the gated warper remain usable.
+jor_back4	mapflag	nomemo
+jor_back4	mapflag	nobranch
+jor_back4	mapflag	nowarpto
+jor_back5	mapflag	nomemo
+jor_back5	mapflag	nobranch
+jor_back5	mapflag	nowarpto
+jor_back6	mapflag	nomemo
+jor_back6	mapflag	nobranch
+jor_back6	mapflag	nowarpto
+jor_maze	mapflag	nomemo
+jor_maze	mapflag	nobranch
+jor_maze	mapflag	nowarpto
+jor_root1	mapflag	nomemo
+jor_root1	mapflag	nobranch
+jor_root1	mapflag	nowarpto
+jor_root2	mapflag	nomemo
+jor_root2	mapflag	nobranch
+jor_root2	mapflag	nowarpto
+jor_root3	mapflag	nomemo
+jor_root3	mapflag	nobranch
+jor_root3	mapflag	nowarpto
+jor_safty1	mapflag	nomemo
+jor_safty1	mapflag	nowarpto
+jor_safty2	mapflag	nomemo
+jor_safty2	mapflag	nowarpto
+jor_sanct	mapflag	nomemo
+jor_sanct	mapflag	nowarpto
+jor_twice	mapflag	nomemo
+jor_twice	mapflag	nobranch
+jor_twice	mapflag	nowarpto
+jor_twig	mapflag	nomemo
+jor_twig	mapflag	nobranch
+jor_twig	mapflag	nowarpto

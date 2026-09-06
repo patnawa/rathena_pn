@@ -1,0 +1,546 @@
+//===== rAthena Script =======================================
+//= Episode 20 - four side stories and nine daily categories
+//===== Description: =========================================
+//= Uses the official 2026 client quest IDs. Daily rewards are
+//= committed only after inventory checks and reset at 04:00.
+//============================================================
+
+function	script	EP20_DailyCanAccept	{
+	.@qid = getarg(0);
+	.@next = getd("EP20_DailyNext_"+.@qid);
+	if (.@next > gettimetick(2))
+		return false;
+	return isbegin_quest(.@qid) != 1;
+}
+
+function	script	EP20_DailyStart	{
+	.@qid = getarg(0);
+	if (!callfunc("EP20_DailyCanAccept",.@qid))
+		return false;
+	if (isbegin_quest(.@qid) == 2)
+		erasequest .@qid;
+	if (isbegin_quest(.@qid) == 0)
+		setquest .@qid;
+	return true;
+}
+
+function	script	EP20_DailyFinish	{
+	.@qid = getarg(0);
+	.@base_whiskers = getarg(1,3);
+	.@reputation = getarg(2,5);
+	.@base_exp = getarg(3,13500000);
+	.@job_exp = getarg(4,9500000);
+	.@reward = callfunc("EP20_DailyWhiskers",.@base_whiskers);
+	if (!callfunc("EP20_CheckReward",.@reward))
+		return false;
+	completequest .@qid;
+	setd("EP20_DailyNext_"+.@qid,callfunc("EP20_NextReset"));
+	callfunc "EP20_Reward",.@reward,.@reputation,.@base_exp,.@job_exp;
+	return true;
+}
+
+function	script	EP20_RecordWorkAssignment	{
+	.@index = getarg(0);
+	.@name$ = getarg(1);
+	if (isbegin_quest(8853) != 1) {
+		message strcharinfo(0),"No intermediate Rgan is waiting for this assignment.";
+		return false;
+	}
+	if (!callfunc("EP20_RequireRganDisguise"))
+		return false;
+	.@bit = 1 << .@index;
+	if (EP20_WorkMask & .@bit) {
+		message strcharinfo(0),.@name$ + " is already assigned for today.";
+		return false;
+	}
+	EP20_WorkMask |= .@bit;
+	message strcharinfo(0),"You assign an intermediate Rgan to " + .@name$ + ".";
+	return true;
+}
+
+// Side story 1: Spy Countermeasure Meeting (19158-19161).
+icas_in,100,62,4	script	Orlito Joveng#ep20	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 4 && !EP20_Side_AntiSpy";
+	mes "[Orlito Joveng]";
+	if (EP20_Step < 4) { mes "The Eagle Patrol cannot brief outsiders before the canyon infiltration is confirmed."; close; }
+	if (!EP20_Side_AntiSpy) {
+		if (isbegin_quest(19158) == 0) {
+			setquest 19158;
+			mes "The Eagle Patrol needs an adventurer experienced with Rgan espionage. Attend our briefing.";
+			close;
+		}
+		if (isbegin_quest(19158) == 1) { callfunc "EP20_MoveQuest",19158,19159; mes "The patrol knows transformed Rgan have entered Ice Castle."; close; }
+		if (isbegin_quest(19159) == 1) { callfunc "EP20_MoveQuest",19159,19160; mes "Join the countermeasure meeting and help establish a daily watchword."; close; }
+		if (isbegin_quest(19160) == 1) { callfunc "EP20_MoveQuest",19160,19161; mes "Two field assignments will test the new countermeasures."; close; }
+		if (isbegin_quest(19161) == 1) {
+			completequest 19161;
+			EP20_Side_AntiSpy = 1;
+			mes "Spy Countermeasure Meeting complete. Spy Search and Espionage Information Retrieval are unlocked.";
+			close;
+		}
+	}
+	mes "Choose an Eagle Patrol daily assignment.";
+	next;
+	.@choice = select("Retrieve espionage information.:Search for a spy.:Leave.");
+	if (.@choice == 3) close;
+	.@qid = (.@choice == 1 ? 19166 : 19164);
+	if (isbegin_quest(.@qid) == 1) {
+		if (.@choice == 1 && !EP20_IntelReady) { mes "[Orlito Joveng]"; mes "Retrieve the intelligence cache from Root F1."; close; }
+		if (.@choice == 2 && !EP20_SpyReady) { mes "[Orlito Joveng]"; mes "Find the suspicious Iwin in Ice Castle."; close; }
+		if (!callfunc("EP20_DailyFinish",.@qid,3,5,13500000,9500000)) close;
+		if (.@choice == 1) EP20_IntelReady = 0;
+		else EP20_SpyReady = 0;
+		mes "[Orlito Joveng]";
+		mes "Assignment complete. It resets at 04:00.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",.@qid)) { mes "[Orlito Joveng]"; mes "That assignment is already complete for this reset period."; close; }
+	if (.@choice == 1) { EP20_IntelReady = 0; mes "[Orlito Joveng]"; mes "Recover the intelligence cache on Snake God's Root F1."; }
+	else { EP20_SpyReady = 0; mes "[Orlito Joveng]"; mes "Find and question the suspicious Iwin in Ice Castle."; }
+	close;
+}
+
+jor_root1,120,118,4	script	Espionage Cache#ep20	4_ENERGY_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(19166) == 1 && !EP20_IntelReady";
+	mes "[Espionage Cache]";
+	if (isbegin_quest(19166) != 1) { mes "The cache is empty."; close; }
+	EP20_IntelReady = 1;
+	mes "You recover the dispatched patrol's intelligence. Return to Orlito Joveng.";
+	close;
+}
+
+icecastle,171,202,4	script	Suspicious Iwin#ep20	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(19164) == 1 && !EP20_SpyReady";
+	mes "[Suspicious Iwin]";
+	if (isbegin_quest(19164) != 1) { mes "The Iwin gives the correct watchword."; close; }
+	EP20_SpyReady = 1;
+	mes "The false answer exposes a transformed Rgan. Report the successful search to Orlito Joveng.";
+	close;
+}
+
+// Side story 2: A New Beginning / A New Home (17712-17716).
+icecastle,46,164,4	script	Iwin Soldier#ep20_home	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 5 && !EP20_Side_Home && isbegin_quest(17712) == 0";
+	mes "[Iwin Soldier]";
+	if (EP20_Step < 5) { mes "We cannot shelter a captured Rgan until the Sacred Roots route is understood."; close; }
+	if (!EP20_Side_Home && isbegin_quest(17712) == 0) {
+		setquest 17712;
+		mes "The captured high-ranking Rgan refuses to cooperate. Speak with Nadyagand inside Ice Castle.";
+		close;
+	}
+	if (!EP20_Side_Home) { mes "Nadyagand is waiting inside Ice Castle."; close; }
+	mes "Nadyagand has begun a new life. His Taste of Leisure daily is available inside.";
+	close;
+}
+
+icas_in2,33,114,4	script	Nadyagand#ep20_home	4_M_SCIENCE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17712) == 1 || isbegin_quest(17713) == 1 || isbegin_quest(17714) == 1";
+	mes "[Nadyagand]";
+	if (isbegin_quest(17712) == 1) { callfunc "EP20_MoveQuest",17712,17713; mes "I am starving. Horr will explain what food can be gathered."; close; }
+	if (isbegin_quest(17713) == 1) { callfunc "EP20_MoveQuest",17713,17714; mes "Bring ten Snake Strawberries from Root F2."; close; }
+	if (isbegin_quest(17714) == 1) {
+		if (countitem(1001154) < 10) { mes "I still need ten Snake Strawberries."; close; }
+		delitem 1001154,10;
+		callfunc "EP20_MoveQuest",17714,17715;
+		mes "I have no home to return to. Perhaps I can remain here.";
+		close;
+	}
+	mes "Leize is helping me learn a peaceful trade.";
+	close;
+}
+
+icas_in2,32,120,4	script	Leize#ep20_home	4_F_SCIENCE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17715) == 1 || isbegin_quest(17716) == 1";
+	mes "[Leize]";
+	if (isbegin_quest(17715) == 1) { callfunc "EP20_MoveQuest",17715,17716; mes "Nadyagand can build a new life by working with Ice Castle."; close; }
+	if (isbegin_quest(17716) == 1) {
+		if (!callfunc("EP20_CheckReward",10)) close;
+		completequest 17716;
+		EP20_Side_Home = 1;
+		callfunc "EP20_Reward",10,0,0,0;
+		mes "A New Home complete. Nadyagand's Taste of Leisure daily is unlocked.";
+		close;
+	}
+	mes "Nadyagand is adapting well.";
+	close;
+}
+
+// Side story 3: Copo's Secret Base (11928-11947) and Sticky Sea.
+icecastle,109,241,4	script	Iwin Courier#ep20_delivery	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 7 && !EP20_Side_Delivery && isbegin_quest(11928) == 0";
+	mes "[Iwin Courier]";
+	if (EP20_Step < 7 || ep19_side_sea < 17) { mes "The Frozen Sea route must be secured before this delivery can leave."; close; }
+	if (!EP20_Side_Delivery && isbegin_quest(11928) == 0) {
+		setquest 11928;
+		mes "Please deliver this box to Frederike at her house in Ice Castle.";
+		close;
+	}
+	mes "Frederike and Lalaha are coordinating the search.";
+	close;
+}
+
+icas_in,35,121,4	script	Frederike#ep20_delivery	4_F_SCIENCE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11928) == 1 || isbegin_quest(11929) == 1 || isbegin_quest(11930) == 1 || isbegin_quest(11931) == 1 || isbegin_quest(11932) == 1";
+	mes "[Frederike]";
+	if (isbegin_quest(11928) == 1) { callfunc "EP20_MoveQuest",11928,11929; mes "The delivery arrived. Help send the young Copos home for their meal."; close; }
+	if (isbegin_quest(11929) == 1) { callfunc "EP20_MoveQuest",11929,11930; mes "One Copo has gone home."; close; }
+	if (isbegin_quest(11930) == 1) { callfunc "EP20_MoveQuest",11930,11931; mes "Send the next Copo home."; close; }
+	if (isbegin_quest(11931) == 1) { callfunc "EP20_MoveQuest",11931,11932; mes "Only the youngest remains."; close; }
+	if (isbegin_quest(11932) == 1) { callfunc "EP20_MoveQuest",11932,11933; mes "Kapopo slipped away. Meet us outside his home."; close; }
+	mes "The children should be home by now.";
+	close;
+}
+
+icecastle,61,160,4	script	Chachako#ep20_delivery	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11933) == 1 || isbegin_quest(11934) == 1";
+	mes "[Chachako]";
+	if (isbegin_quest(11933) == 1) { callfunc "EP20_MoveQuest",11933,11934; mes "Bring Kapopo to the house below Frederike's."; close; }
+	if (isbegin_quest(11934) == 1) { callfunc "EP20_MoveQuest",11934,11935; mes "Kapopo is safe. Return to Frederike's house."; close; }
+	mes "Kapopo is home.";
+	close;
+}
+
+icecastle,65,213,4	script	Frederike#ep20_search	4_F_SCIENCE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11935) == 1";
+	mes "[Frederike]";
+	if (isbegin_quest(11935) != 1) { mes "Lalaha is still worried about Rorohyu."; close; }
+	callfunc "EP20_MoveQuest",11935,11936;
+	mes "Rorohyu is missing. Ask the courier whether he passed the eastern road.";
+	close;
+}
+
+icecastle,109,241,4	script	Iwin Courier#ep20_search	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11936) == 1";
+	mes "[Iwin Courier]";
+	if (isbegin_quest(11936) != 1) { mes "I have not seen Rorohyu."; close; }
+	callfunc "EP20_MoveQuest",11936,11937;
+	mes "Ask the inner guard, then the village entrance guards.";
+	close;
+}
+
+icas_in,113,38,4	script	Iwin Guard#ep20_search1	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11937) == 1";
+	mes "[Iwin Guard]";
+	if (isbegin_quest(11937) != 1) { mes "The search continues outside."; close; }
+	callfunc "EP20_MoveQuest",11937,11938;
+	mes "The gate guard saw Rorohyu near the village entrance.";
+	close;
+}
+
+icecastle,25,124,4	script	Iwin Guard#ep20_search2	4_M_REPAIR,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11938) == 1 || isbegin_quest(11939) == 1";
+	mes "[Iwin Guard]";
+	if (isbegin_quest(11938) == 1) { callfunc "EP20_MoveQuest",11938,11939; mes "That shape is only a bundle of fluff."; close; }
+	if (isbegin_quest(11939) == 1) { callfunc "EP20_MoveQuest",11939,11940; mes "The fluff trail leads outside Ice Castle."; close; }
+	mes "Search north of the village.";
+	close;
+}
+
+jor_back1,316,246,4	script	Rorohyu Fluff#ep20_1	4_ENERGY_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11940) == 1";
+	mes "[Rorohyu's Fluff]";
+	if (isbegin_quest(11940) != 1) { mes "A tuft of pale fluff points north."; close; }
+	callfunc "EP20_MoveQuest",11940,11941;
+	mes "The trail continues farther north.";
+	close;
+}
+
+jor_back1,227,387,4	script	Rorohyu Fluff#ep20_2	4_ENERGY_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11941) == 1";
+	mes "[Rorohyu's Fluff]";
+	if (isbegin_quest(11941) != 1) { mes "The wind has scattered this tuft."; close; }
+	callfunc "EP20_MoveQuest",11941,11942;
+	mes "The trail crosses the Frozen Scale Plateau.";
+	close;
+}
+
+jor_back2,17,246,4	script	Rorohyu Fluff#ep20_3	4_ENERGY_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11942) == 1";
+	mes "[Rorohyu's Fluff]";
+	if (isbegin_quest(11942) != 1) { mes "The trail continues toward the glacier."; close; }
+	callfunc "EP20_MoveQuest",11942,11943;
+	mes "The next tuft lies in the Frozen Scale Glacier.";
+	close;
+}
+
+jor_back3,94,316,4	script	Rorohyu Fluff#ep20_4	4_ENERGY_BLUE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11943) == 1";
+	mes "[Rorohyu's Fluff]";
+	if (isbegin_quest(11943) != 1) { mes "The final trail leads to the beach."; close; }
+	callfunc "EP20_MoveQuest",11943,11944;
+	mes "Rorohyu reached the Frozen Scale Beach.";
+	close;
+}
+
+jor_back4,98,258,4	script	Koko#ep20_sticky_entry	22006,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11944) == 1 || isbegin_quest(11945) == 1 || isbegin_quest(11948) == 1 || isbegin_quest(11951) == 1";
+	mes "[Koko]";
+	if (isbegin_quest(11944) == 1) { callfunc "EP20_MoveQuest",11944,11945; mes "Rorohyu went into the pit to rescue a friend."; close; }
+	if (isbegin_quest(11945) == 1) callfunc "EP20_MoveQuest",11945,11946;
+	if (isbegin_quest(11948) == 1) callfunc "EP20_MoveQuest",11948,11949;
+	if (isbegin_quest(11946) != 1 && isbegin_quest(11949) != 1 && isbegin_quest(11951) != 1) { mes "The Sticky Sea route is quiet."; close; }
+	mes "Enter the Sticky Sea and rescue the trapped Copos.";
+	next;
+	if (select("Enter Sticky Sea.:Wait.") == 2) close;
+	callfunc "EP20_EnterInstance","Sticky Sea";
+}
+
+icecastle,70,213,4	script	Lalaha#ep20_delivery	4_F_SCIENCE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11947) == 1";
+	mes "[Lalaha]";
+	if (isbegin_quest(11947) == 1 && !EP20_Side_Delivery) {
+		if (!callfunc("EP20_CheckReward",10)) close;
+		completequest 11947;
+		EP20_Side_Delivery = 1;
+		callfunc "EP20_Reward",10,10,0,0;
+		mes "Copo's Secret Base complete. Escargo and three Copo-support dailies are unlocked.";
+		close;
+	}
+	if (!EP20_Side_Delivery) { mes "Please find Rorohyu first."; close; }
+	mes "Choose a Copo-support request.";
+	next;
+	.@choice = select("Escargo! + Dangerous! (Sticky Sea).:I Hope They Reconcile (Grey Icewinds).:I Hope They Reconcile (Icewinds).:Leave.");
+	if (.@choice == 4) close;
+	setarray .@qid[1],11948,11953,11955;
+	.@quest = .@qid[.@choice];
+	if (.@choice == 1) {
+		if (EP20_StickyNext > gettimetick(2)) { mes "[Lalaha]"; mes "Escargo resets at 04:00."; close; }
+		if (isbegin_quest(11948) == 2) erasequest 11948;
+		if (isbegin_quest(11949) == 2) erasequest 11949;
+		if (isbegin_quest(11951) == 2) erasequest 11951;
+		if (isbegin_quest(11948) == 0 && isbegin_quest(11949) == 0) setquest 11948;
+		if (isbegin_quest(11951) == 0) setquest 11951;
+		mes "[Lalaha]";
+		mes "Meet Koko on Frozen Scale Beach. Rescue the ten Copos while completing Escargo in the same Sticky Sea run.";
+		close;
+	}
+	if (isbegin_quest(.@quest) == 1) {
+		if (checkquest(.@quest,HUNTING) != 2) { mes "[Lalaha]"; mes "The Icewinds still need to be calmed."; close; }
+		if (!callfunc("EP20_DailyFinish",.@quest,3,5,28000000,26000000)) close;
+		mes "[Lalaha]";
+		mes "Thank you. This request resets at 04:00.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",.@quest)) { mes "[Lalaha]"; mes "That request is complete for this reset period."; close; }
+	if (.@choice == 2) mes "Calm ten Grey Icewinds in the eastern Ancient Ice Canyon.";
+	else mes "Calm ten Icewinds in the western Ancient Ice Canyon.";
+	close;
+}
+
+// Side story 4: I Probably Have a Lunch Box / Collection of Soft Delicacies
+// (8854-8855). The repeat uses 8857 below level 230 and 8858 at 230+.
+icas_in,243,66,4	script	Toryoryo#ep20_flavors	4_F_SCIENCE,{
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 7 && !EP20_Side_Flowers";
+	mes "[Toryoryo]";
+	if (EP20_Step < 7) { mes "The Icy Zone delicacies are not safe to gather yet."; close; }
+	if (!EP20_Side_Flowers) {
+		if (isbegin_quest(8854) == 0) { setquest 8854; mes "Eryligand said I may have a lunch box. Help me prepare soft delicacies for the daycare."; close; }
+		if (isbegin_quest(8854) == 1) { callfunc "EP20_MoveQuest",8854,8855; mes "Hunt twenty Angel and twenty Snow Rabbit Iceslugs, then bring ten Salty and ten Sweet Soft Fluorescent Cells."; close; }
+		if (isbegin_quest(8855) != 1 || checkquest(8855,HUNTING) != 2 || countitem(1001232) < 10 || countitem(1001233) < 10) { mes "Bring the complete Salty and Sweet flavor samples."; close; }
+		.@reward = 15;
+		if (!callfunc("EP20_CheckReward",.@reward)) close;
+		delitem 1001232,10;
+		delitem 1001233,10;
+		completequest 8855;
+		EP20_Side_Flowers = 1;
+		callfunc "EP20_Reward",.@reward,20,31250000,21830000;
+		mes "Collection of Soft Delicacies complete. The flavor daily is unlocked.";
+		close;
+	}
+	.@qid = (isbegin_quest(8857) == 1 ? 8857 : (isbegin_quest(8858) == 1 ? 8858 : (BaseLevel < 230 ? 8857 : 8858)));
+	if (isbegin_quest(.@qid) == 1) {
+		if (checkquest(.@qid,HUNTING) != 2 || countitem(1001232) < 10 || countitem(1001233) < 10 || (.@qid == 8858 && countitem(1001231) < 10)) { mes "Bring every requested flavor cell after completing the hunts."; close; }
+		.@reward = callfunc("EP20_DailyWhiskers",3);
+		if (!callfunc("EP20_CheckReward",.@reward)) close;
+		if (.@qid == 8858) delitem 1001231,10;
+		delitem 1001232,10;
+		delitem 1001233,10;
+		completequest .@qid;
+		setd("EP20_DailyNext_"+.@qid,callfunc("EP20_NextReset"));
+		callfunc "EP20_Reward",.@reward,5,(BaseLevel < 230 ? 31250000 : 56000000),(BaseLevel < 230 ? 21830000 : 39100000);
+		mes (.@qid == 8857 ? "The salty and sweet flavors are complete. This request resets at 04:00." : "The three flavors are complete. This request resets at 04:00.");
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",.@qid)) { mes "The flavor request is complete for this reset period."; close; }
+	if (.@qid == 8857)
+		mes "Hunt twenty Angel and Snow Rabbit Iceslugs and bring ten Salty and ten Sweet cells.";
+	else
+		mes "Hunt twenty Angel, Snow Rabbit, and Melibe Iceslugs and bring ten cells of each flavor.";
+	close;
+}
+
+// Daily 3: Awin's Awin Worry.
+icecastle,75,126,4	script	Chichiring#ep20_daily	22006,{
+	mes "[Chichiring]";
+	if (!callfunc("EP20_MainComplete")) { mes "This Deep Roots request opens after Episode 20 is complete."; close; }
+	if (isbegin_quest(18234) == 1) {
+		if (checkquest(18234,HUNTING) != 2) { mes "Defeat one hundred monsters in Deep Roots Cave."; close; }
+		if (!callfunc("EP20_DailyFinish",18234,30,0,42000000,29500000)) close;
+		mes "The ancient Icewinds are safe for today.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",18234)) { mes "This request is complete for this reset period."; close; }
+	mes "Defeat one hundred monsters in Deep Roots Cave.";
+	close;
+}
+
+// Daily 4: Pulling Out Yormungandr's Roots.
+jor_twice,235,108,4	script	Kokoro#ep20_daily	4_M_REPAIR,{
+	mes "[Kokoro]";
+	if (EP20_Step < 8) { mes "First finish the Icy Zone investigation."; close; }
+	if (isbegin_quest(23111) == 1) {
+		if (checkquest(23111,HUNTING) != 2) { mes "Defeat fifteen Yormungandr Cult Ritualists."; close; }
+		if (!callfunc("EP20_DailyFinish",23111,3,5,13500000,9500000)) close;
+		mes "Their roots are pulled out for today.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",23111)) { mes "This request is complete for this reset period."; close; }
+	mes "Defeat fifteen Elite Rgan Warlocks in the Icy Zone.";
+	close;
+}
+
+// Daily 5: one of Voglinde's two extermination operations.
+icas_in2,253,118,4	script	Voglinde#ep20_daily	4_F_SCIENCE,{
+	mes "[Voglinde]";
+	if (!callfunc("EP20_MainComplete")) { mes "Complete the Separated Sanctuary operation first."; close; }
+	.@choice = select("Root F1 operation.:Root F2 operation.:Leave.");
+	if (.@choice == 3) close;
+	.@qid = (.@choice == 1 ? 18236 : 18238);
+	if (isbegin_quest(.@qid) == 1) {
+		if (checkquest(.@qid,HUNTING) != 2) { mes "[Voglinde]"; mes "Defeat one hundred monsters on the assigned Root floor."; close; }
+		if (!callfunc("EP20_DailyFinish",.@qid,3,5,(.@choice == 1 ? 42000000 : 44000000),(.@choice == 1 ? 29500000 : 30800000))) close;
+		mes "[Voglinde]";
+		mes "Extermination operation complete.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",.@qid)) { mes "[Voglinde]"; mes "That operation is complete for this reset period."; close; }
+	mes "[Voglinde]";
+	mes "Defeat one hundred Rgan on the assigned Root floor.";
+	close;
+}
+
+// Daily 6: Taste of Leisure.
+icas_in2,30,121,4	script	Nadyagand#ep20_daily	4_M_SCIENCE,{
+	mes "[Nadyagand]";
+	if (!EP20_Side_Home) { mes "Help me begin a new life first."; close; }
+	if (isbegin_quest(17718) == 1) {
+		if (countitem(1001154) < 10) { mes "Bring ten Snake Strawberries."; close; }
+		.@reward = callfunc("EP20_DailyWhiskers",20);
+		if (!callfunc("EP20_CheckReward",.@reward)) close;
+		delitem 1001154,10;
+		completequest 17718;
+		setd("EP20_DailyNext_17718",callfunc("EP20_NextReset"));
+		callfunc "EP20_Reward",.@reward,20,17100100,5560000;
+		mes "That makes work much more pleasant. Return after 04:00.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",17718)) { mes "Today's snack was delicious."; close; }
+	mes "Bring ten Snake Strawberries from Root F2.";
+	close;
+}
+
+// Public guides group these two no-whisker assignments as Fakes Feigning
+// Help. Their exact EXP values are not published, so only the sourced item /
+// interaction requirements and 04:00 reset are applied here.
+jor_sanct,271,156,4	script	Nasioramigand#ep20_work	4_M_SCIENCE,{
+	mes "[Nasioramigand]";
+	if (EP20_Step < 6) { mes "Only trusted workers may assign jobs in the Sacred Roots."; close; }
+	if (!callfunc("EP20_RequireRganDisguise")) close;
+	if (isbegin_quest(8853) == 1) {
+		if (EP20_WorkMask != 31) { mes "Assign workers to the Tower, Puddle, Warehouse, Mountain of Junk, and Garbage Dump."; close; }
+		if (!callfunc("EP20_DailyFinish",8853,0,0,0,0)) close;
+		EP20_WorkMask = 0;
+		mes "Every intermediate Rgan has work. This assignment resets at 04:00.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",8853)) { mes "I've Come This Far resets at 04:00."; close; }
+	EP20_WorkMask = 0;
+	mes "Find work at the Tower, Puddle, Warehouse, Mountain of Junk, and Garbage Dump.";
+	close;
+}
+
+jor_sanct,92,139,4	script	Tower#ep20_work	4_ENERGY_BLUE,{
+	callfunc "EP20_RecordWorkAssignment",0,"the Tower";
+	end;
+}
+jor_sanct,48,159,4	script	Puddle#ep20_work	4_ENERGY_BLUE,{
+	callfunc "EP20_RecordWorkAssignment",1,"the Puddle";
+	end;
+}
+jor_root2,149,125,4	script	Firm Spot#ep20_warehouse	4_ENERGY_BLUE,{
+	if (isbegin_quest(8853) != 1) end;
+	if (!callfunc("EP20_RequireRganDisguise")) end;
+	warp "jor_safty2",314,253;
+	end;
+}
+jor_root2,242,124,4	script	Firm Spot#ep20_junk	4_ENERGY_BLUE,{
+	if (isbegin_quest(8853) != 1) end;
+	if (!callfunc("EP20_RequireRganDisguise")) end;
+	warp "jor_safty2",302,352;
+	end;
+}
+jor_root2,12,172,4	script	Firm Spot#ep20_garbage	4_ENERGY_BLUE,{
+	if (isbegin_quest(8853) != 1) end;
+	if (!callfunc("EP20_RequireRganDisguise")) end;
+	warp "jor_safty2",201,358;
+	end;
+}
+jor_safty2,314,250,4	script	Warehouse#ep20_work	4_ENERGY_BLUE,{
+	callfunc "EP20_RecordWorkAssignment",2,"the Warehouse";
+	warp "jor_root2",149,127;
+	end;
+}
+jor_safty2,302,355,4	script	Junk Mountain#ep20_work	4_ENERGY_BLUE,{
+	callfunc "EP20_RecordWorkAssignment",3,"the Mountain of Junk";
+	warp "jor_root2",242,127;
+	end;
+}
+jor_safty2,201,361,4	script	Garbage Dump#ep20_work	4_ENERGY_BLUE,{
+	callfunc "EP20_RecordWorkAssignment",4,"the Garbage Dump";
+	warp "jor_root2",12,175;
+	end;
+}
+
+// Daily 9: Cleaning the Serpent's Maze.
+jor_sanct,26,280,4	script	Supervisor#ep20_daily	4_M_REPAIR,{
+	mes "[Supervisor]";
+	if (EP20_Step < 6) { mes "Only trusted workers may clean the Serpent's Maze."; close; }
+	if (isbegin_quest(17710) == 1) {
+		if (checkquest(17710,HUNTING) != 2) { mes "Eliminate ten Guardians of each color."; close; }
+		if (!callfunc("EP20_DailyFinish",17710,0,0,16600000,11600000)) close;
+		mes "The Maze is clean for today.";
+		close;
+	}
+	if (!callfunc("EP20_DailyStart",17710)) { mes "The next cleaning shift begins after 04:00."; close; }
+	mes "Eliminate ten purple and ten yellow Jormungandr Guardians in the Maze.";
+	close;
+}
+
+// Repeatable Snake Strawberry gathering spots used by story and daily quests.
+jor_root2,25,21,4	script	Snake Strawberry#ep20_1	4_ENERGY_BLUE,{
+	if (isbegin_quest(17698) != 1 && isbegin_quest(17714) != 1 && isbegin_quest(17718) != 1) { message strcharinfo(0),"You are not currently gathering Snake Strawberries."; end; }
+	.@needed = (isbegin_quest(17698) == 1 ? 3 : 10);
+	if (countitem(1001154) >= .@needed) { message strcharinfo(0),"You have gathered enough Snake Strawberries for the active request."; end; }
+	if (!checkweight(1001154,1)) { message strcharinfo(0),"Make room for a Snake Strawberry."; end; }
+	getitem 1001154,1;
+	message strcharinfo(0),"You gather a Snake Strawberry.";
+	end;
+}
+jor_root2,42,61,4	script	Snake Strawberry#ep20_2	4_ENERGY_BLUE,{
+	if (isbegin_quest(17698) != 1 && isbegin_quest(17714) != 1 && isbegin_quest(17718) != 1) { message strcharinfo(0),"You are not currently gathering Snake Strawberries."; end; }
+	.@needed = (isbegin_quest(17698) == 1 ? 3 : 10);
+	if (countitem(1001154) >= .@needed) { message strcharinfo(0),"You have gathered enough Snake Strawberries for the active request."; end; }
+	if (!checkweight(1001154,1)) { message strcharinfo(0),"Make room for a Snake Strawberry."; end; }
+	getitem 1001154,1;
+	message strcharinfo(0),"You gather a Snake Strawberry.";
+	end;
+}
+jor_root2,73,108,4	script	Snake Strawberry#ep20_3	4_ENERGY_BLUE,{
+	if (isbegin_quest(17698) != 1 && isbegin_quest(17714) != 1 && isbegin_quest(17718) != 1) { message strcharinfo(0),"You are not currently gathering Snake Strawberries."; end; }
+	.@needed = (isbegin_quest(17698) == 1 ? 3 : 10);
+	if (countitem(1001154) >= .@needed) { message strcharinfo(0),"You have gathered enough Snake Strawberries for the active request."; end; }
+	if (!checkweight(1001154,1)) { message strcharinfo(0),"Make room for a Snake Strawberry."; end; }
+	getitem 1001154,1;
+	message strcharinfo(0),"You gather a Snake Strawberry.";
+	end;
+}

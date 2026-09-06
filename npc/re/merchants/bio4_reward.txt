@@ -772,15 +772,20 @@ lhz_cube,233,24,4	script	Sorcerer#Bio4Reward	4_M_UMDANCEKID,{
 			delitem 6471, 10; //Goast_Chill
 
 			// anti-hack
-			if (callfunc("F_IsEquipIDHack", .@part, .@equip_item) || callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@refine_count))
+			if (callfunc("F_IsEquipIDHack", .@part, .@equip_item) || callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@refine_count)) {
+				getitem 6471,10; // Return the charged Chill of the Dead.
+				mes "[Pudding]";
+				mes "The equipped item changed during the process. Your materials were returned.";
 				close;
+			}
 
-			if (.@menu == 2)
-				.@equip_card[3] = 0;
-			else
-				.@equip_card[2] = 0;
-			delequip .@part;
-			getitem2 .@equip_item, 1, 1, .@refine_count, 0, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3];
+			.@enchant_slot = .@menu == 2 ? 3 : 2;
+			if (!modifyequipitem(.@part,.@equip_item,0,-1,.@enchant_slot,.@equip_card[.@enchant_slot],0)) {
+				getitem 6471,10;
+				mes "[Pudding]";
+				mes "The equipped item changed before the power could be removed. Your materials were returned.";
+				close;
+			}
 			mes "[Pudding]";
 			if (.@menu == 3)
 				mes "The power of '^952420Thirst for Blood^000000' has been perfectly removed.";
@@ -962,27 +967,39 @@ lhz_cube,233,24,4	script	Sorcerer#Bio4Reward	4_M_UMDANCEKID,{
 		}
 		specialeffect EF_BEGINSPELL3;
 		progressbar "ffff00", 2;
-		if (.@socket_type == 3)
-			delitem 6470, 10; //Blood_Thirst
-		else
-			delitem 6469, 10; //Will_Of_Warrior
+		.@material = .@socket_type == 3 ? 6470 : 6469;
+		delitem .@material,10; //Blood_Thirst or Will_Of_Warrior
 
 		// anti-hack
-		if (callfunc("F_IsEquipIDHack", .@part, .@equip_item) || callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@refine_count))
+		if (callfunc("F_IsEquipIDHack", .@part, .@equip_item) || callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@refine_count)) {
+			getitem .@material,10;
+			mes "[Pudding]";
+			mes "The equipped item changed during the process. Your materials were returned.";
 			close;
+		}
 
-		.@equip_card[(.@socket_type-1)] = .@enchant;
-		delequip .@part;
-		
+		.@enchant_slot = .@socket_type - 1;
 		if (.@enchant == 0){
+			// This roll intentionally destroys the equipment, cards, and refine.
+			if (!deleteequipitem(.@part,.@equip_item,.@refine_count,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3])) {
+				getitem .@material,10;
+				mes "[Pudding]";
+				mes "The equipment could not be processed. Your materials were returned.";
+				close;
+			}
 			specialeffect2 EF_SUI_EXPLOSION;
 			emotion ET_OTL;
 			mes "[Pudding]";
 			mes "...Well....the equipment could not accept the power of "+((.@socket_type==3)?"'^952420Thirst for Blood^000000'":"'^F2766EWill of Warrior^000000'")+" and it got destroyed.";
 			close;
 		} else {
+			if (!modifyequipitem(.@part,.@equip_item,0,-1,.@enchant_slot,.@equip_card[.@enchant_slot],.@enchant)) {
+				getitem .@material,10;
+				mes "[Pudding]";
+				mes "The equipped item changed before the power could be applied. Your materials were returned.";
+				close;
+			}
 			specialeffect2 EF_FIREHIT;
-			getitem2 .@equip_item, 1, 1, .@refine_count, 0, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3];
 			emotion ET_DELIGHT;
 			mes "[Pudding]";
 			mes "Fortunately, the power of "+((.@socket_type==3)?"'^952420Thirst for Blood^000000'":"'^F2766EWill of Warrior^000000'")+" has been dwelt well into your equipment...";

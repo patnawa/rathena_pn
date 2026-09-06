@@ -17,7 +17,7 @@
 //============================================================
 
 -	script	Warper	-1,{
-function Go; function Disp; function Pick; function Restrict;
+function Go; function ValidateWarp; function Disp; function Pick; function Restrict;
 
 // --------------------------------------------------
 //	Main Menu:
@@ -35,7 +35,7 @@ menu	"Last Warp ^777777["+lastwarp$+"]^000000",-,
 	if (lastwarp$ == "")
 		message strcharinfo(0),"You haven't warped anywhere yet.";
 	else
-		warp lastwarp$,lastwarpx,lastwarpy;
+		Go(lastwarp$,lastwarpx,lastwarpy);
 	end;
 
 // ------------------- Functions -------------------
@@ -63,11 +63,124 @@ menu	"Last Warp ^777777["+lastwarp$+"]^000000",-,
 // --------------------------------------------------
 
 function Go {
+	if (!ValidateWarp(getarg(0)))
+		end;
 	set lastwarp$, getarg(0);
 	set lastwarpx, getarg(1,0);
 	set lastwarpy, getarg(2,0);
 	warp getarg(0),getarg(1,0),getarg(2,0);
 	end;
+}
+function ValidateWarp {
+	.@map$ = getarg(0);
+	// Episode 19: preserve the same milestones as the story's airship and
+	// dungeon entrances.  Direct warps must not skip the Issgard introduction.
+	if ((.@map$ == "jor_back1" || .@map$ == "jor_back2" || .@map$ == "jor_back3" || .@map$ == "jor_tail") && ep19_main < 7) {
+		message strcharinfo(0),"Reach Issgard aboard Ginger's airship in Episode 19 first.";
+		return false;
+	}
+	if (.@map$ == "jor_dun01" && ep19_main < 15) {
+		message strcharinfo(0),"Advance Episode 19 until Leon sends you to investigate the Rgan base.";
+		return false;
+	}
+	if ((.@map$ == "jor_dun02" || .@map$ == "jor_nest") && ep19_main < 16) {
+		message strcharinfo(0),"Begin the Episode 19 Rgan infiltration before entering the inner nest.";
+		return false;
+	}
+	if (.@map$ == "jor_ab01" && ep19_side_sea < 8) {
+		message strcharinfo(0),"Advance Frozen Sea until Friederike purifies the abandoned pit entrance.";
+		return false;
+	}
+	if (.@map$ == "jor_ab02" && ep19_side_sea < 15) {
+		message strcharinfo(0),"Advance Frozen Sea until Mark opens the abandoned pit's second floor.";
+		return false;
+	}
+	if (.@map$ == "jor_dun03" && ep19_main != 34 && ep19_main != 49 && ep19_main != 50) {
+		message strcharinfo(0),"Juncea's public laboratory is available only during its Episode 19 investigation steps.";
+		return false;
+	}
+	if ((.@map$ == "jor_back4" || .@map$ == "jor_back5" || .@map$ == "jor_back6" || .@map$ == "jor_safty1" ||
+		.@map$ == "jor_root1" || .@map$ == "jor_root2" || .@map$ == "icas_in2" || .@map$ == "jor_safty2" ||
+		.@map$ == "jor_sanct" || .@map$ == "jor_maze" || .@map$ == "jor_twice" || .@map$ == "jor_twig" ||
+		.@map$ == "jor_root3") && !callfunc("EP20_WarperAccess",.@map$))
+		return false;
+	if ((.@map$ == "bl_ice" || .@map$ == "bl_lava" || .@map$ == "bl_grass" || .@map$ == "bl_death" ||
+		.@map$ == "bl_soul" || .@map$ == "bl_venom" || .@map$ == "bl_temple") && !callfunc("F_BiosphereAccess"))
+		return false;
+	if (.@map$ == "bl_depth1" && !callfunc("F_BiosphereDepth1Access"))
+		return false;
+	if ((.@map$ == "ba_chess" || .@map$ == "bl_depth2") && !callfunc("F_BiosphereDepth2Access"))
+		return false;
+	if (.@map$ == "bl_depth2")
+		callfunc "F_BiosphereDepth2Purge";
+	if ((.@map$ == "jor_crk" || .@map$ == "jor_mbase" || .@map$ == "jor_albe" ||
+		.@map$ == "jor_raise1" || .@map$ == "jor_raise2" || .@map$ == "jor_tmple1" || .@map$ == "jor_tmple2" ||
+		.@map$ == "jor_sklf1" || .@map$ == "jor_sklf2") && !callfunc("EP21_WarperAccess",.@map$))
+		return false;
+	if (.@map$ == "jor_base" && !callfunc("EP21_GaebolgComplete")) {
+		message strcharinfo(0),"Complete the Gaebolg Resistance assignment first.";
+		return false;
+	}
+	if ((.@map$ == "ygg_edge" || .@map$ == "ygg_roots" || .@map$ == "uknw_ruin" || .@map$ == "uknw_ruin2" ||
+		.@map$ == "hem_fild") && (BaseLevel < 200 || !isbegin_quest(18368))) {
+		message strcharinfo(0),"Begin Chapter 1 at the Small Ash Tree in Prontera Field 5 (353,252) first.";
+		return false;
+	}
+	if (.@map$ == "hem_dun01" && isbegin_quest(17899) != 2) {
+		message strcharinfo(0),"Complete the Chapter 1 Geffen investigation before entering Destroyed Verus.";
+		return false;
+	}
+	if (.@map$ == "hem_dun02" && (BaseLevel < 230 || isbegin_quest(18379) < 2 || !getstatus(SC_CONTENTS_37))) {
+		message strcharinfo(0),"Hemel's distorted realm requires Chapter 1 quest 18379, Base Level 230, and Minuel's dimensional resistance.";
+		return false;
+	}
+	if ((.@map$ == "ch1_gfn01" || .@map$ == "ch1_gfn03") &&
+		(BaseLevel < 260 || isbegin_quest(18379) < 2 || !getstatus(SC_CONTENTS_38))) {
+		message strcharinfo(0),"Devoured Geffenia requires Chapter 1 quest 18379, Base Level 260, and the stronger dimensional resistance.";
+		return false;
+	}
+	if (.@map$ == "ch1_dw" && isbegin_quest(17909) != 1 && isbegin_quest(17910) != 1 &&
+		isbegin_quest(17911) != 1 && isbegin_quest(17912) != 1 && !isbegin_quest(17916)) {
+		message strcharinfo(0),"Advance the Chapter 1 Dark Whisper investigation before entering this area.";
+		return false;
+	}
+	if (.@map$ == "ch1fild1" && !callfunc("ZC_HasAccess")) {
+		message strcharinfo(0),"Complete Robin's Zero Cell investigation first.";
+		return false;
+	}
+	if ((.@map$ == "ch1zero1" || .@map$ == "ch1zero2") && !callfunc("ZC_CanEnter",1))
+		return false;
+	if ((.@map$ == "ch1zero3" || .@map$ == "ch1zero4") && !callfunc("ZC_CanEnter",2))
+		return false;
+	if (.@map$ == "veledor" && !CH2_Step) {
+		message strcharinfo(0),"Start Chapter 2 with Guardian El at Ashridge first.";
+		return false;
+	}
+	if ((.@map$ == "kindlbrk" || .@map$ == "mu_fild02" || .@map$ == "mu_fild03") && CH2_Step < 3) {
+		message strcharinfo(0),"Clear the Chapter 2 Crossroads of Tangled Mana first.";
+		return false;
+	}
+	if (.@map$ == "deadroot" && CH2_Step < 5) {
+		message strcharinfo(0),"Help Kindlebrook before traveling to the Root of Death.";
+		return false;
+	}
+	if ((.@map$ == "mu_dun01" || .@map$ == "mu_dun02") && CH2_Step < 6) {
+		message strcharinfo(0),"Follow Orion's Chapter 2 investigation first.";
+		return false;
+	}
+	if (.@map$ == "ragsruth" && CH2_Step < 8) {
+		message strcharinfo(0),"Stabilize the Primordial Flame before traveling to Ragsroot.";
+		return false;
+	}
+	if (.@map$ == "rgs_dun1" && CH2_Step < 10) {
+		message strcharinfo(0),"Restore Nyrholt before entering Distorted Ragsroot.";
+		return false;
+	}
+	if (.@map$ == "kin_in01" && CH2_Step < 3) {
+		message strcharinfo(0),"Reach Kindlebrook in Chapter 2 before entering its interior.";
+		return false;
+	}
+	return true;
 }
 function Disp {
 	if (getargcount() < 3)
@@ -107,18 +220,6 @@ function Pick {
 	set .@y, @c[.@i*2+1];
 	deletearray @c[0],getarraysize(@c);
 	@f = false; @d = false;
-	if ((.@map$ == "bl_ice" || .@map$ == "bl_lava" || .@map$ == "bl_grass" || .@map$ == "bl_death" || .@map$ == "bl_soul" || .@map$ == "bl_venom" || .@map$ == "bl_temple") && !callfunc("F_BiosphereAccess"))
-		end;
-	if (.@map$ == "bl_depth1" && !callfunc("F_BiosphereDepth1Access"))
-		end;
-	if ((.@map$ == "ba_chess" || .@map$ == "bl_depth2") && !callfunc("F_BiosphereDepth2Access"))
-		end;
-	if (.@map$ == "bl_depth2")
-		callfunc "F_BiosphereDepth2Purge";
-	if ((.@map$ == "jor_tail" || .@map$ == "jor_crk" || .@map$ == "jor_mbase" || .@map$ == "jor_albe" ||
-		.@map$ == "jor_raise1" || .@map$ == "jor_raise2" || .@map$ == "jor_tmple1" || .@map$ == "jor_tmple2" ||
-		.@map$ == "jor_sklf1" || .@map$ == "jor_sklf2") && !callfunc("EP21_WarperAccess",.@map$))
-		end;
 	Go(.@map$,.@x,.@y);
 }
 function Restrict {
@@ -525,15 +626,15 @@ D53: Restrict("RE");
 	 setarray @c[2],244,61,72,20,122,22;
 	 Disp("Lab-OPTATIO:R&D-WISH:Verus Center Square"); Pick("verus");
 D54: Restrict("RE");
-	 setarray @c[2],206,16,32,34,25,285,187,198;
-	 Disp("Snake's Maze:Snake God's Root Floor 1:Snake God's Root Floor 2:World Tree Twig");
-	 Pick("","jor_maze","jor_root1","jor_root2","jor_twig");
+	 setarray @c[2],98,258,353,73,200,200,206,16,32,34,25,285,200,200,235,111,187,198;
+	 Disp("Frozen Scale Beach:Ancient Ice Canyon - East:Ancient Ice Canyon - West:Snake's Maze:Snake God's Root Floor 1:Snake God's Root Floor 2:Deep Roots Cave:Icy Zone:World Tree Twig");
+	 Pick("","jor_back4","jor_back5","jor_back6","jor_maze","jor_root1","jor_root2","jor_root3","jor_twice","jor_twig");
 D55: Restrict("RE");
 	 setarray @c[2],276,386,118,410,170,62,24,173,298,170,276,128;
 	 Disp("Northern Rising Land:Southern Rising Land:Gimleh Temple Floor 1:Gimleh Temple Floor 2:Jormungand Cult Temple Floor 1:Jormungand Cult Temple Floor 2");
 	 Pick("","jor_raise1","jor_raise2","jor_tmple1","jor_tmple2","jor_sklf1","jor_sklf2");
 D56: Restrict("RE");
-	 setarray @c[2],325,147,264,238,33,246,207,27,18,86,59,171,59,173,145,27,264,294;
+	 setarray @c[2],325,147,264,238,33,246,207,27,18,86,160,51,59,169,145,33,264,294;
 	 Disp("Twisted Land of Darkness:Distorted Brimir Floor 1:Distorted Brimir Floor 2:Destroyed Geffen Field:Destroyed Verus:Destroyed Valkyrie Realm:Devoured Geffenia East:Devoured Geffenia West:Dark Whisper");
 	 Pick("","ygg_roots","uknw_ruin","uknw_ruin2","hem_fild","hem_dun01","hem_dun02","ch1_gfn01","ch1_gfn03","ch1_dw");
 D57: Restrict("RE");
@@ -608,7 +709,7 @@ D58_9:
 	if (CH2_Step<10) { message strcharinfo(0),"Restore Nyrholt first."; end; }
 	Go("rgs_dun1",95,131);
 D58_10:
-	if (!callfunc("CH2_Complete")) { message strcharinfo(0),"Finish Chapter 2 to unlock the workshop."; end; }
+	if (CH2_Step<3) { message strcharinfo(0),"Reach Kindlebrook before entering its interior."; end; }
 	Go("kin_in01",115,215);
 
 // --------------------------------------------------
@@ -693,7 +794,7 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Sunken Tower",I31, "Geffen Night Arena",I32,
 		"Lake of Fire",I33, "Hall of Life",I34,
 		"Tomb of Remorse",I35, "Constellation Tower",I36,
-		"Airship Crash",I37;
+		"Airship Crash",I37, "Memories of Thanatos",I38;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -770,6 +871,8 @@ I36: Restrict("RE");
 	Go("e_tower",83,105);
 I37: Restrict("RE");
 	Go("dali02",137,86);
+I38: Restrict("RE");
+	Go("thana_step",154,367);
 
 // --------------------------------------------------
 	Special:

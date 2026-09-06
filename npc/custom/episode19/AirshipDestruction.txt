@@ -128,8 +128,13 @@ jor_nest,22,255,6	script	Rope#whl	4_ROPEPILE,{
 	next;
 	if (select( "Cancel", "Rope to Airship" ) == 1)
 		end;
-	instance_create(.@md_name$);
-	end;
+	.@instance_id = instance_create(.@md_name$);
+	if (.@instance_id < 1) {
+		mes "The airship route could not be secured. Nothing was recorded, so please try again shortly.";
+		close;
+	}
+	mes "The rope is secured. Select it again when you are ready to enter the airship.";
+	close;
 
 }
 

@@ -64,7 +64,19 @@ Thumbs.db
 /3rdparty/httplib/obj
 
 # /db/
-/db/import
+# Keep the runtime import directory ignored by default, but explicitly retain
+# the episode fragments maintained by this repository.  Ignoring the entire
+# directory made fresh clones silently omit required Episode 20, Thanatos, and
+# legacy-quest databases even though an existing developer checkout worked.
+/db/import/*
+!/db/import/episode20_instance_db.yml
+!/db/import/episode20_mob_db.yml
+!/db/import/episode20_mob_skill_db.txt
+!/db/import/episode20_quest_db.yml
+!/db/import/legacy_compat_quest_db.yml
+!/db/import/thanatos_mob_db.yml
+!/db/import/thanatos_mob_skill_db.txt
+!/db/import/thanatos_quest_db.yml
 
 # /conf/
 /conf/import

@@ -1,76 +1,406 @@
 // Chapter 2 story and repeatable instances.
+//
+// Native Chapter 2 maps are not publicly extractable from the current Gravity
+// archives. These encounters preserve the published progression and mechanics
+// inside the verified walkable rooms of the synchronized compatibility maps.
 
-// The compatibility maps contain disconnected regions. Keep every required
-// encounter in the same verified-walkable arena as the instance entrance.
+function	script	CH2_ClaimInstanceClear	{
+	.@iid = getarg(0);
+	.@mode = getarg(1); // 1 Crossroads, 2 Nyrholt, 3 Phantom
+	.@party_id = getinstancevar('ch2_party_id,.@iid);
+	.@roster$ = getinstancevar('ch2_roster$,.@iid);
+	if (getcharid(1) != .@party_id || .@roster$ == "" || !compare(.@roster$,","+getcharid(0)+","))
+		return 0;
+	switch (.@mode) {
+	case 1:
+		if (CH2_Step == 2 && !CH2_Crossroads) {
+			CH2_Crossroads = 1;
+			callfunc "CH2_GiveInstanceItem",1002700,3;
+			dispbottom "Crossroads clear: 3 Flame Coins. Report to Guardian El.";
+			return 1;
+		}
+		break;
+	case 2:
+		if ((CH2_Step == 8 || CH2_Step == 9) && !CH2_Nyrholt) {
+			CH2_Nyrholt = 1;
+			callfunc "CH2_GiveInstanceItem",1002700,4;
+			dispbottom "Nyrholt clear: 4 Flame Coins. Return to the Nyrholt Keeper.";
+			return 1;
+		}
+		break;
+	case 3:
+		// Story credit and repeatable credit are deliberately disjoint.
+		// A first story clear must never pre-arm quest 27119's daily turn-in.
+		if (!callfunc("CH2_Complete") && CH2_Step == 11 && !CH2_Phantom) {
+			CH2_Phantom = 1;
+			callfunc "CH2_GiveInstanceItem",1002700,3;
+			dispbottom "Phantom story clear: 3 Flame Coins. Use the exit and report to Guardian El.";
+			return 1;
+		}
+		if (callfunc("CH2_Complete") && isbegin_quest(27119) == 1 && !CH2_DailyPhantom) {
+			CH2_DailyPhantom = 1;
+			dispbottom "Phantom daily clear recorded. Claim 3 Flame Coins at the Phantom Gate or mission board.";
+			return 1;
+		}
+		break;
+	}
+	return 0;
+}
+
+function	script	CH2_RewardInstanceClear	{
+	.@map$ = getarg(0);
+	.@mode = getarg(1);
+	.@iid = getarg(2);
+	.@caller_aid = getcharid(3);
+	.@count = getmapunits(BL_PC,.@map$,.@players[0]);
+	.@credited = 0;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!attachrid(.@players[.@i]))
+			continue;
+		if (strcharinfo(3) == .@map$)
+			.@credited += callfunc("CH2_ClaimInstanceClear",.@iid,.@mode);
+		detachrid;
+	}
+	if (.@caller_aid)
+		attachrid .@caller_aid;
+	return .@credited;
+}
+
+// --------------------------------------------------------------------------
+// Crossroads of Tangled Mana
+// Four tangible knots each release a wave of Wandering Mana. The current
+// client lacks the native Sollith/Wandering Mana resources, so supported
+// Chapter 2 sprites are used as named encounter proxies.
+// --------------------------------------------------------------------------
 1@ch2b,1,1,4	script	#ch2_crossroads	-1,{
 	end;
+
 OnInstanceInit:
-	.@map$ = instance_mapname("1@ch2b");
-	instance_announce instance_id(),"The Tangled Mana core is condensing at the crossroads.",bc_map,0x55AAFF;
-	areamonster .@map$,72,136,99,153,"Tangled Dragon Clam",22674,8,instance_npcname(strnpcinfo(0))+"::OnMinionDead";
-	areamonster .@map$,72,136,99,153,"Tangled Flame Bull",22685,8,instance_npcname(strnpcinfo(0))+"::OnMinionDead";
-	'kills = 0;
+	'ch2_map$ = instance_mapname("1@ch2b");
+	'ch2_knot_active = 0;
+	'ch2_knots_cleared = 0;
+	'ch2_cleared = 0;
+	'ch2_clear_mode = 0;
+	deletearray 'ch2_knot_done;
+	instance_announce instance_id(),"Unravel all four Tangled Mana knots. Each knot releases Wandering Mana.",bc_map,0x55AAFF;
 	end;
-OnMinionDead:
-	'kills++;
-	if ('kills < 16) end;
-	.@map$ = instance_mapname("1@ch2b");
-	instance_announce instance_id(),"The mana core has appeared!",bc_map,0xFF8800;
-	monster .@map$,86,157,"Tangled Mana Core",22686,1,instance_npcname(strnpcinfo(0))+"::OnBossDead";
+
+OnKnot1:
+	callsub S_StartKnot,0,"Mana Knot I#ch2";
 	end;
-OnBossDead:
-	CH2_Crossroads = 1;
-	instance_announce instance_id(),"The Crossroads of Tangled Mana has been cleared.",bc_map,0x66FF66;
-	callfunc "CH2_GiveInstanceItem",1002700,3;
+OnKnot2:
+	callsub S_StartKnot,1,"Mana Knot II#ch2";
+	end;
+OnKnot3:
+	callsub S_StartKnot,2,"Mana Knot III#ch2";
+	end;
+OnKnot4:
+	callsub S_StartKnot,3,"Mana Knot IV#ch2";
+	end;
+
+S_StartKnot:
+	.@index = getarg(0);
+	.@npc$ = getarg(1);
+	if ('ch2_cleared || 'ch2_knot_active || 'ch2_knot_done[.@index])
+		return;
+	'ch2_knot_done[.@index] = 1;
+	'ch2_knot_active = 1;
+	'ch2_wave_remaining = 4;
+	disablenpc instance_npcname(.@npc$);
+	instance_announce instance_id(),"Tangled Mana knot "+(.@index+1)+" unravels; Wandering Mana has appeared!",bc_map,0x66CCFF;
+	areamonster 'ch2_map$,78,139,94,153,"Wandering Mana",22674,4,instance_npcname(strnpcinfo(0))+"::OnWanderingManaDead";
+	return;
+
+OnWanderingManaDead:
+	if (!'ch2_knot_active || 'ch2_cleared)
+		end;
+	--'ch2_wave_remaining;
+	if ('ch2_wave_remaining > 0)
+		end;
+	'ch2_knot_active = 0;
+	++'ch2_knots_cleared;
+	if ('ch2_knots_cleared < 4) {
+		instance_announce instance_id(),"A knot is stable. Unravel the next Tangled Mana knot ("+'ch2_knots_cleared+"/4).",bc_map,0x66FFCC;
+		end;
+	}
+	instance_announce instance_id(),"All four knots are stable. Sollith has emerged at the northern edge!",bc_map,0xFF8800;
+	monster 'ch2_map$,86,157,"Sollith",22686,1,instance_npcname(strnpcinfo(0))+"::OnSollithDead";
+	end;
+
+OnSollithDead:
+	if ('ch2_cleared)
+		end;
+	'ch2_cleared = 1;
+	'ch2_clear_mode = 1;
+	callfunc "CH2_RewardInstanceClear",'ch2_map$,1,instance_id();
+	instance_announce instance_id(),"Crossroads cleared. The exit remains open for 90 seconds.",bc_map,0x66FF66;
+	initnpctimer;
+	end;
+
+OnTimer84000:
+	instance_announce instance_id(),"The Crossroads will close in 6 seconds.",bc_map,0xFFAA33;
+	end;
+OnTimer90000:
+	.@iid = instance_id();
+	instance_warpall "veledor",136,62,.@iid;
+	instance_destroy .@iid;
 	end;
 }
 
+1@ch2b,78,141,4	script	Mana Knot I#ch2	4_ENERGY_BLUE,{
+	if ('ch2_knot_done[0]) { mes "This knot is already stable."; close; }
+	if ('ch2_knot_active) { mes "Defeat the Wandering Mana before touching another knot."; close; }
+	mes "The first knot writhes with tangled mana.";
+	next;
+	if (select("Unravel it:Leave") == 1) { close2; donpcevent instance_npcname("#ch2_crossroads")+"::OnKnot1"; end; }
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@ch2b,94,141,4	script	Mana Knot II#ch2	4_ENERGY_BLUE,{
+	if ('ch2_knot_done[1]) { mes "This knot is already stable."; close; }
+	if ('ch2_knot_active) { mes "Defeat the Wandering Mana before touching another knot."; close; }
+	mes "The second knot pulses with tangled mana.";
+	next;
+	if (select("Unravel it:Leave") == 1) { close2; donpcevent instance_npcname("#ch2_crossroads")+"::OnKnot2"; end; }
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@ch2b,78,151,4	script	Mana Knot III#ch2	4_ENERGY_BLUE,{
+	if ('ch2_knot_done[2]) { mes "This knot is already stable."; close; }
+	if ('ch2_knot_active) { mes "Defeat the Wandering Mana before touching another knot."; close; }
+	mes "The third knot crackles with tangled mana.";
+	next;
+	if (select("Unravel it:Leave") == 1) { close2; donpcevent instance_npcname("#ch2_crossroads")+"::OnKnot3"; end; }
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@ch2b,94,151,4	script	Mana Knot IV#ch2	4_ENERGY_BLUE,{
+	if ('ch2_knot_done[3]) { mes "This knot is already stable."; close; }
+	if ('ch2_knot_active) { mes "Defeat the Wandering Mana before touching another knot."; close; }
+	mes "The fourth knot strains against the World Tree's current.";
+	next;
+	if (select("Unravel it:Leave") == 1) { close2; donpcevent instance_npcname("#ch2_crossroads")+"::OnKnot4"; end; }
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	enablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// --------------------------------------------------------------------------
+// Nyrholt / Phantom of Nyrholt
+// Both expeditions open four successive gates of Mysterious Intruders. The
+// Phantom uses the real CH2_ANTIRRHINUM2 (22711): 1% damage outside an Artea
+// circle and a ten-second, full-damage groggy window after it enters one.
+// --------------------------------------------------------------------------
 1@ch2a,1,1,4	script	#ch2_nyrholt	-1,{
 	end;
+
 OnInstanceInit:
-	.@map$ = instance_mapname("1@ch2a");
-	.@name$ = instance_live_info(ILI_NAME,instance_id());
-	if (.@name$ == "Nyrholt") {
-		instance_announce instance_id(),"Frozen memories guard Nyrholt's heart.",bc_map,0x88CCFF;
-		areamonster .@map$,72,136,99,153,"Frozen Alpuring",22699,10,instance_npcname(strnpcinfo(0))+"::OnStoryMinion";
-		areamonster .@map$,72,136,99,153,"Frozen Icy Blast",22700,10,instance_npcname(strnpcinfo(0))+"::OnStoryMinion";
-		'kills = 0;
-	} else {
-		instance_announce instance_id(),"The Phantom of Nyrholt has manifested.",bc_map,0xFF6688;
-		monster .@map$,86,157,"Phantom Snapdragon",22706,1,instance_npcname(strnpcinfo(0))+"::OnPhantomDead";
+	'ch2_map$ = instance_mapname("1@ch2a");
+	'ch2_instance_name$ = instance_live_info(ILI_NAME,instance_id());
+	'ch2_mode = ('ch2_instance_name$ == "Nyrholt") ? 1 : 2;
+	'ch2_gate = 0;
+	'ch2_gate_remaining = 0;
+	'ch2_stage = 1;
+	'ch2_cleared = 0;
+	'ch2_clear_mode = 0;
+	if ('ch2_mode == 1)
+		instance_announce instance_id(),"Nyrholt's four gates are sealed by Mysterious Intruders.",bc_map,0x88CCFF;
+	else
+		instance_announce instance_id(),"Collect the foreign mana through four gates, then lure the Phantom into Artea's circles.",bc_map,0xFF6688;
+	callsub S_NextGate;
+	end;
+
+S_NextGate:
+	if ('ch2_cleared || 'ch2_stage != 1)
+		return;
+	if ('ch2_gate >= 4) {
+		'ch2_stage = 2;
+		if ('ch2_mode == 1) {
+			instance_announce instance_id(),"All four gates are open. The Snapdragon guards Nyrholt's heart!",bc_map,0xFFAA55;
+			monster 'ch2_map$,86,157,"Snapdragon",22706,1,instance_npcname(strnpcinfo(0))+"::OnSnapdragonDead";
+		} else {
+			instance_announce instance_id(),"The Snapdragon Phantom has appeared. Lure it within three cells of a blue circle.",bc_map,0xFF6688;
+			monster 'ch2_map$,86,157,"Snapdragon Phantom",22711,1,instance_npcname(strnpcinfo(0))+"::OnPhantomDead";
+			'ch2_boss_gid = $@mobid[0];
+			getunitdata 'ch2_boss_gid,.@boss_data;
+			'ch2_boss_mode = .@boss_data[UMOB_MODE];
+			'ch2_groggy_ticks = 0;
+			setunitdata 'ch2_boss_gid,UMOB_DAMAGETAKEN,1;
+			initnpctimer;
+		}
+		return;
 	}
+	setarray .@gate_x[0],78,94,78,94;
+	setarray .@gate_y[0],141,141,151,151;
+	.@x = .@gate_x['ch2_gate];
+	.@y = .@gate_y['ch2_gate];
+	++'ch2_gate;
+	'ch2_gate_remaining = 2;
+	instance_announce instance_id(),"Gate "+'ch2_gate+" of 4 opens: defeat the Mysterious Intruders.",bc_map,0x88CCFF;
+	areamonster 'ch2_map$,.@x-2,.@y-2,.@x+2,.@y+2,"Mysterious Intruder",22706,2,instance_npcname(strnpcinfo(0))+"::OnIntruderDead";
+	return;
+
+OnIntruderDead:
+	if ('ch2_cleared || 'ch2_stage != 1 || 'ch2_gate_remaining < 1)
+		end;
+	--'ch2_gate_remaining;
+	if ('ch2_gate_remaining < 1)
+		callsub S_NextGate;
 	end;
-OnStoryMinion:
-	'kills++;
-	if ('kills < 20) end;
-	.@map$ = instance_mapname("1@ch2a");
-	instance_announce instance_id(),"Frost Morbang is defending the seal!",bc_map,0x88CCFF;
-	monster .@map$,86,157,"Nyrholt's Frost Morbang",22698,1,instance_npcname(strnpcinfo(0))+"::OnStoryBoss";
+
+OnSnapdragonDead:
+	if ('ch2_cleared || 'ch2_mode != 1 || 'ch2_stage != 2)
+		end;
+	'ch2_cleared = 1;
+	'ch2_stage = 3;
+	'ch2_clear_mode = 2;
+	callfunc "CH2_RewardInstanceClear",'ch2_map$,2,instance_id();
+	instance_announce instance_id(),"Nyrholt is restored. The exit remains open for 90 seconds.",bc_map,0x66FF66;
+	stopnpctimer;
+	setnpctimer 0;
+	initnpctimer;
 	end;
-OnStoryBoss:
-	CH2_Nyrholt = 1;
-	instance_announce instance_id(),"Nyrholt's living seal has been restored.",bc_map,0x66FF66;
-	callfunc "CH2_GiveInstanceItem",1002700,5;
-	end;
+
 OnPhantomDead:
-	CH2_Phantom = 1;
-	CH2_DailyPhantom = 1;
-	instance_announce instance_id(),"Phantom Snapdragon has dissolved into a crystal.",bc_map,0x66FF66;
-	callfunc "CH2_GiveInstanceItem",106441,1;
+	if ('ch2_cleared || 'ch2_mode != 2 || 'ch2_stage != 2)
+		end;
+	'ch2_cleared = 1;
+	'ch2_stage = 3;
+	'ch2_clear_mode = 3;
+	'ch2_boss_gid = 0;
+	.@credited = callfunc("CH2_RewardInstanceClear",'ch2_map$,3,instance_id());
+	// MuhRO documents one 10% crystal chance as boss loot. Roll once per
+	// successful party clear, not once per member, and deliver safely to killer.
+	if (.@credited > 0 && rand(100) < 10)
+		callfunc "CH2_GiveInstanceItem",106441,1;
+	instance_announce instance_id(),"The Snapdragon Phantom is defeated. The exit remains open for 90 seconds.",bc_map,0x66FF66;
+	stopnpctimer;
+	setnpctimer 0;
+	initnpctimer;
+	end;
+
+OnTimer1000:
+	if ('ch2_stage != 2 || 'ch2_mode != 2 || !unitexists('ch2_boss_gid))
+		end;
+	if ('ch2_groggy_ticks > 0) {
+		--'ch2_groggy_ticks;
+		if ('ch2_groggy_ticks < 1) {
+			sc_end SC_GROGGY,'ch2_boss_gid;
+			setunitdata 'ch2_boss_gid,UMOB_DAMAGETAKEN,1;
+			setunitdata 'ch2_boss_gid,UMOB_MODE,'ch2_boss_mode;
+			unitwarp 'ch2_boss_gid,'ch2_map$,86,157;
+			instance_announce instance_id(),"The groggy window closed. Lure the Phantom into another circle.",bc_map,0xFFAA55;
+		}
+	} else {
+		getunitdata 'ch2_boss_gid,.@boss_data;
+		setarray .@circle_x[0],78,94,78,94;
+		setarray .@circle_y[0],141,141,151,151;
+		for (.@i = 0; .@i < 4; ++.@i) {
+			if (distance(.@boss_data[UMOB_X],.@boss_data[UMOB_Y],.@circle_x[.@i],.@circle_y[.@i]) > 3)
+				continue;
+			'ch2_groggy_ticks = 10;
+			setunitdata 'ch2_boss_gid,UMOB_DAMAGETAKEN,100;
+			setunitdata 'ch2_boss_gid,UMOB_MODE,('ch2_boss_mode | MD_NOCAST) & ~(MD_CANMOVE | MD_CANATTACK | MD_AGGRESSIVE);
+			unitskilluseid 'ch2_boss_gid,"NPC_GROGGY_ON",5,'ch2_boss_gid,-10000;
+			instance_announce instance_id(),"Artea's circle resonates! The Phantom is groggy and takes full damage for 10 seconds.",bc_map,0x66FFCC;
+			break;
+		}
+	}
+	setnpctimer 0;
+	initnpctimer;
+	end;
+
+OnTimer84000:
+	instance_announce instance_id(),"Nyrholt will close in 6 seconds.",bc_map,0xFFAA33;
+	end;
+OnTimer90000:
+	.@iid = instance_id();
+	if ('ch2_mode == 1)
+		instance_warpall "ragsruth",88,55,.@iid;
+	else
+		instance_warpall "ch2safe4",86,142,.@iid;
+	instance_destroy .@iid;
 	end;
 }
 
-1@ch2a,86,136,0	script	#ch2_instance_exit_a	WARPNPC,1,1,{
-	.@name$ = instance_live_info(ILI_NAME,instance_id());
-	if (.@name$ == "Nyrholt") {
-		warp "ragsruth",88,55;
-		end;
-	}
-	if (CH2_Step >= 12) {
-		warp "kindlbrk",119,212;
-		end;
-	}
-	warp "ch2safe4",86,142;
+1@ch2a,78,141,4	script	Artea Circle I#ch2	4_ENERGY_BLUE,{
+	mes "Artea's magic circle. Lure the Snapdragon Phantom within three cells to open a 10-second groggy window.";
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id()) == "Phantom of Nyrholt") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
 	end;
 }
-1@ch2b,86,136,0	script	#ch2_instance_exit_b	WARPNPC,1,1,{ warp "veledor",136,62; end; }
+1@ch2a,94,141,4	script	Artea Circle II#ch2	4_ENERGY_BLUE,{
+	mes "Artea's magic circle. Lure the Snapdragon Phantom within three cells to open a 10-second groggy window.";
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id()) == "Phantom of Nyrholt") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@ch2a,78,151,4	script	Artea Circle III#ch2	4_ENERGY_BLUE,{
+	mes "Artea's magic circle. Lure the Snapdragon Phantom within three cells to open a 10-second groggy window.";
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id()) == "Phantom of Nyrholt") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+1@ch2a,94,151,4	script	Artea Circle IV#ch2	4_ENERGY_BLUE,{
+	mes "Artea's magic circle. Lure the Snapdragon Phantom within three cells to open a 10-second groggy window.";
+	close;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id()) == "Phantom of Nyrholt") enablenpc instance_npcname(strnpcinfo(0));
+	else disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+
+// Exits are always available. Before a clear they are a safe retreat; after a
+// clear they remain usable during the 90-second reward/re-entry grace period.
+1@ch2a,86,136,0	script	#ch2_instance_exit_a	WARPNPC,1,1,{
+	if ('ch2_clear_mode)
+		callfunc "CH2_ClaimInstanceClear",instance_id(),'ch2_clear_mode;
+	if (instance_live_info(ILI_NAME,instance_id()) == "Nyrholt")
+		warp "ragsruth",88,55;
+	else
+		warp "ch2safe4",86,142;
+	end;
+}
+1@ch2b,86,136,0	script	#ch2_instance_exit_b	WARPNPC,1,1,{
+	if ('ch2_clear_mode)
+		callfunc "CH2_ClaimInstanceClear",instance_id(),'ch2_clear_mode;
+	warp "veledor",136,62;
+	end;
+}

@@ -805,40 +805,67 @@ Body:
         StealProtected: true
   - Id: 22706
     AegisName: CH2_ANTIRRHINUM
-    Name: Phantom Snapdragon
+    Name: Mysterious Intruder
     Level: 235
     Hp: 25000000
-    BaseExp: 12000000
-    JobExp: 8400000
+    BaseExp: 0
+    JobExp: 0
+    # Public kRO databases omit the attack values. These two values are retained
+    # as explicit compatibility estimates so the encounter remains functional.
     Attack: 15500
     Attack2: 19000
-    Defense: 550
-    MagicDefense: 480
-    Resistance: 350
-    MagicResistance: 330
-    Str: 225
-    Agi: 205
-    Vit: 210
-    Int: 220
-    Dex: 250
-    Luk: 100
-    AttackRange: 3
+    Defense: 749
+    MagicDefense: 556
+    Str: 1
+    Agi: 1
+    Vit: 1
+    Int: 1
+    Dex: 1
+    Luk: 1
+    AttackRange: 1
     SkillRange: 12
     ChaseRange: 14
-    Size: Large
-    Race: Plant
+    Size: Medium
+    Race: Formless
     Element: Dark
     ElementLevel: 4
-    WalkSpeed: 135
-    AttackDelay: 680
-    AttackMotion: 500
+    WalkSpeed: 150
+    AttackDelay: 862
+    AttackMotion: 430
     DamageMotion: 360
-    DamageTaken: 10
     Ai: '21'
-    Class: Boss
+  - Id: 22711
+    AegisName: CH2_ANTIRRHINUM2
+    Name: Phantom of Antirrhinum
+    Level: 225
+    Hp: 50000000
+    BaseExp: 0
+    JobExp: 0
+    # Attack/ranges are absent from current kRO tables. Reuse the compatible
+    # intruder offense while keeping every published identity/stat exact.
+    Attack: 15500
+    Attack2: 19000
+    Defense: 749
+    MagicDefense: 556
+    Str: 1
+    Agi: 1
+    Vit: 1
+    Int: 1
+    Dex: 1
+    Luk: 1
+    AttackRange: 1
+    SkillRange: 12
+    ChaseRange: 14
+    Size: Medium
+    Race: Formless
+    Element: Dark
+    ElementLevel: 4
+    WalkSpeed: 150
+    AttackDelay: 360
+    AttackMotion: 360
+    DamageMotion: 360
+    Ai: '21'
     Drops:
-      - Item: Ch2_Phantom_Crystal
-        Rate: 10000
       - Item: aegis_300783
         Rate: 1
         StealProtected: true

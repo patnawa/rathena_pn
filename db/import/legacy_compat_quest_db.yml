@@ -1,0 +1,69 @@
+###########################################################################
+# Legacy compatibility quest records
+###########################################################################
+# These official quest IDs are still queried by enabled upstream scripts but
+# are absent from the current rAthena quest database. Keeping the records here
+# preserves old character state and makes the enabled completion paths valid.
+###########################################################################
+
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  # Morroc reconstruction missions handled by the Reward Coordinator.
+  - Id: 5251
+    Title: Wood Supply Mission
+  - Id: 5253
+    Title: Wood Delivery Mission
+  - Id: 5255
+    Title: Rope Making Mission
+  - Id: 5256
+    Title: (Pending) Rope Making Mission
+    TimeLimit: +3h
+  - Id: 5257
+    Title: Rope Delivery Mission
+  - Id: 5259
+    Title: Brick Making Mission
+  - Id: 5261
+    Title: Brick Delivery Mission
+  - Id: 5263
+    Title: Snack Order
+  - Id: 5265
+    Title: Purging the Land (1)
+    Targets:
+      - Mob: MOROCC_1
+        Count: 10
+  - Id: 5266
+    Title: Purging the Land (2)
+    Targets:
+      - Mob: MOROCC_2
+        Count: 10
+  - Id: 5267
+    Title: Purging the Land (3)
+    Targets:
+      - Mob: MOROCC_3
+        Count: 10
+  - Id: 5268
+    Title: Purging the Land (4)
+    Targets:
+      - Mob: MOROCC_4
+        Count: 10
+  - Id: 5270
+    Title: Worker Transport
+  - Id: 5271
+    Title: Worker Transport
+  - Id: 5272
+    Title: Worker Transport
+  - Id: 5273
+    Title: Worker Transport
+  - Id: 5274
+    Title: Worker Transport
+
+  # Doram/Lasagna repeatable quest states used by enabled NPCs.
+  - Id: 14564
+    Title: I love buns, too
+  - Id: 14577
+    Title: Meal Box Delivery
+  - Id: 14578
+    Title: Delivery Complete Report

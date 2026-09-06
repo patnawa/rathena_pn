@@ -55,3 +55,90 @@ Body:
           - Ch2_Blaze_Necklace
     Script: |
       bonus bMatkRate,10; bonus2 bMagicAtkEle,Ele_All,10; bonus2 bMagicAddRace,RC_All,15;
+
+  # Chapter 2 card set bonuses documented by MuhRO.
+  # Scripts below contain only the set bonus; each card's standalone effect lives
+  # in db/import/chapter2_item_db.yml and must not be repeated here.
+  - Combos:
+      - Combo:
+          - aegis_300761
+          - Engkanto_Card
+    Script: |
+      bonus2 bMagicAddEle,Ele_Poison,18;
+  - Combos:
+      - Combo:
+          - aegis_300764
+          - Engkanto_Card
+    Script: |
+      bonus2 bMagicAddEle,Ele_Poison,18;
+  - Combos:
+      - Combo:
+          - aegis_300765
+          - aegis_300776
+    Script: |
+      bonus bSMatk,3; bonus bVariableCastrate,-10; bonus bDelayrate,-4;
+  - Combos:
+      - Combo:
+          - aegis_300766
+          - aegis_300767
+    Script: |
+      bonus bNonCritAtkRate,10;
+  - Combos:
+      - Combo:
+          - aegis_300768
+          - aegis_300770
+    Script: |
+      bonus2 bAddEle,Ele_Fire,10; bonus2 bAddRace,RC_Formless,10; bonus2 bAddSize,Size_Medium,10; bonus2 bAddSize,Size_Large,10;
+      .@type = getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_VIEW);
+      if (.@type==W_2HSWORD || .@type==W_2HSPEAR || .@type==W_2HSTAFF || .@type==W_2HAXE || .@type==W_KATAR || .@type==W_BOW || .@type==W_HUUMA || .@type==W_REVOLVER || .@type==W_RIFLE || .@type==W_GATLING || .@type==W_SHOTGUN || .@type==W_GRENADE) {
+        bonus2 bAddEle,Ele_Fire,25; bonus2 bAddRace,RC_Formless,25; bonus2 bAddSize,Size_Medium,25; bonus2 bAddSize,Size_Large,25; bonus bPAtk,7;
+      }
+  - Combos:
+      - Combo:
+          - aegis_300768
+          - aegis_300772
+    Script: |
+      bonus2 bAddEle,Ele_Fire,5; bonus2 bAddRace,RC_Formless,5; bonus bMaxHPrate,3;
+  - Combos:
+      - Combo:
+          - aegis_300769
+          - aegis_300771
+    Script: |
+      bonus2 bMagicAddEle,Ele_Fire,10; bonus2 bMagicAddRace,RC_Formless,10; bonus2 bMagicAddSize,Size_Medium,10; bonus2 bMagicAddSize,Size_Large,10;
+      .@type = getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_VIEW);
+      if (.@type==W_2HSWORD || .@type==W_2HSPEAR || .@type==W_2HSTAFF || .@type==W_2HAXE || .@type==W_KATAR || .@type==W_BOW || .@type==W_HUUMA || .@type==W_REVOLVER || .@type==W_RIFLE || .@type==W_GATLING || .@type==W_SHOTGUN || .@type==W_GRENADE) {
+        bonus2 bMagicAddEle,Ele_Fire,25; bonus2 bMagicAddRace,RC_Formless,25; bonus2 bMagicAddSize,Size_Medium,25; bonus2 bMagicAddSize,Size_Large,25; bonus bSMatk,7;
+      }
+  - Combos:
+      - Combo:
+          - aegis_300769
+          - aegis_300772
+    Script: |
+      bonus2 bMagicAddEle,Ele_Fire,5; bonus2 bMagicAddRace,RC_Formless,5; bonus bMaxHPrate,3;
+  - Combos:
+      - Combo:
+          - aegis_300770
+          - aegis_300772
+    Script: |
+      bonus2 bAddSize,Size_Medium,5; bonus2 bAddSize,Size_Large,5; bonus bMaxHPrate,3;
+  - Combos:
+      - Combo:
+          - aegis_300771
+          - aegis_300772
+    Script: |
+      bonus2 bMagicAddSize,Size_Medium,5; bonus2 bMagicAddSize,Size_Large,5; bonus bMaxHPrate,3;
+  - Combos:
+      - Combo:
+          - aegis_300773
+          - aegis_300762
+      - Combo:
+          - aegis_300773
+          - aegis_300780
+    Script: |
+      bonus bNonCritAtkRate,8;
+  - Combos:
+      - Combo:
+          - aegis_300778
+          - aegis_300779
+    Script: |
+      bonus bNonCritAtkRate,10;

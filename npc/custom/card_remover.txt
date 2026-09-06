@@ -87,7 +87,8 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 		}
 		mes "[Wise Old Woman]";
 		mes "Very well. I shall begin.";
-		set Zeny, Zeny - (.zenycost+(.@cardcount * .percardcost));
+		set .@cost, .zenycost+(.@cardcount * .percardcost);
+		set Zeny, Zeny - .@cost;
 		delitem 1000,1; //Star_Crumb
 		delitem 715,1; //Yellow_Gemstone
 		
@@ -100,7 +101,8 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 		if (.faildestroy==1) {
 			if(.@failchance < 2) {
 				next;
-				failedremovecards .@part,0;
+				if (!failedremovecards(.@part,0))
+					callfunc "F_CardRemovalRefund",.@cost;
 				mes "[Wise Old Woman]";
 				mes "The process was a total failure. I am afraid the item and the cards were destroyed.";
 				close;
@@ -109,7 +111,8 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 			if(.@failchance < 8) {
 				if (.@failtype == 1) {
 					next;
-					failedremovecards .@part,1;
+					if (!failedremovecards(.@part,1))
+						callfunc "F_CardRemovalRefund",.@cost;
 					mes "[Wise Old Woman]";
 					mes "While I have managed to remove the cards from the item, they were destroyed in the process. The item, however, is okay.";
 					close;
@@ -117,7 +120,8 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 
 				if (.@failtype == 2) {
 					next;
-					failedremovecards .@part,2;
+					if (!failedremovecards(.@part,2))
+						callfunc "F_CardRemovalRefund",.@cost;
 					mes "[Wise Old Woman]";
 					mes "Most unfortunate. I succeeded at removing the cards, but the item itself was destroyed in the process.";
 					close;
@@ -127,13 +131,15 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 
 		if(.@failchance < 10) {
 			next;
-			failedremovecards .@part,3;
+			if (!failedremovecards(.@part,3))
+				callfunc "F_CardRemovalRefund",.@cost;
 			mes "[Wise Old Woman]";
 			mes "I have failed to remove the cards. Luckily, however, both the item and the cards are still okay.";
 			close;
 		}
 		next;
-		successremovecards .@part;
+		if (!successremovecards(.@part))
+			callfunc "F_CardRemovalRefund",.@cost;
 		mes "[Wise Old Woman]";
 		mes "The process was a success. Here are your cards and your item. Farewell.";
 		close;
@@ -146,4 +152,18 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 		mes "Very well. Return at once if you seek my services.";
 		close;
 	}
+}
+
+// A zero command result means the core transaction never committed (for
+// example, inventory capacity changed or an unequip script invalidated its
+// compare-and-swap guard). Only these technical aborts refund the service fee;
+// ordinary harmless/destructive outcomes still consume it as advertised.
+function	script	F_CardRemovalRefund	{
+	Zeny += getarg(0);
+	getitem 1000,1; // Star_Crumb
+	getitem 715,1;  // Yellow_Gemstone
+	mes "[Wise Old Woman]";
+	mes "The operation was stopped safely because your equipment or inventory changed.";
+	mes "Your Zeny and materials have been refunded.";
+	close;
 }

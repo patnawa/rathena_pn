@@ -786,17 +786,25 @@ dali,98,141,3	script	Emmitt White	4_M_KHKYEL,{
 						mes "Come back if you change your mind~!";
 						end;
 					case 2:
+						.@instance_id = instance_create(.@md_name$);
+						if (.@instance_id < 0) {
+							mes "Party Name: "+.@p_name$;
+							mes "Party Leader: "+strcharinfo(0);
+							mes "^0000ff"+.@md_name$+" ^000000- Reservation Failed!";
+							mes "No quest progress was changed. Please try again.";
+							end;
+						}
+						GMTRewardClaimed = 0;
+						GMT_Pending_9310 = 0;
+						GMT_Pending_9311 = 0;
+						GMT_Pending_9312 = 0;
+						GMT_Pending_9313 = 0;
+						GMT_Pending_9314 = 0;
+
 						for (.@i = 9284; .@i <= 9314; .@i++) {
 							if (checkquest(.@i) != -1) {
 								erasequest .@i;
 							}
-						}
-						
-						if (instance_create(.@md_name$) < 0) {
-							mes "Party Name: "+.@p_name$;
-							mes "Party Leader: "+strcharinfo(0);
-							mes "^0000ff"+.@md_name$+" ^000000- Reservation Failed!";
-							end;
 						}
 						mes .@n$; 
 						mes "The Dimensional Device has been activated.";
@@ -829,10 +837,10 @@ dali,98,141,3	script	Emmitt White	4_M_KHKYEL,{
 }
 
 1@gef,120,34,4	script	#gefmagic_warp01	45,2,2,{
-	callfunc("InventoryCheck");
-	end;
+	goto L_Warp;
 
 OnTouch:
+L_Warp:
 	movenpc instance_npcname("Old Bachelor#z1_0et"),1,1;
 	movenpc instance_npcname("Dio Anemos#z1_0et"),1,1;
 	movenpc instance_npcname("Ju#z1_0et"),1,1;
@@ -1402,8 +1410,20 @@ OnInstanceInit:
 	.@n$ = "[ Tournament Guide ]";
 	ignoretimeout 1;
 	if (checkquest(9308) != -1) {
+		if (GMTRewardClaimed) {
+			mes .@n$;
+			mes "You have already received the champion reward for this tournament.";
+			mes "Return to Emmitt White to report the result.";
+			end;
+		}
 		switch(select("Leave the Arena and receive your reward:End Conversation")) {
 			case 1:
+				.@reward_amount = 'reward[getarraysize('reward[0]) - 1];
+				if (!checkweight(6671,.@reward_amount)) {
+					mes .@n$;
+					mes "Please make room in your inventory before receiving the tournament coins.";
+					end;
+				}
 				mes .@n$;
 				mes "You won the competition!","Congratulations!";
 				next;
@@ -1437,7 +1457,8 @@ OnInstanceInit:
 				"Geffen Festivities.";
 				close2;
 				cutin "",255;
-				getitem 6671,'reward[getarraysize('reward[0]) - 1];
+				getitem 6671,.@reward_amount;
+				GMTRewardClaimed = 1;
 				warp instance_mapname("1@gef"), 120,35;
 				end;
 			case 2:
@@ -1457,6 +1478,12 @@ OnInstanceInit:
 	
 			switch(select(.@menu$,"End Conversation")) {
 			case 1:
+					.@reward_amount = 'reward['GMT_1QUE-11];
+					if (!checkweight(6671,.@reward_amount)) {
+						mes .@n$;
+						mes "Please make room in your inventory before starting the next match.";
+						end;
+					}
 					mes .@n$;
 					mes "Winners of each round will receive ^55CC55Geffen Magic Tournament Coins^000000 as a reward.";
 					next;
@@ -1466,7 +1493,7 @@ OnInstanceInit:
 					mes .@n$;
 					mes "The "+callfunc("F_GetNumSuffix",('GMT_1QUE-9))+" match of Group A is about to begin!";
 					close2;
-					getitem 6671, 'reward['GMT_1QUE-11];
+					getitem 6671,.@reward_amount;
 					hideonnpc instance_npcname("Tournament Healer#1");
 					
 					switch ('GMT_1QUE) {
@@ -3812,8 +3839,18 @@ OnLoseRound:
 		mes .@n$;
 		mes "Please take this present.";
 		setarray .items,501,502,503,504,505,506,608,607;
-		getitem .items[rand(0,7)],1;
+		if (!GMT_Pending_9314)
+			GMT_Pending_9314 = .items[rand(0,7)];
+		if (!checkweight(GMT_Pending_9314,1)) {
+			mes .@n$;
+			mes "Please make room in your inventory and speak to me again.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		getitem GMT_Pending_9314,1;
 		erasequest 9314;
+		GMT_Pending_9314 = 0;
 		cutin "", 255;
 		end;
 	}
@@ -3848,8 +3885,18 @@ OnEnable:
 		mes .@n$;
 		mes "I want to give you a reward even if you lost~!";
 		setarray .items,501,502,503,504,505,506,608,607;
-		getitem .items[rand(0,7)],1;
+		if (!GMT_Pending_9312)
+			GMT_Pending_9312 = .items[rand(0,7)];
+		if (!checkweight(GMT_Pending_9312,1)) {
+			mes .@n$;
+			mes "Please make room in your inventory and speak to me again.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		getitem GMT_Pending_9312,1;
 		erasequest 9312;
+		GMT_Pending_9312 = 0;
 		cutin "", 255;
 		end;
 	}
@@ -3883,8 +3930,18 @@ OnEnable:
 		mes .@n$;
 		mes "Take this to cheer you up.";
 		setarray .items,501,502,503,504,505,506,608,607;
-		getitem .items[rand(0,7)],1;
+		if (!GMT_Pending_9310)
+			GMT_Pending_9310 = .items[rand(0,7)];
+		if (!checkweight(GMT_Pending_9310,1)) {
+			mes .@n$;
+			mes "Please make room in your inventory and speak to me again.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		getitem GMT_Pending_9310,1;
 		erasequest 9310;
+		GMT_Pending_9310 = 0;
 		cutin "", 255;
 		end;
 	}
@@ -3919,8 +3976,18 @@ OnEnable:
 			mes "You have been very impressive today.";
 			mes "I want to give you a present~!";
 			setarray .items,501,502,503,504,505,506,608,607;
-			getitem .items[rand(0,7)],1;
+			if (!GMT_Pending_9311)
+				GMT_Pending_9311 = .items[rand(0,7)];
+			if (!checkweight(GMT_Pending_9311,1)) {
+				mes .@n$;
+				mes "Please make room in your inventory and speak to me again.";
+				close2;
+				cutin "",255;
+				end;
+			}
+			getitem GMT_Pending_9311,1;
 			erasequest 9311;
+			GMT_Pending_9311 = 0;
 			cutin "", 255;
 			end;
 		}
@@ -3954,8 +4021,18 @@ OnEnable:
 		mes "Take this gift.";
 		mes "Keep trying harder~!";
 		setarray .items,501,502,503,504,505,506,608,607;
-		getitem .items[rand(0,7)],1;
+		if (!GMT_Pending_9313)
+			GMT_Pending_9313 = .items[rand(0,7)];
+		if (!checkweight(GMT_Pending_9313,1)) {
+			mes .@n$;
+			mes "Please make room in your inventory and speak to me again.";
+			close2;
+			cutin "",255;
+			end;
+		}
+		getitem GMT_Pending_9313,1;
 		erasequest 9313;
+		GMT_Pending_9313 = 0;
 		cutin "", 255;
 		end;
 	}

@@ -62,24 +62,34 @@ prontera,147,61,3	script	Driller#pron	87,{
 		mes "I can't identify the accessory item you're wearing on your right hand. I can't work on it.";
 		close;
 	}
-	if (getequipcardid(.@part,3) > 0) {
+	.@equip_refine = getequiprefinerycnt(.@part);
+	setarray .@equip_card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+	if (.@equip_card[0] > 0 || .@equip_card[1] > 0 || .@equip_card[2] > 0 || .@equip_card[3] > 0) {
 		mes "[Driller]";
 		mes "This item has already been enchanted. I can't work on this as it is against the rules.";
 		close;
 	}
 
 	// anti-hack
-	if (callfunc("F_IsEquipIDHack", .@part, .@equip_id))
+	if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 		close;
 
-	delequip .@part;
 	if (rand(1,10) > 5) {
-		getitem .@slotted,1;
+		if (!modifyequipitem(.@part,.@equip_id,.@slotted,-1,-1,0,0)) {
+			mes "[Driller]";
+			mes "The equipped accessory changed before drilling could finish. Nothing was altered.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Driller]";
 		mes "Yay! Success! Your "+.@name$+" now has a card slot. Check it out!";
 		close;
 	} else {
+		if (!deleteequipitem(.@part,.@equip_id,.@equip_refine,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3])) {
+			mes "[Driller]";
+			mes "The equipped accessory changed before drilling could finish. Nothing was altered.";
+			close;
+		}
 		specialeffect2 EF_LORD;
 		mes "[Driller]";
 		mes "Awww... Damn weak "+.@str$+"... It broke during the procedure. I'm sorry.";
@@ -119,6 +129,7 @@ prontera,147,59,3	script	Goldberg#pron	878,{
 		close;
 	}
 	setarray .@equip_card[0], getequipcardid(.@part,0),getequipcardid(.@part,1),getequipcardid(.@part,2),getequipcardid(.@part,3);
+	set .@equip_refine, getequiprefinerycnt(.@part);
 	if (.@select == 1) {
 		switch(getequipid(.@part)) {
 		case 2966:
@@ -266,21 +277,26 @@ prontera,147,59,3	script	Goldberg#pron	878,{
 		    callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]))
 			close;
 
-		set .@equip_card[.@slot], .@enchant;
+		copyarray .@new_card[0], .@equip_card[0], 4;
+		set .@old_card, .@equip_card[.@slot];
+		set .@new_card[.@slot], .@enchant;
 		if (.@slot == 2 && .@enchant == 0) {
-			set .@equip_card[3],0;
+			set .@new_card[3],0;
 		} else if (.@slot == 1 && .@enchant == 0) {
-			set .@equip_card[2],0;
-			set .@equip_card[3],0;
+			set .@new_card[2],0;
+			set .@new_card[3],0;
 		} else if (.@slot == 0 && .@enchant == 0) {
-			set .@equip_card[1],0;
-			set .@equip_card[2],0;
-			set .@equip_card[3],0;
+			set .@new_card[1],0;
+			set .@new_card[2],0;
+			set .@new_card[3],0;
 		}
 
-		set .@equip_refine, getequiprefinerycnt(.@part);
-		delequip .@part;
 		if (.@enchant == 9) {
+			if (!deleteequipitem(.@part,.@equip_id,.@equip_refine,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3])) {
+				mes "[Goldberg]";
+				mes "The equipped accessory changed before the failed enchantment could finish. Nothing was altered.";
+				close;
+			}
 			mes "[Goldberg]";
 			mes "Oh gosh!";
  			mes "The item was not strong enough to bear the enchantment and thus got destroyed. I am sorry.";
@@ -288,18 +304,26 @@ prontera,147,59,3	script	Goldberg#pron	878,{
 			close;
 		}
 		if (.@enchant == 0) { // Should never happen.
+			if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+				.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],-1,
+				.@new_card[0],.@new_card[1],.@new_card[2],.@new_card[3],0)) {
+				mes "[Goldberg]";
+				mes "The equipped accessory changed before the unstable enchantment could be cleared. Nothing was altered.";
+				close;
+			}
 			mes "[Goldberg]";
 			mes "Oh... It looks like there was an instability of some sort between all the powers infused. This caused all the enchantments to vanish. It is a shame, but please try again!";
 		} else {
+			if (!modifyequipitem(.@part,.@equip_id,0,-1,.@slot,.@old_card,.@enchant)) {
+				mes "[Goldberg]";
+				mes "The equipped accessory changed before I could apply the enchantment. Nothing was altered.";
+				close;
+			}
 			mes "[Goldberg]";
 			mes "Great!";
 			mes "The enchantment is a success! It will be applied in socket No.^990000"+(.@slot+1)+"^000000.";
 			specialeffect2 EF_REPAIRWEAPON;
 		}
-
-//		GetNonSlotItemSock2 .@equip_refine .@equip_id .@equip_card[0] .@equip_card[1] .@equip_card[2] .@equip_card[3]
-		getitem2 .@equip_id,1,1,.@equip_refine,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
-
 		close;
 	} else if (.@select == 2) {
 		mes "[Goldberg]";
@@ -320,19 +344,29 @@ prontera,147,59,3	script	Goldberg#pron	878,{
 			mes "Hm... this equipment is clean. I cannot initialize it if there's nothing! Check it again.";
 			close;
 		}
+		if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) ||
+		    callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) ||
+		    callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
+			close;
+
+		delitem 6665,1; //RWC_Inicializer
+		copyarray .@new_card[0], .@equip_card[0], 4;
+		for ( .@i = getiteminfo(.@equip_id, ITEMINFO_SLOT); .@i < MAX_SLOTS; .@i++ ) {
+			if (getiteminfo(.@new_card[.@i], ITEMINFO_SUBTYPE) == CARD_ENCHANT)
+				.@new_card[.@i] = 0;// Armor Enchant System
+		}
+		if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+			.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],-1,
+			.@new_card[0],.@new_card[1],.@new_card[2],.@new_card[3],0)) {
+			getitem 6665,1;
+			mes "[Goldberg]";
+			mes "The equipped accessory changed before initialization could finish. Your coupon was returned.";
+			close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Goldberg]";
-		mes "The enchant option in your item will be initialized.";
-		delitem 6665,1; //RWC_Inicializer
-		delequip .@part;
-	
-//		GetNonSlotItemSock2 .@equip_refine .@equip_id .@equip_card[0] .@equip_card[1] .@equip_card[2] .@equip_card[3]
-		for ( .@i = getiteminfo(.@equip_id, ITEMINFO_SLOT); .@i < MAX_SLOTS; .@i++ ) {
-			if (getiteminfo(.@equip_card[.@i], ITEMINFO_SUBTYPE) == CARD_ENCHANT)
-				.@equip_card[.@i] = 0;// Armor Enchant System
-		}
-		getitem2 .@equip_id,1,1,.@equip_refine,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
-		
+		mes "The enchant option in your item has been initialized.";
+
 		close;
 	}
 }

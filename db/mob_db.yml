@@ -89,6 +89,8 @@ Footer:
   - Path: db/re/mob_db.yml
     Mode: Renewal
   - Path: db/import/mob_db.yml
+  - Path: db/import/episode20_mob_db.yml
+  - Path: db/import/thanatos_mob_db.yml
   - Path: db/import/biosphere_mob_db.yml
   - Path: db/import/zero_cell_mob_db.yml
   - Path: db/import/chapter2_mob_db.yml

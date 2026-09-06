@@ -19,54 +19,6 @@ function	script	FOGH_IsEquipment	{
 	return .@id >= 32228 && .@id <= 32233;
 }
 
-// Recreates the selected equipped artifact while preserving its physical
-// card, refine, grade, identify/broken state, binding, and random options.
-function	script	FOGH_RebuildEquipment	{
-	.@part = getarg(0);
-	.@new1 = getarg(1);
-	.@new2 = getarg(2);
-	.@new3 = getarg(3);
-	switch (.@part) {
-	case EQI_ARMOR:
-		.@mask = EQP_ARMOR;
-		break;
-	case EQI_GARMENT:
-		.@mask = EQP_GARMENT;
-		break;
-	case EQI_ACC_L:
-		.@mask = EQP_ACC_L;
-		break;
-	default:
-		return 0;
-	}
-	getinventorylist;
-	.@idx = -1;
-	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i] & .@mask) && callfunc("FOGH_IsEquipment",@inventorylist_id[.@i])) {
-			.@idx = .@i;
-			break;
-		}
-	}
-	if (.@idx < 0)
-		return 0;
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@id = @inventorylist_id[.@idx];
-	.@identify = @inventorylist_identify[.@idx];
-	.@refine = @inventorylist_refine[.@idx];
-	.@attribute = @inventorylist_attribute[.@idx];
-	.@grade = @inventorylist_enchantgrade[.@idx];
-	.@bound = @inventorylist_bound[.@idx];
-	.@card0 = @inventorylist_card1[.@idx];
-	delitemidx @inventorylist_idx[.@idx],1;
-	if (.@bound)
-		getitembound4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@bound,.@grade,.@oid,.@oval,.@opar;
-	else
-		getitem4 .@id,1,.@identify,.@refine,.@attribute,.@card0,.@new1,.@new2,.@new3,.@grade,.@oid,.@oval,.@opar;
-	return 1;
-}
-
 glast_01,241,290,5	script	Oscar#fogh_gate	4_ED_OSCAR,{
 	mes "[Oscar]";
 	if (BaseLevel < 130) {
@@ -335,8 +287,10 @@ glast_01,243,296,5	script	OSC1127#fogh	2_SLOT_MACHINE,{
 			end;
 		delitem .@mat1,.@amount1*5;
 		delitem .@mat2,.@amount2*5;
-		if (!callfunc("FOGH_RebuildEquipment",.@part,0,0,0)) {
-			mes "The equipped artifact could not be located. No further processing is possible.";
+		if (!resetequipenchants(.@part,.@id,.@card[0],.@card[1],.@card[2],.@card[3])) {
+			getitem .@mat1,.@amount1*5;
+			getitem .@mat2,.@amount2*5;
+			mes "The equipped artifact changed. Your materials were refunded.";
 			close;
 		}
 		specialeffect2 EF_REPAIRWEAPON;
@@ -372,12 +326,19 @@ glast_01,243,296,5	script	OSC1127#fogh	2_SLOT_MACHINE,{
 		}
 		if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@check[0],.@check[1],.@check[2],.@check[3]))
 			end;
+		.@old_enchant = .@card[1];
 		Zeny -= 30000000;
 		delitem 25740,50;
 		delitem 6755,200;
 		delitem 7925,3;
 		.@card[1] = .@enchant;
-		callfunc "FOGH_RebuildEquipment",.@part,.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(.@part,.@id,0,-1,1,.@old_enchant,.@card[1])) {
+			Zeny += 30000000;
+			getitem 25740,50;
+			getitem 6755,200;
+			getitem 7925,3;
+			mes "The equipped artifact changed. Your fee was refunded."; close;
+		}
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "The special enchant ^3366FF"+getitemname(.@enchant)+"^000000 was installed.";
 		close;
@@ -398,10 +359,15 @@ glast_01,243,296,5	script	OSC1127#fogh	2_SLOT_MACHINE,{
 	if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@check[0],.@check[1],.@check[2],.@check[3]))
 		end;
 	.@enchant = .@pool[rand(getarraysize(.@pool))];
+	.@old_enchant = .@card[.@slot];
 	.@card[.@slot] = .@enchant;
 	delitem .@mat1,.@amount1;
 	delitem .@mat2,.@amount2;
-	callfunc "FOGH_RebuildEquipment",.@part,.@card[1],.@card[2],.@card[3];
+	if (!modifyequipitem(.@part,.@id,0,-1,.@slot,.@old_enchant,.@card[.@slot])) {
+		getitem .@mat1,.@amount1;
+		getitem .@mat2,.@amount2;
+		mes "The equipped artifact changed. Your materials were refunded."; close;
+	}
 	specialeffect2 EF_REPAIRWEAPON;
 	mes "Installed enchant: ^3366FF"+getitemname(.@enchant)+"^000000.";
 	close;
@@ -476,13 +442,27 @@ glast_01,241,296,5	script	OSC1198#fogh	2_DROP_MACHINE,{
 		close;
 	if (callfunc("F_IsEquipIDHack",.@part,.@id) || callfunc("F_IsEquipRefineHack",.@part,.@refine) || callfunc("F_IsEquipCardHack",.@part,.@card[0],.@card[1],.@card[2],.@card[3]))
 		end;
-	delequip .@part;
 	.@amount = rand(.@minimum[.@enchants],.@maximum[.@enchants]);
-	getitem .@material,.@amount;
-	mes "Recovered ^3366FF"+.@amount+" "+getitemname(.@material)+"^000000.";
-	if (rand(100) < 3) {
+	.@has_bonus = rand(100) < 3;
+	setarray .@reward_item[0],.@material;
+	setarray .@reward_amount[0],.@amount;
+	if (.@has_bonus) {
 		setarray .@costume[0],31631,31632,31633;
 		.@bonus = .@costume[rand(3)];
+		.@reward_item[1] = .@bonus;
+		.@reward_amount[1] = 1;
+	}
+	if (!checkweight2(.@reward_item,.@reward_amount)) {
+		mes "Make room for every dismantling result before destroying the artifact.";
+		close;
+	}
+	if (!delequip(.@part)) {
+		mes "The equipped artifact changed, so nothing was dismantled.";
+		close;
+	}
+	getitem .@material,.@amount;
+	mes "Recovered ^3366FF"+.@amount+" "+getitemname(.@material)+"^000000.";
+	if (.@has_bonus) {
 		getitem .@bonus,1;
 		mes "Memento recovered: ^33AA33"+getitemname(.@bonus)+"^000000!";
 	}
@@ -1232,7 +1212,9 @@ OnTimer300000:
 		close;
 	}
 	if ('fogh_advanced) {
-		if (!checkweight(25740,6) || !checkweight(102551,1)) {
+		setarray .@reward_item[0],25740,102551;
+		setarray .@reward_amount[0],6,1;
+		if (!checkweight2(.@reward_item,.@reward_amount)) {
 			mes "You are carrying too much to receive the reward.";
 			close;
 		}
@@ -1240,7 +1222,9 @@ OnTimer300000:
 		getitem 102551,1;
 		mes "Reward: ^3366FF6 "+getitemname(25740)+"^000000 and ^3366FF1 "+getitemname(102551)+"^000000.";
 	} else {
-		if (!checkweight(25739,3) || !checkweight(102550,1)) {
+		setarray .@reward_item[0],25739,102550;
+		setarray .@reward_amount[0],3,1;
+		if (!checkweight2(.@reward_item,.@reward_amount)) {
 			mes "You are carrying too much to receive the reward.";
 			close;
 		}

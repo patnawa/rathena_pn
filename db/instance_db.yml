@@ -48,4 +48,5 @@ Footer:
   - Path: db/re/instance_db.yml
     Mode: Renewal
   - Path: db/import/instance_db.yml
+  - Path: db/import/episode20_instance_db.yml
   - Path: db/import/chapter2_instance_db.yml

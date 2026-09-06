@@ -1273,15 +1273,21 @@ moc_para01,179,27,3	script	Dark Luhir#new10	4_F_VALKYRIE2,{
 			close;
 
 		if (.@card[3] == 0) {
-			.@card[3] = .@enchants[ rand(3) ];
+			.@slot_index = 3;
+			.@old_enchant = .@card[3];
+			.@new_enchant = .@enchants[ rand(3) ];
 			.@slot = 4;
 		}
 		else if (.@card[2] == 0 && .@refine >= 7) {
-			.@card[2] = .@enchants[ rand(3) ];
+			.@slot_index = 2;
+			.@old_enchant = .@card[2];
+			.@new_enchant = .@enchants[ rand(3) ];
 			.@slot = 3;
 		}
 		else if (.@card[1] == 0 && .@refine >= 9) {
-			.@card[1] = .@enchants[ rand(4) ];
+			.@slot_index = 1;
+			.@old_enchant = .@card[1];
+			.@new_enchant = .@enchants[ rand(4) ];
 			.@slot = 2;
 		}
 		else {
@@ -1292,8 +1298,10 @@ moc_para01,179,27,3	script	Dark Luhir#new10	4_F_VALKYRIE2,{
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Dark Luhir]";
 		mes "Giving ability to item's ^990000" + .@slot + " socket^000000.";
-		delequip EQI_GARMENT;
-		getitem2 2589,1,1, .@refine,0, .@card[0], .@card[1], .@card[2], .@card[3];
+		if (!modifyequipitem(EQI_GARMENT,2589,0,-1,.@slot_index,.@old_enchant,.@new_enchant)) {
+			mes "The equipped Fallen Angel Wing changed before the enchantment could be applied. Nothing was altered.";
+			close;
+		}
 		close;
 	case 3:
 		mes "[Dark Luhir]";
@@ -1309,14 +1317,21 @@ moc_para01,179,27,3	script	Dark Luhir#new10	4_F_VALKYRIE2,{
 		}
 		if (getequipid(EQI_GARMENT) == 2589) {
 			.@refine = getequiprefinerycnt(EQI_GARMENT);
-			.@card[0] = getequipcardid(EQI_GARMENT,0);
+			setarray .@card[0],
+				getequipcardid(EQI_GARMENT,0),
+				getequipcardid(EQI_GARMENT,1),
+				getequipcardid(EQI_GARMENT,2),
+				getequipcardid(EQI_GARMENT,3);
 
 			mes "[Dark Luhir]";
 			specialeffect2 EF_REPAIRWEAPON;
 			mes "Reseting item stats.";
-			delequip EQI_GARMENT;
 			Zeny -= 1000000;
-			getitem2 2589,1,1, .@refine,0, .@card[0],0,0,0;// Fallen_Angel_Wing
+			if (!resetequipenchants(EQI_GARMENT,2589,.@card[0],.@card[1],.@card[2],.@card[3])) {
+				Zeny += 1000000;
+				mes "The equipped Fallen Angel Wing changed before the reset could be applied. Your Zeny was returned.";
+				close;
+			}
 		}
 		close;
 	}

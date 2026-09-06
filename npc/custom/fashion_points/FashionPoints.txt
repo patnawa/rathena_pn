@@ -3,8 +3,8 @@
 //===== License / provenance =================================
 //= Clean-room implementation from the published player-facing rules at:
 //= https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
-//= Costume application itself remains handled by rAthena's GPL script:
-//= npc/re/merchants/malangdo_costume.txt
+//= Application and recovery use the dedicated compensated-transaction service
+//= in this package. The stock Malangdo tables are intentionally not extended.
 //============================================================
 //= Published rules implemented here:
 //= * 1 Gold Point per 3 minutes online; balance cap 50.
@@ -27,13 +27,14 @@
 //=   from its published outcomes. This is NOT claimed to be MuhRO's rate table.
 //= * The wiki does not publish Fashion Point prices for the costume catalogue;
 //=   the catalogue is view-only here rather than assigning invented prices.
-//= * Druid/Karnos/Alitea item effects use numeric skill IDs from the upstream
-//=   rAthena GPL implementation PR #9765. This server has not implemented those
-//=   jobs yet, so those bonuses remain dormant until the skills exist.
-//= * The local GPL Malangdo enchanters map 196 of the 366 published pairs.
-//=   All 170 newer physical stone IDs (1000375 and above in these box lists)
-//=   can be awarded/traded/recovered, but cannot be applied by that old script.
-//=   Its missing application tables are not guessed in this subsystem.
+//= * The local GPL Malangdo enchanters map only 196 of the 366 published pairs.
+//=   Complete Fashion Enchanter supports the 358 pairs whose enchant effects
+//=   exist in this build, including the newer physical stone IDs.
+//= * Eight Druid/Karnos/Alitea pairs (314848-314855) depend on skill IDs
+//=   6526-6606 from still-unmerged rAthena PR #9765. They remain valid recovery
+//=   and trade-in items, but boxes do not award them and application refuses
+//=   them until the complete class implementation is installed. Applying an
+//=   inert card would be misleading and is therefore never allowed.
 //============================================================
 
 function	script	FP_LoadBox	{
@@ -81,9 +82,32 @@ function	script	FP_StoneKnown	{
 	return 0;
 }
 
+// Return whether an enchant has a functional effect on this server build.
+// Revision 61305 of the source wiki contains eight future-class enchants whose
+// referenced skills are absent here. Keep this deny-list paired with the exact
+// dependency notes in client-patch/fashion_points/README.md.
+function	script	FP_EnchantSupported	{
+	.@enchant = getarg(0);
+	if (getiteminfo(.@enchant,ITEMINFO_TYPE) != IT_CARD
+		|| getiteminfo(.@enchant,ITEMINFO_SUBTYPE) != CARD_ENCHANT)
+		return 0;
+	if (.@enchant >= 314848 && .@enchant <= 314855)
+		return 0;
+	return 1;
+}
+
 function	script	FP_StoneFromEnchant	{
 	.@needle = getarg(0);
-	for (.@box = 0; .@box < 21; ++.@box) {
+	.@category = getarg(1,-1);
+	switch (.@category) {
+	case 0: .@first = 0;  .@last = 4;  break; // upper slot
+	case 1: .@first = 5;  .@last = 9;  break; // middle slot
+	case 2: .@first = 10; .@last = 14; break; // lower slot
+	case 3: .@first = 15; .@last = 19; break; // garment first slot
+	case 4: .@first = 20; .@last = 20; break; // garment second slot
+	default: return 0;
+	}
+	for (.@box = .@first; .@box <= .@last; ++.@box) {
 		.@n = callfunc("FP_LoadBox",.@box);
 		for (.@i = 0; .@i < .@n; ++.@i)
 			if (@FP_BoxEnchant[.@i] == .@needle) return @FP_BoxStone[.@i];
@@ -104,10 +128,9 @@ function	script	FP_OpenBox	{
 	deletearray .@available[0],128;
 	.@count=0;
 	for (.@i=0; .@i<.@n; ++.@i) {
-		// Require both the physical stone and its matching enchant database
-		// record. Enchanter support is a separate compatibility concern: this
-		// snapshot's stock Malangdo script predates the newest published pairs.
-		if (getiteminfo(@FP_BoxStone[.@i],ITEMINFO_TYPE) < 0 || getiteminfo(@FP_BoxEnchant[.@i],ITEMINFO_TYPE) < 0) continue;
+		// Award only pairs that are both present and functional. The eight
+		// future-class outcomes remain withheld rather than issuing inert cards.
+		if (getiteminfo(@FP_BoxStone[.@i],ITEMINFO_TYPE) < 0 || !callfunc("FP_EnchantSupported",@FP_BoxEnchant[.@i])) continue;
 		.@available[.@count++]=@FP_BoxStone[.@i];
 	}
 	if (!.@count) {
@@ -306,9 +329,14 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 	.@equip_id=getequipid(.@part);
 	.@menu$="";
 	.@count=0;
-	for (.@slot=0; .@slot<4; ++.@slot) {
+	.@slot_limit=(.@part==EQI_COSTUME_GARMENT)?2:3;
+	for (.@slot=0; .@slot<.@slot_limit; ++.@slot) {
 		.@enchant=getequipcardid(.@part,.@slot);
-		.@stone=callfunc("FP_StoneFromEnchant",.@enchant);
+		.@category=(.@part==EQI_COSTUME_GARMENT)?(3+.@slot):.@slot;
+		// The same generic enchant record can represent different physical
+		// stones in upper/middle/lower slots. Reverse-map within the exact
+		// slot family so recovery never returns the wrong stone.
+		.@stone=callfunc("FP_StoneFromEnchant",.@enchant,.@category);
 		if (!.@stone || getiteminfo(.@stone,ITEMINFO_TYPE) < 0) continue;
 		.@slots[.@count]=.@slot;
 		.@stones[.@count]=.@stone;
@@ -328,11 +356,6 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 	.@slot=.@slots[.@pick];
 	.@stone=.@stones[.@pick];
 	.@enchant=.@enchants[.@pick];
-	if (getequipuniqueid(.@part)) {
-		mes "[Gregio Grumani]";
-		mes "This costume has a unique ID that script commands cannot preserve safely, so it was refused.";
-		close;
-	}
 	mes "[Gregio Grumani]";
 	mes "Recover ^0000ff" + getitemname(.@stone) + "^000000 from slot " + (.@slot+1) + ".";
 	mes "Choose the published per-stone payment.";
@@ -343,36 +366,150 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 	if (.@pay == 1 && #FP_Fashion < 30) { mes "[Gregio Grumani]"; mes "You need 30 Fashion Points."; close; }
 	if (.@pay == 2 && (!.@coin_ok || countitem(50000) < 10)) { mes "[Gregio Grumani]"; mes "The Muh Coin option is unavailable or you have fewer than 10."; close; }
 	if (.@pay == 3 && Zeny < 1000000) { mes "[Gregio Grumani]"; mes "You need 1,000,000 Zeny."; close; }
-	if (!checkweight(.@stone,1)) { mes "[Gregio Grumani]"; mes "Make room for the returned stone."; close; }
-	if (getequipid(.@part) != .@equip_id || getequipcardid(.@part,.@slot) != .@enchant) close;
+	mes "[Gregio Grumani]";
+	mes "The same costume and unique ID are retained. If the guarded in-place removal fails, the staged stone is removed and your payment is refunded.";
+	next;
+	if (select("Recover stone:Cancel")==2) close;
+	if (getequipid(.@part) != .@equip_id || getequipcardid(.@part,.@slot) != .@enchant) {
+		mes "[Gregio Grumani]";
+		mes "The equipped costume changed. Nothing was charged.";
+		close;
+	}
 	getinventorylist;
 	.@idx=-1;
-	for (.@i=0; .@i<@inventorylist_count; ++.@i)
-		if ((@inventorylist_equip[.@i] & .@mask) && @inventorylist_id[.@i] == .@equip_id) { .@idx=.@i; break; }
+	.@coin_need=(.@pay==2)?10:0;
+	.@coin_rows=0;
+	for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & .@mask) && @inventorylist_id[.@i] == .@equip_id)
+			.@idx=.@i;
+		if (.@coin_need>0 && @inventorylist_id[.@i]==50000
+			&& @inventorylist_amount[.@i]>0 && !@inventorylist_expire[.@i]
+			&& !@inventorylist_favorite[.@i]) {
+			.@take=@inventorylist_amount[.@i];
+			if (.@take>.@coin_need) .@take=.@coin_need;
+			.@coin_idx[.@coin_rows]=@inventorylist_idx[.@i];
+			.@coin_bound[.@coin_rows]=@inventorylist_bound[.@i];
+			.@coin_take[.@coin_rows]=.@take;
+			.@coin_need-=.@take;
+			++.@coin_rows;
+		}
+	}
 	if (.@idx < 0) { mes "[Gregio Grumani]"; mes "I could not locate that equipped item safely."; close; }
-	if (@inventorylist_expire[.@idx]) {
+	if (.@pay==2 && .@coin_need>0) {
 		mes "[Gregio Grumani]";
-		mes "Rental costumes cannot use recovery because their expiry metadata cannot be recreated safely.";
+		mes "You need 10 permanent, non-favorite Muh Coins in inventory. Nothing was charged.";
+		close;
+	}
+	if (!@inventorylist_identify[.@idx] || @inventorylist_amount[.@idx]!=1) {
+		mes "[Gregio Grumani]";
+		mes "Only one identified equipped costume can be changed safely. Nothing was charged.";
+		close;
+	}
+	if (getiteminfo(.@equip_id,ITEMINFO_TYPE) != IT_ARMOR
+		|| !(getiteminfo(.@equip_id,ITEMINFO_LOCATIONS)&.@mask)
+		|| .@slot < getitemslots(.@equip_id)) {
+		mes "[Gregio Grumani]";
+		mes "That position is not a costume-enchant slot, so no card or payment was changed.";
 		close;
 	}
 	setarray .@card[0],@inventorylist_card1[.@idx],@inventorylist_card2[.@idx],@inventorylist_card3[.@idx],@inventorylist_card4[.@idx];
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@card[.@slot]=0;
-	if (.@pay == 1) #FP_Fashion -= 30;
-	else if (.@pay == 2) delitem 50000,10;
-	else Zeny -= 1000000;
-	.@bound=@inventorylist_bound[.@idx];
-	delequip .@part;
-	delitemidx @inventorylist_idx[.@idx],1;
-	if (.@bound)
-		getitembound4 .@equip_id,1,@inventorylist_identify[.@idx],@inventorylist_refine[.@idx],@inventorylist_attribute[.@idx],.@card[0],.@card[1],.@card[2],.@card[3],.@bound,@inventorylist_enchantgrade[.@idx],.@oid,.@oval,.@opar;
-	else
-		getitem4 .@equip_id,1,@inventorylist_identify[.@idx],@inventorylist_refine[.@idx],@inventorylist_attribute[.@idx],.@card[0],.@card[1],.@card[2],.@card[3],@inventorylist_enchantgrade[.@idx],.@oid,.@oval,.@opar;
+	if (.@card[0]==CARD0_FORGE || .@card[0]==CARD0_CREATE || .@card[0]==CARD0_PET
+		|| .@card[.@slot]!=.@enchant) {
+		mes "[Gregio Grumani]";
+		mes "This item's card metadata cannot be changed safely. Nothing was charged.";
+		close;
+	}
+	if (!checkweight(.@stone,1)) {
+		mes "[Gregio Grumani]";
+		mes "Make room for the returned stone. Nothing was charged.";
+		close;
+	}
+	// Recheck the selected payment immediately before staging the returned stone.
+	if ((.@pay==1 && #FP_Fashion<30) || (.@pay==2 && countitem(50000)<10)
+		|| (.@pay==3 && Zeny<1000000)) {
+		mes "[Gregio Grumani]";
+		mes "The selected payment changed. Nothing was charged.";
+		close;
+	}
+
+	// Stage the one output and identify its exact inventory index. No player
+	// input occurs between staging, payment and the guarded mutation.
+	for (.@i=0; .@i<@inventorylist_count; ++.@i)
+		if (@inventorylist_id[.@i]==.@stone)
+			.@stone_before_at[@inventorylist_idx[.@i]]=@inventorylist_amount[.@i];
 	getitem .@stone,1;
+	getinventorylist;
+	.@return_idx=-1;
+	for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+		.@row_by_idx[@inventorylist_idx[.@i]]=.@i+1;
+		if (@inventorylist_id[.@i]==.@stone && !@inventorylist_expire[.@i]
+			&& !@inventorylist_bound[.@i]
+			&& @inventorylist_amount[.@i]==.@stone_before_at[@inventorylist_idx[.@i]]+1)
+			.@return_idx=@inventorylist_idx[.@i];
+	}
+	.@payment_ok=((.@pay==1 && #FP_Fashion>=30) || (.@pay==3 && Zeny>=1000000));
+	if (.@pay==2) {
+		.@payment_ok=1;
+		for (.@i=0; .@i<.@coin_rows; ++.@i) {
+			.@coin_list=.@row_by_idx[.@coin_idx[.@i]]-1;
+			if (.@coin_list<0 || @inventorylist_id[.@coin_list]!=50000
+				|| @inventorylist_amount[.@coin_list]<.@coin_take[.@i]
+				|| @inventorylist_expire[.@coin_list] || @inventorylist_favorite[.@coin_list]
+				|| @inventorylist_bound[.@coin_list]!=.@coin_bound[.@i]) {
+				.@payment_ok=0;
+				break;
+			}
+		}
+	}
+	if (.@return_idx<0 || getequipid(.@part)!=.@equip_id
+		|| getequipcardid(.@part,.@slot)!=.@enchant
+		|| !.@payment_ok) {
+		if (.@return_idx>=0) delitemidx .@return_idx,1;
+		mes "[Gregio Grumani]";
+		mes "Final verification failed. The staged stone was removed and nothing was charged.";
+		close;
+	}
+
+	// Commit the selected payment. Exact Muh Coin rows are used so mixed
+	// bindings are restored correctly on any later mutation failure.
+	if (.@pay==1)
+		#FP_Fashion-=30;
+	else if (.@pay==2) {
+		.@paid_rows=0;
+		for (.@i=0; .@i<.@coin_rows; ++.@i) {
+			if (!delitemidx(.@coin_idx[.@i],.@coin_take[.@i])) {
+				delitemidx .@return_idx,1;
+				for (.@j=0; .@j<.@paid_rows; ++.@j) {
+					if (.@coin_bound[.@j]) getitembound 50000,.@coin_take[.@j],.@coin_bound[.@j];
+					else getitem 50000,.@coin_take[.@j];
+				}
+				mes "[Gregio Grumani]";
+				mes "Muh Coin payment could not be committed. The staged stone was removed and deducted coins were refunded.";
+				close;
+			}
+			++.@paid_rows;
+		}
+	}
+	else
+		Zeny-=1000000;
+
+	if (!modifyequipitem(.@part,.@equip_id,0,-1,.@slot,.@enchant,0)) {
+		delitemidx .@return_idx,1;
+		if (.@pay==1) #FP_Fashion += 30;
+		else if (.@pay==2) {
+			for (.@i=0; .@i<.@coin_rows; ++.@i) {
+				if (.@coin_bound[.@i]) getitembound 50000,.@coin_take[.@i],.@coin_bound[.@i];
+				else getitem 50000,.@coin_take[.@i];
+			}
+		}
+		else Zeny += 1000000;
+		mes "[Gregio Grumani]";
+		mes "The equipped item changed or failed a safety check. The staged stone was removed and your payment was refunded.";
+		close;
+	}
 	mes "[Gregio Grumani]";
-	mes "The stone was recovered. Your costume was returned unequipped with all other item data preserved.";
+	mes "The stone was recovered from the same costume and unique ID. Every unrelated item field was preserved.";
+	mes "If an equipment restriction prevented automatic re-equipping, the costume is safely in your inventory.";
 	close;
 }
 

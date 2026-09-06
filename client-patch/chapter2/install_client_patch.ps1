@@ -46,4 +46,11 @@ if ((Test-Path -LiteralPath $loader) -and (Test-Path -LiteralPath $metadataSourc
     }
 }
 
-Write-Host "Installed Chapter 2 map aliases and item metadata."
+$questInstaller = Join-Path (Split-Path $PSScriptRoot -Parent) 'quest_compat\install_client_patch.ps1'
+if (Test-Path -LiteralPath $questInstaller -PathType Leaf) {
+    # The quest table lives beside the loose data directory under
+    # <client>\SystemEN, not under <client>\data\SystemEN.
+    & $questInstaller -DataRoot $clientRoot
+}
+
+Write-Host "Installed Chapter 2 map aliases, item metadata, and quest text."

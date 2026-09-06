@@ -23,9 +23,17 @@ ch2safe4	mapflag	nomemo
 ch2gms	mapflag	nomemo
 1@ch2a	mapflag	nosave	SavePoint
 1@ch2a	mapflag	noteleport
+1@ch2a	mapflag	monster_noteleport
 1@ch2a	mapflag	nomemo
 1@ch2a	mapflag	nobranch
+1@ch2a	mapflag	nowarp
+1@ch2a	mapflag	nowarpto
+1@ch2a	mapflag	partylock
 1@ch2b	mapflag	nosave	SavePoint
 1@ch2b	mapflag	noteleport
+1@ch2b	mapflag	monster_noteleport
 1@ch2b	mapflag	nomemo
 1@ch2b	mapflag	nobranch
+1@ch2b	mapflag	nowarp
+1@ch2b	mapflag	nowarpto
+1@ch2b	mapflag	partylock

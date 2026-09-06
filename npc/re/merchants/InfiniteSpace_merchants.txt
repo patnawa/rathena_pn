@@ -213,7 +213,13 @@ cmd_fild07,60,275,3	script	Artifact Enhancer#pa0829_01	4_F_JOB_BLACKSMITH,{
 			mes "You can choose 3 types of enchant, and the enchant fee is " + .@fee + " " + getitemname(.@stone_id) + ".";
 			mes "I'll make sure it gets enchanted without a problem.";
 			next;
-			.@type = select("Quit:Physical:Magical:Range") - 2;
+			.@type = select("Quit:Physical:Magical:Range");
+			if (.@type == 1) {
+				mes "[ Artifact Enhancer ]";
+				mes "If you change your mind, just return to me.";
+				close;
+			}
+			.@type -= 2;
 			mes "[ Artifact Enhancer ]";
 			if (.@slot == 3)
 				mes "Okay, let's begin the first enchantment.";
@@ -234,11 +240,16 @@ cmd_fild07,60,275,3	script	Artifact Enhancer#pa0829_01	4_F_JOB_BLACKSMITH,{
 			explode(.@TT$,.@T$[.@type],",");
 			.@enchant = atoi(.@TT$[rand(getarraysize(.@TT$))]);
 			.@card[.@slot] = .@enchant;
-			delitem .@stone_id,.@fee;
 			if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipRefineHack", .@part, .@refine) || callfunc("F_IsEquipCardHack", .@part, .@check[0], .@check[1], .@check[2], .@check[3]))
 				close;
-			delequip .@part;
-			getitem2 .@equip_id,1,1,.@refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
+			delitem .@stone_id,.@fee;
+			if (!modifyequipenchantstate(.@part,.@equip_id,.@refine,
+				.@check[0],.@check[1],.@check[2],.@check[3],
+				.@refine,.@card[0],.@card[1],.@card[2],.@card[3],0)) {
+				getitem .@stone_id,.@fee;
+				mes "The equipped item changed, so enchanting was cancelled and your materials were returned.";
+				close;
+			}
 			specialeffect2 EF_REPAIRWEAPON;
 			mes "[ Artifact Enhancer ]";
 			mes "Hm. It was well done. Check your equipment at once.";
@@ -302,16 +313,27 @@ cmd_fild07,60,275,3	script	Artifact Enhancer#pa0829_01	4_F_JOB_BLACKSMITH,{
 				mes "Hm. By the way, I don't think you were listening, you don't have enough " + getitemname(.@stone_id) + ".";
 				close;
 			}
-			delitem .@stone_id,.@fee;
 			if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipRefineHack", .@part, .@refine) || callfunc("F_IsEquipCardHack", .@part, .@check[0], .@check[1], .@check[2], .@check[3]))
 				close;
-			delequip .@part;
-			if (rand(1,100) > .@chance) {
-				getitem2 .@equip_id,1,1,.@refine,0,.@card[0],.@card[1],0,0;
+			delitem .@stone_id,.@fee;
+			if (rand(1,100) > .@break_chance) {
+				if (!modifyequipenchantstate(.@part,.@equip_id,.@refine,
+					.@check[0],.@check[1],.@check[2],.@check[3],
+					.@refine,.@card[0],.@card[1],0,0,0)) {
+					getitem .@stone_id,.@fee;
+					mes "The equipped item changed, so initialization was cancelled and your materials were returned.";
+					close;
+				}
 				specialeffect2 EF_REPAIRWEAPON;
 				mes "[ Artifact Enhancer ]";
 				mes "Hm. It was well done. Check your equipment at once.";
 			} else {
+				if (!deleteequipitem(.@part,.@equip_id,.@refine,
+					.@check[0],.@check[1],.@check[2],.@check[3])) {
+					getitem .@stone_id,.@fee;
+					mes "The equipped item changed, so initialization was cancelled and your materials were returned.";
+					close;
+				}
 				specialeffect2 EF_REFINEFAIL;
 				mes "[ Artifact Enhancer ]";
 				mes "Well, I did warn you. You aren't lucky, eh?";

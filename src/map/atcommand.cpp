@@ -2156,6 +2156,30 @@ ACMD_FUNC(go)
 		{ MAP_MALAYA,      242, 211 }, // 34=Malaya Port
 		{ MAP_ECLAGE,      110,  39 }, // 35=Eclage
 		{ MAP_LASAGNA,     193, 182 }, // 36=Lasagna
+		{ "icecastle",    185, 212 }, // 37=Ice Castle (Episode 19)
+		{ "harboro1",     298, 206 }, // 38=Rock Ridge
+		{ "sp_cor",        160, 166 }, // 39=Special Border Area Cor
+		{ "ba_maison",      72, 146 }, // 40=Varmundt's Mansion
+		{ "wolfvill",      144, 144 }, // 41=Grey Wolf Village
+		{ "ygg_edge",      255, 240 }, // 42=Ashwood
+		{ "jor_mbase",     313, 106 }, // 43=Lunaforma Base
+		{ "jor_albe",      191, 182 }, // 44=Fishing Alberta
+		{ "jor_base",      240,  46 }, // 45=Jornville
+		{ "jor_crk",       137, 137 }, // 46=Scale Island
+		{ "verus04",       123, 250 }, // 47=Verus
+		{ "grademk",        34, 184 }, // 48=Grade Workshop
+		{ "t_garden",      116,  47 }, // 49=Garden of Time
+		{ "sp_rudus",      200, 377 }, // 50=Rudus
+		{ "amicitia1",     242, 244 }, // 51=Amicitia
+		{ "oz_dun01",      223, 116 }, // 52=Oz Labyrinth
+		{ "jor_tail",      233,  41 }, // 53=Isgard Airship
+		{ "bl_grass",        0,   0 }, // 54=Grass Rune
+		{ "clock_01",        0,   0 }, // 55=Constellation Tower
+		{ "nif_dun01",     145,  85 }, // 56=Niflheim Dungeon
+		{ "bl_depth1",       0,   0 }, // 57=Biosphere Depth
+		{ "pub_cat",       150, 105 }, // 58=Cat on a Bullet
+		{ "tra_fild",      112, 167 }, // 59=Training Zone
+		{ "itemmall",       22,  43 }, // 60=Service Mall
 	};
 
 	nullpo_retr(-1, sd);
@@ -2277,6 +2301,54 @@ ACMD_FUNC(go)
 		town = 35;
 	} else if (strncmp(map_name, "lasagna", 2) == 0) {
 		town = 36;
+	} else if (strncmp(map_name, "icecastle", 3) == 0 || strncmp(map_name, "isgard", 3) == 0 || strncmp(map_name, "issgard", 3) == 0) {
+		town = 37;
+	} else if (strncmp(map_name, "rockridge", 4) == 0 || strncmp(map_name, "harboro1", 4) == 0) {
+		town = 38;
+	} else if (strcmp(map_name, "cor") == 0 || strcmp(map_name, "sp_cor") == 0) {
+		town = 39;
+	} else if (strncmp(map_name, "varmundt", 3) == 0 || strncmp(map_name, "barmund", 3) == 0 || strncmp(map_name, "ba_maison", 3) == 0) {
+		town = 40;
+	} else if (strncmp(map_name, "wolfvill", 4) == 0 || strncmp(map_name, "greywolf", 4) == 0) {
+		town = 41;
+	} else if (strncmp(map_name, "ashwood", 3) == 0 || strncmp(map_name, "ygg_edge", 3) == 0) {
+		town = 42;
+	} else if (strncmp(map_name, "lunaforma", 4) == 0 || strncmp(map_name, "jor_mbase", 4) == 0) {
+		town = 43;
+	} else if (strncmp(map_name, "fishingalberta", 5) == 0 || strncmp(map_name, "jor_albe", 4) == 0) {
+		town = 44;
+	} else if (strncmp(map_name, "jornville", 4) == 0 || strncmp(map_name, "jor_base", 4) == 0) {
+		town = 45;
+	} else if (strncmp(map_name, "scaleisland", 5) == 0 || strncmp(map_name, "jor_crk", 4) == 0) {
+		town = 46;
+	} else if (strncmp(map_name, "verus", 3) == 0) {
+		town = 47;
+	} else if (strncmp(map_name, "grademk", 4) == 0 || strncmp(map_name, "gradeworkshop", 5) == 0 || strcmp(map_name, "workshop") == 0) {
+		town = 48;
+	} else if (strncmp(map_name, "gardenoftime", 6) == 0 || strcmp(map_name, "garden") == 0 || strcmp(map_name, "t_garden") == 0) {
+		town = 49;
+	} else if (strncmp(map_name, "rudus", 3) == 0 || strncmp(map_name, "sp_rudus", 3) == 0) {
+		town = 50;
+	} else if (strncmp(map_name, "amicitia", 4) == 0) {
+		town = 51;
+	} else if (strncmp(map_name, "ozlab", 3) == 0 || strncmp(map_name, "oz_dun01", 3) == 0) {
+		town = 52;
+	} else if (strncmp(map_name, "isgardairship", 6) == 0 || strncmp(map_name, "jor_tail", 4) == 0) {
+		town = 53;
+	} else if (strncmp(map_name, "grassrune", 5) == 0 || strncmp(map_name, "bl_grass", 4) == 0) {
+		town = 54;
+	} else if (strncmp(map_name, "constella", 5) == 0 || strncmp(map_name, "clock_01", 5) == 0) {
+		town = 55;
+	} else if (strncmp(map_name, "nifdun", 4) == 0 || strncmp(map_name, "nif_dun01", 4) == 0) {
+		town = 56;
+	} else if (strncmp(map_name, "biosphere", 4) == 0 || strncmp(map_name, "bl_depth1", 4) == 0) {
+		town = 57;
+	} else if (strncmp(map_name, "pubcat", 4) == 0 || strncmp(map_name, "pub_cat", 4) == 0) {
+		town = 58;
+	} else if (strncmp(map_name, "training", 4) == 0 || strncmp(map_name, "tra_fild", 4) == 0) {
+		town = 59;
+	} else if (strcmp(map_name, "mall") == 0 || strcmp(map_name, "servicemall") == 0 || strcmp(map_name, "service_mall") == 0 || strcmp(map_name, "itemmall") == 0) {
+		town = 60;
 	}
 
 	if (town >= 0 && town < ARRAYLENGTH(data))
@@ -9847,6 +9919,43 @@ ACMD_FUNC(itemlist)
 	return 0;
 }
 
+/*==========================================
+ * Display the invoking character's calculated battle status.
+ *------------------------------------------*/
+ACMD_FUNC(bs)
+{
+	nullpo_retr(-1, sd);
+
+	const status_data& status = sd->battle_status;
+	const int32 aspd = ( AMOTION_ZERO_ASPD - status.amotion ) / AMOTION_INTERVAL;
+
+	clif_displaymessage(fd, "======== Battle Stats ========");
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "HP %u/%u | SP %u/%u | AP %u/%u",
+		status.hp, status.max_hp, status.sp, status.max_sp, status.ap, status.max_ap);
+	clif_displaymessage(fd, atcmd_output);
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "ATK %d~%d | MATK %u~%u | Range %u",
+		status.batk + status.rhw.atk, status.batk + status.rhw.atk2, status.matk_min, status.matk_max, status.rhw.range);
+	clif_displaymessage(fd, atcmd_output);
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "DEF %d + %d | MDEF %d + %d | RES %d | MRES %d",
+		status.def, status.def2, status.mdef, status.mdef2, status.res, status.mres);
+	clif_displaymessage(fd, atcmd_output);
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "HIT %d | FLEE %d | Perfect Dodge %d.%d | CRIT %d.%d",
+		status.hit, status.flee, status.flee2 / 10, abs(status.flee2 % 10), status.cri / 10, abs(status.cri % 10));
+	clif_displaymessage(fd, atcmd_output);
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "ASPD %d | P.ATK %d | S.MATK %d | H.Plus %d | C.Rate %d",
+		aspd, status.patk, status.smatk, status.hplus, status.crate);
+	clif_displaymessage(fd, atcmd_output);
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "STR %d | AGI %d | VIT %d | INT %d | DEX %d | LUK %d",
+		status.str, status.agi, status.vit, status.int_, status.dex, status.luk);
+	clif_displaymessage(fd, atcmd_output);
+	safesnprintf(atcmd_output, sizeof(atcmd_output), "POW %d | STA %d | WIS %d | SPL %d | CON %d | CRT %d",
+		status.pow, status.sta, status.wis, status.spl, status.con, status.crt);
+	clif_displaymessage(fd, atcmd_output);
+	clif_displaymessage(fd, "==============================");
+
+	return 0;
+}
+
 ACMD_FUNC(stats)
 {
 	char job_jobname[100];
@@ -11769,6 +11878,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF2("storagelist", itemlist),
 		ACMD_DEF2("cartlist", itemlist),
 		ACMD_DEF(itemlist),
+		ACMD_DEF(bs),
 		ACMD_DEF(stats),
 		ACMD_DEF(delitem),
 		ACMD_DEF(charcommands),

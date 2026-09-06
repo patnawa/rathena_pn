@@ -439,10 +439,15 @@ prontera,90,115,5	script	Illusion Enchanter#0	4_GEFFEN_09,3,3,{
 		if (callfunc("F_IsEquipIDHack", .@loc, .@eq_id) || callfunc("F_IsEquipCardHack", .@loc, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@loc, .@refine))
 			close;
 
-		.@card[.@slot] = callsub( S_Enchant, .@loc_enchant, .@slot, .@weapon_enchant_type );
+		.@old_enchant = .@card[.@slot];
+		.@new_enchant = callsub( S_Enchant, .@loc_enchant, .@slot, .@weapon_enchant_type );
 		delitem .@item_req, .@item_req_count;
-		delequip .@loc;
-		getitem2 .@eq_id,1,1,.@refine,0,.@card[0],.@card[1],.@card[2],.@card[3];
+		if (!modifyequipitem(.@loc,.@eq_id,0,-1,.@slot,.@old_enchant,.@new_enchant)) {
+			getitem .@item_req,.@item_req_count;
+			mes "[Illusion Enchanter]";
+			mes "The equipped item changed before I could apply the enchantment. Your Illusion Stones were returned.";
+			close;
+		}
 		mes "[Illusion Enchanter]";
 		mes "It's done. Please check.";
 		specialeffect2 EF_REPAIRWEAPON;
@@ -477,14 +482,21 @@ prontera,90,115,5	script	Illusion Enchanter#0	4_GEFFEN_09,3,3,{
 			close;
 
 		Zeny -= .@cost;
-		delequip .@loc;
 		if (rand(100) < .@rate) {
-			getitem2 .@eq_id,1,1,.@refine,0,.@card[0],.@card[1],0,0;
+			if (!resetequipenchants(.@loc,.@eq_id,.@card[0],.@card[1],.@card[2],.@card[3])) {
+				Zeny += .@cost;
+				mes "[Illusion Enchanter]";
+				mes "The equipped item changed before I could reset it. Your Zeny was returned.";
+				close;
+			}
 			mes "[Illusion Enchanter]";
 			mes "It's done. Please check.";
 			specialeffect2 EF_REPAIRWEAPON;
 			close;
 		}
+		// A failed reset intentionally destroys the equipment. The item was
+		// revalidated immediately above and no player interaction occurs here.
+		delequip .@loc;
 		mes "[Illusion Enchanter]";
 		mes "Ah, that was unfortunate. Well, you can't always be lucky.";
 		specialeffect2 EF_LORD;

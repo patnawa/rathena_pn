@@ -1527,7 +1527,7 @@ mosk_fild01,86,104,3	script	Aged Stranger#npc	4_M_GUSLIMAN,{
 			mes "well.";
 			next;
 			if (isbegin_quest(18118))
-				changequest 18118,18119;
+				changequest 18118,900200;
 		}
 		callsub S_AS_2,1;
 	} else if (mos_whale_edq == 36) {
@@ -1722,10 +1722,10 @@ S_AS_1:
 		mes "With your ability to play, surely";
 		mes "you can win the admiration of all.";
 		mos_whale_edq = 38;
-		if (isbegin_quest(18119))
-			changequest 18119,18120;
+		if (isbegin_quest(900200))
+			changequest 900200,900201;
 		else if (isbegin_quest(18118))// debug
-			changequest 18118,18120;
+			changequest 18118,900201;
 		close;
 	}
 	mes "[Aged Stranger]";
@@ -2231,8 +2231,8 @@ mosk_in,131,92,3	script	Csar Alexsay III#npc	4_M_RUSKING,7,7,{
 				getexp (checkre(3))?50000:500000,0;
 				mos_whale_edq = 39;
 				if (isbegin_quest(18118))// debug
-					changequest 18118,18119;
-				completequest 18119;
+					changequest 18118,900200;
+				completequest 900200;
 				close;
 			}
 			mes "[Csar Alexsay III]";
@@ -2262,8 +2262,8 @@ mosk_in,131,92,3	script	Csar Alexsay III#npc	4_M_RUSKING,7,7,{
 			getexp (checkre(3))?70000:700000,0;
 			mos_whale_edq = 40;
 			if (isbegin_quest(18118))// debug
-				changequest 18118,18119;
-			completequest 18119;
+				changequest 18118,900200;
+			completequest 900200;
 			close;
 		}
 		mes "[Csar Alexsay III]";
@@ -2346,7 +2346,7 @@ mosk_in,131,92,3	script	Csar Alexsay III#npc	4_M_RUSKING,7,7,{
 			getitem 617,1; //Old_Violet_Box
 			getexp (checkre(3))?100000:1200000,0;
 			mos_whale_edq = 41;
-			completequest 18120;
+			completequest 900201;
 			close;
 		}
 		mes "[Csar Alexsay III]";
@@ -6292,8 +6292,8 @@ moscovia,211,93,3	script	Irina#edq	4_F_RUSCHILD,{
 	mes "If you bring the materials,";
 	mes "we can make one immediately!";
 	mes "The materials are: ^0000FFNine Tails 20, Yarn 10, Soft Silk 10, Sea-otter Fur 20, Spool 1^000000.";
-	if (isbegin_quest(18121) == 0)
-		setquest 18121;
+	if (isbegin_quest(900202) == 0)
+		setquest 900202;
 	next;
 	if (countitem(1022) > 19 && countitem(7038) > 9 && countitem(7166) > 9 && countitem(7065) > 19 && countitem(7217)) {
 		mes "[Irina]";
@@ -6306,7 +6306,7 @@ moscovia,211,93,3	script	Irina#edq	4_F_RUSCHILD,{
 		delitem 7065,20; //Sea_Otter_Leather
 		delitem 7217,1; //Spool
 		getitem 5243,1; //Chullos
-		completequest 18121;
+		completequest 900202;
 		mes "[Irina]";
 		mes "Good, I made it. So, how about it?";
 		mes "Do you like it?";

@@ -1,0 +1,84 @@
+// Chapter 1 reward delivery safety.
+// Pending amounts are permanent character variables, so quest advancement or
+// material consumption can never discard these one-time rewards.
+
+function	script	F_CH1_ClaimRewards	{
+	.@show_empty = getarg(0,0);
+	.@had_pending = CH1_Pending_Coin + CH1_Pending_Amulet + CH1_Pending_Sample;
+	if (.@had_pending < 1) {
+		if (.@show_empty)
+			dispbottom "You have no queued Chapter 1 rewards.";
+		return 0;
+	}
+
+	if (CH1_Pending_Coin > 0 && checkweight(1001972,CH1_Pending_Coin)) {
+		.@amount = CH1_Pending_Coin;
+		getitem 1001972,.@amount;
+		CH1_Pending_Coin = 0;
+		++.@claimed_types;
+	}
+	if (CH1_Pending_Amulet > 0 && checkweight(1001973,CH1_Pending_Amulet)) {
+		.@amount = CH1_Pending_Amulet;
+		getitem 1001973,.@amount;
+		CH1_Pending_Amulet = 0;
+		++.@claimed_types;
+	}
+	if (CH1_Pending_Sample > 0 && checkweight(1001974,CH1_Pending_Sample)) {
+		.@amount = CH1_Pending_Sample;
+		getitem 1001974,.@amount;
+		CH1_Pending_Sample = 0;
+		++.@claimed_types;
+	}
+
+	if (.@claimed_types)
+		dispbottom "Your queued Chapter 1 reward items were delivered.";
+	if (CH1_Pending_Coin + CH1_Pending_Amulet + CH1_Pending_Sample > 0)
+		dispbottom "Some Chapter 1 rewards are still queued. Free inventory weight/slots and use @ch1rewards.";
+	return .@claimed_types;
+}
+
+function	script	F_CH1_GiveReward	{
+	.@item = getarg(0);
+	.@amount = getarg(1,1);
+	if (.@amount < 1)
+		return 0;
+
+	if (checkweight(.@item,.@amount)) {
+		getitem .@item,.@amount;
+		return 1;
+	}
+
+	switch (.@item) {
+	case 1001972:
+		CH1_Pending_Coin += .@amount;
+		break;
+	case 1001973:
+		CH1_Pending_Amulet += .@amount;
+		break;
+	case 1001974:
+		CH1_Pending_Sample += .@amount;
+		break;
+	default:
+		debugmes "F_CH1_GiveReward rejected unsupported item " + .@item + ".";
+		return 0;
+	}
+
+	dispbottom "Inventory full: " + .@amount + " " + getitemname(.@item) + " queued safely. Free space and use @ch1rewards.";
+	return 1;
+}
+
+-	script	CH1RewardClaims	FAKE_NPC,{
+	end;
+
+OnInit:
+	bindatcmd "ch1rewards",strnpcinfo(3) + "::OnClaim",0,99;
+	end;
+
+OnPCLoginEvent:
+	callfunc "F_CH1_ClaimRewards",0;
+	end;
+
+OnClaim:
+	callfunc "F_CH1_ClaimRewards",1;
+	end;
+}

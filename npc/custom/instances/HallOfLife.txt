@@ -59,52 +59,22 @@ function	script	F_PNHoL_SyncProtection	{
 	if (!.@item_level)
 		return 0;
 
-	if (#PNHoL_Level < 1 || #PNHoL_Level > 20)
-		#PNHoL_Level = .@item_level;
-	if (.@item_level == #PNHoL_Level)
-		return #PNHoL_Level;
+	.@target_level = getarg(0,#PNHoL_Level);
+	if (.@target_level < 1 || .@target_level > 20)
+		.@target_level = .@item_level;
+	if (.@item_level == .@target_level) {
+		#PNHoL_Level = .@target_level;
+		return .@target_level;
+	}
 
-	if (getequipuniqueid(EQI_HEAD_LOW)) {
-		dispbottom "Hall of Life: unique-ID protections cannot be synchronized safely.";
+	.@current_card = 312452 + .@item_level;
+	.@target_card = 312452 + .@target_level;
+	if (!modifyequipitem(EQI_HEAD_LOW,420231,0,-1,3,.@current_card,.@target_card)) {
+		dispbottom "Hall of Life: the equipped protection changed or failed a safety check.";
 		return 0;
 	}
-	getinventorylist;
-	.@idx = -1;
-	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i] & EQP_HEAD_LOW) && @inventorylist_id[.@i] == 420231) {
-			.@idx = .@i;
-			break;
-		}
-	}
-	if (.@idx < 0 || @inventorylist_expire[.@idx]) {
-		dispbottom "Hall of Life: rental or unlocatable protections cannot be synchronized safely.";
-		return 0;
-	}
-	setarray .@card[0],@inventorylist_card1[.@idx],@inventorylist_card2[.@idx],@inventorylist_card3[.@idx],@inventorylist_card4[.@idx];
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@card[3] = 312452 + #PNHoL_Level;
-	.@identify = @inventorylist_identify[.@idx];
-	.@refine = @inventorylist_refine[.@idx];
-	.@attribute = @inventorylist_attribute[.@idx];
-	.@grade = @inventorylist_enchantgrade[.@idx];
-	.@bound = @inventorylist_bound[.@idx];
-	delequip EQI_HEAD_LOW;
-	if (!delitemidx(@inventorylist_idx[.@idx],1))
-		return 0;
-	if (.@bound)
-		getitembound4 420231,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@bound,.@grade,.@oid,.@oval,.@opar;
-	else
-		getitem4 420231,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@grade,.@oid,.@oval,.@opar;
-	// `equip` selects the first copy by item ID. Only auto-equip when this is the
-	// sole protection; otherwise let the player select the newly ranked copy.
-	if (countitem(420231) != 1) {
-		dispbottom "Hall of Life: the synchronized protection was returned unequipped. Equip the correctly ranked copy and try again.";
-		return 0;
-	}
-	equip 420231;
-	return #PNHoL_Level;
+	#PNHoL_Level = .@target_level;
+	return .@target_level;
 }
 
 // Apply an unfinished-run penalty once the referenced instance no
@@ -122,14 +92,13 @@ function	script	F_PNHoL_CheckFailure	{
 	if (instance_live_info(ILI_NAME, #PNHoL_PendingIID) == "Hall of Life")
 		return 0;
 
-	if (#PNHoL_Level > 1)
-		--#PNHoL_Level;
+	.@next_level = max(1,#PNHoL_Level - 1);
+	if (callfunc("F_PNHoL_SyncProtection",.@next_level) != .@next_level)
+		return 0;
 	#PNHoL_PendingIID = 0;
 	#PNHoL_PendingLevel = 0;
 	if (isbegin_quest(12617) > 0)
 		erasequest 12617;
-	if (callfunc("F_PNHoL_ProtectionLevel"))
-		callfunc("F_PNHoL_SyncProtection");
 	return 1;
 }
 
@@ -214,6 +183,11 @@ t_garden,172,235,2	script	Hall of Life#pn_hol	GATE_SKYBLUE,{
 		close;
 	}
 	.@protection_level = callfunc("F_PNHoL_SyncProtection");
+	if (.@protection_level < 1) {
+		mes "[Hall of Life]";
+		mes "Your equipped protection could not be synchronized safely. Follow the message in your chat window, then try again.";
+		close;
+	}
 
 	.@iid = instance_id(IM_PARTY);
 	if (#PNHoL_PendingIID > 0 && #PNHoL_PendingIID != .@iid && #PNHoL_RewardUntil <= .@now) {
@@ -320,6 +294,11 @@ OnTimer1000:
 		close;
 	}
 	.@max_level = callfunc("F_PNHoL_SyncProtection");
+	if (.@max_level < 1) {
+		mes "[Rigel]";
+		mes "Your protection could not be synchronized safely. Resolve the inventory warning and try again.";
+		close;
+	}
 	mes "[Rigel]";
 	mes "The leader's account barrier fixes this correction at ^FF0000level " + .@max_level + "^000000.";
 	if (select("Begin the correction.:Cancel.") == 2)
@@ -859,6 +838,10 @@ OnTouch:
 		close;
 	}
 	.@personal_level = callfunc("F_PNHoL_SyncProtection");
+	if (.@personal_level < 1) {
+		mes "Your protection could not be synchronized safely. Resolve the inventory warning and try again.";
+		close;
+	}
 	if (inarray('decided_aid, .@aid) >= 0) {
 		mes "You already made your decision for this correction.";
 		if (select("Return to the Garden.:Stay here.") == 1)
@@ -892,8 +875,12 @@ OnTouch:
 		}
 		// At the same tier, advance by one.  A helper below the leader's
 		// tier catches up directly to the tier that the party defeated.
-		#PNHoL_Level = ('level > .@personal_level ? 'level : .@personal_level + 1);
-		callfunc("F_PNHoL_SyncProtection");
+		.@next_level = ('level > .@personal_level ? 'level : .@personal_level + 1);
+		if (callfunc("F_PNHoL_SyncProtection",.@next_level) != .@next_level) {
+			mes "[Hall of Life]";
+			mes "The protection could not be advanced safely. Resolve the inventory warning and try again.";
+			close;
+		}
 		'decided_aid[getarraysize('decided_aid)] = .@aid;
 		if (#PNHoL_PendingIID == instance_id()) {
 			#PNHoL_PendingIID = 0;
@@ -924,11 +911,14 @@ OnTouch:
 		close;
 	case 4:
 		if (#PNHoL_PendingIID == instance_id()) {
-			if (#PNHoL_Level > 1)
-				--#PNHoL_Level;
+			.@next_level = max(1,#PNHoL_Level - 1);
+			if (callfunc("F_PNHoL_SyncProtection",.@next_level) != .@next_level) {
+				mes "[Hall of Life]";
+				mes "The failure record could not be synchronized safely. Resolve the inventory warning and try again.";
+				close;
+			}
 			#PNHoL_PendingIID = 0;
 			#PNHoL_PendingLevel = 0;
-			callfunc("F_PNHoL_SyncProtection");
 			'decided_aid[getarraysize('decided_aid)] = .@aid;
 			if (isbegin_quest(12617) > 0)
 				erasequest 12617;

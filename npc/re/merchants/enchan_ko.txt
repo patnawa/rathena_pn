@@ -279,15 +279,19 @@ que_ng,75,20,3	script	Artisan Tene#ko	762,{
 			set .@equip_card[3],0;
 		}
 		progressbar "ffff00",2;
-		set Zeny, Zeny - 100000;
 
 		// anti-hack
 		if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 			close;
 
-		delequip .@part;
-//		GetNonSlotItemSock2 .@equip_refine .@equip_id .@equip_card[0] .@equip_card[1] .@equip_card[2] .@equip_card[3]
-		getitem2 .@equip_id,1,1,.@equip_refine,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
+		set Zeny, Zeny - 100000;
+		if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+			.@card[0],.@card[1],.@card[2],.@card[3],
+			.@equip_refine,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],0)) {
+			Zeny += 100000;
+			mes "The equipped item changed, so initialization was cancelled and your Zeny was returned.";
+			close;
+		}
 
 		mes "[Artisan Tene]";
 		mes "Initialization complete.";
@@ -523,16 +527,19 @@ que_ng,75,20,3	script	Artisan Tene#ko	762,{
 	} else
 		set .@equip_card[2], .@enchant;
 	progressbar "ffff00",2;
-	set Zeny, Zeny - 100000;
 
 	// anti-hack
 	if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 		close;
 
-	delequip .@part;
-
-//	GetNonSlotItemSock2 .@equip_refine .@equip_id .@equip_card[0] .@equip_card[1] .@equip_card[2] .@equip_card[3]
-	getitem2 .@equip_id,1,1,.@equip_refine,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
+	set Zeny, Zeny - 100000;
+	if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+		.@card[0],.@card[1],.@card[2],.@card[3],
+		.@equip_refine,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],0)) {
+		Zeny += 100000;
+		mes "The equipped item changed, so enchanting was cancelled and your Zeny was returned.";
+		close;
+	}
 
 	mes "[Artisan Tene]";
 	mes "^44B7BC" + getitemname(.@equip_id) + "^000000";

@@ -24877,6 +24877,26 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 		materials[idx] = entry.second;
 	}
 
+	t_itemid upgrade_item_id = upgrade->upgrade_item_id;
+
+	if( !upgrade->random_upgrades.empty() ){
+		uint32 roll = rnd_value( 1u, 100000u );
+		uint32 cumulative_chance = 0;
+
+		for( const s_item_enchant_random_upgrade& random_upgrade : upgrade->random_upgrades ){
+			cumulative_chance += random_upgrade.chance;
+
+			if( roll <= cumulative_chance ){
+				upgrade_item_id = random_upgrade.item_id;
+				break;
+			}
+		}
+	}
+
+	if( upgrade_item_id == 0 ){
+		return;
+	}
+
 	if( pc_payzeny( sd, upgrade->zeny, LOG_TYPE_ENCHANT ) != 0 ){
 		return;
 	}
@@ -24890,7 +24910,7 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 	// Log removal of item
 	log_pick_pc( sd, LOG_TYPE_ENCHANT, -1, &selected_item );
 
-	selected_item.card[slot] = upgrade->upgrade_item_id;
+	selected_item.card[slot] = upgrade_item_id;
 
 	// Log retrieving the item again -> with the new enchant
 	log_pick_pc( sd, LOG_TYPE_ENCHANT, 1, &selected_item );

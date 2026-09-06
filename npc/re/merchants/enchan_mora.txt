@@ -1087,6 +1087,7 @@ L_Socket:
 		    callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]))
 			close;
 
+		copyarray .@old_card[0],.@equip_card[0],4;
 		if (.@equip_card[3] == 0 && .@allowed_slot < 4) {
 			set .@equip_card[3],.@enchant;
 		} else if (.@equip_card[2] == 0 && .@allowed_slot < 3) {
@@ -1112,12 +1113,26 @@ L_Socket:
 		}
 		delitem 6380,1; //Mora_Coin
 		set Zeny, Zeny-100000;
-		delequip .@part;
 		if (.@enchant == 9) {
+			if (!deleteequipitem(.@part,.@equip_id,.@equip_refine,
+				.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3])) {
+				getitem 6380,1;
+				Zeny += 100000;
+				mes "The equipped item changed, so enhancing was cancelled and your payment was returned.";
+				close;
+			}
 			specialeffect2 EF_SUI_EXPLOSION;
 			mes "[Artifact Researcher]";
 			mes "This!";
  			mes "I... I'm sorry but the equipment has been destroyed.";
+			close;
+		}
+		if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+			.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3],
+			.@equip_refine,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],0)) {
+			getitem 6380,1;
+			Zeny += 100000;
+			mes "The equipped item changed, so enhancing was cancelled and your payment was returned.";
 			close;
 		}
 		if (.@enchant == 0) {
@@ -1131,10 +1146,6 @@ L_Socket:
 			//mes "The artifact ^990000"+.@slot+" will have the first enhancement retained.";
 			mes "I've successfully enhanced the artifact ^990000"+.@equip_name$+"^000000 at socket "+.@slot+".";
 		}
-
-//		GetNonSlotItemSock2 .@equip_refine .@equip_id .@equip_card[0] .@equip_card[1] .@equip_card[2] .@equip_card[3]
-		getitem2 .@equip_id,1,1,.@equip_refine,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
-
 		close;
 	} else if (.@select == 2) {
 		if (Zeny < 100000 || countitem(6380) == 0) {
@@ -1145,21 +1156,26 @@ L_Socket:
 		specialeffect2 EF_REPAIRWEAPON;
 		mes "[Artifact Researcher]";
 		mes "The ability to enhance remains.";
-		delitem 6380,1; //Mora_Coin
-		set Zeny, Zeny-100000;
 
 		// anti-hack
 		if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 			close;
 
-		delequip .@part;
-
-//		GetNonSlotItemSock2 .@equip_refine .@equip_id .@equip_card[0] .@equip_card[1] .@equip_card[2] .@equip_card[3]
+		copyarray .@old_card[0],.@equip_card[0],4;
 		for ( .@i = getiteminfo(.@equip_id, ITEMINFO_SLOT); .@i < MAX_SLOTS; .@i++ ) {
 			if (getiteminfo(.@equip_card[.@i], ITEMINFO_SUBTYPE) == CARD_ENCHANT)
 				.@equip_card[.@i] = 0;// Armor Enchant System
 		}
-		getitem2 .@equip_id,1,1,.@equip_refine,0,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3];
+		delitem 6380,1; //Mora_Coin
+		set Zeny, Zeny-100000;
+		if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+			.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3],
+			.@equip_refine,.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3],0)) {
+			getitem 6380,1;
+			Zeny += 100000;
+			mes "The equipped item changed, so resetting was cancelled and your payment was returned.";
+			close;
+		}
 
 		close;
 	}
@@ -1416,7 +1432,11 @@ mora,124,82,4	script	Artifact Collector#blan	522,{
 	if (callfunc("F_IsEquipIDHack", EQI_HAND_R, .@equip_id) || callfunc("F_IsEquipCardHack", EQI_HAND_R, .@equip_card[0], .@equip_card[1], .@equip_card[2], .@equip_card[3]) || callfunc("F_IsEquipRefineHack", EQI_HAND_R, .@equip_refine))
 		close;
 
-	delequip EQI_HAND_R;
+	if (!deleteequipitem(EQI_HAND_R,.@equip_id,.@equip_refine,
+		.@equip_card[0],.@equip_card[1],.@equip_card[2],.@equip_card[3])) {
+		mes "The equipped artifact changed, so the exchange was cancelled.";
+		close;
+	}
 	getitem .@empowered,1;
 	mes "[Artifact Collector]";
 	mes "It is perfectly done, you will be so happy! Good bye friend~";

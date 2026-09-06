@@ -195,27 +195,9 @@ Body:
                 Amount: 50
               - Material: Ch2_Kindle_Hal_B
                 Amount: 5
-          - Item: aegis_314945
-            Price: 15000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 50
-              - Material: Ch1_Mana_Ring
-                Amount: 50
-              - Material: Ch2_Kindle_Hal_B
-                Amount: 5
-          - Item: aegis_314946
-            Price: 15000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 50
-              - Material: Ch1_Mana_Ring
-                Amount: 50
-              - Material: Ch2_Kindle_Hal_B
-                Amount: 5
       - Slot: 2
         PerfectEnchants:
-          - Item: aegis_314947
+          - Item: aegis_314945
             Price: 17500000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -224,43 +206,7 @@ Body:
                 Amount: 75
               - Material: Ch2_Kindle_Hal_R
                 Amount: 5
-          - Item: aegis_314948
-            Price: 17500000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 100
-              - Material: Ch1_Mana_Ring
-                Amount: 75
-              - Material: Ch2_Kindle_Hal_R
-                Amount: 5
-          - Item: aegis_314949
-            Price: 17500000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 100
-              - Material: Ch1_Mana_Ring
-                Amount: 75
-              - Material: Ch2_Kindle_Hal_R
-                Amount: 5
-          - Item: aegis_314950
-            Price: 17500000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 100
-              - Material: Ch1_Mana_Ring
-                Amount: 75
-              - Material: Ch2_Kindle_Hal_R
-                Amount: 5
-          - Item: aegis_314951
-            Price: 17500000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 100
-              - Material: Ch1_Mana_Ring
-                Amount: 75
-              - Material: Ch2_Kindle_Hal_R
-                Amount: 5
-          - Item: aegis_314952
+          - Item: aegis_314946
             Price: 17500000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -271,7 +217,7 @@ Body:
                 Amount: 5
       - Slot: 1
         PerfectEnchants:
-          - Item: aegis_314939
+          - Item: aegis_314947
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -280,7 +226,7 @@ Body:
                 Amount: 100
               - Material: Ch2_Kindle_Hal_Y
                 Amount: 5
-          - Item: aegis_314940
+          - Item: aegis_314948
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -289,7 +235,34 @@ Body:
                 Amount: 100
               - Material: Ch2_Kindle_Hal_Y
                 Amount: 5
-          - Item: aegis_314941
+          - Item: aegis_314949
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314950
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314951
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314952
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -329,45 +302,9 @@ Body:
                 Amount: 50
               - Material: Ch2_Kindle_Hal_B
                 Amount: 5
-          - Item: aegis_314955
-            Price: 15000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 50
-              - Material: Ch1_Mana_Ring
-                Amount: 50
-              - Material: Ch2_Kindle_Hal_B
-                Amount: 5
-          - Item: aegis_314956
-            Price: 15000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 50
-              - Material: Ch1_Mana_Ring
-                Amount: 50
-              - Material: Ch2_Kindle_Hal_B
-                Amount: 5
-          - Item: aegis_314957
-            Price: 15000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 50
-              - Material: Ch1_Mana_Ring
-                Amount: 50
-              - Material: Ch2_Kindle_Hal_B
-                Amount: 5
-          - Item: aegis_314958
-            Price: 15000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 50
-              - Material: Ch1_Mana_Ring
-                Amount: 50
-              - Material: Ch2_Kindle_Hal_B
-                Amount: 5
       - Slot: 2
         PerfectEnchants:
-          - Item: aegis_314959
+          - Item: aegis_314955
             Price: 17500000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -376,7 +313,7 @@ Body:
                 Amount: 75
               - Material: Ch2_Kindle_Hal_R
                 Amount: 5
-          - Item: aegis_314960
+          - Item: aegis_314956
             Price: 17500000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -385,7 +322,7 @@ Body:
                 Amount: 75
               - Material: Ch2_Kindle_Hal_R
                 Amount: 5
-          - Item: aegis_314961
+          - Item: aegis_314957
             Price: 17500000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -394,25 +331,7 @@ Body:
                 Amount: 75
               - Material: Ch2_Kindle_Hal_R
                 Amount: 5
-          - Item: aegis_314962
-            Price: 17500000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 100
-              - Material: Ch1_Mana_Ring
-                Amount: 75
-              - Material: Ch2_Kindle_Hal_R
-                Amount: 5
-          - Item: aegis_314963
-            Price: 17500000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 100
-              - Material: Ch1_Mana_Ring
-                Amount: 75
-              - Material: Ch2_Kindle_Hal_R
-                Amount: 5
-          - Item: aegis_314964
+          - Item: aegis_314958
             Price: 17500000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -423,7 +342,7 @@ Body:
                 Amount: 5
       - Slot: 1
         PerfectEnchants:
-          - Item: aegis_314939
+          - Item: aegis_314959
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -432,7 +351,7 @@ Body:
                 Amount: 100
               - Material: Ch2_Kindle_Hal_Y
                 Amount: 5
-          - Item: aegis_314940
+          - Item: aegis_314960
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -441,7 +360,34 @@ Body:
                 Amount: 100
               - Material: Ch2_Kindle_Hal_Y
                 Amount: 5
-          - Item: aegis_314941
+          - Item: aegis_314961
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314962
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314963
+            Price: 20000000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 150
+              - Material: Ch1_Mana_Ring
+                Amount: 100
+              - Material: Ch2_Kindle_Hal_Y
+                Amount: 5
+          - Item: aegis_314964
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -619,6 +565,15 @@ Body:
                 Amount: 75
               - Material: Ch2_Kindle_Hal_R
                 Amount: 5
+          - Item: aegis_314978
+            Price: 17500000
+            Materials:
+              - Material: Ch2_Flame_Coin
+                Amount: 100
+              - Material: Ch1_Mana_Ring
+                Amount: 75
+              - Material: Ch2_Kindle_Hal_R
+                Amount: 5
           - Item: aegis_314974
             Price: 17500000
             Materials:
@@ -649,15 +604,6 @@ Body:
               - Material: Ch2_Kindle_Hal_Y
                 Amount: 5
           - Item: aegis_314977
-            Price: 20000000
-            Materials:
-              - Material: Ch2_Flame_Coin
-                Amount: 150
-              - Material: Ch1_Mana_Ring
-                Amount: 100
-              - Material: Ch2_Kindle_Hal_Y
-                Amount: 5
-          - Item: aegis_314978
             Price: 20000000
             Materials:
               - Material: Ch2_Flame_Coin
@@ -2104,3 +2050,1618 @@ Body:
               - Material: Time_D_Ma_Rune
                 Amount: 325
 # END CODEX BIOSPHERE CROWN ENCHANT 132
+
+# Chapter 1 Dimensional footwear (client enchant group 163).
+# Ranks 1-4 advance one level at 90% or skip two levels at 10%; rank 5 advances
+# deterministically to rank 6. Every upgrade consumes the listed cost once.
+  - Id: 163
+    TargetItems:
+      Dimension_B_Greave: true
+      Dimension_H_Boots: true
+      Dimension_S_Shoes: true
+      Dimension_M_Shoes: true
+      Dimension_E_Boots: true
+    Reset:
+      Chance: 100000
+      Price: 5000000
+      Materials:
+        - Material: Ch1_Root_Coin
+          Amount: 25
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: Ch01_S_E_Life01
+            Price: 2500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 30
+              - Material: Ch1_Mana_Ring
+                Amount: 20
+              - Material: Frontier_M_Stone
+                Amount: 25
+          - Item: Ch01_S_E_Regiment01
+            Price: 2500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 30
+              - Material: Ch1_Mana_Ring
+                Amount: 20
+              - Material: Frontier_M_Stone
+                Amount: 25
+          - Item: Ch01_S_E_GAE01
+            Price: 2500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 30
+              - Material: Ch1_Mana_Ring
+                Amount: 20
+              - Material: Frontier_M_Stone
+                Amount: 25
+          - Item: Ch01_S_E_Immo01
+            Price: 2500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 30
+              - Material: Ch1_Mana_Ring
+                Amount: 20
+              - Material: Frontier_M_Stone
+                Amount: 25
+          - Item: Ch01_S_E_Vain01
+            Price: 2500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 30
+              - Material: Ch1_Mana_Ring
+                Amount: 20
+              - Material: Frontier_M_Stone
+                Amount: 25
+        Upgrades:
+          - Enchant: Ch01_S_E_Life05
+            Upgrade: Ch01_S_E_Life06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Regiment05
+            Upgrade: Ch01_S_E_Regiment06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_GAE05
+            Upgrade: Ch01_S_E_GAE06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Immo05
+            Upgrade: Ch01_S_E_Immo06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Vain05
+            Upgrade: Ch01_S_E_Vain06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Life01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Life02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Life03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Life02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Life03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Life04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Life03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Life04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Life05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Life04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Life05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Life06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Regiment01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Regiment02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Regiment03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Regiment02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Regiment03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Regiment04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Regiment03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Regiment04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Regiment05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Regiment04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Regiment05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Regiment06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_GAE01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_GAE02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_GAE03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_GAE02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_GAE03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_GAE04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_GAE03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_GAE04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_GAE05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_GAE04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_GAE05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_GAE06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Immo01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Immo02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Immo03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Immo02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Immo03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Immo04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Immo03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Immo04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Immo05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Immo04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Immo05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Immo06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Vain01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Vain02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Vain03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Vain02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Vain03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Vain04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Vain03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Vain04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Vain05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Vain04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Vain05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Vain06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+      - Slot: 2
+        PerfectEnchants:
+          - Item: Ch01_S_E_Flame01
+            Price: 3500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 30
+              - Material: Frontier_M_Stone
+                Amount: 35
+          - Item: Ch01_S_E_Frozen01
+            Price: 3500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 30
+              - Material: Frontier_M_Stone
+                Amount: 35
+          - Item: Ch01_S_E_Earth01
+            Price: 3500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 30
+              - Material: Frontier_M_Stone
+                Amount: 35
+          - Item: Ch01_S_E_Death01
+            Price: 3500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 30
+              - Material: Frontier_M_Stone
+                Amount: 35
+          - Item: Ch01_S_E_Poison01
+            Price: 3500000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 50
+              - Material: Ch1_Mana_Ring
+                Amount: 30
+              - Material: Frontier_M_Stone
+                Amount: 35
+        Upgrades:
+          - Enchant: Ch01_S_E_Flame05
+            Upgrade: Ch01_S_E_Flame06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Frozen05
+            Upgrade: Ch01_S_E_Frozen06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Earth05
+            Upgrade: Ch01_S_E_Earth06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Death05
+            Upgrade: Ch01_S_E_Death06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Poison05
+            Upgrade: Ch01_S_E_Poison06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Flame01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Flame02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Flame03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Flame02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Flame03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Flame04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Flame03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Flame04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Flame05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Flame04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Flame05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Flame06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Frozen01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Frozen02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Frozen03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Frozen02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Frozen03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Frozen04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Frozen03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Frozen04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Frozen05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Frozen04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Frozen05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Frozen06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Earth01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Earth02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Earth03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Earth02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Earth03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Earth04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Earth03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Earth04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Earth05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Earth04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Earth05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Earth06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Death01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Death02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Death03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Death02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Death03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Death04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Death03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Death04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Death05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Death04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Death05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Death06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+          - Enchant: Ch01_S_E_Poison01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Poison02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Poison03
+                Chance: 10000
+            Price: 5000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 12
+              - Material: Frontier_Stone_YL
+                Amount: 10
+              - Material: Chaotic_Rune
+                Amount: 30
+              - Material: Chaotic_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Poison02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Poison03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Poison04
+                Chance: 10000
+            Price: 10000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Poison03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Poison04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Poison05
+                Chance: 10000
+            Price: 17500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Disparate_Rune
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 5
+          - Enchant: Ch01_S_E_Poison04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Poison05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Poison06
+                Chance: 10000
+            Price: 27500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Disparate_Rune
+                Amount: 40
+              - Material: Disparate_Essence
+                Amount: 10
+      - Slot: 1
+        PerfectEnchants:
+          - Item: Ch01_S_E_Fighting01
+            Price: 5000000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 70
+              - Material: Ch1_Mana_Ring
+                Amount: 40
+              - Material: Frontier_M_Stone
+                Amount: 45
+          - Item: Ch01_S_E_Prudence01
+            Price: 5000000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 70
+              - Material: Ch1_Mana_Ring
+                Amount: 40
+              - Material: Frontier_M_Stone
+                Amount: 45
+          - Item: Ch01_S_E_Pride01
+            Price: 5000000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 70
+              - Material: Ch1_Mana_Ring
+                Amount: 40
+              - Material: Frontier_M_Stone
+                Amount: 45
+          - Item: Ch01_S_E_Sageness01
+            Price: 5000000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 70
+              - Material: Ch1_Mana_Ring
+                Amount: 40
+              - Material: Frontier_M_Stone
+                Amount: 45
+          - Item: Ch01_S_E_Volition01
+            Price: 5000000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 70
+              - Material: Ch1_Mana_Ring
+                Amount: 40
+              - Material: Frontier_M_Stone
+                Amount: 45
+          - Item: Ch01_S_E_Will01
+            Price: 5000000
+            Materials:
+              - Material: Ch1_Root_Coin
+                Amount: 70
+              - Material: Ch1_Mana_Ring
+                Amount: 40
+              - Material: Frontier_M_Stone
+                Amount: 45
+        Upgrades:
+          - Enchant: Ch01_S_E_Fighting05
+            Upgrade: Ch01_S_E_Fighting06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Prudence05
+            Upgrade: Ch01_S_E_Prudence06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Pride05
+            Upgrade: Ch01_S_E_Pride06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Sageness05
+            Upgrade: Ch01_S_E_Sageness06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Volition05
+            Upgrade: Ch01_S_E_Volition06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Will05
+            Upgrade: Ch01_S_E_Will06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Fighting01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Fighting02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Fighting03
+                Chance: 10000
+            Price: 7500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Frontier_Stone_GR
+                Amount: 10
+              - Material: Frontier_Stone_BK
+                Amount: 8
+              - Material: Chaotic_Essence
+                Amount: 15
+              - Material: Disparate_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Fighting02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Fighting03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Fighting04
+                Chance: 10000
+            Price: 12500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Frontier_Stone_GR
+                Amount: 12
+              - Material: Frontier_Stone_BK
+                Amount: 10
+              - Material: Chaotic_Essence
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 9
+          - Enchant: Ch01_S_E_Fighting03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Fighting04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Fighting05
+                Chance: 10000
+            Price: 20000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Frontier_Stone_GR
+                Amount: 14
+              - Material: Frontier_Stone_BK
+                Amount: 12
+              - Material: Chaotic_Essence
+                Amount: 25
+              - Material: Disparate_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Fighting04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Fighting05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Fighting06
+                Chance: 10000
+            Price: 30000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 20
+              - Material: Frontier_Stone_YL
+                Amount: 18
+              - Material: Frontier_Stone_GR
+                Amount: 16
+              - Material: Frontier_Stone_BK
+                Amount: 14
+              - Material: Chaotic_Essence
+                Amount: 30
+              - Material: Disparate_Essence
+                Amount: 15
+          - Enchant: Ch01_S_E_Prudence01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Prudence02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Prudence03
+                Chance: 10000
+            Price: 7500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Frontier_Stone_GR
+                Amount: 10
+              - Material: Frontier_Stone_BK
+                Amount: 8
+              - Material: Chaotic_Essence
+                Amount: 15
+              - Material: Disparate_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Prudence02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Prudence03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Prudence04
+                Chance: 10000
+            Price: 12500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Frontier_Stone_GR
+                Amount: 12
+              - Material: Frontier_Stone_BK
+                Amount: 10
+              - Material: Chaotic_Essence
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 9
+          - Enchant: Ch01_S_E_Prudence03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Prudence04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Prudence05
+                Chance: 10000
+            Price: 20000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Frontier_Stone_GR
+                Amount: 14
+              - Material: Frontier_Stone_BK
+                Amount: 12
+              - Material: Chaotic_Essence
+                Amount: 25
+              - Material: Disparate_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Prudence04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Prudence05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Prudence06
+                Chance: 10000
+            Price: 30000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 20
+              - Material: Frontier_Stone_YL
+                Amount: 18
+              - Material: Frontier_Stone_GR
+                Amount: 16
+              - Material: Frontier_Stone_BK
+                Amount: 14
+              - Material: Chaotic_Essence
+                Amount: 30
+              - Material: Disparate_Essence
+                Amount: 15
+          - Enchant: Ch01_S_E_Pride01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Pride02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Pride03
+                Chance: 10000
+            Price: 7500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Frontier_Stone_GR
+                Amount: 10
+              - Material: Frontier_Stone_BK
+                Amount: 8
+              - Material: Chaotic_Essence
+                Amount: 15
+              - Material: Disparate_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Pride02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Pride03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Pride04
+                Chance: 10000
+            Price: 12500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Frontier_Stone_GR
+                Amount: 12
+              - Material: Frontier_Stone_BK
+                Amount: 10
+              - Material: Chaotic_Essence
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 9
+          - Enchant: Ch01_S_E_Pride03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Pride04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Pride05
+                Chance: 10000
+            Price: 20000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Frontier_Stone_GR
+                Amount: 14
+              - Material: Frontier_Stone_BK
+                Amount: 12
+              - Material: Chaotic_Essence
+                Amount: 25
+              - Material: Disparate_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Pride04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Pride05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Pride06
+                Chance: 10000
+            Price: 30000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 20
+              - Material: Frontier_Stone_YL
+                Amount: 18
+              - Material: Frontier_Stone_GR
+                Amount: 16
+              - Material: Frontier_Stone_BK
+                Amount: 14
+              - Material: Chaotic_Essence
+                Amount: 30
+              - Material: Disparate_Essence
+                Amount: 15
+          - Enchant: Ch01_S_E_Sageness01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Sageness02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Sageness03
+                Chance: 10000
+            Price: 7500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Frontier_Stone_GR
+                Amount: 10
+              - Material: Frontier_Stone_BK
+                Amount: 8
+              - Material: Chaotic_Essence
+                Amount: 15
+              - Material: Disparate_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Sageness02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Sageness03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Sageness04
+                Chance: 10000
+            Price: 12500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Frontier_Stone_GR
+                Amount: 12
+              - Material: Frontier_Stone_BK
+                Amount: 10
+              - Material: Chaotic_Essence
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 9
+          - Enchant: Ch01_S_E_Sageness03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Sageness04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Sageness05
+                Chance: 10000
+            Price: 20000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Frontier_Stone_GR
+                Amount: 14
+              - Material: Frontier_Stone_BK
+                Amount: 12
+              - Material: Chaotic_Essence
+                Amount: 25
+              - Material: Disparate_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Sageness04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Sageness05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Sageness06
+                Chance: 10000
+            Price: 30000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 20
+              - Material: Frontier_Stone_YL
+                Amount: 18
+              - Material: Frontier_Stone_GR
+                Amount: 16
+              - Material: Frontier_Stone_BK
+                Amount: 14
+              - Material: Chaotic_Essence
+                Amount: 30
+              - Material: Disparate_Essence
+                Amount: 15
+          - Enchant: Ch01_S_E_Volition01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Volition02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Volition03
+                Chance: 10000
+            Price: 7500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Frontier_Stone_GR
+                Amount: 10
+              - Material: Frontier_Stone_BK
+                Amount: 8
+              - Material: Chaotic_Essence
+                Amount: 15
+              - Material: Disparate_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Volition02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Volition03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Volition04
+                Chance: 10000
+            Price: 12500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Frontier_Stone_GR
+                Amount: 12
+              - Material: Frontier_Stone_BK
+                Amount: 10
+              - Material: Chaotic_Essence
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 9
+          - Enchant: Ch01_S_E_Volition03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Volition04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Volition05
+                Chance: 10000
+            Price: 20000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Frontier_Stone_GR
+                Amount: 14
+              - Material: Frontier_Stone_BK
+                Amount: 12
+              - Material: Chaotic_Essence
+                Amount: 25
+              - Material: Disparate_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Volition04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Volition05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Volition06
+                Chance: 10000
+            Price: 30000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 20
+              - Material: Frontier_Stone_YL
+                Amount: 18
+              - Material: Frontier_Stone_GR
+                Amount: 16
+              - Material: Frontier_Stone_BK
+                Amount: 14
+              - Material: Chaotic_Essence
+                Amount: 30
+              - Material: Disparate_Essence
+                Amount: 15
+          - Enchant: Ch01_S_E_Will01
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Will02
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Will03
+                Chance: 10000
+            Price: 7500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 14
+              - Material: Frontier_Stone_YL
+                Amount: 12
+              - Material: Frontier_Stone_GR
+                Amount: 10
+              - Material: Frontier_Stone_BK
+                Amount: 8
+              - Material: Chaotic_Essence
+                Amount: 15
+              - Material: Disparate_Essence
+                Amount: 6
+          - Enchant: Ch01_S_E_Will02
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Will03
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Will04
+                Chance: 10000
+            Price: 12500000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 16
+              - Material: Frontier_Stone_YL
+                Amount: 14
+              - Material: Frontier_Stone_GR
+                Amount: 12
+              - Material: Frontier_Stone_BK
+                Amount: 10
+              - Material: Chaotic_Essence
+                Amount: 20
+              - Material: Disparate_Essence
+                Amount: 9
+          - Enchant: Ch01_S_E_Will03
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Will04
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Will05
+                Chance: 10000
+            Price: 20000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 18
+              - Material: Frontier_Stone_YL
+                Amount: 16
+              - Material: Frontier_Stone_GR
+                Amount: 14
+              - Material: Frontier_Stone_BK
+                Amount: 12
+              - Material: Chaotic_Essence
+                Amount: 25
+              - Material: Disparate_Essence
+                Amount: 12
+          - Enchant: Ch01_S_E_Will04
+            RandomUpgrades:
+              - Upgrade: Ch01_S_E_Will05
+                Chance: 90000
+              - Upgrade: Ch01_S_E_Will06
+                Chance: 10000
+            Price: 30000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 20
+              - Material: Frontier_Stone_YL
+                Amount: 18
+              - Material: Frontier_Stone_GR
+                Amount: 16
+              - Material: Frontier_Stone_BK
+                Amount: 14
+              - Material: Chaotic_Essence
+                Amount: 30
+              - Material: Disparate_Essence
+                Amount: 15

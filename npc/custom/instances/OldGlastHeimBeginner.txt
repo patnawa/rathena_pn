@@ -593,7 +593,7 @@ OnFinalBossDead:
 	case 2:
 		undisguise;
 		OGHB_Disguised = 0;
-		warp "glast_01",196,239;
+		warp "glast_01",196,235;
 		end;
 	default:
 		close;
@@ -609,7 +609,7 @@ OnFinalBossDead:
 	close2;
 	undisguise;
 	OGHB_Disguised = 0;
-	warp "glast_01",196,239;
+	warp "glast_01",196,235;
 	end;
 }
 
@@ -722,11 +722,13 @@ OnTouch:
 		mes "The crack is sealed by the unstable memory.";
 		close;
 	}
-	if (!checkweight(6608,1) || !checkweight(909,4)) {
+	.@jellopy = rand(1,4);
+	setarray .@reward_item[0],6608,909;
+	setarray .@reward_amount[0],1,.@jellopy;
+	if (!checkweight2(.@reward_item,.@reward_amount)) {
 		mes "You are carrying too much to collect the treasure.";
 		close;
 	}
-	.@jellopy = rand(1,4);
 	getitem 6608,1;
 	getitem 909,.@jellopy;
 	specialeffect EF_SPELLBREAKER;

@@ -4,7 +4,9 @@ Chapter 2's post-2025 map files are not fully extractable from current encrypted
 Gravity archives. The server therefore ships a synchronized map-cache alias set.
 Clients must append `resnametable_chapter2.txt` to the active
 `data/resnametable.txt` and load `SystemEN/itemInfo_Chapter2.lua`, or run
-`install_client_patch.ps1` to install both automatically.
+`install_client_patch.ps1` to install both automatically. The installer also
+adds readable Chapter 2 entries to `SystemEN/OngoingQuests.lub` through the
+shared quest compatibility patch.
 
 Example:
 

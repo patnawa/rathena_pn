@@ -248,6 +248,7 @@ dali02,93,146,6	script	Assistant Professor#a1	4_M_REPAIR,{
 				mes "If you wish to enchant, you must equip Sarah's " + .@sarah_earring$ + " earring.";
 				close;
 			}
+			.@equip_refine = getequiprefinerycnt(.@part);
 			setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
 			if (.@card[2] > 0) {// 2 enchants
 				mes "[Chief Assistant]";
@@ -346,13 +347,23 @@ dali02,93,146,6	script	Assistant Professor#a1	4_M_REPAIR,{
 			delitem 6803,4;// Shard of Gigantes
 
 			// anti-hack
-			if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]))
+			if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine)) {
+				getitem 6803,4; // Return the charged Shards of Gigantes.
+				mes "[Chief Assistant]";
+				mes "The equipped earring changed during the process. Your shards were returned.";
 				close;
+			}
 
-			delequip .@part;
 			.@r = rand(100);
 			for ( .@i = 0; .@i < .@bonus_size && (.@bonus_chance * (.@i+1)) < .@r; .@i++ );
 			if (.@i == .@bonus_size) {
+				// Failure intentionally destroys the exact guarded earring.
+				if (!deleteequipitem(.@part,.@equip_id,.@equip_refine,.@card[0],.@card[1],.@card[2],.@card[3])) {
+					getitem 6803,4;
+					mes "[Chief Assistant]";
+					mes "The earring could not be processed. Your shards were returned.";
+					close;
+				}
 				specialeffect2 EF_CRASHEARTH;
 				specialeffect2 EF_MAXPOWER;
 				mes "[Chief Assistant]";
@@ -362,9 +373,13 @@ dali02,93,146,6	script	Assistant Professor#a1	4_M_REPAIR,{
 				mes "enchantment is not an easy task..";
 				close;
 			}
-			.@card[.@slot-1] = .@bonus[.@i];
+			if (!modifyequipitem(.@part,.@equip_id,0,-1,.@slot-1,.@card[.@slot-1],.@bonus[.@i])) {
+				getitem 6803,4;
+				mes "[Chief Assistant]";
+				mes "The equipped earring changed before the enchantment could be applied. Your shards were returned.";
+				close;
+			}
 			specialeffect2 EF_ANGEL2;
-			getitem2 .@sarah_item_id,1,1,0,0,.@card[0],.@card[1],.@card[2],.@card[3];
 			mes "[Chief Assistant]";
 			mes "Enchantment completed!";
 			close;
@@ -409,6 +424,7 @@ dali02,93,146,6	script	Assistant Professor#a1	4_M_REPAIR,{
 			}
 			.@equip_id = getequipid(.@part);
 			setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+			.@equip_refine = getequiprefinerycnt(.@part);
 			if (.@equip_id == -1) {
 				mes "[Chief Assistant]";
 				mes "To initialize an enchantment, the relevant column must be equipped with gear.";
@@ -440,11 +456,20 @@ dali02,93,146,6	script	Assistant Professor#a1	4_M_REPAIR,{
 				delitem 6803,1;// Shard of Gigantes
 
 				// anti-hack
-				if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]))
+				if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine)) {
+					getitem 6803,1;
+					mes "[Chief Assistant]";
+					mes "The equipped earring changed during the process. Your shard was returned.";
 					close;
+				}
 
-				delequip .@part;
-				getitem .@sarah_item_id,1;
+				if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
+					.@card[0],.@card[1],.@card[2],.@card[3],0,0,0,0,0,1)) {
+					getitem 6803,1;
+					mes "[Chief Assistant]";
+					mes "The equipped earring changed before initialization could finish. Your shard was returned.";
+					close;
+				}
 				mes "[Chief Assistant]";
 				mes "Initialization completed.";
 				mes "Please find me if you need me.";

@@ -489,7 +489,7 @@ ygg_fruit,80,122,3	script	Lapine Shasha#c1p1ssha01	4_CH1_DELEGACY01,{
 		setquest 18377;
 		completequest 18377;
 		setquest 12660;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 195914233, 4000000;
 		close3;
 	}
@@ -623,7 +623,7 @@ ygg_fruit,82,120,3	script	Maysel#c1p1may01	4_F_MAYSEL,{
 		mes "If you don't know the way, ask Naviel to guide you.";
 		changequest 18370, 18371;
 		getexp 65304744, 4000000;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		close3;
 	}
 	npctalk "Handling information is what I do best.", "", BC_SELF;
@@ -674,7 +674,7 @@ ygg_fruit,71,78,3	script	Debris#c1p1demi02	4_LGTSCIENCE,{
 		mes "Now, go explore the world in the Distorted Space!";
 		delitem "Dragon_Scale", 5;
 		changequest 18373, 18372;
-		getitem "Ch1_Root_Coin", 10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 65304744, 4000000;
 		close3;
 	}
@@ -710,7 +710,7 @@ ygg_fruit,71,78,3	script	Debris#c1p1demi02	4_LGTSCIENCE,{
 		mes "Go and find the advanced party!";
 		erasequest 18375;
 		setquest 18376;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 65304744, 4000000;
 		close3;
 	}
@@ -2203,7 +2203,7 @@ ygg_roots,338,243,5	script	Mark#ch01_2	4_EP18_MARK,{
 		mes "We'll be back soon.";
 		changequest 24085, 18378;
 		getexp 130609489, 4000000;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		close2;
 		cutin "",255;
 		cloaknpc("Chez#ch01_d3", true, getcharid(0));
@@ -2465,7 +2465,7 @@ ch1_sf03,190,257,5	script	Reno#c01ms00	4_M_KNG_RENO,{
 		mes "Once everyone is finished, let's meet back in Ashridge.";
 		mes "Dismissed!";
 		changequest 17891, 17892;
-		getitem "Ch1_Root_Coin",3;
+		callfunc "F_CH1_GiveReward",1001972,3;
 		getexp 32652372, 2500000;
 		close2;
 		cutin "",255;
@@ -2590,7 +2590,7 @@ ch1_geffen,190,123,5	script	Geffen Resident#c01ms10	4_M_02,5,5,{
 		cutin "4job_gregor_01.png",2;
 		mes "[Gregor]";
 		mes "I'm curious about the disease. If it's something we already know, we might be able to create a cure. We need to meet the people who've caught it.";
-		npctalk "æˆ√ª πœ¿Ω¡˜«œ≥◊.", "Charles#c01ms10", BC_SELF;
+		npctalk "ÏóÑÏ≤≠ ÎØøÏùåÏßÅÌïòÎÑ§.", "Charles#c01ms10", BC_SELF;
 		next;
 		cutin "4job_einhar_01.png",2;
 		mes "[Einhar]";
@@ -3162,7 +3162,7 @@ ch1_geffen,117,117,5	script(CLOAKED)	Ascetic Jeon#c01ms12	4_EXJOB_MASTER_J,{
 		mes "Then rest for today and focus on purifying your body and mind. Let's meet again after dawn. Good work.";
 		erasequest 17931;
 		setquest 17932;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		close3;
 	}
 	if ( 
@@ -3203,7 +3203,7 @@ ch1_geffen,117,117,5	script(CLOAKED)	Ascetic Jeon#c01ms12	4_EXJOB_MASTER_J,{
 		setquest 17928;
 		setquest 17929;
 		setquest 17930;
-		getitem "Ch1_Purifi_Amulet",5;
+		callfunc "F_CH1_GiveReward",1001973,5;
 		getexp 32652372, 2000000;
 		close3;
 	}
@@ -3301,7 +3301,7 @@ ch1_geffen,117,117,5	script(CLOAKED)	Ascetic Jeon#c01ms12	4_EXJOB_MASTER_J,{
 		mes "[Ascetic Jeon]";
 		mes "I'll leave it to you.";
 		changequest 17897, 17898;
-		getitem "Ch1_Root_Coin",7;
+		callfunc "F_CH1_GiveReward",1001972,7;
 		getexp 97957116, 5500000;
 		close3;
 	}
@@ -3385,7 +3385,7 @@ ch1_geffen,122,118,3	script(CLOAKED)	Clover#c01ms10	1_M_WIZARD,{
 		mes "You should get plenty of rest for today and come back after dawn. Got it?";
 		erasequest 17933;
 		setquest 17934;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 208473000, 145403733;
 		close3;
 	}
@@ -3554,7 +3554,7 @@ ch1_geffen,122,118,3	script(CLOAKED)	Clover#c01ms10	1_M_WIZARD,{
 		mes "We're finally going underground...! Master! Seniors! Just wait a little longer! Clover is on the way!!";
 		completequest 17899;
 		setquest 17900;
-		getitem "Ch1_Root_Coin",3;
+		callfunc "F_CH1_GiveReward",1001972,3;
 		getexp 32652372, 1000000;
 		close2;
 		cutin "",255;
@@ -3734,7 +3734,7 @@ ch1_geffen,122,118,3	script(CLOAKED)	Clover#c01ms10	1_M_WIZARD,{
 		mes "[Ascetic Jeon]";
 		mes "We came to help in the first place. You being grateful is enough.";
 		completequest 17925;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 65304744, 4000000;
 		close;
 	}
@@ -5222,7 +5222,7 @@ ch1_gef_in,175,187,3	script(CLOAKED)	Maxim's Journals#ch1	4_POINT_WHITE,{
 					mes "It contains notes on symptoms like fever and coughing. Is this the right journal?";
 					next;
 					mes "Several names are listed, but Margot's name is not in it.";
-					mes "This doesn°Øt seem to be the right journal.";
+					mes "This doesn‚Äôt seem to be the right journal.";
 					next;
 					mes "There must be a journal somewhere where Margot's records is written...";
 					break;
@@ -5457,7 +5457,7 @@ ch1_gef_in,179,193,7	script(CLOAKED)	Gregor#rch1_06	4259,{
 		setquest 16929;
 		setquest 16930;
 		getexp 130609489, 4000000;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		close3;
 	}
 	if ( isbegin_quest(16934) == 1 ) {
@@ -5807,7 +5807,7 @@ ch1_gef_in,175,188,3	script(CLOAKED)	Ascetic Jeon#c01ms40	4_EXJOB_MASTER_J,{
 		mes "Okay, we'll count on you.";
 		completequest 17920;
 		setquest 17921;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 97957116, 2000000;
 		close3;
 	}
@@ -6364,7 +6364,7 @@ ch1_gef_in,144,171,1	script(CLOAKED)	Einhar#rch1_09	4_4JOB_EINHAR,{
 		mes "Alright, "+strcharinfo(0)+", let's go to the <NAVI>[clinic]<INFO>ch1_geffen.gat,167,173,0,101,0</INFO></NAVI>.";
 		erasequest 16938;
 		setquest 16939;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 130609489, 4000000;
 		close3;
 	}
@@ -6565,7 +6565,7 @@ ch1_gef_in,172,187,3	script(CLOAKED)	Maxim#ch1_t_maxim1	4_M_RUSBALD,{
 		mes "Head to the <NAVI>[decayed Verus]<INFO>hem_dun01,209,248,0,101,0</INFO></NAVI> and regroup with the other. They called the operation Witch Hunt Operation. Quite the fitting name, don't you think?";
 		erasequest 23299;
 		setquest 12663;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 195914233, 8000000;
 		close3;
 	}
@@ -7272,7 +7272,7 @@ ch1_sf03,261,175,5	script(CLOAKED)	Parsifal#c01ms20	ACADEMY_MASTER,{
 		mes "Let's go.";
 		erasequest 17903;
 		setquest 17904;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 97957116, 1950000;
 		close2;
 		cutin "",255;
@@ -8073,7 +8073,7 @@ hem_dun01,221,209,7	script(CLOAKED)	Charles#c01ms24	4_M_JOB_WIZARD,{
 		mes "It's a strange power. Let's head inside to find out.";
 		erasequest 17908;
 		setquest 17909;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 97957116, 1950000;
 		close2;
 		cutin "",255;
@@ -8343,9 +8343,11 @@ ch1_dw,264,66,7	script(CLOAKED)	Ascetic Jeon#c01ms31	4_EXJOB_MASTER_J,{
 		mes "We'll discuss that later. We need to get out of here first and do something about the plague. Let's move.";
 		if ( countitem("Ch1_Sample") ) 
 			delitem "Ch1_Sample", countitem("Ch1_Sample");
+		// A queued sample represents the same evidence being handed over here.
+		CH1_Pending_Sample = 0;
 		erasequest 17916;
 		setquest 17917;
-		getitem "Ch1_Root_Coin",12;
+		callfunc "F_CH1_GiveReward",1001972,12;
 		getexp 130609489, 3000000;
 		close2;
 		cutin "",255;
@@ -8409,7 +8411,7 @@ ch1_dw,340,85,3	script	Immortal Corps#c01ms35	CH1_IMMORTAL_CORPS2,{
 			erasequest 17913;
 			erasequest 17914;
 			erasequest 17915;
-			getitem "Ch1_Sample", 1;
+			callfunc "F_CH1_GiveReward",1001974,1;
 			pctalk "This one...! It's a bit strange? I'd better take this one.";
 			if ( isbegin_quest(17911) == 0 ) {
 				setquest 17916;
@@ -8455,7 +8457,7 @@ ch1_dw,217,96,3	script	Advanced Device#c01ms30	4_POINT_WHITE,{
 				progressbar_npc "3131FF", 1;
 				pctalk "This thing... it looks like some kind of spore?? I should take it.";
 				erasequest 17911;
-				getitem "Ch1_Sample", 1;
+				callfunc "F_CH1_GiveReward",1001974,1;
 				if ( isbegin_quest(17912) == 0 ) {
 					setquest 17916;
 				}
@@ -8815,7 +8817,7 @@ ygg_fruit,40,72,3	script(CLOAKED)	Ascetic Jeon#rch1_1	4_EXJOB_MASTER_J,{
 		mes "Fine. Let's move and talk on the way. Lead the <NAVI>[way]<INFO>ch1_gef_in.gat,29,22,0,101,0</INFO></NAVI>.";
 		erasequest 16944;
 		setquest 16945;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 130609489, 4000000;
 		close3;
 	}
@@ -9447,7 +9449,7 @@ ch1_gef_in,69,33,3	script(CLOAKED)	Maxim#rch1_1	4_M_RUSBALD,{
 		mes "All of you... you also don't look well. Let's go back and regroup for now.";
 		erasequest 16950;
 		setquest 16951;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 130609489, 4000000;
 		close2;
 		cutin "",255;
@@ -9483,8 +9485,8 @@ ygg_edge,209,209,5	script	Professor Telcos#C1DY	4_M_COSTELL,2,2,{
 		mes "But hey, just so I don't get dragged into anything troublesome, let me say one last thing.";
 		next;
 		mes "[Telcos]";
-		mes "Everything that happens in there is already the °∏past°π.";
-		mes "So don't start spouting nonsense like °∏I have to change things!°π.";
+		mes "Everything that happens in there is already the „Äåpast„Äç.";
+		mes "So don't start spouting nonsense like „ÄåI have to change things!„Äç.";
 		next;
 		mes "[Telcos]";
 		mes "Even if it feels like the people inside are talking to you?";
@@ -9535,7 +9537,7 @@ ygg_edge,209,209,5	script	Professor Telcos#C1DY	4_M_COSTELL,2,2,{
 		next;
 		erasequest 19226;
 		setquest 23271;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 195914233, 6000000;
 		mes "[Telcos]";
 		mes "Whether you go again or not, it's up to you. Not like I'll be bothered. So off you go~! Take care, come back or don't, whatever~!";
@@ -9554,7 +9556,7 @@ ygg_edge,209,209,5	script	Professor Telcos#C1DY	4_M_COSTELL,2,2,{
 	mes "No matter what you say, I know you have no reason to be here. It's true. Really, Do you think I won't notice?";
 	next;
 	mes "[Telcos]";
-	mes "Just look at your face °ÆUhh.. What am I supposed to do here?', don't you know? Are you getting what I mean? Now, if you're getting me, just turn around and go back. Okay? Please?";
+	mes "Just look at your face ‚ÄòUhh.. What am I supposed to do here?', don't you know? Are you getting what I mean? Now, if you're getting me, just turn around and go back. Okay? Please?";
 	close;
 	
 OnTouch:
@@ -10541,7 +10543,7 @@ ch1_gef_in,142,143,3	script	Nurse Margot#ch1_margot1	4_F_PATIENT01,{
 		mes "Margot has agreed to let her blood be used for research. Let's head to <NAVI>[Ashridge]<INFO>ygg_fruit,103,73,0,101,0</INFO></NAVI> and share the news.";
 		erasequest 23284;
 		setquest 23285;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 130609489, 4000000;
 		close3;
 	}
@@ -10794,7 +10796,7 @@ ygg_fruit,109,76,3	script(CLOAKED)	Baily's Shelf#ch1_t_bs	4_POINT_WHITE,{
 		mes "We'll be focusing all our effort on developing the cure now, you'll hear more of the details after you regroup with the others in Brimir!";
 		erasequest 23288;
 		setquest 8955;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 130609489, 4000000;
 		close3;
 	}
@@ -11802,7 +11804,7 @@ ch1_sf02,114,46,3	script(CLOAKED)	Two#cpt2	4_CH1_GRAY_VALKYRIE,{
 		delitem "aegis_1001975", 20;
 		completequest 8970;
 		setquest 8971;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 82232200, 5724800;
 		close;
 	}
@@ -11846,7 +11848,7 @@ ch1_sf02,114,46,3	script(CLOAKED)	Two#cpt2	4_CH1_GRAY_VALKYRIE,{
 		delitem "aegis_1001975", 20;
 		erasequest 8972;
 		setquest 8971;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 82232200, 5724800;
 		close;
 	}
@@ -12164,7 +12166,7 @@ ch1_sf02,111,271,5	script(CLOAKED)	Three#cpt2	4_CH1_GRAY_VALKYRIE,{
 		mes "I'd like meet one someday.";
 		completequest 8973;
 		setquest 8974;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 16364720, 11449600;
 		close;
 	}
@@ -12206,7 +12208,7 @@ ch1_sf02,111,271,5	script(CLOAKED)	Three#cpt2	4_CH1_GRAY_VALKYRIE,{
 		mes "I'd like meet one someday.";
 		erasequest 8975;
 		setquest 8974;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 16364720, 11449600;
 		close;
 	}
@@ -12487,7 +12489,7 @@ ch1_sf02,45,54,3	script(CLOAKED)	Four#cpt2	4_CH1_GRAY_VALKYRIE,{
 		mes "...I am truly thankful.";
 		setquest 8977;
 		erasequest 8976;
-		getitem "Ch1_Root_Coin",5;
+		callfunc "F_CH1_GiveReward",1001972,5;
 		getexp 8528760, 5955240;
 		close;
 	}
@@ -12788,7 +12790,7 @@ ch1_sf02,160,160,3	script(CLOAKED)	One#cpt2	4_CH1_GRAY_VALKYRIE,{
 		mes "I'll be waiting for the day you return.";
 		completequest 8968;
 		setquest 8969;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 130609489, 6000000;
 		close2;
 		cutin "",255;
@@ -13366,7 +13368,7 @@ ch1_sf01,110,227,3	script	Yuvilus#ch01_in	4_CH1_YUP,{
 		mes "Let's start by gathering Hal.";
 		mes "We'll need a lot of it, so you should prepare to start farming.";
 		completequest 24109;
-		getitem "1001972",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 65304744, 4000000;
 		close3;
 	}
@@ -13548,7 +13550,7 @@ ch1_sf01,110,227,3	script	Yuvilus#ch01_in	4_CH1_YUP,{
 		mes "I'll send them to the village as soon as they're ready.";
 		erasequest 24099;
 		setquest 23289;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 130609489, 4000000;
 		close2;
 		cutin "",255;
@@ -13589,22 +13591,22 @@ OnFinishCheck:
 			delitem "aegis_1001977", 10;
 			erasequest 24110;
 			setquest 24111;
-			getitem "Ch1_Root_Coin", 5;
+			callfunc "F_CH1_GiveReward",1001972,5;
 		}
 		if ( checkquest(24112, HUNTING) == 2 ) {
 			erasequest 24112;
 			setquest 24113;
-			getitem "Ch1_Root_Coin", 5;
+			callfunc "F_CH1_GiveReward",1001972,5;
 		}
 		if ( checkquest(24114, HUNTING) == 2 ) {
 			erasequest 24114;
 			setquest 24115;
-			getitem "Ch1_Root_Coin", 5;
+			callfunc "F_CH1_GiveReward",1001972,5;
 		}
 		if ( checkquest(24116, HUNTING) == 2 ) {
 			erasequest 24116;
 			setquest 24117;
-			getitem "Ch1_Root_Coin", 5;
+			callfunc "F_CH1_GiveReward",1001972,5;
 		}
 		close3;
 	} else {
@@ -14156,8 +14158,11 @@ hem_dun01,205,248,4	script(CLOAKED)	Wizard Professor#w1	9,{
 	.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
 	if ( .@active == false && is_party_leader() == true ) {
 		select("Create Simulated Dark Whisper");
-		if(instance_create(.@md_name$) == -3) {
-			instance_warning(2, .@md_name$);
+		.@instance_id = instance_create(.@md_name$);
+		if ( .@instance_id < 0 ) {
+			mes "[Wizard Professor]";
+			mes "The simulation could not be created. No mission progress was changed, so please try again shortly.";
+			close;
 		}
 		end;
 	}
@@ -14235,8 +14240,11 @@ hem_dun01,209,248,4	script(CLOAKED)	Est#wsp1	4_F_ESTLOVELOY,{
 		.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
 		if ( .@active == false && is_party_leader() == true ) {
 			select("Create Ominous Dark Whisper");
-			if(instance_create(.@md_name$) == -3) {
-				instance_warning(2, .@md_name$);
+			.@instance_id = instance_create(.@md_name$);
+			if ( .@instance_id < 0 ) {
+				mes "[Est]";
+				mes "The operation entrance could not be created. No mission progress was changed, so please try again shortly.";
+				close;
 			}
 			end;
 		}
@@ -14286,7 +14294,7 @@ ygg_edge,178,185,5	script	Yvain#ch01_v	4_F_FAIRYKID2,2,2,{
 			mes "Thank you.";
 			erasequest 24105;
 			setquest 24106;
-			getitem "Ch1_Root_Coin",5;
+			callfunc "F_CH1_GiveReward",1001972,5;
 			getexp 16364720, 1000000;
 			close3;
 		}
@@ -14328,7 +14336,7 @@ ygg_edge,178,185,5	script	Yvain#ch01_v	4_F_FAIRYKID2,2,2,{
 		mes "It's a relief that the Land of Darkness is starting to stabilize.";
 		mes "The monster amount seems to have been reduced, thanks to that we've able to identify the other locations of dimensional dimension.";
 		completequest 24103;
-		getitem "Ch1_Root_Coin",10;
+		callfunc "F_CH1_GiveReward",1001972,10;
 		getexp 32652372, 2000000;
 		close3;
 	}
@@ -14781,7 +14789,7 @@ ygg_edge,167,182,3	script	Naviel#c1p1naviel	4_M_FAIRYSOLDIER,{
 	mes "Do you need help navigating Ashridge?";
 	while ( true ) {
 		next;
-		switch ( select("¢π Hvergelmir°Øs Spring", "¢π Twisted Land of Darkness", "¢π Prontera", "¢π Payon", "¢π Shops", "¢π Inn", "¢π Sour Fruit", "¢π Sweet Fruit", "¢π Fresh Fruit", "¢π Long Fruit", "Remove Mini-Map Marker", "No, it's fine.") ) {
+		switch ( select("‚ñ∑ Hvergelmir‚Äôs Spring", "‚ñ∑ Twisted Land of Darkness", "‚ñ∑ Prontera", "‚ñ∑ Payon", "‚ñ∑ Shops", "‚ñ∑ Inn", "‚ñ∑ Sour Fruit", "‚ñ∑ Sweet Fruit", "‚ñ∑ Fresh Fruit", "‚ñ∑ Long Fruit", "Remove Mini-Map Marker", "No, it's fine.") ) {
 			case 1:
 				mes "[Naviel]";
 				mes "<NAVI>[Hvergelmir's Spring]<INFO>ygg_edge,259,245,0,101,0</INFO></NAVI>";
@@ -15859,42 +15867,42 @@ ch1_vrgef2,132,38,3	script	Bard Eland#Ch1fly	1_M_BARD,{
 	next;
 	mes "[Eland]";
 	mes "That tower that pierced the sky,";
-	mes "was the symbol of the city and of magic~¢›";
+	mes "was the symbol of the city and of magic~‚ô¨";
 	mes "Geffen's symbol, the essence of magic,";
-	mes "there, everyone followed their dreams~¢›";
+	mes "there, everyone followed their dreams~‚ô¨";
 	next;
 	cutin "bard_eland03.bmp",2;
 	mes "[Eland]";
 	mes "But one day the wind whispered,";
-	mes "the tower no longer stands~¢›";
+	mes "the tower no longer stands~‚ô¨";
 	mes "The hand of destruction fell,";
-	mes "and the symbol of all turned to ash~¢›";
+	mes "and the symbol of all turned to ash~‚ô¨";
 	next;
 	mes "[Eland]";
 	mes "Echoing cries resounded,";
 	mes "under the crimson evening sky,";
 	mes "the symbol of the mage collapsed,";
-	mes "and the Mage Tower crumbled into dust~¢›";
+	mes "and the Mage Tower crumbled into dust~‚ô¨";
 	next;
 	cutin "bard_eland02.bmp",2;
 	mes "[Eland]";
 	mes "A name unseen, a symbol lost,";
-	mes "sing for them~¢›";
+	mes "sing for them~‚ô¨";
 	mes "Breaths scattered in the wind,";
-	mes "may the stars cradle their souls~¢›";
+	mes "may the stars cradle their souls~‚ô¨";
 	next;
 	mes "[Eland]";
 	mes "Though the tower is gone,";
-	mes "a greater hope remains in our hearts~¢›";
+	mes "a greater hope remains in our hearts~‚ô¨";
 	mes "Even in ruins, hope will bloom,";
-	mes "and from the ashes, new sprouts shall grow~¢›";
+	mes "and from the ashes, new sprouts shall grow~‚ô¨";
 	next;
 	cutin "bard_eland03.bmp",2;
 	mes "[Eland]";
 	mes "O dear one, remember.";
 	mes "Though the tower has fallen, our story,";
 	mes "carried by the wind, sung through song,";
-	mes "shall live on forever~¢›";
+	mes "shall live on forever~‚ô¨";
 	next;
 	mes "[Eland]";
 	mes "... ... ... ... ... ...";
@@ -16016,7 +16024,7 @@ ch1_vrgef2,120,62,0	script	Kafra Employee#Ch1Fountain	4_F_KAFRA3,{
 			close3;
 
 		case 2:
-			switch ( select("Check Saved Points", "ƒ´«¡∂Û ¿ßƒ° æ»≥ª", "√Îº“") ) {
+			switch ( select("Check Saved Points", "Ïπ¥ÌîÑÎùº ÏúÑÏπò ÏïàÎÇ¥", "Ï∑®ÏÜå") ) {
 				case 1:
 					mes "[Kafra Employee]";
 					mes ""+strcharinfo(0)+", you have saved 1747 points.";
@@ -16097,7 +16105,7 @@ ch1_vrgef2,124,65,0	script	Sign#Ch1fly	2_BULLETIN_BOARD,{
 	mes "  ";
 	mes "<B>Geffen perimeter lockdown</B>";
 	mes "All entry and exit routes will be sealed, and going outside the city is strictly prohibited.";
-	mes "^FF0000°ÿ Entry of essential goods and relief supplies will only be allowed after strict inspection by the guards.^000000";
+	mes "^FF0000‚Äª Entry of essential goods and relief supplies will only be allowed after strict inspection by the guards.^000000";
 	mes "  ";
 	mes "<B>Rules within the city</B>";
 	mes "Free movement within the city is permitted. However, access to major facilities may be restricted.";
@@ -16590,16 +16598,16 @@ ch1_vrgef2,83,189,5	script	Seth#Ch1virtual	4_M_KID2,{
 	mes "My name is Seth. I like origami.";
 	next;
 	mes "[Seth]";
-	mes "Yesterday, I folded a big piece of colored paper into a big boat and gave it to my mom, and she patted my head and said thank you. Hehe¢‹";
+	mes "Yesterday, I folded a big piece of colored paper into a big boat and gave it to my mom, and she patted my head and said thank you. Hehe‚ô™";
 	next;
 	mes "[Seth]";
-	mes "My teacher taught me how to make pretty flowers!!! It's a bit hard, but suuuper fun~¢‹";
+	mes "My teacher taught me how to make pretty flowers!!! It's a bit hard, but suuuper fun~‚ô™";
 	next;
 	mes "[Seth]";
-	mes "They're small and cute, and when I put one in my hair, everyone said it looked pretty, so Seth feels really happy~¢‹";
+	mes "They're small and cute, and when I put one in my hair, everyone said it looked pretty, so Seth feels really happy~‚ô™";
 	next;
 	mes "[Seth]";
-	mes "I hope everyone can be as happy as Seth~¢‹";
+	mes "I hope everyone can be as happy as Seth~‚ô™";
 	close;
 }
 
@@ -16815,7 +16823,7 @@ ch1_vrgef2,196,167,4	script	Geju#Ch1virtual	4W_F_01,{
 	mes "Hmm... This is... getting complicated...";
 	next;
 	mes "[Geju]";
-	mes "Huh? Move along now, unless you have business with me~¢Ω";
+	mes "Huh? Move along now, unless you have business with me~‚ô°";
 	close;
 }
 
@@ -17064,7 +17072,7 @@ end;
 
 ch1_vrgef1,137,139,6	script(DISABLED)	Thief#EG03_2	17,{
 	mes "[Thief]";
-	mes "Ha! Got him!! Yeah f- °·°ﬁ#°Ÿ That was exhilarating.";
+	mes "Ha! Got him!! Yeah f- ‚ñ†‚óá#‚òÜ That was exhilarating.";
 	close;
 	
 OnInit:
@@ -17374,42 +17382,42 @@ OnTouch:
 	sleep 3000;
 	npctalk "Complaining Woman: Why won't you explain it to us?", "Complaining Woman#EG13";
 	sleep 3000;
-	npctalk "Eland: Oh.. oh.. dear complainants~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Oh.. oh.. dear complainants~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
 	npctalk "Eland: You didn't attend the meeting at the village hall, did you?", "Bard Eland#EG13";
 	sleep 2000;
-	npctalk "Eland: Like the gentle breeze, I, Eland, shall share with you what was said at the meeting~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Like the gentle breeze, I, Eland, shall share with you what was said at the meeting~‚ô¨", "Bard Eland#EG13";
 	sleep 2000;
-	npctalk "Eland: One~¢›", "Bard Eland#EG13";
+	npctalk "Eland: One~‚ô¨", "Bard Eland#EG13";
 	sleep 2000;
-	npctalk "Eland: Two~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Two~‚ô¨", "Bard Eland#EG13";
 	sleep 2000;
-	npctalk "Eland: Geffen Tower collapses, a city shrouded in darkness~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Geffen Tower collapses, a city shrouded in darkness~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
 	npctalk "Eland: Unknown plague! Standing amidst the fear", "Bard Eland#EG13";
 	sleep 3000;
-	npctalk "Eland:  Fear can be overcome, gather your hearts firmly~¢›", "Bard Eland#EG13";
+	npctalk "Eland:  Fear can be overcome, gather your hearts firmly~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
 	npctalk "Eland: From the moment the countermeasure committee was formed, we vowed to overcome this together as one.", "Bard Eland#EG13";
 	sleep 5000;
 	emotion ET_OTL,getnpcid(0, "Bard Eland#EG13");
-	npctalk "Eland: Unite, oh Geffen~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Unite, oh Geffen~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
-	npctalk "Eland: Even before an uncertain future, we shall walk on, relying on each other~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Even before an uncertain future, we shall walk on, relying on each other~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
 	emotion ET_DELIGHT, getnpcid(0,"Bard Eland#EG13");
-	npctalk "Eland: The voice of Doctor rings out like a warning~¢›", "Bard Eland#EG13";
+	npctalk "Eland: The voice of Doctor rings out like a warning~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
 	npctalk "Eland: In the airborne threat, the mask is the shield of life!", "Bard Eland#EG13";
 	sleep 3000;
-	npctalk "Eland: Painful memories of the comodo village, bury the bodies swiftly in the ground~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Painful memories of the comodo village, bury the bodies swiftly in the ground~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
 	npctalk "Eland: The inn becomes a treatment center to fight on the front lines!", "Bard Eland#EG13";
 	sleep 3000;
 	emotion ET_DELIGHT, getnpcid(0,"Bard Eland#EG13");
-	npctalk "Eland: Unite, oh Geffen~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Unite, oh Geffen~‚ô¨", "Bard Eland#EG13";
 	sleep 3000;
-	npctalk "Eland: Even before an uncertain future, we shall walk on, relying on each other~¢›", "Bard Eland#EG13";
+	npctalk "Eland: Even before an uncertain future, we shall walk on, relying on each other~‚ô¨", "Bard Eland#EG13";
 	sleep 2000;
 	emotion ET_THANKS, getnpcid(0,"Bard Eland#EG13");
 	emotion ET_SWEAT, getnpcid(0,"Complaining Man#EG13");
@@ -17605,7 +17613,7 @@ OnTouch:
 	emotion ET_HUK, getnpcid(0,"Thief#EG03_1");
 	npctalk "Thief: Ack! What the, why is there a monster?!", "Thief#EG03_1";
 	sleep 4000;
-	npctalk "Thief: Ugh °·°ﬁ#°Ÿ@°€°⁄ what a crappy day..", "Thief#EG03_1";
+	npctalk "Thief: Ugh ‚ñ†‚óá#‚òÜ@‚óã‚òÖ what a crappy day..", "Thief#EG03_1";
 	sleep 1000;
 	disablenpc "Thief#EG03_1";
 	sleep 1000;
@@ -17616,7 +17624,7 @@ OnTouch:
 	disablenpc "???#EG03";
 	sleep 2000;
 	emotion ET_BEST, getnpcid(0,"Thief#EG03_2");
-	npctalk "Thief: Ha- °·°ﬁ#°Ÿ that was wild. So this means the place is empty, right?", "Thief#EG03_2";
+	npctalk "Thief: Ha- ‚ñ†‚óá#‚òÜ that was wild. So this means the place is empty, right?", "Thief#EG03_2";
 	sleep 4000;
 	npctalk "Thief: Let's see- what should I take that'll fetch a good price~", "Thief#EG03_2";
 	sleep 4000;
@@ -18157,4 +18165,3 @@ ch1_gfn03,0,0	monster	--en--	22482,40,5000
 ch1_gfn03,0,0	monster	--en--	22484,40,5000
 ch1_gfn03,0,0	monster	--en--	22486,40,5000
 ch1_gfn03,0,0	monster	--en--	22488,40,5000
-

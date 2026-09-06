@@ -1,0 +1,357 @@
+# Chapter 1 Ashridge exchanges used by CH1.c.
+# Source: https://github.com/hayakawakaki/rathena-script-collection/tree/main/Episode%20CH%201
+Header:
+  Type: BARTER_DB
+  Version: 2
+
+Body:
+  - Name: CH1_STORE_1
+    Items:
+      - Index: 0
+        Item: Ch1_Warp_Leaf
+        Zeny: 5000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 1
+  - Name: CH1_STORE_2
+    Items:
+      - Index: 0
+        Item: Ch1_Warp_Leaf
+        Zeny: 5000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 1
+      - Index: 1
+        Item: Ch1_Mana_Ring
+        Zeny: 50000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 1
+      - Index: 2
+        Item: Ch1_Root_Coin
+        Zeny: 30000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Mana_Ring
+            Amount: 1
+  - Name: CH1_STORE_3
+    Items:
+      - Index: 0
+        Item: Frontier_Magic_Dust
+        Zeny: 10000
+        RequiredItems:
+          - Index: 0
+            Item: Etel_Dust
+            Amount: 5
+          - Index: 1
+            Item: Ch1_Mana_Ring
+            Amount: 1
+      - Index: 1
+        Item: Frontier_M_Stone
+        Zeny: 50000
+        RequiredItems:
+          - Index: 0
+            Item: Frontier_Magic_Dust
+            Amount: 5
+          - Index: 1
+            Item: Ch1_Root_Coin
+            Amount: 3
+      - Index: 2
+        Item: Illusion_Stone_BL
+        Zeny: 500000
+        RequiredItems:
+          - Index: 0
+            Item: Illusion_Fragment_BL
+            Amount: 7
+          - Index: 1
+            Item: Frontier_Magic_Dust
+            Amount: 100
+      - Index: 3
+        Item: Illusion_Stone_YL
+        Zeny: 750000
+        RequiredItems:
+          - Index: 0
+            Item: Illusion_Fragment_YL
+            Amount: 7
+          - Index: 1
+            Item: Frontier_Magic_Dust
+            Amount: 125
+      - Index: 4
+        Item: Illusion_Stone_GR
+        Zeny: 1000000
+        RequiredItems:
+          - Index: 0
+            Item: Illusion_Fragment_GR
+            Amount: 7
+          - Index: 1
+            Item: Frontier_Magic_Dust
+            Amount: 150
+      - Index: 5
+        Item: Illusion_Stone_BK
+        Zeny: 1250000
+        RequiredItems:
+          - Index: 0
+            Item: Illusion_Fragment_BK
+            Amount: 7
+          - Index: 1
+            Item: Frontier_Magic_Dust
+            Amount: 175
+      - Index: 6
+        Item: Frontier_Stone_BL
+        Zeny: 750000
+        RequiredItems:
+          - Index: 0
+            Item: Frontier_M_Stone
+            Amount: 3
+          - Index: 1
+            Item: Illusion_Stone_BL
+            Amount: 4
+          - Index: 2
+            Item: Chaotic_Rune
+            Amount: 15
+      - Index: 7
+        Item: Frontier_Stone_YL
+        Zeny: 1250000
+        RequiredItems:
+          - Index: 0
+            Item: Frontier_M_Stone
+            Amount: 6
+          - Index: 1
+            Item: Illusion_Stone_YL
+            Amount: 5
+          - Index: 2
+            Item: Chaotic_Rune
+            Amount: 15
+      - Index: 8
+        Item: Frontier_Stone_GR
+        Zeny: 1750000
+        RequiredItems:
+          - Index: 0
+            Item: Frontier_M_Stone
+            Amount: 10
+          - Index: 1
+            Item: Illusion_Stone_GR
+            Amount: 7
+          - Index: 2
+            Item: Disparate_Rune
+            Amount: 15
+      - Index: 9
+        Item: Frontier_Stone_BK
+        Zeny: 2250000
+        RequiredItems:
+          - Index: 0
+            Item: Frontier_M_Stone
+            Amount: 15
+          - Index: 1
+            Item: Illusion_Stone_BK
+            Amount: 10
+          - Index: 2
+            Item: Disparate_Rune
+            Amount: 15
+      - Index: 10
+        Item: Dimension_Essence_BL
+        Zeny: 1000000
+        RequiredItems:
+          - Index: 0
+            Item: Dimension_Energy_BL
+            Amount: 20
+          - Index: 1
+            Item: Chaotic_Essence
+            Amount: 5
+          - Index: 2
+            Item: Illusion_Fragment_BL
+            Amount: 15
+      - Index: 11
+        Item: Dimension_Essence_YL
+        Zeny: 1750000
+        RequiredItems:
+          - Index: 0
+            Item: Dimension_Energy_YL
+            Amount: 20
+          - Index: 1
+            Item: Chaotic_Essence
+            Amount: 5
+          - Index: 2
+            Item: Illusion_Fragment_YL
+            Amount: 15
+      - Index: 12
+        Item: Dimension_Essence_GR
+        Zeny: 2500000
+        RequiredItems:
+          - Index: 0
+            Item: Dimension_Energy_GR
+            Amount: 20
+          - Index: 1
+            Item: Disparate_Essence
+            Amount: 5
+          - Index: 2
+            Item: Illusion_Fragment_GR
+            Amount: 15
+      - Index: 13
+        Item: Dimension_Essence_BK
+        Zeny: 3250000
+        RequiredItems:
+          - Index: 0
+            Item: Dimension_Energy_BK
+            Amount: 20
+          - Index: 1
+            Item: Disparate_Essence
+            Amount: 5
+          - Index: 2
+            Item: Illusion_Fragment_BK
+            Amount: 15
+      - Index: 14
+        Item: Chaotic_Rune
+        Zeny: 100000
+        RequiredItems:
+          - Index: 0
+            Item: Chaotic_Rune_Ore
+            Amount: 10
+          - Index: 1
+            Item: Frontier_M_Stone
+            Amount: 3
+          - Index: 2
+            Item: Ch1_Root_Coin
+            Amount: 5
+      - Index: 15
+        Item: Disparate_Rune
+        Zeny: 500000
+        RequiredItems:
+          - Index: 0
+            Item: Disparate_Rune_Ore
+            Amount: 10
+          - Index: 1
+            Item: Frontier_M_Stone
+            Amount: 7
+          - Index: 2
+            Item: Ch1_Root_Coin
+            Amount: 10
+  - Name: CH1_STORE_4
+    Items:
+      - Index: 0
+        Item: Entwined_Armor
+        Zeny: 3000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 150
+      - Index: 1
+        Item: Entwined_Robe
+        Zeny: 3000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 150
+      - Index: 2
+        Item: Entwined_Manteau
+        Zeny: 3000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 150
+      - Index: 3
+        Item: Entwined_Muffler
+        Zeny: 3000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 150
+      - Index: 4
+        Item: Entwined_Boots
+        Zeny: 3000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 150
+      - Index: 5
+        Item: Entwined_Shoes
+        Zeny: 3000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Root_Coin
+            Amount: 150
+  - Name: CH1_STORE_5
+    Items:
+      - Index: 0
+        Item: Dimension_B_Greave
+        Zeny: 10000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Mana_Ring
+            Amount: 250
+          - Index: 1
+            Item: Frontier_Stone_BL
+            Amount: 20
+          - Index: 2
+            Item: Frontier_Stone_YL
+            Amount: 15
+          - Index: 3
+            Item: Chaotic_Rune
+            Amount: 30
+      - Index: 1
+        Item: Dimension_H_Boots
+        Zeny: 10000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Mana_Ring
+            Amount: 250
+          - Index: 1
+            Item: Frontier_Stone_BL
+            Amount: 20
+          - Index: 2
+            Item: Frontier_Stone_YL
+            Amount: 15
+          - Index: 3
+            Item: Chaotic_Rune
+            Amount: 30
+      - Index: 2
+        Item: Dimension_S_Shoes
+        Zeny: 10000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Mana_Ring
+            Amount: 250
+          - Index: 1
+            Item: Frontier_Stone_BL
+            Amount: 20
+          - Index: 2
+            Item: Frontier_Stone_YL
+            Amount: 15
+          - Index: 3
+            Item: Chaotic_Rune
+            Amount: 30
+      - Index: 3
+        Item: Dimension_M_Shoes
+        Zeny: 10000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Mana_Ring
+            Amount: 250
+          - Index: 1
+            Item: Frontier_Stone_BL
+            Amount: 20
+          - Index: 2
+            Item: Frontier_Stone_YL
+            Amount: 15
+          - Index: 3
+            Item: Chaotic_Rune
+            Amount: 30
+      - Index: 4
+        Item: Dimension_E_Boots
+        Zeny: 10000000
+        RequiredItems:
+          - Index: 0
+            Item: Ch1_Mana_Ring
+            Amount: 250
+          - Index: 1
+            Item: Frontier_Stone_BL
+            Amount: 20
+          - Index: 2
+            Item: Frontier_Stone_YL
+            Amount: 15
+          - Index: 3
+            Item: Chaotic_Rune
+            Amount: 30

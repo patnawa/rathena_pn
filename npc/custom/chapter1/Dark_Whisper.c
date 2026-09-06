@@ -553,9 +553,15 @@ end;
 		cutin "ep162_est02.bmp",2;
 		mes "[Est]";
 		mes "Ah, we definitely need to talk more about that. But for now, should we start wrapping things around here?";
+		if (!checkweight(1001972,20)) {
+			next;
+			mes "[Est]";
+			mes "Make room for 20 Root Gold Coins before I record the mission as complete.";
+			close;
+		}
 		erasequest 12664;
 		setquest 12665;
-		getitem "1001972",20;
+		getitem 1001972,20;
 		getexp 326523723, 12000000;
 		open_quest_ui 12665;
 		close3;
@@ -1038,6 +1044,19 @@ end;
 		mes "[Wizard Professor]";
 		mes "That was very impressive.";
 		mes "Let's see... here's your reward for clearing ^0000cdlevel " + get_instance_var("level") + "^000000.";
+		.@level = get_instance_var("level");
+		setarray .@reward_item[0],1001972;
+		setarray .@reward_amount[0],10;
+		if (.@level >= 2 && .@level <= 5) {
+			.@reward_item[1] = 104004 + .@level;
+			.@reward_amount[1] = 1;
+		}
+		if (!checkweight2(.@reward_item,.@reward_amount)) {
+			next;
+			mes "[Wizard Professor]";
+			mes "Make room for the complete reward before I record this clearance.";
+			close;
+		}
 		if ( CH1_RDW < 4 ) {
 			next;
 			CH1_RDW++;
@@ -1046,7 +1065,7 @@ end;
 		}
 		erasequest 12662;
 		getitem "Ch1_Root_Coin", 10;
-		switch ( get_instance_var("level") ) {
+		switch ( .@level ) {
 			case 2: getitem "Ch1_MD_Reward_1", 1; break;
 			case 3: getitem "Ch1_MD_Reward_2", 1; break;
 			case 4: getitem "Ch1_MD_Reward_3", 1; break;

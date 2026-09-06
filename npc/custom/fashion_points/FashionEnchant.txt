@@ -1,27 +1,33 @@
 //===== rAthena Script =======================================
 //= Complete Fashion Stone application service
 //===== Provenance / compatibility ===========================
-//= Stone -> enchant mappings and slot families come from revision 61305 of:
+//= Stone -> enchant mappings and slot families are the complete 366-pair set
+//= from revision 61305 of:
 //= https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
 //=
-//= That player-facing page does not publish an application probability. This
-//= service therefore reuses the exact 50% rule in this repository's GPL stock
-//= npc/re/merchants/malangdo_costume.txt (rand(1,100) < 51). It is a declared
-//= rAthena compatibility policy, not a claim about MuhRO's unpublished rate.
+//= The page does not publish an application chance. This service therefore
+//= applies one supported stone deterministically; a validation or mutation
+//= failure consumes nothing. This is a declared compatibility policy, not a
+//= claim about an unpublished MuhRO probability.
 //=
-//= Unlike the old stock NPC, this service covers all 366 currently published
-//= pairs, accepts any correctly positioned costume, refuses to overwrite a
-//= non-empty target slot, preserves every other card/enchant, refine, grade,
-//= binding, attribute and random option, and leaves the costume untouched on
-//= failure. Rental and unique-ID costumes are refused because rAthena script
-//= commands cannot recreate those metadata without loss.
+//= The stock Malangdo NPC covers only 196 pairs. This service covers all 358
+//= pairs whose effects exist in this server build. Enchants 314848-314855 are
+//= deliberately unavailable until the Druid/Karnos/Alitea class implementation
+//= and its client data are installed; FP_EnchantSupported enforces that gate.
+//=
+//= The custom modifyequipitem command changes the enchant slot on the original
+//= inventory record. Unique ID, binding, expiry, favorite state, refine, grade,
+//= attribute, unrelated cards and random options are retained exactly. The
+//= selected stone is debited by exact inventory index and refunded with its
+//= binding intact if the guarded mutation fails.
 //============================================================
 
 mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 	disable_items;
 	mes "[Complete Fashion Enchanter]";
-	mes "I support every stone listed in the current Fashion Point boxes.";
-	mes "The target slot must be empty; I will never replace an existing enchant.";
+	mes "I support every currently functional stone in the Fashion Point boxes.";
+	mes "Application is guaranteed, and an invalid or interrupted validation consumes nothing.";
+	mes "The target enchant slot must be empty.";
 	next;
 	.@cat=select("Top stone:Middle stone:Lower stone:Garment first-slot stone:Garment second-slot stone:Leave")-1;
 	if (.@cat == 5) close;
@@ -56,7 +62,7 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 			.@stone=@FP_BoxStone[.@i];
 			.@enchant=@FP_BoxEnchant[.@i];
 			if (countitem(.@stone) < 1) continue;
-			if (getiteminfo(.@stone,ITEMINFO_TYPE) < 0 || getiteminfo(.@enchant,ITEMINFO_TYPE) < 0) continue;
+			if (getiteminfo(.@stone,ITEMINFO_TYPE) < 0 || !callfunc("FP_EnchantSupported",.@enchant)) continue;
 			.@stone_id[.@owned]=.@stone;
 			.@enchant_id[.@owned]=.@enchant;
 			++.@owned;
@@ -65,6 +71,7 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 	if (!.@owned) {
 		mes "[Complete Fashion Enchanter]";
 		mes "You do not have a supported " + .@part_name$ + " stone.";
+		mes "Druid, Karnos and Alitea stones remain withheld until their complete class support is installed.";
 		close;
 	}
 	.@page=0;
@@ -97,73 +104,64 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 
 	.@equip_id=getequipid(.@part);
 	mes "[Complete Fashion Enchanter]";
-	if (.@equip_id < 1 || !(getiteminfo(.@equip_id,ITEMINFO_LOCATIONS)&.@mask)) {
+	if (.@equip_id < 1 || getiteminfo(.@equip_id,ITEMINFO_TYPE) != IT_ARMOR
+		|| !(getiteminfo(.@equip_id,ITEMINFO_LOCATIONS)&.@mask)) {
 		mes "Equip a compatible " + .@part_name$ + " first.";
 		close;
 	}
+	if (.@slot < getitemslots(.@equip_id)) {
+		mes "That position is a real card socket, not a costume-enchant slot, so it was refused.";
+		close;
+	}
 	if (getequipcardid(.@part,.@slot)) {
-		mes "The target slot already contains an enchant. Remove it first; it will not be overwritten.";
+		mes "The target slot already contains an enchant. Recover it first; it will not be overwritten.";
 		close;
 	}
-	if (getequipuniqueid(.@part)) {
-		mes "This costume has a unique ID that script commands cannot preserve safely, so it was refused.";
-		close;
-	}
-
-	getinventorylist;
-	.@idx=-1;
-	for (.@i=0; .@i<@inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i]&.@mask) && @inventorylist_id[.@i]==.@equip_id) {
-			.@idx=.@i;
-			break;
-		}
-	}
-	if (.@idx<0) {
-		mes "The equipped costume could not be located safely.";
-		close;
-	}
-	if (@inventorylist_expire[.@idx]) {
-		mes "Rental costumes cannot be enchanted because their expiry metadata cannot be recreated safely.";
-		close;
-	}
-	setarray .@card[0],@inventorylist_card1[.@idx],@inventorylist_card2[.@idx],@inventorylist_card3[.@idx],@inventorylist_card4[.@idx];
-	setarray .@oid[0],@inventorylist_option_id1[.@idx],@inventorylist_option_id2[.@idx],@inventorylist_option_id3[.@idx],@inventorylist_option_id4[.@idx],@inventorylist_option_id5[.@idx];
-	setarray .@oval[0],@inventorylist_option_value1[.@idx],@inventorylist_option_value2[.@idx],@inventorylist_option_value3[.@idx],@inventorylist_option_value4[.@idx],@inventorylist_option_value5[.@idx];
-	setarray .@opar[0],@inventorylist_option_parameter1[.@idx],@inventorylist_option_parameter2[.@idx],@inventorylist_option_parameter3[.@idx],@inventorylist_option_parameter4[.@idx],@inventorylist_option_parameter5[.@idx];
-	.@bound=@inventorylist_bound[.@idx];
-	.@identify=@inventorylist_identify[.@idx];
-	.@refine=@inventorylist_refine[.@idx];
-	.@attribute=@inventorylist_attribute[.@idx];
-	.@grade=@inventorylist_enchantgrade[.@idx];
-
 	mes "Apply ^0000ff"+getitemname(.@stone)+"^000000 to ^0000ff"+getitemname(.@equip_id)+"^000000?";
-	mes "The repository's GPL Malangdo policy gives this attempt a 50% success chance and consumes one stone either way.";
-	mes "Failure leaves the costume and every existing slot unchanged.";
+	mes "The application is guaranteed. The original item and all of its metadata are retained.";
 	next;
-	if (select("Attempt enchant:Cancel")==2) close;
+	if (select("Apply enchant:Cancel")==2) close;
 
-	// Final atomic safety checks after confirmation.
-	if (countitem(.@stone)<1 || getequipid(.@part)!=.@equip_id || getequipcardid(.@part,.@slot)!=0) {
+	// Re-read mutable state after confirmation and debit one exact, refundable
+	// stone stack before making the in-place compare-and-swap mutation.
+	if (!callfunc("FP_EnchantSupported",.@enchant) || countitem(.@stone)<1
+		|| getequipid(.@part)!=.@equip_id || getequipcardid(.@part,.@slot)!=0) {
 		mes "[Complete Fashion Enchanter]";
 		mes "The stone or equipped costume changed. Nothing was consumed.";
 		close;
 	}
-	delitem .@stone,1;
-	if (rand(1,100)>=51) {
+	getinventorylist;
+	.@stone_list=-1;
+	for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+		if (@inventorylist_id[.@i]==.@stone && @inventorylist_amount[.@i]>0
+			&& !@inventorylist_expire[.@i] && !@inventorylist_favorite[.@i] && .@stone_list<0)
+			.@stone_list=.@i;
+	}
+	if (.@stone_list<0) {
 		mes "[Complete Fashion Enchanter]";
-		mes "The enchant failed. The stone was consumed, but the costume was not changed.";
+		mes "A permanent, non-favorite stone stack could not be located. Nothing was consumed.";
 		close;
 	}
-
-	.@card[.@slot]=.@enchant;
-	delequip .@part;
-	delitemidx @inventorylist_idx[.@idx],1;
-	if (.@bound)
-		getitembound4 .@equip_id,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@bound,.@grade,.@oid,.@oval,.@opar;
-	else
-		getitem4 .@equip_id,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@grade,.@oid,.@oval,.@opar;
+	if (.@slot < getitemslots(.@equip_id)) {
+		mes "The selected position is not an available costume-enchant slot.";
+		close;
+	}
+	.@stone_idx=@inventorylist_idx[.@stone_list];
+	.@stone_bound=@inventorylist_bound[.@stone_list];
+	if (!delitemidx(.@stone_idx,1)) {
+		mes "[Complete Fashion Enchanter]";
+		mes "The exact stone stack changed. Nothing was consumed.";
+		close;
+	}
+	if (!modifyequipitem(.@part,.@equip_id,0,-1,.@slot,0,.@enchant)) {
+		if (.@stone_bound) getitembound .@stone,1,.@stone_bound;
+		else getitem .@stone,1;
+		mes "[Complete Fashion Enchanter]";
+		mes "The equipped item changed or failed a safety check. Your stone was refunded.";
+		close;
+	}
 	mes "[Complete Fashion Enchanter]";
-	mes "Success. The costume was returned unequipped with its other item data and enchants preserved.";
+	mes "Success. The same costume and unique ID now carry the enchant; all unrelated metadata was preserved.";
+	mes "If an equipment restriction prevented automatic re-equipping, the item is safely in your inventory.";
 	close;
 }
-

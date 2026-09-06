@@ -9879,6 +9879,514 @@ BUILDIN_FUNC(downrefitem) {
 }
 
 /**
+ * Mutate an equipped item without replacing its inventory record.
+ *
+ * modifyequipitem <equipment slot>,<expected item id>,<new item id|0>,
+ *     <new refine|-1>,<card slot|-1>,<expected card>,<new enchant card|0>
+ *     {,<char_id>};
+ *
+ * A zero new item ID and a refine/card slot of -1 leave those fields unchanged.
+ * The expected item/card values provide compare-and-swap protection for scripts
+ * which validated the equipment before charging materials.
+ */
+static constexpr uint32 script_equipment_slot_transition_mask(int32 old_slots, int32 new_slots) {
+	const int32 first_transition_slot = old_slots < new_slots ? old_slots : new_slots;
+	const int32 last_transition_slot = old_slots > new_slots ? old_slots : new_slots;
+	uint32 mask = 0;
+
+	for (int32 slot = first_transition_slot; slot < last_transition_slot; ++slot) {
+		mask |= 1U << slot;
+	}
+	return mask;
+}
+
+static_assert(script_equipment_slot_transition_mask(0, 1) == 0x1U);
+static_assert(script_equipment_slot_transition_mask(1, 0) == 0x1U);
+static_assert(script_equipment_slot_transition_mask(1, 1) == 0x0U);
+static_assert(script_equipment_slot_transition_mask(1, 4) == 0xeU);
+
+BUILDIN_FUNC(modifyequipitem) {
+	TBL_PC* sd;
+
+	if (!script_charid2sd(9, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	const int32 position = script_getnum(st, 2);
+	const int32 expected_item_id = script_getnum(st, 3);
+	const int32 new_item_id = script_getnum(st, 4);
+	const int32 new_refine = script_getnum(st, 5);
+	const int32 card_slot = script_getnum(st, 6);
+	const int32 expected_card_id = script_getnum(st, 7);
+	const int32 new_card_id = script_getnum(st, 8);
+	auto reject = [&]() -> int32 {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	};
+
+	if (!equip_index_check(position) || expected_item_id <= 0 || new_item_id < 0 ||
+		new_refine < -1 || new_refine > MAX_REFINE || card_slot < -1 ||
+		card_slot >= MAX_SLOTS || expected_card_id < 0 || new_card_id < 0) {
+		return reject();
+	}
+	if (card_slot == -1 && (expected_card_id != 0 || new_card_id != 0)) {
+		return reject();
+	}
+
+	const int16 index = pc_checkequip(sd, equip_bitmask[position]);
+	if (index < 0 || sd->inventory_data[index] == nullptr) {
+		return reject();
+	}
+
+	struct item& selected_item = sd->inventory.u.items_inventory[index];
+	item_data* old_data = sd->inventory_data[index];
+	auto is_supported_equipment = [](item_types type) {
+		return type == IT_WEAPON || type == IT_ARMOR || type == IT_SHADOWGEAR;
+	};
+
+	if (selected_item.nameid != static_cast<t_itemid>(expected_item_id) ||
+		old_data->nameid != selected_item.nameid || selected_item.amount != 1 ||
+		old_data->slots > MAX_SLOTS || !selected_item.identify ||
+		!is_supported_equipment(old_data->type) ||
+		itemdb_isspecial(selected_item.card[0])) {
+		return reject();
+	}
+
+	std::shared_ptr<item_data> replacement_data;
+	item_data* result_data = old_data;
+	uint32 slot_transition_mask = 0;
+	if (new_item_id != 0) {
+		replacement_data = item_db.find(static_cast<t_itemid>(new_item_id));
+		if (replacement_data == nullptr || !is_supported_equipment(replacement_data->type) ||
+			replacement_data->type != old_data->type || replacement_data->equip != old_data->equip ||
+			replacement_data->slots > MAX_SLOTS) {
+			return reject();
+		}
+
+		// A slot-count conversion changes which card-array indices represent
+		// physical compounded cards. Only permit that boundary to move across
+		// empty indices; otherwise an enchant could silently become a physical
+		// card (or vice versa) merely by changing the equipment ID.
+		slot_transition_mask = script_equipment_slot_transition_mask(old_data->slots, replacement_data->slots);
+		for (int32 slot = 0; slot < MAX_SLOTS; ++slot) {
+			if ((slot_transition_mask & (1U << slot)) != 0 &&
+				(selected_item.card[slot] != 0 || (card_slot == slot && new_card_id != 0))) {
+				return reject();
+			}
+		}
+		result_data = replacement_data.get();
+	}
+
+	if (card_slot >= 0) {
+		if (card_slot < old_data->slots ||
+			selected_item.card[card_slot] != static_cast<t_itemid>(expected_card_id)) {
+			return reject();
+		}
+
+		if (expected_card_id != 0) {
+			std::shared_ptr<item_data> expected_card = item_db.find(static_cast<t_itemid>(expected_card_id));
+
+			if (expected_card == nullptr || expected_card->type != IT_CARD) {
+				return reject();
+			}
+		}
+		if (new_card_id != 0) {
+			std::shared_ptr<item_data> new_card = item_db.find(static_cast<t_itemid>(new_card_id));
+
+			if (new_card == nullptr || new_card->type != IT_CARD || new_card->subtype != CARD_ENCHANT) {
+				return reject();
+			}
+		}
+	}
+
+	const int64 weight_delta = static_cast<int64>(result_data->weight) - static_cast<int64>(old_data->weight);
+	const int64 future_weight = static_cast<int64>(sd->weight) + weight_delta;
+	if (future_weight < 0 || future_weight > static_cast<int64>(sd->max_weight)) {
+		return reject();
+	}
+
+	const bool changes_item_id = result_data->nameid != selected_item.nameid;
+	const bool changes_refine = new_refine >= 0 && selected_item.refine != new_refine;
+	const bool changes_card = card_slot >= 0 && selected_item.card[card_slot] != static_cast<t_itemid>(new_card_id);
+	if (!changes_item_id && !changes_refine && !changes_card) {
+		script_pushint(st, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	const uint32 equipped_position = selected_item.equip;
+	struct item expected_item = selected_item;
+	expected_item.equip = 0;
+	if (!pc_unequipitem(sd, index, 3)) {
+		return reject();
+	}
+
+	// Unequip scripts are allowed to run. Revalidate the inventory identity and
+	// compare-and-swap fields before touching the item they may have changed.
+	struct item& current_item = sd->inventory.u.items_inventory[index];
+	const bool identity_matches = memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
+		sd->inventory_data[index] != nullptr &&
+		sd->inventory_data[index]->nameid == current_item.nameid;
+	if (!identity_matches || itemdb_isspecial(current_item.card[0]) ||
+		(card_slot >= 0 && current_item.card[card_slot] != static_cast<t_itemid>(expected_card_id))) {
+		if (identity_matches) {
+			pc_equipitem(sd, index, equipped_position);
+		}
+		return reject();
+	}
+
+	const int64 committed_weight = static_cast<int64>(sd->weight) + weight_delta;
+	if (committed_weight < 0 || committed_weight > static_cast<int64>(sd->max_weight)) {
+		pc_equipitem(sd, index, equipped_position);
+		return reject();
+	}
+
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, -1, &current_item);
+	if (changes_item_id) {
+		current_item.nameid = result_data->nameid;
+		sd->inventory_data[index] = result_data;
+	}
+	if (new_refine >= 0) {
+		current_item.refine = static_cast<char>(new_refine);
+	}
+	if (card_slot >= 0) {
+		current_item.card[card_slot] = static_cast<t_itemid>(new_card_id);
+	}
+	if (weight_delta != 0) {
+		sd->weight = static_cast<uint32>(committed_weight);
+	}
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, 1, &current_item);
+
+	clif_delitem(*sd, index, 1, 3);
+	clif_additem(sd, index, 1, 0);
+	if (weight_delta != 0) {
+		clif_updatestatus(*sd, SP_WEIGHT);
+	}
+
+	// The mutation is already complete and client-visible. A failed re-equip is
+	// therefore reported as a successful mutation, with the item safely left in
+	// inventory instead of attempting a lossy rollback.
+	pc_equipitem(sd, index, equipped_position);
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
+ * Atomically clear every synthetic enchant slot on an equipped item without
+ * replacing its inventory record.
+ *
+ * resetequipenchants <equipment slot>,<expected item id>,<expected card 0>,
+ *     <expected card 1>,<expected card 2>,<expected card 3>{,<char_id>};
+ *
+ * All four expected card values form a compare-and-swap guard. Physical card
+ * slots are retained; only non-physical slots containing Card/SubType Enchant
+ * items are eligible to be cleared.
+ */
+BUILDIN_FUNC(resetequipenchants) {
+	TBL_PC* sd;
+
+	if (!script_charid2sd(8, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	const int32 position = script_getnum(st, 2);
+	const int32 expected_item_id = script_getnum(st, 3);
+	t_itemid expected_cards[MAX_SLOTS] = {};
+	auto reject = [&]() -> int32 {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	};
+
+	if (!equip_index_check(position) || expected_item_id <= 0) {
+		return reject();
+	}
+	for (int32 slot = 0; slot < MAX_SLOTS; ++slot) {
+		const int32 expected_card_id = script_getnum(st, 4 + slot);
+
+		if (expected_card_id < 0) {
+			return reject();
+		}
+		expected_cards[slot] = static_cast<t_itemid>(expected_card_id);
+	}
+
+	const int16 index = pc_checkequip(sd, equip_bitmask[position]);
+	if (index < 0 || sd->inventory_data[index] == nullptr) {
+		return reject();
+	}
+
+	struct item& selected_item = sd->inventory.u.items_inventory[index];
+	item_data* selected_data = sd->inventory_data[index];
+	const bool supported_equipment = selected_data->type == IT_WEAPON || selected_data->type == IT_ARMOR ||
+		selected_data->type == IT_SHADOWGEAR;
+	if (selected_item.nameid != static_cast<t_itemid>(expected_item_id) ||
+		selected_data->nameid != selected_item.nameid || selected_item.amount != 1 ||
+		!selected_item.identify || !supported_equipment || itemdb_isspecial(selected_item.card[0])) {
+		return reject();
+	}
+
+	bool changes_card = false;
+	for (int32 slot = 0; slot < MAX_SLOTS; ++slot) {
+		if (selected_item.card[slot] != expected_cards[slot]) {
+			return reject();
+		}
+		if (slot < selected_data->slots || expected_cards[slot] == 0) {
+			continue;
+		}
+
+		std::shared_ptr<item_data> enchant = item_db.find(expected_cards[slot]);
+		if (enchant == nullptr || enchant->type != IT_CARD || enchant->subtype != CARD_ENCHANT) {
+			return reject();
+		}
+		changes_card = true;
+	}
+
+	if (!changes_card) {
+		script_pushint(st, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	const uint32 equipped_position = selected_item.equip;
+	struct item expected_item = selected_item;
+	expected_item.equip = 0;
+	if (!pc_unequipitem(sd, index, 3)) {
+		return reject();
+	}
+
+	struct item& current_item = sd->inventory.u.items_inventory[index];
+	const bool identity_matches = memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
+		sd->inventory_data[index] != nullptr &&
+		sd->inventory_data[index]->nameid == current_item.nameid;
+	if (!identity_matches || itemdb_isspecial(current_item.card[0])) {
+		if (identity_matches) {
+			pc_equipitem(sd, index, equipped_position);
+		}
+		return reject();
+	}
+
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, -1, &current_item);
+	for (int32 slot = selected_data->slots; slot < MAX_SLOTS; ++slot) {
+		current_item.card[slot] = 0;
+	}
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, 1, &current_item);
+
+	clif_delitem(*sd, index, 1, 3);
+	clif_additem(sd, index, 1, 0);
+
+	// The reset is already complete and client-visible. As with
+	// modifyequipitem, re-equip failure leaves the item safely in inventory.
+	pc_equipitem(sd, index, equipped_position);
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
+ * Atomically delete one exact equipped inventory record.
+ *
+ * deleteequipitem <equipment slot>,<expected item id>,<expected refine>,
+ *     <expected card 0>,<expected card 1>,<expected card 2>,<expected card 3>
+ *     {,<char_id>};
+ */
+BUILDIN_FUNC(deleteequipitem) {
+	TBL_PC* sd;
+
+	if (!script_charid2sd(9, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	const int32 position = script_getnum(st, 2);
+	const int32 expected_item_id = script_getnum(st, 3);
+	const int32 expected_refine = script_getnum(st, 4);
+	t_itemid expected_cards[MAX_SLOTS] = {};
+	auto reject = [&]() -> int32 {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	};
+
+	if (!equip_index_check(position) || expected_item_id <= 0 ||
+		expected_refine < 0 || expected_refine > MAX_REFINE) {
+		return reject();
+	}
+	for (int32 slot = 0; slot < MAX_SLOTS; ++slot) {
+		const int32 expected_card_id = script_getnum(st, 5 + slot);
+
+		if (expected_card_id < 0) {
+			return reject();
+		}
+		expected_cards[slot] = static_cast<t_itemid>(expected_card_id);
+	}
+
+	const int16 index = pc_checkequip(sd, equip_bitmask[position]);
+	if (index < 0 || sd->inventory_data[index] == nullptr) {
+		return reject();
+	}
+
+	struct item& selected_item = sd->inventory.u.items_inventory[index];
+	item_data* selected_data = sd->inventory_data[index];
+	if (selected_item.nameid != static_cast<t_itemid>(expected_item_id) ||
+		selected_data->nameid != selected_item.nameid || selected_item.amount != 1 ||
+		selected_item.refine != expected_refine ||
+		memcmp(selected_item.card, expected_cards, sizeof(expected_cards)) != 0) {
+		return reject();
+	}
+
+	const uint32 equipped_position = selected_item.equip;
+	struct item expected_item = selected_item;
+	expected_item.equip = 0;
+	if (!pc_unequipitem(sd, index, 3)) {
+		return reject();
+	}
+
+	struct item& current_item = sd->inventory.u.items_inventory[index];
+	const bool identity_matches = memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
+		sd->inventory_data[index] == selected_data;
+	if (!identity_matches) {
+		return reject();
+	}
+
+	if (pc_delitem(sd, index, 1, 0, 2, LOG_TYPE_SCRIPT) != 0) {
+		pc_equipitem(sd, index, equipped_position);
+		return reject();
+	}
+
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
+ * Atomically replace the complete refine/card enchant state of one equipped
+ * item, optionally clearing all random options, without replacing its record.
+ *
+ * modifyequipenchantstate <equipment slot>,<expected item id>,<expected refine>,
+ *     <expected card 0>,<expected card 1>,<expected card 2>,<expected card 3>,
+ *     <new refine|-1>,<new card 0>,<new card 1>,<new card 2>,<new card 3>,
+ *     <clear random options>{,<char_id>};
+ */
+BUILDIN_FUNC(modifyequipenchantstate) {
+	TBL_PC* sd;
+
+	if (!script_charid2sd(15, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	const int32 position = script_getnum(st, 2);
+	const int32 expected_item_id = script_getnum(st, 3);
+	const int32 expected_refine = script_getnum(st, 4);
+	const int32 new_refine = script_getnum(st, 9);
+	const int32 clear_random_options = script_getnum(st, 14);
+	t_itemid expected_cards[MAX_SLOTS] = {};
+	t_itemid new_cards[MAX_SLOTS] = {};
+	auto reject = [&]() -> int32 {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	};
+
+	if (!equip_index_check(position) || expected_item_id <= 0 ||
+		expected_refine < 0 || expected_refine > MAX_REFINE ||
+		new_refine < -1 || new_refine > MAX_REFINE ||
+		(clear_random_options != 0 && clear_random_options != 1)) {
+		return reject();
+	}
+	for (int32 slot = 0; slot < MAX_SLOTS; ++slot) {
+		const int32 expected_card_id = script_getnum(st, 5 + slot);
+		const int32 new_card_id = script_getnum(st, 10 + slot);
+
+		if (expected_card_id < 0 || new_card_id < 0) {
+			return reject();
+		}
+		expected_cards[slot] = static_cast<t_itemid>(expected_card_id);
+		new_cards[slot] = static_cast<t_itemid>(new_card_id);
+	}
+
+	const int16 index = pc_checkequip(sd, equip_bitmask[position]);
+	if (index < 0 || sd->inventory_data[index] == nullptr) {
+		return reject();
+	}
+
+	struct item& selected_item = sd->inventory.u.items_inventory[index];
+	item_data* selected_data = sd->inventory_data[index];
+	const bool supported_equipment = selected_data->type == IT_WEAPON ||
+		selected_data->type == IT_ARMOR || selected_data->type == IT_SHADOWGEAR;
+	if (selected_item.nameid != static_cast<t_itemid>(expected_item_id) ||
+		selected_data->nameid != selected_item.nameid || selected_item.amount != 1 ||
+		selected_item.refine != expected_refine || selected_data->slots > MAX_SLOTS ||
+		!supported_equipment || itemdb_isspecial(selected_item.card[0]) ||
+		memcmp(selected_item.card, expected_cards, sizeof(expected_cards)) != 0) {
+		return reject();
+	}
+
+	bool changes_cards = false;
+	for (int32 slot = 0; slot < MAX_SLOTS; ++slot) {
+		if (slot < selected_data->slots) {
+			// Physical compounded-card slots are outside this command's mutation
+			// scope and must be carried through byte-for-byte.
+			if (new_cards[slot] != expected_cards[slot]) {
+				return reject();
+			}
+			continue;
+		}
+		if (new_cards[slot] == expected_cards[slot]) {
+			continue;
+		}
+
+		changes_cards = true;
+		if (new_cards[slot] != 0) {
+			std::shared_ptr<item_data> enchant = item_db.find(new_cards[slot]);
+
+			if (enchant == nullptr || enchant->type != IT_CARD || enchant->subtype != CARD_ENCHANT) {
+				return reject();
+			}
+		}
+	}
+
+	const int32 resulting_refine = new_refine >= 0 ? new_refine : expected_refine;
+	const bool changes_refine = resulting_refine != expected_refine;
+	struct s_item_randomoption empty_options[MAX_ITEM_RDM_OPT] = {};
+	const bool changes_options = clear_random_options != 0 &&
+		memcmp(selected_item.option, empty_options, sizeof(empty_options)) != 0;
+	if (!changes_refine && !changes_cards && !changes_options) {
+		script_pushint(st, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	const uint32 equipped_position = selected_item.equip;
+	struct item expected_item = selected_item;
+	expected_item.equip = 0;
+	if (!pc_unequipitem(sd, index, 3)) {
+		return reject();
+	}
+
+	struct item& current_item = sd->inventory.u.items_inventory[index];
+	const bool identity_matches = memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
+		sd->inventory_data[index] == selected_data;
+	if (!identity_matches || itemdb_isspecial(current_item.card[0])) {
+		if (identity_matches) {
+			pc_equipitem(sd, index, equipped_position);
+		}
+		return reject();
+	}
+
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, -1, &current_item);
+	current_item.refine = static_cast<char>(resulting_refine);
+	memcpy(current_item.card, new_cards, sizeof(new_cards));
+	if (clear_random_options != 0) {
+		memset(current_item.option, 0, sizeof(current_item.option));
+	}
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, 1, &current_item);
+
+	clif_delitem(*sd, index, 1, 3);
+	clif_additem(sd, index, 1, 0);
+
+	// The record mutation is already committed and client-visible. If an equip
+	// rule changed, leave the same item safely in inventory and still report 1.
+	pc_equipitem(sd, index, equipped_position);
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
  * Delete the item equipped at pos.
  * delequip <equipment slot>{,<char_id>};
  **/
@@ -14142,170 +14650,340 @@ BUILDIN_FUNC(getequipcardcnt)
 	return SCRIPT_CMD_SUCCESS;
 }
 
-/// Removes all cards from the item found in the specified equipment slot of the invoking character,
-/// and give them to the character. If any cards were removed in this manner, it will also show a success effect.
-/// successremovecards <slot>;
-BUILDIN_FUNC(successremovecards) {
-	int32 i=-1,c,cardflag=0;
+enum class e_script_card_removal : uint8 {
+	SUCCESS,
+	DESTROY_BOTH,
+	DESTROY_CARDS,
+	DESTROY_ITEM,
+	HARMLESS,
+};
 
-	map_session_data* sd;
-	int32 num;
+struct s_script_removed_card {
+	uint8 slot;
+	t_itemid nameid;
+};
 
-	if( !script_rid2sd(sd) )
-		return SCRIPT_CMD_SUCCESS;
+struct s_script_added_card {
+	int16 index;
+	struct item previous_item;
+	item_data* previous_data;
+};
 
-	num = script_getnum(st,2);
+static bool script_card_stack_matches(const struct item& inventory_item, t_itemid nameid) {
+	static const t_itemid empty_cards[MAX_SLOTS] = {};
 
-	if (equip_index_check(num))
-		i=pc_checkequip(sd,equip_bitmask[num]);
-
-	if (i < 0 || !sd->inventory_data[i]) {
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	if(itemdb_isspecial(sd->inventory.u.items_inventory[i].card[0]))
-		return SCRIPT_CMD_SUCCESS;
-
-	for( c = sd->inventory_data[i]->slots - 1; c >= 0; --c ) {
-		if( sd->inventory.u.items_inventory[i].card[c] && itemdb_type(sd->inventory.u.items_inventory[i].card[c]) == IT_CARD ) {// extract this card from the item
-			item item_tmp = {};
-
-			cardflag = 1;
-			item_tmp.nameid   = sd->inventory.u.items_inventory[i].card[c];
-			item_tmp.identify = 1;
-
-			e_additem_result flag = pc_additem( sd, &item_tmp, 1, LOG_TYPE_SCRIPT );
-
-			// get back the card in inventory
-			if( flag != ADDITEM_SUCCESS ){
-				clif_additem(sd,0,0,flag);
-				ShowError( "buildin_successremovecards: Failed to add the item to player.\n" );
-				return SCRIPT_CMD_FAILURE;
-			}
-		}
-	}
-
-	// if card was removed, replace item with no card
-	if(cardflag == 1) {
-		item item_tmp = {};
-
-		item_tmp.nameid      = sd->inventory.u.items_inventory[i].nameid;
-		item_tmp.identify    = 1;
-		item_tmp.refine      = sd->inventory.u.items_inventory[i].refine;
-		item_tmp.attribute   = sd->inventory.u.items_inventory[i].attribute;
-		item_tmp.expire_time = sd->inventory.u.items_inventory[i].expire_time;
-		item_tmp.bound       = sd->inventory.u.items_inventory[i].bound;
-		item_tmp.enchantgrade = sd->inventory.u.items_inventory[i].enchantgrade;
-
-		for (int32 j = sd->inventory_data[i]->slots; j < MAX_SLOTS; j++)
-			item_tmp.card[j]=sd->inventory.u.items_inventory[i].card[j];
-		
-		for (int32 j = 0; j < MAX_ITEM_RDM_OPT; j++){
-			item_tmp.option[j].id=sd->inventory.u.items_inventory[i].option[j].id;
-			item_tmp.option[j].value=sd->inventory.u.items_inventory[i].option[j].value;
-			item_tmp.option[j].param=sd->inventory.u.items_inventory[i].option[j].param;
-		}
-
-		pc_delitem(sd,i,1,0,3,LOG_TYPE_SCRIPT);
-
-		e_additem_result flag = pc_additem( sd, &item_tmp, 1, LOG_TYPE_SCRIPT );
-
-		// get back the card in inventory
-		if( flag != ADDITEM_SUCCESS ){
-			clif_additem(sd,0,0,flag);
-			ShowError( "buildin_successremovecards: Failed to add the item to player.\n" );
-			return SCRIPT_CMD_FAILURE;
-		}
-
-		clif_misceffect( *sd, NOTIFYEFFECT_REFINE_SUCCESS );
-	}
-	return SCRIPT_CMD_SUCCESS;
+	return inventory_item.nameid == nameid && inventory_item.bound == 0 &&
+		inventory_item.expire_time == 0 && inventory_item.unique_id == 0 &&
+		memcmp(inventory_item.card, empty_cards, sizeof(empty_cards)) == 0;
 }
 
-/// Removes all cards from the item found in the specified equipment slot of the invoking character.
-/// failedremovecards <slot>, <type>;
-/// <type>=0 : will destroy both the item and the cards.
-/// <type>=1 : will keep the item, but destroy the cards.
-/// <type>=2 : will keep the cards, but destroy the item.
-/// <type>=? : will just display the failure effect.
-BUILDIN_FUNC(failedremovecards) {
-	int32 i=-1,c,cardflag=0;
+/**
+ * Simulate pc_additem for every returned card before making any change. The
+ * equipped item deliberately continues to occupy its inventory slot until all
+ * card additions have succeeded, which keeps every rollback lossless.
+ */
+static bool script_can_return_removed_cards(map_session_data* sd, const std::vector<s_script_removed_card>& cards) {
+	std::vector<struct item> simulated_inventory(MAX_INVENTORY);
+	int64 future_weight = sd->weight;
 
-	map_session_data* sd;
-	int32 num;
-	int32 typefail;
+	for (int32 index = 0; index < MAX_INVENTORY; ++index) {
+		simulated_inventory[index] = sd->inventory.u.items_inventory[index];
+	}
 
-	if( !script_rid2sd(sd) )
-		return SCRIPT_CMD_SUCCESS;
+	for (const s_script_removed_card& card : cards) {
+		std::shared_ptr<item_data> data = item_db.find(card.nameid);
 
-	num = script_getnum(st,2);
-	typefail = script_getnum(st,3);
+		// Auto-equipping output items could mutate unrelated equipment during
+		// commit/rollback. Real card items do not use that flag.
+		if (data == nullptr || data->type != IT_CARD || data->flag.autoequip) {
+			return false;
+		}
+		if (data->stack.inventory && data->stack.amount < 1) {
+			return false;
+		}
 
-	if (equip_index_check(num))
-		i=pc_checkequip(sd,equip_bitmask[num]);
+		future_weight += data->weight;
+		if (future_weight > static_cast<int64>(sd->max_weight)) {
+			return false;
+		}
 
-	if (i < 0 || !sd->inventory_data[i])
-		return SCRIPT_CMD_SUCCESS;
+		int16 target = -1;
+		if (itemdb_isstackable2(data.get()) && !data->flag.guid) {
+			for (int16 index = 0; index < MAX_INVENTORY; ++index) {
+				if (script_card_stack_matches(simulated_inventory[index], card.nameid)) {
+					target = index;
+					break;
+				}
+			}
 
-	if(itemdb_isspecial(sd->inventory.u.items_inventory[i].card[0]))
-		return SCRIPT_CMD_SUCCESS;
+			if (target >= 0) {
+				struct item& stack = simulated_inventory[target];
+				if (target >= sd->status.inventory_slots || stack.amount >= MAX_AMOUNT ||
+					(data->stack.inventory && stack.amount >= data->stack.amount)) {
+					return false;
+				}
+				++stack.amount;
+				continue;
+			}
+		}
 
-	for( c = sd->inventory_data[i]->slots - 1; c >= 0; --c ) {
-		if( sd->inventory.u.items_inventory[i].card[c] && itemdb_type(sd->inventory.u.items_inventory[i].card[c]) == IT_CARD ) {
-			cardflag = 1;
+		for (int16 index = 0; index < MAX_INVENTORY; ++index) {
+			if (simulated_inventory[index].nameid == 0) {
+				target = index;
+				break;
+			}
+		}
+		if (target < 0 || target >= sd->status.inventory_slots) {
+			return false;
+		}
 
-			if(typefail == 2) {// add cards to inventory, clear
-				item item_tmp = {};
+		struct item returned_card = {};
+		returned_card.nameid = card.nameid;
+		returned_card.amount = 1;
+		returned_card.identify = 1;
+		// A GUID card always consumes a fresh slot. Its actual unique ID is
+		// generated by pc_additem during commit.
+		if (data->flag.guid) {
+			returned_card.unique_id = UINT64_MAX;
+		}
+		simulated_inventory[target] = returned_card;
+	}
 
-				item_tmp.nameid   = sd->inventory.u.items_inventory[i].card[c];
-				item_tmp.identify = 1;
+	return true;
+}
 
-				e_additem_result flag = pc_additem( sd, &item_tmp, 1, LOG_TYPE_SCRIPT );
+static bool script_rollback_removed_cards(map_session_data* sd, std::vector<s_script_added_card>& additions) {
+	bool restored = true;
 
-				if( flag != ADDITEM_SUCCESS ){
-					clif_additem(sd,0,0,flag);
-					ShowError( "failedremovecards: Failed to add the item to player.\n" );
-					return SCRIPT_CMD_FAILURE;
+	for (auto addition = additions.rbegin(); addition != additions.rend(); ++addition) {
+		if (pc_delitem(sd, addition->index, 1, 0, 0, LOG_TYPE_SCRIPT) != 0 ||
+			memcmp(&sd->inventory.u.items_inventory[addition->index], &addition->previous_item,
+				sizeof(struct item)) != 0 ||
+			sd->inventory_data[addition->index] != addition->previous_data) {
+			ShowError("script_rollback_removed_cards: Failed to restore inventory index %d.\n", addition->index);
+			restored = false;
+		}
+	}
+	additions.clear();
+	return restored;
+}
+
+static bool script_add_removed_cards(map_session_data* sd, const std::vector<s_script_removed_card>& cards,
+	std::vector<s_script_added_card>& additions) {
+	for (const s_script_removed_card& card : cards) {
+		std::vector<struct item> previous_inventory(MAX_INVENTORY);
+
+		for (int32 index = 0; index < MAX_INVENTORY; ++index) {
+			previous_inventory[index] = sd->inventory.u.items_inventory[index];
+		}
+
+		std::shared_ptr<item_data> data = item_db.find(card.nameid);
+		int16 changed_index = -1;
+		if (data != nullptr && itemdb_isstackable2(data.get()) && !data->flag.guid) {
+			for (int16 index = 0; index < MAX_INVENTORY; ++index) {
+				if (script_card_stack_matches(previous_inventory[index], card.nameid)) {
+					changed_index = index;
+					break;
 				}
 			}
 		}
-	}
-
-	if(cardflag == 1) {
-		if(typefail == 0 || typefail == 2){	// destroy the item
-			pc_delitem(sd,i,1,0,2,LOG_TYPE_SCRIPT);
-		}else if(typefail == 1){ // destroy the card
-			item item_tmp = {};
-
-			item_tmp.nameid      = sd->inventory.u.items_inventory[i].nameid;
-			item_tmp.identify    = 1;
-			item_tmp.refine      = sd->inventory.u.items_inventory[i].refine;
-			item_tmp.attribute   = sd->inventory.u.items_inventory[i].attribute;
-			item_tmp.expire_time = sd->inventory.u.items_inventory[i].expire_time;
-			item_tmp.bound       = sd->inventory.u.items_inventory[i].bound;
-			item_tmp.enchantgrade = sd->inventory.u.items_inventory[i].enchantgrade;
-
-			for (int32 j = sd->inventory_data[i]->slots; j < MAX_SLOTS; j++)
-				item_tmp.card[j]=sd->inventory.u.items_inventory[i].card[j];
-			
-			for (int32 j = 0; j < MAX_ITEM_RDM_OPT; j++){
-				item_tmp.option[j].id=sd->inventory.u.items_inventory[i].option[j].id;
-				item_tmp.option[j].value=sd->inventory.u.items_inventory[i].option[j].value;
-				item_tmp.option[j].param=sd->inventory.u.items_inventory[i].option[j].param;
-			}
-
-			pc_delitem(sd,i,1,0,2,LOG_TYPE_SCRIPT);
-
-			e_additem_result flag = pc_additem( sd, &item_tmp, 1, LOG_TYPE_SCRIPT );
-
-			if( flag != ADDITEM_SUCCESS ){
-				clif_additem(sd,0,0,flag);
-				ShowError( "failedremovecards: Failed to add the item to player.\n" );
-				return SCRIPT_CMD_FAILURE;
-			}
+		if (changed_index < 0) {
+			changed_index = pc_search_inventory(sd, 0);
 		}
-		clif_misceffect( *sd, NOTIFYEFFECT_REFINE_FAILURE );
+		if (changed_index < 0 || changed_index >= sd->status.inventory_slots) {
+			ShowError("script_add_removed_cards: Preflight target disappeared for card %u.\n", card.nameid);
+			script_rollback_removed_cards(sd, additions);
+			return false;
+		}
+		item_data* previous_data = sd->inventory_data[changed_index];
+
+		struct item returned_card = {};
+		returned_card.nameid = card.nameid;
+		returned_card.identify = 1;
+		const e_additem_result result = pc_additem(sd, &returned_card, 1, LOG_TYPE_SCRIPT);
+		if (result != ADDITEM_SUCCESS) {
+			clif_additem(sd, 0, 0, result);
+			ShowError("script_add_removed_cards: Failed to return card %u.\n", card.nameid);
+			script_rollback_removed_cards(sd, additions);
+			return false;
+		}
+
+		// Register the deterministic pc_additem target before checking its
+		// postconditions, so even a defensive check failure rolls this card back.
+		additions.push_back({ changed_index, previous_inventory[changed_index], previous_data });
+		int32 changed_records = 0;
+		for (int16 index = 0; index < MAX_INVENTORY; ++index) {
+			if (memcmp(&previous_inventory[index], &sd->inventory.u.items_inventory[index],
+					sizeof(struct item)) == 0) {
+				continue;
+			}
+			++changed_records;
+		}
+
+		if (changed_records != 1 ||
+			sd->inventory.u.items_inventory[changed_index].nameid != card.nameid ||
+			sd->inventory.u.items_inventory[changed_index].amount !=
+				previous_inventory[changed_index].amount + 1) {
+			ShowError("script_add_removed_cards: Unexpected inventory delta while returning card %u.\n", card.nameid);
+			script_rollback_removed_cards(sd, additions);
+			return false;
+		}
 	}
+
+	return true;
+}
+
+static bool script_remove_equipment_cards(map_session_data* sd, int32 position, e_script_card_removal mode) {
+	if (!equip_index_check(position)) {
+		return false;
+	}
+
+	const int16 index = pc_checkequip(sd, equip_bitmask[position]);
+	if (index < 0 || sd->inventory_data[index] == nullptr) {
+		return false;
+	}
+
+	struct item& selected_item = sd->inventory.u.items_inventory[index];
+	item_data* selected_data = sd->inventory_data[index];
+	if (selected_item.amount != 1 || selected_item.nameid != selected_data->nameid ||
+		selected_data->slots > MAX_SLOTS || itemdb_isspecial(selected_item.card[0])) {
+		return false;
+	}
+
+	std::vector<s_script_removed_card> cards;
+	for (int32 slot = selected_data->slots - 1; slot >= 0; --slot) {
+		const t_itemid card_id = selected_item.card[slot];
+		if (card_id == 0) {
+			continue;
+		}
+
+		std::shared_ptr<item_data> card_data = item_db.find(card_id);
+		if (card_data == nullptr || card_data->type != IT_CARD) {
+			return false;
+		}
+		cards.push_back({ static_cast<uint8>(slot), card_id });
+	}
+
+	// Match the historical no-card behavior: nothing is destroyed and no
+	// visual effect is shown.
+	if (cards.empty()) {
+		return true;
+	}
+
+	if (mode == e_script_card_removal::HARMLESS) {
+		clif_misceffect(*sd, NOTIFYEFFECT_REFINE_FAILURE);
+		return true;
+	}
+
+	const bool returns_cards = mode == e_script_card_removal::SUCCESS ||
+		mode == e_script_card_removal::DESTROY_ITEM;
+	if (returns_cards && !script_can_return_removed_cards(sd, cards)) {
+		return false;
+	}
+
+	const uint32 equipped_position = selected_item.equip;
+	struct item expected_item = selected_item;
+	expected_item.equip = 0;
+	if (!pc_unequipitem(sd, index, 3)) {
+		return false;
+	}
+
+	struct item& current_item = sd->inventory.u.items_inventory[index];
+	const bool identity_matches = memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
+		sd->inventory_data[index] == selected_data;
+	if (!identity_matches || itemdb_isspecial(current_item.card[0])) {
+		if (identity_matches) {
+			pc_equipitem(sd, index, equipped_position);
+		}
+		return false;
+	}
+
+	// Unequip scripts may change weight, capacity, or other inventory stacks.
+	// Repeat the full output preflight against the post-unequip state.
+	if (returns_cards && !script_can_return_removed_cards(sd, cards)) {
+		pc_equipitem(sd, index, equipped_position);
+		return false;
+	}
+
+	std::vector<s_script_added_card> additions;
+	if (returns_cards && !script_add_removed_cards(sd, cards, additions)) {
+		pc_equipitem(sd, index, equipped_position);
+		return false;
+	}
+
+	// pc_additem does not run item scripts for these validated card outputs, but
+	// retain the exact compare-and-swap guard immediately before commit.
+	if (memcmp(&current_item, &expected_item, sizeof(struct item)) != 0 ||
+		sd->inventory_data[index] != selected_data) {
+		if (script_rollback_removed_cards(sd, additions) &&
+			memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
+			sd->inventory_data[index] == selected_data) {
+			pc_equipitem(sd, index, equipped_position);
+		}
+		return false;
+	}
+
+	if (mode == e_script_card_removal::DESTROY_BOTH || mode == e_script_card_removal::DESTROY_ITEM) {
+		if (pc_delitem(sd, index, 1, 0, 2, LOG_TYPE_SCRIPT) != 0) {
+			script_rollback_removed_cards(sd, additions);
+			pc_equipitem(sd, index, equipped_position);
+			return false;
+		}
+	} else {
+		log_pick_pc(sd, LOG_TYPE_SCRIPT, -1, &current_item);
+		for (const s_script_removed_card& card : cards) {
+			current_item.card[card.slot] = 0;
+		}
+		log_pick_pc(sd, LOG_TYPE_SCRIPT, 1, &current_item);
+
+		clif_delitem(*sd, index, 1, mode == e_script_card_removal::SUCCESS ? 3 : 2);
+		clif_additem(sd, index, 1, 0);
+		// Mutation is complete even if a map/item rule prevents re-equipping.
+		pc_equipitem(sd, index, equipped_position);
+	}
+
+	clif_misceffect(*sd, mode == e_script_card_removal::SUCCESS ?
+		NOTIFYEFFECT_REFINE_SUCCESS : NOTIFYEFFECT_REFINE_FAILURE);
+	return true;
+}
+
+/// Removes all physical cards from the equipped item in place and returns them.
+/// Returns 1 on commit (or a harmless no-op), 0 if validation/preflight/CAS fails.
+/// successremovecards <slot>;
+BUILDIN_FUNC(successremovecards) {
+	map_session_data* sd;
+
+	if (!script_rid2sd(sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	script_pushint(st, script_remove_equipment_cards(sd, script_getnum(st, 2),
+		e_script_card_removal::SUCCESS) ? 1 : 0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Removes all physical cards using the requested historical failure outcome.
+/// failedremovecards <slot>, <type>;
+BUILDIN_FUNC(failedremovecards) {
+	map_session_data* sd;
+
+	if (!script_rid2sd(sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	const int32 type = script_getnum(st, 3);
+	e_script_card_removal mode = e_script_card_removal::HARMLESS;
+	if (type == 0) {
+		mode = e_script_card_removal::DESTROY_BOTH;
+	} else if (type == 1) {
+		mode = e_script_card_removal::DESTROY_CARDS;
+	} else if (type == 2) {
+		mode = e_script_card_removal::DESTROY_ITEM;
+	}
+
+	script_pushint(st, script_remove_equipment_cards(sd, script_getnum(st, 2), mode) ? 1 : 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -28051,6 +28729,10 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(successrefitem,"i??"),
 	BUILDIN_DEF(failedrefitem,"i?"),
 	BUILDIN_DEF(downrefitem,"i??"),
+	BUILDIN_DEF(modifyequipitem,"iiiiiii?"),
+	BUILDIN_DEF(resetequipenchants,"iiiiii?"),
+	BUILDIN_DEF(deleteequipitem,"iiiiiii?"),
+	BUILDIN_DEF(modifyequipenchantstate,"iiiiiiiiiiiii?"),
 	BUILDIN_DEF(statusup,"i?"),
 	BUILDIN_DEF(statusup2,"ii?"),
 	BUILDIN_DEF(traitstatusup,"i?"),

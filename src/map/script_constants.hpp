@@ -2010,6 +2010,8 @@
 	export_constant(SC_FROST_STORM);
 	export_constant(SC_WARM_SHIELD);
 	export_constant(SC_MTP_W_POTION_100);
+	export_constant(SC_CONTENTS_37);
+	export_constant(SC_CONTENTS_38);
 
 /// Do not modify code below this, until the end of the API hook, since it will be automatically generated again
 /// @APIHOOK_START(EFST_CONST)

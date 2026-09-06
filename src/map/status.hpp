@@ -1453,6 +1453,8 @@ enum sc_type : int16 {
 	SC_FROST_STORM,
 	SC_WARM_SHIELD,
 	SC_MTP_W_POTION_100,
+	SC_CONTENTS_37,
+	SC_CONTENTS_38,
 
 	SC_MAX, //Automatically updated max, used in for's to check we are within bounds.
 };

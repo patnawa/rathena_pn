@@ -1,0 +1,1356 @@
+Header:
+  Type: MOB_DB
+  Version: 5
+
+Body:
+  # Episode 20 client IDs are present in the base database as commented stubs.
+  # These renewal records restore the kROM combat roster. Core stats, EXP,
+  # field drops, and MVP drops follow the current Divine Pride kROM records,
+  # cross-checked against RagnaPlace where that database exposes the same data.
+  - Id: 21965
+    AegisName: EP20_COPO
+    Name: Copo
+    Level: 220
+    Hp: 14711277
+    BaseExp: 378705
+    JobExp: 265094
+    Attack: 5348
+    Attack2: 1438
+    Defense: 310
+    MagicDefense: 167
+    Resistance: 225
+    MagicResistance: 171
+    Str: 91
+    Agi: 75
+    Vit: 87
+    Int: 91
+    Dex: 88
+    Luk: 87
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Brute
+    Element: Neutral
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 1000
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Bill_Of_Birds
+        Rate: 2500
+      - Item: Round_Feather
+        Rate: 2400
+      - Item: Ep20_Copo_Head_F
+        Rate: 1600
+      - Item: Copo_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21966
+    AegisName: EP20_ICEWIND1
+    Name: Grey Icewind
+    Level: 220
+    Hp: 17344773
+    BaseExp: 385384
+    JobExp: 269769
+    Attack: 6182
+    Attack2: 1500
+    Defense: 297
+    MagicDefense: 159
+    Resistance: 199
+    MagicResistance: 150
+    Str: 100
+    Agi: 100
+    Vit: 100
+    Int: 100
+    Dex: 100
+    Luk: 100
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Brute
+    Element: Dark
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 950
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Bill_Of_Birds
+        Rate: 2500
+      - Item: Soft_Feather
+        Rate: 2400
+      - Item: Ep20_Huge_Feather_G
+        Rate: 1800
+      - Item: Grey_Icewind_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21967
+    AegisName: EP20_ICEWIND2
+    Name: Icewind
+    Level: 244
+    Hp: 28012565
+    BaseExp: 604691
+    JobExp: 423073
+    Attack: 6574
+    Attack2: 2412
+    Defense: 247
+    MagicDefense: 252
+    Resistance: 190
+    MagicResistance: 289
+    Str: 93
+    Agi: 101
+    Vit: 105
+    Int: 142
+    Dex: 126
+    Luk: 142
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Brute
+    Element: Wind
+    ElementLevel: 3
+    WalkSpeed: 150
+    AttackDelay: 900
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Bill_Of_Birds
+        Rate: 2500
+      - Item: Soft_Feather
+        Rate: 2400
+      - Item: Ep20_Huge_Feather_W
+        Rate: 1600
+      - Item: Icewind_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21969
+    AegisName: EP20_RABBIT_ICESLUG
+    Name: Snow Rabbit Slug
+    Level: 220
+    Hp: 17545012
+    BaseExp: 380041
+    JobExp: 264699
+    Attack: 6328
+    Attack2: 1153
+    Defense: 336
+    MagicDefense: 128
+    Resistance: 238
+    MagicResistance: 112
+    Str: 104
+    Agi: 87
+    Vit: 82
+    Int: 67
+    Dex: 89
+    Luk: 87
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Formless
+    Element: Water
+    ElementLevel: 1
+    WalkSpeed: 140
+    AttackDelay: 1150
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Single_Cell
+        Rate: 2500
+      - Item: Ep20_Fluor_Cell_Sweet
+        Rate: 1500
+      - Item: Cool_Liquid
+        Rate: 1050
+      - Item: EP19_Unknown_Cell
+        Rate: 550
+      - Item: Rabbit_Iceslug_card
+        Rate: 1
+        StealProtected: true
+  - Id: 21983
+    AegisName: EP20_ANGEL_ICESLUG
+    Name: Angel Ice Slug
+    Level: 222
+    Hp: 16734483
+    BaseExp: 401573
+    JobExp: 281101
+    Attack: 6360
+    Attack2: 1561
+    Defense: 304
+    MagicDefense: 163
+    Resistance: 210
+    MagicResistance: 159
+    Str: 81
+    Agi: 66
+    Vit: 77
+    Int: 81
+    Dex: 78
+    Luk: 77
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Angel
+    Element: Holy
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 1470
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Single_Cell
+        Rate: 2500
+      - Item: Ep20_Fluor_Cell_Salty
+        Rate: 1600
+      - Item: Slicky_Fluid
+        Rate: 1050
+      - Item: EP19_Unknown_Cell
+        Rate: 550
+      - Item: Angel_Iceslug_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21970
+    AegisName: EP20_MELIBE_ICESLUG
+    Name: Melibe Ice Slug
+    Level: 244
+    Hp: 36665831
+    BaseExp: 619701
+    JobExp: 433791
+    Attack: 7935
+    Attack2: 2198
+    Defense: 357
+    MagicDefense: 197
+    Resistance: 287
+    MagicResistance: 222
+    Str: 129
+    Agi: 106
+    Vit: 123
+    Int: 129
+    Dex: 160
+    Luk: 123
+    AttackRange: 7
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Fish
+    Element: Wind
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 1052
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Single_Cell
+        Rate: 2500
+      - Item: Ep20_Fluor_Cell_Sour
+        Rate: 1800
+      - Item: EP19_Unknown_Cell
+        Rate: 1250
+      - Item: Melibe_Iceslug_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21971
+    AegisName: EP20_ICEBEAR
+    Name: Ice Bear Bug
+    Level: 243
+    Hp: 25609178
+    BaseExp: 586912
+    JobExp: 409813
+    Attack: 8512
+    Attack2: 1987
+    Defense: 255
+    MagicDefense: 134
+    Resistance: 185
+    MagicResistance: 148
+    Str: 145
+    Agi: 171
+    Vit: 95
+    Int: 122
+    Dex: 156
+    Luk: 149
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Insect
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 100
+    AttackDelay: 1075
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Animal's_Skin
+        Rate: 2500
+      - Item: Sticky_Mucus
+        Rate: 2500
+      - Item: Ep20_Ice_Bearskin
+        Rate: 2000
+      - Item: Slicky_Fluid
+        Rate: 550
+      - Item: Icebear_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21972
+    AegisName: EP20_JORMUNGUARD1
+    Name: Jormungandr Guard P
+    Level: 222
+    Hp: 18988110
+    BaseExp: 416884
+    JobExp: 290630
+    Attack: 9319
+    Attack2: 1602
+    Defense: 341
+    MagicDefense: 130
+    Resistance: 245
+    MagicResistance: 115
+    Str: 108
+    Agi: 91
+    Vit: 86
+    Int: 69
+    Dex: 93
+    Luk: 90
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 1351
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Transparent_Cloth
+        Rate: 2500
+      - Item: Fluorescent_Liquid
+        Rate: 2500
+      - Item: Ep20_Mystic_Spl_Colt
+        Rate: 1500
+      - Item: Light_Granule
+        Rate: 750
+      - Item: Jormun_Guardian_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21973
+    AegisName: EP20_JORMUNGUARD2
+    Name: Jormungandr Guard Y
+    Level: 222
+    Hp: 17847680
+    BaseExp: 412612
+    JobExp: 288685
+    Attack: 5873
+    Attack2: 2328
+    Defense: 229
+    MagicDefense: 230
+    Resistance: 173
+    MagicResistance: 261
+    Str: 83
+    Agi: 90
+    Vit: 94
+    Int: 127
+    Dex: 112
+    Luk: 127
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Ghost
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 769
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Transparent_Cloth
+        Rate: 2500
+      - Item: Fluorescent_Liquid
+        Rate: 2500
+      - Item: Ep20_Mystic_Spl_Colt
+        Rate: 1500
+      - Item: Light_Granule
+        Rate: 750
+      - Item: Jormun_Guardian_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21980
+    AegisName: EP20_BOSS_CLANER
+    Name: Rgan Chief Cleaner
+    Level: 250
+    Hp: 344751289
+    BaseExp: 693292
+    JobExp: 485304
+    Attack: 16392
+    Attack2: 4481
+    Defense: 386
+    MagicDefense: 215
+    Resistance: 337
+    MagicResistance: 263
+    Str: 161
+    Agi: 133
+    Vit: 154
+    Int: 161
+    Dex: 156
+    Luk: 154
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Poison
+    ElementLevel: 4
+    WalkSpeed: 180
+    AttackDelay: 920
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Modes:
+      Mvp: true
+    MvpDrops:
+      - Item: Magic_Card_Album
+        Rate: 4000
+      - Item: Bs_Making_S
+        Rate: 4000
+      - Item: Snow_F_Stone3
+        Rate: 2000
+    Drops:
+      - Item: EP20_D_P_Ore
+        Rate: 4000
+      - Item: Ep20_Fluor_Cell_Sweet
+        Rate: 3500
+      - Item: Ep20_Unknown_Canine
+        Rate: 3500
+      - Item: Ep20_Fluor_Cell_Salty
+        Rate: 1700
+      - Item: EP20_D_P_Crystal
+        Rate: 1000
+      - Item: Rgan_Chief_Clean_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21985
+    AegisName: EP20_RGAN_WARLOCK
+    Name: Rgan Warlock
+    Level: 223
+    Hp: 20283828
+    BaseExp: 420481
+    JobExp: 294337
+    Attack: 6929
+    Attack2: 1704
+    Defense: 305
+    MagicDefense: 164
+    Resistance: 212
+    MagicResistance: 161
+    Str: 82
+    Agi: 67
+    Vit: 78
+    Int: 82
+    Dex: 101
+    Luk: 78
+    AttackRange: 7
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Poison
+    ElementLevel: 1
+    WalkSpeed: 160
+    AttackDelay: 934
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: EP19_Shell_Of_Rgan
+        Rate: 1500
+      - Item: Ep20_Rgan_Core_F
+        Rate: 1250
+      - Item: EP19_Unknown_Cell
+        Rate: 1000
+      - Item: Ep20_Coral_Bangle
+        Rate: 1000
+      - Item: S_Rgan_Warlock_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21982
+    AegisName: MD_EP20_FALLENANGEL
+    Name: Fallen Angel Iceslug
+    Level: 225
+    Hp: 206537987
+    BaseExp: 808789
+    JobExp: 566153
+    Attack: 15028
+    Attack2: 4885
+    Defense: 359
+    MagicDefense: 196
+    Resistance: 283
+    MagicResistance: 217
+    Str: 115
+    Agi: 94
+    Vit: 110
+    Int: 115
+    Dex: 115
+    Luk: 110
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Angel
+    Element: Water
+    ElementLevel: 4
+    WalkSpeed: 160
+    AttackDelay: 780
+    AttackMotion: 620
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Modes:
+      Mvp: true
+    MvpDrops:
+      - Item: Old_Card_Album
+        Rate: 4000
+      - Item: Magic_Card_Album
+        Rate: 4000
+    Drops:
+      - Item: EP20_D_P_Ore
+        Rate: 4000
+      - Item: Ep20_Angels_Tail
+        Rate: 3500
+      - Item: EP20_D_P_Crystal
+        Rate: 2000
+      - Item: EP20_D_P_Extract
+        Rate: 500
+      - Item: F_Angel_Iceslug_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21986
+    AegisName: EP20_RGAN_HEALER
+    Name: Rgan Healer
+    Level: 223
+    Hp: 20291081
+    BaseExp: 416930
+    JobExp: 291851
+    Attack: 7218
+    Attack2: 1952
+    Defense: 329
+    MagicDefense: 179
+    Resistance: 258
+    MagicResistance: 199
+    Str: 113
+    Agi: 93
+    Vit: 108
+    Int: 113
+    Dex: 109
+    Luk: 108
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 2
+    WalkSpeed: 140
+    AttackDelay: 1250
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: EP19_Shell_Of_Rgan
+        Rate: 1500
+      - Item: Ep20_Rgan_Core_F
+        Rate: 1250
+      - Item: EP19_Unknown_Cell
+        Rate: 1000
+      - Item: Ep20_Coral_Bangle
+        Rate: 1000
+      - Item: S_Rgan_Healer_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21987
+    AegisName: EP20_JORGAN_WARLOCK
+    Name: Jorgan Warlock
+    Level: 227
+    Hp: 22457464
+    BaseExp: 451624
+    JobExp: 316137
+    Attack: 7542
+    Attack2: 2136
+    Defense: 347
+    MagicDefense: 191
+    Resistance: 290
+    MagicResistance: 224
+    Str: 134
+    Agi: 110
+    Vit: 128
+    Int: 134
+    Dex: 129
+    Luk: 128
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Wind
+    ElementLevel: 2
+    WalkSpeed: 160
+    AttackDelay: 862
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Ep20_Rgan_Core_F
+        Rate: 1500
+      - Item: Ep20_Shell_Hairpin
+        Rate: 1000
+      - Item: EP19_Unknown_Cell
+        Rate: 750
+      - Item: E_Rgan_Warlock_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21988
+    AegisName: EP20_JORGAN_HEALER
+    Name: Jorgan Bishop
+    Level: 230
+    Hp: 24183470
+    BaseExp: 482902
+    JobExp: 338031
+    Attack: 8396
+    Attack2: 2269
+    Defense: 341
+    MagicDefense: 187
+    Resistance: 273
+    MagicResistance: 211
+    Str: 122
+    Agi: 100
+    Vit: 116
+    Int: 122
+    Dex: 118
+    Luk: 116
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Holy
+    ElementLevel: 2
+    WalkSpeed: 160
+    AttackDelay: 1075
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Ep20_Rgan_Core_F
+        Rate: 1500
+      - Item: Ep20_Seaweed_Belt
+        Rate: 1000
+      - Item: EP19_Unknown_Cell
+        Rate: 750
+      - Item: E_Rgan_Healer_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21989
+    AegisName: EP20_JORGAN_GUARDIAN
+    Name: Sanctuary Guardian
+    Level: 225
+    Hp: 20506906
+    BaseExp: 439231
+    JobExp: 305924
+    Attack: 9888
+    Attack2: 1790
+    Defense: 361
+    MagicDefense: 138
+    Resistance: 280
+    MagicResistance: 132
+    Str: 134
+    Agi: 112
+    Vit: 106
+    Int: 86
+    Dex: 115
+    Luk: 112
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Dark
+    ElementLevel: 2
+    WalkSpeed: 160
+    AttackDelay: 1086
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Ep20_Rgan_Core_F
+        Rate: 1500
+      - Item: Ep20_Cataphract_Piece
+        Rate: 1000
+      - Item: EP19_Unknown_Cell
+        Rate: 750
+      - Item: E_Rgan_Guardian_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21990
+    AegisName: EP20_JORGAN_CLEANER
+    Name: Sanctuary Cleaner
+    Level: 244
+    Hp: 39954819
+    BaseExp: 625452
+    JobExp: 435203
+    Attack: 7785
+    Attack2: 2113
+    Defense: 497
+    MagicDefense: 217
+    Resistance: 426
+    MagicResistance: 252
+    Str: 125
+    Agi: 121
+    Vit: 170
+    Int: 147
+    Dex: 151
+    Luk: 140
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Formless
+    Element: Earth
+    ElementLevel: 2
+    WalkSpeed: 170
+    AttackDelay: 719
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Ep20_Fluor_Cell_Sweet
+        Rate: 1200
+      - Item: Ep20_Fluor_Cell_Salty
+        Rate: 1200
+      - Item: EP19_Unknown_Cell
+        Rate: 750
+      - Item: E_Rgan_Cleaner_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21968
+    AegisName: EP20_EGGCOPO
+    Name: Copo Egg
+    Level: 222
+    Hp: 16739740
+    BaseExp: 394613
+    JobExp: 276229
+    Attack: 8236
+    Attack2: 1582
+    Defense: 321
+    MagicDefense: 174
+    Resistance: 244
+    MagicResistance: 187
+    Str: 104
+    Agi: 85
+    Vit: 99
+    Int: 104
+    Dex: 100
+    Luk: 99
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Brute
+    Element: Wind
+    ElementLevel: 1
+    WalkSpeed: 160
+    AttackDelay: 1000
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Bill_Of_Birds
+        Rate: 2500
+      - Item: Piece_Of_Egg_Shell
+        Rate: 2500
+      - Item: Ep20_Copo_Egg_Shell
+        Rate: 1600
+      - Item: Copo_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21974
+    AegisName: EP20_FAKE_IWIN_SN
+    Name: Fake Iwin Soldier
+    Level: 220
+    Hp: 15888468
+    BaseExp: 378705
+    JobExp: 265094
+    Attack: 5783
+    Attack2: 1503
+    Defense: 310
+    MagicDefense: 197
+    Resistance: 225
+    MagicResistance: 171
+    Str: 91
+    Agi: 75
+    Vit: 87
+    Int: 91
+    Dex: 88
+    Luk: 87
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 950
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Soft_Feather
+        Rate: 2400
+      - Item: Ep20_Broken_Trident
+        Rate: 2000
+      - Item: Ep19_Rgan_Core_F
+        Rate: 1250
+      - Item: Fake_Iwin_S_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21975
+    AegisName: EP20_FAKE_IWIN_SY
+    Name: Fake Iwin Soldier
+    Level: 221
+    Hp: 17936738
+    BaseExp: 386607
+    JobExp: 270625
+    Attack: 5462
+    Attack2: 1417
+    Defense: 309
+    MagicDefense: 166
+    Resistance: 221
+    MagicResistance: 168
+    Str: 88
+    Agi: 72
+    Vit: 84
+    Int: 88
+    Dex: 85
+    Luk: 84
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Earth
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 940
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Round_Feather
+        Rate: 2400
+      - Item: Ep20_Broken_Trident
+        Rate: 1800
+      - Item: Ep20_Iwin_Private_C
+        Rate: 1500
+      - Item: Ep19_Rgan_Core_F
+        Rate: 700
+      - Item: Fake_Iwin_S_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21976
+    AegisName: EP20_FAKE_IWIN_SB
+    Name: Fake Iwin Soldier
+    Level: 223
+    Hp: 19746167
+    BaseExp: 402725
+    JobExp: 281907
+    Attack: 5310
+    Attack2: 1399
+    Defense: 313
+    MagicDefense: 169
+    Resistance: 226
+    MagicResistance: 172
+    Str: 91
+    Agi: 75
+    Vit: 87
+    Int: 91
+    Dex: 88
+    Luk: 87
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Water
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 930
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Round_Feather
+        Rate: 2400
+      - Item: Ep20_Broken_Trident
+        Rate: 1600
+      - Item: Ep20_Iwin_Priva_Co_C
+        Rate: 1500
+      - Item: Ep19_Rgan_Core_F
+        Rate: 700
+      - Item: Fake_Iwin_S_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21977
+    AegisName: EP20_FAKE_IWIN_SG
+    Name: Fake Iwin Soldier
+    Level: 224
+    Hp: 17621745
+    BaseExp: 410942
+    JobExp: 287659
+    Attack: 6004
+    Attack2: 1637
+    Defense: 325
+    MagicDefense: 177
+    Resistance: 250
+    MagicResistance: 192
+    Str: 108
+    Agi: 88
+    Vit: 103
+    Int: 108
+    Dex: 104
+    Luk: 103
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Wind
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 920
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Round_Feather
+        Rate: 2400
+      - Item: Ep20_Iwin_Corporal_C
+        Rate: 1500
+      - Item: Ep20_Broken_Trident
+        Rate: 1400
+      - Item: Ep19_Rgan_Core_F
+        Rate: 700
+      - Item: Fake_Iwin_S_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21978
+    AegisName: EP20_FAKE_IWIN_SR
+    Name: Fake Iwin Soldier
+    Level: 225
+    Hp: 18073002
+    BaseExp: 421114
+    JobExp: 294780
+    Attack: 5958
+    Attack2: 1617
+    Defense: 320
+    MagicDefense: 174
+    Resistance: 239
+    MagicResistance: 183
+    Str: 100
+    Agi: 82
+    Vit: 95
+    Int: 100
+    Dex: 96
+    Luk: 95
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Fire
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 910
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Round_Feather
+        Rate: 2400
+      - Item: Ep20_Iwin_Sergeant_C
+        Rate: 1500
+      - Item: Ep20_Broken_Trident
+        Rate: 1200
+      - Item: Ep19_Rgan_Core_F
+        Rate: 700
+      - Item: Fake_Iwin_S_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21981
+    AegisName: MD_EP20_BOSS_LASGAND
+    Name: Demigod Lasgand
+    Level: 215
+    Hp: 1000000000
+    BaseExp: 657312
+    JobExp: 460119
+    Attack: 20380
+    Attack2: 7313
+    Defense: 527
+    MagicDefense: 286
+    Resistance: 424
+    MagicResistance: 321
+    Str: 112
+    Agi: 92
+    Vit: 107
+    Int: 112
+    Dex: 112
+    Luk: 107
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Undead
+    Element: Poison
+    ElementLevel: 4
+    WalkSpeed: 170
+    AttackDelay: 850
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: EP20_D_P_Ore
+        Rate: 4000
+      - Item: EP20_D_P_Crystal
+        Rate: 2000
+      - Item: EP20_D_P_Extract
+        Rate: 1000
+      - Item: C_Serpent_Crystal
+        Rate: 5
+        StealProtected: true
+      - Item: C_White_Serpent_Hair
+        Rate: 5
+        StealProtected: true
+      - Item: C_Serpent_Shadow
+        Rate: 3
+        StealProtected: true
+      - Item: Demigod_Lasgand_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21984
+    AegisName: EP20_ICEEGG
+    Name: Icewind Egg
+    Level: 215
+    Hp: 6951869
+    Attack: 5434
+    Attack2: 1389
+    Defense: 300
+    MagicDefense: 161
+    Resistance: 211
+    MagicResistance: 160
+    Str: 83
+    Agi: 69
+    Vit: 79
+    Int: 83
+    Dex: 80
+    Luk: 79
+    AttackRange: 0
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 1000
+    AttackMotion: 720
+    DamageMotion: 420
+    Ai: '04'
+    Drops:
+      - Item: Solid_Shell
+        Rate: 2500
+      - Item: Piece_Of_Egg_Shell
+        Rate: 2500
+      - Item: Ep20_Copo_Egg_Shell
+        Rate: 1500
+      - Item: Cool_Liquid
+        Rate: 500
+      - Item: Icewind_Egg_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21991
+    AegisName: MD_EP20_JOR_G_P
+    Name: MD Jormungandr Guard P
+    Level: 215
+    Hp: 12636609
+    BaseExp: 0
+    JobExp: 0
+    Attack: 4980
+    Attack2: 1258
+    Defense: 288
+    MagicDefense: 153
+    Resistance: 188
+    MagicResistance: 141
+    Str: 67
+    Agi: 55
+    Vit: 64
+    Int: 67
+    Dex: 65
+    Luk: 64
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 1351
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+  - Id: 21992
+    AegisName: MD_EP20_JOR_G_Y
+    Name: MD Jormungandr Guard Y
+    Level: 215
+    Hp: 12640341
+    BaseExp: 0
+    JobExp: 0
+    Attack: 4737
+    Attack2: 1311
+    Defense: 302
+    MagicDefense: 162
+    Resistance: 216
+    MagicResistance: 164
+    Str: 86
+    Agi: 70
+    Vit: 82
+    Int: 86
+    Dex: 83
+    Luk: 82
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Ghost
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 769
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+  - Id: 21993
+    AegisName: MD_EP20_JOR_WARLOCK
+    Name: Instance Rgan Warlock
+    Level: 215
+    Hp: 12641420
+    BaseExp: 0
+    JobExp: 0
+    Attack: 4634
+    Attack2: 1314
+    Defense: 306
+    MagicDefense: 165
+    Resistance: 224
+    MagicResistance: 170
+    Str: 91
+    Agi: 75
+    Vit: 87
+    Int: 91
+    Dex: 88
+    Luk: 87
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Formless
+    Element: Wind
+    ElementLevel: 2
+    WalkSpeed: 160
+    AttackDelay: 862
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+  - Id: 21994
+    AegisName: EP20_MD_HEARTHUNTER1
+    Name: Instance Heart Hunter
+    Level: 215
+    Hp: 13798920
+    Attack: 4606
+    Attack2: 1200
+    Defense: 291
+    MagicDefense: 155
+    Resistance: 193
+    MagicResistance: 145
+    Str: 71
+    Agi: 58
+    Vit: 67
+    Int: 71
+    Dex: 68
+    Luk: 67
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Medium
+    Race: Demihuman
+    Element: Neutral
+    ElementLevel: 1
+    WalkSpeed: 150
+    AttackDelay: 900
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+  - Id: 21996
+    AegisName: EP20_SNOW_ANGEL
+    Name: Snow Angel
+    Level: 235
+    Hp: 207606917
+    BaseExp: 517488
+    JobExp: 362242
+    Attack: 11690
+    Attack2: 2849
+    Defense: 329
+    MagicDefense: 179
+    Resistance: 244
+    MagicResistance: 187
+    Str: 101
+    Agi: 83
+    Vit: 97
+    Int: 101
+    Dex: 98
+    Luk: 97
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Angel
+    Element: Holy
+    ElementLevel: 4
+    WalkSpeed: 160
+    AttackDelay: 800
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: EP20_D_P_Ore
+        Rate: 4000
+      - Item: Ep20_Fluor_Cell_Salty
+        Rate: 3500
+      - Item: Ep20_Twinkling_Snow
+        Rate: 3500
+      - Item: Slicky_Fluid
+        Rate: 1700
+      - Item: EP20_D_P_Crystal
+        Rate: 1000
+      - Item: Snow_Angel_Card
+        Rate: 1
+        StealProtected: true
+  - Id: 21997
+    AegisName: G_EP20_JORMUNGUARD1
+    Name: Jormungandr Guardian
+    Level: 222
+    Hp: 18988110
+    BaseExp: 0
+    JobExp: 0
+    Attack: 9319
+    Attack2: 1602
+    Defense: 341
+    MagicDefense: 130
+    Resistance: 245
+    MagicResistance: 115
+    Str: 108
+    Agi: 91
+    Vit: 86
+    Int: 69
+    Dex: 93
+    Luk: 90
+    AttackRange: 2
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Demon
+    Element: Poison
+    ElementLevel: 2
+    WalkSpeed: 150
+    AttackDelay: 1351
+    AttackMotion: 1020
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+  - Id: 23060
+    AegisName: EP20_ARMOERDCOPO
+    Name: Armored Copo
+    Level: 243
+    Hp: 34890060
+    BaseExp: 593294
+    JobExp: 415305
+    Attack: 6442
+    Attack2: 1721
+    Defense: 342
+    MagicDefense: 187
+    Resistance: 258
+    MagicResistance: 199
+    Str: 109
+    Agi: 90
+    Vit: 104
+    Int: 109
+    Dex: 106
+    Luk: 104
+    AttackRange: 1
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Small
+    Race: Brute
+    Element: Water
+    ElementLevel: 1
+    WalkSpeed: 140
+    AttackDelay: 1000
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '04'
+    Drops:
+      - Item: Bill_Of_Birds
+        Rate: 2500
+      - Item: Piece_Of_Egg_Shell
+        Rate: 2500
+      - Item: Ep20_Copo_Egg_Shell
+        Rate: 1500
+      - Item: Ep20_Copo_Head_F
+        Rate: 1250
+      - Item: Copo_Card
+        Rate: 1
+        StealProtected: true

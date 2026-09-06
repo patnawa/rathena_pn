@@ -348,6 +348,22 @@ ch1zero1	mapflag	loadevent
 ch1zero2	mapflag	loadevent
 ch1zero3	mapflag	loadevent
 ch1zero4	mapflag	loadevent
+ch1zero1	mapflag	noteleport
+ch1zero2	mapflag	noteleport
+ch1zero3	mapflag	noteleport
+ch1zero4	mapflag	noteleport
+ch1zero1	mapflag	nomemo
+ch1zero2	mapflag	nomemo
+ch1zero3	mapflag	nomemo
+ch1zero4	mapflag	nomemo
+ch1zero1	mapflag	nobranch
+ch1zero2	mapflag	nobranch
+ch1zero3	mapflag	nobranch
+ch1zero4	mapflag	nobranch
+ch1zero1	mapflag	nowarpto
+ch1zero2	mapflag	nowarpto
+ch1zero3	mapflag	nowarpto
+ch1zero4	mapflag	nowarpto
 
 // Twisted Land of Darkness - Erosion Zone 1
 ch1fild1,0,0,0,0	monster	M.RK-ERROR	22669,7,5000,5000

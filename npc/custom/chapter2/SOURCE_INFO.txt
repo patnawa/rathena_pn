@@ -1,4 +1,4 @@
-Chapter 2 implementation references (checked 2026-09-03):
+Chapter 2 implementation references (checked 2026-09-05):
 
 - https://wiki.muhro.eu/Chapter_2
 - https://rockragnarok.com/rockwiki/Chapter_2_-_Song_of_the_World_Tree:_Fragments_of_the_End
@@ -6,12 +6,34 @@ Chapter 2 implementation references (checked 2026-09-03):
 - https://wiki.gemstonero.com/equipment/midgard/item_reform
 - https://wiki.gemstonero.com/equipment/midgard/item_enchant
 - https://www.divine-pride.net/database/monster/22674
+- https://www.divine-pride.net/database/monster/22706/ch2-antirrhinum
+- https://www.divine-pride.net/database/monster/22711
+- https://ragnaplace.com/th/kro/mob/22711
 
 MuhRO marks its guide as not yet implemented. This server implementation uses
 the published quest order, requirements, field populations, four-hour standby
 timers, exchange/reform/refinement/enchant costs, official IDs and item effects.
+The three instances are party-owned: the leader creates and snapshotted party
+members enter/re-enter. Crossroads exposes four Tangled Mana knots, Nyrholt and
+its repeatable Phantom expose four Intruder gates, and the Phantom uses official
+monster 22711 with the documented Artea-circle/groggy damage cycle.
+
+Published Phantom rewards are 3 Flame Coins per eligible clear and one 10%
+chance for item 106441. The story clear does not arm the repeatable daily. The
+current public guide describes the crystal contents only as Frontier Magic
+Dust, Rune Ores and Illusion Fragments; it publishes neither quantities nor
+RNG weights. To avoid fabricated rates, one crystal transparently lets the
+player choose one supported material from those documented categories.
 
 Gravity's late-2025 GRF encryption prevents public tools from extracting most
 new map resources. The server map cache and client resnametable therefore use
 matching compatibility aliases. Replace both sides with native map resources
-once those resources are legitimately available to the client.
+once those resources are legitimately available to the client. Consequently,
+native cinematics, exact geometry, original knot/gate placement and the public
+NPC coordinates cannot be reproduced. The reachable compatibility gates and
+walkable encounter room are deliberate substitutions. Sollith and Wandering
+Mana also use named supported Chapter 2 sprite proxies because their native
+monster resources/IDs are not present. Public databases omit 22706/22711 attack,
+range and skill records, so their local offensive values remain clearly marked
+compatibility estimates; the published IDs, level, HP, DEF/MDEF, size, element,
+base/job EXP and Phantom card rate are preserved.

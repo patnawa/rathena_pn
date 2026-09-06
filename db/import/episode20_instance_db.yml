@@ -1,0 +1,57 @@
+Header:
+  Type: INSTANCE_DB
+  Version: 2
+
+Body:
+  - Id: 304
+    Name: Drift Ice Zone
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@twsd
+      X: 196
+      Y: 200
+  - Id: 305
+    Name: Separated Sanctuary
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@twas
+      X: 80
+      Y: 80
+    AdditionalMaps:
+      1@twbs: true
+  - Id: 306
+    Name: Canyon Exploration
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@20cn1
+      X: 150
+      Y: 122
+    AdditionalMaps:
+      1@20cn2: true
+  - Id: 307
+    Name: Nest of Small Branches
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@twig
+      X: 140
+      Y: 145
+  - Id: 308
+    Name: Sticky Sea
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@slug
+      X: 196
+      Y: 200
+  - Id: 309
+    Name: The Undying
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@twbs
+      X: 78
+      Y: 80

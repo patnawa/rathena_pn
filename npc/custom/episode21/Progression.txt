@@ -79,8 +79,11 @@ function	script	EP21_WarperAccess	{
 		return false;
 	}
 	if (.@map$ == "jor_raise1" || .@map$ == "jor_raise2") {
-		if (callfunc("EP21_GaebolgComplete")) return true;
-		message strcharinfo(0),"Complete the Gaebolg Resistance assignment first.";
+		// Quest 23247 requires Skipskippers from jor_raise2.  Permit the
+		// assignment route while it is active, then retain permanent access
+		// through the normal Gaebolg completion flag.
+		if (isbegin_quest(23247) == 1 || callfunc("EP21_GaebolgComplete")) return true;
+		message strcharinfo(0),"Receive the Gaebolg Resistance assignment from Tris first.";
 		return false;
 	}
 	if (.@map$ == "jor_tmple1" || .@map$ == "jor_tmple2") {
