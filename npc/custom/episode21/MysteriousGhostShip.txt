@@ -12,7 +12,9 @@
 function	script	EP21_DailyKey	{
 	// Daily period starts at 04:00 in the map-server's local timezone.
 	.@now = gettimetick(2);
-	.@reset = .@now - (gettime(DT_HOUR) * 3600 + gettime(DT_MINUTE) * 60 + gettime(DT_SECOND)) + 14400;
+	// Derive every clock component from the same captured instant.
+	.@clock = atoi(gettimestr("%H%M%S",7,.@now));
+	.@reset = .@now - ((.@clock / 10000) * 3600 + ((.@clock / 100) % 100) * 60 + (.@clock % 100)) + 14400;
 	if (.@now < .@reset)
 		.@reset -= 86400;
 	return .@reset;
