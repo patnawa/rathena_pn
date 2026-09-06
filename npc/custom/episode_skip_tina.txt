@@ -1,0 +1,213 @@
+// Episode clear ticket service based on the public Temporal Tina behavior.
+// Clears story gates only. It intentionally gives no historical EXP or rewards.
+
+function	script	F_CompleteEpisodeGate	{
+	.@quest_id = getarg(0);
+	if (isbegin_quest(.@quest_id) == 0)
+		setquest .@quest_id;
+	if (isbegin_quest(.@quest_id) == 1)
+		completequest .@quest_id;
+	return;
+}
+
+prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
+	mes "[Temporal Tina]";
+	mes "I can close an Episode's ^4D4DFFmain story gate^000000 with a clear ticket.";
+	mes "You will not receive skipped quest EXP, reputation, or reward items.";
+	next;
+	.@mode = select(
+		"Buy an Episode Clear Ticket",
+		"Use an Episode Clear Ticket",
+		"Cancel"
+	);
+	if (.@mode == 3)
+		close;
+	next;
+	.@choice = select(
+		"Episode 14 - 1,000,000z",
+		"Episode 15 - 1,000,000z",
+		"Episode 16 - 1,000,000z",
+		"Episode 17.1 - 2,000,000z",
+		"Episode 17.2 - 4,000,000z",
+		"Episode 18 - 9,000,000z",
+		"Episode 19 - 12,000,000z",
+		"Episode 20 - 16,000,000z",
+		"Episode 21 - 32,000,000z",
+		"Cancel"
+	);
+	if (.@choice == 10)
+		close;
+
+	switch (.@choice) {
+	case 1:
+		.@episode$ = "Episode 14";
+		.@level = 160;
+		.@price = 1000000;
+		.@ticket = 1000284;
+		.@done = (ep14_3_newerabs >= 24 && ep14_3_fall_bless >= 13);
+		break;
+	case 2:
+		.@episode$ = "Episode 15";
+		.@level = 140;
+		.@price = 1000000;
+		.@ticket = 1000286;
+		.@done = (ep15_1_atnad >= 34 && ep15_2_bslast >= 9);
+		break;
+	case 3:
+		.@episode$ = "Episode 16";
+		.@level = 100;
+		.@price = 1000000;
+		.@ticket = 1000282;
+		.@done = (ep16_royal >= 24 && terra_gloria_main >= 26);
+		break;
+	case 4:
+		.@episode$ = "Episode 17.1";
+		.@level = 110;
+		.@price = 2000000;
+		.@ticket = 1000285;
+		.@done = (isbegin_quest(16360) == 2);
+		.@blocked = (terra_gloria_main < 26);
+		.@required$ = "Complete or skip Episode 16 first.";
+		break;
+	case 5:
+		.@episode$ = "Episode 17.2";
+		.@level = 130;
+		.@price = 4000000;
+		.@ticket = 1000287;
+		.@done = (ep17_2_main >= 36 && isbegin_quest(18020) == 2);
+		.@blocked = (isbegin_quest(16360) != 2);
+		.@required$ = "Complete or skip Episode 17.1 first.";
+		break;
+	case 6:
+		.@episode$ = "Episode 18";
+		.@level = 170;
+		.@price = 9000000;
+		.@ticket = 1000288;
+		.@done = (ep18_main >= 57 && isbegin_quest(18085) == 2);
+		.@blocked = (isbegin_quest(18020) != 2);
+		.@required$ = "Complete or skip Episode 17.2 first.";
+		break;
+	case 7:
+		.@episode$ = "Episode 19";
+		.@level = 200;
+		.@price = 12000000;
+		.@ticket = 1000988;
+		.@done = (isbegin_quest(17649) == 2);
+		.@blocked = (isbegin_quest(18085) != 2);
+		.@required$ = "Complete or skip Episode 18 first.";
+		break;
+	case 8:
+		.@episode$ = "Episode 20";
+		.@level = 215;
+		.@price = 16000000;
+		.@ticket = 1001214;
+		.@done = (isbegin_quest(18233) == 2);
+		.@blocked = (isbegin_quest(17649) != 2);
+		.@required$ = "Complete or skip Episode 19 first.";
+		break;
+	case 9:
+		.@episode$ = "Episode 21";
+		.@level = 230;
+		.@price = 32000000;
+		.@ticket = 1001215;
+		.@done = (isbegin_quest(18360) == 2);
+		.@blocked = (isbegin_quest(18233) != 2);
+		.@required$ = "Complete or skip Episode 20 first.";
+		break;
+	}
+
+	// Buying and using are deliberately separate so the ticket remains visible
+	// in the player's inventory until it is actually consumed.
+	if (.@mode == 1) {
+		if (Zeny < .@price) {
+			mes "[Temporal Tina]";
+			mes "You need ^FF0000" + .@price + " Zeny^000000 to buy this ticket.";
+			close;
+		}
+		set Zeny, Zeny - .@price;
+		getitem .@ticket,1;
+		mes "[Temporal Tina]";
+		mes "You received ^4D4DFF" + getitemname(.@ticket) + "^000000.";
+		mes "It is now stored in the ^4D4DFFUsable Items^000000 inventory tab.";
+		close;
+	}
+
+	if (.@done) {
+		mes "[Temporal Tina]";
+		mes .@episode$ + " is already cleared.";
+		close;
+	}
+	if (.@blocked) {
+		mes "[Temporal Tina]";
+		mes .@required$;
+		close;
+	}
+	if (BaseLevel < .@level) {
+		mes "[Temporal Tina]";
+		mes "Required Base Level: ^FF0000" + .@level + "^000000";
+		close;
+	}
+	if (countitem(.@ticket) < 1) {
+		mes "[Temporal Tina]";
+		mes "You do not have ^FF0000" + getitemname(.@ticket) + "^000000.";
+		mes "Choose ^4D4DFFBuy an Episode Clear Ticket^000000 first.";
+		close;
+	}
+
+	mes "[Temporal Tina]";
+	mes "Clear ^4D4DFF" + .@episode$ + "^000000 now?";
+	mes "This cannot be undone automatically.";
+	if (select("Use the clear ticket","Cancel") == 2)
+		close;
+
+	delitem .@ticket,1;
+
+	switch (.@choice) {
+	case 1:
+		ep14_3_newerabs = 24;
+		ep14_3_fall_bless = 13;
+		break;
+	case 2:
+		ep15_1_atnad = 34;
+		ep15_1_elb = 15;
+		ep15_1_mang = 10;
+		ep15_2_bslast = 9;
+		ep15_2_bsmemo = 18;
+		ep15_2_permit = 6;
+		break;
+	case 3:
+		ep16_royal = 24;
+		terra_gloria_main = 26;
+		terra_gloria_lady_part = 13;
+		break;
+	case 4:
+		callfunc "F_CompleteEpisodeGate",16360;
+		break;
+	case 5:
+		ep17_2_main = 36;
+		callfunc "F_CompleteEpisodeGate",18020;
+		break;
+	case 6:
+		ep18_main = 57;
+		callfunc "F_CompleteEpisodeGate",18085;
+		break;
+	case 7:
+		callfunc "F_CompleteEpisodeGate",17649;
+		break;
+	case 8:
+		callfunc "F_CompleteEpisodeGate",18233;
+		break;
+	case 9:
+		callfunc "F_CompleteEpisodeGate",18360;
+		break;
+	}
+
+	episode_skip_last = .@choice;
+	logmes "Temporal Tina cleared " + .@episode$ + " with ticket item " + .@ticket;
+	mes "[Temporal Tina]";
+	mes "^00AA00" + .@episode$ + " is now cleared.^000000";
+	mes "Relog once if an NPC marker does not refresh immediately.";
+	close;
+}
+
+grademk,30,184,4	duplicate(Temporal Tina#episode)	Temporal Tina#grademk	4_F_KAFRA6

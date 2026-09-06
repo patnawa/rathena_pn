@@ -222,6 +222,11 @@ foreach ($group in $enabledScriptEntries | Group-Object Path | Where-Object Coun
 $enabledScripts = @($enabledScriptEntries | Group-Object Path | ForEach-Object { $_.Group[0].Path })
 Write-Host "  unique enabled NPC scripts: $($enabledScripts.Count)"
 
+# These persistent town services must not disappear during episode deployments.
+foreach ($service in @('npc/custom/healer.txt', 'npc/custom/grademk_services.txt', 'npc/custom/episode_skip_tina.txt')) {
+	if ($enabledScripts -notcontains $service) { Fail "Required custom service is disabled: $service" }
+}
+
 # Every imported database file must exist.
 $dbRoots = @(
 	'db/item_db.yml', 'db/item_group_db.yml', 'db/mob_db.yml',
@@ -740,6 +745,41 @@ foreach ($literal in @(
 	if (!$biosphereEnchant.Contains($literal)) { Fail "Incomplete Biosphere crown enchant group: '$literal'" }
 }
 Write-Host '  Biosphere crown enchant group: 132'
+
+# The Grade Workshop service must retain its native crown table and weighted
+# upgrade recipes; a loaded NPC alone does not prove its enchant UI can open.
+$workshopEnchantPath = 'db/import/grademk_item_enchant.yml'
+if ($dbImports -notcontains $workshopEnchantPath) {
+	Fail "Grade Workshop enchant database is not imported: $workshopEnchantPath"
+}
+if (Test-Path -LiteralPath (RepoPath $workshopEnchantPath)) {
+	$workshopEnchant = [IO.File]::ReadAllText((RepoPath $workshopEnchantPath))
+	$targets = [regex]::Matches($workshopEnchant, '(?m)^      (?:Time_DM|Frontier)_R_Crown_\w+: true\s*$')
+	if ($targets.Count -ne 36) { Fail "Grade Workshop crown target count is $($targets.Count), expected 36" }
+	$rolls = [regex]::Matches($workshopEnchant, '(?m)^            RandomUpgrades:\r?\n(?:              - Upgrade: [^\r\n]+\r?\n                Chance: \d+\r?\n)+')
+	if ($rolls.Count -ne 90) { Fail "Grade Workshop weighted upgrade count is $($rolls.Count), expected 90" }
+	foreach ($roll in $rolls) {
+		$total = 0
+		foreach ($chance in [regex]::Matches($roll.Value, 'Chance: (\d+)')) { $total += [int]$chance.Groups[1].Value }
+		if ($total -ne 100000) { Fail "Grade Workshop upgrade probabilities total $total, expected 100000" }
+	}
+} else {
+	Fail "Missing Grade Workshop enchant database: $workshopEnchantPath"
+}
+Write-Host '  Grade Workshop crown enchants: 36 targets, 90 weighted upgrades'
+
+$workshopGroupIds = [Collections.Generic.HashSet[int]]::new()
+foreach ($relative in @('db/re/item_enchant.yml', 'db/import/item_enchant.yml', 'db/import/grademk_item_enchant.yml', 'db/import/grademk_service_enchants.yml')) {
+	if (!(Test-Path -LiteralPath (RepoPath $relative))) { Fail "Missing workshop enchant dependency: $relative"; continue }
+	if ($dbImports -notcontains $relative) { Fail "Workshop enchant dependency is not imported: $relative" }
+	foreach ($match in [regex]::Matches([IO.File]::ReadAllText((RepoPath $relative)), '(?m)^\s*- Id:\s*(\d+)\s*(?:#.*)?$')) {
+		[void]$workshopGroupIds.Add([int]$match.Groups[1].Value)
+	}
+}
+foreach ($id in @(7,8,9,10,11,12,13,15,16,17,18,19,52,53,54,55,117,118,119,120,121,122,123,124,142,163,164)) {
+	if (!$workshopGroupIds.Contains($id)) { Fail "Grade Workshop NPC references missing enchant group $id" }
+}
+Write-Host '  Grade Workshop native enchant dependencies: 27 groups'
 
 # Chapter 1 footwear group 163 must reproduce the official upgrade behavior:
 # ranks 1-4 advance one rank at 90% or skip two ranks at 10%, while rank 5

@@ -1,0 +1,251 @@
+//===== Custom Grade Workshop Services ========================
+//= Mad Bunny-LT enchant, refinement UI, and material dealer.
+//=============================================================
+
+grademk,38,184,4	script	Mad Bunny-LT Enchanter#grademk	4_F_ZONDAGIRL,{
+	mes "[Mad Bunny-LT Enchanter]";
+	mes "I can enchant and improve a Mad Bunny-LT shield.";
+	mes "Bring the shield and the materials shown in the enchant window.";
+	next;
+	if (select("Open Mad Bunny-LT Enchant:Cancel") == 2)
+		close;
+	close2;
+	item_enchant(15);
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Mad Bunny-LT Enchant>");
+	end;
+}
+
+grademk,42,184,4	script	Master Refiner#grademk	4_M_DWARF,{
+	mes "[Master Refiner]";
+	mes "I can refine eligible weapons and armor using the modern refinement interface.";
+	mes "Refinement can break or downgrade equipment according to the selected material.";
+	next;
+	if (select("Open Refine UI:Cancel") == 2)
+		close;
+	close2;
+	refineui();
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Equipment Refiner>");
+	end;
+}
+
+grademk,46,184,4	shop	Ore and Material Dealer#grademk	4_F_01,1010:200,1011:1000,984:5000,985:5000,7619:100000,7620:100000,6240:150000,6241:150000,6223:20000,6224:20000,6225:250000,6226:250000,1000331:50000,1000332:50000,1000333:250000,1000334:250000,1000335:350000,1000336:350000,1000368:100000,1000370:100000,1000369:500000,1000371:500000,6635:500000,1000322:5000,1000323:25000,1000325:100000,1000326:100000,1000327:100000,1000328:100000,1000337:250000,1000874:100000,25729:50000,25731:50000
+
+grademk,50,184,4	script	Gambler's Seal Expert#grademk	4_M_ROKI2,{
+	mes "[Gambler's Seal Expert]";
+	mes "Gambler's Seal enchants use the Laphine Upgrade window.";
+	mes "Double-click a Loki coin, then select the slotted Korean Gambler's Seal (item 410233).";
+	next;
+	mes "[Gambler's Seal Expert]";
+	mes "Supported coins:";
+	mes "^4D4DFF102278^000000 - Melee";
+	mes "^4D4DFF100487^000000 - Magic";
+	mes "^4D4DFF102343^000000 - Ranged";
+	mes "^4D4DFF102676^000000 - Defensive";
+	next;
+	mes "[Gambler's Seal Expert]";
+	if (countitem(410233))
+		mes "You have ^008800" + countitem(410233) + " compatible seal(s)^000000 in your inventory.";
+	else {
+		mes "You do not have item ^FF0000410233^000000 in your inventory.";
+		if (countitem(5918) || countitem(410004) || countitem(410232))
+			mes "Your other Gambler's Seal version is not a valid target for these Loki coins.";
+	}
+	next;
+	mes "[Gambler's Seal Expert]";
+	mes "Ace cards in Mouth use Loki's Advice:";
+	mes "^4D4DFF420210 + 102277^000000 - Hearts / Melee";
+	mes "^4D4DFF420213 + 100488^000000 - Spades / Magic";
+	mes "^4D4DFF420220 + 102342^000000 - Diamonds / Ranged";
+	mes "^4D4DFF420269 + 102677^000000 - Clovers / Defense";
+	close;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Gambler's Seal Help>");
+	end;
+}
+
+grademk,44,184,4	script	Frontier Rune Crown Enchanter#grademk	4_M_REPAIR,{
+	mes "[Frontier Rune Crown Enchanter]";
+	mes "I can enchant Dimension footwear and Frontier / Time Dimension Rune Crowns.";
+	mes "The enchant order is slot 3, slot 2, then slot 1.";
+	next;
+	mes "[Frontier Rune Crown Enchanter]";
+	mes "Random enchants use Frontier runes and stones.";
+	mes "The enchant window offers the configured crown jewel upgrades and material costs.";
+	next;
+	.@choice = select("Dimension Footwear:Frontier / Time Rune Crown:Cancel");
+	if (.@choice == 3)
+		close;
+	close2;
+	item_enchant((.@choice == 1) ? 163 : 164);
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Frontier Crown Enchant>");
+	end;
+}
+
+grademk,48,184,4	script	Varmundt Rune Enchanter#grademk	4_M_BARMUND,{
+	mes "[Varmundt Rune Enchanter]";
+	mes "Choose the Varmundt equipment family you want to enchant.";
+	mes "Original equipment and evolved Rune equipment use separate tables.";
+	next;
+	.@tier = select("Original Varmundt Equipment:Evolved Rune Equipment:Cancel");
+	if (.@tier == 3)
+		close;
+	.@element = select("Glade / Plain:Flame:Ice:Death:Cancel");
+	if (.@element == 5)
+		close;
+	if (.@tier == 1)
+		.@enchant_id = 15 + .@element;
+	else
+		.@enchant_id = 51 + .@element;
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Varmundt Rune Enchant>");
+	end;
+}
+
+grademk,36,184,4	script	Constellation Enchanter#grademk	4_M_ALCHE_A,{
+	mes "[Constellation Enchanter]";
+	mes "I handle Constellation Tower armor and Star Signet enchants.";
+	mes "Armor must satisfy the refine requirement shown by the client.";
+	next;
+	.@choice = select("Power Armor:Stamina Armor:Concentration Suit:Creative Suit:Spell Robe:Wisdom Robe:Star Signets:Upgrade Star of Spell Lv3-5:Cancel");
+	if (.@choice == 9)
+		close;
+	if (.@choice == 8)
+		goto L_UpgradeStarSpell;
+	.@enchant_id = 6 + .@choice;
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
+L_UpgradeStarSpell:
+	getinventorylist;
+	.@menu$ = "";
+	.@count = 0;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_id[.@i] != 490136 || @inventorylist_equip[.@i] != 0 || @inventorylist_expire[.@i] != 0)
+			continue;
+		for (.@slot = 2; .@slot <= 3; ++.@slot) {
+			.@enchant = (.@slot == 2) ? @inventorylist_card3[.@i] : @inventorylist_card4[.@i];
+			if (.@enchant != 310709 && .@enchant != 310710)
+				continue;
+			.@invpos[.@count] = .@i;
+			.@slots[.@count] = .@slot;
+			.@levels[.@count] = .@enchant - 310706;
+			.@menu$ += sprintf("Star of Spell Lv%d -> Lv%d (enchant slot %d):", .@levels[.@count], .@levels[.@count] + 1, .@slot);
+			++.@count;
+		}
+	}
+	if (.@count == 0) {
+		mes "[Constellation Enchanter]";
+		mes "I could not find an unequipped Star Signet containing Star of Spell Lv3 or Lv4.";
+		close;
+	}
+	.@pick = select(.@menu$ + "Cancel") - 1;
+	if (.@pick == .@count)
+		close;
+	.@i = .@invpos[.@pick];
+	.@slot = .@slots[.@pick];
+	.@level = .@levels[.@pick];
+	if (.@slot == 3 && .@level == 3) {
+		.@price = 15000000;
+		setarray .@need[0],10,7,7,7,7,7;
+	} else if (.@slot == 3 && .@level == 4) {
+		.@price = 20000000;
+		setarray .@need[0],15,10,10,10,10,10;
+	} else if (.@slot == 2 && .@level == 3) {
+		.@price = 17500000;
+		setarray .@need[0],12,9,9,9,9,9;
+	} else {
+		.@price = 25000000;
+		setarray .@need[0],18,12,12,12,12,12;
+	}
+	setarray .@material[0],1002139,1002137,1002143,1002144,1002145,1002146;
+	mes "[Constellation Enchanter]";
+	mes sprintf("Star of Spell Lv%d -> Lv%d", .@level, .@level + 1);
+	mes sprintf("Cost: %s Zeny", callfunc("F_InsertComma", .@price));
+	for (.@j = 0; .@j < 6; ++.@j)
+		mes sprintf("%s: %d/%d", getitemname(.@material[.@j]), countitem(.@material[.@j]), .@need[.@j]);
+	next;
+	if (select("Upgrade:Cancel") == 2)
+		close;
+	if (Zeny < .@price) {
+		mes "[Constellation Enchanter]";
+		mes "You do not have enough Zeny.";
+		close;
+	}
+	for (.@j = 0; .@j < 6; ++.@j) {
+		if (countitem(.@material[.@j]) < .@need[.@j]) {
+			mes "[Constellation Enchanter]";
+			mes sprintf("You need %d %s.", .@need[.@j], getitemname(.@material[.@j]));
+			close;
+		}
+	}
+	.@item_id = @inventorylist_id[.@i];
+	.@identify = @inventorylist_identify[.@i];
+	.@refine = @inventorylist_refine[.@i];
+	.@attribute = @inventorylist_attribute[.@i];
+	.@bound = @inventorylist_bound[.@i];
+	.@grade = @inventorylist_enchantgrade[.@i];
+	setarray .@card[0], @inventorylist_card1[.@i], @inventorylist_card2[.@i], @inventorylist_card3[.@i], @inventorylist_card4[.@i];
+	if (.@slot == 2)
+		.@card[2] = 310707 + .@level;
+	else
+		.@card[3] = 310707 + .@level;
+	setarray .@option_id[0], @inventorylist_option_id1[.@i], @inventorylist_option_id2[.@i], @inventorylist_option_id3[.@i], @inventorylist_option_id4[.@i], @inventorylist_option_id5[.@i];
+	setarray .@option_value[0], @inventorylist_option_value1[.@i], @inventorylist_option_value2[.@i], @inventorylist_option_value3[.@i], @inventorylist_option_value4[.@i], @inventorylist_option_value5[.@i];
+	setarray .@option_param[0], @inventorylist_option_parameter1[.@i], @inventorylist_option_parameter2[.@i], @inventorylist_option_parameter3[.@i], @inventorylist_option_parameter4[.@i], @inventorylist_option_parameter5[.@i];
+	delitemidx @inventorylist_idx[.@i],1;
+	Zeny -= .@price;
+	for (.@j = 0; .@j < 6; ++.@j)
+		delitem .@material[.@j],.@need[.@j];
+	getitembound4 .@item_id,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@bound,.@grade,.@option_id,.@option_value,.@option_param;
+	specialeffect2 EF_SUCCESSPOISON;
+	mes "[Constellation Enchanter]";
+	mes sprintf("Upgrade complete: Star of Spell Lv%d.", .@level + 1);
+	close;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Constellation Enchant>");
+	end;
+}
+
+grademk,32,184,4	script	Lake of Fire Enchanter#grademk	4_F_01,{
+	mes "[Lake of Fire Enchanter]";
+	mes "I handle all four seasonal Divine Beast Cloaks, Circles of Life, and seasonal Signets.";
+	next;
+	.@category = select("Divine Beast Cloak:Circle of Life:Seasonal Signets:Cancel");
+	if (.@category == 4)
+		close;
+	if (.@category == 3) {
+		close2;
+		item_enchant(142);
+		end;
+	}
+	.@season = select("Spring:Summer:Autumn:Winter:Cancel");
+	if (.@season == 5)
+		close;
+	if (.@category == 1)
+		.@enchant_id = 115 + (.@season * 2);
+	else
+		.@enchant_id = 116 + (.@season * 2);
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Lake of Fire Enchant>");
+	end;
+}

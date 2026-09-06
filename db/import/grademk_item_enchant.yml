@@ -1,0 +1,2135 @@
+# Grade Workshop crown enchant table (164), restored from existing server assets.
+# Weighted upgrade results use the server's native RandomUpgrades schema.
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+
+Body:
+  - Id: 164
+    TargetItems:
+      Time_DM_R_Crown_DK: true
+      Time_DM_R_Crown_IG: true
+      Time_DM_R_Crown_MT: true
+      Time_DM_R_Crown_BO: true
+      Time_DM_R_Crown_SHC: true
+      Time_DM_R_Crown_ABC: true
+      Time_DM_R_Crown_AG: true
+      Time_DM_R_Crown_EM: true
+      Time_DM_R_Crown_CD: true
+      Time_DM_R_Crown_IQ: true
+      Time_DM_R_Crown_WH: true
+      Time_DM_R_Crown_TR: true
+      Time_DM_R_Crown_SS: true
+      Time_DM_R_Crown_NW: true
+      Time_DM_R_Crown_SKE: true
+      Time_DM_R_Crown_SOA: true
+      Time_DM_R_Crown_HN: true
+      Time_DM_R_Crown_SH: true
+      Frontier_R_Crown_DK: true
+      Frontier_R_Crown_IG: true
+      Frontier_R_Crown_MT: true
+      Frontier_R_Crown_BO: true
+      Frontier_R_Crown_SHC: true
+      Frontier_R_Crown_ABC: true
+      Frontier_R_Crown_AG: true
+      Frontier_R_Crown_EM: true
+      Frontier_R_Crown_CD: true
+      Frontier_R_Crown_IQ: true
+      Frontier_R_Crown_WH: true
+      Frontier_R_Crown_TR: true
+      Frontier_R_Crown_SS: true
+      Frontier_R_Crown_NW: true
+      Frontier_R_Crown_SKE: true
+      Frontier_R_Crown_SOA: true
+      Frontier_R_Crown_HN: true
+      Frontier_R_Crown_SH: true
+    Reset:
+      Chance: 100000
+      Price: 1000000
+      Materials:
+        - Material: Zelunium
+          Amount: 5
+        - Material: Shadowdecon
+          Amount: 5
+        - Material: Ch1_Mana_Ring
+          Amount: 15
+    Order:
+      - Slot: 3
+      - Slot: 2
+      - Slot: 1
+    Slots:
+      - Slot: 3
+        Price: 500000
+        Materials:
+          - Material: Frontier_Magic_Dust
+            Amount: 10
+          - Material: Abyss_Rune
+            Amount: 2
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 1
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 2
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 3
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+          - Enchantgrade: 4
+            Items:
+              - Item: Strength2
+                Chance: 8000
+              - Item: Inteligence2
+                Chance: 8000
+              - Item: Vitality2
+                Chance: 8000
+              - Item: Luck2
+                Chance: 8000
+              - Item: Strength1
+                Chance: 11500
+              - Item: Inteligence1
+                Chance: 11500
+              - Item: Vitality1
+                Chance: 11500
+              - Item: Luck1
+                Chance: 11500
+              - Item: Strength3
+                Chance: 3500
+              - Item: Inteligence3
+                Chance: 3500
+              - Item: Vitality3
+                Chance: 3500
+              - Item: Luck3
+                Chance: 3500
+              - Item: Strength5
+                Chance: 500
+              - Item: Inteligence5
+                Chance: 500
+              - Item: Vitality5
+                Chance: 500
+              - Item: Luck5
+                Chance: 500
+              - Item: Strength4
+                Chance: 1500
+              - Item: Inteligence4
+                Chance: 1500
+              - Item: Vitality4
+                Chance: 1500
+              - Item: Luck4
+                Chance: 1500
+      - Slot: 2
+        Price: 1500000
+        Materials:
+          - Material: Frontier_M_Stone
+            Amount: 3
+          - Material: Chaotic_Rune
+            Amount: 3
+          - Material: Disparate_Rune
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 1
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 2
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 3
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+          - Enchantgrade: 4
+            Items:
+              - Item: T_D_Jewel_STR_1
+                Chance: 5600
+              - Item: T_D_Jewel_AGI_1
+                Chance: 5600
+              - Item: T_D_Jewel_DEX_1
+                Chance: 5600
+              - Item: T_D_Jewel_VIT_1
+                Chance: 5600
+              - Item: T_D_Jewel_INT_1
+                Chance: 5600
+              - Item: T_D_Jewel_SPR_1
+                Chance: 5600
+              - Item: T_D_Jewel_WIS_1
+                Chance: 5600
+              - Item: T_D_Jewel_LUK_1
+                Chance: 5600
+              - Item: T_D_Jewel_POW_1
+                Chance: 5600
+              - Item: T_D_Jewel_CON_1
+                Chance: 5600
+              - Item: T_D_Jewel_STR_3
+                Chance: 1440
+              - Item: T_D_Jewel_AGI_3
+                Chance: 1440
+              - Item: T_D_Jewel_DEX_3
+                Chance: 1440
+              - Item: T_D_Jewel_VIT_3
+                Chance: 1440
+              - Item: T_D_Jewel_INT_3
+                Chance: 1440
+              - Item: T_D_Jewel_SPR_3
+                Chance: 1440
+              - Item: T_D_Jewel_WIS_3
+                Chance: 1440
+              - Item: T_D_Jewel_LUK_3
+                Chance: 1440
+              - Item: T_D_Jewel_POW_3
+                Chance: 1440
+              - Item: T_D_Jewel_CON_3
+                Chance: 1440
+              - Item: T_D_Jewel_STR_2
+                Chance: 2960
+              - Item: T_D_Jewel_AGI_2
+                Chance: 2960
+              - Item: T_D_Jewel_DEX_2
+                Chance: 2960
+              - Item: T_D_Jewel_VIT_2
+                Chance: 2960
+              - Item: T_D_Jewel_INT_2
+                Chance: 2960
+              - Item: T_D_Jewel_SPR_2
+                Chance: 2960
+              - Item: T_D_Jewel_WIS_2
+                Chance: 2960
+              - Item: T_D_Jewel_LUK_2
+                Chance: 2960
+              - Item: T_D_Jewel_POW_2
+                Chance: 2960
+              - Item: T_D_Jewel_CON_2
+                Chance: 2960
+      - Slot: 1
+        PerfectEnchants:
+          - Item: Acute_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Mettle_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Tenacity_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Master_A_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Magic_E_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Spell_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Adamatine_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Affection_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Fierce_A_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+          - Item: Great_C_Jewel_1
+            Price: 100000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 85
+              - Material: Chaotic_Essence
+                Amount: 100
+
+# Client-defined crown jewel upgrade recipes supplement the base table.
+  - Id: 164
+    Slots:
+      - Slot: 1
+        Upgrades:
+          - Enchant: Mettle_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_3
+                Chance: 10000
+              - Upgrade: Mettle_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Mettle_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_4
+                Chance: 10000
+              - Upgrade: Mettle_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Mettle_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_5
+                Chance: 10000
+              - Upgrade: Mettle_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Mettle_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_6
+                Chance: 10000
+              - Upgrade: Mettle_Jewel_5
+                Chance: 80000
+              - Upgrade: Mettle_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Mettle_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_7
+                Chance: 10000
+              - Upgrade: Mettle_Jewel_6
+                Chance: 80000
+              - Upgrade: Mettle_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Mettle_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_5
+                Chance: 80000
+              - Upgrade: Mettle_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Mettle_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_6
+                Chance: 90000
+              - Upgrade: Mettle_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Mettle_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_7
+                Chance: 93000
+              - Upgrade: Mettle_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Mettle_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_8
+                Chance: 95000
+              - Upgrade: Mettle_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Tenacity_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_3
+                Chance: 10000
+              - Upgrade: Tenacity_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Tenacity_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_4
+                Chance: 10000
+              - Upgrade: Tenacity_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Tenacity_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_5
+                Chance: 10000
+              - Upgrade: Tenacity_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Tenacity_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_6
+                Chance: 10000
+              - Upgrade: Tenacity_Jewel_5
+                Chance: 80000
+              - Upgrade: Tenacity_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Tenacity_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_7
+                Chance: 10000
+              - Upgrade: Tenacity_Jewel_6
+                Chance: 80000
+              - Upgrade: Tenacity_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Tenacity_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_5
+                Chance: 80000
+              - Upgrade: Tenacity_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Tenacity_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_6
+                Chance: 90000
+              - Upgrade: Tenacity_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Tenacity_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_7
+                Chance: 93000
+              - Upgrade: Tenacity_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Tenacity_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_8
+                Chance: 95000
+              - Upgrade: Tenacity_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Master_A_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_3
+                Chance: 10000
+              - Upgrade: Master_A_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Master_A_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_4
+                Chance: 10000
+              - Upgrade: Master_A_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Master_A_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_5
+                Chance: 10000
+              - Upgrade: Master_A_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Master_A_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_6
+                Chance: 10000
+              - Upgrade: Master_A_Jewel_5
+                Chance: 80000
+              - Upgrade: Master_A_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Master_A_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_7
+                Chance: 10000
+              - Upgrade: Master_A_Jewel_6
+                Chance: 80000
+              - Upgrade: Master_A_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Master_A_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_5
+                Chance: 80000
+              - Upgrade: Master_A_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Master_A_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_6
+                Chance: 90000
+              - Upgrade: Master_A_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Master_A_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_7
+                Chance: 93000
+              - Upgrade: Master_A_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Master_A_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_8
+                Chance: 95000
+              - Upgrade: Master_A_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Acute_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_3
+                Chance: 10000
+              - Upgrade: Acute_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Acute_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_4
+                Chance: 10000
+              - Upgrade: Acute_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Acute_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_5
+                Chance: 10000
+              - Upgrade: Acute_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Acute_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_6
+                Chance: 10000
+              - Upgrade: Acute_Jewel_5
+                Chance: 80000
+              - Upgrade: Acute_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Acute_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_7
+                Chance: 10000
+              - Upgrade: Acute_Jewel_6
+                Chance: 80000
+              - Upgrade: Acute_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Acute_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_5
+                Chance: 80000
+              - Upgrade: Acute_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Acute_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_6
+                Chance: 90000
+              - Upgrade: Acute_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Acute_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_7
+                Chance: 93000
+              - Upgrade: Acute_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Acute_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_8
+                Chance: 95000
+              - Upgrade: Acute_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Magic_E_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_3
+                Chance: 10000
+              - Upgrade: Magic_E_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Magic_E_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_4
+                Chance: 10000
+              - Upgrade: Magic_E_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Magic_E_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_5
+                Chance: 10000
+              - Upgrade: Magic_E_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Magic_E_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_6
+                Chance: 10000
+              - Upgrade: Magic_E_Jewel_5
+                Chance: 80000
+              - Upgrade: Magic_E_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Magic_E_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_7
+                Chance: 10000
+              - Upgrade: Magic_E_Jewel_6
+                Chance: 80000
+              - Upgrade: Magic_E_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Magic_E_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_5
+                Chance: 80000
+              - Upgrade: Magic_E_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Magic_E_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_6
+                Chance: 90000
+              - Upgrade: Magic_E_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Magic_E_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_7
+                Chance: 93000
+              - Upgrade: Magic_E_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Magic_E_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_8
+                Chance: 95000
+              - Upgrade: Magic_E_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Spell_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_3
+                Chance: 10000
+              - Upgrade: Spell_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Spell_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_4
+                Chance: 10000
+              - Upgrade: Spell_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Spell_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_5
+                Chance: 10000
+              - Upgrade: Spell_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Spell_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_6
+                Chance: 10000
+              - Upgrade: Spell_Jewel_5
+                Chance: 80000
+              - Upgrade: Spell_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Spell_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_7
+                Chance: 10000
+              - Upgrade: Spell_Jewel_6
+                Chance: 80000
+              - Upgrade: Spell_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Spell_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_5
+                Chance: 80000
+              - Upgrade: Spell_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Spell_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_6
+                Chance: 90000
+              - Upgrade: Spell_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Spell_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_7
+                Chance: 93000
+              - Upgrade: Spell_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Spell_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_8
+                Chance: 95000
+              - Upgrade: Spell_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Adamatine_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_3
+                Chance: 10000
+              - Upgrade: Adamatine_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Adamatine_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_4
+                Chance: 10000
+              - Upgrade: Adamatine_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Adamatine_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_5
+                Chance: 10000
+              - Upgrade: Adamatine_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Adamatine_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_6
+                Chance: 10000
+              - Upgrade: Adamatine_Jewel_5
+                Chance: 80000
+              - Upgrade: Adamatine_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Adamatine_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_7
+                Chance: 10000
+              - Upgrade: Adamatine_Jewel_6
+                Chance: 80000
+              - Upgrade: Adamatine_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Adamatine_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_5
+                Chance: 80000
+              - Upgrade: Adamatine_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Adamatine_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_6
+                Chance: 90000
+              - Upgrade: Adamatine_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Adamatine_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_7
+                Chance: 93000
+              - Upgrade: Adamatine_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Adamatine_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_8
+                Chance: 95000
+              - Upgrade: Adamatine_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Affection_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_3
+                Chance: 10000
+              - Upgrade: Affection_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Affection_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_4
+                Chance: 10000
+              - Upgrade: Affection_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Affection_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_5
+                Chance: 10000
+              - Upgrade: Affection_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Affection_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_6
+                Chance: 10000
+              - Upgrade: Affection_Jewel_5
+                Chance: 80000
+              - Upgrade: Affection_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Affection_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_7
+                Chance: 10000
+              - Upgrade: Affection_Jewel_6
+                Chance: 80000
+              - Upgrade: Affection_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Affection_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_5
+                Chance: 80000
+              - Upgrade: Affection_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Affection_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_6
+                Chance: 90000
+              - Upgrade: Affection_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Affection_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_7
+                Chance: 93000
+              - Upgrade: Affection_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Affection_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_8
+                Chance: 95000
+              - Upgrade: Affection_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Fierce_A_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_3
+                Chance: 10000
+              - Upgrade: Fierce_A_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Fierce_A_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_4
+                Chance: 10000
+              - Upgrade: Fierce_A_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Fierce_A_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_5
+                Chance: 10000
+              - Upgrade: Fierce_A_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Fierce_A_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_6
+                Chance: 10000
+              - Upgrade: Fierce_A_Jewel_5
+                Chance: 80000
+              - Upgrade: Fierce_A_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Fierce_A_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_7
+                Chance: 10000
+              - Upgrade: Fierce_A_Jewel_6
+                Chance: 80000
+              - Upgrade: Fierce_A_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Fierce_A_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_5
+                Chance: 80000
+              - Upgrade: Fierce_A_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Fierce_A_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_6
+                Chance: 90000
+              - Upgrade: Fierce_A_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Fierce_A_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_7
+                Chance: 93000
+              - Upgrade: Fierce_A_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Fierce_A_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Fierce_A_Jewel_8
+                Chance: 95000
+              - Upgrade: Fierce_A_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25
+          - Enchant: Great_C_Jewel_1
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_3
+                Chance: 10000
+              - Upgrade: Great_C_Jewel_2
+                Chance: 90000
+            Price: 35000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 60
+              - Material: Chaotic_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 40
+          - Enchant: Great_C_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_4
+                Chance: 10000
+              - Upgrade: Great_C_Jewel_3
+                Chance: 90000
+            Price: 40000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 80
+              - Material: Chaotic_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Tiem_SpellScroll
+                Amount: 30
+          - Enchant: Great_C_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_5
+                Chance: 10000
+              - Upgrade: Great_C_Jewel_4
+                Chance: 90000
+            Price: 45000000
+            Materials:
+              - Material: Chaotic_Rune
+                Amount: 100
+              - Material: Chaotic_Essence
+                Amount: 120
+              - Material: Time_D_Ma_Rune
+                Amount: 65
+              - Material: Dimansion_SpellScroll
+                Amount: 30
+          - Enchant: Great_C_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_6
+                Chance: 10000
+              - Upgrade: Great_C_Jewel_5
+                Chance: 80000
+              - Upgrade: Great_C_Jewel_4
+                Chance: 10000
+            Price: 50000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 80
+              - Material: Time_D_Ma_Rune
+                Amount: 85
+              - Material: Pure_SpellScoll
+                Amount: 30
+          - Enchant: Great_C_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_7
+                Chance: 10000
+              - Upgrade: Great_C_Jewel_6
+                Chance: 80000
+              - Upgrade: Great_C_Jewel_5
+                Chance: 10000
+            Price: 55000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 80
+              - Material: Disparate_Essence
+                Amount: 100
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+              - Material: Polluted_SpellScroll
+                Amount: 30
+          - Enchant: Great_C_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_5
+                Chance: 80000
+              - Upgrade: Great_C_Jewel_7
+                Chance: 20000
+            Price: 60000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 60
+              - Material: Disparate_Essence
+                Amount: 70
+              - Material: Time_D_Ma_Rune
+                Amount: 20
+              - Material: Polluted_SpellScroll
+                Amount: 10
+          - Enchant: Great_C_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_6
+                Chance: 90000
+              - Upgrade: Great_C_Jewel_8
+                Chance: 10000
+            Price: 65000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 70
+              - Material: Disparate_Essence
+                Amount: 85
+              - Material: Time_D_Ma_Rune
+                Amount: 30
+              - Material: Polluted_SpellScroll
+                Amount: 15
+          - Enchant: Great_C_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_7
+                Chance: 93000
+              - Upgrade: Great_C_Jewel_9
+                Chance: 7000
+            Price: 70000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 90
+              - Material: Disparate_Essence
+                Amount: 110
+              - Material: Time_D_Ma_Rune
+                Amount: 50
+              - Material: Immortal_SpellScroll
+                Amount: 20
+          - Enchant: Great_C_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Great_C_Jewel_8
+                Chance: 95000
+              - Upgrade: Great_C_Jewel_10
+                Chance: 5000
+            Price: 75000000
+            Materials:
+              - Material: Disparate_Rune
+                Amount: 120
+              - Material: Disparate_Essence
+                Amount: 145
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+              - Material: Immortal_SpellScroll
+                Amount: 25

@@ -16,7 +16,7 @@
 -	script	Healer	-1,{
 
 	.@Price = 0;	// Zeny required for heal
-	.@Buffs = 0;	// Also buff players? (1: yes / 0: no)
+	.@Buffs = 1;	// Full buffs enabled
 	.@Delay = 0;	// Heal delay, in seconds
 
 	if (@HD > gettimetick(2))
@@ -31,11 +31,22 @@
 	}
 	specialeffect2 EF_HEAL2;
 	percentheal 100,100;
+	healap MaxAp;
 	if (.@Buffs) {
+		// Free 30-minute full buff package.
 		specialeffect2 EF_INCAGILITY;
-		sc_start SC_INCREASEAGI,240000,10;
+		sc_start SC_INCREASEAGI,1800000,10;
 		specialeffect2 EF_BLESSING;
-		sc_start SC_BLESSING,240000,10;
+		sc_start SC_BLESSING,1800000,10;
+		sc_start SC_ANGELUS,1800000,10;
+		sc_start SC_IMPOSITIO,1800000,5;
+		sc_start SC_MAGNIFICAT,1800000,5;
+		sc_start SC_GLORIA,1800000,5;
+		sc_start SC_ASSUMPTIO,1800000,5;
+		sc_start SC_WINDWALK,1800000,10;
+		sc_start SC_TRUESIGHT,1800000,5;
+		sc_start SC_CONCENTRATE,1800000,10;
+		message strcharinfo(0), "Full buffs applied for 30 minutes.";
 	}
 	if (.@Delay)
 		@HD = gettimetick(2) + .@Delay;
