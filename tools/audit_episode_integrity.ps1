@@ -511,6 +511,16 @@ $requiredCells = @(
 	@('jor_mbase',54,155), @('jor_mbase',313,106), @('mbase_in',289,124),
 	@('jor_albe',192,209), @('luna_sf2',187,254)
 )
+# Standing cells in front of the restored workshop counter, Tina, and healer.
+# The workshop counter blocks portions of row 183; row 181 is the approach aisle.
+# These also guard against accidentally deploying an incompatible map cache.
+$serviceCells = @(
+	@('grademk',30,181), @('grademk',32,181), @('grademk',36,181),
+	@('grademk',38,181), @('grademk',42,181), @('grademk',44,181),
+	@('grademk',46,181), @('grademk',48,181), @('grademk',50,181),
+	@('prontera',162,192), @('malangdo',132,113)
+)
+$requiredCells += $serviceCells
 $wantedCacheMaps = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($cell in $requiredCells) { [void]$wantedCacheMaps.Add($cell[0]) }
 foreach ($destination in $literalDestinations) {
@@ -535,6 +545,12 @@ foreach ($destination in $literalDestinations) {
 	}
 	if (!(Test-WalkableCell $cacheEntries[$destination.Map] $destination.X $destination.Y)) {
 		Fail "Literal warp destination $($destination.Map),$($destination.X),$($destination.Y) is blocked or out of bounds ($($destination.File):$($destination.Line))"
+	}
+}
+foreach ($cell in $serviceCells) {
+	if ($cell[0] -ne 'grademk' -or !$cacheEntries.ContainsKey('grademk')) { continue }
+	if (!(Test-ConnectedCells $cacheEntries['grademk'] 38 177 $cell[1] $cell[2])) {
+		Fail "Restored workshop approach is disconnected: grademk,38,177 -> $($cell[1]),$($cell[2])"
 	}
 }
 foreach ($mapName in @('1@ch2a','1@ch2b')) {
@@ -757,8 +773,9 @@ foreach ($literal in @('16739, 16740, 16741, 16742','ba_in01,252,353','BEGIN RAT
 Write-Host '  Biosphere custom client quests: 8'
 
 # Crown group 132 is disabled in the base database. The import provides the
-# exact supported rolls and deterministic upgrades, including 2026 POW/CON,
-# Fierce Attack, and Great Craftsman additions.
+# supported rolls, including 2026 POW/CON, Fierce Attack, and Great Craftsman
+# additions. The eight client jewel families use weighted upgrades through Lv10;
+# the two extra custom families retain their existing deterministic recipes.
 $biosphereEnchant = [IO.File]::ReadAllText((RepoPath 'db/import/item_enchant.yml'))
 foreach ($literal in @(
 	'BEGIN CODEX BIOSPHERE CROWN ENCHANT 132','- Id: 132','Time_DM_R_Crown_DK: true',
@@ -768,6 +785,14 @@ foreach ($literal in @(
 	if (!$biosphereEnchant.Contains($literal)) { Fail "Incomplete Biosphere crown enchant group: '$literal'" }
 }
 Write-Host '  Biosphere crown enchant group: 132'
+$biosphereCrown = [regex]::Match($biosphereEnchant, '(?s)# BEGIN CODEX BIOSPHERE CROWN ENCHANT 132.*?# END CODEX BIOSPHERE CROWN ENCHANT 132').Value
+$biosphereRolls = [regex]::Matches($biosphereCrown, '(?m)^            RandomUpgrades:\r?\n(?:              - Upgrade: [^\r\n]+\r?\n                Chance: \d+\r?\n)+')
+if ($biosphereRolls.Count -ne 72) { Fail "Biosphere weighted upgrade count is $($biosphereRolls.Count), expected 72" }
+foreach ($roll in $biosphereRolls) {
+	$total = 0
+	foreach ($chance in [regex]::Matches($roll.Value, 'Chance: (\d+)')) { $total += [int]$chance.Groups[1].Value }
+	if ($total -ne 100000) { Fail "Biosphere crown upgrade probabilities total $total, expected 100000" }
+}
 
 # The Grade Workshop service must retain its native crown table and weighted
 # upgrade recipes; a loaded NPC alone does not prove its enchant UI can open.

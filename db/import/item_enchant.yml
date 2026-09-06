@@ -1850,165 +1850,325 @@ Body:
                 Amount: 125
         Upgrades:
           - Enchant: Mettle_Jewel_1
-            Upgrade: Mettle_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_1
+                Chance: 20000
+              - Upgrade: Mettle_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Mettle_Jewel_2
-            Upgrade: Mettle_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_1
+                Chance: 35000
+              - Upgrade: Mettle_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Mettle_Jewel_3
-            Upgrade: Mettle_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_2
+                Chance: 50000
+              - Upgrade: Mettle_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Mettle_Jewel_4
-            Upgrade: Mettle_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_3
+                Chance: 65000
+              - Upgrade: Mettle_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Tenacity_Jewel_1
-            Upgrade: Tenacity_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_1
+                Chance: 20000
+              - Upgrade: Tenacity_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Tenacity_Jewel_2
-            Upgrade: Tenacity_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_1
+                Chance: 35000
+              - Upgrade: Tenacity_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Tenacity_Jewel_3
-            Upgrade: Tenacity_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_2
+                Chance: 50000
+              - Upgrade: Tenacity_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Tenacity_Jewel_4
-            Upgrade: Tenacity_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_3
+                Chance: 65000
+              - Upgrade: Tenacity_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Master_A_Jewel_1
-            Upgrade: Master_A_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_1
+                Chance: 20000
+              - Upgrade: Master_A_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Master_A_Jewel_2
-            Upgrade: Master_A_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_1
+                Chance: 35000
+              - Upgrade: Master_A_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Master_A_Jewel_3
-            Upgrade: Master_A_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_2
+                Chance: 50000
+              - Upgrade: Master_A_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Master_A_Jewel_4
-            Upgrade: Master_A_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_3
+                Chance: 65000
+              - Upgrade: Master_A_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Acute_Jewel_1
-            Upgrade: Acute_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_1
+                Chance: 20000
+              - Upgrade: Acute_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Acute_Jewel_2
-            Upgrade: Acute_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_1
+                Chance: 35000
+              - Upgrade: Acute_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Acute_Jewel_3
-            Upgrade: Acute_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_2
+                Chance: 50000
+              - Upgrade: Acute_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Acute_Jewel_4
-            Upgrade: Acute_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_3
+                Chance: 65000
+              - Upgrade: Acute_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Magic_E_Jewel_1
-            Upgrade: Magic_E_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_1
+                Chance: 20000
+              - Upgrade: Magic_E_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Magic_E_Jewel_2
-            Upgrade: Magic_E_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_1
+                Chance: 35000
+              - Upgrade: Magic_E_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Magic_E_Jewel_3
-            Upgrade: Magic_E_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_2
+                Chance: 50000
+              - Upgrade: Magic_E_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Magic_E_Jewel_4
-            Upgrade: Magic_E_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_3
+                Chance: 65000
+              - Upgrade: Magic_E_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Spell_Jewel_1
-            Upgrade: Spell_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_1
+                Chance: 20000
+              - Upgrade: Spell_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Spell_Jewel_2
-            Upgrade: Spell_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_1
+                Chance: 35000
+              - Upgrade: Spell_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Spell_Jewel_3
-            Upgrade: Spell_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_2
+                Chance: 50000
+              - Upgrade: Spell_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Spell_Jewel_4
-            Upgrade: Spell_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_3
+                Chance: 65000
+              - Upgrade: Spell_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Adamatine_Jewel_1
-            Upgrade: Adamatine_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_1
+                Chance: 20000
+              - Upgrade: Adamatine_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Adamatine_Jewel_2
-            Upgrade: Adamatine_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_1
+                Chance: 35000
+              - Upgrade: Adamatine_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Adamatine_Jewel_3
-            Upgrade: Adamatine_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_2
+                Chance: 50000
+              - Upgrade: Adamatine_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Adamatine_Jewel_4
-            Upgrade: Adamatine_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_3
+                Chance: 65000
+              - Upgrade: Adamatine_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Affection_Jewel_1
-            Upgrade: Affection_Jewel_2
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_1
+                Chance: 20000
+              - Upgrade: Affection_Jewel_2
+                Chance: 80000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 175
+                Amount: 5
           - Enchant: Affection_Jewel_2
-            Upgrade: Affection_Jewel_3
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_1
+                Chance: 35000
+              - Upgrade: Affection_Jewel_3
+                Chance: 65000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 225
+                Amount: 10
           - Enchant: Affection_Jewel_3
-            Upgrade: Affection_Jewel_4
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_2
+                Chance: 50000
+              - Upgrade: Affection_Jewel_4
+                Chance: 50000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 275
+                Amount: 20
           - Enchant: Affection_Jewel_4
-            Upgrade: Affection_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_3
+                Chance: 65000
+              - Upgrade: Affection_Jewel_5
+                Chance: 35000
+            Price: 0
             Materials:
               - Material: Time_D_Ma_Rune
-                Amount: 325
+                Amount: 35
           - Enchant: Fierce_A_Jewel_1
             Upgrade: Fierce_A_Jewel_2
             Materials:
@@ -2049,6 +2209,406 @@ Body:
             Materials:
               - Material: Time_D_Ma_Rune
                 Amount: 325
+          - Enchant: Mettle_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_4
+                Chance: 75000
+              - Upgrade: Mettle_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Mettle_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_5
+                Chance: 80000
+              - Upgrade: Mettle_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Mettle_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_6
+                Chance: 90000
+              - Upgrade: Mettle_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Mettle_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_7
+                Chance: 93000
+              - Upgrade: Mettle_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Mettle_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Mettle_Jewel_8
+                Chance: 95000
+              - Upgrade: Mettle_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Tenacity_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_4
+                Chance: 75000
+              - Upgrade: Tenacity_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Tenacity_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_5
+                Chance: 80000
+              - Upgrade: Tenacity_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Tenacity_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_6
+                Chance: 90000
+              - Upgrade: Tenacity_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Tenacity_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_7
+                Chance: 93000
+              - Upgrade: Tenacity_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Tenacity_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Tenacity_Jewel_8
+                Chance: 95000
+              - Upgrade: Tenacity_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Master_A_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_4
+                Chance: 75000
+              - Upgrade: Master_A_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Master_A_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_5
+                Chance: 80000
+              - Upgrade: Master_A_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Master_A_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_6
+                Chance: 90000
+              - Upgrade: Master_A_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Master_A_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_7
+                Chance: 93000
+              - Upgrade: Master_A_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Master_A_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Master_A_Jewel_8
+                Chance: 95000
+              - Upgrade: Master_A_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Acute_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_4
+                Chance: 75000
+              - Upgrade: Acute_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Acute_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_5
+                Chance: 80000
+              - Upgrade: Acute_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Acute_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_6
+                Chance: 90000
+              - Upgrade: Acute_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Acute_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_7
+                Chance: 93000
+              - Upgrade: Acute_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Acute_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Acute_Jewel_8
+                Chance: 95000
+              - Upgrade: Acute_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Magic_E_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_4
+                Chance: 75000
+              - Upgrade: Magic_E_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Magic_E_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_5
+                Chance: 80000
+              - Upgrade: Magic_E_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Magic_E_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_6
+                Chance: 90000
+              - Upgrade: Magic_E_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Magic_E_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_7
+                Chance: 93000
+              - Upgrade: Magic_E_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Magic_E_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Magic_E_Jewel_8
+                Chance: 95000
+              - Upgrade: Magic_E_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Spell_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_4
+                Chance: 75000
+              - Upgrade: Spell_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Spell_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_5
+                Chance: 80000
+              - Upgrade: Spell_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Spell_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_6
+                Chance: 90000
+              - Upgrade: Spell_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Spell_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_7
+                Chance: 93000
+              - Upgrade: Spell_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Spell_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Spell_Jewel_8
+                Chance: 95000
+              - Upgrade: Spell_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Adamatine_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_4
+                Chance: 75000
+              - Upgrade: Adamatine_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Adamatine_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_5
+                Chance: 80000
+              - Upgrade: Adamatine_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Adamatine_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_6
+                Chance: 90000
+              - Upgrade: Adamatine_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Adamatine_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_7
+                Chance: 93000
+              - Upgrade: Adamatine_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Adamatine_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Adamatine_Jewel_8
+                Chance: 95000
+              - Upgrade: Adamatine_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
+          - Enchant: Affection_Jewel_5
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_4
+                Chance: 75000
+              - Upgrade: Affection_Jewel_6
+                Chance: 25000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 55
+          - Enchant: Affection_Jewel_6
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_5
+                Chance: 80000
+              - Upgrade: Affection_Jewel_7
+                Chance: 20000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 80
+          - Enchant: Affection_Jewel_7
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_6
+                Chance: 90000
+              - Upgrade: Affection_Jewel_8
+                Chance: 10000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 110
+          - Enchant: Affection_Jewel_8
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_7
+                Chance: 93000
+              - Upgrade: Affection_Jewel_9
+                Chance: 7000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 145
+          - Enchant: Affection_Jewel_9
+            RandomUpgrades:
+              - Upgrade: Affection_Jewel_8
+                Chance: 95000
+              - Upgrade: Affection_Jewel_10
+                Chance: 5000
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 185
 # END CODEX BIOSPHERE CROWN ENCHANT 132
 
 # Chapter 1 Dimensional footwear (client enchant group 163).

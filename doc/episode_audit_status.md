@@ -35,16 +35,45 @@ loaded groups, including the 20 crown recipes previously omitted. Exact selector
 tests, sanitized tests, production-image compilation, and isolated startup pass.
 See [protocol evidence and limits](enchant_upgrade_protocol.md).
 
+## Item identity and crown follow-up
+
+- Numeric IDs from the active client's 5,208-entry `ItemDBNameTbl.lub` resolve 85
+  localized aliases. This explains 266 of the former 338 recipe differences.
+  There are no unresolved names in the compared upgrade recipes/materials.
+- The remaining 72 differences were in Biosphere crown group 132: 32 incorrect
+  deterministic recipes and 40 missing higher-level recipes. The native window
+  now uses the same weighted level 1–10 progression and rune costs as the client
+  and the existing Abyss Researcher script menu. Failure retains level 1 or
+  downgrades one level; it is not a guaranteed upgrade.
+- All 1,245 ordinary and 444 guaranteed client upgrade recipes in 162 loaded
+  groups now compare exactly. All 24 additional server-only recipes remain
+  unchanged (16 stat upgrades and 8 Fierce Attack/Great Craftsman upgrades).
+  Group 132's target items, reset, order, and normal enchants are unchanged;
+  all other groups in the modified import are unchanged.
+- The comparison now models material overlay/zero-removal, omitted amounts and
+  prices, and mutually exclusive deterministic/random replacements. There are
+  23 synthetic regression tests for these rules, non-executing Lua-table reading,
+  alias resolution, and safe/idempotent recipe generation.
+- The restored workshop/Tina/healer scripts match the running Docker server.
+  The audit checks 11 service approach cells in addition to 40 episode arrivals,
+  including routes from `grademk,38,177` to the nine counter services. The client
+  Grademk GAT agrees that the approach aisle at row 181 is walkable; portions of
+  row 183 are the counter, not player standing cells.
+- `admin`'s character `MSCESXi` still has all 15 saved reputation/mirror variables
+  at their configured maxima. No account values were changed in this follow-up.
+- RockMMO and MuhRO references were inventoried. Their tested GRF payloads are
+  not standard zlib; no protected assets were imported. See the
+  [reference inventory and comparison command](client_reference_grfs.md).
+
 ## Known unresolved coverage
 
 - End-to-end client clicks, cost charging, relog persistence, and equipment-effect
   verification remain pending for the new guaranteed-upgrade path. Packet evidence
   comes from the bundled 2025 binary; the active 2026 client needs a runtime check.
-- The broader recipe comparison reports 338 ordinary-upgrade differences outside
-  the 18 workshop groups. These require classification: some are Korean Aegis-name
-  aliases, while others may be actual cost/outcome differences or missing recipes.
-  They are not yet proven to be 338 server defects. Normal enchants and other
-  service types still need equivalent client/server comparison.
+- Normal/initial enchants, resets, and other service types still need equivalent
+  client/server comparison. The 24 server-only upgrades have been preserved, not
+  proven to appear in this client's UI. Client clicks and actual material charging
+  remain unverified for the corrected group 132 native recipes.
 - Parser fixtures in `npc/test/native_equip_safety.txt` only test accepted command
   syntax during a test-config load; they are not player-attached runtime tests.
 - The restored healer and workshop need actual client interaction checks. The

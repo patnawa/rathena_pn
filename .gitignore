@@ -167,3 +167,4 @@ Thumbs.db
 
 # generated files
 generated
+/tools/ci/__pycache__/

@@ -5,21 +5,72 @@ Requires PyYAML. --emit-perfect prints an import; it never modifies files.
 Client paths are supplied explicitly because GRF precedence is deployment-specific.
 """
 import argparse
+import copy
+import hashlib
 import json
 import re
 import subprocess
 from collections import defaultdict
 from pathlib import Path
 import yaml
+from lua51_literal_table import literal_tables
+
+
+def renewal_records(root, relative):
+    """Yield records in database import order, rejecting cycles."""
+    active = set()
+
+    def read(relative):
+        path = (root / relative).resolve()
+        if not path.exists():
+            return
+        if path in active:
+            raise ValueError(f'Import cycle: {relative}')
+        active.add(path)
+        data = yaml.load(path.read_text(encoding='utf-8'), Loader=getattr(yaml, 'CSafeLoader', yaml.SafeLoader)) or {}
+        yield from data.get('Body') or []
+        for entry in data.get('Footer', {}).get('Imports', []):
+            if entry.get('Mode', 'Renewal') == 'Renewal':
+                yield from read(entry['Path'])
+        active.remove(path)
+    yield from read(relative)
+
+
+class ClientItemNames:
+    """Resolve localized client names by numeric ID, not by translated labels."""
+
+    def __init__(self, path, root):
+        data = path.read_bytes()
+        self.sha256 = hashlib.sha256(data).hexdigest()
+        self.client = literal_tables(data)['ItemDBNameTbl']
+        if not all(isinstance(k, str) and type(v) is int and v > 0 for k, v in self.client.items()):
+            raise ValueError('ItemDBNameTbl must map names to positive integer IDs')
+        self.server = {}
+        for record in renewal_records(root, 'db/item_db.yml'):
+            if 'AegisName' in record:
+                self.server[record['Id']] = record['AegisName']
+        self.aliases, self.unresolved = {}, set()
+
+    def __call__(self, name):
+        item_id = self.client.get(name)
+        if item_id not in self.server:
+            self.unresolved.add(name)
+            return name
+        result = self.server[item_id]
+        if result != name:
+            self.aliases[name] = {'Id': item_id, 'AegisName': result}
+        return result
 
 
 def split_args(text):
     return [part.strip() for part in re.split(r',(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)(?![^{}]*\})', text)]
 
 
-def item_name(value):
+def item_name(value, resolve=None):
     # The Korean client retains localized Aegis names for the six stat cards.
     name = json.loads(value)
+    if resolve is not None:
+        return resolve(name)
     for korean, aegis in [('힘', 'Strength'), ('인트', 'Inteligence'),
                           ('덱', 'Dexterity'), ('어질', 'Agility'),
                           ('바탈', 'Vitality'), ('럭', 'Luck')]:
@@ -28,7 +79,7 @@ def item_name(value):
     return name
 
 
-def client_recipes(path):
+def client_recipes(path, resolve=None):
     ordinary, perfect = {}, {}
     for line in path.read_text(encoding='cp949').splitlines():
         match = re.match(r'^Table\[(\d+)\]\.Slot\[(\d+)\]:(AddUpgradeEnchant|AddPerfectUpgradeEnchant|SetRandomUpgradeRequire|AddRandomUpgradeEnchant)\((.*)\)$', line)
@@ -36,16 +87,16 @@ def client_recipes(path):
             continue
         group, slot, method, args = match.groups()
         args = split_args(args)
-        source = item_name(args[0])
+        source = item_name(args[0], resolve)
         key = (int(group), int(slot), source)
         if method == 'AddRandomUpgradeEnchant':
-            ordinary[key]['RandomUpgrades'].append({'Upgrade': item_name(args[1]), 'Chance': int(args[2])})
+            ordinary[key]['RandomUpgrades'].append({'Upgrade': item_name(args[1], resolve), 'Chance': int(args[2])})
             continue
         if method == 'SetRandomUpgradeRequire':
             recipe = {'Enchant': source, 'RandomUpgrades': []}
             offset = 1
         else:
-            recipe = {'Enchant': source, 'Upgrade': item_name(args[1])}
+            recipe = {'Enchant': source, 'Upgrade': item_name(args[1], resolve)}
             offset = 2
         recipe['Price'] = int(args[offset])
         materials = []
@@ -53,7 +104,7 @@ def client_recipes(path):
             material = re.fullmatch(r'\{\s*"([^"\\]+)"\s*,\s*(\d+)\s*\}', arg)
             if not material:
                 raise ValueError(f'Unsupported material syntax: {arg}')
-            materials.append({'Material': material[1], 'Amount': int(material[2])})
+            materials.append({'Material': resolve(material[1]) if resolve else material[1], 'Amount': int(material[2])})
         if materials:
             recipe['Materials'] = materials
         destination = perfect if method == 'AddPerfectUpgradeEnchant' else ordinary
@@ -68,33 +119,58 @@ def client_recipes(path):
     return ordinary, perfect
 
 
+def merge_recipe(previous, recipe, perfect=False):
+    """Mirror successful ItemEnchantDatabase overlay semantics, not list replacement."""
+    result = copy.deepcopy(previous)
+    if 'Upgrade' in recipe and 'RandomUpgrades' in recipe:
+        raise ValueError('Upgrade and RandomUpgrades are mutually exclusive')
+    if perfect and ('Upgrade' not in recipe or 'RandomUpgrades' in recipe):
+        raise ValueError('Perfect upgrades require a deterministic target')
+    if not previous and 'Upgrade' not in recipe and 'RandomUpgrades' not in recipe:
+        raise ValueError('New upgrades require an outcome')
+    if 'RandomUpgrades' in recipe:
+        outcomes = recipe['RandomUpgrades']
+        if (not outcomes or len({x['Upgrade'] for x in outcomes}) != len(outcomes)
+                or any(not 0 < x['Chance'] <= 100000 for x in outcomes)
+                or sum(x['Chance'] for x in outcomes) != 100000):
+            raise ValueError('Invalid random upgrade outcomes')
+    if 'Upgrade' in recipe:
+        result.pop('RandomUpgrades', None)
+    if 'RandomUpgrades' in recipe:
+        result.pop('Upgrade', None)
+    result.update(copy.deepcopy({k: v for k, v in recipe.items() if k != 'Materials'}))
+    if 'Price' in result:
+        price = result['Price']
+        if not 0 <= price <= 4294967295 or (perfect and price > 2147483647):
+            raise ValueError('Invalid upgrade Zeny price')
+        result['Price'] = min(price, 2147483647)  # MAX_ZENY
+    materials = {x['Material']: x.get('Amount', 1) for x in previous.get('Materials', [])}
+    for entry in recipe.get('Materials') or []:
+        name = entry['Material']
+        amount = entry.get('Amount', materials.get(name, 1))
+        if not 0 <= amount <= 65535:
+            raise ValueError(f'Material amount is outside uint16: {name}')
+        if amount:
+            materials[name] = min(amount, 30000)  # MAX_AMOUNT
+        else:
+            materials.pop(name, None)
+    if materials or 'Materials' in previous or 'Materials' in recipe:
+        result['Materials'] = [{'Material': k, 'Amount': v} for k, v in materials.items()]
+    return result
+
+
 def server_recipes(root):
     groups, ordinary, perfect = set(), {}, {}
-    active = set()
-
-    def read(relative):
-        path = root / relative
-        if not path.exists():
-            return
-        if relative in active:
-            raise ValueError(f'Import cycle: {relative}')
-        active.add(relative)
-        data = yaml.safe_load(path.read_text(encoding='utf-8')) or {}
-        for record in data.get('Body') or []:
-            group = record['Id']
-            groups.add(group)
-            for slot in record.get('Slots') or []:
-                for section, dest in [('Upgrades', ordinary), ('PerfectUpgrades', perfect)]:
-                    for recipe in slot.get(section) or []:
-                        key = (group, slot['Slot'], recipe['Enchant'])
-                        if section == 'PerfectUpgrades':
-                            key += (recipe['Upgrade'],)
-                        dest.setdefault(key, {}).update(recipe)
-        for entry in data.get('Footer', {}).get('Imports', []):
-            if entry.get('Mode', 'Renewal') == 'Renewal':
-                read(entry['Path'])
-        active.remove(relative)
-    read('db/item_enchant.yml')
+    for record in renewal_records(root, 'db/item_enchant.yml'):
+        group = record['Id']
+        groups.add(group)
+        for slot in record.get('Slots') or []:
+            for section, dest in [('Upgrades', ordinary), ('PerfectUpgrades', perfect)]:
+                for recipe in slot.get(section) or []:
+                    key = (group, slot['Slot'], recipe['Enchant'])
+                    if section == 'PerfectUpgrades':
+                        key += (recipe['Upgrade'],)
+                    dest[key] = merge_recipe(dest.get(key, {}), recipe, section == 'PerfectUpgrades')
     return groups, ordinary, perfect
 
 
@@ -110,7 +186,7 @@ def workshop_contents(root, ordinary, requested_groups, baseline_head=False):
         def increase_indent(self, flow=False, indentless=False):
             return super().increase_indent(flow, False)
     files = {'db/import/grademk_service_enchants.yml': set(range(7, 14)) | set(range(117, 125)) | {142},
-             'db/import/item_enchant.yml': {163}}
+             'db/import/item_enchant.yml': {132, 163}}
     contents = {}
     for relative, groups in files.items():
         groups &= requested_groups
@@ -166,10 +242,18 @@ def workshop_contents(root, ordinary, requested_groups, baseline_head=False):
                 current = desired.pop(previous['Enchant'], None)
                 if current is not None:
                     recipes.append(previous if canonical(previous) == canonical(current) else current)
+                elif group == 132:
+                    # The custom Biosphere service retains two additional jewel
+                    # families absent from this client's group 132 table.
+                    recipes.append(previous)
             recipes.extend(desired.values())
+            trailing = []
+            while kept and (not kept[-1].strip() or kept[-1].lstrip().startswith('#')):
+                trailing.insert(0, kept.pop())
             if recipes:
                 section = yaml.dump({'Upgrades': recipes}, Dumper=Dumper, sort_keys=False, width=120)
                 kept += ['        ' + line + '\n' for line in section.splitlines()]
+            kept.extend(trailing)
             output.extend(kept)
             i = end
         after = ''.join(output)
@@ -205,8 +289,10 @@ def main():
     parser.add_argument('--compare-non-upgrades-ref', help='Prove unrelated workshop database fields match this git ref')
     parser.add_argument('--groups', help='Comma-separated group IDs to inspect (default: all active groups)')
     parser.add_argument('--details', action='store_true')
+    parser.add_argument('--client-item-names', type=Path, help='Active ItemDBNameTbl.lub: resolve localized names by item ID')
     args = parser.parse_args()
-    ordinary, perfect = client_recipes(args.client)
+    resolve = ClientItemNames(args.client_item_names, args.root) if args.client_item_names else None
+    ordinary, perfect = client_recipes(args.client, resolve)
     groups, server_ordinary, server_perfect = server_recipes(args.root)
     if args.compare_non_upgrades_ref:
         verify_preserved(args.root, args.compare_non_upgrades_ref)
@@ -235,16 +321,26 @@ def main():
             if key[0] not in groups:
                 continue
             if key not in server:
-                issues.append([label, list(key), 'missing'])
+                issue = [label, list(key), 'missing']
             elif canonical(recipe) != canonical(server[key]):
-                issues.append([label, list(key), 'recipe mismatch'])
+                issue = [label, list(key), 'recipe mismatch']
+            else:
+                continue
+            if args.details:
+                issue.append({'client': recipe, 'server': server.get(key)})
+            issues.append(issue)
     print(json.dumps({'active_server_groups': len(groups),
+                      'item_name_resolution': None if resolve is None else {
+                          'table_sha256': resolve.sha256,
+                          'localized_aliases_resolved': len(resolve.aliases),
+                          'unresolved_names': sorted(resolve.unresolved)},
                       'client_ordinary_recipes_in_active_groups': sum(k[0] in groups for k in ordinary),
                       'client_perfect_recipes_in_active_groups': sum(k[0] in groups for k in perfect),
+                      'server_only_ordinary_recipes_in_active_groups': sum(k[0] in groups and k not in ordinary for k in server_ordinary),
                       'issue_count': len(issues),
                       'issues_by_group': {str(group): sum(x[1][0] == group for x in issues) for group in sorted({x[1][0] for x in issues})},
                       'issues': issues if args.details else issues[:12]}, indent=2, ensure_ascii=False))
-    raise SystemExit(bool(issues))
+    raise SystemExit(bool(issues) or bool(resolve and resolve.unresolved))
 
 
 if __name__ == '__main__':
