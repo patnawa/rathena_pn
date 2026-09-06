@@ -67,13 +67,26 @@ See [protocol evidence and limits](enchant_upgrade_protocol.md).
 
 ## Known unresolved coverage
 
+The normal-enchant sampler, grade bonus parser/application, and disabled-reset
+charging order have now been corrected and covered by 39 compiled behavioral
+checks plus 7 new configuration-comparison tests. Explicit zero success/bonus/
+outcome/reset rates now parse correctly. Exhaustive testing of all 339 effective
+server distributions passes 33.9 million draws with exact declared frequencies.
+See the
+[initial-enchant/reset audit](enchant_probability_audit.md) for evidence and limits.
+
 - End-to-end client clicks, cost charging, relog persistence, and equipment-effect
   verification remain pending for the new guaranteed-upgrade path. Packet evidence
   comes from the bundled 2025 binary; the active 2026 client needs a runtime check.
-- Normal/initial enchants, resets, and other service types still need equivalent
-  client/server comparison. The 24 server-only upgrades have been preserved, not
-  proven to appear in this client's UI. Client clicks and actual material charging
-  remain unverified for the corrected group 132 native recipes.
+- The first initial-enchant/reset comparison covers 157 shared groups, 339 normal
+  grade tables and 2307 selectable initial recipes. It reports 89 differences:
+  missing newer item-dependent recipes/targets, one Gray Wolf distribution, and
+  ten deliberately customized Biosphere distributions. There are 71 unresolved
+  client item names across the full configuration. No item IDs/effects have been
+  guessed. Compared reset settings and existing initial-recipe costs match.
+  The 24 server-only upgrades remain preserved, not proven visible in the client.
+  Client clicks and actual material charging remain unverified for corrected
+  group 132 native recipes and the corrected normal/reset handlers.
 - Parser fixtures in `npc/test/native_equip_safety.txt` only test accepted command
   syntax during a test-config load; they are not player-attached runtime tests.
 - The restored healer and workshop need actual client interaction checks. The

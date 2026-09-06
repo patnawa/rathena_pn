@@ -897,6 +897,30 @@ foreach ($literal in @(
 }
 Write-Host '  Chapter 1 footwear enchant upgrades: 64 weighted + 16 final'
 
+# These wiring/order checks complement the exhaustive C++ probability tests.
+$normalEnchantHandler = [regex]::Match($clifSource, '(?s)void clif_parse_enchantwindow_general\(.*?(?=void clif_parse_enchantwindow_perfect\()').Value
+$resetEnchantHandler = [regex]::Match($clifSource, '(?s)void clif_parse_enchantwindow_reset\(.*?(?=void clif_parse_enchantwindow_close\()').Value
+$normalSelection = $normalEnchantHandler.IndexOf('select_normal_enchant_result(')
+$normalCharge = $normalEnchantHandler.IndexOf('pc_payzeny(')
+$resetDisabled = $resetEnchantHandler.IndexOf('enchant->reset.chance == 0')
+$resetCharge = $resetEnchantHandler.IndexOf('pc_payzeny(')
+if ($normalSelection -lt 0 -or $normalCharge -lt 0 -or $normalSelection -gt $normalCharge) {
+	Fail 'Normal enchant must reject invalid probability tables before charging'
+}
+if ($resetDisabled -lt 0 -or $resetCharge -lt 0 -or $resetDisabled -gt $resetCharge) {
+	Fail 'Disabled enchant reset must be rejected before charging'
+}
+if ($normalEnchantHandler.Contains('umap_random(') -or !$normalEnchantHandler.Contains('enchant_success_rate(')) {
+	Fail 'Normal enchant still uses biased uniform fallback or missing grade-aware success rate'
+}
+if (!$itemdbSource.Contains('parseChance( enchantgradeNode, chance )')) {
+	Fail 'Enchant grade bonus must be parsed from the grade bonus node'
+}
+if ($dbImports -contains 'npc/test/enchant_probability.yml') {
+	Fail 'Enchant probability test fixture must not be enabled in production imports'
+}
+Write-Host '  Native enchant probability and reset charging guards: present'
+
 # Fashion enchant status IDs 37/38 require matching C++ enum/export records
 # and database status definitions; a script-only name compiles but cannot run.
 $statusHeader = [IO.File]::ReadAllText((RepoPath 'src/map/status.hpp'))

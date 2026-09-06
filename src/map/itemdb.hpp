@@ -14,6 +14,7 @@
 #include <common/mmo.hpp> // ITEM_NAME_LENGTH
 
 #include "enchant_upgrade.hpp"
+#include "enchant_probability.hpp"
 #include "script.hpp"
 #include "status.hpp"
 
@@ -3699,16 +3700,6 @@ public:
 };
 
 extern ItemReformDatabase item_reform_db;
-
-struct s_item_enchant_normal_sub{
-	t_itemid item_id;
-	uint32 chance;
-};
-
-struct s_item_enchant_normal{
-	uint16 enchantgrade;
-	std::unordered_map<t_itemid, std::shared_ptr<s_item_enchant_normal_sub>> enchants;
-};
 
 struct s_item_enchant_perfect{
 	t_itemid item_id;

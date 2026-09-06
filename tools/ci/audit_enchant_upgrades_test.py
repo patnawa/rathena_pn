@@ -170,7 +170,7 @@ class ClientNameTests(unittest.TestCase):
         self.assertEqual(resolve.unresolved, {'Missing'})
 
     def test_client_recipe_resolves_sources_targets_and_materials(self):
-        source = 'Table[1].Slot[2]:AddUpgradeEnchant("마력1","마력2",5,{"광석",2})'
+        source = '  Table[1].Slot[2]:AddUpgradeEnchant("마력1","마력2",5,{"광석",2})  \t'
         aliases = {'마력1': 'Spell1', '마력2': 'Spell2', '광석': 'Ore'}
         ordinary, perfect = client_recipes(FakePath(source.encode('cp949')), aliases.__getitem__)
         self.assertEqual(ordinary[(1, 2, 'Spell1')], {'Enchant': 'Spell1', 'Upgrade': 'Spell2',

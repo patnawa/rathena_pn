@@ -24538,15 +24538,7 @@ void clif_enchantwindow_result( map_session_data& sd, bool success, t_itemid enc
 }
 
 bool clif_parse_enchant_basecheck( struct item& selected_item, std::shared_ptr<s_item_enchant> enchant ){
-	if( selected_item.equip != 0 ){
-		return false;
-	}
-
-	if( selected_item.equipSwitch != 0 ){
-		return false;
-	}
-
-	if( selected_item.attribute != 0 ){
+	if( !enchant_item_state_valid( selected_item, itemdb_isspecial( selected_item.card[0] ) ) ){
 		return false;
 	}
 
@@ -24633,6 +24625,15 @@ void clif_parse_enchantwindow_general( int32 fd, map_session_data* sd ){
 		return;
 	}
 
+	const t_itemid enchant_item_id = select_normal_enchant_result( *enchants_for_enchantgrade,
+		rnd_value( 1u, 100000u ) );
+	if( enchant_item_id == 0 ){
+		ShowWarning( "Invalid normal enchant probability table: group %" PRIu64 ", slot %hu, grade %hu.\n",
+			enchant->id, slot, static_cast<uint16>( selected_item.enchantgrade ) );
+		clif_enchantwindow_result( *sd, false );
+		return;
+	}
+
 	if( sd->status.zeny < enchant_slot->normal.zeny ){
 		return;
 	}
@@ -24663,13 +24664,9 @@ void clif_parse_enchantwindow_general( int32 fd, map_session_data* sd ){
 		}
 	}
 
-	uint32 chance = enchant_slot->normal.chance;
-
-	for( int32 i = 0; i <= MAX_ENCHANTGRADE; i++ ){
-		chance += enchant_slot->normal.enchantgradeChanceIncrease[i];
-	}
-
-	if( chance < 100000 && rnd_value( 0, 100000 ) > chance ){
+	const uint32 chance = enchant_success_rate( enchant_slot->normal.chance,
+		enchant_slot->normal.enchantgradeChanceIncrease, selected_item.enchantgrade );
+	if( !enchant_roll_succeeds( chance, rnd_value( 1u, 100000u ) ) ){
 		clif_enchantwindow_result( *sd, false );
 		return;
 	}
@@ -24677,23 +24674,7 @@ void clif_parse_enchantwindow_general( int32 fd, map_session_data* sd ){
 	// Log removal of item
 	log_pick_pc( sd, LOG_TYPE_ENCHANT, -1, &selected_item );
 
-	size_t maximum = 3 * enchant_slot->normal.enchants.size();
-	bool enchanted = false;
-
-	for( int32 i = 0; i < maximum; i++ ){
-		std::shared_ptr<s_item_enchant_normal_sub> normal_enchant = util::umap_random( enchants_for_enchantgrade->enchants );
-
-		if( rnd_value( 0, 10000 ) < normal_enchant->chance ){
-			selected_item.card[slot] = normal_enchant->item_id;
-			enchanted = true;
-			break;
-		}
-	}
-
-	if( !enchanted ){
-		std::shared_ptr<s_item_enchant_normal_sub> normal_enchant = util::umap_random( enchants_for_enchantgrade->enchants );
-		selected_item.card[slot] = normal_enchant->item_id;
-	}
+	selected_item.card[slot] = enchant_item_id;
 
 	// Log retrieving the item again -> with the new enchant
 	log_pick_pc( sd, LOG_TYPE_ENCHANT, 1, &selected_item );
@@ -24937,21 +24918,18 @@ void clif_parse_enchantwindow_reset( int32 fd, map_session_data* sd ){
 
 	struct item& selected_item = sd->inventory.u.items_inventory[index];
 
-	if( selected_item.equip != 0 ){
-		return;
-	}
-
-	if( selected_item.equipSwitch != 0 ){
-		return;
-	}
-
-	if( selected_item.attribute != 0 ){
+	if( !enchant_item_state_valid( selected_item, itemdb_isspecial( selected_item.card[0] ) ) ){
 		return;
 	}
 
 	std::shared_ptr<s_item_enchant> enchant = item_enchant_db.find( p->enchant_group );
 
 	if( enchant == nullptr ){
+		return;
+	}
+
+	// Chance zero disables reset. Reject before charging any price or material.
+	if( enchant->reset.chance == 0 ){
 		return;
 	}
 
@@ -25010,13 +24988,7 @@ void clif_parse_enchantwindow_reset( int32 fd, map_session_data* sd ){
 		}
 	}
 
-	uint32 chance = enchant->reset.chance;
-
-	if( chance == 0 ){
-		return;
-	}
-
-	if( chance < 100000 && rnd_value( 0, 100000 ) > chance ){
+	if( !enchant_roll_succeeds( enchant->reset.chance, rnd_value( 1u, 100000u ) ) ){
 		clif_enchantwindow_result( *sd, false );
 		return;
 	}

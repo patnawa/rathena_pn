@@ -1,0 +1,68 @@
+# Parser regression fixture only; do not add to production database imports.
+# For an isolated Docker run, mount this over db/item_enchant.yml and mount the
+# original root as npc/test/enchant_probability_base.yml (see probability doc).
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+Body:
+  - Id: 990001
+    TargetItems:
+      Gray_W_Suits: true
+    Order:
+      - Slot: 3
+    Slots:
+      - Slot: 3
+        # Chance deliberately omitted. Reading the slot instead of the grade
+        # bonus node incorrectly rejects this otherwise-valid fixture.
+        EnchantgradeBonus:
+          - Enchantgrade: 1
+            Chance: 0
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: Strength1
+                Chance: 0
+              - Item: Strength2
+                Chance: 100000
+  - Id: 990002
+    TargetItems:
+      Gray_W_Robe: true
+    Order:
+      - Slot: 3
+    Slots:
+      - Slot: 3
+        Chance: 25000
+        EnchantgradeBonus:
+          - Enchantgrade: 1
+            Chance: 5000
+          - Enchantgrade: 4
+            Chance: 75000
+        Enchants:
+          - Enchantgrade: 0
+            Items:
+              - Item: Strength1
+                Chance: 1
+              - Item: Strength2
+                Chance: 99999
+  - Id: 990003
+    TargetItems:
+      Gray_W_Suits: true
+    Reset:
+      Chance: 0
+      Price: 50
+    Order:
+      - Slot: 3
+    Slots:
+      - Slot: 3
+        Chance: 0
+        EnchantgradeBonus:
+          - Enchantgrade: 4
+            Chance: 100000
+        Enchants:
+          - Enchantgrade: 4
+            Items:
+              - Item: Strength1
+                Chance: 100000
+Footer:
+  Imports:
+    - Path: npc/test/enchant_probability_base.yml

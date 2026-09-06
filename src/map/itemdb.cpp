@@ -2251,6 +2251,18 @@ bool ItemEnchantDatabase::parseMaterials( const ryml::NodeRef& node, std::unorde
 
 uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 	uint64 id;
+	// Enchant success, per-grade bonuses, outcome weights and reset rates all
+	// permit zero. The shared positive-only rate parser is not suitable here.
+	const auto parseChance = [this]( const ryml::NodeRef& rateNode, uint32& chance ){
+		if( !this->asUInt32( rateNode, "Chance", chance ) ){
+			return false;
+		}
+		if( chance > 100000 ){
+			this->invalidWarning( rateNode["Chance"], "Enchant chance %u exceeds maximum 100000.\n", chance );
+			return false;
+		}
+		return true;
+	};
 
 	if( !this->asUInt64( node, "Id", id ) ){
 		return 0;
@@ -2363,7 +2375,7 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 		if( this->nodeExists( resetNode, "Chance" ) ){
 			uint32 chance;
 
-			if( !this->asUInt32Rate( resetNode, "Chance", chance, 100000 ) ){
+			if( !parseChance( resetNode, chance ) ){
 				return 0;
 			}
 
@@ -2472,7 +2484,7 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 			if( this->nodeExists( slotNode, "Chance" ) ){
 				uint32 chance;
 
-				if( !this->asUInt32Rate( slotNode, "Chance", chance, 100000 ) ){
+				if( !parseChance( slotNode, chance ) ){
 					return 0;
 				}
 
@@ -2498,7 +2510,7 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 
 					uint32 chance;
 
-					if( !this->asUInt32Rate( slotNode, "Chance", chance, 100000 ) ){
+					if( !parseChance( enchantgradeNode, chance ) ){
 						return 0;
 					}
 
@@ -2557,7 +2569,7 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 							if( this->nodeExists( itemNode, "Chance" ) ){
 								uint32 chance;
 
-								if( !this->asUInt32Rate( itemNode, "Chance", chance, 100000 ) ){
+								if( !parseChance( itemNode, chance ) ){
 									return 0;
 								}
 

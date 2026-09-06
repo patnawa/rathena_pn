@@ -82,8 +82,11 @@ def item_name(value, resolve=None):
 def client_recipes(path, resolve=None):
     ordinary, perfect = {}, {}
     for line in path.read_text(encoding='cp949').splitlines():
+        line = line.strip()
         match = re.match(r'^Table\[(\d+)\]\.Slot\[(\d+)\]:(AddUpgradeEnchant|AddPerfectUpgradeEnchant|SetRandomUpgradeRequire|AddRandomUpgradeEnchant)\((.*)\)$', line)
         if not match:
+            if re.match(r'^Table\[\d+\]\.Slot\[\d+\]:(AddUpgradeEnchant|AddPerfectUpgradeEnchant|SetRandomUpgradeRequire|AddRandomUpgradeEnchant)\(', line):
+                raise ValueError(f'Unsupported upgrade declaration: {line[:120]}')
             continue
         group, slot, method, args = match.groups()
         args = split_args(args)
