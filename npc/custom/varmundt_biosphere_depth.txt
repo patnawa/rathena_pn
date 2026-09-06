@@ -412,34 +412,62 @@ ba_chess,25,13,4	script	Depth Abyss Research Manager#bio_d2	4_EP17_MASTER_A,{
 	close;
 }
 
-// Changes exactly one synthetic enchant slot on the equipped Time Dimensions
-// Rune Crown. The original inventory record and all unrelated metadata remain
-// intact, including its unique ID, expiry, binding, grade and random options.
+// Crown transaction guard. Arguments: explicit ID array, mode (0 capture,
+// 1 validate, 2 mutate), caller-local numeric snapshot, caller-local UID string,
+// synthetic card index (1 or 3), new enchant. Capture MUST precede dialogue
+// suspension. Validation never replaces that expectation with current values.
+// Numeric snapshot: inventory index/id/amount/equip/refine/identify/attribute/
+// grade, four cards, expiry/binding/favorite, and all five option triples.
 function	script	F_BioD2ModifyCrown	{
-	.@new1 = getarg(0);
-	.@new2 = getarg(1);
-	.@new3 = getarg(2);
-	.@id = getequipid(EQI_HEAD_TOP);
-	if (.@id < 400529 || .@id > 400546)
+	.@mode = getarg(1);
+	if (.@mode < 0 || .@mode > 2)
 		return 0;
-	setarray .@old[0],getequipcardid(EQI_HEAD_TOP,1),getequipcardid(EQI_HEAD_TOP,2),getequipcardid(EQI_HEAD_TOP,3);
-	setarray .@next[0],.@new1,.@new2,.@new3;
-	.@changes = 0;
-	for (.@i = 0; .@i < 3; ++.@i) {
-		if (.@old[.@i] == .@next[.@i])
-			continue;
-		.@slot = .@i + 1;
-		++.@changes;
+	getinventorylist;
+	.@idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && inarray(getarg(0),@inventorylist_id[.@i]) >= 0) {
+			.@idx = .@i;
+			break;
+		}
 	}
-	if (!.@changes)
-		return 1;
-	if (.@changes != 1)
+	if (.@idx < 0)
 		return 0;
-	return modifyequipitem(EQI_HEAD_TOP,.@id,0,-1,.@slot,.@old[.@slot-1],.@next[.@slot-1]);
+	.@uid$ = @inventorylist_uniqueid$[.@idx];
+	// Normal non-stackable equipment has a generated UID. A legacy zero UID
+	// cannot distinguish an otherwise identical replacement: refuse, not guess.
+	if (.@uid$ == "0" || .@uid$ == "" || @inventorylist_amount[.@idx] != 1 || !@inventorylist_identify[.@idx])
+		return 0;
+	setarray .@seen[0],@inventorylist_idx[.@idx],@inventorylist_id[.@idx],@inventorylist_amount[.@idx],@inventorylist_equip[.@idx],@inventorylist_refine[.@idx],@inventorylist_identify[.@idx],@inventorylist_attribute[.@idx],@inventorylist_enchantgrade[.@idx],@inventorylist_card1[.@idx],@inventorylist_card2[.@idx],@inventorylist_card3[.@idx],@inventorylist_card4[.@idx],@inventorylist_expire[.@idx],@inventorylist_bound[.@idx],@inventorylist_favorite[.@idx];
+	for (.@i = 1; .@i <= 5; ++.@i) {
+		.@offset = 15 + (.@i - 1) * 3;
+		.@seen[.@offset] = getd("@inventorylist_option_id" + .@i + "[" + .@idx + "]");
+		.@seen[.@offset+1] = getd("@inventorylist_option_value" + .@i + "[" + .@idx + "]");
+		.@seen[.@offset+2] = getd("@inventorylist_option_parameter" + .@i + "[" + .@idx + "]");
+	}
+	if (.@mode == 0) {
+		copyarray getarg(2),.@seen[0],30;
+		set getarg(3),.@uid$;
+		return 1;
+	}
+	copyarray .@expected[0],getarg(2),30;
+	if (.@uid$ != getarg(3))
+		return 0;
+	for (.@i = 0; .@i < 30; ++.@i)
+		if (.@seen[.@i] != .@expected[.@i])
+			return 0;
+	if (.@mode == 1)
+		return 1;
+	.@slot = getarg(4);
+	if (.@slot != 1 && .@slot != 3)
+		return 0;
+	// Even a same-result roll reaches native validation, with original values.
+	return modifyequipitem(EQI_HEAD_TOP,.@expected[1],0,-1,.@slot,.@expected[8+.@slot],getarg(5));
 }
 
 // Depth Abyss conversion, crown crafting, and native enchant interfaces.
 ba_chess,22,16,4	script	Abyss Researcher#bio_d2	4_EP17_BASIC_B,{
+	// This is an identity list, not a numeric range or a character-job gate.
+	setarray .@crown_ids[0],400529,400530,400531,400532,400533,400534,400535,400536,400537,400538,400539,400540,400541,400542,400543,400544,400545,400546,400999;
 	mes "[Abyss Researcher]";
 	if (!callfunc("F_BioDepthQuestAccess"))
 		close;
@@ -455,39 +483,47 @@ ba_chess,22,16,4	script	Abyss Researcher#bio_d2	4_EP17_BASIC_B,{
 	case 1:
 		goto L_Convert;
 	case 2:
-		if (.@rep < 500) {
+		if (!callsub(S_Access,500)) {
 			mes "[Abyss Researcher]";
 			mes "Crown crafting requires 500 Depth 2 reputation.";
 			close;
 		}
 		goto L_Crown;
 	case 3:
-		if (.@rep < 750) {
+		if (!callsub(S_Access,750)) {
 			mes "[Abyss Researcher]";
 			mes "Dimension weapon enchanting requires 750 Depth 2 reputation.";
 			close;
 		}
 		close2;
+		if (!callsub(S_Access,750)) {
+			dispbottom "Your Biosphere access or reputation changed. Please speak to me again.";
+			end;
+		}
 		item_enchant 133;
 		end;
 	case 4:
-		if (.@rep < 1500) {
+		if (!callsub(S_Access,1500)) {
 			mes "[Abyss Researcher]";
 			mes "Crown enchanting requires 1,500 Depth 2 reputation.";
 			close;
 		}
 		close2;
+		if (!callsub(S_Access,1500)) {
+			dispbottom "Your Biosphere access or reputation changed. Please speak to me again.";
+			end;
+		}
 		item_enchant 132;
 		end;
 	case 5:
-		if (.@rep < 1500) {
+		if (!callsub(S_Access,1500)) {
 			mes "[Abyss Researcher]";
 			mes "Crown enchant upgrades require 1,500 Depth 2 reputation.";
 			close;
 		}
 		goto L_RandomUpgrade;
 	case 6:
-		if (.@rep < 1500) {
+		if (!callsub(S_Access,1500)) {
 			mes "[Abyss Researcher]";
 			mes "Crown stat rerolls require 1,500 Depth 2 reputation.";
 			close;
@@ -501,15 +537,22 @@ L_Crown:
 	mes "[Abyss Researcher]";
 	mes "Every crown costs 50 Abyss Magic Jewels, 50 Time Dimension Magic Jewels, and 75 Temporal Gemstones.";
 	next;
-	.@crown = select("Dragon Knight:Imperial Guard:Meister:Biolo:Shadow Cross:Abyss Chaser:Arch Mage:Elemental Master:Cardinal:Inquisitor:Windhawk:Troubadour / Trouvere:Shinkiro / Shiranui:Night Watch:Sky Emperor:Soul Ascetic:Hyper Novice:Spirit Handler:Cancel") - 1;
+	// Keep every old selection, including Cancel at 19, at its original index.
+	.@crown = select("Dragon Knight:Imperial Guard:Meister:Biolo:Shadow Cross:Abyss Chaser:Arch Mage:Elemental Master:Cardinal:Inquisitor:Windhawk:Troubadour / Trouvere:Shinkiro / Shiranui:Night Watch:Sky Emperor:Soul Ascetic:Hyper Novice:Spirit Handler:Cancel:Alitea") - 1;
 	if (.@crown == 18)
 		close;
-	.@result = 400529 + .@crown;
+	if (.@crown == 19)
+		.@crown = 18;
+	.@result = .@crown_ids[.@crown];
 	mes "[Abyss Researcher]";
 	mes "Create item ^3366FF" + .@result + "^000000?";
 	next;
 	if (select("Craft it.:Cancel.") == 2)
 		close;
+	if (!callsub(S_Access,500)) {
+		mes "Your Biosphere access or reputation changed. No materials were used.";
+		close;
+	}
 	if (countitem(1001552) < 50 || countitem(1001553) < 50 || countitem(25865) < 75) {
 		mes "[Abyss Researcher]";
 		mes "You do not have all required materials.";
@@ -528,22 +571,12 @@ L_Crown:
 	close;
 
 L_RandomUpgrade:
-	getinventorylist;
-	.@idx = -1;
-	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] >= 400529 && @inventorylist_id[.@i] <= 400546) {
-			.@idx = .@i;
-			break;
-		}
-	}
-	if (.@idx < 0) {
+	if (!callfunc("F_BioD2ModifyCrown",.@crown_ids[0],0,.@crown_snapshot[0],.@crown_uid$)) {
 		mes "[Abyss Researcher]";
-		mes "Equip the Time Dimensions Rune Crown you want to upgrade.";
+		mes "Equip an identified Time Dimensions Rune Crown with a valid unique ID to upgrade.";
 		close;
 	}
-	.@current = @inventorylist_card2[.@idx];
-	.@keep2 = @inventorylist_card3[.@idx];
-	.@keep3 = @inventorylist_card4[.@idx];
+	.@current = .@crown_snapshot[9];
 	setarray .@base[0],312719,312729,312739,312749,312759,312769,312779,312789,314249,314259;
 	.@family = -1;
 	for (.@i = 0; .@i < 10; ++.@i) {
@@ -574,12 +607,19 @@ L_RandomUpgrade:
 	next;
 	if (select("Attempt upgrade.:Cancel.") == 2)
 		close;
+	if (!callsub(S_Access,1500)) {
+		mes "Your Biosphere access or reputation changed. No materials were used.";
+		close;
+	}
+	if (!callfunc("F_BioD2ModifyCrown",.@crown_ids[0],1,.@crown_snapshot[0],.@crown_uid$)) {
+		mes "The selected crown changed. The upgrade was cancelled without using materials.";
+		close;
+	}
 	if (countitem(1001556) < .@cost[.@level]) {
 		mes "[Abyss Researcher]";
 		mes "You do not have enough Time Dimension Magic Runes.";
 		close;
 	}
-	delitem 1001556,.@cost[.@level];
 	if (rand(100) < .@chance[.@level]) {
 		.@new = .@current + 1;
 		.@success = 1;
@@ -587,14 +627,15 @@ L_RandomUpgrade:
 		.@new = (.@level > 1) ? .@current - 1 : .@current;
 		.@success = 0;
 	}
-	if (!callfunc("F_BioD2ModifyCrown",.@new,.@keep2,.@keep3)) {
-		// This can only occur if external state removed the equipped crown between
-		// validation and reconstruction; refund rather than consume materials.
-		getitem 1001556,.@cost[.@level];
+	if (!callfunc("F_BioD2ModifyCrown",.@crown_ids[0],2,.@crown_snapshot[0],.@crown_uid$,1,.@new)) {
 		mes "[Abyss Researcher]";
-		mes "The equipped crown changed, so the upgrade was cancelled and refunded.";
+		mes "The crown could not be updated. No materials were used.";
 		close;
 	}
+	// Current synchronous equipment/status callback content is regression-
+	// audited not to change these materials or access. No yield after success:
+	// deduct once, avoiding any potentially lossy delete-then-refund path.
+	delitem 1001556,.@cost[.@level];
 	mes "[Abyss Researcher]";
 	if (.@success)
 		mes "Upgrade successful. The special jewel is now level " + (.@level + 1) + ".";
@@ -605,22 +646,12 @@ L_RandomUpgrade:
 	close;
 
 L_StatReroll:
-	getinventorylist;
-	.@idx = -1;
-	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-		if ((@inventorylist_equip[.@i] & EQP_HEAD_TOP) && @inventorylist_id[.@i] >= 400529 && @inventorylist_id[.@i] <= 400546) {
-			.@idx = .@i;
-			break;
-		}
-	}
-	if (.@idx < 0) {
+	if (!callfunc("F_BioD2ModifyCrown",.@crown_ids[0],0,.@crown_snapshot[0],.@crown_uid$)) {
 		mes "[Abyss Researcher]";
-		mes "Equip the Time Dimensions Rune Crown whose slot 4 stat you want to reroll.";
+		mes "Equip an identified Time Dimensions Rune Crown with a valid unique ID to reroll.";
 		close;
 	}
-	.@keep1 = @inventorylist_card2[.@idx];
-	.@keep2 = @inventorylist_card3[.@idx];
-	.@old = @inventorylist_card4[.@idx];
+	.@old = .@crown_snapshot[11];
 	setarray .@stat_id[0],4700,4701,4702,4703,4704,4710,4711,4712,4713,4714,4740,4741,4742,4743,4744,4750,4751,4752,4753,4754;
 	.@valid = 0;
 	for (.@i = 0; .@i < 20; ++.@i) {
@@ -639,6 +670,14 @@ L_StatReroll:
 	next;
 	if (select("Reroll slot 4.:Cancel.") == 2)
 		close;
+	if (!callsub(S_Access,1500)) {
+		mes "Your Biosphere access or reputation changed. No materials were used.";
+		close;
+	}
+	if (!callfunc("F_BioD2ModifyCrown",.@crown_ids[0],1,.@crown_snapshot[0],.@crown_uid$)) {
+		mes "The selected crown changed. The reroll was cancelled without using materials.";
+		close;
+	}
 	if (countitem(1001555) < 180) {
 		mes "[Abyss Researcher]";
 		mes "You need 180 Abyss Magic Runes.";
@@ -654,16 +693,21 @@ L_StatReroll:
 			break;
 		}
 	}
-	delitem 1001555,180;
-	if (!callfunc("F_BioD2ModifyCrown",.@keep1,.@keep2,.@new)) {
-		getitem 1001555,180;
+	if (!callfunc("F_BioD2ModifyCrown",.@crown_ids[0],2,.@crown_snapshot[0],.@crown_uid$,3,.@new)) {
 		mes "[Abyss Researcher]";
-		mes "The equipped crown changed, so the reroll was cancelled and refunded.";
+		mes "The crown could not be updated. No materials were used.";
 		close;
 	}
+	// Same audited synchronous callback invariant as the jewel upgrade above.
+	delitem 1001555,180;
 	mes "[Abyss Researcher]";
 	mes "Slot 4 was rerolled successfully.";
 	close;
+
+// Pure current-state authorization: safe to call after close2 as well as before
+// a costed operation. Reputation is a threshold and is never spent here.
+S_Access:
+	return BaseLevel >= 250 && ep17_2_main >= 33 && get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1) >= 2000 && get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2) >= getarg(0);
 
 L_Convert:
 	mes "[Abyss Researcher]";

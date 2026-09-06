@@ -961,7 +961,7 @@ $equipmentMutationConsumers = @(
 	@('npc/custom/fashion_points/FashionPoints.txt', 'modifyequipitem(.@part,.@equip_id,0,-1,.@slot,.@enchant,0)', 'Fashion stone recovery'),
 	@('npc/custom/chapter2/Chapter2.txt', 'modifyequipitem(.@part,.@oldid,.@newid,.@newref,-1,0,0)', 'Chapter 2 refine/reform'),
 	@('npc/custom/instances/HallOfLife.txt', 'modifyequipitem(EQI_HEAD_LOW,420231,0,-1,3,.@current_card,.@target_card)', 'Hall of Life barrier'),
-	@('npc/custom/varmundt_biosphere_depth.txt', 'modifyequipitem(EQI_HEAD_TOP,.@id,0,-1,.@slot', 'Biosphere crown reroll')
+	@('npc/custom/varmundt_biosphere_depth.txt', 'modifyequipitem(EQI_HEAD_TOP,.@expected[1],0,-1,.@slot,.@expected[8+.@slot],getarg(5))', 'Biosphere original-snapshot crown mutation')
 )
 foreach ($consumer in $equipmentMutationConsumers) {
 	$content = [IO.File]::ReadAllText((RepoPath $consumer[0]))
@@ -1158,7 +1158,8 @@ $routeAssertions = @(
 	@('npc/custom/varmundt_biosphere_depth.txt', '.@reward = 102717;', 'Depth 2 3000-kill reward'),
 	@('npc/custom/varmundt_biosphere_depth.txt', 'item_enchant 133;', 'Dimension weapon native enchant UI'),
 	@('npc/custom/varmundt_biosphere_depth.txt', 'item_enchant 132;', 'Time Dimensions crown native enchant UI'),
-	@('npc/custom/varmundt_biosphere_depth.txt', '.@result = 400529 + .@crown;', 'all legacy Time Dimensions crown recipes'),
+	@('npc/custom/varmundt_biosphere_depth.txt', 'setarray .@crown_ids[0],400529,400530,400531,400532,400533,400534,400535,400536,400537,400538,400539,400540,400541,400542,400543,400544,400545,400546,400999;', 'all legacy and Alitea Time Dimensions crown identities'),
+	@('npc/custom/varmundt_biosphere_depth.txt', '.@result = .@crown_ids[.@crown];', 'explicit Time Dimensions crown recipe mapping'),
 	@('npc/custom/varmundt_biosphere_depth.txt', '80,65,50,35,25,20,10,7,5', 'crown random-upgrade success table'),
 	@('npc/custom/varmundt_biosphere_depth.txt', '5,10,20,35,55,80,110,145,185', 'crown random-upgrade material table'),
 	@('npc/custom/varmundt_biosphere_depth.txt', 'Rerolling only slot 4 costs 180 Abyss Magic Runes', 'crown stat-line reroll')
