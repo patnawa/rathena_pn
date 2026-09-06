@@ -1,0 +1,4085 @@
+{
+  "combos": [
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {},
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "SHC_SAVAGE_IMPACT",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 0,
+          "value": -200
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "SHC_SAVAGE_IMPACT",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_SHC",
+        "Sky_Slasher_Katar"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AG_MYSTERY_ILLUSION",
+          "step": 0,
+          "value": 40
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AG_ASTRAL_STRIKE",
+          "step": 0,
+          "value": 40
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "AG_ASTRAL_STRIKE",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "AG_SOUL_VC_STRIKE",
+          "step": 0,
+          "value": -200
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "AG_ASTRAL_STRIKE",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillAtk",
+          "selector": "AG_ASTRAL_STRIKE",
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "AG_ASTRAL_STRIKE",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Neutral",
+          "step": 0,
+          "value": 15
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_AG",
+        "Sky_Deadsoul_Staff"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {},
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "BO_MAYHEMIC_THORNS",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 0,
+          "value": -200
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "BO_MAYHEMIC_THORNS",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_BO",
+        "Sky_Thorns_Sword"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "TR_ROSEBLOSSOM",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": -150
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "TR_ROSEBLOSSOM",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_TR",
+        "Sky_Music_Viollin"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "TR_ROSEBLOSSOM",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": -150
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "TR_ROSEBLOSSOM",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_TR",
+        "Sky_Music_Whip"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_NOVA",
+          "step": 0,
+          "value": 45
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "AT_GLACIER_STOMP",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "AT_GLACIER_MONOLITH",
+          "step": 0,
+          "value": -1000
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "AT_GLACIER_STOMP",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bAutoSpellOnSkill",
+          "selector": "AT_GLACIER_MONOLITH|AT_GLACIER_STOMP|5",
+          "step": 0,
+          "value": 1000
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_AT",
+        "Sky_Glacier_Mace"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {},
+          "op": "bMaxHPrate",
+          "selector": null,
+          "step": 0,
+          "value": 20
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "DK_DRAGONIC_AURA",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 0,
+          "value": -150
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "DK_DRAGONIC_AURA",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_DK",
+        "Sky_Dragon_Spear"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "EM_TERRA_DRIVE",
+          "step": 0,
+          "value": 45
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Earth",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "EM_TERRA_DRIVE",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 0,
+          "value": -300
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "EM_TERRA_DRIVE",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "EM_PSYCHIC_STREAM",
+          "step": 0,
+          "value": -1000
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "EM_TERRA_DRIVE",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bAutoSpellOnSkill",
+          "selector": "EM_PSYCHIC_STREAM|EM_TERRA_DRIVE|5",
+          "step": 0,
+          "value": 1000
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_EM",
+        "Sky_Elemental_Book"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SS_RAIDENPOU",
+          "step": 0,
+          "value": 45
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Wind",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "SS_REIKETSUHOU",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "SS_RAIDENPOU",
+          "step": 0,
+          "value": -200
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "SS_REIKETSUHOU",
+            "learned_level": 10,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bAutoSpellOnSkill",
+          "selector": "SS_RAIDENPOU|SS_REIKETSUHOU|10",
+          "step": 0,
+          "value": 1000
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_SS",
+        "Sky_Frost_Humma"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "NW_MIDNIGHT_FALLEN",
+          "step": 0,
+          "value": 45
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "NW_MIDNIGHT_FALLEN",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bAutoSpellOnSkill",
+          "selector": "NW_THE_VIGILANTE_AT_NIGHT|NW_MIDNIGHT_FALLEN|5",
+          "step": 0,
+          "value": 1000
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "NW_MIDNIGHT_FALLEN",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_NW",
+        "Sky_Nightshot_Gatling"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS",
+          "step": 0,
+          "value": 40
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "learned": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+            "learned_level": 5,
+            "sum": 24,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+          "step": 0,
+          "value": -250
+        }
+      ],
+      "names": [
+        "Sky_Rune_Crown_SOA",
+        "Sky_Seonang_Wand"
+      ]
+    }
+  ],
+  "date": "2026-09-06",
+  "external_combo_script_sha256": {
+    "Axe_Furious|FuriousCirclet_AT": "c48d892a5f3850a35ea017c96fd03f92b3bfc034a4b41edb4d5dc6137aed3b25",
+    "Dimen_AT_Axe|Time_DM_R_Crown_AT": "ca777c93547ad6300337f4df1ddc761a172a2dcfabb1eb669cdd1793c02e366d",
+    "Dimen_AT_Knife|Time_DM_R_Crown_AT": "db0e571ea6f250fb91882fc973f7c545a74b0622b489b395dc22d164aefc3fa4",
+    "FuriousCirclet_AT|Hall_Furious": "87557746836d75e685d1801e048dd91746e84aaea6014b5c4c379eedf67a31fd"
+  },
+  "external_combos_registered_elsewhere": [
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bAddRace",
+          "selector": "RC_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bAddRace",
+          "selector": "RC_Player_Human",
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {},
+          "op": "bAddRace",
+          "selector": "RC_Player_Doram",
+          "step": 0,
+          "value": -10
+        }
+      ],
+      "names": [
+        "FuriousCirclet_AT",
+        "Axe_Furious"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "names": [
+        "FuriousCirclet_AT",
+        "Hall_Furious"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_SAVAGE_LUNGE",
+          "step": 0,
+          "value": 60
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "weapon_grade": 4
+          },
+          "op": "bSkillAtk",
+          "selector": "AT_SAVAGE_LUNGE",
+          "step": -1,
+          "value": 1
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "AT_FRENZY_FANG",
+          "step": 0,
+          "value": -200
+        }
+      ],
+      "names": [
+        "Time_DM_R_Crown_AT",
+        "Dimen_AT_Axe"
+      ]
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_TEMPEST_FLAP",
+          "step": 0,
+          "value": 45
+        },
+        {
+          "conditions": {},
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "weapon_grade": 4
+          },
+          "op": "bSkillAtk",
+          "selector": "AT_QUILL_SPEAR",
+          "step": -1,
+          "value": 1
+        },
+        {
+          "conditions": {
+            "crown_grade": 4,
+            "weapon_grade": 4
+          },
+          "op": "bSkillCooldown",
+          "selector": "AT_QUILL_SPEAR",
+          "step": 0,
+          "value": -200
+        }
+      ],
+      "names": [
+        "Time_DM_R_Crown_AT",
+        "Dimen_AT_Knife"
+      ]
+    }
+  ],
+  "items": [
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bMaxHP",
+          "selector": null,
+          "step": 2,
+          "value": 120
+        },
+        {
+          "conditions": {},
+          "op": "bMaxSP",
+          "selector": null,
+          "step": 2,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_FRENZY_FANG",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_QUILL_SPEAR",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 10
+          },
+          "op": "bAddRace",
+          "selector": "RC_All",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "refine": 10
+          },
+          "op": "bAddRace",
+          "selector": "RC_Player_Human",
+          "step": 0,
+          "value": -15
+        },
+        {
+          "conditions": {
+            "refine": 10
+          },
+          "op": "bAddRace",
+          "selector": "RC_Player_Doram",
+          "step": 0,
+          "value": -15
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMaxHPrate",
+          "selector": null,
+          "step": 0,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMaxSPrate",
+          "selector": null,
+          "step": 0,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 15
+        }
+      ],
+      "item": {
+        "AegisName": "Time_DM_R_Crown_AT",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 250,
+        "Gradable": true,
+        "Id": 400999,
+        "Jobs": {
+          "Alitea": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Time Dimensions Rune Crown (Alitea)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2441,
+        "Weight": 0
+      },
+      "resource": "Time_Dimen_R_Crown",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=400999&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 2,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 2,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_ALPHA_CLAW",
+          "step": 3,
+          "value": 4
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_TERRA_HARVEST",
+          "step": 3,
+          "value": 4
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 3,
+          "value": 4
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -15
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Earth",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -300
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPow",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSpl",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bCon",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Earth",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -200
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 15
+        }
+      ],
+      "item": {
+        "AegisName": "FuriousCirclet_AT",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 30,
+        "EquipLevelMin": 235,
+        "Gradable": true,
+        "Id": 401176,
+        "Jobs": {
+          "Alitea": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Furious Circlet (Alitea)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2415,
+        "Weight": 300
+      },
+      "resource": "Flash_of_Lightning",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401176&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 2,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bCritical",
+          "selector": null,
+          "step": 2,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bShortAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bDelayrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bCRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_SHC",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401171,
+        "Jobs": {
+          "Assassin": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Shadow Cross)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401171&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Dark",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AG_SOUL_VC_STRIKE",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AG_MYSTERY_ILLUSION",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Ghost",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Dark",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMagicAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bMagicAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Ghost",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Neutral",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Dark",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_AG",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401172,
+        "Jobs": {
+          "Wizard": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Arch Mage)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401172&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 2,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bCritical",
+          "selector": null,
+          "step": 2,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 15
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_BO",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401173,
+        "Jobs": {
+          "Alchemist": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Biolo)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401173&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 2,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bHit",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_TR",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401174,
+        "Jobs": {
+          "BardDancer": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Troubadour/Trouvere)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401174&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_NOVA",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMagicAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bMagicAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_NOVA",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_AT",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401175,
+        "Jobs": {
+          "Alitea": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Alitea)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401175&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 2,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bHit",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bMaxHPrate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_DK",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401216,
+        "Jobs": {
+          "Knight": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Dragon Knight)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401216&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Earth",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "EM_TERRA_DRIVE",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Earth",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMagicAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bMagicAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "EM_TERRA_DRIVE",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_EM",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401217,
+        "Jobs": {
+          "Sage": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Elemental Master)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401217&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Wind",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SS_RAIDENPOU",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SS_REIKETSUHOU",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Wind",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMagicAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bMagicAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "SS_RAIDENPOU",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_SS",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401218,
+        "Jobs": {
+          "KagerouOboro": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Shinkiro/Shiranui)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401218&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 2,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bHit",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "NW_THE_VIGILANTE_AT_NIGHT",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {},
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "NW_MIDNIGHT_FALLEN",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "NW_MIDNIGHT_FALLEN",
+          "step": 0,
+          "value": 15
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_NW",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401219,
+        "Jobs": {
+          "Rebellion": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Nightwatch)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401219&itemSeq=2"
+    },
+    {
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 2,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+          "step": 4,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bFixedCast",
+          "selector": null,
+          "step": 0,
+          "value": -500
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMagicAddSize",
+          "selector": "Size_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bMagicAddEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Rune_Crown_SOA",
+        "ArmorLevel": 2,
+        "Classes": {
+          "Fourth": true
+        },
+        "Defense": 50,
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 401220,
+        "Jobs": {
+          "SoulLinker": true
+        },
+        "Locations": {
+          "Head_Top": true
+        },
+        "Name": "Sky Rune Crown (Soul Ascetic)",
+        "Refineable": true,
+        "Slots": 1,
+        "Type": "Armor",
+        "View": 2692,
+        "Weight": 0
+      },
+      "resource": "Midgard_Diadem_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=401220&itemSeq=2"
+    },
+    {
+      "client_view": 16,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 3,
+          "value": 35
+        },
+        {
+          "conditions": {},
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "SHC_SAVAGE_IMPACT",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bCRate",
+          "selector": null,
+          "step": 0,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Slasher_Katar",
+        "Attack": 310,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 610093,
+        "Jobs": {
+          "Assassin": true
+        },
+        "Locations": {
+          "Both_Hand": true
+        },
+        "Name": "Sky Slasher Katar",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Katar",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 2000
+      },
+      "resource": "Midgard_Katar_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=610093&itemSeq=1"
+    },
+    {
+      "client_view": 2,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bCritical",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "BO_MAYHEMIC_THORNS",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Thorns_Sword",
+        "Attack": 220,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 500136,
+        "Jobs": {
+          "Alchemist": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "Name": "Sky Thorns Sword",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "1hSword",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Midgard_T_Sword_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=500136&itemSeq=1"
+    },
+    {
+      "client_view": 10,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bUnbreakableWeapon",
+          "selector": null,
+          "step": 0,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AG_SOUL_VC_STRIKE",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Ghost",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AG_SOUL_VC_STRIKE",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Ghost",
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "AG_SOUL_VC_STRIKE",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "AG_SOUL_VC_STRIKE",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bDelayrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Deadsoul_Staff",
+        "Attack": 110,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 550194,
+        "Jobs": {
+          "Wizard": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "MagicAttack": 230,
+        "Name": "Sky Deadsoul Staff",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Staff",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1600
+      },
+      "resource": "Midgard_Staff_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=550194&itemSeq=1"
+    },
+    {
+      "client_view": 13,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Music_Viollin",
+        "Attack": 220,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gender": "Male",
+        "Gradable": true,
+        "Id": 570093,
+        "Jobs": {
+          "BardDancer": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "Name": "Sky Music Violin",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Musical",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Midgard_Viollin_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=570093&itemSeq=1"
+    },
+    {
+      "client_view": 14,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bNonCritAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "TR_ROSEBLOSSOM",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Music_Whip",
+        "Attack": 220,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gender": "Female",
+        "Gradable": true,
+        "Id": 580093,
+        "Jobs": {
+          "BardDancer": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "Name": "Sky Music Whip",
+        "Range": 2,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Whip",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Midgard_Whip_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=580093&itemSeq=1"
+    },
+    {
+      "client_view": 8,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bUnbreakableWeapon",
+          "selector": null,
+          "step": 0,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bSkillAtk",
+          "selector": "AT_GLACIER_SHARD",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Glacier_Mace",
+        "Attack": 100,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 590116,
+        "Jobs": {
+          "Alitea": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "MagicAttack": 230,
+        "Name": "Sky Glacier Mace",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Mace",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Midgard_Mace_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=590116&itemSeq=1"
+    },
+    {
+      "client_view": 5,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 3,
+          "value": 35
+        },
+        {
+          "conditions": {},
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMaxHPrate",
+          "selector": null,
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "DK_DRAGONIC_BREATH",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Dragon_Spear",
+        "Attack": 370,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 630066,
+        "Jobs": {
+          "Knight": true
+        },
+        "Locations": {
+          "Both_Hand": true
+        },
+        "Name": "Sky Dragon Spear",
+        "Range": 3,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "2hSpear",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 4000
+      },
+      "resource": "Midgard_Lance_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=630066&itemSeq=1"
+    },
+    {
+      "client_view": 22,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bUnbreakableWeapon",
+          "selector": null,
+          "step": 0,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SS_REIKETSUHOU",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 3,
+          "value": 35
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SS_REIKETSUHOU",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "SS_REIKETSUHOU",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "SS_REIKETSUHOU",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bSkillAtk",
+          "selector": "SS_REIKETSUHOU",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Frost_Humma",
+        "Attack": 110,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 650062,
+        "Jobs": {
+          "KagerouOboro": true
+        },
+        "Locations": {
+          "Both_Hand": true
+        },
+        "MagicAttack": 330,
+        "Name": "Sky Frost Huuma",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Huuma",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 2000
+      },
+      "resource": "Sky_Frost_Humma",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=650062&itemSeq=1"
+    },
+    {
+      "client_view": 19,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "NW_THE_VIGILANTE_AT_NIGHT",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bBaseAtk",
+          "selector": null,
+          "step": 3,
+          "value": 35
+        },
+        {
+          "conditions": {},
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 3,
+          "value": 3
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "NW_THE_VIGILANTE_AT_NIGHT",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bLongAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bDelayrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "NW_THE_VIGILANTE_AT_NIGHT",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bAtkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "NW_THE_VIGILANTE_AT_NIGHT",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bPerfectHitAddRate",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bPAtk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Nightshot_Gatling",
+        "Attack": 310,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 830047,
+        "Jobs": {
+          "Rebellion": true
+        },
+        "Locations": {
+          "Both_Hand": true
+        },
+        "Name": "Sky Nightshot Gatling",
+        "Range": 9,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Gatling",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Midgard_Gatling_Gun_JP",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=830047&itemSeq=1"
+    },
+    {
+      "client_view": 15,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_Water",
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bSkillAtk",
+          "selector": "EM_DIAMOND_STORM",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Elemental_Book",
+        "Attack": 100,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 540125,
+        "Jobs": {
+          "Sage": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "MagicAttack": 230,
+        "Name": "Sky Elemental Book",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Book",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Sky_Elemental_Book",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=540125&itemSeq=1"
+    },
+    {
+      "client_view": 10,
+      "effects": [
+        {
+          "conditions": {},
+          "op": "bUnbreakableWeapon",
+          "selector": null,
+          "step": 0,
+          "value": 1
+        },
+        {
+          "conditions": {},
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -5
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {},
+          "op": "bMatk",
+          "selector": null,
+          "step": 3,
+          "value": 30
+        },
+        {
+          "conditions": {},
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 3,
+          "value": 2
+        },
+        {
+          "conditions": {},
+          "op": "bSkillAtk",
+          "selector": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+          "step": 4,
+          "value": 7
+        },
+        {
+          "conditions": {
+            "refine": 7
+          },
+          "op": "bMagicAtkEle",
+          "selector": "Ele_All",
+          "step": 0,
+          "value": 25
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bVariableCastrate",
+          "selector": null,
+          "step": 0,
+          "value": -10
+        },
+        {
+          "conditions": {
+            "refine": 9
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "refine": 11
+          },
+          "op": "bSkillAtk",
+          "selector": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+          "step": 0,
+          "value": 15
+        },
+        {
+          "conditions": {
+            "grade": 1
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 2
+          },
+          "op": "bSkillAtk",
+          "selector": "SOA_TALISMAN_OF_FOUR_BEARING_GOD",
+          "step": 0,
+          "value": 10
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bMatkRate",
+          "selector": null,
+          "step": 0,
+          "value": 3
+        },
+        {
+          "conditions": {
+            "grade": 3
+          },
+          "op": "bSpl",
+          "selector": null,
+          "step": 0,
+          "value": 5
+        },
+        {
+          "conditions": {
+            "grade": 4
+          },
+          "op": "bSMatk",
+          "selector": null,
+          "step": 0,
+          "value": 10
+        }
+      ],
+      "item": {
+        "AegisName": "Sky_Seonang_Wand",
+        "Attack": 100,
+        "Classes": {
+          "Fourth": true
+        },
+        "EquipLevelMin": 240,
+        "Gradable": true,
+        "Id": 550197,
+        "Jobs": {
+          "SoulLinker": true
+        },
+        "Locations": {
+          "Right_Hand": true
+        },
+        "MagicAttack": 230,
+        "Name": "Sky Seonang Wand",
+        "Range": 1,
+        "Refineable": true,
+        "Slots": 2,
+        "SubType": "Staff",
+        "Type": "Weapon",
+        "WeaponLevel": 5,
+        "Weight": 1800
+      },
+      "resource": "Sky_Seonang_Wand",
+      "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=550197&itemSeq=1"
+    }
+  ],
+  "output_sha256": {
+    "client-patch/druid_missing_crowns/SystemEN/itemInfo_DruidMissingCrowns.lua": "3cfd17437eb6de75b93d8cbb546628aa426daca6e326c2a0923548250891983f",
+    "db/import/druid_missing_crown_combos.yml": "4d40f461b1378f6eaa7c7028e46e72b46d0c6e41308f774a307502e5be1d358b",
+    "db/import/druid_missing_crowns.yml": "80564e8ec4d2a69a68ef7a635b2f0090755eaf9848d3ada1488061dcf2e126e0",
+    "db/import/sky_crown_partner_weapons.yml": "37fd6c80b004676acab9d459f49122ffe3560804f7c9eae9aad876f9c9917f22"
+  },
+  "reach_source": "Project category defaults; exact upstream records absent at e985006171d2eb320ee512a653f4c83aea3d81b6; official item-specific reach unresolved",
+  "schema": 1,
+  "sky_partners": 11,
+  "supported_crowns": 12,
+  "unresolved": {
+    "401195": "Frontier_R_Crown_AT"
+  }
+}

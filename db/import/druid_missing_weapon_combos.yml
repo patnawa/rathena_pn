@@ -1,0 +1,125 @@
+# Only new membership sets; existing sets and their scripts remain untouched.
+# Requires the two crown records delivered in the coordinated crown overlay.
+Header:
+  Type: COMBO_DB
+  Version: 1
+Body:
+  - Combos:
+      - Combo: [Axe_Furious, FuriousBoots]
+    Script: |
+      .@r = getequiprefinerycnt(EQI_HAND_R)+getequiprefinerycnt(EQI_SHOES);
+      bonus2 bSkillAtk,"AT_PRIMAL_CLAW",.@r;
+      bonus2 bSkillAtk,"AT_FERAL_CLAW",.@r;
+  - Combos:
+      - Combo: [Hall_Furious, FuriousBoots]
+    Script: |
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",getequiprefinerycnt(EQI_HAND_R)+getequiprefinerycnt(EQI_SHOES);
+  - Combos:
+      - Combo: [Axe_Furious, FuriousCirclet_AT]
+    Script: |
+      bonus2 bAddRace,RC_All,10;
+      bonus2 bAddRace,RC_Player_Human,-10;
+      bonus2 bAddRace,RC_Player_Doram,-10;
+  - Combos:
+      - Combo: [Hall_Furious, FuriousCirclet_AT]
+    Script: |
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",10;
+  - Combos:
+      - Combo: [Dimen_AT_Axe, Time_DM_R_Crown_AT]
+    Script: |
+      bonus2 bSkillAtk,"AT_SAVAGE_LUNGE",60;
+      if (getenchantgrade(EQI_HAND_R) >= ENCHANTGRADE_A && getenchantgrade(EQI_HEAD_TOP) >= ENCHANTGRADE_A) {
+         bonus2 bSkillAtk,"AT_SAVAGE_LUNGE",getequiprefinerycnt(EQI_HAND_R)+getequiprefinerycnt(EQI_HEAD_TOP);
+         bonus2 bSkillCooldown,"AT_FRENZY_FANG",-200;
+      }
+  - Combos:
+      - Combo: [Dimen_AT_Knife, Time_DM_R_Crown_AT]
+    Script: |
+      bonus2 bSkillAtk,"AT_TEMPEST_FLAP",45;
+      bonus bLongAtkRate,15;
+      if (getenchantgrade(EQI_HAND_R) >= ENCHANTGRADE_A && getenchantgrade(EQI_HEAD_TOP) >= ENCHANTGRADE_A) {
+         bonus2 bSkillAtk,"AT_QUILL_SPEAR",getequiprefinerycnt(EQI_HAND_R)+getequiprefinerycnt(EQI_HEAD_TOP);
+         bonus2 bSkillCooldown,"AT_QUILL_SPEAR",-200;
+      }
+  - Combos:
+      - Combo: [D_Glacier_N_Axe, D_Glacier_Armor, D_Glacier_Boots, D_Glacier_Manteau]
+    Script: |
+      .@g = getenchantgrade(EQI_HAND_R);
+      bonus bBaseAtk,10*(getequiprefinerycnt(EQI_HAND_R)/3);
+      if (.@g >= ENCHANTGRADE_C) {
+         bonus bPAtk,6;
+         bonus bPow,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_B) {
+         bonus bPAtk,5;
+         bonus bPow,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus bPAtk,4;
+         bonus bPow,5;
+         bonus bCon,5;
+         bonus2 bAddEle,Ele_All,20;
+      }
+  - Combos:
+      - Combo: [D_Glacier_N_Knife, D_Glacier_Armor, D_Glacier_Boots, D_Glacier_Manteau]
+    Script: |
+      .@g = getenchantgrade(EQI_HAND_R);
+      bonus bBaseAtk,10*(getequiprefinerycnt(EQI_HAND_R)/3);
+      if (.@g >= ENCHANTGRADE_C) {
+         bonus bPAtk,6;
+         bonus bPow,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_B) {
+         bonus bPAtk,5;
+         bonus bPow,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus bPAtk,4;
+         bonus bPow,5;
+         bonus bCon,5;
+      }
+  - Combos:
+      - Combo: [D_Glacier_N_Axe, D_Glacier_Robe, D_Glacier_Shoes, D_Glacier_Muffler]
+    Script: |
+      .@g = getenchantgrade(EQI_HAND_R);
+      bonus bMatk,10*(getequiprefinerycnt(EQI_HAND_R)/3);
+      if (.@g >= ENCHANTGRADE_C) {
+         bonus bSMatk,6;
+         bonus bSpl,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_B) {
+         bonus bSMatk,5;
+         bonus bSpl,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus bSMatk,4;
+         bonus bSpl,5;
+         bonus bCon,5;
+         bonus2 bMagicAddEle,Ele_All,20;
+      }
+  - Combos:
+      - Combo: [D_Glacier_N_Knife, D_Glacier_Robe, D_Glacier_Shoes, D_Glacier_Muffler]
+    Script: |
+      .@g = getenchantgrade(EQI_HAND_R);
+      bonus bMatk,10*(getequiprefinerycnt(EQI_HAND_R)/3);
+      if (.@g >= ENCHANTGRADE_C) {
+         bonus bSMatk,6;
+         bonus bSpl,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_B) {
+         bonus bSMatk,5;
+         bonus bSpl,5;
+         bonus bCon,5;
+      }
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus bSMatk,4;
+         bonus bSpl,5;
+         bonus bCon,5;
+      }

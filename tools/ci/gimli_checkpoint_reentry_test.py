@@ -67,7 +67,7 @@ CPP = r'''
 #include "map/script.hpp"
 struct Route { int stage; int map; int x,y; };
 #include "gimli_routes.inc"
-int32 map_readfromcache(struct map_data*,char*,char*);
+int32 map_readfromcache(struct map_data*,const char*,size_t,char*,size_t);
 namespace {
 constexpr int32 NPC = 99000003, TEST_PARTY = 99000004, INSTANCE = 42;
 unsigned assertions = 0, failures = 0, errors = 0, cases = 0;
@@ -220,7 +220,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
         boundary(cache.good(),"exact selected cache record available");
         std::vector<char> bytes{std::istreambuf_iterator<char>(cache),std::istreambuf_iterator<char>()};
         char decoded[MAX_MAP_SIZE];
-        boundary(map_readfromcache(&map[m],bytes.data(),decoded) == 1,"native selected-record cache decoding succeeded");
+        boundary(map_readfromcache(&map[m],bytes.data(),bytes.size(),decoded,sizeof(decoded)) == 1,"native selected-record cache decoding succeeded");
     }
     boundary(map[1].cell && map[2].cell,"both actual source map geometries decoded");
     instance_generate_mapname(1,INSTANCE,map[3].name); instance_generate_mapname(2,INSTANCE,map[4].name);

@@ -1,0 +1,407 @@
+# Twelve sourced weapons; see doc/druid_missing_weapons_audit.md.
+# No acquisition, prices, or custom trade restrictions are added.
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+  - Id: 510185
+    AegisName: Repeat_Dagger_AD
+    Name: Repeat Dagger-OSAD
+    Type: Weapon
+    SubType: Dagger
+    Weight: 900
+    Attack: 150
+    Range: 1
+    Slots: 2
+    Jobs:
+      Karnos: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 170
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      bonus bAtkRate,5;
+      if (.@r >= 7) bonus bVariableCastrate,-10;
+      if (.@r >= 9) bonus2 bSkillAtk,"KR_SHARPEN_GUST",25;
+      if (.@r >= 11) {
+         bonus bLongAtkRate,15;
+         bonus2 bSkillAtk,"KR_SHARPEN_GUST",20;
+      }
+  - Id: 510189
+    AegisName: Solid_Whinger
+    Name: Solid Whinger
+    Type: Weapon
+    SubType: Dagger
+    Weight: 1100
+    Attack: 200
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 220
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus2 bSkillAtk,"AT_QUILL_SPEAR",6*(.@r/2);
+      bonus2 bSkillAtk,"AT_PINION_SHOT",8*(.@r/3);
+      bonus bLongAtkRate,4*(.@r/4);
+      if (.@g >= ENCHANTGRADE_D) bonus bCon,2;
+      if (.@g >= ENCHANTGRADE_C) bonus2 bSkillAtk,"AT_QUILL_SPEAR",10;
+      if (.@g >= ENCHANTGRADE_B) bonus bPAtk,2;
+  - Id: 510190
+    AegisName: Glacier_N_Knife
+    Name: Glacier Nature Knife
+    Type: Weapon
+    SubType: Dagger
+    Weight: 1200
+    Attack: 210
+    MagicAttack: 210
+    Range: 1
+    # Official prose SLOT:0 and original group31's four slots, not its inconsistent web header.
+    Slots: 0
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 210
+    Refineable: true
+    Gradable: true
+  - Id: 510191
+    AegisName: D_Glacier_N_Knife
+    Name: Dim Glacier Nature Knife
+    Type: Weapon
+    SubType: Dagger
+    Weight: 1200
+    Attack: 210
+    MagicAttack: 210
+    Range: 1
+    Slots: 1
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 230
+    Refineable: true
+    Gradable: true
+  - Id: 510193
+    AegisName: Dimen_AT_Knife
+    Name: Dimensions Nature Dagger
+    Type: Weapon
+    SubType: Dagger
+    Weight: 1800
+    Attack: 240
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 250
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bCritical,5;
+      bonus2 bSkillAtk,"AT_QUILL_SPEAR",15+5*(.@r/3);
+      bonus bBaseAtk,25*(.@r/2);
+      bonus bAtkRate,.@r/2;
+      if (.@r >= 7) bonus bCritAtkRate,20;
+      if (.@r >= 9) {
+         bonus bCritical,15;
+         bonus bCRate,5;
+      }
+      if (.@r >= 11) bonus2 bSkillAtk,"AT_QUILL_SPEAR",15;
+      if (.@g >= ENCHANTGRADE_D) bonus bPAtk,5;
+      if (.@g >= ENCHANTGRADE_C) bonus2 bSkillAtk,"AT_QUILL_SPEAR",15;
+      if (.@g >= ENCHANTGRADE_B) bonus bLongAtkRate,10;
+      if (.@g >= ENCHANTGRADE_A) bonus bPAtk,3*(.@r/2);
+  - Id: 520047
+    AegisName: F_Ein_AXE
+    Name: Flush Grinder Axe
+    Type: Weapon
+    SubType: 1hAxe
+    Weight: 2000
+    Attack: 230
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 250
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bUnbreakableWeapon;
+      bonus bAtkRate,10;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",20;
+      bonus2 bSkillAtk,"AT_FRENZY_FANG",20;
+      if (.@r >= 7) {
+         bonus bBaseAtk,70;
+         bonus bAspdRate,10;
+      }
+      if (.@r >= 9) {
+         bonus2 bSkillAtk,"KR_CHOP_CHOP",15;
+         bonus2 bSkillAtk,"AT_FRENZY_FANG",10;
+         bonus2 bAddSize,Size_All,15;
+         bonus2 bSkillUseSP,"KR_CHOP_CHOP",-25;
+         bonus2 bSkillUseSP,"AT_FRENZY_FANG",-25;
+      }
+      if (.@r >= 11) {
+         bonus bDelayrate,-15;
+         bonus2 bSkillAtk,"KR_CHOP_CHOP",10;
+         bonus2 bSkillAtk,"AT_FRENZY_FANG",10;
+         bonus2 bSkillUseSP,"KR_CHOP_CHOP",-25;
+         bonus2 bSkillUseSP,"AT_FRENZY_FANG",-25;
+      }
+      if (.@g >= ENCHANTGRADE_D) bonus bPAtk,10;
+      if (.@g >= ENCHANTGRADE_C) {
+         bonus2 bSkillAtk,"KR_CHOP_CHOP",10;
+         bonus2 bSkillAtk,"AT_FRENZY_FANG",10;
+      }
+      if (.@g >= ENCHANTGRADE_B) bonus2 bAddEle,Ele_All,10;
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus2 bSkillAtk,"KR_CHOP_CHOP",10;
+         bonus2 bSkillAtk,"AT_FRENZY_FANG",10;
+      }
+  - Id: 520052
+    AegisName: Axe_Furious
+    Name: Furious Axe
+    Type: Weapon
+    SubType: 1hAxe
+    Weight: 5000
+    Attack: 230
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 205
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bUnbreakableWeapon;
+      bonus2 bSkillAtk,"AT_ALPHA_CLAW",5;
+      if (BaseLevel >= 210) {
+         bonus bAtkRate,4;
+         bonus bBaseAtk,40;
+      }
+      if (BaseLevel >= 220) bonus2 bSkillAtk,"AT_ALPHA_CLAW",5;
+      if (BaseLevel >= 230) bonus2 bAddSize,Size_All,10;
+      if (.@r >= 7) bonus bShortAtkRate,10;
+      if (.@r >= 9) bonus2 bSkillAtk,"AT_ALPHA_CLAW",10;
+      if (.@r >= 10) bonus bCritical,10;
+      if (.@r >= 11) bonus2 bSkillAtk,"AT_ALPHA_CLAW",10;
+      if (.@g >= ENCHANTGRADE_D) bonus bShortAtkRate,15;
+      if (.@g >= ENCHANTGRADE_C) bonus2 bSkillAtk,"AT_ALPHA_CLAW",5;
+      if (.@g >= ENCHANTGRADE_B) {
+         bonus2 bSkillAtk,"AT_PRIMAL_CLAW",10;
+         bonus2 bSkillAtk,"AT_FERAL_CLAW",10;
+      }
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus bAtkRate,3*(.@r/2);
+         bonus bPAtk,3*(.@r/2);
+      }
+  - Id: 590104
+    AegisName: Mocadas_Garz
+    Name: Muqaddas Garz
+    Type: Weapon
+    SubType: Mace
+    Weight: 1200
+    Attack: 220
+    MagicAttack: 230
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 250
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bUnbreakableWeapon;
+      bonus bMatkRate,5;
+      bonus2 bSkillAtk,"AT_GLACIER_MONOLITH",10;
+      bonus2 bSkillAtk,"AT_GLACIER_NOVA",10;
+      if (.@r >= 7) bonus2 bMagicAtkEle,Ele_Water,10;
+      if (.@r >= 9) {
+         bonus2 bSkillAtk,"AT_GLACIER_MONOLITH",10;
+         bonus2 bSkillAtk,"AT_GLACIER_NOVA",10;
+      }
+      if (.@r >= 11) {
+         bonus2 bSkillAtk,"AT_GLACIER_MONOLITH",10;
+         bonus2 bSkillAtk,"AT_GLACIER_NOVA",10;
+      }
+      if (.@g >= ENCHANTGRADE_D) bonus2 bMagicAddSize,Size_Small,15;
+      if (.@g >= ENCHANTGRADE_C) bonus2 bMagicAddSize,Size_Medium,15;
+      if (.@g >= ENCHANTGRADE_B) bonus2 bMagicAddSize,Size_Large,15;
+      if (.@g >= ENCHANTGRADE_A) bonus bSMatk,5;
+  - Id: 590117
+    AegisName: Hall_Furious
+    Name: Furious Scepter
+    Type: Weapon
+    SubType: Mace
+    Weight: 1100
+    Attack: 100
+    MagicAttack: 180
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Right_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 205
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bUnbreakableWeapon;
+      bonus2 bSkillAtk,"AT_TERRA_HARVEST",10;
+      if (BaseLevel >= 210) {
+         bonus bMatkRate,4;
+         bonus bMatk,40;
+      }
+      if (BaseLevel >= 220) bonus2 bSkillAtk,"AT_TERRA_HARVEST",5;
+      if (BaseLevel >= 230) bonus2 bMagicAddSize,Size_All,10;
+      if (.@r >= 7) {
+         bonus2 bMagicAtkEle,Ele_Water,10;
+         bonus2 bMagicAtkEle,Ele_Earth,10;
+      }
+      if (.@r >= 9) bonus2 bSkillAtk,"AT_TERRA_HARVEST",10;
+      if (.@r >= 10) {
+         bonus2 bMagicAtkEle,Ele_Water,10;
+         bonus2 bMagicAtkEle,Ele_Earth,10;
+      }
+      if (.@r >= 11) bonus2 bSkillAtk,"AT_GLACIER_SHARD",10;
+      if (.@g >= ENCHANTGRADE_D) {
+         bonus2 bMagicAtkEle,Ele_Water,10;
+         bonus2 bMagicAtkEle,Ele_Earth,10;
+      }
+      if (.@g >= ENCHANTGRADE_C) bonus2 bSkillAtk,"AT_TERRA_HARVEST",5;
+      if (.@g >= ENCHANTGRADE_B) bonus2 bSkillAtk,"AT_GLACIER_SHARD",10;
+      if (.@g >= ENCHANTGRADE_A) {
+         bonus bMatkRate,3*(.@r/2);
+         bonus bSMatk,3*(.@r/2);
+      }
+  - Id: 620056
+    AegisName: Glacier_N_Axe
+    Name: Glacier Nature Axe
+    Type: Weapon
+    SubType: 2hAxe
+    Weight: 6000
+    Attack: 350
+    MagicAttack: 180
+    Range: 1
+    Slots: 0
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 210
+    Refineable: true
+    Gradable: true
+    Script: |
+      bonus bUnbreakableWeapon;
+  - Id: 620057
+    AegisName: D_Glacier_N_Axe
+    Name: Dim Glacier Nature Axe
+    Type: Weapon
+    SubType: 2hAxe
+    Weight: 6000
+    Attack: 350
+    MagicAttack: 180
+    Range: 1
+    Slots: 1
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 230
+    Refineable: true
+    Gradable: true
+    Script: |
+      bonus bUnbreakableWeapon;
+  - Id: 620059
+    AegisName: Dimen_AT_Axe
+    Name: Dimensions Nature Axe
+    Type: Weapon
+    SubType: 2hAxe
+    Weight: 4000
+    Attack: 380
+    Range: 1
+    Slots: 2
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Both_Hand: true
+    WeaponLevel: 5
+    EquipLevelMin: 250
+    Refineable: true
+    Gradable: true
+    Script: |
+      .@r = getrefine();
+      .@g = getenchantgrade();
+      bonus bUnbreakableWeapon;
+      bonus bCritical,5;
+      bonus2 bSkillAtk,"AT_FRENZY_FANG",15+5*(.@r/3);
+      bonus bBaseAtk,25*(.@r/2);
+      bonus bAtkRate,.@r/2;
+      if (.@r >= 7) bonus bShortAtkRate,25;
+      if (.@r >= 9) {
+         bonus bCritical,15;
+         bonus bCRate,5;
+      }
+      if (.@r >= 11) bonus2 bSkillAtk,"AT_FRENZY_FANG",15;
+      if (.@g >= ENCHANTGRADE_D) bonus bPAtk,5;
+      if (.@g >= ENCHANTGRADE_C) bonus2 bSkillAtk,"AT_FRENZY_FANG",15;
+      if (.@g >= ENCHANTGRADE_B) bonus bShortAtkRate,10;
+      if (.@g >= ENCHANTGRADE_A) bonus bPAtk,3*(.@r/2);

@@ -5,6 +5,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <zlib.h>
 
 #include <config/core.hpp>
 
@@ -3637,83 +3638,90 @@ int32 map_eraseipport(uint16 mapindex, uint32 ip, uint16 port)
 /*==========================================
  * [Shinryo]: Init the mapcache
  *------------------------------------------*/
-static char *map_init_mapcache(FILE *fp)
+static bool map_init_mapcache(FILE *fp, std::vector<char>& buffer)
 {
-	size_t size = 0;
-	char *buffer;
-
-	// No file open? Return..
-	nullpo_ret(fp);
-
-	// Get file size
-	fseek(fp, 0, SEEK_END);
-	size = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-
-	// Allocate enough space
-	CREATE(buffer, char, size);
-
-	// No memory? Return..
-	nullpo_ret(buffer);
-
-	// Read file into buffer..
-	if(fread(buffer, 1, size, fp) != size) {
-		ShowError("map_init_mapcache: Could not read entire mapcache file\n");
-		return nullptr;
+	if (fp == nullptr || fseek(fp, 0, SEEK_END) != 0) {
+		ShowError("map_init_mapcache: Could not seek to end of mapcache file\n");
+		return false;
+	}
+	const long file_size = ftell(fp);
+	if (file_size < 0 || static_cast<unsigned long>(file_size) < sizeof(map_cache_main_header)) {
+		ShowError("map_init_mapcache: Invalid mapcache file size\n");
+		return false;
+	}
+	if (fseek(fp, 0, SEEK_SET) != 0) {
+		ShowError("map_init_mapcache: Could not rewind mapcache file\n");
+		return false;
 	}
 
-	return buffer;
+	// Temporary ownership also releases the allocation on a short/failed read.
+	std::vector<char> loaded(static_cast<size_t>(file_size));
+	if (fread(loaded.data(), 1, loaded.size(), fp) != loaded.size() || ferror(fp)) {
+		ShowError("map_init_mapcache: Could not read entire mapcache file\n");
+		return false;
+	}
+	buffer.swap(loaded);
+	return true;
 }
 
 /*==========================================
  * Map cache reading
  * [Shinryo]: Optimized some behaviour to speed this up
  *==========================================*/
-int32 map_readfromcache(struct map_data *m, char *buffer, char *decode_buffer)
+int32 map_readfromcache(struct map_data *m, const char *buffer, size_t buffer_size, char *decode_buffer, size_t decode_capacity)
 {
-	int32 i;
-	struct map_cache_main_header *header = (struct map_cache_main_header *)buffer;
-	struct map_cache_map_info *info = nullptr;
-	char *p = buffer + sizeof(struct map_cache_main_header);
+	if (m == nullptr || m->cell != nullptr || buffer == nullptr || decode_buffer == nullptr ||
+		buffer_size < sizeof(map_cache_main_header) || memchr(m->name, '\0', sizeof(m->name)) == nullptr)
+		return 0;
 
-	for(i = 0; i < header->map_count; i++) {
-		info = (struct map_cache_map_info *)p;
-
-		if( strcmp(m->name, info->name) == 0 )
-			break; // Map found
-
-		// Jump to next entry..
-		p += sizeof(struct map_cache_map_info) + info->len;
-	}
-
-	if( info && i < header->map_count ) {
-		unsigned long size, xy;
-
-		if( info->xs <= 0 || info->ys <= 0 )
-			return 0;// Invalid
-
-		m->xs = info->xs;
-		m->ys = info->ys;
-		size = (unsigned long)info->xs*(unsigned long)info->ys;
-
-		if(size > MAX_MAP_SIZE) {
-			ShowWarning("map_readfromcache: %s exceeded MAX_MAP_SIZE of %d\n", info->name, MAX_MAP_SIZE);
-			return 0; // Say not found to remove it from list.. [Shinryo]
+	// Variable compressed lengths leave later headers unaligned. Copy headers
+	// before accessing fields, even if the caller's initial buffer is aligned.
+	map_cache_main_header header;
+	memcpy(&header, buffer, sizeof(header));
+	size_t offset = sizeof(header);
+	map_cache_map_info selected{};
+	const char *compressed = nullptr;
+	for (uint32 i = 0; i < header.map_count; ++i) {
+		if (sizeof(map_cache_map_info) > buffer_size - offset)
+			return 0;
+		map_cache_map_info info;
+		memcpy(&info, buffer + offset, sizeof(info));
+		offset += sizeof(info);
+		if (info.name[0] == '\0' || memchr(info.name, '\0', sizeof(info.name)) == nullptr ||
+			info.xs <= 0 || info.ys <= 0 || info.len <= 0 ||
+			static_cast<size_t>(info.len) > buffer_size - offset ||
+			static_cast<size_t>(info.xs) * static_cast<size_t>(info.ys) > MAX_MAP_SIZE)
+			return 0;
+		if (compressed == nullptr && strcmp(m->name, info.name) == 0) {
+			selected = info;
+			compressed = buffer + offset;
 		}
-
-		// TO-DO: Maybe handle the scenario, if the decoded buffer isn't the same size as expected? [Shinryo]
-		decode_zip(decode_buffer, &size, p+sizeof(struct map_cache_map_info), info->len);
-
-		CREATE(m->cell, struct mapcell, size);
-
-
-		for( xy = 0; xy < size; ++xy )
-			m->cell[xy] = map_gat2cell(decode_buffer[xy]);
-
-		return 1;
+		offset += static_cast<size_t>(info.len);
 	}
+	// Existing caches may have a stale file_size field. The actual supplied size
+	// and complete record walk are authoritative, not that legacy field.
+	if (offset != buffer_size || compressed == nullptr)
+		return 0;
 
-	return 0; // Not found
+	const size_t cells_count = static_cast<size_t>(selected.xs) * static_cast<size_t>(selected.ys);
+	if (cells_count > decode_capacity)
+		return 0;
+	unsigned long decoded_size = static_cast<unsigned long>(cells_count);
+	if (decode_zip(decode_buffer, &decoded_size, compressed, selected.len) != Z_OK || decoded_size != cells_count)
+		return 0;
+	for (size_t xy = 0; xy < cells_count; ++xy)
+		if (static_cast<unsigned char>(decode_buffer[xy]) > 6)
+			return 0;
+
+	// Publish dimensions and allocation only after every validation succeeds.
+	struct mapcell *cells;
+	CREATE(cells, struct mapcell, cells_count);
+	for (size_t xy = 0; xy < cells_count; ++xy)
+		cells[xy] = map_gat2cell(decode_buffer[xy]);
+	m->xs = selected.xs;
+	m->ys = selected.ys;
+	m->cell = cells;
+	return 1;
 }
 
 int32 map_addmap(char* mapname)
@@ -3912,7 +3920,7 @@ int32 map_readallmaps (void)
 {
 	FILE* fp;
 	// Has the uncompressed gat data of all maps, so just one allocation has to be made
-	std::vector<char *> map_cache_buffer = {};
+	std::vector<std::vector<char>> map_cache_buffer;
 
 	if( enable_grf )
 		ShowStatus("Loading maps (using GRF files)...\n");
@@ -3933,14 +3941,14 @@ int32 map_readallmaps (void)
 			}
 
 			// Init mapcache data. [Shinryo]
-			map_cache_buffer.push_back(map_init_mapcache(fp));
-
-			if( !map_cache_buffer.back() ) {
+			std::vector<char> cache;
+			const bool loaded = map_init_mapcache(fp, cache);
+			fclose(fp);
+			if (!loaded) {
 				ShowFatalError( "Failed to initialize mapcache data (%s)..\n", mapdat.c_str());
 				exit(EXIT_FAILURE);
 			}
-
-			fclose(fp);
+			map_cache_buffer.push_back(std::move(cache));
 		}
 	}
 
@@ -3966,7 +3974,7 @@ int32 map_readallmaps (void)
 		}else{
 			// try to load the map
 			for (const auto &cache : map_cache_buffer) {
-				if ((success = map_readfromcache(mapdata, cache, map_cache_decode_buffer)) != 0)
+				if ((success = map_readfromcache(mapdata, cache.data(), cache.size(), map_cache_decode_buffer, sizeof(map_cache_decode_buffer))) != 0)
 					break;
 			}
 		}
@@ -4014,15 +4022,8 @@ int32 map_readallmaps (void)
 	// intialization and configuration-dependent adjustments of mapflags
 	map_flags_init();
 
-	if( !enable_grf ) {
-		// The cache isn't needed anymore, so free it. [Shinryo]
-		auto it = map_cache_buffer.begin();
-
-		while (it != map_cache_buffer.end()) {
-			aFree(*it);
-			it = map_cache_buffer.erase(it);
-		}
-	}
+	// The cache isn't needed anymore; each vector releases its owned buffer.
+	map_cache_buffer.clear();
 
 	if (maps_removed)
 		ShowNotice("Maps removed: '" CL_WHITE "%d" CL_RESET "'" CL_CLL ".\n", maps_removed);

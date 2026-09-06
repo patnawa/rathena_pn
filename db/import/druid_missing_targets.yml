@@ -1,0 +1,55 @@
+# Only verified missing targets from the original client. No recipe changes.
+# Booster weapons 510200/620064 and Frontier crown 401195 remain unresolved.
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+Body:
+  - Id: 24
+    TargetItems:
+      Solid_Whinger: true
+  - Id: 31
+    TargetItems:
+      Glacier_N_Knife: true
+      Glacier_N_Axe: true
+  - Id: 33
+    TargetItems:
+      Repeat_Dagger_AD: true
+  - Id: 47
+    TargetItems:
+      D_Glacier_N_Knife: true
+      D_Glacier_N_Axe: true
+  - Id: 63
+    TargetItems:
+      F_Ein_AXE: true
+  - Id: 64
+    TargetItems:
+      Mocadas_Garz: true
+  - Id: 132
+    TargetItems:
+      Time_DM_R_Crown_AT: true
+  - Id: 133
+    TargetItems:
+      Dimen_AT_Knife: true
+      Dimen_AT_Axe: true
+  - Id: 147
+    TargetItems:
+      Axe_Furious: true
+      Hall_Furious: true
+  - Id: 148
+    TargetItems:
+      FuriousCirclet_AT: true
+  - Id: 164
+    TargetItems:
+      Time_DM_R_Crown_AT: true
+  - Id: 165
+    TargetItems:
+      Sky_Rune_Crown_SHC: true
+      Sky_Rune_Crown_AG: true
+      Sky_Rune_Crown_BO: true
+      Sky_Rune_Crown_TR: true
+      Sky_Rune_Crown_AT: true
+      Sky_Rune_Crown_DK: true
+      Sky_Rune_Crown_EM: true
+      Sky_Rune_Crown_SS: true
+      Sky_Rune_Crown_NW: true
+      Sky_Rune_Crown_SOA: true

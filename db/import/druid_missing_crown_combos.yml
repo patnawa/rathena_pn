@@ -1,0 +1,138 @@
+# Additive reviewed definitions; see doc/druid_missing_crowns_audit.md.
+Header:
+  Type: COMBO_DB
+  Version: 1
+Body:
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_SHC
+    - Sky_Slasher_Katar
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"SHC_SAVAGE_IMPACT",20;
+    bonus bCritAtkRate,20;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("SHC_SAVAGE_IMPACT")>=10 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"SHC_SAVAGE_IMPACT",-200;
+      bonus bShortAtkRate,10;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_AG
+    - Sky_Deadsoul_Staff
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"AG_MYSTERY_ILLUSION",40;
+    bonus2 bSkillAtk,"AG_ASTRAL_STRIKE",40;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("AG_ASTRAL_STRIKE")>=10 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"AG_SOUL_VC_STRIKE",-200;
+      bonus2 bSkillAtk,"AG_ASTRAL_STRIKE",20;
+      bonus2 bMagicAtkEle,Ele_Neutral,15;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_BO
+    - Sky_Thorns_Sword
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"BO_MAYHEMIC_THORNS",20;
+    bonus bCritAtkRate,20;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("BO_MAYHEMIC_THORNS")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"BO_MAYHEMIC_THORNS",-200;
+      bonus2 bSkillAtk,"BO_MAYHEMIC_THORNS",10;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_TR
+    - Sky_Music_Viollin
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"TR_ROSEBLOSSOM",20;
+    bonus bNonCritAtkRate,20;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("TR_ROSEBLOSSOM")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"TR_ROSEBLOSSOM",-150;
+      bonus bLongAtkRate,10;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_TR
+    - Sky_Music_Whip
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"TR_ROSEBLOSSOM",20;
+    bonus bNonCritAtkRate,20;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("TR_ROSEBLOSSOM")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"TR_ROSEBLOSSOM",-150;
+      bonus bLongAtkRate,10;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_AT
+    - Sky_Glacier_Mace
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"AT_GLACIER_NOVA",45;
+    bonus2 bMagicAtkEle,Ele_Water,15;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("AT_GLACIER_STOMP")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"AT_GLACIER_MONOLITH",-1000;
+      bonus4 bAutoSpellOnSkill,"AT_GLACIER_MONOLITH","AT_GLACIER_STOMP",5,1000;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_DK
+    - Sky_Dragon_Spear
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"DK_DRAGONIC_BREATH",20;
+    bonus bMaxHPrate,20;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("DK_DRAGONIC_AURA")>=10 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"DK_DRAGONIC_BREATH",-150;
+      bonus bLongAtkRate,10;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_EM
+    - Sky_Elemental_Book
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"EM_TERRA_DRIVE",45;
+    bonus2 bMagicAtkEle,Ele_Earth,15;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("EM_TERRA_DRIVE")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"EM_DIAMOND_STORM",-300;
+      bonus2 bSkillCooldown,"EM_PSYCHIC_STREAM",-1000;
+      bonus4 bAutoSpellOnSkill,"EM_PSYCHIC_STREAM","EM_TERRA_DRIVE",5,1000;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_SS
+    - Sky_Frost_Humma
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"SS_RAIDENPOU",45;
+    bonus2 bMagicAtkEle,Ele_Wind,15;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("SS_REIKETSUHOU")>=10 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"SS_RAIDENPOU",-200;
+      bonus4 bAutoSpellOnSkill,"SS_RAIDENPOU","SS_REIKETSUHOU",10,1000;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_NW
+    - Sky_Nightshot_Gatling
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"NW_MIDNIGHT_FALLEN",45;
+    bonus bNonCritAtkRate,15;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("NW_MIDNIGHT_FALLEN")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus4 bAutoSpellOnSkill,"NW_THE_VIGILANTE_AT_NIGHT","NW_MIDNIGHT_FALLEN",5,1000;
+      bonus bLongAtkRate,10;
+    }
+- Combos:
+  - Combo:
+    - Sky_Rune_Crown_SOA
+    - Sky_Seonang_Wand
+  Script: |
+    .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
+    bonus2 bSkillAtk,"SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS",40;
+    bonus2 bMagicAtkEle,Ele_All,15;
+    if (getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getskilllv("SOA_TALISMAN_OF_FOUR_BEARING_GOD")>=5 && .@sum>=24 && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
+      bonus2 bSkillCooldown,"SOA_TALISMAN_OF_FOUR_BEARING_GOD",-250;
+    }

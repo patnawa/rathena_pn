@@ -1,0 +1,560 @@
+# Additive reviewed definitions; see doc/druid_missing_crowns_audit.md.
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+- Id: 610093
+  AegisName: Sky_Slasher_Katar
+  Name: Sky Slasher Katar
+  Type: Weapon
+  SubType: Katar
+  Weight: 2000
+  Attack: 310
+  Range: 1
+  Slots: 2
+  Jobs:
+    Assassin: true
+  Classes:
+    Fourth: true
+  Locations:
+    Both_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bCritical,5;
+    bonus2 bSkillAtk,"SHC_SAVAGE_IMPACT",15;
+    bonus bBaseAtk,35*(.@r/3);
+    bonus bCritAtkRate,3*(.@r/3);
+    bonus2 bSkillAtk,"SHC_SAVAGE_IMPACT",7*(.@r/4);
+    if (.@r>=7) {
+      bonus bCritAtkRate,25;
+    }
+    if (.@r>=9) {
+      bonus bCritical,10;
+      bonus bPAtk,5;
+    }
+    if (.@r>=11) {
+      bonus bCritical,5;
+      bonus2 bSkillAtk,"SHC_SAVAGE_IMPACT",10;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bAtkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"SHC_SAVAGE_IMPACT",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bCritical,5;
+      bonus bCRate,7;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bPAtk,10;
+    }
+- Id: 500136
+  AegisName: Sky_Thorns_Sword
+  Name: Sky Thorns Sword
+  Type: Weapon
+  SubType: 1hSword
+  Weight: 1800
+  Attack: 220
+  Range: 1
+  Slots: 2
+  Jobs:
+    Alchemist: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bCritical,5;
+    bonus2 bSkillAtk,"BO_MAYHEMIC_THORNS",15;
+    bonus bBaseAtk,30*(.@r/3);
+    bonus bCritAtkRate,2*(.@r/3);
+    bonus2 bSkillAtk,"BO_MAYHEMIC_THORNS",7*(.@r/4);
+    if (.@r>=7) {
+      bonus bCritAtkRate,25;
+    }
+    if (.@r>=9) {
+      bonus bCritical,10;
+      bonus bPAtk,5;
+    }
+    if (.@r>=11) {
+      bonus bCritical,5;
+      bonus2 bSkillAtk,"BO_MAYHEMIC_THORNS",10;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bAtkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"BO_MAYHEMIC_THORNS",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bVariableCastrate,-10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bPAtk,10;
+    }
+- Id: 550194
+  AegisName: Sky_Deadsoul_Staff
+  Name: Sky Deadsoul Staff
+  Type: Weapon
+  SubType: Staff
+  Weight: 1600
+  Attack: 110
+  Range: 1
+  Slots: 2
+  Jobs:
+    Wizard: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  MagicAttack: 230
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bUnbreakableWeapon;
+    bonus bVariableCastrate,-5;
+    bonus2 bSkillAtk,"AG_SOUL_VC_STRIKE",15;
+    bonus bMatk,30*(.@r/3);
+    bonus2 bMagicAtkEle,Ele_Ghost,2*(.@r/3);
+    bonus2 bSkillAtk,"AG_SOUL_VC_STRIKE",7*(.@r/4);
+    if (.@r>=7) {
+      bonus2 bMagicAtkEle,Ele_Ghost,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bSMatk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"AG_SOUL_VC_STRIKE",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bMatkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"AG_SOUL_VC_STRIKE",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bDelayrate,-10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bSMatk,10;
+    }
+- Id: 570093
+  AegisName: Sky_Music_Viollin
+  Name: Sky Music Violin
+  Type: Weapon
+  SubType: Musical
+  Weight: 1800
+  Attack: 220
+  Range: 1
+  Slots: 2
+  Jobs:
+    BardDancer: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  Gender: Male
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bPerfectHitAddRate,5;
+    bonus2 bSkillAtk,"TR_ROSEBLOSSOM",15;
+    bonus bBaseAtk,30*(.@r/3);
+    bonus bNonCritAtkRate,2*(.@r/3);
+    bonus2 bSkillAtk,"TR_ROSEBLOSSOM",7*(.@r/4);
+    if (.@r>=7) {
+      bonus bNonCritAtkRate,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bPAtk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"TR_ROSEBLOSSOM",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bAtkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"TR_ROSEBLOSSOM",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bVariableCastrate,-10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bPAtk,10;
+    }
+- Id: 580093
+  AegisName: Sky_Music_Whip
+  Name: Sky Music Whip
+  Type: Weapon
+  SubType: Whip
+  Weight: 1800
+  Attack: 220
+  Range: 2
+  Slots: 2
+  Jobs:
+    BardDancer: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  Gender: Female
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bPerfectHitAddRate,5;
+    bonus2 bSkillAtk,"TR_ROSEBLOSSOM",15;
+    bonus bBaseAtk,30*(.@r/3);
+    bonus bNonCritAtkRate,2*(.@r/3);
+    bonus2 bSkillAtk,"TR_ROSEBLOSSOM",7*(.@r/4);
+    if (.@r>=7) {
+      bonus bNonCritAtkRate,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bPAtk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"TR_ROSEBLOSSOM",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bAtkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"TR_ROSEBLOSSOM",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bVariableCastrate,-10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bPAtk,10;
+    }
+- Id: 590116
+  AegisName: Sky_Glacier_Mace
+  Name: Sky Glacier Mace
+  Type: Weapon
+  SubType: Mace
+  Weight: 1800
+  Attack: 100
+  Range: 1
+  Slots: 2
+  Jobs:
+    Alitea: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  MagicAttack: 230
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bUnbreakableWeapon;
+    bonus bVariableCastrate,-5;
+    bonus2 bSkillAtk,"AT_GLACIER_SHARD",15;
+    bonus bMatk,30*(.@r/3);
+    bonus2 bMagicAtkEle,Ele_Water,2*(.@r/3);
+    bonus2 bSkillAtk,"AT_GLACIER_SHARD",7*(.@r/4);
+    if (.@r>=7) {
+      bonus2 bMagicAtkEle,Ele_Water,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bSMatk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bMatkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bSMatk,10;
+    }
+- Id: 630066
+  AegisName: Sky_Dragon_Spear
+  Name: Sky Dragon Spear
+  Type: Weapon
+  SubType: 2hSpear
+  Weight: 4000
+  Attack: 370
+  Range: 3
+  Slots: 2
+  Jobs:
+    Knight: true
+  Classes:
+    Fourth: true
+  Locations:
+    Both_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bPerfectHitAddRate,5;
+    bonus2 bSkillAtk,"DK_DRAGONIC_BREATH",15;
+    bonus bBaseAtk,35*(.@r/3);
+    bonus bLongAtkRate,3*(.@r/3);
+    bonus2 bSkillAtk,"DK_DRAGONIC_BREATH",7*(.@r/4);
+    if (.@r>=7) {
+      bonus bMaxHPrate,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bPAtk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"DK_DRAGONIC_BREATH",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bAtkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"DK_DRAGONIC_BREATH",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bVariableCastrate,-10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bPAtk,10;
+    }
+- Id: 650062
+  AegisName: Sky_Frost_Humma
+  Name: Sky Frost Huuma
+  Type: Weapon
+  SubType: Huuma
+  Weight: 2000
+  Attack: 110
+  Range: 1
+  Slots: 2
+  Jobs:
+    KagerouOboro: true
+  Classes:
+    Fourth: true
+  Locations:
+    Both_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  MagicAttack: 330
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bUnbreakableWeapon;
+    bonus bVariableCastrate,-5;
+    bonus2 bSkillAtk,"SS_REIKETSUHOU",15;
+    bonus bMatk,35*(.@r/3);
+    bonus2 bMagicAtkEle,Ele_Water,3*(.@r/3);
+    bonus2 bSkillAtk,"SS_REIKETSUHOU",7*(.@r/4);
+    if (.@r>=7) {
+      bonus2 bMagicAtkEle,Ele_Water,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bSMatk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"SS_REIKETSUHOU",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bMatkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"SS_REIKETSUHOU",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus2 bSkillAtk,"SS_REIKETSUHOU",10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bSMatk,10;
+    }
+- Id: 830047
+  AegisName: Sky_Nightshot_Gatling
+  Name: Sky Nightshot Gatling
+  Type: Weapon
+  SubType: Gatling
+  Weight: 1800
+  Attack: 310
+  Range: 9
+  Slots: 2
+  Jobs:
+    Rebellion: true
+  Classes:
+    Fourth: true
+  Locations:
+    Both_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bPerfectHitAddRate,5;
+    bonus2 bSkillAtk,"NW_THE_VIGILANTE_AT_NIGHT",15;
+    bonus bBaseAtk,35*(.@r/3);
+    bonus bLongAtkRate,3*(.@r/3);
+    bonus2 bSkillAtk,"NW_THE_VIGILANTE_AT_NIGHT",7*(.@r/4);
+    if (.@r>=7) {
+      bonus bLongAtkRate,25;
+    }
+    if (.@r>=9) {
+      bonus bDelayrate,-10;
+      bonus bPAtk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"NW_THE_VIGILANTE_AT_NIGHT",10;
+      bonus bPAtk,5;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bAtkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"NW_THE_VIGILANTE_AT_NIGHT",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bPerfectHitAddRate,10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bPAtk,10;
+    }
+- Id: 540125
+  AegisName: Sky_Elemental_Book
+  Name: Sky Elemental Book
+  Type: Weapon
+  SubType: Book
+  Weight: 1800
+  Attack: 100
+  Range: 1
+  Slots: 2
+  Jobs:
+    Sage: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  MagicAttack: 230
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bVariableCastrate,-5;
+    bonus2 bSkillAtk,"EM_DIAMOND_STORM",15;
+    bonus bMatk,30*(.@r/3);
+    bonus2 bMagicAtkEle,Ele_Water,2*(.@r/3);
+    bonus2 bSkillAtk,"EM_DIAMOND_STORM",7*(.@r/4);
+    if (.@r>=7) {
+      bonus2 bMagicAtkEle,Ele_Water,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bSMatk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"EM_DIAMOND_STORM",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bMatkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"EM_DIAMOND_STORM",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus2 bSkillAtk,"EM_DIAMOND_STORM",10;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bSMatk,10;
+    }
+- Id: 550197
+  AegisName: Sky_Seonang_Wand
+  Name: Sky Seonang Wand
+  Type: Weapon
+  SubType: Staff
+  Weight: 1800
+  Attack: 100
+  Range: 1
+  Slots: 2
+  Jobs:
+    SoulLinker: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 240
+  Refineable: true
+  Gradable: true
+  MagicAttack: 230
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bUnbreakableWeapon;
+    bonus bVariableCastrate,-5;
+    bonus2 bSkillAtk,"SOA_TALISMAN_OF_FOUR_BEARING_GOD",15;
+    bonus bMatk,30*(.@r/3);
+    bonus2 bMagicAtkEle,Ele_All,2*(.@r/3);
+    bonus2 bSkillAtk,"SOA_TALISMAN_OF_FOUR_BEARING_GOD",7*(.@r/4);
+    if (.@r>=7) {
+      bonus2 bMagicAtkEle,Ele_All,25;
+    }
+    if (.@r>=9) {
+      bonus bVariableCastrate,-10;
+      bonus bSMatk,5;
+    }
+    if (.@r>=11) {
+      bonus2 bSkillAtk,"SOA_TALISMAN_OF_FOUR_BEARING_GOD",15;
+    }
+    if (.@g>=ENCHANTGRADE_D) {
+      bonus bMatkRate,5;
+    }
+    if (.@g>=ENCHANTGRADE_C) {
+      bonus2 bSkillAtk,"SOA_TALISMAN_OF_FOUR_BEARING_GOD",10;
+    }
+    if (.@g>=ENCHANTGRADE_B) {
+      bonus bMatkRate,3;
+      bonus bSpl,5;
+    }
+    if (.@g>=ENCHANTGRADE_A) {
+      bonus bSMatk,10;
+    }

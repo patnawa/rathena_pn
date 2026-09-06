@@ -107,3 +107,9 @@ Footer:
     Mode: Renewal
   - Path: db/import/druid_shadow166_items.yml
     Mode: Renewal
+  - Path: db/import/druid_missing_crowns.yml
+    Mode: Renewal
+  - Path: db/import/sky_crown_partner_weapons.yml
+    Mode: Renewal
+  - Path: db/import/druid_missing_weapons.yml
+    Mode: Renewal
