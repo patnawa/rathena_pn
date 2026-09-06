@@ -340,3 +340,47 @@ including its genuine old-source failure, with clean ASan/UBSan and allocator
 teardown. The changed `script.cpp` was freshly compiled; retained sanitizer
 objects were reused only when their exact production/driver source hashes
 matched. Generated results are not proof of untested end-to-end gameplay.
+
+## Equipment-switch deletion manual re-review, 2026-09-06
+
+The preceding deployment receipts remain historical. The only subsequent
+runtime change is `src/map/pc.cpp`, raw SHA256
+`1c4dee142c4a34d7bb8065e37c5dc6558f0ff2ad52205756d44481c08e764403`.
+Root and an independent reviewer inspected both changes in `pc_delitem`:
+
+- Reject `n >= MAX_INVENTORY` before the first array access, alongside the
+  existing negative-index check. Rejection has no logging, inventory, weight,
+  cache, status or packet side effects.
+- On full depletion only, call the existing `pc_equipswitch_remove` before
+  ordinary unequip and before zeroing the old item. Its existing nonzero-mask
+  guard, all-EQI matching-index cleanup, one removal notification and final
+  mask clear contain no script entry, callback, yield or status recalculation.
+  The notification uses the old mask; partial deletion and ordinary items
+  without a switch registration retain their prior behavior. The type flags
+  suppress their documented deletion/weight/status operations, not all packet
+  notifications. The existing ordinary unequip path is otherwise unchanged.
+
+The fix removes a consumed item's live registration. It intentionally does not
+reconstruct already-corrupt caches whose corresponding item has no switch mask,
+transfer consumed metadata to replacement gear, or alter exchange economy.
+The native regression receipt separately distinguishes real engine/NPC calls
+from player/world/transport doubles and does not claim client gameplay proof.
+
+All 2,739 engine file memberships were compared with the prior project and
+explicit-live manifests; only `src/map/pc.cpp` changed in each. Current engine
+section pins are project
+`213aa0d386ab10a268a666095ce2aa2ab9355da8ab44aded401fe61c9f220c2f`
+and explicit `live-20260906`
+`01a5af6f37959bd526b25cdbe47e48fabef1cc7ace0950570a6b96e369ae925a`.
+Database, NPC and closure pins, the three exact preserved live differences,
+normalization, profile selection and fail-closed acceptance rules are unchanged.
+No generic capacity-checking contract is modified by this change.
+
+Re-review verification passed all 17 default, 21 explicit-live and nine scoped
+conversion rejection controls. The dedicated equipment-switch native suite
+passed fixed 103 / 8,097 and genuine old 101 / 6,659, with a separate exact old
+out-of-range diagnostic. Crown 4,152 / 200,773 and conversion 225 / 49,497
+regressions passed with freshly compiled patched `pc.cpp`. Both candidate
+startup data variants and the installed explicit-live manifest/gates passed.
+See `equipswitch_deletion_deployment_20260906.md` for actual binary provenance,
+quiescence checks, backups, and the distinction from full gameplay validation.

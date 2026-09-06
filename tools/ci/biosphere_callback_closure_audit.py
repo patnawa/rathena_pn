@@ -34,7 +34,7 @@ REVIEW = '2026-09-06 current valid Biosphere 19-crown callbacks; not arbitrary p
 # SHA256 of canonical JSON for each COMPLETE manifest section. Manual review is
 # required before changing these. There is intentionally no update/accept flag.
 PINS = {
-    'engine': '85a78b70ec48fd28b24c64418f1d715361ad0014f56d9d47ac852b2dfb48dce9',
+    'engine': '213aa0d386ab10a268a666095ce2aa2ab9355da8ab44aded401fe61c9f220c2f',
     'databases': '393c5f74fd82616b74a5667818cb4e5443d683a9ce693af1f3fd8d03f22df331',
     'npcs': 'dd76ad03a2fc1a98ac03b9c1085b6e4cae779ca8bb1fa5d49e18d572d62af23e',
     'closure': '79513f7035bb459077a3eeae053c0db1f1df5c49c758abbfeab76a513a7f228c',
@@ -51,7 +51,7 @@ PROFILES = {
             'src/map/skills/npc/suicidebombing.cpp': '80e5ebd92e5eec5e26eec2f3bfb62cb61f894cd8c94bbed097545b7ee7ec4164',
         },
         'pins': {
-            'engine': '434e6e4aa4274bad80e1e6f125f65750bfa0e13824f2cef14cf3b7bfc5c96c02',
+            'engine': '01a5af6f37959bd526b25cdbe47e48fabef1cc7ace0950570a6b96e369ae925a',
             'databases': 'a9a970c11e8c7e30bc3be916237b9e106a6358906c4ad3e537b970a2485a1088',
             'npcs': 'dd76ad03a2fc1a98ac03b9c1085b6e4cae779ca8bb1fa5d49e18d572d62af23e',
             'closure': 'b516348011c7faab98fc5023cb3dd453f5ff67e767a72c37410bb9d8599c0d86',
