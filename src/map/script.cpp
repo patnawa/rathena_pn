@@ -15757,6 +15757,19 @@ BUILDIN_FUNC(petloot)
 	pd->loot->weight = 0;
 	return SCRIPT_CMD_SUCCESS;
 }
+// Read the same per-character slot limit used by pc_additem. This is capacity,
+// not occupied-slot count; getinventorylist supplies the actual item indices.
+BUILDIN_FUNC(getinventoryslots)
+{
+	TBL_PC* sd;
+	if (!script_charid2sd(2, sd)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_FAILURE;
+	}
+	script_pushint(st, sd->status.inventory_slots);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 /*==========================================
  * Set arrays with info of all sd inventory :
  * @inventorylist_id, @inventorylist_amount, @inventorylist_equip,
@@ -28957,6 +28970,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(makepet,"i"),
 	BUILDIN_DEF(getexp,"ii?"),
 	BUILDIN_DEF(getinventorylist,"?"),
+	BUILDIN_DEF(getinventoryslots,"?"),
 	BUILDIN_DEF(getskilllist,"?"),
 	BUILDIN_DEF(clearitem,"?"),
 	BUILDIN_DEF(classchange,"i??"),

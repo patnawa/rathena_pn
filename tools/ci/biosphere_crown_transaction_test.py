@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[2]
 NPC = 'npc/custom/varmundt_biosphere_depth.txt'
 BASE = '5e139a555'
 BASE_SHA = 'c0e59e6497f0bebef17ee98784ac92a988d54d16cacf41be188fb774f0456d09'
+CROWN_BASE = 'bc55ec95dc341b43f458a71160ecd75b0f33c9d2'
+CROWN_BASE_SHA = '790c47dd2deb4a46154c63983ca46cff60d34704824bdb3fc8c2a71f544d44df'
 IDS = list(range(400529, 400547)) + [400999]
 WRAPPERS = ('main', '_Z9map_id2sdi', '_Z9map_id2ndi', '_Z11mapreg_initv', '_Z12mapreg_finalv',
     '_Z17npc_event_dequeueP16map_session_datab', '_Z9ShowErrorPKcz',
@@ -51,8 +53,12 @@ def validate():
     marker = '// Changes exactly one synthetic enchant slot'
     require(old.split(marker)[0] == new.split('// Crown transaction guard.')[0],
             'Changes outside approved helper/Abyss Researcher prefix')
-    require(old.split('L_Convert:\n', 1)[1] == new.split('L_Convert:\n', 1)[1],
-            'Conversion or unrelated trailing source changed')
+    crown_baseline = subprocess.check_output(['git', 'show', f'{CROWN_BASE}:{NPC}'], cwd=ROOT)
+    require(sha(crown_baseline) == CROWN_BASE_SHA, 'Pinned deployed crown baseline drift')
+    # Bulk conversion has its own native transaction suite. Preserve the ENTIRE
+    # already-reviewed crown/helper/access prefix while allowing that scoped fix.
+    require(crown_baseline.decode().split('L_Convert:\n', 1)[0] == new.split('L_Convert:\n', 1)[0],
+            'Previously deployed crown/helper/access source changed')
     match = re.search(r'setarray \.@crown_ids\[0\],([^;]+);', new)
     require(match and [int(x) for x in match[1].split(',')] == IDS, 'Exact supported 19-ID mapping changed')
     menu = 'Dragon Knight:Imperial Guard:Meister:Biolo:Shadow Cross:Abyss Chaser:Arch Mage:Elemental Master:Cardinal:Inquisitor:Windhawk:Troubadour / Trouvere:Shinkiro / Shiranui:Night Watch:Sky Emperor:Soul Ascetic:Hyper Novice:Spirit Handler:Cancel'
@@ -79,7 +85,7 @@ def validate():
     require(items[400999]['AegisName'] == 'Time_DM_R_Crown_AT', 'Alitea identity mismatch')
     require(items[4365]['Type'] == 'Card' and items[4365]['Locations'].get('Head_Top') is True,
             'Fixture physical card must be legitimate headgear equipment')
-    print('BIOSPHERE_STATIC_OK: exact 19 IDs, old Cancel 19, old economy and unrelated source unchanged', flush=True)
+    print('BIOSPHERE_STATIC_OK: exact 19 IDs, old Cancel 19, old economy and deployed crown prefix unchanged', flush=True)
     print('Required callback-closure gate PASS', flush=True)
     return original, current, [items[id] for id in sorted(required)], callback_manifest
 

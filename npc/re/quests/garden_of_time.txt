@@ -5,6 +5,7 @@
 //= Quest NPCs - Hall of Life
 //===== Changelog: ===========================================
 //= 1.0 Initial release [Atemo]
+//= 1.0 Added Lake of Fire/Hall of Life [crazyarashi]
 //============================================================
 
 function	script	F_mesnavi	{
@@ -711,20 +712,20 @@ t_garden,166,235,3	script(CLOAKED)	Sealing Spirit Stone#life2	HEROS_OUT_ORB,{
 		cutin "",255;
 		specialeffect2 EF_BEGINSPELL_N5;
 		sleep2 2000;
-		specialeffect EF_LORD, AREA, "Dimension Prison#1";
+		specialeffect EF_LORD, AREA, "Dimensional Prison#1";
 		sleep2 500;
-		specialeffect EF_LORD, AREA, "Dimension Prison#2";
+		specialeffect EF_LORD, AREA, "Dimensional Prison#2";
 		sleep2 1500;
-		specialeffect EF_BAKU, AREA, "Dimension Prison#1";
+		specialeffect EF_BAKU, AREA, "Dimensional Prison#1";
 		sleep2 500;
-		specialeffect EF_BAKU, AREA, "Dimension Prison#2";
+		specialeffect EF_BAKU, AREA, "Dimensional Prison#2";
 		sleep2 500;
-		specialeffect EF_THUNDERSTORM2, AREA, "Dimension Prison#1";
+		specialeffect EF_THUNDERSTORM2, AREA, "Dimensional Prison#1";
 		sleep2 500;
 		setpcblock PCBLOCK_NPC, false;
-		specialeffect EF_THUNDERSTORM2, AREA, "Dimension Prison#2";
-		cloakoffnpcself( "Dimension Prison#1" );
-		cloakoffnpcself( "Dimension Prison#2" );
+		specialeffect EF_THUNDERSTORM2, AREA, "Dimensional Prison#2";
+		cloakoffnpcself( "Dimensional Prison#1" );
+		cloakoffnpcself( "Dimensional Prison#2" );
 		sleep2 1500;
 		cutin "rigel_halfeyes01.png",2;
 		mes "[Rigel]";
@@ -978,35 +979,173 @@ OnInit:
 }
 
 
-// t_garden,158,235,2	script(CLOAKED)	Dimension Prison#1	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect
-t_garden,158,235,2	script(CLOAKED)	Dimension Prison#1	GATE_SKYBLUE,{
-	if (isbegin_quest(12597) != 2)
-		end;
+// t_garden,158,235,2	script(CLOAKED)	Dimensional Prison#1	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect
+t_garden,158,235,2	script(DISABLED)	Dimensional Prison#1	GATE_SKYBLUE,{
+	if (isbegin_quest(12597) != 2) {
+		mes "^0000ffYou have not completed all the steps required for entry. Please check the sealing spirit stone again.^000000";
+		close;
+	}
 	if (checkweight(1201,1) == 0) {
 		mes "^ff0000It seems that there are too many types and weights of items. Please organize your inventory.^000000";
 		close;
 	}
 	if (getcharid(1) < 1) {
-		mes "^0000ffPlease organize a party of at least one person and proceed.^000000";
+		mes "^0000ffThe party leader must finish preparing for the MD entry before interacting with the gate.^000000";
 		close;
 	}
-	// ...
+	switch ( checkquest(12611, PLAYTIME) ) {
+		case -1:
+			break;
+		case 0:
+		case 1:
+			mes "^0000ffYou need more time before entering the dungeon.^000000";
 			end;
+		case 2:
+			erasequest 12611;
+			break;
 	}
-
-// t_garden,173,235,2	script(CLOAKED)	Dimension Prison#2	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect
-t_garden,173,235,2	script(CLOAKED)	Dimension Prison#2	GATE_SKYBLUE,{
-	if (isbegin_quest(12597) != 2)
+	.@md_name$ = "Lake of Fire";
+	.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
+	if ( .@active == false && is_party_leader() == true ) {
+		if ( select("Cancel", "Get permission to the Lake of Fire") == 1 )
+			end;
+		if(instance_create(.@md_name$) == -3) {
+			dispbottom "The reservation of the instance '" + .@md_name$ + "' has failed due to an active instance.";
+                        end;
+		}
 		end;
+	}
+	if ( .@active == true ) {
+		if ( select("Cancel", "Enter the Lake of Fire") == 1 )
+			end;
+		if( instance_enter(.@md_name$) != IE_OK ){
+			mes "^0000ffThe party leader must finish preparing for the MD entry before interacting with the gate.^000000";
+			close;
+		}
+		setquest 12611;
+		for ( .@i = 12613; .@i <= 12616; ++.@i ) {
+			if ( isbegin_quest(.@i) > 0 )
+				erasequest .@i;
+		}
+		mapannounce "t_garden", "The adventurer " + strcharinfo(0) + " is entering the " + .@md_name$ + ".", BC_MAP, 0xFFAA00;
+	} else {
+		mes "^0000ffThe party leader must finish preparing for the MD entry before interacting with the gate.^000000";
+		close;
+	}
+	end;
+}
+
+// t_garden,173,235,2	script(CLOAKED)	Dimensional Prison#2	GATE_SKYBLUE,2,2,{	// unknown OnTouch effect
+t_garden,173,235,2	script(DISABLED)	Dimensional Prison#2	GATE_SKYBLUE,{
+	if (isbegin_quest(12597) != 2) {
+		mes "^0000ffYou have not completed all the steps required for entry. Please check the sealing spirit stone again.^000000";
+		close;
+	}
 	if (checkweight(1201,1) == 0) {
 		mes "^ff0000It seems that there are too many types and weights of items. Please organize your inventory.^000000";
 		close;
 	}
-	// ...
+	switch ( checkquest(12619, PLAYTIME) ) {
+		case -1:
+			break;
+			
+		case 0:
+		case 1:
+			.@md_name$ = "Hall of Life";
+			.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
+			if ( .@active ) {
+				mes "ff0000The after effect of the dimensional rift haven't subsided yet, please wait a moment and try again later.^000000";
+				close;
+			}
+			cutin "rigel_halfeyes01.png", 2;
+			mes "[Rigel]";
+			mes "It's best to enter the Dimensional Prison only once per hour. Take a short break and go in when you're ready. Make sure you don't forget the key.";
+			close3;
+			
+		case 2:
+			erasequest 12619;
+			break;
+	}
+	if ( getequipid(EQI_HEAD_LOW) != 420231 ) {
+	OnNoBlessing:
+		cutin "rigel_halfeyes01.png", 2;
+		mes "[Rigel]";
+		mes "You are not wearing the blessing. You haven't forgotten that you can't enter in that state, right? Equip the blessing and come back.";
+		next;
+		if ( select("I understand","I lost the blessing") == 2 ) {
+			mes "[Rigel]";
+			mes "The sealing spirit stone should contain a spare blessing. Use the spirit stone to have the blessing re-created.";
+		}
+		close3;
+	}
+	if ( countitem(1001415) < 1 ) {
+		mes "^0000ffYou do not have the key to enter the Hall of Life. Quickly inform your party members of the situation and leave the party.^000000";
+		close;
+	}
+	if ( isbegin_quest(12617) == 1 ) {
+		disable_items;
+		.@equip_id = getequipid(EQI_HEAD_LOW);
+		if ( .@equip_id != 420231 ) { //edge case check
+			doevent strnpcinfo(3) + "::OnNoBlessing";
+			end;
+		}
+		.@id = getequipcardid(EQI_HEAD_LOW, 3);
+		if ( !.@id || (.@id < 312453 || .@id > 312472 ) ) { //another edge case check
+			doevent strnpcinfo(3) + "::OnNoBlessing";
+			end;
+		}
+		.@level = .@id - 312452;
+		erasequest 12617;
+		if ( .@level == 1 ) {
+			cutin "rigel_halfeyes01.png", 2;
+			mes "[Rigel]";
+			mes "Sometimes the correction can fail. Right now, it's at the lowest level, so I won't be lowering the barrier any further.";
+			mes "However, if the barrier is level 2 or higher, the barrier level will lower when failing to deal with the dimensional criminal for your safety. Keep that in mind.";
+		} 
+		else {
+			if ( .@equip_id != 420231 ) {
+				doevent strnpcinfo(3) + "::OnNoBlessing";
+				end;
+			}
+			delequip EQI_HEAD_LOW;
+			getitem2 .@equip_id, 1, 1, 0, 0, 0, 0, 0, (.@id - 1);
+			equip .@equip_id;
+			cutin "rigel_halfeyes01.png", 2;
+			mes "[Rigel]";
+			mes "Sometimes the correction can fail. I will be lowering your barrier level for your safety.";
+		}
+		close3;
+	}
+	.@md_name$ = "Hall of Life";
+	.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
+	if ( .@active == false && is_party_leader() == true ) {
+		if ( select("Cancel", "Get permission to the Hall of Life") == 1 )
+			end;
+		if(instance_create(.@md_name$) == -3) {
+			dispbottom "The reservation of the instance '" + .@md_name$ + "' has failed due to an active instance.";
+                        end;
+		}
+		end;
+	}
+	if ( .@active == true ) {
+		if ( select("Cancel", "Enter the Hall of Life") == 1 )
+			end;
+		if( instance_enter(.@md_name$) != IE_OK ){
+			mes "^0000ffThe party leader must finish preparing for the MD entry before interacting with the gate.^000000";
+			close;
+		}
+		delitem 1001415, 1;
+		setquest 12617;
+		setquest 12619;
+		if ( checkquest(12612, PLAYTIME) == 2 )
+			erasequest 12612;
+		mapannounce "t_garden", "The adventurer " + strcharinfo(0) + " is entering the " + .@md_name$ + ".", BC_MAP, 0xFFAA00;
+	} else {
+		mes "^0000ffThe party leader must finish preparing for the MD entry before interacting with the gate.^000000";
+		close;
+	}
 	end;
 }
-
-
 
 // Daily Quests
 // t_garden,105,118,0	script	#wp01	HIDDEN_WARP_NPC,6,5,{	// (NPC name is not unique)
@@ -1293,6 +1432,7 @@ OnTouch:
 	cloakoffnpcself( "Subspace vending machine#1" );
 	cloakoffnpcself( "Subspace vending machine#2" );
 	cloakoffnpcself( "Subspace vending machine#3" );
+	cloakoffnpcself( "Subspace vending machine#4" );
 	cloakoffnpcself( "Spirit Complaint Terminal#1" );
 	end;
 }

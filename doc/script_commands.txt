@@ -3016,6 +3016,21 @@ of possible equipment slots.
 
 ---------------------------------------
 
+*getinventoryslots({<char_id>})
+
+Returns the currently allowed number of inventory slots for the attached
+character, or the specified online character. Returns -1 if no character can
+be resolved. This read-only command does not expand, shrink or reorganize the
+inventory, and does not count occupied slots.
+
+The result is the same per-character limit used when adding items. Combine it
+with getinventorylist's actual @inventorylist_idx values when checking whether
+a destination slot is usable; inventory may retain items beyond this limit
+after its allowed size is reduced. Item weight, stack identity, stack limits
+and any intervening changes still need separate validation.
+
+---------------------------------------
+
 *getinventorylist {<char_id>};
 
 This command sets a bunch of arrays with a complete list of whatever the

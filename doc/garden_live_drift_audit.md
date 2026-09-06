@@ -1,14 +1,15 @@
 # Preserved Garden of Time and self-destruction drift
 
-Read-only review, 2026-09-06. No NPC, engine, database, client, server, or snapshot
-was changed. This document is a source/engine-semantics audit, **not** a native VM,
-combat, client visibility, or live-player test. The supplied snapshots establish
-file contents, not which historical binary compiled them or unsnapshotted live
-mapflags. Recommendations below are for a separately reviewed batch.
+Initial read-only review, 2026-09-06, followed by the approved local hardening
+and bounded native proof recorded below. The original review changed no runtime
+files. Its findings/line references and "local stub" refer to the original
+`2ad116...` source, not the later preserved-live candidate. The supplied snapshots
+establish file contents, not historical binary provenance or unsnapshotted live
+mapflags. No live-player, combat, or client rendering test is claimed.
 
 ## Findings and preservation decision
 
-Keep the live Garden file intact for the current deployment. Do not replace it
+The initial decision was to keep the live Garden file intact. Do not replace it
 with the local stub, load both copies, or enable its legacy instance gates.
 The enabled custom gates already suppress both legacy spelling variants.
 
@@ -83,7 +84,7 @@ Both entrance implementations create/enter those same custom-controller maps.
   legacy-created/entered run does not satisfy that contract; a generated
   controller `run_token` alone does not register players. The legacy quest
   timer also is not the custom `PNLake_NextEntry` midnight policy.
-- Live Hall (snapshot lines 1042-1148) charges a key on **each character's
+- Live Hall (snapshot lines 1039-1148) charges a key on **each character's
   successful entry**. Custom Hall charges one leader key on successful
   reservation and writes instance `'party_id` / `'leader_aid` (255-263).
   The custom start seal requires the instance party and leader (287).
@@ -240,7 +241,178 @@ Any enabled barrier mutation needs field-exact metadata and native-refusal
 tests before quest/account updates. A restored skill condition needs actual
 target checks for flag on/off, versus/non-versus, sphere/normal/non-mob,
 bit 8 on/off, caster death, and instance flag-copy behavior. None of those
-runtime tests was run in this audit.
+runtime tests was run in the initial read-only audit. The bounded follow-up
+below now verifies declaration/reveal/click/reload behavior only; it does not
+implement or retest reward/barrier/skill policy.
+
+## Approved preservation hardening and actual native proof
+
+The parent approved adopting the exact live Garden baseline and changing only
+the two active declaration flags. No custom controller, import root, engine,
+key/reward policy, legacy body, story anchor, or snapshot was edited by this
+subtask. The existing disabled-at-timer legacy suppression remains unchanged.
+
+Encoding was inspected as bytes, not inferred from a filename/editor setting:
+
+| Property | Original local stub | Preserved live snapshot / hardened candidate |
+| --- | --- | --- |
+| Byte count | 63,732 | 67,395 / 67,397 |
+| Line endings | 1,595 CRLF, no bare LF/CR | 1,735 LF, no CR |
+| BOM | None | None |
+| Non-ASCII bytes | `A1 D8`, offsets 24423-24424 | Same `A1 D8`, offsets 23806-23807 |
+| Byte context | Commented strategy-record message, line 672 | Identical comment, line 673 |
+
+Both files fail strict UTF-8. CP949 interprets `A1 D8` as U+203B; CP874,
+CP1252, and Latin-1 also round-trip the files, so original encoding provenance
+cannot be identified uniquely from these two bytes. Every live/local behavioral
+diff hunk is ASCII. No encoding guess or transcoding was necessary or performed.
+
+The allowed mechanical rewrite used native PowerShell `ReadAllBytes` /
+`WriteAllBytes`, guarded by the complete original-local/live/candidate SHA-256
+values. It searched for each full newline-anchored active ASCII declaration
+exactly once, copied every other byte from live, verified the candidate before
+writing one explicit local path, and rechecked both the output and untouched
+snapshot after writing. This was the approved non-UTF-8 bulk-mechanical exception
+to text patching; the new test/document sources use `apply_patch`.
+
+Relative to the actual preserved live baseline, exactly two lines change:
+
+```diff
+-t_garden,158,235,2\tscript(CLOAKED)\tDimensional Prison#1\tGATE_SKYBLUE,{
++t_garden,158,235,2\tscript(DISABLED)\tDimensional Prison#1\tGATE_SKYBLUE,{
+-t_garden,173,235,2\tscript(CLOAKED)\tDimensional Prison#2\tGATE_SKYBLUE,{
++t_garden,173,235,2\tscript(DISABLED)\tDimensional Prison#2\tGATE_SKYBLUE,{
+```
+
+Here `\t` denotes original literal tab bytes; the active lines are 983 and
+1039. Commented alternative declarations are untouched. The complete candidate
+is SHA-256 `3e5a98758e70be050a0b61b3d23e3d0a3dae1c45e3729cc1988dd2c60fa0f301`.
+Compared with the former local checkout this necessarily includes the already
+reviewed live baseline additions above, not just the two new hardening flags.
+
+Run on Linux/WSL from the repository:
+
+```sh
+python3 tools/ci/garden_legacy_gate_test.py --build-dir ../garden-legacy-native-20260906
+```
+
+Default mode normalizes **CRLF to LF only in an in-memory active-source byte
+view**, then requires that complete view to match candidate hash `3e5a987...`.
+It performs no text decoding, encoding conversion, or disk rewrite. All other
+bytes, including `A1 D8`, remain subject to the exact hash. It then inverses
+**only** the two newline-anchored `DISABLED` declarations. It requires the
+reconstructed **whole file** to match the original live SHA-256 `0505f6...`
+before using any of it. Therefore the old-source negative control is the
+hash-exact historical live file, not an approximate/synthetic old behavior,
+and a clean checkout needs no untracked sibling snapshot. If an independent
+snapshot exists at the default sibling path, or the path selected with
+`--live-snapshot`, its bytes must match the reconstruction exactly.
+
+`--candidate-from-live` is explicitly an uninstalled-candidate check and still
+requires an existing hash-pinned snapshot. Neither mode writes production
+files. The test creates exact full gate
+declaration/body fixtures, plus the source-extracted named reveal and existing
+custom suppression calls, in the supplied generated-artifact directory. It
+also writes stdout/stderr and a hash/provenance `receipt.json` there.
+As with the other native harnesses, first build the project on Linux/WSL to
+provide its supporting map objects/libraries; no live server is started.
+
+The driver includes the complete, unmodified current `npc.cpp` translation unit
+to initialize only its private registries. Actual `npc_parsesrcfile` dispatches
+to the actual private declaration parser and `parse_script`; actual
+`npc_enable_target`, `npc_is_cloaked`, `npc_click`, `npc_unloadfile`, and
+`run_script`/`cloakoffnpcself` run. The existing `npc.o` and `script.o` are not
+used. `npc.cpp`, `script.cpp`, and `malloc.cpp` are freshly ASan/UBSan-compiled.
+Other existing map objects provide supporting implementations (for example
+empty-quest lookup and NPC unit/view initialization) and unrelated link
+dependencies; fresh compilation or sanitizer coverage is not claimed for them.
+
+Results: **20 click/lifecycle cases, 132 assertions, zero failures and zero
+native errors**, followed by explicit `Memory manager: No memory leaks found.`
+The same executable and assertions against the hash-exact old live gate bodies
+produce **68 expected hardening failures**, zero native errors, and clean
+teardown. The runner requires those exact counts, rejects sanitizer/allocator
+warnings or error diagnostics even with exit zero, and has no sanitizer
+suppression. Socket/connect/bind/listen syscalls are denied and that denial is
+tested before VM initialization.
+
+The original default-mode run against the actual edited source is recorded in
+`../garden-legacy-native-final-20260906/receipt.json`, with `fixed.stdout.log`
+and `old.stdout.log` beside it. It freshly compiled `npc.cpp` SHA-256
+`10a407a5cb707dc82c4a366c07246dcba2440cca035778ce18c7c09bad5ee0f8`,
+`script.cpp` `035c218850b1b4ea4d906468ac96af380c36ef0226a279e4b62dd9cda0087fd1`,
+and `malloc.cpp` `064496e9722eeb1486178a6663aaa375ed7f312717986b9f41df3b69fd3a4a70`.
+This includes the parent's current script getter source, without modifying it.
+
+The subsequent portability verification freshly repeats the same native proof
+with **no independent snapshot available to the runner**:
+
+```sh
+python3 tools/ci/garden_legacy_gate_test.py --build-dir ../garden-legacy-portable-final-20260906 --live-snapshot ../garden-legacy-portable-final-20260906/independent-snapshot-absent.txt
+```
+
+Its receipt is `../garden-legacy-portable-final-20260906/receipt.json`, with
+`independent_snapshot_confirmed: false` and the exact inverse-reconstructed
+old-source hash. The existing real snapshot was neither moved nor deleted.
+Separate read-only function checks prove that an existing snapshot matches the
+same reconstructed bytes and that modified current bytes, a mismatching
+snapshot, and draft mode without a snapshot are rejected. Runtime NPC bytes,
+the native `.cpp` harness, fixture hashes, and the 132/68 assertion results
+are unchanged by this portability-only follow-up.
+
+For a clean Windows checkout with `core.autocrlf`, the candidate pin above is
+specifically the **normalized LF test-view hash**, not a requirement that the
+checkout's raw bytes use LF. The latest receipt separately records
+`source_raw_sha256`, `source_normalized_lf_sha256`, and the number of CRLF pairs
+normalized in memory. The runner retains the initially read raw byte sequence
+and asserts that the disk source is identical after fixture creation, before
+each native control run, and before the receipt is written. An optional original
+snapshot is **not normalized**: it must still match exact raw `0505f6...` bytes.
+
+The runner includes four in-memory positive newline checks and four rejection
+controls: LF and all-CRLF candidate views, identical reconstructed original,
+and preserved legacy bytes pass; an ASCII change, a legacy-byte change, a stray
+CR, and a CRLF-rewritten independent snapshot fail. Thus this acceptance does
+not conceal content drift. The newline portability rerun uses
+`--reuse-unchanged-test-objects` in the same artifact directory: each actual
+native test object is reused only after its saved source hashes match current
+`npc.cpp`, `script.cpp`, `malloc.cpp`, and the native harness as applicable.
+The repeated 20-case/132-assertion proof and exact 68-failure old control remain
+ASan/UBSan-clean and leak-free. No runtime file or native harness changed.
+
+Coverage includes immediate load before custom timers, both original gate
+positions and identities, two individual players' source-derived uncloaking,
+global uncloaking, unchanged custom suppression calls, real file unload and
+reparse with no custom timer, and repeated blocked clicks. Four explicit
+`NPCVIEW_ENABLE` controls intentionally enter the actual legacy body and stop
+at its unchanged first unfinished-quest dialogue. This proves the fixture is
+not simply rejecting every NPC click. Fixed gates dispatch zero legacy bodies
+outside those controls; the old source dispatches sixteen extra bodies across
+the startup/reveal/reload cases. Whole inventory bytes and Zeny remain unchanged.
+
+Important boundaries:
+
+- Player/world lookup, NPC registration/iteration, and outbound packet APIs are
+  explicit doubles. The world retains native block-registration preconditions
+  (`prev != nullptr`) so actual unload code can run; it does not implement a
+  spatial grid or a network. Geometry, walking, full packet handling, and client
+  rendering are not retested here.
+- Native parsing can issue a spawn request before applying its declaration
+  state. The test observes request counts but does not promise that a client
+  never receives an initial spawn packet; it proves the gate is hidden and
+  disabled when parsing returns, before player input can be processed normally.
+- Old-source pre-reveal `npc_click` calls are direct server API calls, not a
+  claim that an ordinary client presents a click target while cloaked. The
+  post-reveal and reload controls independently demonstrate the open legacy
+  route once cloak presentation is removed.
+- Existing suppression statements are executed without waiting for their timer;
+  timer scheduling itself and the complete Garden story/quest scene are not
+  executed. The source-byte equality protects those preserved bodies. Explicit
+  future `enablenpc` can still reopen a gate, as the positive controls prove.
+- No legacy barrier mutation, instance entry, key deduction, reward claim, or
+  self-destruction skill is executed. No production deployment was performed by
+  this subtask. The separate flag activation and reward-policy uncertainties
+  above remain unchanged.
 
 ## SHA-256 evidence (raw file bytes)
 
@@ -251,7 +423,8 @@ reconciling the reviewed line differences.
 
 | File | SHA-256 |
 | --- | --- |
-| `npc/re/quests/garden_of_time.txt` | `2ad1160409c13f73326790995cabac7ab8359443f0e5f32ba9569aad5c56dd91` |
+| Original local `npc/re/quests/garden_of_time.txt` (before hardening) | `2ad1160409c13f73326790995cabac7ab8359443f0e5f32ba9569aad5c56dd91` |
+| Hardened local `npc/re/quests/garden_of_time.txt` | `3e5a98758e70be050a0b61b3d23e3d0a3dae1c45e3729cc1988dd2c60fa0f301` |
 | `../biosphere-live-callback-drift-20260906/garden_of_time.txt` | `0505f6c6980642ef05c132652278ed42da06a294c977c00a4e44c2b94125431f` |
 | `npc/custom/instances/HallOfLife.txt` | `8c08ddd788654e4671a943984e74fc360fd98993d297e2d6a0d0f59bb4059b5c` |
 | `npc/custom/instances/LakeOfFire.txt` | `32d37c3e9edbf5450571d3c23948bbb9599ef39a189781827369d29b8c3a4889` |

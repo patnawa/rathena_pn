@@ -117,7 +117,7 @@ providers without trusting keyword recognition. Tests and documentation are
 outside the hash scope. Deployment configuration, runtime CLI overrides and
 live stored scripts are checked separately by root, not inferred here.
 
-Section pins (SHA256 of canonical JSON, including per-file hashes and graph):
+Initial crown-batch pins (historical; superseded by the re-review below):
 
 - Engine: `8d8b7450ba5c8a1d3850a8bf153ba74bf20936fa366124f9c13e02c50db702e9`
 - Databases: `393c5f74fd82616b74a5667818cb4e5443d683a9ce693af1f3fd8d03f22df331`
@@ -174,7 +174,7 @@ negative controls were rejected, and the stdlib host verifier matched all
 original pre-profile standalone sentinel raw SHA256 was
 `20450b03e90d1bdadab60e05157340202832058ac5d315049a45c1a03a3053b7`.
 
-## Explicit preserved-live profile
+## Initial preserved-live profile (historical crown deployment)
 
 `live-20260906` is an additional, explicitly chosen review, not a fallback
 after default validation fails. The default `PINS`, `validate(ROOT)` API and
@@ -281,3 +281,62 @@ live file at a time and were rejected. Both profile crossover directions and
 an unknown profile were rejected. All injections were in-memory and wrote no
 runtime files. Final standalone sentinel raw SHA256:
 `2387012e979e92283affbcdda6c9f1b3782c9f698e8f13f4f321ddeaca8c2ee8`.
+
+## Conversion and Garden manual re-review, 2026-09-06
+
+The earlier receipt and hashes above describe the completed crown deployment;
+they are not claims about the newly changed source tree. Root re-read the
+complete authorized runtime diff before changing the gate constants:
+
+- `src/map/script.cpp` only adds/registers the read-only per-character
+  `getinventoryslots` getter (raw SHA256
+  `035c218850b1b4ea4d906468ac96af380c36ef0226a279e4b62dd9cda0087fd1`).
+  It returns the native field and does not invoke scripts or change state.
+- The Biosphere NPC changes only `L_Convert`; every byte of the deployed
+  crown/helper/access prefix is preserved. Current raw SHA256 is
+  `40730ba4620a448e03ad2d71ff6d28f9398934fa5c1af1e22cb083e6ac392f28`.
+  Five recipes are unchanged; complete post-input checks precede bounded
+  material debits and output. Its separate achievement/QuestInfo/weight-status
+  closure is reviewed and pinned by `biosphere_conversion_callback_audit.py`.
+  No dynamic bonus producer or crown status callback is added.
+- Garden now incorporates the previously reviewed live source, preserving all
+  bytes except the two active legacy declarations: `CLOAKED` to `DISABLED`.
+  Raw SHA256 is
+  `3e5a98758e70be050a0b61b3d23e3d0a3dae1c45e3729cc1988dd2c60fa0f301`.
+  Actual native parser/click/reload tests separately cover these flags. The
+  two legacy bodies remain disabled; custom entry controllers are unchanged.
+  Legacy non-UTF-8 bytes were preserved without transcoding.
+
+There are now exactly three preserved live differences: the same item overlay,
+pet overlay and **unbuilt** Suicide Bombing source described above. Garden is
+identical in both new source profiles; it is no longer an exceptional profile
+file. No database, graph membership, dynamic producer or closure pin changed.
+Both profiles still cover 3,688 unique files, with 3,685 identical across them.
+
+Current project pins:
+
+- Engine: `85a78b70ec48fd28b24c64418f1d715361ad0014f56d9d47ac852b2dfb48dce9`
+- Databases: `393c5f74fd82616b74a5667818cb4e5443d683a9ce693af1f3fd8d03f22df331`
+- NPCs: `dd76ad03a2fc1a98ac03b9c1085b6e4cae779ca8bb1fa5d49e18d572d62af23e`
+- Closure: `79513f7035bb459077a3eeae053c0db1f1df5c49c758abbfeab76a513a7f228c`
+
+Current explicit `live-20260906` pins:
+
+- Engine: `434e6e4aa4274bad80e1e6f125f65750bfa0e13824f2cef14cf3b7bfc5c96c02`
+- Databases: `a9a970c11e8c7e30bc3be916237b9e106a6358906c4ad3e537b970a2485a1088`
+- NPCs: `dd76ad03a2fc1a98ac03b9c1085b6e4cae779ca8bb1fa5d49e18d572d62af23e`
+- Closure: `b516348011c7faab98fc5023cb3dd453f5ff67e767a72c37410bb9d8599c0d86`
+
+The API, normalization, explicit-profile requirement and fail-closed behavior
+are unchanged. Source pins do not certify runtime settings, persisted scripts,
+running binaries, general transactions or end-to-end episode gameplay.
+
+Fresh re-review checks passed: all 17 default negative controls and all 21
+explicit-live controls were rejected (17 common, three exact preserved-file
+mutations, and rejection of the live profile by the default gate). The separate
+conversion gate rejected all nine scoped negative controls. The crown native
+suite passed again against the new engine/NPC: 4,152 cases and 200,773 assertions,
+including its genuine old-source failure, with clean ASan/UBSan and allocator
+teardown. The changed `script.cpp` was freshly compiled; retained sanitizer
+objects were reused only when their exact production/driver source hashes
+matched. Generated results are not proof of untested end-to-end gameplay.

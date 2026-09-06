@@ -34,9 +34,9 @@ REVIEW = '2026-09-06 current valid Biosphere 19-crown callbacks; not arbitrary p
 # SHA256 of canonical JSON for each COMPLETE manifest section. Manual review is
 # required before changing these. There is intentionally no update/accept flag.
 PINS = {
-    'engine': '8d8b7450ba5c8a1d3850a8bf153ba74bf20936fa366124f9c13e02c50db702e9',
+    'engine': '85a78b70ec48fd28b24c64418f1d715361ad0014f56d9d47ac852b2dfb48dce9',
     'databases': '393c5f74fd82616b74a5667818cb4e5443d683a9ce693af1f3fd8d03f22df331',
-    'npcs': '1c47017cafe784109cf87b762bb8e5d236bd7627cff47054b05b08a3915ccc1a',
+    'npcs': 'dd76ad03a2fc1a98ac03b9c1085b6e4cae779ca8bb1fa5d49e18d572d62af23e',
     'closure': '79513f7035bb459077a3eeae053c0db1f1df5c49c758abbfeab76a513a7f228c',
 }
 
@@ -48,13 +48,12 @@ PROFILES = {
         'files': {
             'db/import/item_db.yml': '20946df000e0fba0710843bfd676dc895818e96fac6a0f3e2296e04cb39a287b',
             'db/import/pet_db.yml': '8c70d5f5b70b905082f3431fc0990ea76c736fb3c4b18713e899764d5297c00a',
-            'npc/re/quests/garden_of_time.txt': '0505f6c6980642ef05c132652278ed42da06a294c977c00a4e44c2b94125431f',
             'src/map/skills/npc/suicidebombing.cpp': '80e5ebd92e5eec5e26eec2f3bfb62cb61f894cd8c94bbed097545b7ee7ec4164',
         },
         'pins': {
-            'engine': 'babc23082555cd292e24764ef3571e374b80297d83ef4934771346c8aa354293',
+            'engine': '434e6e4aa4274bad80e1e6f125f65750bfa0e13824f2cef14cf3b7bfc5c96c02',
             'databases': 'a9a970c11e8c7e30bc3be916237b9e106a6358906c4ad3e537b970a2485a1088',
-            'npcs': 'f405662667a62c1fe3baecae2eea59de64af2f2a8f3df9875c33fa65f207e32e',
+            'npcs': 'dd76ad03a2fc1a98ac03b9c1085b6e4cae779ca8bb1fa5d49e18d572d62af23e',
             'closure': 'b516348011c7faab98fc5023cb3dd453f5ff67e767a72c37410bb9d8599c0d86',
         },
     },
@@ -329,8 +328,8 @@ def _check_manifest(manifest, profile=None):
 def validate(root=ROOT, *, profile=None):
     """Return reviewed manifest or raise ValueError; profile is explicit only.
 
-    The default API and manifest remain unchanged. A named profile still
-    traverses and recomputes the entire closure, not just its four differences.
+    A named profile traverses and recomputes the entire closure, not just its
+    three preserved differences. See the dated manual re-review in the doc.
     """
     selected_pins(profile)
     return _check_manifest(collect(root), profile)

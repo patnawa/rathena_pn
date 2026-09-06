@@ -742,6 +742,10 @@ L_Convert:
 		break;
 	}
 	.@max = Zeny / .@cost;
+	// One getitem output must fit the native MAX_AMOUNT (30000). Input totals
+	// may be larger across stacks; each debit is safely chunked below.
+	if (.@max > 30000)
+		.@max = 30000;
 	for (.@i = 0; .@i < .@matcount; ++.@i) {
 		.@have = countitem(.@mat[.@i]) / .@need[.@i];
 		if (.@max > .@have)
@@ -754,14 +758,69 @@ L_Convert:
 	}
 	mes "[Abyss Researcher]";
 	mes "How many should I create? Maximum: " + .@max + ".";
-	input .@amount,1,.@max;
-	if (!checkweight(.@result,.@amount)) {
+	// input clamps out-of-range values; a nonzero status must not silently
+	// convert that clamped quantity into an unintended transaction.
+	if (input(.@amount,1,.@max) != 0)
+		close;
+	// Revalidate the original conversion access policy after its final yield.
+	// Unlike crown services, conversion has no Depth 2 reputation threshold.
+	if (strcharinfo(3) != "ba_chess" || BaseLevel < 250 || ep17_2_main < 33 || get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1) < 2000) {
+		mes "Your Biosphere access changed. No materials or Zeny were used.";
+		close;
+	}
+	.@total = .@cost * .@amount;
+	if (Zeny < .@total) {
+		mes "Your materials or Zeny changed. Please try again.";
+		close;
+	}
+	for (.@i = 0; .@i < .@matcount; ++.@i) {
+		if (countitem(.@mat[.@i]) < .@need[.@i] * .@amount) {
+			mes "Your materials or Zeny changed. Please try again.";
+			close;
+		}
+	}
+	// Preserve the conservative pre-payment weight policy: do not credit the
+	// weight or slots that consuming materials would release.
+	if (Weight + getiteminfo(.@result,ITEMINFO_WEIGHT) * .@amount > MaxWeight) {
 		mes "Make room for the converted material first.";
 		close;
 	}
-	for (.@i = 0; .@i < .@matcount; ++.@i)
-		delitem .@mat[.@i],.@need[.@i] * .@amount;
-	Zeny -= .@cost * .@amount;
+	// Match the actual plain getitem output, not checkweight's first same-ID
+	// approximation. A bound/card/UID-separated first stack may be irrelevant.
+	.@slots = getinventoryslots();
+	if (.@slots < 1) {
+		mes "Your inventory capacity could not be verified. Nothing was used.";
+		close;
+	}
+	getinventorylist;
+	.@target = -1;
+	.@occupied = 0;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_idx[.@i] < .@slots)
+			++.@occupied;
+		if (@inventorylist_id[.@i] != .@result || @inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		// getinventorylist is in increasing native inventory-index order. The
+		// first compatible stack is terminal even if a later stack has room.
+		.@target = @inventorylist_idx[.@i];
+		.@stack_amount = @inventorylist_amount[.@i];
+		break;
+	}
+	if ((.@target >= 0 && (.@target >= .@slots || .@stack_amount + .@amount > 30000)) || (.@target < 0 && .@occupied >= .@slots)) {
+		mes "Make room in the matching output stack or an available inventory slot first.";
+		close;
+	}
+	// Current ba_chess material/achievement callbacks are reviewed as non-
+	// mutating. No further suspension is allowed between preflight and commit.
+	for (.@i = 0; .@i < .@matcount; ++.@i) {
+		.@remaining = .@need[.@i] * .@amount;
+		while (.@remaining > 0) {
+			.@chunk = (.@remaining > 30000) ? 30000 : .@remaining;
+			delitem .@mat[.@i],.@chunk;
+			.@remaining -= .@chunk;
+		}
+	}
+	Zeny -= .@total;
 	getitem .@result,.@amount;
 	mes "Conversion complete. You received " + .@amount + " unit(s) of item ^3366FF" + .@result + "^000000.";
 	close;
