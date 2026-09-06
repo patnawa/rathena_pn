@@ -125,3 +125,18 @@ After the fresh compile, root made the runner's source-region extraction portabl
 Covered final paths include all 19 craft outputs and original menu/cancel positions; menu Escape at every relevant selection; exact admission thresholds and external access loss; missing/reduced materials; full capacity initially and during confirmation; 31 exposed-field/identity changes for each paid service; UID-zero refusal; every supported jewel family/level and both success-threshold sides for every crown; every stat endpoint at every grade; and no-charge native failure with bound materials, capacity loss, or changed target. A successful mutation whose re-equip fails charges once and preserves the modified record in inventory. The callback failure fixtures explicitly compare post-callback inventory state rather than attributing injected changes to the NPC.
 
 These are isolated candidate checks. Live callback-source parity, persisted-script state, deployment and actual player/client interaction remain separate operational checks owned by the parent agent. No official acquisition-economy claim is implied.
+
+## Material-service batch regression, 2026-09-06
+
+The later Omega/Ellie material repair changes the separate Depth fusion NPC.
+The crown runner now excludes only that region after checking its exact old or
+reviewed-new hash through `biosphere_regression_scope.py`; all remaining
+protected bytes still compare exactly and the broad callback gate is mandatory.
+Four LF/CRLF forms and six deliberate scope mutations passed their controls.
+
+The final material/reward tree passed 4,152 cases / 200,773 assertions again in
+`../material-reward-crown-final-20260906/`. Exact-source retained binaries were
+used; this is not another fresh compilation. Receipt SHA256:
+`d0a80f059bc6025d9817933ed1ef6d7dee5cd61f271b5ad1fa459d19515e8989`.
+The tested Depth file is `6582a4b1401398f505b695f67e213e1d14f9b9978c875ae24b663623ce3b6988`;
+both broad-gate checks accepted NPC section `45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7`.

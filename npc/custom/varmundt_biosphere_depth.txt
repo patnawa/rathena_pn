@@ -253,6 +253,8 @@ ba_in01,293,119,4	script	Ellie#bio_d1_fusion	4_EP17_TABLET,{
 	.@zenymax = Zeny / .@cost[.@stage];
 	if (.@max > .@zenymax)
 		.@max = .@zenymax;
+	if (.@max > 30000)
+		.@max = 30000;
 	if (.@max < 1) {
 		mes "[Ellie]";
 		mes "You do not have enough " + .@name$[.@i] + " materials and Zeny for that fusion.";
@@ -260,14 +262,10 @@ ba_in01,293,119,4	script	Ellie#bio_d1_fusion	4_EP17_TABLET,{
 	}
 	mes "[Ellie]";
 	mes "How many should I create? Maximum: " + .@max + ".";
-	input .@amount,1,.@max;
-	if (!checkweight(.@output,.@amount)) {
-		mes "Make room for the fused material first.";
+	if (input(.@amount,1,.@max) != 0)
 		close;
-	}
-	delitem .@input,.@need[.@stage] * .@amount;
-	Zeny -= .@cost[.@stage] * .@amount;
-	getitem .@output,.@amount;
+	if (!callfunc("F_BiosphereMaterialCommit",.@amount,.@output,.@cost[.@stage],1,1,.@input,.@need[.@stage]))
+		close;
 	mes "Fusion complete. You received " + .@amount + " unit(s) of item ^3366FF" + .@output + "^000000.";
 	close;
 }

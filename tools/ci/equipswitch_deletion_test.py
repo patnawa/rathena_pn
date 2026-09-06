@@ -11,6 +11,7 @@ import sys
 import yaml
 from audit_enchant_upgrades import renewal_records
 from biosphere_crown_transaction_test import WRAPPERS
+from biosphere_regression_scope import equipment_tail
 
 ROOT=Path(__file__).resolve().parents[2]
 BASE='50717df9e48a6a762303a05e5d92dcc65092b8bc'
@@ -51,7 +52,10 @@ def validate():
     current=(ROOT/'src/map/pc.cpp').read_bytes()
     check_pc_delta(old,current)
     newline_controls(old,current)
-    for p in (NPC,ACCESS):require(normalized((ROOT/p).read_bytes())==normalized(subprocess.check_output(['git','show',f'{BASE}:{p}'],cwd=ROOT)),'Unchanged NPC/access source required')
+    require(equipment_tail((ROOT/NPC).read_bytes())==equipment_tail(subprocess.check_output(['git','show',f'{BASE}:{NPC}'],cwd=ROOT)),
+            'Equipment Ellie and every following byte must remain unchanged outside reviewed material prefix')
+    require(normalized((ROOT/ACCESS).read_bytes())==normalized(subprocess.check_output(['git','show',f'{BASE}:{ACCESS}'],cwd=ROOT)),
+            'Unchanged complete access source required')
     ids={450199,480144,470107,490297,1151,2224,1000640,1000641,1000642,1000643,1001182,1001180,1001178,
          450201,480145,470108,450200,480146,470109,450203,480148,470111,450202,480147,470110,490299,490300,490301}
     records={}
@@ -99,7 +103,7 @@ def native(build,inputs):
     (build/'items.yml').write_text(yaml.safe_dump({'Body':items},sort_keys=False))
     combined=build/'combined.cpp';combined.write_text((ROOT/PREFIX).read_text().split('extern "C" int __wrap_main(',1)[0]+'\n'+(ROOT/DRIVER).read_text())
     production=['src/map/pc.cpp','src/map/script.cpp','src/map/itemdb.cpp','src/map/clif.cpp','src/common/malloc.cpp']
-    tracked=production+[NPC,ACCESS,PREFIX,DRIVER,'tools/ci/equipswitch_deletion_test.py','tools/ci/biosphere_crown_transaction_test.py']
+    tracked=production+[NPC,ACCESS,PREFIX,DRIVER,'tools/ci/equipswitch_deletion_test.py','tools/ci/biosphere_crown_transaction_test.py','tools/ci/biosphere_regression_scope.py']
     hashes={p:sha((ROOT/p).read_bytes()) for p in tracked}
     context={'sources':hashes,'callback_manifest':sha(json.dumps(manifest,sort_keys=True).encode())}
     san=['-fsanitize=address,undefined','-fno-sanitize-recover=all','-fno-omit-frame-pointer']

@@ -12,6 +12,7 @@ import yaml
 
 from audit_enchant_upgrades import renewal_records
 from biosphere_crown_transaction_test import WRAPPERS as CROWN_WRAPPERS
+from biosphere_regression_scope import without_reviewed_fusion
 
 ROOT = Path(__file__).resolve().parents[2]
 NPC = 'npc/custom/varmundt_biosphere_depth.txt'
@@ -44,7 +45,8 @@ def validate():
     require(sha(old) == BASE_SHA, 'Pinned original NPC differs')
     before = old.split(b'L_Convert:\n',1)
     after = normal(current).split(b'L_Convert:\n',1)
-    require(len(after) == 2 and before[0] == after[0], 'Crown/helper/prefix bytes changed, except newline form')
+    require(len(after) == 2 and without_reviewed_fusion(before[0]) == without_reviewed_fusion(after[0]),
+            'Crown/helper/prefix bytes changed outside exact reviewed material fusion')
     marker = b'\t.@max = Zeny / .@cost;\n'
     require(before[1].split(marker,1)[0] == after[1].split(marker,1)[0], 'Any original recipe/menu field changed')
     require(b'REPUTATION_BIOSPHERE_DEPTH2' not in after[1] and b'S_Access' not in after[1],
@@ -130,7 +132,7 @@ def native(build, inputs, reuse=False):
     production = ['src/map/pc.cpp','src/map/script.cpp','src/map/itemdb.cpp','src/map/clif.cpp',
                   'src/map/achievement.cpp','src/common/malloc.cpp']
     tracked = production + [PREFIX,DRIVER,'tools/ci/biosphere_conversion_transaction_test.py',
-                            'tools/ci/biosphere_crown_transaction_test.py']
+                            'tools/ci/biosphere_crown_transaction_test.py','tools/ci/biosphere_regression_scope.py']
     hashes = {p:sha((ROOT/p).read_bytes()) for p in tracked}
     executable = build/'biosphere_conversion_transaction_test'
     if reuse:

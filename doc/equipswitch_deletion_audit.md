@@ -215,3 +215,21 @@ and unchanged source/raw NPC/gate checkpoints. Updated runner SHA256 is
 `6b1127199a489073b3112bc904b6b3b537de8b9ce16a4bf547030fff076bb1e0`.
 Portable-run `receipt.json` SHA256 is
 `f5ee67cc0a2c7bc4cf2f5200c1fe2094dd381a33894a1fd5ca9646ef116a87ca`.
+
+## Material-service batch regression, 2026-09-06
+
+The earlier whole-quests-file preservation assertion predates the independent
+Omega material repair. It now accepts only the exact reviewed old/new material
+prefix hashes through `biosphere_regression_scope.py`, then compares equipment
+Ellie and every following byte exactly. The complete access file is still
+unchanged. The broad callback gate remains unconditional; this exception cannot
+admit an arbitrary material-prefix edit.
+
+The final three-NPC material/reward tree was retested in the fresh
+`../material-reward-equipswitch-final-20260906/` directory. All five scoped
+production units, original pc.cpp and combined driver were freshly compiled;
+pre-existing unrelated support objects remain an explicit linking boundary.
+Fixed 103 / 8,097 and original 101 / 6,659 passed, with the exact separate old
+index-200 sanitizer failure, clean normal-process allocator/sanitizer teardown,
+seven diagnostic rejection controls and all newline controls. Receipt SHA256:
+`b630b71906805ed0d474556cf1a8cc2f5d0e9503717e2157c0b4aa35c1690613`.

@@ -92,6 +92,8 @@ ba_in01,365,50,4	script	Omega#biosphere_materials	4_EP17_CLEANER,{
 		.@zenymax = Zeny / 20000;
 		if (.@max > .@zenymax)
 			.@max = .@zenymax;
+		if (.@max > 30000)
+			.@max = 30000;
 		if (.@max < 1) {
 			mes "[Omega]";
 			mes "You do not have enough materials and Zeny.";
@@ -99,14 +101,10 @@ ba_in01,365,50,4	script	Omega#biosphere_materials	4_EP17_CLEANER,{
 		}
 		mes "[Omega]";
 		mes "How many should I create? Maximum: " + .@max + ".";
-		input .@amount,1,.@max;
-		if (!checkweight(.@output,.@amount)) {
-			mes "Make room for the converted material first.";
+		if (input(.@amount,1,.@max) != 0)
 			close;
-		}
-		delitem .@input,.@need * .@amount;
-		Zeny -= 20000 * .@amount;
-		getitem .@output,.@amount;
+		if (!callfunc("F_BiosphereMaterialCommit",.@amount,.@output,20000,0,1,.@input,.@need))
+			close;
 		mes "Conversion complete.";
 		close;
 	case 2:
@@ -125,6 +123,8 @@ ba_in01,365,50,4	script	Omega#biosphere_materials	4_EP17_CLEANER,{
 		.@have = countitem(.@special_essence[.@water_type]) / 5;
 		if (.@max > .@have)
 			.@max = .@have;
+		if (.@max > 30000)
+			.@max = 30000;
 		if (.@max < 1) {
 			mes "[Omega]";
 			mes "Each water needs 5 Glade, Fire, Ice, Death, and matching special essences, plus 20,000z.";
@@ -132,21 +132,94 @@ ba_in01,365,50,4	script	Omega#biosphere_materials	4_EP17_CLEANER,{
 		}
 		mes "[Omega]";
 		mes "How many should I create? Maximum: " + .@max + ".";
-		input .@amount,1,.@max;
-		if (!checkweight(.@water[.@water_type],.@amount)) {
-			mes "Make room for the magical water first.";
+		if (input(.@amount,1,.@max) != 0)
 			close;
-		}
-		for (.@i = 0; .@i < 4; ++.@i)
-			delitem .@common_essence[.@i],5 * .@amount;
-		delitem .@special_essence[.@water_type],5 * .@amount;
-		Zeny -= 20000 * .@amount;
-		getitem .@water[.@water_type],.@amount;
+		if (!callfunc("F_BiosphereMaterialCommit",.@amount,.@water[.@water_type],20000,0,5,.@common_essence[0],5,.@common_essence[1],5,.@common_essence[2],5,.@common_essence[3],5,.@special_essence[.@water_type],5))
+			close;
 		mes "Magical water conversion complete.";
 		close;
 	default:
 		close;
 	}
+}
+
+// Only Omega's 17 material recipes and Ellie's 24 Depth material recipes use
+// this no-yield commit. Their exact plain-Etc definitions and ba_in01 callbacks
+// are pinned by the material-service regression; this is not a generic shop API.
+function	script	F_BiosphereMaterialCommit	{
+	if (getargcount() < 5)
+		return false;
+	.@amount = getarg(0); .@result = getarg(1); .@cost = getarg(2);
+	.@access = getarg(3); .@matcount = getarg(4);
+	if ((.@access != 0 && .@access != 1) || .@amount < 1 || .@amount > 30000 || (.@matcount != 1 && .@matcount != 5))
+		return false;
+	if (getargcount() != 5 + 2 * .@matcount || .@result < 1 || .@result > 2147483647 || getiteminfo(.@result,ITEMINFO_TYPE) != IT_ETC)
+		return false;
+	if ((.@access == 0 && .@cost != 20000) || (.@access == 1 && (.@matcount != 1 || (.@cost != 30000 && .@cost != 50000 && .@cost != 100000))))
+		return false;
+	for (.@i = 0; .@i < .@matcount; ++.@i) {
+		.@mat[.@i] = getarg(5 + 2 * .@i); .@need[.@i] = getarg(6 + 2 * .@i);
+		if (.@mat[.@i] < 1 || .@mat[.@i] > 2147483647 || .@mat[.@i] == .@result || getiteminfo(.@mat[.@i],ITEMINFO_TYPE) != IT_ETC || (.@need[.@i] != 5 && .@need[.@i] != 10))
+			return false;
+		for (.@j = 0; .@j < .@i; ++.@j)
+			if (.@mat[.@j] == .@mat[.@i])
+				return false;
+	}
+	// Revalidate only each service's original access policy after input.
+	if (strcharinfo(3) != "ba_in01" || (.@access == 0 && BaseLevel < 240) || (.@access == 1 && (BaseLevel < 250 || ep17_2_main < 33))) {
+		mes "Your Biosphere access changed. No materials or Zeny were used.";
+		return false;
+	}
+	.@total = .@cost * .@amount;
+	if (Zeny < .@total) {
+		mes "Your materials or Zeny changed. Please try again.";
+		return false;
+	}
+	for (.@i = 0; .@i < .@matcount; ++.@i) {
+		if (countitem(.@mat[.@i]) < .@need[.@i] * .@amount) {
+			mes "Your materials or Zeny changed. Please try again.";
+			return false;
+		}
+	}
+	// Keep conservative pre-payment capacity: no credit for consumed inputs.
+	if (Weight + getiteminfo(.@result,ITEMINFO_WEIGHT) * .@amount > MaxWeight) {
+		mes "Make room for the converted material first.";
+		return false;
+	}
+	.@slots = getinventoryslots();
+	if (.@slots < 1 || .@slots > MAX_INVENTORY) {
+		mes "Your inventory capacity could not be verified. Nothing was used.";
+		return false;
+	}
+	getinventorylist;
+	.@target = -1; .@occupied = 0;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_idx[.@i] < .@slots)
+			++.@occupied;
+		if (@inventorylist_id[.@i] != .@result || @inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		// Native first-compatible stacking is terminal, even outside allowed slots.
+		.@target = @inventorylist_idx[.@i];
+		.@stack_amount = @inventorylist_amount[.@i];
+		break;
+	}
+	if ((.@target >= 0 && (.@target >= .@slots || .@stack_amount + .@amount > 30000)) || (.@target < 0 && .@occupied >= .@slots)) {
+		mes "Make room in the matching output stack or an available inventory slot first.";
+		return false;
+	}
+	// The reviewed ba_in01 QuestInfo/achievement conditions do not mutate payment
+	// resources. There must be no further suspension between preflight and commit.
+	for (.@i = 0; .@i < .@matcount; ++.@i) {
+		.@remaining = .@need[.@i] * .@amount;
+		while (.@remaining > 0) {
+			.@chunk = (.@remaining > 30000) ? 30000 : .@remaining;
+			delitem .@mat[.@i],.@chunk;
+			.@remaining -= .@chunk;
+		}
+	}
+	Zeny -= .@total;
+	getitem .@result,.@amount;
+	return true;
 }
 
 ba_in01,359,53,4	script	Ellie#biosphere_equipment	4_EP17_ELYUMINA,{

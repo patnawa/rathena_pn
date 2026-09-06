@@ -384,3 +384,67 @@ regressions passed with freshly compiled patched `pc.cpp`. Both candidate
 startup data variants and the installed explicit-live manifest/gates passed.
 See `equipswitch_deletion_deployment_20260906.md` for actual binary provenance,
 quiescence checks, backups, and the distinction from full gameplay validation.
+
+## Material services and crystal capacity manual re-review, 2026-09-06
+
+This review follows the completed equipment-switch deployment. It qualifies
+source changes for the existing callback closure, not new transaction-test or
+deployment completion. Root read the complete three-NPC-file runtime diff and
+the native input, inventory, grant and callback implementations before updating
+the NPC section pin. No engine or database changed:
+
+- `npc/custom/varmundt_biosphere_quests.txt`, raw/LF SHA256
+  `edec07ec166f5f8ae4a7e90ed52e38a5f9d76cf5781d139754a4ebd9a1ba0a7a`:
+  Omega's two quantity paths check input status, cap the offered maximum and
+  call a new purpose-scoped `F_BiosphereMaterialCommit`. It checks current
+  access/location, all payment totals, conservative weight and native-compatible
+  plain stacking, then pays in bounded chunks with no further yield. All 17
+  recipes are unchanged. Equipment Ellie and all subsequent services are
+  byte-identical after newline normalization; Research Beta is unchanged.
+- `npc/custom/varmundt_biosphere_depth.txt`, raw/LF SHA256
+  `6582a4b1401398f505b695f67e213e1d14f9b9978c875ae24b663623ce3b6988`:
+  only Ellie fusion's input/max/payment block changes to that same helper.
+  All 24 recipes and the exact level/story policy remain unchanged. Everything
+  outside that complete NPC region, including crowns and Abyss `L_Convert`,
+  is unchanged. No reputation threshold is added.
+- `npc/custom/episode21/FinalBattle.txt`, raw/LF SHA256
+  `3873d72118f6cf83374c445e6891eaf9a79660fec71c5e12b3bb02872e4625f1`:
+  one new purpose-scoped, read-only `EP21_FB_CheckPlainBatch` snapshots inventory
+  and reserves compatible stack/new-slot capacity cumulatively. Exactly two
+  crystal capacity-check callsites change. Removing the helper and reversing
+  those expressions reproduces the complete old file. Saved rolls, reward
+  ordering/probabilities and daily/reset policy are unchanged.
+
+Neither helper introduces a dynamic bonus provider, item/status script entry,
+NPC relocation, quest-info registration or new NPC include. They run only from
+the reviewed interactive services; their item operations are not new crown
+status-recalculation callbacks. Existing ba_in01 QuestInfo and Final Battle's
+Golden Diamond achievement completion require their own focused gates/native
+fixtures, not a claim that this broad crown review proves those transactions.
+
+Full project and explicit-live collections were compared with the preceding
+deployment manifests. They have the same 3,688 memberships and import graphs;
+exactly the three script hashes above differ. All engine, database and script
+closure manifest sections are identical to the preceding versions. The common
+new NPC section pin is
+`45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7`.
+The three separately preserved live differences and all other section pins are
+unchanged. No automatic acceptance/rebaseline option has been added.
+
+Older crown, conversion and switch regressions now use
+`biosphere_regression_scope.py` for exact reviewed material-only exceptions.
+The omitted fusion region and quests material prefix must match explicitly
+pinned old/new bytes; arbitrary changes are rejected. Every remaining protected
+byte, actual equipment Ellie/access body, and mandatory broad gate remains
+checked. Four LF/CRLF form controls and six mutation controls passed. This is
+not a blanket ignored prefix or a relaxation to keyword-only equivalence.
+
+The initial Final Battle helper draft used a scripted output-by-inventory nested
+loop. Root identified that up to 21 outputs by 200 physical rows could exceed
+the actual 2,048 script jump limit. Before deployment, that draft was replaced
+with native `inarray` aggregation/lookups and one ascending inventory pass.
+Root also required a separate negative-lookup branch before array access,
+without assuming logical short-circuit evaluation in this VM. Native `inarray`
+is read-only and returns -1 for an empty/not-found list. The correction changes
+no reward or callback policy; native budget/invalid-index cases are a separate
+required test, not implied by the source pin. The draft was never deployed.

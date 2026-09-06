@@ -7,6 +7,72 @@
 //= Reference: https://wiki.muhro.eu/Final_Battle
 //============================================================
 
+// Exact capacity for this file's 21 plain crystal outputs. The focused audit
+// pins their stackable/no-GUID/no-custom-stack-cap/no-autoequip definitions and
+// the synchronous weight/achievement/instance quest-info callback closure.
+function	script	EP21_FB_CheckPlainBatch	{
+	.@count = getarg(2);
+	if (.@count < 0 || .@count > 21)
+		return false;
+	// A legitimate empty Normal roll consumes no inventory capacity.
+	if (!.@count)
+		return true;
+	copyarray .@items[0],getarg(0),.@count;
+	copyarray .@amounts[0],getarg(1),.@count;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		.@id = .@items[.@i];
+		if (!(.@id == 103512 || .@id == 1001480 || (.@id >= 1001653 && .@id <= 1001664) || (.@id >= 1001034 && .@id <= 1001037) || (.@id >= 1000812 && .@id <= 1000814)))
+			return false;
+		if (.@amounts[.@i] < 1 || .@amounts[.@i] > 30000)
+			return false;
+		.@j = inarray(.@ids,.@id);
+		if (.@j < 0) {
+			.@j = .@unique;
+			.@ids[.@unique] = .@id;
+			++.@unique;
+		}
+		.@totals[.@j] += .@amounts[.@i];
+		if (.@totals[.@j] > 30000)
+			return false;
+	}
+	for (.@i = 0; .@i < .@unique; ++.@i) {
+		.@unit_weight = getiteminfo(.@ids[.@i],ITEMINFO_WEIGHT);
+		if (.@unit_weight < 0)
+			return false;
+		.@weight += .@unit_weight * .@totals[.@i];
+	}
+	if (Weight + .@weight > MaxWeight)
+		return false;
+	.@slots = getinventoryslots();
+	if (.@slots < 1 || .@slots > MAX_INVENTORY)
+		return false;
+	getinventorylist;
+	// One ascending inventory pass stays inside the normal script jump budget.
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_idx[.@i] < .@slots)
+			++.@occupied;
+		.@j = inarray(.@ids,@inventorylist_id[.@i]);
+		if (.@j < 0)
+			continue;
+		if (.@matched[.@j])
+			continue;
+		if (@inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		// Native inventory order: a failing first compatible stack is terminal.
+		if (@inventorylist_idx[.@i] >= .@slots || @inventorylist_amount[.@i] + .@totals[.@j] > 30000)
+			return false;
+		.@matched[.@j] = true;
+	}
+	for (.@i = 0; .@i < .@unique; ++.@i) {
+		if (!.@matched[.@i]) {
+			++.@occupied;
+			if (.@occupied > .@slots)
+				return false;
+		}
+	}
+	return true;
+}
+
 jor_raise1,132,323,4	script	Nyar#ep21_fb_daily	22006,{
 	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_FinalBattle_Daily != EP21_DailyKey()";
 	mes "[Nyar]";
@@ -281,7 +347,7 @@ OnRepeatBossDead:
 			++.@reward_count;
 		}
 	}
-	if (.@reward_count && !checkweight2(.@reward_item,.@reward_amount)) {
+	if (.@reward_count && !callfunc("EP21_FB_CheckPlainBatch",.@reward_item,.@reward_amount,.@reward_count)) {
 		mes "[Giant Serpent Crystal]";
 		mes "Make enough inventory room for every material extracted from this crystal.";
 		close;
@@ -346,7 +412,7 @@ OnRepeatBossDead:
 			++.@reward_count;
 		}
 	}
-	if (!checkweight2(.@reward_item,.@reward_amount)) {
+	if (!callfunc("EP21_FB_CheckPlainBatch",.@reward_item,.@reward_amount,.@reward_count)) {
 		mes "[Giant Serpent Crystal]";
 		mes "Make enough inventory room for the guaranteed box and every extracted material.";
 		close;

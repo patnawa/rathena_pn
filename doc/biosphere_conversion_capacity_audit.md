@@ -312,3 +312,19 @@ rejecting all **nine** deliberate scoped changes. Root's current default
 engine/NPC section pins begin `85a78b70` / `dd76ad03`; their exact values remain
 owned by the broader gate. Final conversion-gate raw SHA256:
 `9b8cf2bb95602a2464491547b3d4ee43cab64a0bf2f4c24c56b48ec7fcbe1a76`.
+
+## Material-service batch regression, 2026-09-06
+
+The later, separate Depth fusion repair is now an exact old/new hash-pinned
+exception in `biosphere_regression_scope.py`. The conversion runner still
+compares every other protected byte and all original conversion recipes;
+an arbitrary edit to the excluded region is rejected, not ignored.
+
+The current three-NPC material/reward tree passed the mandatory gates and the
+native 225 cases / 49,497 assertions, eight original failure cases / 177
+assertions, and two old getter controls / 51 assertions. The run in
+`../material-reward-conversion-final-20260906/` reused exact-source retained
+binaries, not a newly compiled server. Receipt SHA256:
+`811248808d4e14a697cc65e32d4038bfbaa4b2ba698bec3283ac6113c06472d3`.
+All nine scoped callback negatives passed again against broad NPC pin
+`45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7`.

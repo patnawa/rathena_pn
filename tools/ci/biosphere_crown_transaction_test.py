@@ -11,6 +11,7 @@ import sys
 import yaml
 
 from audit_enchant_upgrades import renewal_records
+from biosphere_regression_scope import without_reviewed_fusion
 
 ROOT = Path(__file__).resolve().parents[2]
 NPC = 'npc/custom/varmundt_biosphere_depth.txt'
@@ -51,13 +52,15 @@ def validate():
     old = original.decode()
     new = current.decode().replace('\r\n', '\n').replace('\r', '\n')
     marker = '// Changes exactly one synthetic enchant slot'
-    require(old.split(marker)[0] == new.split('// Crown transaction guard.')[0],
+    require(without_reviewed_fusion(old.split(marker)[0].encode()) ==
+            without_reviewed_fusion(new.split('// Crown transaction guard.')[0].encode()),
             'Changes outside approved helper/Abyss Researcher prefix')
     crown_baseline = subprocess.check_output(['git', 'show', f'{CROWN_BASE}:{NPC}'], cwd=ROOT)
     require(sha(crown_baseline) == CROWN_BASE_SHA, 'Pinned deployed crown baseline drift')
-    # Bulk conversion has its own native transaction suite. Preserve the ENTIRE
-    # already-reviewed crown/helper/access prefix while allowing that scoped fix.
-    require(crown_baseline.decode().split('L_Convert:\n', 1)[0] == new.split('L_Convert:\n', 1)[0],
+    # Other material services have separate proofs. Only their exact reviewed
+    # fusion region may differ; preserve every other crown/helper/access byte.
+    require(without_reviewed_fusion(crown_baseline.split(b'L_Convert:\n', 1)[0]) ==
+            without_reviewed_fusion(new.split('L_Convert:\n', 1)[0].encode()),
             'Previously deployed crown/helper/access source changed')
     match = re.search(r'setarray \.@crown_ids\[0\],([^;]+);', new)
     require(match and [int(x) for x in match[1].split(',')] == IDS, 'Exact supported 19-ID mapping changed')
@@ -122,7 +125,7 @@ def native(build, inputs, reuse=False):
     (build / 'reputation.yml').write_text(yaml.safe_dump({'Body': relevant}, sort_keys=False))
     sources = ['src/map/pc.cpp', 'src/map/script.cpp', 'src/map/itemdb.cpp',
                'src/map/clif.cpp', 'src/common/malloc.cpp', 'tools/ci/biosphere_crown_transaction_test.cpp']
-    tracked = sources + ['tools/ci/biosphere_crown_transaction_test.py']
+    tracked = sources + ['tools/ci/biosphere_crown_transaction_test.py', 'tools/ci/biosphere_regression_scope.py']
     hashes = {p: sha((ROOT / p).read_bytes()) for p in tracked}
     executable = build / 'biosphere_crown_transaction_test'
     if reuse:
