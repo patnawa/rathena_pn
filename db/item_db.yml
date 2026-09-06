@@ -105,3 +105,5 @@ Footer:
     Mode: Renewal
   - Path: db/import/druid_gear_enchants.yml
     Mode: Renewal
+  - Path: db/import/druid_shadow166_items.yml
+    Mode: Renewal

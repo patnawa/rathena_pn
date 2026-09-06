@@ -1,5 +1,13 @@
 # Installed Chapter 2 and Druid Gear client check
 
+This verifier covers exactly the six-record Chapter 2/Gear checkpoint. After
+later metadata additions, `--loader PATH` can explicitly select the retained
+checkpoint loader while still verifying the unchanged installed GRF/fragments.
+Output reports the selected loader and `loader_is_active`; a historical-loader
+run is not proof of the newer active loader. The later installation must have
+its own full active-loader preservation check. All six-record scope, hash,
+import-order, and recursive preservation assertions remain unchanged.
+
 Run from the repository root under WSL:
 
 ```sh

@@ -59218,7 +59218,7 @@ Body:
       .@sum = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HAND_R);
       bonus2 bSkillAtk,"HN_NAPALM_VULCAN_STRIKE",35;
       if (.@sum>=24 && getenchantgrade(EQI_HEAD_TOP)>=ENCHANTGRADE_A && getenchantgrade(EQI_HAND_R)>=ENCHANTGRADE_A) {
-         bonus2 bSkillAtk,"WL_CHAINLIGHTNING_ATK",.@sum*2;
+         bonus2 bSkillAtk,"WL_CHAINLIGHTNING",.@sum*2;
          if (getskilllv("WL_CHAINLIGHTNING")>=5) {
             bonus4 bAutoSpellOnSkill,"HN_NAPALM_VULCAN_STRIKE","WL_CHAINLIGHTNING",5,1000;
          }

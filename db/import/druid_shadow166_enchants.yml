@@ -1,0 +1,119 @@
+# Exact original active-client group 166: four targets, 18 perfect enchants.
+# Original EnchantList SHA256:
+# 664a6083b051233496611664af4c84d4ccd1c9e6ceb685edac6cacf60feda80d
+# Native card indices 3 then 2. Reset is disabled; dormant client costs omitted.
+# No acquisition route or NPC is added. See doc/druid_shadow166_audit.md.
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+Body:
+  - Id: 166
+    TargetItems:
+      S_AT_Armor: true
+      S_AT_Shoes: true
+      S_AT_Earring: true
+      S_AT_Pendant: true
+    MinimumRefine: 0
+    MinimumEnchantgrade: 0
+    AllowRandomOptions: true
+    Reset:
+      Chance: 0
+      Price: 0
+    Order:
+      - Slot: 3
+      - Slot: 2
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: M_Pow3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 1
+          - Item: M_Sta3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 1
+          - Item: M_Wis3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 1
+          - Item: M_Spl3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 1
+          - Item: M_Con3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 1
+          - Item: M_Crt3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 1
+      - Slot: 2
+        PerfectEnchants:
+          - Item: Nimble_Soul
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+          - Item: Casting_Soul
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+          - Item: Critical_Soul
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+          - Item: Expert_Soul
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+          - Item: Robust_Soul
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+          - Item: AT_Soul_AC
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: AT_Soul_FF
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: AT_Soul_PS
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: AT_Soul_QS
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: AT_Soul_GS
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: AT_Soul_RP
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: AT_Soul_TH
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5

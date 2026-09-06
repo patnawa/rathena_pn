@@ -146,9 +146,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--lua', type=Path, default=RUNTIME)
     parser.add_argument('--backup', type=Path, default=BACKUP)
+    parser.add_argument('--loader', type=Path, default=CLIENT / 'SystemEN/itemInfo.lua',
+                        help='Loader to check; explicitly select a retained checkpoint after later client additions')
     args = parser.parse_args()
     backup_ini, backup_loader = args.backup / 'DATA.INI', args.backup / 'SystemEN/itemInfo.lua'
-    active_ini, active_loader = CLIENT / 'DATA.INI', CLIENT / 'SystemEN/itemInfo.lua'
+    active_ini, active_loader = CLIENT / 'DATA.INI', args.loader
     require(digest(backup_ini) == '10b3584271cfb8197c61365f643c851e7b332f444d4cd9399febc4a6b1d595dd', 'Backup DATA.INI drift')
     require(digest(backup_loader) == '3bcef815049208711949e10a0bf975c90292f3cfed9d58749c5317b26838c065', 'Backup itemInfo loader drift')
     old_order, new_order = archive_order(backup_ini), archive_order(active_ini)
@@ -208,7 +210,9 @@ def main():
         'loader_unchanged_except_four_added_import_lines': True,
         'two_installed_fragments_equal_reviewed_bytes': True,
         'actual_lua_merged_metadata': merged,
-        'active_data_ini_sha256': digest(active_ini), 'active_loader_sha256': digest(active_loader),
+        'active_data_ini_sha256': digest(active_ini), 'checked_loader_sha256': digest(active_loader),
+        'checked_loader': str(active_loader.resolve()),
+        'loader_is_active': active_loader.resolve() == (CLIENT / 'SystemEN/itemInfo.lua').resolve(),
         'lua_runtime_sha256': digest(args.lua.resolve()),
         'runtime_scope': 'Actual Lua loader/merge only; no native main, game packets, or window proof',
     }, indent=2))

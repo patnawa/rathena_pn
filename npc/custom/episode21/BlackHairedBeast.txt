@@ -64,9 +64,10 @@ jor_mbase,203,186,4	script	Tris#ep21_finale	22301,{
 		mes "The Age of Heroes is preserved, even if the rift continues to replay those memories.";
 		close;
 	}
-	if (isbegin_quest(16818)) {
-		if (isbegin_quest(16818) == 1)
-			completequest 16818;
+	// Completed quests remain in the log. Only the active arrival report
+	// should intercept the later tablet, eyewitness, and serpent reports.
+	if (isbegin_quest(16818) == 1) {
+		completequest 16818;
 		if (!isbegin_quest(23249))
 			setquest 23249;
 		mes "Heine's connection is failing. Take the tablet to the upstairs room at ^3366FF(mbase_in 71,126)^000000.";

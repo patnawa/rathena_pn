@@ -1832,8 +1832,8 @@ static bool pc_isItemClass ( const map_session_data* sd, const item_data* item )
 		//third-baby classes (exl. fourth)
 		if (item->class_upper&ITEMJ_THIRD_BABY && sd->class_&JOBL_THIRD && sd->class_&JOBL_BABY && !(sd->class_&JOBL_FOURTH))
 			break;
-		//fourth classes
-		if (item->class_upper&ITEMJ_FOURTH && sd->class_&JOBL_FOURTH)
+		// Fourth classes and their trait-bearing expanded counterparts.
+		if (item->class_upper&ITEMJ_FOURTH && pc_is_trait_job(sd->class_))
 			break;
 #endif
 		return false;

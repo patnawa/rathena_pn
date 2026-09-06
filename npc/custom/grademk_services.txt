@@ -225,14 +225,21 @@ grademk,40,184,4	script	Shadow Gear Enchanter#grademk	4_M_REPAIR,{
 	mes "[Shadow Gear Enchanter]";
 	mes "I enchant Full Power, Full Rate and Full Spell Shadow armor and shoes.";
 	mes "I also handle Focusing, Stout, Centering and Witty Shadow pendants and earrings.";
+	mes "M. Alitea Shadow equipment has its own enchant window.";
 	next;
 	mes "[Shadow Gear Enchanter]";
 	mes "Bring your equipment and Shadow Enchant Essence. The window shows the exact costs.";
-	mes "Upgrades may retain or lower the enchant level. This service has no reset.";
+	mes "Regular Shadow upgrades may retain or lower the enchant level. Both services have no reset.";
+	mes "Alitea equipment receives two ordered, selectable enchants; each requires Essence.";
 	next;
-	if (select("Open Shadow Enchant:Cancel") == 2)
+	.@service = select("Open Shadow Enchant:Cancel:M. Alitea Shadow Enchant");
+	if (.@service == 2)
 		close;
 	close2;
+	if (.@service == 3) {
+		item_enchant(166);
+		end;
+	}
 	item_enchant(128);
 	end;
 

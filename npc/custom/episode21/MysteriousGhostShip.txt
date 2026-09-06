@@ -288,6 +288,8 @@ OnBossDead:
 	mes "[Maristella Walter]";
 	mes "This deck feels familiar, but the ship is saturated with hostile memories. Stay close and examine every trace we uncover.";
 	close2;
+	// close2 yields: a second open dialogue must not rewind shared progress.
+	if ('stage != 0) end;
 	'stage = 1;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnUpper1";
@@ -299,6 +301,7 @@ OnBossDead:
 	mes "[Sternlight]";
 	mes "The lamp's construction is familiar to Maristella, but it is not the one she remembers from childhood.";
 	close2;
+	if ('stage != 2) end;
 	'stage = 3;
 	disablenpc();
 	enablenpc instance_npcname("Mast Traces#ep21gs");
@@ -310,6 +313,7 @@ OnBossDead:
 	mes "[Mast Traces]";
 	mes "Old height marks are carved into the mast. Maristella recognizes the marks made when her father measured her growth.";
 	close2;
+	if ('stage != 3) end;
 	'stage = 4;
 	disablenpc();
 	enablenpc instance_npcname("Old Box#ep21gs");
@@ -321,6 +325,7 @@ OnBossDead:
 	mes "[Old Box]";
 	mes "Hand-carved wooden toys rest inside. Howell Walter made them for his daughter long ago.";
 	close2;
+	if ('stage != 4) end;
 	'stage = 5;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnUpper2";
@@ -328,10 +333,12 @@ OnBossDead:
 }
 
 1@wtgs,121,318,0	script(DISABLED)	#EP21_GS_UpperPortal	WARPNPC,2,2,{
-	if ('stage != 7) end;
-	'stage = 8;
-	disablenpc();
-	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnMiddle";
+	if ('stage < 7) end;
+	// Keep unlocked passages available for other members and re-entry.
+	if ('stage == 7) {
+		'stage = 8;
+		donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnMiddle";
+	}
 	warp instance_mapname("1@wtgs"),47,27;
 	end;
 }
@@ -341,6 +348,7 @@ OnBossDead:
 	mes "[Crumpled Documents]";
 	mes "The writing is almost unreadable; seawater blurred every line before the ship became trapped in this state.";
 	close2;
+	if ('stage != 9) end;
 	'stage = 10;
 	disablenpc();
 	enablenpc instance_npcname("#EP21_GS_MiddlePortal");
@@ -348,10 +356,11 @@ OnBossDead:
 }
 
 1@wtgs,59,30,0	script(DISABLED)	#EP21_GS_MiddlePortal	WARPNPC,2,2,{
-	if ('stage != 10) end;
-	'stage = 11;
-	disablenpc();
-	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower1";
+	if ('stage < 10) end;
+	if ('stage == 10) {
+		'stage = 11;
+		donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower1";
+	}
 	warp instance_mapname("1@wtgs"),185,101;
 	end;
 }
@@ -361,6 +370,7 @@ OnBossDead:
 	mes "[Rusty Fountain Pen]";
 	mes "Yohan recognizes the captain's fountain pen. There can be no doubt: this is the missing Walter.";
 	close2;
+	if ('stage != 12) end;
 	'stage = 13;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower2";
@@ -372,6 +382,7 @@ OnBossDead:
 	mes "[Journal in the Box]";
 	mes "The captain's journal describes a stranger granting his desperate wish. The crew then lost their memories and transformed into monsters.";
 	close2;
+	if ('stage != 14) end;
 	'stage = 15;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_GhostShip_Control")+"::OnLower3";
@@ -379,10 +390,11 @@ OnBossDead:
 }
 
 1@wtgs,106,110,0	script(DISABLED)	#EP21_GS_CaptainPortal	WARPNPC,2,2,{
-	if ('stage != 16) end;
-	'stage = 17;
-	disablenpc();
-	enablenpc instance_npcname("Ghost Ship Captain#ep21gs_battle");
+	if ('stage < 16) end;
+	if ('stage == 16) {
+		'stage = 17;
+		enablenpc instance_npcname("Ghost Ship Captain#ep21gs_battle");
+	}
 	warp instance_mapname("1@wtgs"),303,29;
 	end;
 }
@@ -395,6 +407,7 @@ OnBossDead:
 	mes "[Maristella Walter]";
 	mes "Father, listen to us! We will end the curse, but first we must break the rage holding you here.";
 	close2;
+	if ('stage != 17) end;
 	'stage = 18;
 	disablenpc();
 	monster instance_mapname("1@wtgs"),315,31,"Ghost Ship Captain",22372,1,instance_npcname("#EP21_GhostShip_Control")+"::OnBossDead";
@@ -407,6 +420,7 @@ OnBossDead:
 	mes "My wish was to sink every cult ship, even after death. Instead it chained all of us to this nightmare.";
 	mes "Maria... seeing everyone once more is more than I deserved. Let this ship finally rest.";
 	close2;
+	if ('stage != 19) end;
 	'stage = 20;
 	disablenpc();
 	enablenpc instance_npcname("Howell Megas Walter#ep21gs");
@@ -418,6 +432,7 @@ OnBossDead:
 	mes "[Howell Megas Walter]";
 	mes "Tell the living what happened here. Do not let grief become another prison.";
 	close2;
+	if ('stage != 20) end;
 	'stage = 21;
 	disablenpc();
 	enablenpc instance_npcname("#EP21_GS_CaptainExit");
@@ -425,10 +440,11 @@ OnBossDead:
 }
 
 1@wtgs,331,27,0	script(DISABLED)	#EP21_GS_CaptainExit	WARPNPC,2,2,{
-	if ('stage != 21) end;
-	'stage = 22;
-	disablenpc();
-	enablenpc instance_npcname("Maristella#ep21gs_finish");
+	if ('stage < 21) end;
+	if ('stage == 21) {
+		'stage = 22;
+		enablenpc instance_npcname("Maristella#ep21gs_finish");
+	}
 	warp instance_mapname("1@wtgs"),86,306;
 	end;
 }

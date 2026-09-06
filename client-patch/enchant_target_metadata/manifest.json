@@ -1,0 +1,621 @@
+{
+  "schema": 2,
+  "scope": "Twelve existing-server group-165 targets only; does not define missing server items.",
+  "source_hashes": {
+    "muhro_item_info": "a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4",
+    "muhro_resource_table": "2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6",
+    "original_enchant_list": "664a6083b051233496611664af4c84d4ccd1c9e6ceb685edac6cacf60feda80d",
+    "original_item_names": "2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496",
+    "active_enchant_helper": "bfee2e2ade0437fbb3a101e93e2e1a81986c3a484e4e96b9ec7fe10d52ac75cb"
+  },
+  "unidentified_resource": "EpisodClear20",
+  "baseline_missing_targets": 43,
+  "remaining_missing_targets": 31,
+  "items": [
+    {
+      "id": 401055,
+      "aegis": "Stardust_Crown_SV",
+      "name": "Silver Stardust Crown",
+      "slots": 1,
+      "view": 2500,
+      "defense": 60,
+      "armor_level": 2,
+      "minimum_level": 250,
+      "weight": 400,
+      "reference_name": "Silver Stardust Crown",
+      "resource": "Poenetentia_P_Crown",
+      "jobs": null,
+      "classes": null,
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401056,
+      "aegis": "Stardust_Crown_SC",
+      "name": "Scarlet Stardust Crown",
+      "slots": 1,
+      "view": 2393,
+      "defense": 65,
+      "armor_level": 2,
+      "minimum_level": 250,
+      "weight": 400,
+      "reference_name": "Scarlet Stardust Crown",
+      "resource": "Poenetentia_B_Crown",
+      "jobs": null,
+      "classes": null,
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401057,
+      "aegis": "Stardust_Crown_VI",
+      "name": "Violet Stardust Crown",
+      "slots": 1,
+      "view": 2506,
+      "defense": 35,
+      "armor_level": 2,
+      "minimum_level": 250,
+      "weight": 400,
+      "reference_name": "Violet Stardust Crown",
+      "resource": "Poenetentia_S_Crown",
+      "jobs": null,
+      "classes": null,
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401058,
+      "aegis": "Sky_Rune_Crown_IG",
+      "name": "Celestial Rune Crown (Imperial Guard)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Imperial Guard)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Crusader": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401059,
+      "aegis": "Sky_Rune_Crown_ABC",
+      "name": "Celestial Rune Crown (Abyss Chaser)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Abyss Chaser)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Rogue": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401060,
+      "aegis": "Sky_Rune_Crown_SH",
+      "name": "Rune Crown of the Sky (Spiritualist)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Spirit Handler)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Spirit_Handler": true
+      },
+      "classes": null,
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401115,
+      "aegis": "Sky_Rune_Crown_MS",
+      "name": "Sky Rune Crown (Meister)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Meister)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Blacksmith": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401116,
+      "aegis": "Sky_Rune_Crown_WH",
+      "name": "Sky Rune Crown (Windhawk)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Windhawk)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Hunter": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401117,
+      "aegis": "Sky_Rune_Crown_HN",
+      "name": "Sky Rune Crown (Hyper Novice)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Hyper Novice)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "SuperNovice": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401118,
+      "aegis": "Sky_Rune_Crown_CD",
+      "name": "Sky Rune Crown (Cardinal)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Cardinal)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Priest": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401119,
+      "aegis": "Sky_Rune_Crown_IQ",
+      "name": "Sky Rune Crown (Inquisitor)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Inquisitor)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "Monk": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    },
+    {
+      "id": 401120,
+      "aegis": "Sky_Rune_Crown_SKE",
+      "name": "Sky Rune Crown (Sky Emperor)",
+      "slots": 1,
+      "view": 2692,
+      "defense": 50,
+      "armor_level": 2,
+      "minimum_level": 240,
+      "weight": null,
+      "reference_name": "Sky Rune Crown (Sky Emperor)",
+      "resource": "Midgard_Diadem_JP",
+      "jobs": {
+        "StarGladiator": true
+      },
+      "classes": {
+        "Fourth": true
+      },
+      "refineable": true,
+      "gradable": true
+    }
+  ],
+  "effect_provenance": {
+    "item_scripts": {
+      "401055": "1ec1f80ab688d69019aec7dbfda6e47416eaee24a8627e1841120d688b7952b0",
+      "401056": "fe75ea8fa96c02f9dc66de591e26aada602774f81ffb109a1940c407c00edce0",
+      "401057": "2d934e2d1e80fa069243ac5c406947cb791687e79ad00a567090b8593f323aa1",
+      "401058": "a243aa3b2ac81ed9048150bc1600b74cae572a48e0f7f628d34f6b3d58db6e7c",
+      "401059": "6a0acf953e21cdeff1ab4184c9897f7012af06f5a4dbb735d840717bc746a855",
+      "401060": "6293fc300de3d39c9ffb513e30bf75f93903c97922b7d078270db250ae0ecbed",
+      "401115": "b55744fd2e6ddd4dd4cd0bc53281109cc80b820ef1087a74b06e577d3f10c150",
+      "401116": "01811230f18c59e4dd2c8972b7f0be1d2dceff1b88b724025445a1a14be92a81",
+      "401117": "c6d39307d90f82693f3d67ab4d048b7ff9954ab594352b5d0ac08335adea4d27",
+      "401118": "ab5a59fd4cbc7683106b49fa2a6ae85e88c45a8efdd94bb6dcacf9483f5cb94f",
+      "401119": "7e6a0dcedc866fb8dbf638dc5ac8ff761678b37078e1045c772cd7f16bbc8c30",
+      "401120": "7709008bb4db7e1699b02d8031b4cc47abe3a0d4f18e32cac9c971ead0e41280"
+    },
+    "combo_scripts": [
+      {
+        "ids": [
+          28145,
+          401115
+        ],
+        "sha256": "71855a03f313ffd7b889511226cf33f082ea0b10a3dbe81661341edb51a16dbc"
+      },
+      {
+        "ids": [
+          401055,
+          480669
+        ],
+        "sha256": "ab92555db9d8a099d124fc0f6ac455510e5b435853852f19c72c20b6ac4e25d3"
+      },
+      {
+        "ids": [
+          401055,
+          480670
+        ],
+        "sha256": "ab92555db9d8a099d124fc0f6ac455510e5b435853852f19c72c20b6ac4e25d3"
+      },
+      {
+        "ids": [
+          401056,
+          480671
+        ],
+        "sha256": "eac13ddf68414bd7c027a27071279277c68fc31b22bbca2bebb5dd395a57fb53"
+      },
+      {
+        "ids": [
+          401056,
+          480672
+        ],
+        "sha256": "ea73775a3a8a2795c12008534d01645760b8a2106df85d238bcdc1e3628e8eac"
+      },
+      {
+        "ids": [
+          401057,
+          480673
+        ],
+        "sha256": "586ba5966690b8d4045b543faeccdc20d3926c3e3c5086a10a64aab3094477ed"
+      },
+      {
+        "ids": [
+          401057,
+          480674
+        ],
+        "sha256": "5ecd39e53406a24ca7dd998c6bd41c9a2b2ff2c19029ae2636172a1281dcf43a"
+      },
+      {
+        "ids": [
+          401058,
+          530076
+        ],
+        "sha256": "8b2f54a452d60da0658019441b0fffdcbd00d14159ff5eb214f10b98ad366147"
+      },
+      {
+        "ids": [
+          401059,
+          510199
+        ],
+        "sha256": "b1b6f0b1002f1204af3649a577da9e589c0eef1fb34e1eca103a407ae504fcf1"
+      },
+      {
+        "ids": [
+          401060,
+          550187
+        ],
+        "sha256": "5cff40386b3d4b571270cad7e81ee2b61696d850c9625fa2e584735db1d79b35"
+      },
+      {
+        "ids": [
+          401116,
+          700125
+        ],
+        "sha256": "b45848dd0f4eef4fb7057f6516c1ee85cea1717ce0f5a7c3ae7525496d85e140"
+      },
+      {
+        "ids": [
+          401117,
+          500134
+        ],
+        "sha256": "6bebd23f2c26704398f193356f6df8b665be6b04b2c55e125fc2251713824465"
+      },
+      {
+        "ids": [
+          401118,
+          550190
+        ],
+        "sha256": "98da884e4ab26b240b34afa9ed62cd0f32571612c03df9f3225159d8d55f864f"
+      },
+      {
+        "ids": [
+          401119,
+          560086
+        ],
+        "sha256": "60fcd10ccd46dc811718574e1fd73674f2fa51e0f8075df9d0737fcfdad57f52"
+      },
+      {
+        "ids": [
+          401120,
+          540122
+        ],
+        "sha256": "79326acb209b8905aa116023baf10d7f10014cc0490488b552e7528a2d9f5f09"
+      }
+    ],
+    "combo_partners": [
+      {
+        "Id": 28145,
+        "AegisName": "Sky_Rush_Axe",
+        "Name": "Sky Rush Axe",
+        "Locations": {
+          "Both_Hand": true
+        }
+      },
+      {
+        "Id": 480669,
+        "AegisName": "aegis_480669",
+        "Name": "Executioner's Cloak",
+        "Locations": {
+          "Garment": true
+        }
+      },
+      {
+        "Id": 480670,
+        "AegisName": "aegis_480670",
+        "Name": "Sharpshooter Muffler",
+        "Locations": {
+          "Garment": true
+        }
+      },
+      {
+        "Id": 480671,
+        "AegisName": "aegis_480671",
+        "Name": "Fighter's Cloak",
+        "Locations": {
+          "Garment": true
+        }
+      },
+      {
+        "Id": 480672,
+        "AegisName": "aegis_480672",
+        "Name": "Champion's Cloak",
+        "Locations": {
+          "Garment": true
+        }
+      },
+      {
+        "Id": 480673,
+        "AegisName": "aegis_480673",
+        "Name": "Scholar's Muffler",
+        "Locations": {
+          "Garment": true
+        }
+      },
+      {
+        "Id": 480674,
+        "AegisName": "aegis_480674",
+        "Name": "Wizard's Cloak",
+        "Locations": {
+          "Garment": true
+        }
+      },
+      {
+        "Id": 500134,
+        "AegisName": "Sky_Napalm_Sword",
+        "Name": "Celestial Napalm Sword",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 510199,
+        "AegisName": "Sky_Chasing_Dagger",
+        "Name": "Chasing Dagger of the Sky",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 530076,
+        "AegisName": "Sky_Imperial_Spear",
+        "Name": "Imperial Spear of the Sky",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 540122,
+        "AegisName": "Sky_Moon_Book",
+        "Name": "Celestial Moonsong Book",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 550187,
+        "AegisName": "Sky_Chulho_Foxtail",
+        "Name": "Foxtail of the Sky",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 550190,
+        "AegisName": "Sky_Arbi_Rod",
+        "Name": "Celestial Arby Rod",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 560086,
+        "AegisName": "Sky_Destroy_Knuckle",
+        "Name": "Celestial Annihilation",
+        "Locations": {
+          "Right_Hand": true
+        }
+      },
+      {
+        "Id": 700125,
+        "AegisName": "Sky_Crescive_Bow",
+        "Name": "Celestial Crescent Bow",
+        "Locations": {
+          "Both_Hand": true
+        }
+      }
+    ],
+    "skills": {
+      "ABC_CHASING_BREAK": {
+        "Id": 6513,
+        "Name": "ABC_CHASING_BREAK",
+        "Description": "Chasing Break",
+        "MaxLevel": 5
+      },
+      "ABC_DEFT_STAB": {
+        "Id": 5320,
+        "Name": "ABC_DEFT_STAB",
+        "Description": "Deft Stab",
+        "MaxLevel": 10
+      },
+      "CD_ARBITRIUM": {
+        "Id": 5273,
+        "Name": "CD_ARBITRIUM",
+        "Description": "Arbitrium",
+        "MaxLevel": 10
+      },
+      "CD_ARBITRIUM_ATK": {
+        "Id": 5274,
+        "Name": "CD_ARBITRIUM_ATK",
+        "Description": "Arbitrium Attack",
+        "MaxLevel": 10
+      },
+      "CD_FRAMEN": {
+        "Id": 5284,
+        "Name": "CD_FRAMEN",
+        "Description": "Framen",
+        "MaxLevel": 5
+      },
+      "HN_NAPALM_VULCAN_STRIKE": {
+        "Id": 5460,
+        "Name": "HN_NAPALM_VULCAN_STRIKE",
+        "Description": "Napalm Vulcan Strike",
+        "MaxLevel": 10
+      },
+      "IG_CROSS_RAIN": {
+        "Id": 5267,
+        "Name": "IG_CROSS_RAIN",
+        "Description": "Cross Rain",
+        "MaxLevel": 10
+      },
+      "IG_IMPERIAL_PRESSURE": {
+        "Id": 6505,
+        "Name": "IG_IMPERIAL_PRESSURE",
+        "Description": "Imperial Pressure",
+        "MaxLevel": 5
+      },
+      "IQ_THIRD_FLAME_BOMB": {
+        "Id": 5252,
+        "Name": "IQ_THIRD_FLAME_BOMB",
+        "Description": "Third Flame Bomb",
+        "MaxLevel": 5
+      },
+      "MT_POWERFUL_SWING": {
+        "Id": 6507,
+        "Name": "MT_POWERFUL_SWING",
+        "Description": "Powerful Swing",
+        "MaxLevel": 5
+      },
+      "MT_RUSH_STRIKE": {
+        "Id": 6506,
+        "Name": "MT_RUSH_STRIKE",
+        "Description": "Rush Strike",
+        "MaxLevel": 5
+      },
+      "SH_CHUL_HO_BATTERING": {
+        "Id": 5506,
+        "Name": "SH_CHUL_HO_BATTERING",
+        "Description": "Chulho Battering",
+        "MaxLevel": 7
+      },
+      "SH_CHUL_HO_SONIC_CLAW": {
+        "Id": 5435,
+        "Name": "SH_CHUL_HO_SONIC_CLAW",
+        "Description": "Chulho Sonic Claw",
+        "MaxLevel": 7
+      },
+      "SH_HOGOGONG_STRIKE": {
+        "Id": 5437,
+        "Name": "SH_HOGOGONG_STRIKE",
+        "Description": "Hogogong Strike",
+        "MaxLevel": 7
+      },
+      "SKE_SKY_MOON": {
+        "Id": 5503,
+        "Name": "SKE_SKY_MOON",
+        "Description": "Sky Moon",
+        "MaxLevel": 5
+      },
+      "SKE_STAR_LIGHT_KICK": {
+        "Id": 5504,
+        "Name": "SKE_STAR_LIGHT_KICK",
+        "Description": "Star Light Kick",
+        "MaxLevel": 5
+      },
+      "SR_TIGERCANNON": {
+        "Id": 2330,
+        "Name": "SR_TIGERCANNON",
+        "Description": "Tiger Cannon",
+        "MaxLevel": 10
+      },
+      "WH_CRESCIVE_BOLT": {
+        "Id": 5334,
+        "Name": "WH_CRESCIVE_BOLT",
+        "Description": "Crescive Bolt",
+        "MaxLevel": 10
+      },
+      "WH_HAWKRUSH": {
+        "Id": 5326,
+        "Name": "WH_HAWKRUSH",
+        "Description": "Hawk Rush",
+        "MaxLevel": 5
+      },
+      "WL_CHAINLIGHTNING": {
+        "Id": 2214,
+        "Name": "WL_CHAINLIGHTNING",
+        "Description": "Chain Lightning",
+        "MaxLevel": 5
+      }
+    }
+  }
+}

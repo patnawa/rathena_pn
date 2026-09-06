@@ -41,3 +41,5 @@ Footer:
     Mode: Renewal
   - Path: db/import/item_combos.yml
   - Path: db/import/fashion_points_item_combos.yml
+  - Path: db/import/druid_shadow166_combos.yml
+    Mode: Renewal

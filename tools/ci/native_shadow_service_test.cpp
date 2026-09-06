@@ -135,7 +135,7 @@ extern "C" void shadow_close(const map_session_data& sd, uint32 npc) {
 extern "C" void shadow_menu(map_session_data&, uint32, const char*) asm("__wrap__Z15clif_scriptmenuR16map_session_datajPKc");
 extern "C" void shadow_menu(map_session_data& sd, uint32 npc, const char* text) {
     check(&sd == attached && npc == TEST_NPC, "menu targets attached player and NPC");
-    check(std::strcmp(text, "Open Shadow Enchant:Cancel") == 0, "real select presents exact two options");
+    check(std::strcmp(text, "Open Shadow Enchant:Cancel:M. Alitea Shadow Enchant") == 0, "real select preserves old choices and adds Alitea");
     ++menus;
 }
 extern "C" bool shadow_setreg(map_session_data*, int64, int64) asm("__wrap__Z9pc_setregP16map_session_datall");
@@ -147,7 +147,7 @@ extern "C" bool shadow_setreg(map_session_data* sd, int64 reg, int64 value) {
 }
 extern "C" void shadow_open(map_session_data&, uint64) asm("__wrap__Z23clif_enchantwindow_openR16map_session_datam");
 extern "C" void shadow_open(map_session_data& sd, uint64 group) {
-    check(&sd == attached && group == 128, "actual item_enchant builtin requests group 128 for attached player");
+    check(&sd == attached && (group == 128 || group == 166), "actual item_enchant builtin requests a supported group for attached player");
     check(closes == 1, "window request occurs only after dialogue close");
     window_requests.push_back(group);
     // Deliberately do not fake packet delivery, weight checks or the UI handler's
@@ -175,13 +175,16 @@ extern "C" int __wrap_main(int, char**) {
     auto group = std::make_shared<s_item_enchant>();
     group->id = 128;
     item_enchant_db.put(128, group);
+    auto alitea = std::make_shared<s_item_enchant>();
+    alitea->id = 166;
+    item_enchant_db.put(166, alitea);
     // Only existence is used by this builtin; full native DB parsing and recipe
     // execution are deliberately not claimed by this minimal container entry.
     const auto source = actual_body();
     script_code* code = parse_script(source.c_str(), "npc/custom/grademk_services.txt:Shadow Gear Enchanter", 1, 0);
     check(code != nullptr, "actual production dialogue parses without rewriting");
     battle_config.atcommand_disable_npc = 0;
-    for (int choice : {2, 1, 255}) {
+    for (int choice : {2, 1, 3, 255}) {
         messages.clear(); window_requests.clear(); menu_values.clear();
         nexts = closes = menus = payment_calls = deletion_calls = 0;
         auto player = std::make_unique<map_session_data>();
@@ -208,12 +211,13 @@ extern "C" int __wrap_main(int, char**) {
             check(payment_calls == 0 && deletion_calls == 0, "no script-side payment or item deletion attempted");
         };
         run_script(code, 0, player->id, TEST_NPC);
-        check(player->st && player->st->state == STOP && nexts == 1 && messages.size() == 3, "first real Next suspension");
+        check(player->st && player->st->state == STOP && nexts == 1 && messages.size() == 4, "first real Next suspension");
         unchanged();
         run_script_main(player->st);
-        check(player->st && player->st->state == STOP && nexts == 2 && messages.size() == 6, "second real Next suspension");
-        check(messages.back().find("may retain or lower") != std::string::npos &&
-              messages.back().find("no reset") != std::string::npos, "actual risk and no-reset warning displayed");
+        check(player->st && player->st->state == STOP && nexts == 2 && messages.size() == 8, "second real Next suspension");
+        check(messages[6].find("may retain or lower") != std::string::npos &&
+              messages[6].find("no reset") != std::string::npos, "actual risk and no-reset warning displayed");
+        check(messages[7].find("two ordered, selectable enchants") != std::string::npos, "Alitea service explains its separate recipe flow");
         unchanged();
         run_script_main(player->st);
         check(player->st && player->st->state == RERUNLINE && menus == 1 && player->state.menu_or_input,
@@ -233,18 +237,21 @@ extern "C" int __wrap_main(int, char**) {
             run_script_main(player->st);
             check(player->st == nullptr, "acknowledged dialogue detaches from real VM");
         }
-        check(window_requests.size() == (choice == 1 ? 1u : 0u), "only Open requests exactly one enchant window");
+        check(window_requests.size() == (choice == 1 || choice == 3 ? 1u : 0u), "only either Open requests exactly one enchant window");
+        if (choice == 1 || choice == 3)
+            check(window_requests[0] == (choice == 1 ? 128u : 166u), "menu selection routes to its exact group");
         check(!player->state.menu_or_input, "menu wait flag cleared");
         check(player->state.item_enchant_index == 0, "UI boundary did not simulate transport/session activation");
         unchanged();
         check(errors == 0, "real dialogue path has no script errors");
-        std::printf("SHADOW_SERVICE_CASE_PASS: %s\n", choice == 1 ? "Open" : choice == 2 ? "Cancel" : "Escape");
+        std::printf("SHADOW_SERVICE_CASE_PASS: %s\n", choice == 1 ? "Open" : choice == 2 ? "Cancel" : choice == 3 ? "Alitea" : "Escape");
         attached = nullptr;
     }
     script_free_code(code);
     item_enchant_db.clear();
     group.reset();
+    alitea.reset();
     do_final_script(); timer_final(); db_final(); malloc_final();
-    std::printf("PASS actual Shadow Gear Enchanter VM: 3 paths; %u assertions; no script-side charges; UI requests only\n", assertions);
+    std::printf("PASS actual Shadow Gear Enchanter VM: 4 paths; %u assertions; no script-side charges; UI requests only\n", assertions);
     return errors ? 1 : 0;
 }

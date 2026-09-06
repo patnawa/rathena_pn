@@ -21,7 +21,9 @@ class ShadowServiceTests(unittest.TestCase):
         self.assertIsNotNone(match)
         body = match[1]
         self.assertEqual(body.count('item_enchant(128);'), 1)
-        self.assertRegex(body, r'if \(select\("Open Shadow Enchant:Cancel"\) == 2\)\s+close;\s+close2;\s+item_enchant\(128\);\s+end;')
+        self.assertEqual(body.count('item_enchant(166);'), 1)
+        self.assertIn('select("Open Shadow Enchant:Cancel:M. Alitea Shadow Enchant")', body)
+        self.assertRegex(body, r'if \(\.@service == 2\)\s+close;\s+close2;\s+if \(\.@service == 3\) \{\s+item_enchant\(166\);\s+end;\s+\}\s+item_enchant\(128\);\s+end;')
         self.assertIn('retain or lower', body)
         self.assertIn('no reset', body)
         self.assertNotRegex(body, r'\b(?:getitem|delitem|Zeny)\b')

@@ -211,12 +211,14 @@ jalbe_in,68,46,4	script	Maristella Walter#ep21gimli_report	22306,{
 	end;
 OnInstanceInit:
 	'gimli_stage = 0;
+	'gimli_wave_stage = 0;
 	enablenpc instance_npcname("Nadoyo#ep21gimli_start");
 	mapannounce instance_mapname("1@mdtem"),"Gimli Infiltration: meet Nadoyo near the entry point.",bc_map,0x77AAFF;
 	end;
 
 OnBelieverWave:
-	if ('gimli_stage != 3) end;
+	if ('gimli_stage != 3 || 'gimli_wave_stage == 3) end;
+	'gimli_wave_stage = 3;
 	.@map$ = instance_mapname("1@mdtem");
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnBelieverWaveDead";
 	areamonster .@map$,167,151,175,159,"Jordos Inquisitor",22366,3,.@event$;
@@ -230,7 +232,8 @@ OnBelieverWaveDead:
 	end;
 
 OnGuardWave:
-	if ('gimli_stage != 6) end;
+	if ('gimli_stage != 6 || 'gimli_wave_stage == 6) end;
+	'gimli_wave_stage = 6;
 	.@map$ = instance_mapname("1@mdtem");
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnGuardWaveDead";
 	areamonster .@map$,118,33,125,39,"Jordos Inquisitor",22366,4,.@event$;
@@ -243,7 +246,8 @@ OnGuardWaveDead:
 	end;
 
 OnInnerWave:
-	if ('gimli_stage != 9) end;
+	if ('gimli_stage != 9 || 'gimli_wave_stage == 9) end;
+	'gimli_wave_stage = 9;
 	.@map$ = instance_mapname("2@mdtem");
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnInnerWaveDead";
 	areamonster .@map$,132,118,148,130,"Jordos Inquisitor",22366,4,.@event$;
@@ -256,7 +260,8 @@ OnInnerWaveDead:
 	end;
 
 OnSearchWave:
-	if ('gimli_stage != 14) end;
+	if ('gimli_stage != 14 || 'gimli_wave_stage == 14) end;
+	'gimli_wave_stage = 14;
 	.@map$ = instance_mapname("1@mdtem");
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnSearchWaveDead";
 	areamonster .@map$,77,77,83,83,"Jordos Inquisitor",22366,3,.@event$;
@@ -269,7 +274,8 @@ OnSearchWaveDead:
 	end;
 
 OnTanWave:
-	if ('gimli_stage != 17) end;
+	if ('gimli_stage != 17 || 'gimli_wave_stage == 17) end;
+	'gimli_wave_stage = 17;
 	.@map$ = instance_mapname("2@mdtem");
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnTanWaveDead";
 	monster .@map$,60,65,"Jordos Executioner",22368,1,.@event$;
@@ -282,7 +288,8 @@ OnTanWaveDead:
 	end;
 
 OnFinalWave1:
-	if ('gimli_stage != 20) end;
+	if ('gimli_stage != 20 || 'gimli_wave_stage == 20) end;
+	'gimli_wave_stage = 20;
 	.@map$ = instance_mapname("1@mdtem");
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnFinalWave1Dead";
 	areamonster .@map$,249,67,257,71,"Jordos Inquisitor",22366,5,.@event$;
@@ -308,6 +315,8 @@ OnFinalWave2Dead:
 	mes "[Nadoyo]";
 	mes "Carmigand's escape was exposed. Follow Tan and Wilhelm through the prayer rooms; anyone who wants to leave must move now.";
 	close2;
+	// Another member may have finished an already-open dialogue first.
+	if ('gimli_stage != 0) end;
 	'gimli_stage = 1;
 	disablenpc();
 	enablenpc instance_npcname("Tan#ep21gimli_start");
@@ -318,6 +327,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 1) end;
 	mes "[Tan]"; mes "Keep the disguise intact until we locate Carmigand. I will move everyone into the first prayer room.";
 	close2;
+	if ('gimli_stage != 1) end;
 	'gimli_stage = 2;
 	disablenpc();
 	enablenpc instance_npcname("Wilhelm#ep21gimli_first");
@@ -329,6 +339,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 2) end;
 	mes "[Wilhelm]"; mes "The believers say Carmigand was taken inward. Some of them want to escape, but the guards heard us.";
 	close2;
+	if ('gimli_stage != 2) end;
 	'gimli_stage = 3;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnBelieverWave";
@@ -339,6 +350,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 4) end;
 	mes "[Escaping Believer]"; mes "We will follow your resistance. Another guard post blocks the inner prayer room.";
 	close2;
+	if ('gimli_stage != 4) end;
 	'gimli_stage = 5;
 	disablenpc();
 	enablenpc instance_npcname("Tan#ep21gimli_guard");
@@ -350,6 +362,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 5) end;
 	mes "[Tan]"; mes "The checkpoint recognized Wilhelm's disguise. Break through before it raises the alarm.";
 	close2;
+	if ('gimli_stage != 5) end;
 	'gimli_stage = 6;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnGuardWave";
@@ -369,6 +382,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 8) end;
 	mes "[Escaping Believer]"; mes "Carmigand was moved beyond the eastern corridor. Tan and Wilhelm are waiting there.";
 	close2;
+	if ('gimli_stage != 8) end;
 	'gimli_stage = 9;
 	disablenpc();
 	enablenpc instance_npcname("Tan#ep21gimli_inner");
@@ -379,6 +393,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 9) end;
 	mes "[Tan]"; mes "More executioners are coming. Hold this room while Wilhelm questions the guard.";
 	close2;
+	if ('gimli_stage != 9) end;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnInnerWave";
 	end;
@@ -388,6 +403,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 10) end;
 	mes "[Temple Guard]"; mes "The prisoner you seek was taken to an unmarked chamber. You will never find its release switch.";
 	close2;
+	if ('gimli_stage != 10) end;
 	'gimli_stage = 11;
 	disablenpc();
 	enablenpc instance_npcname("Wilhelm#ep21gimli_search");
@@ -399,6 +415,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 11) end;
 	mes "[Wilhelm]"; mes "One of these suspicious wall sections hides the mechanism. Search carefully; the wrong panels are decoys.";
 	close2;
+	if ('gimli_stage != 11) end;
 	'gimli_stage = 12;
 	disablenpc();
 	enablenpc instance_npcname("Suspicious Place#ep21gimli_a");
@@ -414,6 +431,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 12) end;
 	mes "[Suspicious Place]"; mes "Click. A concealed mechanism releases, and Tan pulls the group through the opening.";
 	close2;
+	if ('gimli_stage != 12) end;
 	'gimli_stage = 14;
 	disablenpc instance_npcname("Suspicious Place#ep21gimli_a");
 	disablenpc();
@@ -430,6 +448,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 14) end;
 	mes "[Wilhelm]"; mes "Reinhardt is alive, but the cult is closing in. Clear this chamber!";
 	close2;
+	if ('gimli_stage != 14) end;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnSearchWave";
 	end;
@@ -439,6 +458,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 15) end;
 	mes "[Wilhelm]"; mes "Reinhardt can walk. Tan found a service corridor leading toward the escape route.";
 	close2;
+	if ('gimli_stage != 15) end;
 	'gimli_stage = 17;
 	disablenpc();
 	enablenpc instance_npcname("Tan#ep21gimli_fight");
@@ -450,6 +470,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 17) end;
 	mes "[Tan]"; mes "Their executioner controls this passage. Defeat it before the second patrol arrives.";
 	close2;
+	if ('gimli_stage != 17) end;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnTanWave";
 	end;
@@ -459,6 +480,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 18) end;
 	mes "[Tan]"; mes "The last patrol is between us and the surface. Wilhelm will lead the final diversion.";
 	close2;
+	if ('gimli_stage != 18) end;
 	'gimli_stage = 20;
 	disablenpc();
 	enablenpc instance_npcname("Wilhelm#ep21gimli_final");
@@ -470,6 +492,7 @@ OnFinalWave2Dead:
 	if ('gimli_stage != 20) end;
 	mes "[Wilhelm]"; mes "No more disguises. We hold this ground until every believer reaches Tan.";
 	close2;
+	if ('gimli_stage != 20) end;
 	disablenpc();
 	donpcevent instance_npcname("#EP21_Gimli_Control")+"::OnFinalWave1";
 	end;

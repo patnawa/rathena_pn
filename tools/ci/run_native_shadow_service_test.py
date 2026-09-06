@@ -8,6 +8,7 @@ The actual item_enchant builtin ends at an explicit outbound-UI request double.
 import argparse
 import hashlib
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 
@@ -34,6 +35,8 @@ def run(build, sanitizer):
     groups = server_configuration(ROOT)
     if 128 not in groups or len(groups[128]['Targets']) != 14:
         raise SystemExit('The effective Renewal imports must contain reviewed group 128 with 14 targets')
+    if 166 not in groups or len(groups[166]['Targets']) != 4:
+        raise SystemExit('The effective Renewal imports must contain reviewed group 166 with four targets')
     expected = {24872: ('S_Full_Power_Armor', 'ShadowGear'), 1001253: ('S_Enchant_Essence', 'Etc')}
     items = {}
     for record in renewal_records(ROOT, 'db/item_db.yml'):
@@ -43,7 +46,7 @@ def run(build, sanitizer):
         actual = (items.get(item_id, {}).get('AegisName'), items.get(item_id, {}).get('Type'))
         if actual != metadata:
             raise SystemExit(f'Synthetic inventory identity drift: {item_id}: {actual} != {metadata}')
-    print('Effective group 128 and synthetic inventory identities verified; native fixture tests existence only', flush=True)
+    print('Effective groups 128/166 and synthetic inventory identities verified; native fixture tests existence only', flush=True)
     npc = ROOT / 'npc/custom/grademk_services.txt'
     print('Production NPC source SHA256 ' + hashlib.sha256(npc.read_bytes()).hexdigest(), flush=True)
     objects = sorted(p for p in (ROOT / 'src/map/obj').rglob('*.o') if p.name != 'script.o')
@@ -75,10 +78,14 @@ def run(build, sanitizer):
     print(result.stdout, end='', flush=True)
     print(result.stderr, end='', flush=True)
     result.check_returncode()
-    for case in ('Cancel', 'Open', 'Escape'):
+    if re.search(r'AddressSanitizer|runtime error:|invalid.free|\[Error\]|\[Warning\]', result.stdout + result.stderr, re.I):
+        raise SystemExit('Native sanitizer/allocator/error diagnostic detected')
+    if 'Memory manager: No memory leaks found.' not in result.stdout:
+        raise SystemExit('Native allocator did not confirm clean teardown')
+    for case in ('Cancel', 'Open', 'Alitea', 'Escape'):
         if result.stdout.count('SHADOW_SERVICE_CASE_PASS: ' + case) != 1:
             raise SystemExit('Missing or duplicate actual-VM completion marker for ' + case)
-    if 'PASS actual Shadow Gear Enchanter VM: 3 paths;' not in result.stdout:
+    if 'PASS actual Shadow Gear Enchanter VM: 4 paths;' not in result.stdout:
         raise SystemExit('Native postconditions did not complete')
 
 

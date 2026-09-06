@@ -1,5 +1,14 @@
 # Real Chapter 2 client-helper verification
 
+Later coverage: [the complete reference-runtime test](client_enchant_reference_runtime_README.md)
+uses independently inspected 2025 native fallback semantics to execute all
+159/164 groups. This strict test still refuses missing metadata and preserves
+its original 43-target checkpoint; the two tests answer different questions.
+After additional client metadata is installed, use `--iteminfo-loader PATH` to
+select the retained pre-addition loader for this historical checkpoint. Output
+explicitly identifies the selected loader and whether it is the active one.
+All other original input hashes and callback checks remain enforced.
+
 `chapter2_client_helper_test.py` executes the actual supplied active
 `EnchantList_f.lub`, original/patched `ItemDBNameTbl.lub` functions, and actual
 enchant declarations using the matching native Win32 Lua 5.1 runtime. It does

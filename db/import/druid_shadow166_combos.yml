@@ -1,0 +1,70 @@
+# Exact kRO Gravity M. Alitea Shadow set effects; see druid_shadow166_audit.md.
+# Player Human and Player Doram cancel RC_All bonuses, preserving exclusion.
+Header:
+  Type: COMBO_DB
+  Version: 1
+Body:
+  - Combos:
+      - Combo:
+          - S_Master_Shield
+          - S_AT_Armor
+      - Combo:
+          - S_Master_Shield
+          - S_AT_Shoes
+      - Combo:
+          - S_Master_Weapon
+          - S_AT_Earring
+      - Combo:
+          - S_Master_Weapon
+          - S_AT_Pendant
+    Script: |
+      bonus bAllTraitStats,2;
+  - Combos:
+      - Combo:
+          - S_Master_Shield
+          - S_AT_Armor
+          - S_AT_Shoes
+    Script: |
+      bonus bPAtk,1;
+      bonus bSMatk,1;
+      .@sum = getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHOES);
+      if (.@sum >= 27) {
+        bonus2 bIgnoreDefRaceRate,RC_All,50;
+        bonus2 bIgnoreDefRaceRate,RC_Player_Human,-50;
+        bonus2 bIgnoreDefRaceRate,RC_Player_Doram,-50;
+        bonus2 bIgnoreMdefRaceRate,RC_All,50;
+        bonus2 bIgnoreMdefRaceRate,RC_Player_Human,-50;
+        bonus2 bIgnoreMdefRaceRate,RC_Player_Doram,-50;
+      }
+  - Combos:
+      - Combo:
+          - S_Master_Weapon
+          - S_AT_Earring
+          - S_AT_Pendant
+    Script: |
+      bonus bPAtk,1;
+      bonus bSMatk,1;
+      .@sum = getequiprefinerycnt(EQI_SHADOW_WEAPON)+getequiprefinerycnt(EQI_SHADOW_ACC_R)+getequiprefinerycnt(EQI_SHADOW_ACC_L);
+      if (.@sum >= 27) {
+        bonus2 bIgnoreDefRaceRate,RC_All,50;
+        bonus2 bIgnoreDefRaceRate,RC_Player_Human,-50;
+        bonus2 bIgnoreDefRaceRate,RC_Player_Doram,-50;
+        bonus2 bIgnoreMdefRaceRate,RC_All,50;
+        bonus2 bIgnoreMdefRaceRate,RC_Player_Human,-50;
+        bonus2 bIgnoreMdefRaceRate,RC_Player_Doram,-50;
+      }
+  - Combos:
+      - Combo:
+          - S_Master_Weapon
+          - S_Master_Shield
+          - S_AT_Armor
+          - S_AT_Shoes
+          - S_AT_Earring
+          - S_AT_Pendant
+    Script: |
+      bonus2 bIgnoreResRaceRate,RC_All,20;
+      bonus2 bIgnoreResRaceRate,RC_Player_Human,-20;
+      bonus2 bIgnoreResRaceRate,RC_Player_Doram,-20;
+      bonus2 bIgnoreMResRaceRate,RC_All,20;
+      bonus2 bIgnoreMResRaceRate,RC_Player_Human,-20;
+      bonus2 bIgnoreMResRaceRate,RC_Player_Doram,-20;

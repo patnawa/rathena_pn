@@ -71,7 +71,7 @@ local diagnostics, calls, slot_counts, missing_slots = {}, {}, {}, {}
 MessageBox = function(message) diagnostics[#diagnostics + 1] = message end
 -- The active loader executes its actual base/custom/override merge rules. Its
 -- native main()/AddItem registration is not needed to inspect merged slotCount.
-dofile("SystemEN/itemInfo.lua")
+dofile(ITEMINFO_LOADER or "SystemEN/itemInfo.lua")
 assert(type(tbl) == "table", "active itemInfo table missing")
 local client_items = tbl
 dofile(NAMES_PATH)
@@ -199,10 +199,12 @@ def windows_path(path):
     return subprocess.check_output(['wslpath', '-w', str(path.resolve())], text=True).strip().replace('\\', '/')
 
 
-def invoke(runtime, names, enchant_list, fragment=False):
+def invoke(runtime, names, enchant_list, fragment=False, iteminfo_loader=None):
     values = '\n'.join(f'{name} = {value}' for name, value in CONSTANTS.items())
     for name, path in [('NAMES_PATH', names), ('LIST_PATH', enchant_list), ('HELPER_PATH', HELPER)]:
         values += '\n' + name + ' = ' + json.dumps(windows_path(path))
+    if iteminfo_loader is not None:
+        values += '\nITEMINFO_LOADER = ' + json.dumps(windows_path(iteminfo_loader))
     original = ORIGINAL_LIST.read_bytes()
     data = enchant_list.read_bytes()
     if fragment:
@@ -235,6 +237,8 @@ def main():
     parser.add_argument('--lua', type=Path, default=RUNTIME)
     parser.add_argument('--draft', type=Path, default=SIBLING / 'chapter2-native-candidate-20260906')
     parser.add_argument('--fixed', type=Path, default=SIBLING / 'chapter2-native-verified-20260906')
+    parser.add_argument('--iteminfo-loader', type=Path,
+                        help='Explicit historical loader checkpoint; default is the active client loader')
     args = parser.parse_args()
     expected_hashes = {
         ORIGINAL_LIST: '664a6083b051233496611664af4c84d4ccd1c9e6ceb685edac6cacf60feda80d',
@@ -248,10 +252,12 @@ def main():
     require(re.search(r'^#define MAX_SLOTS 4\s*$', mmo, re.M), 'Server MAX_SLOTS differs from reference client fixture')
     version = subprocess.run([str(args.lua.resolve()), '-v'], capture_output=True, check=True)
     require(b'Lua 5.1' in version.stdout + version.stderr, 'Matching native Lua 5.1 required')
-    reports = {'original': invoke(args.lua, ORIGINAL_NAMES, ORIGINAL_LIST)}
+    reports = {'original': invoke(args.lua, ORIGINAL_NAMES, ORIGINAL_LIST,
+                                  iteminfo_loader=args.iteminfo_loader)}
     for name, directory in [('draft', args.draft), ('fixed', args.fixed)]:
         base = directory / 'data/luafiles514/lua files'
-        reports[name] = invoke(args.lua, base / 'ItemDBNameTbl.lub', base / 'Enchant/EnchantList.lub')
+        reports[name] = invoke(args.lua, base / 'ItemDBNameTbl.lub', base / 'Enchant/EnchantList.lub',
+                               iteminfo_loader=args.iteminfo_loader)
     original = reports['original']
     require(not original['loaded'] and len(original['metadata_missing']) == 43,
             'Original metadata baseline changed; review and update the scoped coverage checkpoint')
@@ -264,7 +270,8 @@ def main():
     fragments = {}
     for name, directory in [('draft', args.draft), ('fixed', args.fixed)]:
         base = directory / 'data/luafiles514/lua files'
-        fragments[name] = invoke(args.lua, base / 'ItemDBNameTbl.lub', base / 'Enchant/EnchantList.lub', fragment=True)
+        fragments[name] = invoke(args.lua, base / 'ItemDBNameTbl.lub', base / 'Enchant/EnchantList.lub',
+                                 fragment=True, iteminfo_loader=args.iteminfo_loader)
         report = fragments[name]
         require(report['loaded'] and not report['metadata_missing'], name + ' appended groups lack authoritative slot metadata')
         require(report['all_ok'], name + ' scoped LoadAllData failed')
@@ -316,6 +323,8 @@ def main():
     require(count == 58, 'Expected exactly 58 Chapter 2 recipe callbacks')
     print(json.dumps({
         'result': 'PASS', 'runtime': str(args.lua), 'constants': CONSTANTS,
+        'checked_iteminfo_loader': str((args.iteminfo_loader or CLIENT_ROOT / 'SystemEN/itemInfo.lua').resolve()),
+        'loader_is_active': args.iteminfo_loader is None or args.iteminfo_loader.resolve() == (CLIENT_ROOT / 'SystemEN/itemInfo.lua').resolve(),
         'constants_scope': 'Disassembled supplied unprotected 2025 reference executable; not protected 2026 runtime proof',
         'full_original_and_patched_load': 'BLOCKED identically by original missing target metadata; no zero fallback',
         'original_missing_target_metadata': original['metadata_missing'],

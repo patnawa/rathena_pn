@@ -1,0 +1,166 @@
+# Group 166 targets and Alitea Soul enchants. No acquisition changes.
+# kRO Gravity item pages supply the four targets' properties/set effects.
+# Gravity Game Link's 2020-02-26 Shadow Gear guide supplies generic HP/refine.
+# Soul effects follow the user-permitted loose MuhRO fallback descriptions.
+# See doc/druid_shadow166_audit.md for source boundaries and Master dependency.
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+  - Id: 1270183
+    AegisName: S_AT_Armor
+    Name: M. Alitea Shadow Armor
+    Type: ShadowGear
+    Weight: 0
+    Slots: 0
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Shadow_Armor: true
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      bonus bMaxHP,getrefine()*10;
+  - Id: 1270184
+    AegisName: S_AT_Shoes
+    Name: M. Alitea Shadow Shoes
+    Type: ShadowGear
+    Weight: 0
+    Slots: 0
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Shadow_Shoes: true
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      bonus bMaxHP,getrefine()*10;
+  - Id: 1270185
+    AegisName: S_AT_Earring
+    Name: M. Alitea Shadow Earring
+    Type: ShadowGear
+    Weight: 0
+    Slots: 0
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Shadow_Right_Accessory: true
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      bonus bMaxHP,getrefine()*10;
+  - Id: 1270186
+    AegisName: S_AT_Pendant
+    Name: M. Alitea Shadow Pendant
+    Type: ShadowGear
+    Weight: 0
+    Slots: 0
+    Jobs:
+      Alitea: true
+    Classes:
+      Fourth: true
+    Locations:
+      Shadow_Left_Accessory: true
+    EquipLevelMin: 200
+    Refineable: true
+    Script: |
+      bonus bMaxHP,getrefine()*10;
+  - Id: 314804
+    AegisName: AT_Soul_AC
+    Name: Alpha Claw Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_ALPHA_CLAW",2+getrefine()/2;
+  - Id: 314805
+    AegisName: AT_Soul_FF
+    Name: Frenzy Fang Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_FRENZY_FANG",2+getrefine()/2;
+  - Id: 314806
+    AegisName: AT_Soul_PS
+    Name: Pinion Shot Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_PINION_SHOT",2+getrefine()/2;
+  - Id: 314807
+    AegisName: AT_Soul_QS
+    Name: Quill Spear Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_QUILL_SPEAR",2+getrefine()/2;
+  - Id: 314808
+    AegisName: AT_Soul_GS
+    Name: Glacial Shard Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",2+getrefine()/2;
+  - Id: 314809
+    AegisName: AT_Soul_RP
+    Name: Roaring Piercer Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_ROARING_PIERCER",2+getrefine()/2;
+  - Id: 314810
+    AegisName: AT_Soul_TH
+    Name: Terra Harvest Soul
+    Type: Card
+    SubType: Enchant
+    Script: |
+      bonus2 bSkillAtk,"AT_TERRA_HARVEST",2+getrefine()/2;
+  # Jobs is replaced, not merged, by ItemDatabase::parseBodyNode.
+  # Preserve every existing partner job and add only Alitea. No other fields.
+  - Id: 24792
+    Jobs:
+      Alchemist: true
+      Assassin: true
+      BardDancer: true
+      Blacksmith: true
+      Crusader: true
+      Hunter: true
+      KagerouOboro: true
+      Knight: true
+      Monk: true
+      Priest: true
+      Rebellion: true
+      Rogue: true
+      Sage: true
+      SoulLinker: true
+      StarGladiator: true
+      SuperNovice: true
+      Spirit_Handler: true
+      Wizard: true
+      Alitea: true
+  - Id: 24793
+    Jobs:
+      Alchemist: true
+      Assassin: true
+      BardDancer: true
+      Blacksmith: true
+      Crusader: true
+      Hunter: true
+      KagerouOboro: true
+      Knight: true
+      Monk: true
+      Priest: true
+      Rebellion: true
+      Rogue: true
+      Sage: true
+      SoulLinker: true
+      StarGladiator: true
+      SuperNovice: true
+      Spirit_Handler: true
+      Wizard: true
+      Alitea: true
