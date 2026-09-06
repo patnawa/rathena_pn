@@ -1,0 +1,22 @@
+//===== Custom Grade Workshop Equipment Enchant Menu ===========
+//= Entry points for existing native enchant groups only.
+//= No equipment/material grants or script-side charges.
+//=============================================================
+
+grademk,28,184,4	script	Equipment Enchanter#grademk	4_M_REPAIR,{
+	mes "[Equipment Enchanter]";
+	mes "This custom workshop menu opens existing equipment enchant services.";
+	mes "Choose an equipment family, then review its requirements and costs in the enchant window before confirming.";
+	next;
+	.@choice = select("Flush Einbech:Muqaddas:Furious weapons:Furious crowns:Sky Rune crowns:Cancel");
+	if (.@choice < 1 || .@choice > 5)
+		close;
+	setarray .@group[1],63,64,147,148,165;
+	close2;
+	item_enchant(.@group[.@choice]);
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Custom Equipment Enchant>");
+	end;
+}
