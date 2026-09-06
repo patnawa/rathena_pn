@@ -230,7 +230,7 @@
 20796,Odium of Thanatos@NPC_TELEKINESISATTACK,attack,191,5,500,0,5000,yes,target,always,0,,,,,,,
 20796,Odium of Thanatos@NPC_TELEKINESISATTACK,chase,191,5,500,0,5000,yes,target,always,0,,,,,,,
 20796,Odium of Thanatos@NPC_POWERUP,attack,349,5,2000,0,50000,yes,self,always,0,,,,,,,
-20796,Odium of Thanatos@NPC_POWERUP,attack,349,2,2000,0,10000,yes,self,onspawn,,,,,,,,
+20796,Odium of Thanatos@NPC_POWERUP,idle,349,2,2000,0,10000,yes,self,onspawn,,,,,,,,
 20797,Despero of Thanatos@NPC_TELEKINESISATTACK,attack,191,5,500,0,5000,yes,target,always,0,,,,,,,
 20797,Despero of Thanatos@NPC_TELEKINESISATTACK,chase,191,5,500,0,5000,yes,target,always,0,,,,,,,
 20797,Despero of Thanatos@NPC_FIREATTACK,attack,186,3,500,500,5000,no,target,always,0,,,,,,,

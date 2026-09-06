@@ -65,7 +65,43 @@ See [protocol evidence and limits](enchant_upgrade_protocol.md).
   not standard zlib; no protected assets were imported. See the
   [reference inventory and comparison command](client_reference_grfs.md).
 
-## Known unresolved coverage
+## Druid and parallel audit follow-up
+
+The user authorized Druid/Karnos/Alitea integration and parallel agents. The
+reviewed PR #9765 delta adds 84 skills and five job variants, with local fixes
+for Alitea traits, transformed job changes, enhanced-skill bonuses/factory
+identity, and Baby Karnos's cap. A custom Druid Mentor provides the three normal
+job transitions at `prontera,153,193`; this is not the official Veledor quest.
+All 366 Fashion pairs are now enabled. Existing live-only `@go` help additions
+and `MF_MD_SELFDESTRUCTION` were identified during drift checks and preserved.
+See [core integration](druid_integration.md) and
+[client/progression evidence](druid_client_progression.md).
+
+The parallel episode pass fixes cross-map re-entry/party access in two Episode
+20 instances and the shared first-claim reward lock in Secret Altar. Eight
+source-driven regression tests pass. Four Chapter 2 cards now inspect their own
+host weapon level, and Odium's spawn buff has a reachable state; six combat
+tests and 13 sanitized source-extracted assertions pass. See
+[party progression](episode_party_progression_audit.md) and
+[combat bindings](combat_bindings_audit.md).
+
+The broader local audit now reports 899 enabled scripts, 99 instances, 29,535
+item identities, 98 DB imports, 59 local fragments and 52 walkable arrival/service
+cells, with zero integrity warnings. The additional 31 Druid-related item
+definitions have verified source IDs and supplied-MuhRO compatibility effects;
+their acquisition/initial-enchant recipes and active client name aliases are
+not yet wired. See [item provenance and limits](druid_item_compatibility.md).
+
+These remain structural, source-driven and isolated build/startup checks.
+Attached-player combat, actual client clicks, relogging and official balance
+remain unproven. The broad audit is still in progress.
+
+The combined changes were deployed with matching login/char/map/web binaries
+on 2026-09-06 at 14:34 ICT, with no players online. All four containers are
+running and the map/char connection is online. See the
+[deployment receipt and backup details](druid_deployment_20260906.md).
+
+## Initial-enchant and remaining gameplay coverage
 
 The normal-enchant sampler, grade bonus parser/application, and disabled-reset
 charging order have now been corrected and covered by 39 compiled behavioral

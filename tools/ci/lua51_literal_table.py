@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 
-def literal_tables(data):
+def literal_tables(data, reference_tables=None):
     if data[:12] != b'\x1bLua\x51\0\1\4\4\4\x08\0':
         raise ValueError('Expected little-endian Lua 5.1 with 32-bit size_t and double numbers')
     position = 12
@@ -76,6 +76,9 @@ def literal_tables(data):
     if not instructions or instructions[-1] & 63 != 30 or (instructions[-1] >> 23) & 511 != 1:
         raise ValueError('Expected final no-value RETURN')
     registers, tables = {}, {}
+    # Optional explicit, read-only literal globals for client job-name tables.
+    # No global environment, require(), metatable, or callable is available.
+    owned_tables = set()
 
     def rk(operand):
         return constants[operand & 255] if operand & 256 else registers[operand]
@@ -107,12 +110,24 @@ def literal_tables(data):
             registers[a] = registers[b]
         elif op == 1:  # LOADK
             registers[a] = constants[bx]
+        elif op == 5 and reference_tables is not None:  # GETGLOBAL
+            name = constants[bx]
+            registers[a] = tables[name] if name in tables else reference_tables[name]
+        elif op == 6 and reference_tables is not None:  # GETTABLE (literal dict only)
+            if not isinstance(registers[b], dict):
+                raise ValueError('GETTABLE needs a literal table')
+            registers[a] = registers[b][rk(c)]
         elif op == 7:  # SETGLOBAL
+            if reference_tables is not None and constants[bx] in reference_tables:
+                raise ValueError('Cannot overwrite a supplied reference global')
             tables[constants[bx]] = registers[a]
         elif op == 9:  # SETTABLE
+            if id(registers[a]) not in owned_tables:
+                raise ValueError('Cannot mutate a supplied reference table')
             registers[a][rk(b)] = rk(c)
         elif op == 10:  # NEWTABLE
             registers[a] = {}
+            owned_tables.add(id(registers[a]))
         else:
             raise ValueError(f'Non-literal opcode {op} at instruction {pc}')
     return tables

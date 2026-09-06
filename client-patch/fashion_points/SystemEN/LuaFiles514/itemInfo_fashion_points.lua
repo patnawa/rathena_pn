@@ -12,8 +12,6 @@ local items = {}
 local BOX_ICON = "EpisodClear20"
 local STONE_ICON = "EpisodClear20"
 local ENCHANT_ICON = "EpisodClear20"
-local FUTURE_CLASS_WARNING = "^FF0000Unavailable on this server build.^000000"
-local FUTURE_CLASS_REQUIREMENT = "Requires complete Druid/Karnos/Alitea server skills and matching client job data."
 
 local function add(id, name, resource, description)
 	items[id] = {
@@ -47,7 +45,7 @@ for _, box in ipairs(boxes) do
 	add(box[1], box[2], BOX_ICON, {
 		"Contains one currently supported published costume enchant stone.",
 		"One supported outcome is selected uniformly by server compatibility policy.",
-		"Eight Druid/Karnos/Alitea outcomes are withheld until their full server and client dependencies are installed.",
+		"Includes the supported Druid, Karnos and Alitea stones.",
 		"MuhRO's original per-item probabilities are not published.",
 		"_______________________",
 		"^0000CCFashion Point cost:^000000 " .. box[3],
@@ -69,10 +67,8 @@ local physical_stones = {
 
 for _, stone in ipairs(physical_stones) do
 	add(stone[1], stone[2], STONE_ICON, {
-		FUTURE_CLASS_WARNING,
-		FUTURE_CLASS_REQUIREMENT,
 		stone[3],
-		"It is not awarded by boxes or accepted by the enchanter in the current build.",
+		"Apply it at the Complete Fashion Enchanter in Malangdo.",
 		"_______________________",
 		"^0000CCType:^000000 Enchant material",
 		"^0000CCWeight:^000000 0"
@@ -80,47 +76,39 @@ for _, stone in ipairs(physical_stones) do
 end
 
 add(314848, "Karnos Stone (Garment)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Chop Chop damage +10%.", "Feather Sprinkle damage +10%.",
 	"Set effects are applied with matching Druid/Karnos head stones.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314849, "Alitea Stone (Garment)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Physical damage to all properties +Sixth Sense skill level%.",
 	"Magical damage to all properties +Nature Aid skill level%.",
 	"Set effects are applied with matching Karnos head stones.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314850, "Druid Stone (Top)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"MATK +3 per Nature's Logic level.",
 	"Base ATK +2 per Beastly Nose and Sharp Eyes level.",
 	"Wind Bomb and Around Flower damage +15%.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314851, "Druid Stone (Mid)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Ice Cloud, Low Flight and Cruel Bite damage +15%.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314852, "Druid Stone (Low)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Earth Flower, No Mercy Claw and Flicking Tornado damage +15%.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314853, "Karnos Stone (Top)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Water, Wind and Earth magical damage +2% per Nature Vigor level.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314854, "Karnos Stone (Mid)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Melee physical damage +1% per Wolf Instinct level.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })
 add(314855, "Karnos Stone (Low)", ENCHANT_ICON, {
-	FUTURE_CLASS_WARNING, FUTURE_CLASS_REQUIREMENT,
 	"Ranged physical damage +1% per Raptorial Instinct level.",
 	"_______________________", "^0000CCType:^000000 Enchant"
 })

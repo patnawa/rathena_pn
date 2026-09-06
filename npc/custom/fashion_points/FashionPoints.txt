@@ -28,13 +28,9 @@
 //= * The wiki does not publish Fashion Point prices for the costume catalogue;
 //=   the catalogue is view-only here rather than assigning invented prices.
 //= * The local GPL Malangdo enchanters map only 196 of the 366 published pairs.
-//=   Complete Fashion Enchanter supports the 358 pairs whose enchant effects
-//=   exist in this build, including the newer physical stone IDs.
-//= * Eight Druid/Karnos/Alitea pairs (314848-314855) depend on skill IDs
-//=   6526-6606 from still-unmerged rAthena PR #9765. They remain valid recovery
-//=   and trade-in items, but boxes do not award them and application refuses
-//=   them until the complete class implementation is installed. Applying an
-//=   inert card would be misleading and is therefore never allowed.
+//=   Complete Fashion Enchanter supports all 366 pairs, including the eight
+//=   Druid/Karnos/Alitea pairs enabled with the integrated PR #9765 skills.
+//=   The normal card/enchant-type validation still applies to every pair.
 //============================================================
 
 function	script	FP_LoadBox	{
@@ -83,15 +79,12 @@ function	script	FP_StoneKnown	{
 }
 
 // Return whether an enchant has a functional effect on this server build.
-// Revision 61305 of the source wiki contains eight future-class enchants whose
-// referenced skills are absent here. Keep this deny-list paired with the exact
-// dependency notes in client-patch/fashion_points/README.md.
+// The Druid dependencies are now integrated. Keep the card/enchant-type gate
+// so invalid records cannot be awarded or inserted by the service.
 function	script	FP_EnchantSupported	{
 	.@enchant = getarg(0);
 	if (getiteminfo(.@enchant,ITEMINFO_TYPE) != IT_CARD
 		|| getiteminfo(.@enchant,ITEMINFO_SUBTYPE) != CARD_ENCHANT)
-		return 0;
-	if (.@enchant >= 314848 && .@enchant <= 314855)
 		return 0;
 	return 1;
 }
@@ -128,8 +121,7 @@ function	script	FP_OpenBox	{
 	deletearray .@available[0],128;
 	.@count=0;
 	for (.@i=0; .@i<.@n; ++.@i) {
-		// Award only pairs that are both present and functional. The eight
-		// future-class outcomes remain withheld rather than issuing inert cards.
+		// Award only pairs whose stone and enchant records are loaded correctly.
 		if (getiteminfo(@FP_BoxStone[.@i],ITEMINFO_TYPE) < 0 || !callfunc("FP_EnchantSupported",@FP_BoxEnchant[.@i])) continue;
 		.@available[.@count++]=@FP_BoxStone[.@i];
 	}

@@ -101,3 +101,5 @@ Footer:
   - Path: db/import/fashion_points_box_item_db.yml
   - Path: db/import/fashion_points_missing_item_db.yml
   - Path: db/import/garden_of_time_combat_item_db.yml
+  - Path: db/import/druid_item_db.yml
+    Mode: Renewal

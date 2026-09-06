@@ -1097,7 +1097,7 @@ Body:
       BuyingStore: true
       DropEffect: CLIENT
     Script: |
-      .@b = (getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?20:10); bonus2 bAddEle,Ele_Fire,.@b; bonus2 bAddRace,RC_Formless,.@b;
+      .@b = (getequipweaponlv()==5?20:10); bonus2 bAddEle,Ele_Fire,.@b; bonus2 bAddRace,RC_Formless,.@b;
   - Id: 300769
     AegisName: aegis_300769
     Name: Fingerhand Card
@@ -1109,7 +1109,7 @@ Body:
       BuyingStore: true
       DropEffect: CLIENT
     Script: |
-      .@b = (getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?20:10); bonus2 bMagicAddEle,Ele_Fire,.@b; bonus2 bMagicAddRace,RC_Formless,.@b;
+      .@b = (getequipweaponlv()==5?20:10); bonus2 bMagicAddEle,Ele_Fire,.@b; bonus2 bMagicAddRace,RC_Formless,.@b;
   - Id: 300770
     AegisName: aegis_300770
     Name: Tinkerhand Card
@@ -1121,7 +1121,7 @@ Body:
       BuyingStore: true
       DropEffect: CLIENT
     Script: |
-      .@b = (getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?20:10); bonus2 bAddSize,Size_Medium,.@b; bonus2 bAddSize,Size_Large,.@b;
+      .@b = (getequipweaponlv()==5?20:10); bonus2 bAddSize,Size_Medium,.@b; bonus2 bAddSize,Size_Large,.@b;
   - Id: 300771
     AegisName: aegis_300771
     Name: Swifthand Card
@@ -1133,7 +1133,7 @@ Body:
       BuyingStore: true
       DropEffect: CLIENT
     Script: |
-      .@b = (getiteminfo(getequipid(EQI_HAND_R),ITEMINFO_WEAPONLEVEL)==5?20:10); bonus2 bMagicAddSize,Size_Medium,.@b; bonus2 bMagicAddSize,Size_Large,.@b;
+      .@b = (getequipweaponlv()==5?20:10); bonus2 bMagicAddSize,Size_Medium,.@b; bonus2 bMagicAddSize,Size_Large,.@b;
   - Id: 300772
     AegisName: aegis_300772
     Name: Morbang Card

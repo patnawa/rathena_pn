@@ -1,0 +1,352 @@
+# Druid-family enchant compatibility items.
+# IDs: ROenglishRE ItemDBNameTbl, commit 66cdfec631603fda6a90ba4bbe26ab07b5204c84.
+# Effects: user-supplied MuhRO System itemInfo_EN_db/fallback descriptions.
+# This is a reference-compatible implementation, not verified Gravity balance.
+# See doc/druid_item_compatibility.md for exact provenance, hashes and limitations.
+# Prices, weights, drop/trade rules and acquisition recipes are not invented here.
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 314271
+    AegisName: Automatic_Orb99
+    Name: Automatic Orb (Double Slash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 9) .@b += 3;
+      if (.@r >= 11) .@b += 7;
+      bonus2 bSkillAtk,"KR_DOUBLE_SLASH",.@b;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",.@b;
+  - Id: 314272
+    AegisName: Automatic_Orb100
+    Name: Automatic Orb (Sharpen Hail)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 9) .@b += 3;
+      if (.@r >= 11) .@b += 7;
+      bonus2 bSkillAtk,"KR_SHARPEN_HAIL",.@b;
+      bonus2 bSkillAtk,"KR_SHARPEN_GUST",.@b;
+  - Id: 314273
+    AegisName: Automatic_Orb101
+    Name: Automatic Orb (Ice Splash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 9) .@b += 3;
+      if (.@r >= 11) .@b += 7;
+      bonus2 bSkillAtk,"KR_ICE_SPLASH",.@b;
+      bonus2 bSkillAtk,"KR_THUNDERING_ORB",.@b;
+      bonus2 bSkillAtk,"KR_EARTH_STAMP",.@b;
+  - Id: 314274
+    AegisName: Wolf_Orb_Skill_52
+    Name: Wolf Orb (Double Slash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 9) .@b += 15;
+      if (.@r >= 11) .@b += 15;
+      bonus2 bSkillAtk,"KR_DOUBLE_SLASH",.@b;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",.@b;
+  - Id: 314275
+    AegisName: Wolf_Orb_Skill_53
+    Name: Wolf Orb (Sharpen Hail)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 9) .@b += 15;
+      if (.@r >= 11) .@b += 15;
+      bonus2 bSkillAtk,"KR_SHARPEN_HAIL",.@b;
+      bonus2 bSkillAtk,"KR_SHARPEN_GUST",.@b;
+  - Id: 314276
+    AegisName: Wolf_Orb_Skill_54
+    Name: Wolf Orb (Ice Splash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 9) .@b += 15;
+      if (.@r >= 11) .@b += 15;
+      bonus2 bSkillAtk,"KR_ICE_SPLASH",.@b;
+      bonus2 bSkillAtk,"KR_THUNDERING_ORB",.@b;
+      bonus2 bSkillAtk,"KR_EARTH_STAMP",.@b;
+  - Id: 314277
+    AegisName: Glacier_F_Orb_192
+    Name: Glacier Flower (Chop Chop)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",.@b;
+  - Id: 314278
+    AegisName: Glacier_F_Orb_193
+    Name: Glacier Flower (Double Slash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_DOUBLE_SLASH",.@b;
+  - Id: 314279
+    AegisName: Glacier_F_Orb_194
+    Name: Glacier Flower (Sharpen Gust)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_SHARPEN_GUST",.@b;
+  - Id: 314280
+    AegisName: Glacier_F_Orb_195
+    Name: Glacier Flower (Sharpen Hail)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_SHARPEN_HAIL",.@b;
+  - Id: 314281
+    AegisName: Glacier_F_Orb_196
+    Name: Glacier Flower (Feather Sprinkle)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_FEATHER_SPRINKLE",.@b;
+  - Id: 314282
+    AegisName: Glacier_F_Orb_197
+    Name: Glacier Flower (Ice Splash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_ICE_SPLASH",.@b;
+  - Id: 314283
+    AegisName: Glacier_F_Orb_198
+    Name: Glacier Flower (Thundering Orb)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_THUNDERING_ORB",.@b;
+  - Id: 314284
+    AegisName: Glacier_F_Orb_199
+    Name: Glacier Flower (Thundering Focus)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_THUNDERING_FOCUS",.@b;
+  - Id: 314285
+    AegisName: Glacier_F_Orb_200
+    Name: Glacier Flower (Earth Drill)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_EARTH_DRILL",.@b;
+  - Id: 314286
+    AegisName: Glacier_F_Orb_201
+    Name: Glacier Flower (Earth Stamp)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 20 + 10 * (.@r / 3);
+      if (.@r >= 9) .@b += 20;
+      if (.@r >= 11) .@b += 20;
+      bonus2 bSkillAtk,"KR_EARTH_STAMP",.@b;
+  - Id: 314287
+    AegisName: Glacier_F_Orb_202
+    Name: Glacier Flower (Glacial Nova)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_GLACIER_NOVA",.@b;
+  - Id: 314288
+    AegisName: Glacier_F_Orb_203
+    Name: Glacier Flower (Glacial Shard)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_GLACIER_SHARD",.@b;
+  - Id: 314289
+    AegisName: Glacier_F_Orb_204
+    Name: Glacier Flower (Roaring Piercer)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_ROARING_PIERCER",.@b;
+  - Id: 314290
+    AegisName: Glacier_F_Orb_205
+    Name: Glacier Flower (Terra Wave)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_TERRA_WAVE",.@b;
+  - Id: 314291
+    AegisName: Glacier_F_Orb_206
+    Name: Glacier Flower (Terra Harvest)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_TERRA_HARVEST",.@b;
+  - Id: 314292
+    AegisName: Glacier_F_Orb_207
+    Name: Glacier Flower (Quill Spear)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_QUILL_SPEAR",.@b;
+  - Id: 314293
+    AegisName: Glacier_F_Orb_208
+    Name: Glacier Flower (Pinion Shot)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_PINION_SHOT",.@b;
+  - Id: 314294
+    AegisName: Glacier_F_Orb_209
+    Name: Glacier Flower (Frenzy Fang)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_FRENZY_FANG",.@b;
+  - Id: 314295
+    AegisName: Glacier_F_Orb_210
+    Name: Glacier Flower (Primal/Feral/Alpha Claw)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 10 + 5 * (.@r / 4);
+      if (.@r >= 9) .@b += 10;
+      bonus2 bSkillAtk,"AT_PRIMAL_CLAW",.@b;
+      bonus2 bSkillAtk,"AT_FERAL_CLAW",.@b;
+      bonus2 bSkillAtk,"AT_ALPHA_CLAW",.@b;
+  - Id: 314296
+    AegisName: Ice_F_Orb_Skill_55
+    Name: Ice Magic Orb (Double Slash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 7) .@b += 15;
+      if (.@r >= 9) .@b += 15;
+      if (.@r >= 11) .@b += 15;
+      bonus2 bSkillAtk,"KR_DOUBLE_SLASH",.@b;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",.@b;
+      if (.@r >= 11) {
+        bonus2 bSkillAtk,"AT_ALPHA_CLAW",15;
+        bonus2 bSkillAtk,"AT_FRENZY_FANG",15;
+      }
+  - Id: 314297
+    AegisName: Ice_F_Orb_Skill_56
+    Name: Ice Magic Orb (Sharpen Hail)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 7) .@b += 15;
+      if (.@r >= 9) .@b += 15;
+      if (.@r >= 11) .@b += 15;
+      bonus2 bSkillAtk,"KR_SHARPEN_HAIL",.@b;
+      bonus2 bSkillAtk,"KR_SHARPEN_GUST",.@b;
+      if (.@r >= 11) {
+        bonus2 bSkillAtk,"AT_PINION_SHOT",15;
+        bonus2 bSkillAtk,"AT_QUILL_SPEAR",15;
+      }
+  - Id: 314298
+    AegisName: Ice_F_Orb_Skill_57
+    Name: Ice Magic Orb (Ice Splash)
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@r = getrefine();
+      .@b = 15;
+      if (.@r >= 7) .@b += 15;
+      if (.@r >= 9) .@b += 15;
+      if (.@r >= 11) .@b += 15;
+      bonus2 bSkillAtk,"KR_ICE_SPLASH",.@b;
+      bonus2 bSkillAtk,"KR_THUNDERING_ORB",.@b;
+      bonus2 bSkillAtk,"KR_EARTH_STAMP",.@b;
+      if (.@r >= 11) {
+        bonus2 bSkillAtk,"AT_GLACIER_SHARD",15;
+        bonus2 bSkillAtk,"AT_ROARING_PIERCER",15;
+        bonus2 bSkillAtk,"AT_TERRA_HARVEST",15;
+      }
+  - Id: 1002350
+    AegisName: Ice_F_Stone_Skill_55
+    Name: Ice Magic Stone (Double Slash)
+    Type: Etc
+  - Id: 1002351
+    AegisName: Ice_F_Stone_Skill_56
+    Name: Ice Magic Stone (Sharpen Hail)
+    Type: Etc
+  - Id: 1002352
+    AegisName: Ice_F_Stone_Skill_57
+    Name: Ice Magic Stone (Ice Splash)
+    Type: Etc

@@ -46,17 +46,20 @@ OnSecondAreaDead:
 }
 
 1@20cn1,154,126,4	script(DISABLED)	Canyon Passage#ep20	4_ENERGY_BLUE,{
-	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage != 2) end;
+	if (instance_live_info(ILI_NAME) != "Canyon Exploration" || 'ep20_canyon_stage < 2 || 'ep20_canyon_stage > 4) end;
 	mes "[Canyon Passage]";
 	mes "Bagot's prison lies beyond this crack. Cross while the route is stable.";
 	close2;
-	'ep20_canyon_stage = 3;
-	disablenpc;
 	.@map$ = instance_mapname("1@20cn2");
-	.@event$ = instance_npcname("#EP20_Canyon_Control")+"::OnSecondAreaDead";
-	monster .@map$,145,205,"Jormungandr Guardian",21991,4,.@event$;
-	monster .@map$,155,205,"Jormungandr Guardian",21992,4,.@event$;
-	monster .@map$,150,195,"Rgan Warlock",21993,4,.@event$;
+	// Re-entry starts on the first map, so leave this route open after use.
+	// Check the shared stage after the dialog before spawning the wave once.
+	if ('ep20_canyon_stage == 2) {
+		'ep20_canyon_stage = 3;
+		.@event$ = instance_npcname("#EP20_Canyon_Control")+"::OnSecondAreaDead";
+		monster .@map$,145,205,"Jormungandr Guardian",21991,4,.@event$;
+		monster .@map$,155,205,"Jormungandr Guardian",21992,4,.@event$;
+		monster .@map$,150,195,"Rgan Warlock",21993,4,.@event$;
+	}
 	warp .@map$,135,208;
 	end;
 }
@@ -215,15 +218,18 @@ OnBossDead:
 }
 
 1@twas,82,80,4	script(DISABLED)	Dimensional Tear#ep20_sanct	4_ENERGY_RED,{
-	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage != 2) end;
+	if (instance_live_info(ILI_NAME) != "Separated Sanctuary" || 'ep20_story_sanct_stage < 2 || 'ep20_story_sanct_stage > 4) end;
 	mes "[Dimensional Tear]";
 	mes "Lasgand waits beyond the unstable boundary.";
 	close2;
-	'ep20_story_sanct_stage = 3;
-	disablenpc;
 	.@map$ = instance_mapname("1@twbs");
-	.@event$ = instance_npcname("#EP20_StorySanct_Control")+"::OnBossDead";
-	monster .@map$,80,93,"Immortal Lasgand",21981,1,.@event$;
+	// Each party member (including reconnects) must be able to cross.
+	// Only the first confirmed crossing starts the shared boss encounter.
+	if ('ep20_story_sanct_stage == 2) {
+		'ep20_story_sanct_stage = 3;
+		.@event$ = instance_npcname("#EP20_StorySanct_Control")+"::OnBossDead";
+		monster .@map$,80,93,"Immortal Lasgand",21981,1,.@event$;
+	}
 	warp .@map$,80,80;
 	end;
 }

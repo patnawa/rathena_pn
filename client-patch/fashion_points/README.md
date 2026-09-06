@@ -47,11 +47,10 @@ fragment intentionally uses the existing ASCII-safe `EpisodClear20` resource
 as a fallback icon. Replace only the resource-name strings after obtaining
 exact redistributable resources.
 
-## Supported and withheld outcomes
+## Supported outcomes
 
-The server has functional item scripts for 358 of the page's 366 stone/enchant
-pairs. The following physical stones and corresponding enchant cards remain
-visible in item-info only so existing/recovered items have names:
+All 366 published stone/enchant pairs are enabled with the Druid integration.
+The eight newly enabled pairs are:
 
 | Physical stone | Enchant card | Dependency |
 | ---: | ---: | --- |
@@ -64,22 +63,16 @@ visible in item-info only so existing/recovered items have names:
 | 1002631 | 314854 | Karnos middle skills |
 | 1002632 | 314855 | Karnos lower skills |
 
-They are not awarded by boxes and the application NPC rejects them. The local
-server has none of their referenced skill IDs 6526-6606. Enabling them requires
-all of the following, not just a recent executable:
+The referenced skills are now implemented, all eight cards explicitly use
+`SubType: Enchant`, and the former deny rule is removed. Boxes and the application
+service include them while retaining the existing inventory/transaction guards.
+The updated metadata no longer labels these outcomes unavailable.
 
-1. Integrate and rebuild a complete Druid/Karnos/Alitea server implementation,
-   such as [rAthena PR #9765](https://github.com/rathena/rathena/pull/9765).
-2. Install matching client-side job, skill, effect, sprite, and translation
-   data. The PR author explicitly states client-side support is not included.
-3. Give cards 314848-314855 `SubType: Enchant`, reload the item/combo databases,
-   and verify every referenced skill and combo effect in-game.
-4. Only after those checks, deliberately remove their deny rule from
-   `FP_EnchantSupported` and update these warnings.
-
-PR #9765 reports development against a 2025-12-17 client. The inspected
-2026-02-19 executable is new enough by date, but that does not prove the
-required client-side class resources are installed.
+See [Druid integration evidence and limits](../../doc/druid_integration.md).
+The active client's job IDs, skill IDs, visible tree entries and descriptions
+are checked separately from in-game effects. Transformation rendering and every
+fashion skill/combo bonus still need player-attached verification; enabling
+the data is not a claim that those gameplay tests have passed.
 
 The 18 catalogue-only IDs missing from the server snapshot are outside this
 patch. Their published names are known, but equip positions and view IDs are

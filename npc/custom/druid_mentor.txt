@@ -1,0 +1,69 @@
+//===== rAthena Script =======================================
+//= Druid Mentor - scoped compatibility job-change service
+//===== Provenance / policy ==================================
+//= Official job/level requirements:
+//= https://ro.gnjoy.com/guide/runemidgarts/popup/jobChangeQuest.asp?jobgamecode=4351
+//= https://ro.gnjoy.com/guide/runemidgarts/popup/jobChangeQuest.asp?jobgamecode=4353
+//= https://ro.gnjoy.com/guide/runemidgarts/popup/jobChangeQuest.asp?jobgamecode=4355
+//= This is a custom mentor, NOT a reproduction/completion of the Veledor quests.
+//= It changes only Novice -> Druid -> Karnos -> Alitea, charges nothing, grants
+//= no quest rewards, and does not enable the disabled general-purpose Job Master.
+//============================================================
+
+prontera,153,193,6	script	Druid Mentor	4_M_SAGE_C,{
+	function Check_Form {
+		if (getstatus(SC_WEREWOLF) || getstatus(SC_WERERAPTOR) || getstatus(SC_ALL_RIDING)
+			|| checkfalcon() || checkcart() || checkriding() || ismounting()) {
+			mes "Return to your normal form and remove any mount or companion first.";
+			close;
+		}
+		return;
+	}
+	mes "[Druid Mentor]";
+	Check_Form();
+	mes "I guide the Druid, Karnos and Alitea path.";
+	.@from = Class;
+	switch (.@from) {
+	case Job_Novice:
+		.@to = Job_Druid; .@base = 1; .@job = 10;
+		break;
+	case Job_Druid:
+		.@to = Job_Karnos; .@base = 99; .@job = 70;
+		break;
+	case Job_Karnos:
+		.@to = Job_Alitea; .@base = 200; .@job = 70;
+		break;
+	case Job_Alitea:
+		mes "You have already reached Alitea.";
+		close;
+	default:
+		mes "Only a normal Novice, Druid or Karnos can advance here.";
+		mes "Existing characters from other paths cannot be converted.";
+		close;
+	}
+	if (BaseLevel < .@base || JobLevel < .@job) {
+		mes "To become " + jobname(.@to) + ", reach Base Level " + .@base + " and Job Level " + .@job + ".";
+		close;
+	}
+	if (SkillPoint) {
+		mes "Spend all remaining skill points first.";
+		close;
+	}
+	mes "This server's mentor changes your job without the official quest or its rewards.";
+	mes "Advance to " + jobname(.@to) + "?";
+	if (select("Advance:Cancel") == 2) close;
+	// Recheck after the yielding dialogue; never change a stale selection.
+	Check_Form();
+	if (Class != .@from || BaseLevel < .@base || JobLevel < .@job || SkillPoint) {
+		mes "Your class, level or skill points changed. Please speak to me again.";
+		close;
+	}
+	jobchange .@to;
+	if (Class != .@to) {
+		mes "The job change could not be completed. Nothing was charged.";
+		close;
+	}
+	specialeffect2 EF_ANGEL2;
+	mes "You are now " + jobname(Class) + ".";
+	close;
+}

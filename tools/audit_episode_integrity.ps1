@@ -223,7 +223,7 @@ $enabledScripts = @($enabledScriptEntries | Group-Object Path | ForEach-Object {
 Write-Host "  unique enabled NPC scripts: $($enabledScripts.Count)"
 
 # These persistent town services must not disappear during episode deployments.
-foreach ($service in @('npc/custom/healer.txt', 'npc/custom/grademk_services.txt', 'npc/custom/episode_skip_tina.txt')) {
+foreach ($service in @('npc/custom/healer.txt', 'npc/custom/grademk_services.txt', 'npc/custom/episode_skip_tina.txt', 'npc/custom/druid_mentor.txt')) {
 	if ($enabledScripts -notcontains $service) { Fail "Required custom service is disabled: $service" }
 }
 
@@ -518,7 +518,7 @@ $serviceCells = @(
 	@('grademk',30,181), @('grademk',32,181), @('grademk',36,181),
 	@('grademk',38,181), @('grademk',42,181), @('grademk',44,181),
 	@('grademk',46,181), @('grademk',48,181), @('grademk',50,181),
-	@('prontera',162,192), @('malangdo',132,113)
+	@('prontera',162,192), @('malangdo',132,113), @('prontera',153,192)
 )
 $requiredCells += $serviceCells
 $wantedCacheMaps = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)

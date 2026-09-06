@@ -10,10 +10,9 @@
 //= failure consumes nothing. This is a declared compatibility policy, not a
 //= claim about an unpublished MuhRO probability.
 //=
-//= The stock Malangdo NPC covers only 196 pairs. This service covers all 358
-//= pairs whose effects exist in this server build. Enchants 314848-314855 are
-//= deliberately unavailable until the Druid/Karnos/Alitea class implementation
-//= and its client data are installed; FP_EnchantSupported enforces that gate.
+//= The stock Malangdo NPC covers only 196 pairs. This service covers all 366
+//= pairs, including Druid/Karnos/Alitea with the integrated class skills.
+//= FP_EnchantSupported still validates every record's card/enchant type.
 //=
 //= The custom modifyequipitem command changes the enchant slot on the original
 //= inventory record. Unique ID, binding, expiry, favorite state, refine, grade,
@@ -71,7 +70,6 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 	if (!.@owned) {
 		mes "[Complete Fashion Enchanter]";
 		mes "You do not have a supported " + .@part_name$ + " stone.";
-		mes "Druid, Karnos and Alitea stones remain withheld until their complete class support is installed.";
 		close;
 	}
 	.@page=0;
