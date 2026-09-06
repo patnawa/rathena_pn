@@ -45,6 +45,37 @@ function	script	EP21_EnterGimli	{
 		mes "The temple route is not ready.";
 		close;
 	}
+	// BEGIN GIMLI ENTRANT CHECKPOINT
+	// Successful entry validates ownership but always returns to map 1.
+	// Restore only this entrant to the last unlocked group destination.
+	.@stage = getinstancevar('gimli_stage,.@iid);
+	.@checkpoint$ = "";
+	if (.@stage >= 2 && .@stage <= 4) {
+		.@checkpoint$ = instance_mapname("1@mdtem",.@iid);
+		.@x = 170; .@y = 154;
+	} else if (.@stage >= 5 && .@stage <= 7) {
+		.@checkpoint$ = instance_mapname("1@mdtem",.@iid);
+		.@x = 121; .@y = 36;
+	} else if (.@stage >= 8 && .@stage <= 10) {
+		.@checkpoint$ = instance_mapname("2@mdtem",.@iid);
+		.@x = 140; .@y = 125;
+	} else if (.@stage >= 11 && .@stage <= 12) {
+		.@checkpoint$ = instance_mapname("2@mdtem",.@iid);
+		.@x = 60; .@y = 125;
+	} else if (.@stage >= 14 && .@stage <= 15) {
+		.@checkpoint$ = instance_mapname("1@mdtem",.@iid);
+		.@x = 80; .@y = 80;
+	} else if (.@stage >= 17 && .@stage <= 18) {
+		.@checkpoint$ = instance_mapname("2@mdtem",.@iid);
+		.@x = 60; .@y = 65;
+	} else if (.@stage >= 20 && .@stage <= 22) {
+		.@checkpoint$ = instance_mapname("1@mdtem",.@iid);
+		.@x = 252; .@y = 67;
+	}
+	// Stages 0/1, unknown stages, and unavailable maps keep the entrance.
+	if (.@checkpoint$ != "")
+		warp .@checkpoint$,.@x,.@y;
+	// END GIMLI ENTRANT CHECKPOINT
 	end;
 }
 

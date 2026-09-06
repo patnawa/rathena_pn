@@ -452,12 +452,22 @@ OnBossDead:
 1@wtgs,84,311,4	script(DISABLED)	Maristella#ep21gs_finish	22306,{
 	if ('stage < 22) end;
 	mes "[Maristella Walter]";
-	if (isbegin_quest(16816) == 1) {
+	// One completed voyage can supply one story OR daily report per character.
+	// Instance-local character IDs survive reconnects, but expire with the run.
+	.@character = getcharid(0);
+	if (inarray('gs_reported,.@character) >= 0) {
+		mes "You have already reported this voyage. Another investigation needs a new expedition.";
+		mes "Leave through the portal. Once everyone has reported, the owner can close this cleared instance and start another.";
+	} else if (isbegin_quest(16816) == 1) {
 		mes "The Walter can disappear without regret now. We should report everything to Megas before the last memories fade.";
 		changequest 16816,16817;
+		if (!isbegin_quest(16816) && isbegin_quest(16817) == 1)
+			'gs_reported[getarraysize('gs_reported)] = .@character;
 	} else if (isbegin_quest(16821) == 1) {
 		mes "We recovered another fragment of my father's memories. Nillem will preserve it and issue your expedition reward.";
 		changequest 16821,16822;
+		if (!isbegin_quest(16821) && isbegin_quest(16822) == 1)
+			'gs_reported[getarraysize('gs_reported)] = .@character;
 	} else {
 		mes "The curse has been broken. Use the portal beside me before the ship fades.";
 	}

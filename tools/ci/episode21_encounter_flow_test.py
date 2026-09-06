@@ -19,6 +19,7 @@ from episode_party_progression_test import scan_to
 
 ROOT = Path(__file__).resolve().parents[2]
 FILES = ('GimliInfiltration.txt', 'MysteriousGhostShip.txt', 'BlackHairedBeast.txt')
+REPAIRED_CHECKPOINT = '51c8195170e9d7018e3b2d10315c2dd8ab3e6c31'
 PRE_FIX_HASHES = {
     'GimliInfiltration.txt': '04ebc9fcc713b20ebaa778f47c1840182525cf6fd97505ca9d04c6386f221edf',
     'MysteriousGhostShip.txt': '32036b3d303e75f6b3f34474ed9c5fa416387b5a6687f7d73bd43e8e7a788e0a',
@@ -140,6 +141,10 @@ void reset() {
     }
     script_free_vars(instances.at(1)->regs.vars);
     instances.at(1)->regs.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+    if (instances.at(1)->regs.arrays) {
+        instances.at(1)->regs.arrays->destroy(instances.at(1)->regs.arrays, script_free_array_db);
+        instances.at(1)->regs.arrays = nullptr;
+    }
     disabled.clear(); enabled.clear(); events.clear(); moves.clear();
     registries.clear(); items.clear(); reputation.clear(); experience.clear();
     spawned = 0; capacity = true; ++cases;
@@ -418,6 +423,20 @@ def before_fix(filename, source):
     return source
 
 
+def without_gimli_entry(source):
+    """The later entrant-only checkpoint repair has its own complete native test.
+
+    Keep this suite's original travel/spawn/reward invariant everywhere else.
+    This exception removes exactly the named helper, not arbitrary warp lines.
+    """
+    match = re.search(r'(?m)^function\tscript\tEP21_EnterGimli\t\{', source)
+    if not match:
+        return source
+    start = match.end() - 1
+    stop = scan_to(source, start, '{', '}') + 1
+    return source[:start] + '{}' + source[stop:]
+
+
 def fixtures(build, pre_fix=False):
     result, sources = [], {}
     enabled = (ROOT / 'npc/scripts_custom.conf').read_text()
@@ -426,11 +445,16 @@ def fixtures(build, pre_fix=False):
         source = path.read_text(encoding='utf-8')
         if len(re.findall(r'(?m)^npc:\s*npc/custom/episode21/' + re.escape(filename) + r'\s*$', enabled)) != 1:
             raise AssertionError('Expected one active script import: ' + filename)
-        original = before_fix(filename, source)
+        checkpoint = subprocess.check_output(
+            ['git', 'show', REPAIRED_CHECKPOINT + ':' + path.relative_to(ROOT).as_posix()],
+            cwd=ROOT).decode('utf-8').replace('\r\n', '\n')
+        # Historical reproduction stays hash-exact even when separately audited
+        # fixes extend the active script. Actual positive cases still use source.
+        original = before_fix(filename, checkpoint)
         # Prove this pass did not change encounter composition, movements, entry
         # policy calls, or the numerical reward/capacity commands.
         protected = r'(?m)^\s*(?:monster|areamonster|warp|instance_warpall|instance_create|instance_enter|getitem|getexp|callfunc "EP21_AddReputation"|if \(!checkweight)[^\n]*'
-        if [line.strip() for line in re.findall(protected, source)] != [line.strip() for line in re.findall(protected, original)]:
+        if [line.strip() for line in re.findall(protected, without_gimli_entry(source))] != [line.strip() for line in re.findall(protected, without_gimli_entry(original))]:
             raise AssertionError('Existing spawn, travel, entry, or reward declarations changed: ' + filename)
         sources[filename] = hashlib.sha256(path.read_bytes()).hexdigest()
         if pre_fix:
@@ -469,7 +493,7 @@ def fixtures(build, pre_fix=False):
     return hashlib.sha256((build / 'episode_cases.inc').read_bytes()).hexdigest()
 
 
-def run(build, reuse, pre_fix=False, prepare_only=False):
+def run(build, reuse, pre_fix=False, prepare_only=False, completion_marker='EP21_NATIVE_RESULT '):
     shape = fixtures(build, pre_fix)
     if prepare_only:
         return
@@ -509,8 +533,12 @@ def run(build, reuse, pre_fix=False, prepare_only=False):
     completed = subprocess.run([str(executable), str(build)], cwd=ROOT, capture_output=True, text=True, timeout=60)
     print(completed.stdout, end='', flush=True)
     print(completed.stderr, end='', flush=True)
-    if 'EP21_NATIVE_RESULT ' not in completed.stdout:
+    if completion_marker not in completed.stdout:
         raise AssertionError('Native postconditions not reached; this is not an ordinary regression failure')
+    if re.search(r'AddressSanitizer|UndefinedBehaviorSanitizer|runtime error:|invalid.free|\[Warning\]|\[Error\]', completed.stdout + completed.stderr, re.I):
+        raise AssertionError('Native allocator/sanitizer/runtime diagnostic')
+    if 'Memory manager: No memory leaks found.' not in completed.stdout:
+        raise AssertionError('Native allocator did not confirm clean teardown')
     completed.check_returncode()
 
 
