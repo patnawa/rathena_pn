@@ -1,0 +1,42 @@
+# Druid-family Clock Tower tuning enchant items.
+# Identities: original active ItemDBNameTbl and pinned ROenglishRE name table.
+# Effects: user-permitted MuhRO itemInfo_EN_db_fallback.lua, IDs 314269/314270.
+# Reference-compatible effects, not independently verified Gravity balance.
+# See doc/druid_gear_enchants_audit.md for provenance and integration boundaries.
+Header:
+  Type: ITEM_DB
+  Version: 3
+
+Body:
+  - Id: 314269
+    AegisName: Gear_AT2
+    Name: Pinion Shot Tuning Device
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@g = getenchantgrade();
+      bonus2 bSkillAtk,"AT_PINION_SHOT",5;
+      if (.@g >= ENCHANTGRADE_D)
+        bonus2 bSkillAtk,"AT_PINION_SHOT",3;
+      if (.@g >= ENCHANTGRADE_C)
+        bonus2 bAddSize,Size_All,10;
+      if (.@g >= ENCHANTGRADE_B)
+        bonus2 bSkillAtk,"AT_PINION_SHOT",4;
+      if (.@g >= ENCHANTGRADE_A)
+        bonus2 bSkillAtk,"AT_PINION_SHOT",6;
+  - Id: 314270
+    AegisName: Gear_AT1
+    Name: Quill Spear Tuning Device
+    Type: Card
+    SubType: Enchant
+    Script: |
+      .@g = getenchantgrade();
+      bonus2 bSkillAtk,"AT_QUILL_SPEAR",5;
+      if (.@g >= ENCHANTGRADE_D)
+        bonus2 bSkillAtk,"AT_QUILL_SPEAR",3;
+      if (.@g >= ENCHANTGRADE_C)
+        bonus2 bAddSize,Size_All,10;
+      if (.@g >= ENCHANTGRADE_B)
+        bonus2 bSkillAtk,"AT_QUILL_SPEAR",4;
+      if (.@g >= ENCHANTGRADE_A)
+        bonus2 bSkillAtk,"AT_QUILL_SPEAR",6;

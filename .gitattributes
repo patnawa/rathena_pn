@@ -13,3 +13,6 @@ Makefile text eol=lf
 Makefile.in text eol=lf
 *.sh text eol=lf
 *.sql text eol=lf
+# Byte-pinned display fragments used by the installed-client verifier.
+client-patch/chapter2_native/SystemEN/itemInfo_Chapter2Materials.lua text eol=lf
+client-patch/druid_gear/SystemEN/itemInfo_DruidGear.lua text eol=lf

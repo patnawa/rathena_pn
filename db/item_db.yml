@@ -103,3 +103,5 @@ Footer:
   - Path: db/import/garden_of_time_combat_item_db.yml
   - Path: db/import/druid_item_db.yml
     Mode: Renewal
+  - Path: db/import/druid_gear_enchants.yml
+    Mode: Renewal

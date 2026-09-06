@@ -34,6 +34,11 @@ EXPECTED_TARGETS = {
     (47, 2): {f'Glacier_F_Orb_{i}' for i in range(192, 211)},
     (137, 1): {f'Wolf_Orb_Skill_{i}' for i in range(52, 55)},
 }
+# Keep the original six-group / 63-recipe scope explicit. The shared overlay
+# now also contains exactly two independently sourced Clock Tower Gear recipes.
+GEAR_TARGETS = {(24, 2): {'Gear_AT1', 'Gear_AT2'}}
+ALL_EXPECTED_TARGETS = {**EXPECTED_TARGETS, **GEAR_TARGETS}
+ALL_EXPECTED_IDS = {**EXPECTED_IDS, 314269: 'Gear_AT2', 314270: 'Gear_AT1'}
 
 
 def configurations_without_overlay():
@@ -58,6 +63,9 @@ def expected_requirements(group, slot, name):
         return {'Price': 0, 'Materials': {'BarMealTicket': 25}}
     if group == 26:
         return {'Price': 0, 'Materials': {name.replace('_Orb_', '_Stone_'): 1}}
+    if group == 24:
+        return {'Price': 0, 'Materials': {
+            'ClockTower_Gear': 150, 'Shadowdecon': 150, 'Zelunium': 150}}
     if group == 47:
         amounts = [10, 15, 25] if slot == 3 else [15, 20, 35]
         return {'Price': 0, 'Materials': {f'EP19_S_F_{i}_Extract': amount
@@ -94,8 +102,11 @@ class DruidEnchantTests(unittest.TestCase):
 
     def test_overlay_schema_changes_only_allowed_fields(self):
         self.assertEqual(self.overlay['Header'], {'Type': 'ITEM_ENCHANT_DB', 'Version': 1})
-        self.assertEqual(len(self.overlay['Body']), 6)
-        self.assertEqual({r['Id'] for r in self.overlay['Body']}, {1, 26, 31, 44, 47, 137})
+        original_groups = [r for r in self.overlay['Body'] if r['Id'] != 24]
+        self.assertEqual(len(original_groups), 6)
+        self.assertEqual({r['Id'] for r in original_groups}, {1, 26, 31, 44, 47, 137})
+        self.assertEqual(len(self.overlay['Body']), 7)
+        self.assertEqual({r['Id'] for r in self.overlay['Body']}, {1, 24, 26, 31, 44, 47, 137})
         actual = {}
         for group in self.overlay['Body']:
             self.assertEqual(set(group), {'Id', 'Slots'})
@@ -111,12 +122,16 @@ class DruidEnchantTests(unittest.TestCase):
                 actual[key] = set(names)
                 for recipe in slot['PerfectEnchants']:
                     self.assertEqual(set(recipe), {'Item', 'Price', 'Materials'})
-        self.assertEqual(actual, EXPECTED_TARGETS)
-        self.assertEqual(sum(map(len, actual.values())), 63)
+        original_recipes = {key: names for key, names in actual.items() if key[0] != 24}
+        self.assertEqual(original_recipes, EXPECTED_TARGETS)
+        self.assertEqual(sum(map(len, original_recipes.values())), 63)
+        self.assertEqual({key: names for key, names in actual.items() if key[0] == 24}, GEAR_TARGETS)
+        self.assertEqual(actual, ALL_EXPECTED_TARGETS)
+        self.assertEqual(sum(map(len, actual.values())), 65)
 
     def test_exact_pinned_costs_and_all_dependencies_exist(self):
         items = {r['AegisName']: r for r in renewal_records(ROOT, 'db/item_db.yml') if 'AegisName' in r}
-        for (group, slot), names in EXPECTED_TARGETS.items():
+        for (group, slot), names in ALL_EXPECTED_TARGETS.items():
             for name in names:
                 with self.subTest(group=group, slot=slot, item=name):
                     recipe = self.after[group]['Slots'][slot]['Perfect'][name]
@@ -142,7 +157,7 @@ class DruidEnchantTests(unittest.TestCase):
 
     def test_every_other_initial_enchant_setting_is_unchanged(self):
         restored = copy.deepcopy(self.after)
-        for (group, slot), names in EXPECTED_TARGETS.items():
+        for (group, slot), names in ALL_EXPECTED_TARGETS.items():
             for name in names:
                 self.assertNotIn(name, self.before[group]['Slots'][slot]['Perfect'])
                 del restored[group]['Slots'][slot]['Perfect'][name]
@@ -177,11 +192,11 @@ class DruidEnchantTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(CLIENT.read_bytes()).hexdigest(), CLIENT_SHA256)
         resolve = ClientItemNames(CLIENT_NAMES, ROOT)
         client = client_configuration(CLIENT, resolve)
-        verified = set(EXPECTED_IDS.values())
+        verified = set(ALL_EXPECTED_IDS.values())
         selected = {(group, slot): {name for name in data['Perfect'] if name in verified}
                     for group, cfg in client.items() for slot, data in cfg['Slots'].items()
                     if any(name in verified for name in data['Perfect'])}
-        self.assertEqual(selected, EXPECTED_TARGETS)
+        self.assertEqual(selected, ALL_EXPECTED_TARGETS)
         for (group, slot), names in selected.items():
             for name in names:
                 with self.subTest(group=group, slot=slot, item=name):
@@ -197,7 +212,7 @@ class DruidEnchantTests(unittest.TestCase):
         if CLIENT_NAMES is None:
             self.skipTest('Pass --client-item-names to verify existing client identities')
         resolve = ClientItemNames(CLIENT_NAMES, ROOT)
-        for item_id, name in EXPECTED_IDS.items():
+        for item_id, name in ALL_EXPECTED_IDS.items():
             self.assertEqual(resolve.client[name], item_id)
             self.assertEqual(resolve.server[item_id], name)
             self.assertEqual(resolve(name), name)

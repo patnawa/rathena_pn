@@ -9,6 +9,28 @@ Header:
   Type: ITEM_ENCHANT_DB
   Version: 1
 Body:
+  - Id: 24
+    Slots:
+      - Slot: 2
+        PerfectEnchants:
+          - Item: Gear_AT1
+            Price: 0
+            Materials:
+              - Material: ClockTower_Gear
+                Amount: 150
+              - Material: Shadowdecon
+                Amount: 150
+              - Material: Zelunium
+                Amount: 150
+          - Item: Gear_AT2
+            Price: 0
+            Materials:
+              - Material: ClockTower_Gear
+                Amount: 150
+              - Material: Shadowdecon
+                Amount: 150
+              - Material: Zelunium
+                Amount: 150
   - Id: 1
     Slots:
       - Slot: 1
