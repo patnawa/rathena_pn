@@ -1,5 +1,5 @@
 //===== Custom Grade Workshop Services ========================
-//= Mad Bunny-LT enchant, refinement UI, and material dealer.
+//= Native enchant services, refinement UI, and material dealer.
 //=============================================================
 
 grademk,38,184,4	script	Mad Bunny-LT Enchanter#grademk	4_F_ZONDAGIRL,{
@@ -218,6 +218,26 @@ L_UpgradeStarSpell:
 
 OnInit:
 	setunittitle(getnpcid(0), "<Constellation Enchant>");
+	end;
+}
+
+grademk,40,184,4	script	Shadow Gear Enchanter#grademk	4_M_REPAIR,{
+	mes "[Shadow Gear Enchanter]";
+	mes "I enchant Full Power, Full Rate and Full Spell Shadow armor and shoes.";
+	mes "I also handle Focusing, Stout, Centering and Witty Shadow pendants and earrings.";
+	next;
+	mes "[Shadow Gear Enchanter]";
+	mes "Bring your equipment and Shadow Enchant Essence. The window shows the exact costs.";
+	mes "Upgrades may retain or lower the enchant level. This service has no reset.";
+	next;
+	if (select("Open Shadow Enchant:Cancel") == 2)
+		close;
+	close2;
+	item_enchant(128);
+	end;
+
+OnInit:
+	setunittitle(getnpcid(0), "<Shadow Gear Enchant>");
 	end;
 }
 

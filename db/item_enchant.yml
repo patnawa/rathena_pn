@@ -92,3 +92,5 @@ Footer:
   - Path: db/import/perfect_item_enchant.yml
   - Path: db/import/druid_item_enchant.yml
     Mode: Renewal
+  - Path: db/import/shadow_group128_enchant.yml
+    Mode: Renewal

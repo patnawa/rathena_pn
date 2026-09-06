@@ -515,8 +515,8 @@ $requiredCells = @(
 # The workshop counter blocks portions of row 183; row 181 is the approach aisle.
 # These also guard against accidentally deploying an incompatible map cache.
 $serviceCells = @(
-	@('grademk',30,181), @('grademk',32,181), @('grademk',36,181),
-	@('grademk',38,181), @('grademk',42,181), @('grademk',44,181),
+	@('grademk',30,181), @('grademk',32,181), @('grademk',34,181), @('grademk',36,181),
+	@('grademk',38,181), @('grademk',40,181), @('grademk',42,181), @('grademk',44,181),
 	@('grademk',46,181), @('grademk',48,181), @('grademk',50,181),
 	@('prontera',162,192), @('malangdo',132,113), @('prontera',153,192)
 )
@@ -817,17 +817,20 @@ if (Test-Path -LiteralPath (RepoPath $workshopEnchantPath)) {
 Write-Host '  Grade Workshop crown enchants: 36 targets, 90 weighted upgrades'
 
 $workshopGroupIds = [Collections.Generic.HashSet[int]]::new()
-foreach ($relative in @('db/re/item_enchant.yml', 'db/import/item_enchant.yml', 'db/import/grademk_item_enchant.yml', 'db/import/grademk_service_enchants.yml')) {
+foreach ($relative in @('db/re/item_enchant.yml', 'db/import/item_enchant.yml', 'db/import/grademk_item_enchant.yml', 'db/import/grademk_service_enchants.yml', 'db/import/shadow_group128_enchant.yml')) {
 	if (!(Test-Path -LiteralPath (RepoPath $relative))) { Fail "Missing workshop enchant dependency: $relative"; continue }
 	if ($dbImports -notcontains $relative) { Fail "Workshop enchant dependency is not imported: $relative" }
 	foreach ($match in [regex]::Matches([IO.File]::ReadAllText((RepoPath $relative)), '(?m)^\s*- Id:\s*(\d+)\s*(?:#.*)?$')) {
 		[void]$workshopGroupIds.Add([int]$match.Groups[1].Value)
 	}
 }
-foreach ($id in @(7,8,9,10,11,12,13,15,16,17,18,19,52,53,54,55,117,118,119,120,121,122,123,124,142,163,164)) {
+foreach ($id in @(7,8,9,10,11,12,13,15,16,17,18,19,52,53,54,55,117,118,119,120,121,122,123,124,128,142,163,164)) {
 	if (!$workshopGroupIds.Contains($id)) { Fail "Grade Workshop NPC references missing enchant group $id" }
 }
-Write-Host '  Grade Workshop native enchant dependencies: 27 groups'
+if ($workshopService -notmatch 'grademk,40,184,4\s+script\s+Shadow Gear Enchanter#grademk' -or $workshopService -notmatch 'item_enchant\(128\);') {
+	Fail 'Shadow Gear Enchanter service or group-128 entry point is missing'
+}
+Write-Host '  Grade Workshop native enchant dependencies: 28 groups'
 
 # Chapter 1 footwear group 163 must reproduce the official upgrade behavior:
 # ranks 1-4 advance one rank at 90% or skip two ranks at 10%, while rank 5

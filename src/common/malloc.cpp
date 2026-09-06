@@ -3,6 +3,7 @@
 
 #include "malloc.hpp"
 
+#include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -173,7 +174,7 @@ struct block {
 	uint16 unit_used;				/* The number of used units */
 	uint16 unit_unfill;				/* The number of unused units */
 	uint16 unit_maxused;			/* The maximum value of units used */
-	char   data[ BLOCK_DATA_SIZE ];
+	alignas(std::max_align_t) char data[ BLOCK_DATA_SIZE ];
 };
 
 struct unit_head {
@@ -181,7 +182,9 @@ struct unit_head {
 	const  char*   file;
 	uint16 line;
 	uint16 size;
-	long           checksum;
+	// The payload begins at this member, not at sizeof(unit_head)-sizeof(long):
+	// alignas may introduce tail padding on LP64 and LLP64 platforms.
+	alignas(std::max_align_t) long checksum;
 };
 
 static struct block* hash_unfill[BLOCK_DATA_COUNT1 + BLOCK_DATA_COUNT2 + 1];
@@ -194,6 +197,31 @@ struct unit_head_large {
 	struct unit_head_large* next;
 	struct unit_head        unit_head;
 };
+
+static constexpr size_t UNIT_PAYLOAD_OFFSET = offsetof(unit_head, checksum);
+static constexpr size_t LARGE_PAYLOAD_OFFSET = offsetof(unit_head_large, unit_head) + UNIT_PAYLOAD_OFFSET;
+static_assert(BLOCK_ALIGNMENT1 % alignof(std::max_align_t) == 0 &&
+	BLOCK_ALIGNMENT2 % alignof(std::max_align_t) == 0, "Size classes must preserve malloc alignment");
+static_assert(offsetof(block, data) % alignof(std::max_align_t) == 0 &&
+	sizeof(block) % alignof(std::max_align_t) == 0, "Every backing block must be aligned");
+static_assert(UNIT_PAYLOAD_OFFSET % alignof(std::max_align_t) == 0 &&
+	LARGE_PAYLOAD_OFFSET % alignof(std::max_align_t) == 0 &&
+	sizeof(unit_head) % alignof(std::max_align_t) == 0, "Every allocation must be aligned");
+static_assert(UNIT_PAYLOAD_OFFSET + sizeof(long) <= sizeof(unit_head) &&
+	LARGE_PAYLOAD_OFFSET + sizeof(long) <= sizeof(unit_head_large), "Reserve the tail guard");
+
+// Requested lengths need not be multiples of alignof(long). Byte-copy guards
+// retain overflow detection without unaligned typed loads or stores.
+static void memmgr_write_guard(char* address) {
+	const long guard = FREED_POINTER;
+	std::memcpy(address, &guard, sizeof(guard));
+}
+
+static bool memmgr_check_guard(const char* address) {
+	long guard;
+	std::memcpy(&guard, address, sizeof(guard));
+	return guard == FREED_POINTER;
+}
 
 static struct unit_head_large *unit_head_large_first = nullptr;
 
@@ -256,8 +284,8 @@ void* _mmalloc(size_t size, const char *file, int32 line, const char *func )
 				p->next = unit_head_large_first;
 			}
 			unit_head_large_first = p;
-			*(long*)((char*)p + sizeof(struct unit_head_large) - sizeof(long) + size) = FREED_POINTER;
-			return (char *)p + sizeof(struct unit_head_large) - sizeof(long);
+			memmgr_write_guard((char*)p + LARGE_PAYLOAD_OFFSET + size);
+			return (char *)p + LARGE_PAYLOAD_OFFSET;
 		} else {
 			ShowFatalError("Memory manager::memmgr_alloc failed (allocating %" PRIuPTR  "+%" PRIuPTR " bytes at %s:%d).\n", sizeof(struct unit_head_large), size, file, line);
 			exit(EXIT_FAILURE);
@@ -302,7 +330,7 @@ void* _mmalloc(size_t size, const char *file, int32 line, const char *func )
 		size_t i, sz = hash2size( size_hash );
 		for( i=0; i<sz; i++ )
 		{
-			if( ((unsigned char*)head)[ sizeof(struct unit_head) - sizeof(long) + i] != 0xfd )
+			if( ((unsigned char*)head)[ UNIT_PAYLOAD_OFFSET + i] != 0xfd )
 			{
 				if( head->line != 0xfdfd )
 				{
@@ -315,7 +343,7 @@ void* _mmalloc(size_t size, const char *file, int32 line, const char *func )
 				break;
 			}
 		}
-		memset( (char *)head + sizeof(struct unit_head) - sizeof(long), 0xcd, sz );
+		memset( (char *)head + UNIT_PAYLOAD_OFFSET, 0xcd, sz );
 	}
 #endif
 
@@ -323,8 +351,8 @@ void* _mmalloc(size_t size, const char *file, int32 line, const char *func )
 	head->file  = file;
 	head->line  = line;
 	head->size  = (uint16)size;
-	*(long*)((char*)head + sizeof(struct unit_head) - sizeof(long) + size) = FREED_POINTER;
-	return (char *)head + sizeof(struct unit_head) - sizeof(long);
+	memmgr_write_guard((char*)head + UNIT_PAYLOAD_OFFSET + size);
+	return (char *)head + UNIT_PAYLOAD_OFFSET;
 }
 
 void* _mcalloc(size_t num, size_t size, const char *file, int32 line, const char *func )
@@ -341,9 +369,9 @@ void* _mrealloc(void *memblock, size_t size, const char *file, int32 line, const
 		return _mmalloc(size,file,line,func);
 	}
 
-	old_size = ((struct unit_head *)((char *)memblock - sizeof(struct unit_head) + sizeof(long)))->size;
+	old_size = ((struct unit_head *)((char *)memblock - UNIT_PAYLOAD_OFFSET))->size;
 	if( old_size == 0 ) {
-		old_size = ((struct unit_head_large *)((char *)memblock - sizeof(struct unit_head_large) + sizeof(long)))->size;
+		old_size = ((struct unit_head_large *)((char *)memblock - LARGE_PAYLOAD_OFFSET))->size;
 	}
 	if(old_size > size) {
 		// Size reduction - return> as it is (negligence)
@@ -378,13 +406,11 @@ void _mfree(void *ptr, const char *file, int32 line, const char *func )
 	if (ptr == nullptr)
 		return; 
 
-	head = (struct unit_head *)((char *)ptr - sizeof(struct unit_head) + sizeof(long));
+	head = (struct unit_head *)((char *)ptr - UNIT_PAYLOAD_OFFSET);
 	if(head->size == 0) {
 		/* area that is directly secured by malloc () */
-		struct unit_head_large *head_large = (struct unit_head_large *)((char *)ptr - sizeof(struct unit_head_large) + sizeof(long));
-		if(
-			*(long*)((char*)head_large + sizeof(struct unit_head_large) - sizeof(long) + head_large->size)
-			!= FREED_POINTER)
+		struct unit_head_large *head_large = (struct unit_head_large *)((char *)ptr - LARGE_PAYLOAD_OFFSET);
+		if(!memmgr_check_guard((char*)ptr + head_large->size))
 		{
 			ShowError("Memory manager: args of aFree 0x%p is overflowed pointer %s line %d\n", ptr, file, line);
 		} else {
@@ -411,13 +437,13 @@ void _mfree(void *ptr, const char *file, int32 line, const char *func )
 			ShowError("Memory manager: args of aFree 0x%p is invalid pointer %s line %d\n", ptr, file, line);
 		} else if(head->block == nullptr) {
 			ShowError("Memory manager: args of aFree 0x%p is freed pointer %s:%d@%s\n", ptr, file, line, func);
-		} else if(*(long*)((char*)head + sizeof(struct unit_head) - sizeof(long) + head->size) != FREED_POINTER) {
+		} else if(!memmgr_check_guard((char*)ptr + head->size)) {
 			ShowError("Memory manager: args of aFree 0x%p is overflowed pointer %s line %d\n", ptr, file, line);
 		} else {
 			memmgr_usage_bytes -= head->size;
 			head->block         = nullptr;
 #ifdef DEBUG_MEMMGR
-			memset(ptr, 0xfd, block->unit_size - sizeof(struct unit_head) + sizeof(long) );
+			memset(ptr, 0xfd, block->unit_size - UNIT_PAYLOAD_OFFSET );
 			head->file = file;
 			head->line = line;
 #endif
@@ -577,8 +603,8 @@ bool memmgr_verify(void* ptr)
 				struct unit_head* head = block2unit(block, i);
 				if( i < block->unit_maxused && head->block != nullptr )
 				{// memory unit is allocated, check if ptr points to the usable part
-					return ( (char*)ptr >= ((char*)head) + sizeof(struct unit_head) - sizeof(long)
-						&& (char*)ptr < ((char*)head) + sizeof(struct unit_head) - sizeof(long) + head->size );
+					return ( (char*)ptr >= ((char*)head) + UNIT_PAYLOAD_OFFSET
+						&& (char*)ptr < ((char*)head) + UNIT_PAYLOAD_OFFSET + head->size );
 				}
 			}
 			return false;
@@ -589,10 +615,10 @@ bool memmgr_verify(void* ptr)
 	// search large blocks
 	while( large )
 	{
-		if( (char*)ptr >= (char*)large && (char*)ptr < ((char*)large) + large->size )
+		if( (char*)ptr >= (char*)large && (char*)ptr < ((char*)large) + LARGE_PAYLOAD_OFFSET + large->size )
 		{// found memory block, check if ptr points to the usable part
-			return ( (char*)ptr >= ((char*)large) + sizeof(struct unit_head_large) - sizeof(long)
-				&& (char*)ptr < ((char*)large) + sizeof(struct unit_head_large) - sizeof(long) + large->size );
+			return ( (char*)ptr >= ((char*)large) + LARGE_PAYLOAD_OFFSET
+				&& (char*)ptr < ((char*)large) + LARGE_PAYLOAD_OFFSET + large->size );
 		}
 		large = large->next;
 	}
@@ -614,7 +640,7 @@ static void memmgr_final (void)
 			for (i = 0; i < block->unit_maxused; i++) {
 				struct unit_head *head = block2unit(block, i);
 				if(head->block != nullptr) {
-					char* ptr = (char *)head + sizeof(struct unit_head) - sizeof(long);
+					char* ptr = (char *)head + UNIT_PAYLOAD_OFFSET;
 #ifdef LOG_MEMMGR
 					char buf[1024];
 					sprintf (buf,

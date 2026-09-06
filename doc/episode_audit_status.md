@@ -86,7 +86,7 @@ tests and 13 sanitized source-extracted assertions pass. See
 [combat bindings](combat_bindings_audit.md).
 
 The broader local audit now reports 899 enabled scripts, 99 instances, 29,535
-item identities, 99 DB imports, 60 local fragments and 52 walkable arrival/service
+item identities, 100 DB imports, 61 local fragments and 54 walkable arrival/service
 cells, with zero integrity warnings. The additional 31 Druid-related item
 definitions have verified source IDs and supplied-MuhRO compatibility effects;
 63 initial-enchant recipes and the Gray Wolf distribution are now wired in a
@@ -116,6 +116,21 @@ The six-file recipe/Monolith follow-up was deployed at 14:56 ICT; all four core
 containers are ready with zero restart counts. See
 [follow-up receipt](druid_recipes_monolith_deployment_20260906.md).
 
+The allocator/Shadow follow-up deployed at 15:18 ICT. The default allocator now
+provides correctly aligned pooled/large payloads, reads and writes odd-sized tail
+guards safely, and verifies the final large-allocation byte correctly. Fresh
+normal/debug ASan+UBSan matrices pass 18774 assertions each, and deliberate
+shutdown cleanup passes 105 assertions each. The real VM now recompiles the
+allocator too and passes with both sanitizers. See
+[allocator evidence](native_allocator_alignment_audit.md) and
+[deployment receipt](allocator_shadow_deployment_20260906.md).
+
+Group 128 is now imported once and available through the Shadow Gear Enchanter
+at `grademk,40,184`. Its 14 existing targets, 12 initial recipes and 24 weighted
+upgrades match the original client, with 2.4 million exact native-selector draws.
+No equipment/material economy was invented. The map approach, NPC wiring and
+native startup pass; actual client interaction/charging remains unverified.
+
 ## Initial-enchant and remaining gameplay coverage
 
 The normal-enchant sampler, grade bonus parser/application, and disabled-reset
@@ -129,19 +144,25 @@ See the
 - End-to-end client clicks, cost charging, relog persistence, and equipment-effect
   verification remain pending for the new guaranteed-upgrade path. Packet evidence
   comes from the bundled 2025 binary; the active 2026 client needs a runtime check.
-- The first initial-enchant/reset comparison covers 157 shared groups, 339 normal
-  grade tables and 2307 selectable initial recipes. After the Druid overlay it
+- The current initial-enchant/reset comparison covers 158 shared groups, 339 normal
+  grade tables and 2319 selectable initial recipes. After the Druid overlay it
   reports 25 shared-group differences: two Gear_AT recipes, 13 equipment target
   lists, and ten deliberately customized Biosphere distributions. The audit now
-  also reports missing server groups 128 and 166, for 27 total issues. Those
-  groups contain 30 additional selectable recipes, bringing the client total to
-  2337. Upgrade reports explicitly show 24 ordinary recipes in missing group 128.
+  reports missing server group 166, for 26 total issues. That group's 18 additional
+  selectable recipes bring the full client total to 2337. With group 128 restored,
+  all 1269 ordinary and 444 guaranteed client upgrades match, with no missing
+  upgrade groups or unresolved upgrade dependencies.
   All 40 unresolved identities are present in the client but missing on the
   server; none is a missing client name. No item IDs/effects have been
   guessed. Compared reset settings and existing initial-recipe costs match.
   The 24 server-only upgrades remain preserved, not proven visible in the client.
   Client clicks and actual material charging remain unverified for corrected
   group 132 native recipes and the corrected normal/reset handlers.
+- Chapter 2 groups 167-171 have no definitions in any of the supplied client's
+  three enchant-list copies. Their 22 targets/58 outcomes also require 84 missing
+  client name mappings. The existing itemInfo metadata does not register native
+  enchant tables. A separate offline client-patch generator is being prepared;
+  it is not installed and those windows are not yet repaired.
 - Parser fixtures in `npc/test/native_equip_safety.txt` only test accepted command
   syntax during a test-config load; they are not player-attached runtime tests.
 - The restored healer and workshop need actual client interaction checks. The

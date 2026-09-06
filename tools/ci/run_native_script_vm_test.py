@@ -2,7 +2,7 @@
 """Build/run an isolated Linux real-VM proof without launching map-server.
 
 Requires a previously built local Linux map-server object set. The exercised
-script.cpp and test driver are always freshly compiled with current headers;
+script.cpp, allocator and test driver are freshly compiled with current headers;
 other objects only satisfy link dependencies. Explicit doubles isolate the few
 world-boundary functions called by this narrow inventory test. This is not a
 fresh full-server integration build and does not test arbitrary old objects.
@@ -26,7 +26,7 @@ WRAPPERS = (
 )
 
 
-def run(build):
+def run(build, sanitizer):
     # Fail if the small native fixtures drift from the effective live-layout
     # item definitions. Item effects and unrelated DB fields are not simulated.
     expected = {490136: ("Armor", "Normal", 1), 310710: ("Card", "Enchant", 0),
@@ -50,17 +50,20 @@ def run(build):
         raise SystemExit("Build the local Linux map-server first; required support objects are missing")
     includes = ["src", "3rdparty/libconfig", "3rdparty/rapidyaml/src",
                 "3rdparty/rapidyaml/ext/c4core/src", "3rdparty/json/include", "/usr/include/mysql"]
-    flags = ["g++", "-std=c++17", "-O0", "-g", "-DPACKETVER=20260219", "-fno-strict-aliasing", "-fno-omit-frame-pointer", "-fsanitize=address"]
+    sanitizer_flags = ["-fsanitize=" + sanitizer, "-fno-sanitize-recover=all"]
+    flags = ["g++", "-std=c++17", "-O0", "-g", "-DPACKETVER=20260219", "-fno-strict-aliasing", "-fno-omit-frame-pointer"] + sanitizer_flags
     flags.extend("-I" + path for path in includes)
     compiled = []
-    for source in ("src/map/script.cpp", "tools/ci/native_script_vm_test.cpp"):
+    # The standalone allocator object resolves the common archive's allocator
+    # symbols first, so a stale malloc.o cannot hide the current alignment fix.
+    for source in ("src/map/script.cpp", "src/common/malloc.cpp", "tools/ci/native_script_vm_test.cpp"):
         target = build / (Path(source).stem + ".o")
         print("Compiling current " + source, flush=True)
         print("SHA256 " + hashlib.sha256((ROOT / source).read_bytes()).hexdigest(), flush=True)
         subprocess.run(flags + ["-c", source, "-o", str(target)], cwd=ROOT, check=True)
         compiled.append(target)
     executable = build / "native_script_vm_test"
-    command = ["g++", "-fsanitize=address", "-o", str(executable)]
+    command = ["g++"] + sanitizer_flags + ["-o", str(executable)]
     command.extend(str(path) for path in compiled + objects + libraries)
     command.extend("-Wl,--wrap=" + symbol for symbol in WRAPPERS)
     command.extend(["-lz", "-ldl", "-lmysqlclient", "-lzstd", "-lssl", "-lcrypto", "-lresolv", "-lm"])
@@ -79,12 +82,14 @@ def run(build):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--sanitizer", choices=("address", "undefined", "address,undefined"),
+                        default="address,undefined")
     parser.add_argument("--build-dir", type=Path, help="Keep generated objects/binary in this Linux directory")
     arguments = parser.parse_args()
     if arguments.build_dir:
         build_dir = arguments.build_dir.resolve()
         build_dir.mkdir(parents=True, exist_ok=True)
-        run(build_dir)
+        run(build_dir, arguments.sanitizer)
     else:
         with tempfile.TemporaryDirectory(prefix="rathena-script-vm-") as directory:
-            run(Path(directory))
+            run(Path(directory), arguments.sanitizer)

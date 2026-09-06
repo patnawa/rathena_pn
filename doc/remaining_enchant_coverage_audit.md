@@ -5,6 +5,13 @@ Read-only audit, 2026-09-06. This records the working-tree state after the
 document was added by this pass; no item data, recipes, NPCs, client files,
 acquisition routes, or effects were changed.
 
+Subsequent update: group 128 was restored and a custom Grademk service added in
+the next reviewed batch. Its 12 initial recipes and 24 upgrades now match the
+client. The current initial report has 26 issues, with only group 166 absent;
+the upgrade audit has no missing groups and exits successfully. The figures
+below preserve the earlier read-only snapshot. See
+[the restoration](shadow_group128_enchant_compatibility.md).
+
 ## Result
 
 All 40 names still unresolved by `ClientItemNames.unresolved_details` are

@@ -1,0 +1,339 @@
+# Group 128: exact active-client Attribute Shadow Equipment enchant recipes.
+# Source/provenance and staged activation: doc/shadow_group128_enchant_compatibility.md
+# No NPC or acquisition changes. Native random-upgrade support is required.
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+
+Body:
+  - Id: 128
+    TargetItems:
+      S_Full_Power_Armor: true
+      S_Full_Power_Shoes: true
+      S_Full_Rate_Armor: true
+      S_Full_Rate_Shoes: true
+      S_Focusing_Pendant: true
+      S_Focusing_Earring: true
+      S_Stout_Pendant: true
+      S_Stout_Earring: true
+      S_Full_Spell_Armor: true
+      S_Full_Spell_Shoes: true
+      S_Centering_Pendant: true
+      S_Centering_Earring: true
+      S_Witty_Pendant: true
+      S_Witty_Earring: true
+    MinimumRefine: 0
+    MinimumEnchantgrade: 0
+    AllowRandomOptions: true
+    Reset:
+      Chance: 0
+      Price: 0
+    Order:
+      - Slot: 3
+      - Slot: 2
+    Slots:
+      - Slot: 3
+        PerfectEnchants:
+          - Item: Strength3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: Dexterity3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: Inteligence3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: Agility3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: Vitality3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+          - Item: Luck3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+      - Slot: 2
+        PerfectEnchants:
+          - Item: Shadow_ATK_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 7
+          - Item: Shadow_MATK_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 7
+          - Item: Shadow_CRI_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 7
+          - Item: Shadow_CAST_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 7
+          - Item: Shadow_HP_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 7
+          - Item: Shadow_SP_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 7
+        Upgrades:
+          - Enchant: Shadow_ATK_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 2
+            RandomUpgrades:
+              - Upgrade: Shadow_ATK_1
+                Chance: 30000
+              - Upgrade: Shadow_ATK_2
+                Chance: 70000
+          - Enchant: Shadow_ATK_2
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+            RandomUpgrades:
+              - Upgrade: Shadow_ATK_1
+                Chance: 40000
+              - Upgrade: Shadow_ATK_3
+                Chance: 60000
+          - Enchant: Shadow_ATK_3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+            RandomUpgrades:
+              - Upgrade: Shadow_ATK_2
+                Chance: 50000
+              - Upgrade: Shadow_ATK_4
+                Chance: 50000
+          - Enchant: Shadow_ATK_4
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 8
+            RandomUpgrades:
+              - Upgrade: Shadow_ATK_3
+                Chance: 60000
+              - Upgrade: Shadow_ATK_5
+                Chance: 40000
+          - Enchant: Shadow_MATK_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 2
+            RandomUpgrades:
+              - Upgrade: Shadow_MATK_1
+                Chance: 30000
+              - Upgrade: Shadow_MATK_2
+                Chance: 70000
+          - Enchant: Shadow_MATK_2
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+            RandomUpgrades:
+              - Upgrade: Shadow_MATK_1
+                Chance: 40000
+              - Upgrade: Shadow_MATK_3
+                Chance: 60000
+          - Enchant: Shadow_MATK_3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+            RandomUpgrades:
+              - Upgrade: Shadow_MATK_2
+                Chance: 50000
+              - Upgrade: Shadow_MATK_4
+                Chance: 50000
+          - Enchant: Shadow_MATK_4
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 8
+            RandomUpgrades:
+              - Upgrade: Shadow_MATK_3
+                Chance: 60000
+              - Upgrade: Shadow_MATK_5
+                Chance: 40000
+          - Enchant: Shadow_CRI_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 2
+            RandomUpgrades:
+              - Upgrade: Shadow_CRI_1
+                Chance: 30000
+              - Upgrade: Shadow_CRI_2
+                Chance: 70000
+          - Enchant: Shadow_CRI_2
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+            RandomUpgrades:
+              - Upgrade: Shadow_CRI_1
+                Chance: 40000
+              - Upgrade: Shadow_CRI_3
+                Chance: 60000
+          - Enchant: Shadow_CRI_3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+            RandomUpgrades:
+              - Upgrade: Shadow_CRI_2
+                Chance: 50000
+              - Upgrade: Shadow_CRI_4
+                Chance: 50000
+          - Enchant: Shadow_CRI_4
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 8
+            RandomUpgrades:
+              - Upgrade: Shadow_CRI_3
+                Chance: 60000
+              - Upgrade: Shadow_CRI_5
+                Chance: 40000
+          - Enchant: Shadow_CAST_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 2
+            RandomUpgrades:
+              - Upgrade: Shadow_CAST_1
+                Chance: 30000
+              - Upgrade: Shadow_CAST_2
+                Chance: 70000
+          - Enchant: Shadow_CAST_2
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+            RandomUpgrades:
+              - Upgrade: Shadow_CAST_1
+                Chance: 40000
+              - Upgrade: Shadow_CAST_3
+                Chance: 60000
+          - Enchant: Shadow_CAST_3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+            RandomUpgrades:
+              - Upgrade: Shadow_CAST_2
+                Chance: 50000
+              - Upgrade: Shadow_CAST_4
+                Chance: 50000
+          - Enchant: Shadow_CAST_4
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 8
+            RandomUpgrades:
+              - Upgrade: Shadow_CAST_3
+                Chance: 60000
+              - Upgrade: Shadow_CAST_5
+                Chance: 40000
+          - Enchant: Shadow_HP_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 2
+            RandomUpgrades:
+              - Upgrade: Shadow_HP_1
+                Chance: 30000
+              - Upgrade: Shadow_HP_2
+                Chance: 70000
+          - Enchant: Shadow_HP_2
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+            RandomUpgrades:
+              - Upgrade: Shadow_HP_1
+                Chance: 40000
+              - Upgrade: Shadow_HP_3
+                Chance: 60000
+          - Enchant: Shadow_HP_3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+            RandomUpgrades:
+              - Upgrade: Shadow_HP_2
+                Chance: 50000
+              - Upgrade: Shadow_HP_4
+                Chance: 50000
+          - Enchant: Shadow_HP_4
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 8
+            RandomUpgrades:
+              - Upgrade: Shadow_HP_3
+                Chance: 60000
+              - Upgrade: Shadow_HP_5
+                Chance: 40000
+          - Enchant: Shadow_SP_1
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 2
+            RandomUpgrades:
+              - Upgrade: Shadow_SP_1
+                Chance: 30000
+              - Upgrade: Shadow_SP_2
+                Chance: 70000
+          - Enchant: Shadow_SP_2
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 3
+            RandomUpgrades:
+              - Upgrade: Shadow_SP_1
+                Chance: 40000
+              - Upgrade: Shadow_SP_3
+                Chance: 60000
+          - Enchant: Shadow_SP_3
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 5
+            RandomUpgrades:
+              - Upgrade: Shadow_SP_2
+                Chance: 50000
+              - Upgrade: Shadow_SP_4
+                Chance: 50000
+          - Enchant: Shadow_SP_4
+            Price: 0
+            Materials:
+              - Material: S_Enchant_Essence
+                Amount: 8
+            RandomUpgrades:
+              - Upgrade: Shadow_SP_3
+                Chance: 60000
+              - Upgrade: Shadow_SP_5
+                Chance: 40000
