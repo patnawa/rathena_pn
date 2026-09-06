@@ -2766,6 +2766,52 @@ uint64 ItemEnchantDatabase::parseBodyNode( const ryml::NodeRef& node ){
 				}
 			}
 
+			if( this->nodeExists( slotNode, "PerfectUpgrades" ) ){
+				for( const ryml::NodeRef& upgradeNode : slotNode["PerfectUpgrades"] ){
+					if( !this->nodesExist( upgradeNode, { "Enchant", "Upgrade" } ) ){
+						return 0;
+					}
+					if( this->nodeExists( upgradeNode, "RandomUpgrades" ) ){
+						this->invalidWarning( upgradeNode, "PerfectUpgrades must have a deterministic Upgrade, not RandomUpgrades.\n" );
+						return 0;
+					}
+					std::string source_name, target_name;
+					if( !this->asString( upgradeNode, "Enchant", source_name ) ||
+						!this->asString( upgradeNode, "Upgrade", target_name ) ){
+						return 0;
+					}
+					const auto source = item_db.search_aegisname( source_name.c_str() );
+					const auto target = item_db.search_aegisname( target_name.c_str() );
+					if( source == nullptr || target == nullptr ||
+						source->type != IT_CARD || source->subtype != CARD_ENCHANT ||
+						target->type != IT_CARD || target->subtype != CARD_ENCHANT ){
+						this->invalidWarning( upgradeNode, "Perfect upgrade source '%s' and target '%s' must both be existing enchant cards.\n", source_name.c_str(), target_name.c_str() );
+						return 0;
+					}
+					auto& targets = enchant_slot->perfect_upgrades[source->nameid];
+					const auto existing = util::umap_find( targets, target->nameid );
+					auto recipe = existing == nullptr ? std::make_shared<s_item_enchant_upgrade>() :
+						std::make_shared<s_item_enchant_upgrade>( *existing );
+					recipe->enchant_item_id = source->nameid;
+					recipe->upgrade_item_id = target->nameid;
+					if( this->nodeExists( upgradeNode, "Price" ) ){
+						uint32 zeny;
+						if( !this->asUInt32( upgradeNode, "Price", zeny ) ){
+							return 0;
+						}
+						if( zeny > MAX_ZENY ){
+							this->invalidWarning( upgradeNode["Price"], "Perfect upgrade price %u exceeds MAX_ZENY.\n", zeny );
+							return 0;
+						}
+						recipe->zeny = zeny;
+					}
+					if( !this->parseMaterials( upgradeNode, recipe->materials ) ){
+						return 0;
+					}
+					targets[target->nameid] = recipe;
+				}
+			}
+
 			if( !slot_exists ){
 				enchant->slots[slot] = enchant_slot;
 			}

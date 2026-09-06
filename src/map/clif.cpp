@@ -24802,15 +24802,12 @@ void clif_parse_enchantwindow_perfect( int32 fd, map_session_data* sd ){
 #endif
 }
 
-void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
+static void clif_enchantwindow_upgrade( map_session_data* sd, uint64 group, uint16 index,
+	uint16 slot, bool perfect_request, t_itemid requested_target ){
 #if PACKETVER_MAIN_NUM >= 20201118 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
-	const PACKET_CZ_REQUEST_UPGRADE_ENCHANT* p = reinterpret_cast<PACKET_CZ_REQUEST_UPGRADE_ENCHANT*>( RFIFOP( fd, 0 ) );
-
-	if( sd->state.item_enchant_index != p->enchant_group ){
+	if( sd->state.item_enchant_index != group ){
 		return;
 	}
-
-	uint16 index = server_index( p->index );
 
 	if( index >= MAX_INVENTORY ){
 		return;
@@ -24821,7 +24818,7 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 	}
 
 	struct item& selected_item = sd->inventory.u.items_inventory[index];
-	std::shared_ptr<s_item_enchant> enchant = item_enchant_db.find( p->enchant_group );
+	std::shared_ptr<s_item_enchant> enchant = item_enchant_db.find( group );
 
 	if( enchant == nullptr ){
 		return;
@@ -24830,8 +24827,6 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 	if( !clif_parse_enchant_basecheck( selected_item, enchant ) ){
 		return;
 	}
-
-	uint16 slot = p->slot;
 
 	if( slot >= MAX_SLOTS ){
 		return;
@@ -24851,7 +24846,9 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 		return;
 	}
 
-	std::shared_ptr<s_item_enchant_upgrade> upgrade = util::umap_find( enchant_slot->upgrade.enchants, selected_item.card[slot] );
+	std::shared_ptr<s_item_enchant_upgrade> upgrade = select_enchant_upgrade(
+		enchant_slot->upgrade.enchants, enchant_slot->perfect_upgrades,
+		selected_item.card[slot], perfect_request, requested_target );
 
 	if( upgrade == nullptr ){
 		return;
@@ -24877,21 +24874,8 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 		materials[idx] = entry.second;
 	}
 
-	t_itemid upgrade_item_id = upgrade->upgrade_item_id;
-
-	if( !upgrade->random_upgrades.empty() ){
-		uint32 roll = rnd_value( 1u, 100000u );
-		uint32 cumulative_chance = 0;
-
-		for( const s_item_enchant_random_upgrade& random_upgrade : upgrade->random_upgrades ){
-			cumulative_chance += random_upgrade.chance;
-
-			if( roll <= cumulative_chance ){
-				upgrade_item_id = random_upgrade.item_id;
-				break;
-			}
-		}
-	}
+	const t_itemid upgrade_item_id = select_enchant_upgrade_result( *upgrade,
+		upgrade->random_upgrades.empty() ? 0 : rnd_value( 1u, 100000u ) );
 
 	if( upgrade_item_id == 0 ){
 		return;
@@ -24916,6 +24900,20 @@ void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
 	log_pick_pc( sd, LOG_TYPE_ENCHANT, 1, &selected_item );
 
 	clif_enchantwindow_result( *sd, true, selected_item.card[slot] );
+#endif
+}
+
+void clif_parse_enchantwindow_upgrade( int32 fd, map_session_data* sd ){
+#if PACKETVER_MAIN_NUM >= 20201118 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
+	const auto* p = reinterpret_cast<const PACKET_CZ_REQUEST_UPGRADE_ENCHANT*>( RFIFOP( fd, 0 ) );
+	clif_enchantwindow_upgrade( sd, p->enchant_group, server_index( p->index ), p->slot, false, 0 );
+#endif
+}
+
+void clif_parse_enchantwindow_perfect_upgrade( int32 fd, map_session_data* sd ){
+#if PACKETVER_MAIN_NUM >= 20230920
+	const auto* p = reinterpret_cast<const PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT*>( RFIFOP( fd, 0 ) );
+	clif_enchantwindow_upgrade( sd, p->enchant_group, server_index( p->index ), p->slot, true, p->ITID );
 #endif
 }
 

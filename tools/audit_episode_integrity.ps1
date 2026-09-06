@@ -809,6 +809,17 @@ Write-Host '  Grade Workshop native enchant dependencies: 27 groups'
 # advances deterministically to rank 6. Native weighted-upgrade support must
 # remain wired through the database parser and request handler.
 $chapter1EnchantMatch = [regex]::Match($biosphereEnchant, '(?ms)^\s*- Id: 163\s*$.*\z')
+$perfectUpgradePath = 'db/import/perfect_item_enchant.yml'
+if ($dbImports -notcontains $perfectUpgradePath) { Fail "Perfect upgrade database is not imported: $perfectUpgradePath" }
+$perfectUpgradeData = [IO.File]::ReadAllText((RepoPath $perfectUpgradePath))
+$chapter1Perfect = [regex]::Match($perfectUpgradeData, '(?ms)^  - Id: 163\s*$.*?(?=^  - Id:|\z)').Value
+if ([regex]::Matches($chapter1Perfect, '(?m)^          - Enchant:').Count -ne 16) {
+	Fail 'Chapter 1 needs 16 separately selectable guaranteed final upgrades'
+}
+$crownPerfect = [regex]::Match($perfectUpgradeData, '(?ms)^  - Id: 164\s*$.*?(?=^  - Id:|\z)').Value
+if ([regex]::Matches($crownPerfect, '(?m)^          - Enchant:').Count -ne 20) {
+	Fail 'Frontier crown needs 20 separately selectable guaranteed upgrades'
+}
 if (!$chapter1EnchantMatch.Success) {
 	Fail 'Missing Chapter 1 footwear enchant group 163'
 } else {
@@ -832,20 +843,32 @@ if (!$chapter1EnchantMatch.Success) {
 		}
 
 		$finalPattern = "(?m)^\s+- Enchant:\s+Ch01_S_E_$($family)05\s*`r?`n\s+Upgrade:\s+Ch01_S_E_$($family)06\s*$"
-		if ($chapter1Enchant -notmatch $finalPattern) {
+		if ($chapter1Perfect -notmatch $finalPattern) {
 			Fail "Chapter 1 enchant group 163 is missing deterministic transition Ch01_S_E_$($family)05 -> Ch01_S_E_$($family)06"
 		}
 	}
 }
 $itemdbHeader = [IO.File]::ReadAllText((RepoPath 'src/map/itemdb.hpp'))
+$upgradeHeader = [IO.File]::ReadAllText((RepoPath 'src/map/enchant_upgrade.hpp'))
 $itemdbSource = [IO.File]::ReadAllText((RepoPath 'src/map/itemdb.cpp'))
 $clifSource = [IO.File]::ReadAllText((RepoPath 'src/map/clif.cpp'))
 foreach ($check in @(
-	@($itemdbHeader, 'std::vector<s_item_enchant_random_upgrade> random_upgrades;', 'weighted upgrade data structure'),
+	@($upgradeHeader, 'std::vector<s_item_enchant_random_upgrade> random_upgrades;', 'weighted upgrade data structure'),
 	@($itemdbSource, 'Random upgrade chances must total 100000', 'weighted upgrade parser validation'),
-	@($clifSource, 'for( const s_item_enchant_random_upgrade& random_upgrade : upgrade->random_upgrades )', 'weighted upgrade runtime selection')
+	@($itemdbSource, 'slotNode["PerfectUpgrades"]', 'separate guaranteed upgrade parser'),
+	@($clifSource, 'select_enchant_upgrade_result( *upgrade,', 'weighted upgrade runtime selection'),
+	@($clifSource, 'enchant_slot->upgrade.enchants, enchant_slot->perfect_upgrades,', 'separate request-mode recipe selection'),
+	@($clifSource, 'p->slot, true, p->ITID', 'guaranteed request target validation')
 )) {
 	if (!$check[0].Contains($check[1])) { Fail "Missing $($check[2])" }
+}
+$upgradePacketDb = [IO.File]::ReadAllText((RepoPath 'src/map/clif_packetdb.hpp'))
+foreach ($literal in @(
+	'0x0bf0, sizeof( struct PACKET_CZ_REQUEST_UPGRADE_ENCHANT ), clif_parse_enchantwindow_upgrade',
+	'PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT ), clif_parse_enchantwindow_perfect_upgrade',
+	'0x0bf2, 13, clif_parse_enchantwindow_reset'
+)) {
+	if (!$upgradePacketDb.Contains($literal)) { Fail "Missing modern enchant packet route: $literal" }
 }
 Write-Host '  Chapter 1 footwear enchant upgrades: 64 weighted + 16 final'
 

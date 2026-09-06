@@ -58,7 +58,7 @@
 #           Materials:         Items required for this perfect enchant. (Default: null)
 #             - Material       Item name of the required item.
 #               Amount         Amount of the required item. (Default: 1)
-#       Upgrades:              Available enchant upgrades for this slot. (Default: null)
+#       Upgrades:              Ordinary/random upgrades (client request 0x0b9d). (Default: null)
 #         - Enchant            Item name of the enchant item available for upgrade.
 #           Upgrade            Item name of the deterministic upgrade result. Mutually exclusive with RandomUpgrades.
 #           RandomUpgrades:    Weighted upgrade results. Chances must total 100000. Mutually exclusive with Upgrade.
@@ -66,6 +66,14 @@
 #               Chance         Chance to receive this upgrade result.
 #           Price              Price required for this enchant upgrade. (Default: 0)
 #           Materials:         Items required for this enchant upgrade (Default: null)
+#             - Material       Item name of the required item.
+#               Amount         Amount of the required item. (Default: 1)
+#       PerfectUpgrades:       Guaranteed upgrades selected with client request 0x0bf1 (main >= 2023-09-20).
+#         - Enchant            Existing enchant required in the selected slot.
+#           Upgrade            Requested result enchant. Both IDs must be enchant cards.
+#                              Multiple targets per source and overlap with Upgrades are supported.
+#           Price              Zeny cost for this exact source/result pair. (Default: 0)
+#           Materials:         Materials for this exact pair. (Default: null)
 #             - Material       Item name of the required item.
 #               Amount         Amount of the required item. (Default: 1)
 ###########################################################################
@@ -81,3 +89,4 @@ Footer:
   - Path: db/import/item_enchant.yml
   - Path: db/import/grademk_item_enchant.yml
   - Path: db/import/grademk_service_enchants.yml
+  - Path: db/import/perfect_item_enchant.yml

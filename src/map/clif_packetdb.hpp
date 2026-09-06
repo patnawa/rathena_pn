@@ -1994,8 +1994,18 @@
 	parseable_packet( HEADER_CZ_REQUEST_RANDOM_ENCHANT, sizeof( struct PACKET_CZ_REQUEST_RANDOM_ENCHANT ), clif_parse_enchantwindow_general, 0 );
 	parseable_packet( HEADER_CZ_REQUEST_PERFECT_ENCHANT, sizeof( struct PACKET_CZ_REQUEST_PERFECT_ENCHANT ), clif_parse_enchantwindow_perfect, 0 );
 	parseable_packet( HEADER_CZ_REQUEST_UPGRADE_ENCHANT, sizeof( struct PACKET_CZ_REQUEST_UPGRADE_ENCHANT ), clif_parse_enchantwindow_upgrade, 0 );
+#if PACKETVER_MAIN_NUM >= 20230920
+	// New random-upgrade request has the same 14-byte layout as 0x0b9d.
+	parseable_packet( 0x0bf0, sizeof( struct PACKET_CZ_REQUEST_UPGRADE_ENCHANT ), clif_parse_enchantwindow_upgrade, 0 );
+	parseable_packet( HEADER_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT, sizeof( struct PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT ), clif_parse_enchantwindow_perfect_upgrade, 0 );
+#endif
 	parseable_packet( HEADER_CZ_REQUEST_RESET_ENCHANT, sizeof( struct PACKET_CZ_REQUEST_RESET_ENCHANT ), clif_parse_enchantwindow_reset, 0 );
 	parseable_packet( HEADER_CZ_CLOSE_UI_ENCHANT, sizeof( struct PACKET_CZ_CLOSE_UI_ENCHANT ), clif_parse_enchantwindow_close, 0 );
+#endif
+
+// Preserve the deployed newer reset route (12-byte legacy payload + trailing flag).
+#if PACKETVER_MAIN_NUM >= 20250604 || PACKETVER_RE_NUM >= 20250604 || PACKETVER_ZERO_NUM >= 20250604
+	parseable_packet( 0x0bf2, 13, clif_parse_enchantwindow_reset, 0 );
 #endif
 
 #if PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20210818 || PACKETVER_MAIN_NUM >= 20220330

@@ -71,6 +71,7 @@ Thumbs.db
 /db/import/*
 !/db/import/grademk_item_enchant.yml
 !/db/import/grademk_service_enchants.yml
+!/db/import/perfect_item_enchant.yml
 !/db/import/episode20_instance_db.yml
 !/db/import/episode20_mob_db.yml
 !/db/import/episode20_mob_skill_db.txt

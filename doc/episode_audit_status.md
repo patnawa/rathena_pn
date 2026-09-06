@@ -26,18 +26,25 @@ episode, combat encounter, reward, or client enchant action works end to end.
   without consuming a ticket. Episode 21 campaign completion is recognized by the
   Gimli and Ghost Ship access helpers. No historical rewards are granted.
 
+## Enchantment protocol follow-up
+
+The separate guaranteed-upgrade request and recipe path is now implemented. All
+776 ordinary/guaranteed upgrade recipes in the 18 restored workshop groups match
+the active client data. The server import restores 444 guaranteed recipes across
+loaded groups, including the 20 crown recipes previously omitted. Exact selector
+tests, sanitized tests, production-image compilation, and isolated startup pass.
+See [protocol evidence and limits](enchant_upgrade_protocol.md).
+
 ## Known unresolved coverage
 
-- The active client enchant data (`nebula_upgrade_v2.grf`'s `EnchantList.lub`) has
-  separate `AddPerfectUpgradeEnchant` entries. The server currently handles ordinary
-  upgrades via `CZ_REQUEST_UPGRADE_ENCHANT` (0x0b9d), with no separately verified
-  newer perfect-upgrade request path. Converting a recipe to server `Upgrades`
-  does not establish that the client's corresponding button sends this request.
-- Crown group 164 has 90 weighted upgrade recipes. Its 20 guaranteed Lv6→7/Lv7→8
-  recipes overlap existing source enchants and have not been wired as a distinct
-  choice. Do not replace random recipes with guaranteed ones or silently change
-  their costs. Protocol/client verification or an explicitly exposed equivalent
-  service is still required.
+- End-to-end client clicks, cost charging, relog persistence, and equipment-effect
+  verification remain pending for the new guaranteed-upgrade path. Packet evidence
+  comes from the bundled 2025 binary; the active 2026 client needs a runtime check.
+- The broader recipe comparison reports 338 ordinary-upgrade differences outside
+  the 18 workshop groups. These require classification: some are Korean Aegis-name
+  aliases, while others may be actual cost/outcome differences or missing recipes.
+  They are not yet proven to be 338 server defects. Normal enchants and other
+  service types still need equivalent client/server comparison.
 - Parser fixtures in `npc/test/native_equip_safety.txt` only test accepted command
   syntax during a test-config load; they are not player-attached runtime tests.
 - The restored healer and workshop need actual client interaction checks. The

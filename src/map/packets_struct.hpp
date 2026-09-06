@@ -5709,6 +5709,24 @@ struct PACKET_CZ_REQUEST_UPGRADE_ENCHANT {
 DEFINE_PACKET_HEADER(CZ_REQUEST_UPGRADE_ENCHANT, 0x0b9d);
 #endif // PACKETVER_MAIN_NUM >= 20201118 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
 
+#if PACKETVER_MAIN_NUM >= 20230920
+// Client upgrade-perfect sender: group at +2, inventory index at +10,
+// zero-based slot at +12, selected result item at +14 (18 bytes total).
+struct PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT {
+	int16 PacketType;
+	int64 enchant_group;
+	int16 index;
+	int16 slot;
+	uint32 ITID;
+} __attribute__((packed));
+DEFINE_PACKET_HEADER(CZ_REQUEST_PERFECT_UPGRADE_ENCHANT, 0x0bf1);
+static_assert(sizeof(PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT) == 18);
+static_assert(offsetof(PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT, enchant_group) == 2);
+static_assert(offsetof(PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT, index) == 10);
+static_assert(offsetof(PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT, slot) == 12);
+static_assert(offsetof(PACKET_CZ_REQUEST_PERFECT_UPGRADE_ENCHANT, ITID) == 14);
+#endif
+
 #if PACKETVER_MAIN_NUM >= 20201118 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
 struct PACKET_CZ_REQUEST_RESET_ENCHANT {
 	int16 PacketType;

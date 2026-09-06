@@ -1,0 +1,5739 @@
+# Guaranteed upgrade recipes from the active client. Kept separate from ordinary/random upgrades.
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+Body:
+  - Id: 7
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Star_Cluster_Of_Pow2
+            Upgrade: Star_Cluster_Of_Pow3
+            Price: 30000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Sta2
+            Upgrade: Star_Cluster_Of_Sta3
+            Price: 30000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Con2
+            Upgrade: Star_Cluster_Of_Con3
+            Price: 30000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Crt2
+            Upgrade: Star_Cluster_Of_Crt3
+            Price: 30000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Spl2
+            Upgrade: Star_Cluster_Of_Spl3
+            Price: 30000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Wis2
+            Upgrade: Star_Cluster_Of_Wis3
+            Price: 30000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Nebula_Of_FS2
+            Upgrade: Nebula_Of_FS3
+            Price: 15000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_EA2
+            Upgrade: Nebula_Of_EA3
+            Price: 15000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SH2
+            Upgrade: Nebula_Of_SH3
+            Price: 15000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SP2
+            Upgrade: Nebula_Of_SP3
+            Price: 15000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HL2
+            Upgrade: Nebula_Of_HL3
+            Price: 15000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HP2
+            Upgrade: Nebula_Of_HP3
+            Price: 15000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+  - Id: 8
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Star_Cluster_Of_Pow2
+            Upgrade: Star_Cluster_Of_Pow3
+            Price: 30000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Sta2
+            Upgrade: Star_Cluster_Of_Sta3
+            Price: 30000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Con2
+            Upgrade: Star_Cluster_Of_Con3
+            Price: 30000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Crt2
+            Upgrade: Star_Cluster_Of_Crt3
+            Price: 30000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Spl2
+            Upgrade: Star_Cluster_Of_Spl3
+            Price: 30000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Wis2
+            Upgrade: Star_Cluster_Of_Wis3
+            Price: 30000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Nebula_Of_FS2
+            Upgrade: Nebula_Of_FS3
+            Price: 15000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_EA2
+            Upgrade: Nebula_Of_EA3
+            Price: 15000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SH2
+            Upgrade: Nebula_Of_SH3
+            Price: 15000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SP2
+            Upgrade: Nebula_Of_SP3
+            Price: 15000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HL2
+            Upgrade: Nebula_Of_HL3
+            Price: 15000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HP2
+            Upgrade: Nebula_Of_HP3
+            Price: 15000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+  - Id: 9
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Star_Cluster_Of_Pow2
+            Upgrade: Star_Cluster_Of_Pow3
+            Price: 30000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Sta2
+            Upgrade: Star_Cluster_Of_Sta3
+            Price: 30000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Con2
+            Upgrade: Star_Cluster_Of_Con3
+            Price: 30000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Crt2
+            Upgrade: Star_Cluster_Of_Crt3
+            Price: 30000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Spl2
+            Upgrade: Star_Cluster_Of_Spl3
+            Price: 30000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Wis2
+            Upgrade: Star_Cluster_Of_Wis3
+            Price: 30000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Nebula_Of_FS2
+            Upgrade: Nebula_Of_FS3
+            Price: 15000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_EA2
+            Upgrade: Nebula_Of_EA3
+            Price: 15000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SH2
+            Upgrade: Nebula_Of_SH3
+            Price: 15000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SP2
+            Upgrade: Nebula_Of_SP3
+            Price: 15000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HL2
+            Upgrade: Nebula_Of_HL3
+            Price: 15000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HP2
+            Upgrade: Nebula_Of_HP3
+            Price: 15000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+  - Id: 10
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Star_Cluster_Of_Pow2
+            Upgrade: Star_Cluster_Of_Pow3
+            Price: 30000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Sta2
+            Upgrade: Star_Cluster_Of_Sta3
+            Price: 30000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Con2
+            Upgrade: Star_Cluster_Of_Con3
+            Price: 30000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Crt2
+            Upgrade: Star_Cluster_Of_Crt3
+            Price: 30000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Spl2
+            Upgrade: Star_Cluster_Of_Spl3
+            Price: 30000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Wis2
+            Upgrade: Star_Cluster_Of_Wis3
+            Price: 30000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Nebula_Of_FS2
+            Upgrade: Nebula_Of_FS3
+            Price: 15000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_EA2
+            Upgrade: Nebula_Of_EA3
+            Price: 15000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SH2
+            Upgrade: Nebula_Of_SH3
+            Price: 15000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SP2
+            Upgrade: Nebula_Of_SP3
+            Price: 15000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HL2
+            Upgrade: Nebula_Of_HL3
+            Price: 15000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HP2
+            Upgrade: Nebula_Of_HP3
+            Price: 15000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+  - Id: 11
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Star_Cluster_Of_Pow2
+            Upgrade: Star_Cluster_Of_Pow3
+            Price: 30000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Sta2
+            Upgrade: Star_Cluster_Of_Sta3
+            Price: 30000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Con2
+            Upgrade: Star_Cluster_Of_Con3
+            Price: 30000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Crt2
+            Upgrade: Star_Cluster_Of_Crt3
+            Price: 30000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Spl2
+            Upgrade: Star_Cluster_Of_Spl3
+            Price: 30000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Wis2
+            Upgrade: Star_Cluster_Of_Wis3
+            Price: 30000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Nebula_Of_FS2
+            Upgrade: Nebula_Of_FS3
+            Price: 15000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_EA2
+            Upgrade: Nebula_Of_EA3
+            Price: 15000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SH2
+            Upgrade: Nebula_Of_SH3
+            Price: 15000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SP2
+            Upgrade: Nebula_Of_SP3
+            Price: 15000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HL2
+            Upgrade: Nebula_Of_HL3
+            Price: 15000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HP2
+            Upgrade: Nebula_Of_HP3
+            Price: 15000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+  - Id: 12
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Star_Cluster_Of_Pow2
+            Upgrade: Star_Cluster_Of_Pow3
+            Price: 30000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Sta2
+            Upgrade: Star_Cluster_Of_Sta3
+            Price: 30000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 15
+              - Material: Con_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Con2
+            Upgrade: Star_Cluster_Of_Con3
+            Price: 30000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Crt2
+            Upgrade: Star_Cluster_Of_Crt3
+            Price: 30000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Spl2
+            Upgrade: Star_Cluster_Of_Spl3
+            Price: 30000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 15
+              - Material: Wis_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+          - Enchant: Star_Cluster_Of_Wis2
+            Upgrade: Star_Cluster_Of_Wis3
+            Price: 30000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 15
+              - Material: Sta_Meteor_Extract
+                Amount: 10
+              - Material: Frontier_Extract_BL
+                Amount: 12
+              - Material: Frontier_Extract_YL
+                Amount: 12
+              - Material: Frontier_Extract_GR
+                Amount: 12
+              - Material: Frontier_Extract_BK
+                Amount: 12
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Nebula_Of_FS2
+            Upgrade: Nebula_Of_FS3
+            Price: 15000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_EA2
+            Upgrade: Nebula_Of_EA3
+            Price: 15000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SH2
+            Upgrade: Nebula_Of_SH3
+            Price: 15000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_SP2
+            Upgrade: Nebula_Of_SP3
+            Price: 15000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 12
+              - Material: Wis_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HL2
+            Upgrade: Nebula_Of_HL3
+            Price: 15000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 12
+              - Material: Sta_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+          - Enchant: Nebula_Of_HP2
+            Upgrade: Nebula_Of_HP3
+            Price: 15000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 12
+              - Material: Con_Meteor_Extract
+                Amount: 8
+              - Material: Frontier_Extract_BL
+                Amount: 8
+              - Material: Frontier_Extract_YL
+                Amount: 8
+              - Material: Frontier_Extract_GR
+                Amount: 8
+              - Material: Frontier_Extract_BK
+                Amount: 8
+  - Id: 13
+    Slots:
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Star_Of_Mettle1
+            Upgrade: Star_Of_Mettle2
+            Price: 10000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 7
+              - Material: Sta_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_MasterArcher1
+            Upgrade: Star_Of_MasterArcher2
+            Price: 10000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 7
+              - Material: Wis_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_Sharp1
+            Upgrade: Star_Of_Sharp2
+            Price: 10000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 7
+              - Material: Con_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_Spell1
+            Upgrade: Star_Of_Spell2
+            Price: 10000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 7
+              - Material: Pow_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_Speed1
+            Upgrade: Star_Of_Speed2
+            Price: 10000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 7
+              - Material: Crt_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_Vital1
+            Upgrade: Star_Of_Vital2
+            Price: 10000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 7
+              - Material: Spl_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_Spirit1
+            Upgrade: Star_Of_Spirit2
+            Price: 10000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 7
+              - Material: Sta_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+          - Enchant: Star_Of_Mettle2
+            Upgrade: Star_Of_Mettle3
+            Price: 12500000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 9
+              - Material: Sta_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+          - Enchant: Star_Of_MasterArcher2
+            Upgrade: Star_Of_MasterArcher3
+            Price: 12500000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 9
+              - Material: Wis_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+          - Enchant: Star_Of_Sharp2
+            Upgrade: Star_Of_Sharp3
+            Price: 12500000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 9
+              - Material: Con_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+          - Enchant: Star_Of_Spell2
+            Upgrade: Star_Of_Spell3
+            Price: 12500000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 9
+              - Material: Pow_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+          - Enchant: Star_Of_Speed2
+            Upgrade: Star_Of_Speed3
+            Price: 12500000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 9
+              - Material: Crt_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+          - Enchant: Star_Of_Vital2
+            Upgrade: Star_Of_Vital3
+            Price: 12500000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 9
+              - Material: Spl_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+          - Enchant: Star_Of_Spirit2
+            Upgrade: Star_Of_Spirit3
+            Price: 12500000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 9
+              - Material: Sta_Meteor_Extract
+                Amount: 7
+              - Material: Frontier_Extract_BL
+                Amount: 7
+              - Material: Frontier_Extract_YL
+                Amount: 7
+              - Material: Frontier_Extract_GR
+                Amount: 7
+              - Material: Frontier_Extract_BK
+                Amount: 7
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Star_Of_Mettle1
+            Upgrade: Star_Of_Mettle2
+            Price: 7500000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 5
+              - Material: Sta_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_MasterArcher1
+            Upgrade: Star_Of_MasterArcher2
+            Price: 7500000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 5
+              - Material: Wis_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_Sharp1
+            Upgrade: Star_Of_Sharp2
+            Price: 7500000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 5
+              - Material: Con_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_Spell1
+            Upgrade: Star_Of_Spell2
+            Price: 7500000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 5
+              - Material: Pow_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_Speed1
+            Upgrade: Star_Of_Speed2
+            Price: 7500000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 5
+              - Material: Crt_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_Vital1
+            Upgrade: Star_Of_Vital2
+            Price: 7500000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 5
+              - Material: Spl_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_Spirit1
+            Upgrade: Star_Of_Spirit2
+            Price: 7500000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 5
+              - Material: Sta_Meteor_Extract
+                Amount: 3
+              - Material: Frontier_Extract_BL
+                Amount: 3
+              - Material: Frontier_Extract_YL
+                Amount: 3
+              - Material: Frontier_Extract_GR
+                Amount: 3
+          - Enchant: Star_Of_Mettle2
+            Upgrade: Star_Of_Mettle3
+            Price: 10000000
+            Materials:
+              - Material: Pow_Meteor_Extract
+                Amount: 7
+              - Material: Sta_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+          - Enchant: Star_Of_MasterArcher2
+            Upgrade: Star_Of_MasterArcher3
+            Price: 10000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 7
+              - Material: Wis_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+          - Enchant: Star_Of_Sharp2
+            Upgrade: Star_Of_Sharp3
+            Price: 10000000
+            Materials:
+              - Material: Crt_Meteor_Extract
+                Amount: 7
+              - Material: Con_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+          - Enchant: Star_Of_Spell2
+            Upgrade: Star_Of_Spell3
+            Price: 10000000
+            Materials:
+              - Material: Spl_Meteor_Extract
+                Amount: 7
+              - Material: Pow_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+          - Enchant: Star_Of_Speed2
+            Upgrade: Star_Of_Speed3
+            Price: 10000000
+            Materials:
+              - Material: Con_Meteor_Extract
+                Amount: 7
+              - Material: Crt_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+          - Enchant: Star_Of_Vital2
+            Upgrade: Star_Of_Vital3
+            Price: 10000000
+            Materials:
+              - Material: Sta_Meteor_Extract
+                Amount: 7
+              - Material: Spl_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+          - Enchant: Star_Of_Spirit2
+            Upgrade: Star_Of_Spirit3
+            Price: 10000000
+            Materials:
+              - Material: Wis_Meteor_Extract
+                Amount: 7
+              - Material: Sta_Meteor_Extract
+                Amount: 5
+              - Material: Frontier_Extract_BL
+                Amount: 5
+              - Material: Frontier_Extract_YL
+                Amount: 5
+              - Material: Frontier_Extract_GR
+                Amount: 5
+              - Material: Frontier_Extract_BK
+                Amount: 5
+  - Id: 117
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Spring_1
+            Upgrade: Life_of_Spring_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 4
+              - Material: Energy_Of_Ground
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 14
+          - Enchant: Life_of_Spring_2
+            Upgrade: Life_of_Spring_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 5
+              - Material: Energy_Of_Ground
+                Amount: 16
+              - Material: Energy_Of_Wind
+                Amount: 16
+          - Enchant: Life_of_Spring_3
+            Upgrade: Life_of_Spring_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 7
+              - Material: Energy_Of_Ground
+                Amount: 19
+              - Material: Energy_Of_Wind
+                Amount: 19
+          - Enchant: Life_of_Spring_4
+            Upgrade: Life_of_Spring_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 10
+              - Material: Energy_Of_Ground
+                Amount: 23
+              - Material: Energy_Of_Wind
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Spring_5
+            Upgrade: Life_of_Spring_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 28
+              - Material: Energy_Of_Wind
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Spring_6
+            Upgrade: Life_of_Spring_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 19
+              - Material: Energy_Of_Ground
+                Amount: 34
+              - Material: Energy_Of_Wind
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Spring_7
+            Upgrade: Life_of_Spring_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 25
+              - Material: Energy_Of_Ground
+                Amount: 41
+              - Material: Energy_Of_Wind
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Spring_Material_1
+                Amount: 1
+              - Material: Spring_Material_2
+                Amount: 1
+              - Material: Spring_Material_3
+                Amount: 1
+          - Enchant: Life_of_Spring_8
+            Upgrade: Life_of_Spring_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 32
+              - Material: Energy_Of_Ground
+                Amount: 49
+              - Material: Energy_Of_Wind
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Spring_Material_1
+                Amount: 3
+              - Material: Spring_Material_2
+                Amount: 3
+              - Material: Spring_Material_3
+                Amount: 3
+          - Enchant: Life_of_Spring_9
+            Upgrade: Life_of_Spring_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 40
+              - Material: Energy_Of_Ground
+                Amount: 58
+              - Material: Energy_Of_Wind
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Spring_Material_1
+                Amount: 5
+              - Material: Spring_Material_2
+                Amount: 5
+              - Material: Spring_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Physical_Fruit_1
+            Upgrade: Physical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 2
+              - Material: Energy_Of_Ground
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 12
+          - Enchant: Physical_Fruit_2
+            Upgrade: Physical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 3
+              - Material: Energy_Of_Ground
+                Amount: 13
+              - Material: Energy_Of_Wind
+                Amount: 13
+          - Enchant: Physical_Fruit_3
+            Upgrade: Physical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 5
+              - Material: Energy_Of_Ground
+                Amount: 15
+              - Material: Energy_Of_Wind
+                Amount: 15
+          - Enchant: Physical_Fruit_4
+            Upgrade: Physical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 8
+              - Material: Energy_Of_Ground
+                Amount: 18
+              - Material: Energy_Of_Wind
+                Amount: 18
+          - Enchant: Physical_Fruit_5
+            Upgrade: Physical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 22
+              - Material: Energy_Of_Wind
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Fruit_6
+            Upgrade: Physical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 17
+              - Material: Energy_Of_Ground
+                Amount: 27
+              - Material: Energy_Of_Wind
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Fruit_7
+            Upgrade: Physical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 23
+              - Material: Energy_Of_Ground
+                Amount: 33
+              - Material: Energy_Of_Wind
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Fruit_8
+            Upgrade: Physical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 30
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Fruit_9
+            Upgrade: Physical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 38
+              - Material: Energy_Of_Ground
+                Amount: 48
+              - Material: Energy_Of_Wind
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Physical_Seed_1
+            Upgrade: Physical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 1
+              - Material: Energy_Of_Ground
+                Amount: 10
+              - Material: Energy_Of_Wind
+                Amount: 10
+          - Enchant: Physical_Seed_2
+            Upgrade: Physical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 2
+              - Material: Energy_Of_Ground
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 12
+          - Enchant: Physical_Seed_3
+            Upgrade: Physical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 3
+              - Material: Energy_Of_Ground
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 14
+          - Enchant: Physical_Seed_4
+            Upgrade: Physical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 4
+              - Material: Energy_Of_Ground
+                Amount: 16
+              - Material: Energy_Of_Wind
+                Amount: 16
+          - Enchant: Physical_Seed_5
+            Upgrade: Physical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 5
+              - Material: Energy_Of_Ground
+                Amount: 18
+              - Material: Energy_Of_Wind
+                Amount: 18
+          - Enchant: Physical_Seed_6
+            Upgrade: Physical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 6
+              - Material: Energy_Of_Ground
+                Amount: 20
+              - Material: Energy_Of_Wind
+                Amount: 20
+          - Enchant: Physical_Seed_7
+            Upgrade: Physical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 7
+              - Material: Energy_Of_Ground
+                Amount: 22
+              - Material: Energy_Of_Wind
+                Amount: 22
+          - Enchant: Physical_Seed_8
+            Upgrade: Physical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 8
+              - Material: Energy_Of_Ground
+                Amount: 24
+              - Material: Energy_Of_Wind
+                Amount: 24
+          - Enchant: Physical_Seed_9
+            Upgrade: Physical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 9
+              - Material: Energy_Of_Ground
+                Amount: 26
+              - Material: Energy_Of_Wind
+                Amount: 26
+          - Enchant: Physical_Seed_10
+            Upgrade: Physical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 30
+              - Material: Energy_Of_Wind
+                Amount: 30
+              - Material: Spring_Material_1
+                Amount: 3
+              - Material: Spring_Material_2
+                Amount: 3
+              - Material: Spring_Material_3
+                Amount: 3
+          - Enchant: Physical_Leaf_1
+            Upgrade: Physical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 35
+              - Material: Energy_Of_Wind
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Leaf_2
+            Upgrade: Physical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 16
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Leaf_3
+            Upgrade: Physical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 18
+              - Material: Energy_Of_Ground
+                Amount: 45
+              - Material: Energy_Of_Wind
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Leaf_4
+            Upgrade: Physical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 20
+              - Material: Energy_Of_Ground
+                Amount: 50
+              - Material: Energy_Of_Wind
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+  - Id: 118
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Spring_1
+            Upgrade: Life_of_Spring_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 4
+              - Material: Energy_Of_Ground
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 14
+          - Enchant: Life_of_Spring_2
+            Upgrade: Life_of_Spring_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 5
+              - Material: Energy_Of_Ground
+                Amount: 16
+              - Material: Energy_Of_Wind
+                Amount: 16
+          - Enchant: Life_of_Spring_3
+            Upgrade: Life_of_Spring_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 7
+              - Material: Energy_Of_Ground
+                Amount: 19
+              - Material: Energy_Of_Wind
+                Amount: 19
+          - Enchant: Life_of_Spring_4
+            Upgrade: Life_of_Spring_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 10
+              - Material: Energy_Of_Ground
+                Amount: 23
+              - Material: Energy_Of_Wind
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Spring_5
+            Upgrade: Life_of_Spring_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 28
+              - Material: Energy_Of_Wind
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Spring_6
+            Upgrade: Life_of_Spring_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 19
+              - Material: Energy_Of_Ground
+                Amount: 34
+              - Material: Energy_Of_Wind
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Spring_7
+            Upgrade: Life_of_Spring_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 25
+              - Material: Energy_Of_Ground
+                Amount: 41
+              - Material: Energy_Of_Wind
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Spring_Material_1
+                Amount: 1
+              - Material: Spring_Material_2
+                Amount: 1
+              - Material: Spring_Material_3
+                Amount: 1
+          - Enchant: Life_of_Spring_8
+            Upgrade: Life_of_Spring_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 32
+              - Material: Energy_Of_Ground
+                Amount: 49
+              - Material: Energy_Of_Wind
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Spring_Material_1
+                Amount: 3
+              - Material: Spring_Material_2
+                Amount: 3
+              - Material: Spring_Material_3
+                Amount: 3
+          - Enchant: Life_of_Spring_9
+            Upgrade: Life_of_Spring_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 40
+              - Material: Energy_Of_Ground
+                Amount: 58
+              - Material: Energy_Of_Wind
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Spring_Material_1
+                Amount: 5
+              - Material: Spring_Material_2
+                Amount: 5
+              - Material: Spring_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Physical_Fruit_1
+            Upgrade: Physical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 2
+              - Material: Energy_Of_Ground
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 12
+          - Enchant: Physical_Fruit_2
+            Upgrade: Physical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 3
+              - Material: Energy_Of_Ground
+                Amount: 13
+              - Material: Energy_Of_Wind
+                Amount: 13
+          - Enchant: Physical_Fruit_3
+            Upgrade: Physical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 5
+              - Material: Energy_Of_Ground
+                Amount: 15
+              - Material: Energy_Of_Wind
+                Amount: 15
+          - Enchant: Physical_Fruit_4
+            Upgrade: Physical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 8
+              - Material: Energy_Of_Ground
+                Amount: 18
+              - Material: Energy_Of_Wind
+                Amount: 18
+          - Enchant: Physical_Fruit_5
+            Upgrade: Physical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 22
+              - Material: Energy_Of_Wind
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Fruit_6
+            Upgrade: Physical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 17
+              - Material: Energy_Of_Ground
+                Amount: 27
+              - Material: Energy_Of_Wind
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Fruit_7
+            Upgrade: Physical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 23
+              - Material: Energy_Of_Ground
+                Amount: 33
+              - Material: Energy_Of_Wind
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Fruit_8
+            Upgrade: Physical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 30
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Fruit_9
+            Upgrade: Physical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 38
+              - Material: Energy_Of_Ground
+                Amount: 48
+              - Material: Energy_Of_Wind
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Physical_Seed_1
+            Upgrade: Physical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 1
+              - Material: Energy_Of_Ground
+                Amount: 10
+              - Material: Energy_Of_Wind
+                Amount: 10
+          - Enchant: Physical_Seed_2
+            Upgrade: Physical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 2
+              - Material: Energy_Of_Ground
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 12
+          - Enchant: Physical_Seed_3
+            Upgrade: Physical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 3
+              - Material: Energy_Of_Ground
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 14
+          - Enchant: Physical_Seed_4
+            Upgrade: Physical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 4
+              - Material: Energy_Of_Ground
+                Amount: 16
+              - Material: Energy_Of_Wind
+                Amount: 16
+          - Enchant: Physical_Seed_5
+            Upgrade: Physical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 5
+              - Material: Energy_Of_Ground
+                Amount: 18
+              - Material: Energy_Of_Wind
+                Amount: 18
+          - Enchant: Physical_Seed_6
+            Upgrade: Physical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 6
+              - Material: Energy_Of_Ground
+                Amount: 20
+              - Material: Energy_Of_Wind
+                Amount: 20
+          - Enchant: Physical_Seed_7
+            Upgrade: Physical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 7
+              - Material: Energy_Of_Ground
+                Amount: 22
+              - Material: Energy_Of_Wind
+                Amount: 22
+          - Enchant: Physical_Seed_8
+            Upgrade: Physical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 8
+              - Material: Energy_Of_Ground
+                Amount: 24
+              - Material: Energy_Of_Wind
+                Amount: 24
+          - Enchant: Physical_Seed_9
+            Upgrade: Physical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 9
+              - Material: Energy_Of_Ground
+                Amount: 26
+              - Material: Energy_Of_Wind
+                Amount: 26
+          - Enchant: Physical_Seed_10
+            Upgrade: Physical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 30
+              - Material: Energy_Of_Wind
+                Amount: 30
+              - Material: Spring_Material_1
+                Amount: 3
+              - Material: Spring_Material_2
+                Amount: 3
+              - Material: Spring_Material_3
+                Amount: 3
+          - Enchant: Physical_Leaf_1
+            Upgrade: Physical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 35
+              - Material: Energy_Of_Wind
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Leaf_2
+            Upgrade: Physical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 16
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Leaf_3
+            Upgrade: Physical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 18
+              - Material: Energy_Of_Ground
+                Amount: 45
+              - Material: Energy_Of_Wind
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Leaf_4
+            Upgrade: Physical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 20
+              - Material: Energy_Of_Ground
+                Amount: 50
+              - Material: Energy_Of_Wind
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Leaf_5
+            Upgrade: Physical_Flower_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 25
+              - Material: Spring_Material_1
+                Amount: 3
+              - Material: Spring_Material_2
+                Amount: 3
+              - Material: Spring_Material_3
+                Amount: 3
+              - Material: Circul_Of_Life
+                Amount: 10
+          - Enchant: Physical_Flower_1
+            Upgrade: Physical_Flower_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 30
+              - Material: Circul_Of_Life
+                Amount: 12
+          - Enchant: Physical_Flower_2
+            Upgrade: Physical_Flower_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 35
+              - Material: Circul_Of_Life
+                Amount: 14
+              - Material: Fruit_Of_Birth
+                Amount: 3
+              - Material: Fruit_Of_Extinction
+                Amount: 3
+          - Enchant: Physical_Flower_3
+            Upgrade: Physical_Flower_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 40
+              - Material: Circul_Of_Life
+                Amount: 16
+              - Material: Fruit_Of_Birth
+                Amount: 6
+              - Material: Fruit_Of_Extinction
+                Amount: 6
+              - Material: Truth_Of_Life
+                Amount: 3
+          - Enchant: Physical_Flower_4
+            Upgrade: Physical_Flower_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Spring
+                Amount: 45
+              - Material: Circul_Of_Life
+                Amount: 18
+              - Material: Fruit_Of_Birth
+                Amount: 9
+              - Material: Fruit_Of_Extinction
+                Amount: 9
+              - Material: Truth_Of_Life
+                Amount: 5
+              - Material: Light_Of_Life
+                Amount: 3
+  - Id: 119
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Summer_1
+            Upgrade: Life_of_Summer_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 4
+              - Material: Energy_Of_Water
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 14
+          - Enchant: Life_of_Summer_2
+            Upgrade: Life_of_Summer_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 5
+              - Material: Energy_Of_Water
+                Amount: 16
+              - Material: Energy_Of_Flame
+                Amount: 16
+          - Enchant: Life_of_Summer_3
+            Upgrade: Life_of_Summer_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 7
+              - Material: Energy_Of_Water
+                Amount: 19
+              - Material: Energy_Of_Flame
+                Amount: 19
+          - Enchant: Life_of_Summer_4
+            Upgrade: Life_of_Summer_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 10
+              - Material: Energy_Of_Water
+                Amount: 23
+              - Material: Energy_Of_Flame
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Summer_5
+            Upgrade: Life_of_Summer_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 28
+              - Material: Energy_Of_Flame
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Summer_6
+            Upgrade: Life_of_Summer_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 19
+              - Material: Energy_Of_Water
+                Amount: 34
+              - Material: Energy_Of_Flame
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Summer_7
+            Upgrade: Life_of_Summer_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 25
+              - Material: Energy_Of_Water
+                Amount: 41
+              - Material: Energy_Of_Flame
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Summer_Material_1
+                Amount: 1
+              - Material: Summer_Material_2
+                Amount: 1
+              - Material: Summer_Material_3
+                Amount: 1
+          - Enchant: Life_of_Summer_8
+            Upgrade: Life_of_Summer_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 32
+              - Material: Energy_Of_Water
+                Amount: 49
+              - Material: Energy_Of_Flame
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Summer_Material_1
+                Amount: 3
+              - Material: Summer_Material_2
+                Amount: 3
+              - Material: Summer_Material_3
+                Amount: 3
+          - Enchant: Life_of_Summer_9
+            Upgrade: Life_of_Summer_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 40
+              - Material: Energy_Of_Water
+                Amount: 58
+              - Material: Energy_Of_Flame
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Summer_Material_1
+                Amount: 5
+              - Material: Summer_Material_2
+                Amount: 5
+              - Material: Summer_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Physical_Fruit_1
+            Upgrade: Physical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 2
+              - Material: Energy_Of_Water
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 12
+          - Enchant: Physical_Fruit_2
+            Upgrade: Physical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 3
+              - Material: Energy_Of_Water
+                Amount: 13
+              - Material: Energy_Of_Flame
+                Amount: 13
+          - Enchant: Physical_Fruit_3
+            Upgrade: Physical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 5
+              - Material: Energy_Of_Water
+                Amount: 15
+              - Material: Energy_Of_Flame
+                Amount: 15
+          - Enchant: Physical_Fruit_4
+            Upgrade: Physical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 8
+              - Material: Energy_Of_Water
+                Amount: 18
+              - Material: Energy_Of_Flame
+                Amount: 18
+          - Enchant: Physical_Fruit_5
+            Upgrade: Physical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 22
+              - Material: Energy_Of_Flame
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Fruit_6
+            Upgrade: Physical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 17
+              - Material: Energy_Of_Water
+                Amount: 27
+              - Material: Energy_Of_Flame
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Fruit_7
+            Upgrade: Physical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 23
+              - Material: Energy_Of_Water
+                Amount: 33
+              - Material: Energy_Of_Flame
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Fruit_8
+            Upgrade: Physical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 30
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Fruit_9
+            Upgrade: Physical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 38
+              - Material: Energy_Of_Water
+                Amount: 48
+              - Material: Energy_Of_Flame
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Physical_Seed_1
+            Upgrade: Physical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 1
+              - Material: Energy_Of_Water
+                Amount: 10
+              - Material: Energy_Of_Flame
+                Amount: 10
+          - Enchant: Physical_Seed_2
+            Upgrade: Physical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 2
+              - Material: Energy_Of_Water
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 12
+          - Enchant: Physical_Seed_3
+            Upgrade: Physical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 3
+              - Material: Energy_Of_Water
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 14
+          - Enchant: Physical_Seed_4
+            Upgrade: Physical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 4
+              - Material: Energy_Of_Water
+                Amount: 16
+              - Material: Energy_Of_Flame
+                Amount: 16
+          - Enchant: Physical_Seed_5
+            Upgrade: Physical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 5
+              - Material: Energy_Of_Water
+                Amount: 18
+              - Material: Energy_Of_Flame
+                Amount: 18
+          - Enchant: Physical_Seed_6
+            Upgrade: Physical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 6
+              - Material: Energy_Of_Water
+                Amount: 20
+              - Material: Energy_Of_Flame
+                Amount: 20
+          - Enchant: Physical_Seed_7
+            Upgrade: Physical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 7
+              - Material: Energy_Of_Water
+                Amount: 22
+              - Material: Energy_Of_Flame
+                Amount: 22
+          - Enchant: Physical_Seed_8
+            Upgrade: Physical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 8
+              - Material: Energy_Of_Water
+                Amount: 24
+              - Material: Energy_Of_Flame
+                Amount: 24
+          - Enchant: Physical_Seed_9
+            Upgrade: Physical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 9
+              - Material: Energy_Of_Water
+                Amount: 26
+              - Material: Energy_Of_Flame
+                Amount: 26
+          - Enchant: Physical_Seed_10
+            Upgrade: Physical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 30
+              - Material: Energy_Of_Flame
+                Amount: 30
+              - Material: Summer_Material_1
+                Amount: 3
+              - Material: Summer_Material_2
+                Amount: 3
+              - Material: Summer_Material_3
+                Amount: 3
+          - Enchant: Physical_Leaf_1
+            Upgrade: Physical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 35
+              - Material: Energy_Of_Flame
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Leaf_2
+            Upgrade: Physical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 16
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Leaf_3
+            Upgrade: Physical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 18
+              - Material: Energy_Of_Water
+                Amount: 45
+              - Material: Energy_Of_Flame
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Leaf_4
+            Upgrade: Physical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 20
+              - Material: Energy_Of_Water
+                Amount: 50
+              - Material: Energy_Of_Flame
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+  - Id: 120
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Summer_1
+            Upgrade: Life_of_Summer_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 4
+              - Material: Energy_Of_Water
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 14
+          - Enchant: Life_of_Summer_2
+            Upgrade: Life_of_Summer_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 5
+              - Material: Energy_Of_Water
+                Amount: 16
+              - Material: Energy_Of_Flame
+                Amount: 16
+          - Enchant: Life_of_Summer_3
+            Upgrade: Life_of_Summer_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 7
+              - Material: Energy_Of_Water
+                Amount: 19
+              - Material: Energy_Of_Flame
+                Amount: 19
+          - Enchant: Life_of_Summer_4
+            Upgrade: Life_of_Summer_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 10
+              - Material: Energy_Of_Water
+                Amount: 23
+              - Material: Energy_Of_Flame
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Summer_5
+            Upgrade: Life_of_Summer_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 28
+              - Material: Energy_Of_Flame
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Summer_6
+            Upgrade: Life_of_Summer_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 19
+              - Material: Energy_Of_Water
+                Amount: 34
+              - Material: Energy_Of_Flame
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Summer_7
+            Upgrade: Life_of_Summer_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 25
+              - Material: Energy_Of_Water
+                Amount: 41
+              - Material: Energy_Of_Flame
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Summer_Material_1
+                Amount: 1
+              - Material: Summer_Material_2
+                Amount: 1
+              - Material: Summer_Material_3
+                Amount: 1
+          - Enchant: Life_of_Summer_8
+            Upgrade: Life_of_Summer_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 32
+              - Material: Energy_Of_Water
+                Amount: 49
+              - Material: Energy_Of_Flame
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Summer_Material_1
+                Amount: 3
+              - Material: Summer_Material_2
+                Amount: 3
+              - Material: Summer_Material_3
+                Amount: 3
+          - Enchant: Life_of_Summer_9
+            Upgrade: Life_of_Summer_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 40
+              - Material: Energy_Of_Water
+                Amount: 58
+              - Material: Energy_Of_Flame
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Summer_Material_1
+                Amount: 5
+              - Material: Summer_Material_2
+                Amount: 5
+              - Material: Summer_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Physical_Fruit_1
+            Upgrade: Physical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 2
+              - Material: Energy_Of_Water
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 12
+          - Enchant: Physical_Fruit_2
+            Upgrade: Physical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 3
+              - Material: Energy_Of_Water
+                Amount: 13
+              - Material: Energy_Of_Flame
+                Amount: 13
+          - Enchant: Physical_Fruit_3
+            Upgrade: Physical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 5
+              - Material: Energy_Of_Water
+                Amount: 15
+              - Material: Energy_Of_Flame
+                Amount: 15
+          - Enchant: Physical_Fruit_4
+            Upgrade: Physical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 8
+              - Material: Energy_Of_Water
+                Amount: 18
+              - Material: Energy_Of_Flame
+                Amount: 18
+          - Enchant: Physical_Fruit_5
+            Upgrade: Physical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 22
+              - Material: Energy_Of_Flame
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Fruit_6
+            Upgrade: Physical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 17
+              - Material: Energy_Of_Water
+                Amount: 27
+              - Material: Energy_Of_Flame
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Fruit_7
+            Upgrade: Physical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 23
+              - Material: Energy_Of_Water
+                Amount: 33
+              - Material: Energy_Of_Flame
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Fruit_8
+            Upgrade: Physical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 30
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Fruit_9
+            Upgrade: Physical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 38
+              - Material: Energy_Of_Water
+                Amount: 48
+              - Material: Energy_Of_Flame
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Physical_Seed_1
+            Upgrade: Physical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 1
+              - Material: Energy_Of_Water
+                Amount: 10
+              - Material: Energy_Of_Flame
+                Amount: 10
+          - Enchant: Physical_Seed_2
+            Upgrade: Physical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 2
+              - Material: Energy_Of_Water
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 12
+          - Enchant: Physical_Seed_3
+            Upgrade: Physical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 3
+              - Material: Energy_Of_Water
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 14
+          - Enchant: Physical_Seed_4
+            Upgrade: Physical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 4
+              - Material: Energy_Of_Water
+                Amount: 16
+              - Material: Energy_Of_Flame
+                Amount: 16
+          - Enchant: Physical_Seed_5
+            Upgrade: Physical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 5
+              - Material: Energy_Of_Water
+                Amount: 18
+              - Material: Energy_Of_Flame
+                Amount: 18
+          - Enchant: Physical_Seed_6
+            Upgrade: Physical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 6
+              - Material: Energy_Of_Water
+                Amount: 20
+              - Material: Energy_Of_Flame
+                Amount: 20
+          - Enchant: Physical_Seed_7
+            Upgrade: Physical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 7
+              - Material: Energy_Of_Water
+                Amount: 22
+              - Material: Energy_Of_Flame
+                Amount: 22
+          - Enchant: Physical_Seed_8
+            Upgrade: Physical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 8
+              - Material: Energy_Of_Water
+                Amount: 24
+              - Material: Energy_Of_Flame
+                Amount: 24
+          - Enchant: Physical_Seed_9
+            Upgrade: Physical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 9
+              - Material: Energy_Of_Water
+                Amount: 26
+              - Material: Energy_Of_Flame
+                Amount: 26
+          - Enchant: Physical_Seed_10
+            Upgrade: Physical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 30
+              - Material: Energy_Of_Flame
+                Amount: 30
+              - Material: Summer_Material_1
+                Amount: 3
+              - Material: Summer_Material_2
+                Amount: 3
+              - Material: Summer_Material_3
+                Amount: 3
+          - Enchant: Physical_Leaf_1
+            Upgrade: Physical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 35
+              - Material: Energy_Of_Flame
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Leaf_2
+            Upgrade: Physical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 16
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Leaf_3
+            Upgrade: Physical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 18
+              - Material: Energy_Of_Water
+                Amount: 45
+              - Material: Energy_Of_Flame
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Leaf_4
+            Upgrade: Physical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 20
+              - Material: Energy_Of_Water
+                Amount: 50
+              - Material: Energy_Of_Flame
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Leaf_5
+            Upgrade: Physical_Flower_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 25
+              - Material: Summer_Material_1
+                Amount: 3
+              - Material: Summer_Material_2
+                Amount: 3
+              - Material: Summer_Material_3
+                Amount: 3
+              - Material: Circul_Of_Life
+                Amount: 10
+          - Enchant: Physical_Flower_1
+            Upgrade: Physical_Flower_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 30
+              - Material: Circul_Of_Life
+                Amount: 12
+          - Enchant: Physical_Flower_2
+            Upgrade: Physical_Flower_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 35
+              - Material: Circul_Of_Life
+                Amount: 14
+              - Material: Fruit_Of_Birth
+                Amount: 3
+              - Material: Fruit_Of_Extinction
+                Amount: 3
+          - Enchant: Physical_Flower_3
+            Upgrade: Physical_Flower_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 40
+              - Material: Circul_Of_Life
+                Amount: 16
+              - Material: Fruit_Of_Birth
+                Amount: 6
+              - Material: Fruit_Of_Extinction
+                Amount: 6
+              - Material: Truth_Of_Life
+                Amount: 3
+          - Enchant: Physical_Flower_4
+            Upgrade: Physical_Flower_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Summer
+                Amount: 45
+              - Material: Circul_Of_Life
+                Amount: 18
+              - Material: Fruit_Of_Birth
+                Amount: 9
+              - Material: Fruit_Of_Extinction
+                Amount: 9
+              - Material: Truth_Of_Life
+                Amount: 5
+              - Material: Light_Of_Life
+                Amount: 3
+  - Id: 121
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Autumn_1
+            Upgrade: Life_of_Autumn_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 4
+              - Material: Energy_Of_Flame
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 14
+          - Enchant: Life_of_Autumn_2
+            Upgrade: Life_of_Autumn_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 5
+              - Material: Energy_Of_Flame
+                Amount: 16
+              - Material: Energy_Of_Ground
+                Amount: 16
+          - Enchant: Life_of_Autumn_3
+            Upgrade: Life_of_Autumn_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 7
+              - Material: Energy_Of_Flame
+                Amount: 19
+              - Material: Energy_Of_Ground
+                Amount: 19
+          - Enchant: Life_of_Autumn_4
+            Upgrade: Life_of_Autumn_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 10
+              - Material: Energy_Of_Flame
+                Amount: 23
+              - Material: Energy_Of_Ground
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Autumn_5
+            Upgrade: Life_of_Autumn_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 28
+              - Material: Energy_Of_Ground
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Autumn_6
+            Upgrade: Life_of_Autumn_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 19
+              - Material: Energy_Of_Flame
+                Amount: 34
+              - Material: Energy_Of_Ground
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Autumn_7
+            Upgrade: Life_of_Autumn_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 25
+              - Material: Energy_Of_Flame
+                Amount: 41
+              - Material: Energy_Of_Ground
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Autumn_Material_1
+                Amount: 1
+              - Material: Autumn_Material_2
+                Amount: 1
+              - Material: Autumn_Material_3
+                Amount: 1
+          - Enchant: Life_of_Autumn_8
+            Upgrade: Life_of_Autumn_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 32
+              - Material: Energy_Of_Flame
+                Amount: 49
+              - Material: Energy_Of_Ground
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Autumn_Material_1
+                Amount: 3
+              - Material: Autumn_Material_2
+                Amount: 3
+              - Material: Autumn_Material_3
+                Amount: 3
+          - Enchant: Life_of_Autumn_9
+            Upgrade: Life_of_Autumn_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 40
+              - Material: Energy_Of_Flame
+                Amount: 58
+              - Material: Energy_Of_Ground
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Autumn_Material_1
+                Amount: 5
+              - Material: Autumn_Material_2
+                Amount: 5
+              - Material: Autumn_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Magical_Fruit_1
+            Upgrade: Magical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 2
+              - Material: Energy_Of_Flame
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 12
+          - Enchant: Magical_Fruit_2
+            Upgrade: Magical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 3
+              - Material: Energy_Of_Flame
+                Amount: 13
+              - Material: Energy_Of_Ground
+                Amount: 13
+          - Enchant: Magical_Fruit_3
+            Upgrade: Magical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 5
+              - Material: Energy_Of_Flame
+                Amount: 15
+              - Material: Energy_Of_Ground
+                Amount: 15
+          - Enchant: Magical_Fruit_4
+            Upgrade: Magical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 8
+              - Material: Energy_Of_Flame
+                Amount: 18
+              - Material: Energy_Of_Ground
+                Amount: 18
+          - Enchant: Magical_Fruit_5
+            Upgrade: Magical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 22
+              - Material: Energy_Of_Ground
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Magical_Fruit_6
+            Upgrade: Magical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 17
+              - Material: Energy_Of_Flame
+                Amount: 27
+              - Material: Energy_Of_Ground
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Magical_Fruit_7
+            Upgrade: Magical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 23
+              - Material: Energy_Of_Flame
+                Amount: 33
+              - Material: Energy_Of_Ground
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Magical_Fruit_8
+            Upgrade: Magical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 30
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Magical_Fruit_9
+            Upgrade: Magical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 38
+              - Material: Energy_Of_Flame
+                Amount: 48
+              - Material: Energy_Of_Ground
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Magical_Seed_1
+            Upgrade: Magical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 1
+              - Material: Energy_Of_Flame
+                Amount: 10
+              - Material: Energy_Of_Ground
+                Amount: 10
+          - Enchant: Magical_Seed_2
+            Upgrade: Magical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 2
+              - Material: Energy_Of_Flame
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 12
+          - Enchant: Magical_Seed_3
+            Upgrade: Magical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 3
+              - Material: Energy_Of_Flame
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 14
+          - Enchant: Magical_Seed_4
+            Upgrade: Magical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 4
+              - Material: Energy_Of_Flame
+                Amount: 16
+              - Material: Energy_Of_Ground
+                Amount: 16
+          - Enchant: Magical_Seed_5
+            Upgrade: Magical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 5
+              - Material: Energy_Of_Flame
+                Amount: 18
+              - Material: Energy_Of_Ground
+                Amount: 18
+          - Enchant: Magical_Seed_6
+            Upgrade: Magical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 6
+              - Material: Energy_Of_Flame
+                Amount: 20
+              - Material: Energy_Of_Ground
+                Amount: 20
+          - Enchant: Magical_Seed_7
+            Upgrade: Magical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 7
+              - Material: Energy_Of_Flame
+                Amount: 22
+              - Material: Energy_Of_Ground
+                Amount: 22
+          - Enchant: Magical_Seed_8
+            Upgrade: Magical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 8
+              - Material: Energy_Of_Flame
+                Amount: 24
+              - Material: Energy_Of_Ground
+                Amount: 24
+          - Enchant: Magical_Seed_9
+            Upgrade: Magical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 9
+              - Material: Energy_Of_Flame
+                Amount: 26
+              - Material: Energy_Of_Ground
+                Amount: 26
+          - Enchant: Magical_Seed_10
+            Upgrade: Magical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 30
+              - Material: Energy_Of_Ground
+                Amount: 30
+              - Material: Autumn_Material_1
+                Amount: 3
+              - Material: Autumn_Material_2
+                Amount: 3
+              - Material: Autumn_Material_3
+                Amount: 3
+          - Enchant: Magical_Leaf_1
+            Upgrade: Magical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 35
+              - Material: Energy_Of_Ground
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Magical_Leaf_2
+            Upgrade: Magical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 16
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Magical_Leaf_3
+            Upgrade: Magical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 18
+              - Material: Energy_Of_Flame
+                Amount: 45
+              - Material: Energy_Of_Ground
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Magical_Leaf_4
+            Upgrade: Magical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 20
+              - Material: Energy_Of_Flame
+                Amount: 50
+              - Material: Energy_Of_Ground
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+  - Id: 122
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Autumn_1
+            Upgrade: Life_of_Autumn_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 4
+              - Material: Energy_Of_Flame
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 14
+          - Enchant: Life_of_Autumn_2
+            Upgrade: Life_of_Autumn_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 5
+              - Material: Energy_Of_Flame
+                Amount: 16
+              - Material: Energy_Of_Ground
+                Amount: 16
+          - Enchant: Life_of_Autumn_3
+            Upgrade: Life_of_Autumn_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 7
+              - Material: Energy_Of_Flame
+                Amount: 19
+              - Material: Energy_Of_Ground
+                Amount: 19
+          - Enchant: Life_of_Autumn_4
+            Upgrade: Life_of_Autumn_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 10
+              - Material: Energy_Of_Flame
+                Amount: 23
+              - Material: Energy_Of_Ground
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Autumn_5
+            Upgrade: Life_of_Autumn_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 28
+              - Material: Energy_Of_Ground
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Autumn_6
+            Upgrade: Life_of_Autumn_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 19
+              - Material: Energy_Of_Flame
+                Amount: 34
+              - Material: Energy_Of_Ground
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Autumn_7
+            Upgrade: Life_of_Autumn_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 25
+              - Material: Energy_Of_Flame
+                Amount: 41
+              - Material: Energy_Of_Ground
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Autumn_Material_1
+                Amount: 1
+              - Material: Autumn_Material_2
+                Amount: 1
+              - Material: Autumn_Material_3
+                Amount: 1
+          - Enchant: Life_of_Autumn_8
+            Upgrade: Life_of_Autumn_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 32
+              - Material: Energy_Of_Flame
+                Amount: 49
+              - Material: Energy_Of_Ground
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Autumn_Material_1
+                Amount: 3
+              - Material: Autumn_Material_2
+                Amount: 3
+              - Material: Autumn_Material_3
+                Amount: 3
+          - Enchant: Life_of_Autumn_9
+            Upgrade: Life_of_Autumn_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 40
+              - Material: Energy_Of_Flame
+                Amount: 58
+              - Material: Energy_Of_Ground
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Autumn_Material_1
+                Amount: 5
+              - Material: Autumn_Material_2
+                Amount: 5
+              - Material: Autumn_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Magical_Fruit_1
+            Upgrade: Magical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 2
+              - Material: Energy_Of_Flame
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 12
+          - Enchant: Magical_Fruit_2
+            Upgrade: Magical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 3
+              - Material: Energy_Of_Flame
+                Amount: 13
+              - Material: Energy_Of_Ground
+                Amount: 13
+          - Enchant: Magical_Fruit_3
+            Upgrade: Magical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 5
+              - Material: Energy_Of_Flame
+                Amount: 15
+              - Material: Energy_Of_Ground
+                Amount: 15
+          - Enchant: Magical_Fruit_4
+            Upgrade: Magical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 8
+              - Material: Energy_Of_Flame
+                Amount: 18
+              - Material: Energy_Of_Ground
+                Amount: 18
+          - Enchant: Magical_Fruit_5
+            Upgrade: Magical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 22
+              - Material: Energy_Of_Ground
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Magical_Fruit_6
+            Upgrade: Magical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 17
+              - Material: Energy_Of_Flame
+                Amount: 27
+              - Material: Energy_Of_Ground
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Magical_Fruit_7
+            Upgrade: Magical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 23
+              - Material: Energy_Of_Flame
+                Amount: 33
+              - Material: Energy_Of_Ground
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Magical_Fruit_8
+            Upgrade: Magical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 30
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Magical_Fruit_9
+            Upgrade: Magical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 38
+              - Material: Energy_Of_Flame
+                Amount: 48
+              - Material: Energy_Of_Ground
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Magical_Seed_1
+            Upgrade: Magical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 1
+              - Material: Energy_Of_Flame
+                Amount: 10
+              - Material: Energy_Of_Ground
+                Amount: 10
+          - Enchant: Magical_Seed_2
+            Upgrade: Magical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 2
+              - Material: Energy_Of_Flame
+                Amount: 12
+              - Material: Energy_Of_Ground
+                Amount: 12
+          - Enchant: Magical_Seed_3
+            Upgrade: Magical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 3
+              - Material: Energy_Of_Flame
+                Amount: 14
+              - Material: Energy_Of_Ground
+                Amount: 14
+          - Enchant: Magical_Seed_4
+            Upgrade: Magical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 4
+              - Material: Energy_Of_Flame
+                Amount: 16
+              - Material: Energy_Of_Ground
+                Amount: 16
+          - Enchant: Magical_Seed_5
+            Upgrade: Magical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 5
+              - Material: Energy_Of_Flame
+                Amount: 18
+              - Material: Energy_Of_Ground
+                Amount: 18
+          - Enchant: Magical_Seed_6
+            Upgrade: Magical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 6
+              - Material: Energy_Of_Flame
+                Amount: 20
+              - Material: Energy_Of_Ground
+                Amount: 20
+          - Enchant: Magical_Seed_7
+            Upgrade: Magical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 7
+              - Material: Energy_Of_Flame
+                Amount: 22
+              - Material: Energy_Of_Ground
+                Amount: 22
+          - Enchant: Magical_Seed_8
+            Upgrade: Magical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 8
+              - Material: Energy_Of_Flame
+                Amount: 24
+              - Material: Energy_Of_Ground
+                Amount: 24
+          - Enchant: Magical_Seed_9
+            Upgrade: Magical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 9
+              - Material: Energy_Of_Flame
+                Amount: 26
+              - Material: Energy_Of_Ground
+                Amount: 26
+          - Enchant: Magical_Seed_10
+            Upgrade: Magical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 12
+              - Material: Energy_Of_Flame
+                Amount: 30
+              - Material: Energy_Of_Ground
+                Amount: 30
+              - Material: Autumn_Material_1
+                Amount: 3
+              - Material: Autumn_Material_2
+                Amount: 3
+              - Material: Autumn_Material_3
+                Amount: 3
+          - Enchant: Magical_Leaf_1
+            Upgrade: Magical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 14
+              - Material: Energy_Of_Flame
+                Amount: 35
+              - Material: Energy_Of_Ground
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Magical_Leaf_2
+            Upgrade: Magical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 16
+              - Material: Energy_Of_Flame
+                Amount: 40
+              - Material: Energy_Of_Ground
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Magical_Leaf_3
+            Upgrade: Magical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 18
+              - Material: Energy_Of_Flame
+                Amount: 45
+              - Material: Energy_Of_Ground
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Magical_Leaf_4
+            Upgrade: Magical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 20
+              - Material: Energy_Of_Flame
+                Amount: 50
+              - Material: Energy_Of_Ground
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Magical_Leaf_5
+            Upgrade: Magical_Flower_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 25
+              - Material: Autumn_Material_1
+                Amount: 3
+              - Material: Autumn_Material_2
+                Amount: 3
+              - Material: Autumn_Material_3
+                Amount: 3
+              - Material: Circul_Of_Life
+                Amount: 10
+          - Enchant: Magical_Flower_1
+            Upgrade: Magical_Flower_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 30
+              - Material: Circul_Of_Life
+                Amount: 12
+          - Enchant: Magical_Flower_2
+            Upgrade: Magical_Flower_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 35
+              - Material: Circul_Of_Life
+                Amount: 14
+              - Material: Fruit_Of_Birth
+                Amount: 3
+              - Material: Fruit_Of_Extinction
+                Amount: 3
+          - Enchant: Magical_Flower_3
+            Upgrade: Magical_Flower_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 40
+              - Material: Circul_Of_Life
+                Amount: 16
+              - Material: Fruit_Of_Birth
+                Amount: 6
+              - Material: Fruit_Of_Extinction
+                Amount: 6
+              - Material: Truth_Of_Life
+                Amount: 3
+          - Enchant: Magical_Flower_4
+            Upgrade: Magical_Flower_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Autumn
+                Amount: 45
+              - Material: Circul_Of_Life
+                Amount: 18
+              - Material: Fruit_Of_Birth
+                Amount: 9
+              - Material: Fruit_Of_Extinction
+                Amount: 9
+              - Material: Truth_Of_Life
+                Amount: 5
+              - Material: Light_Of_Life
+                Amount: 3
+  - Id: 123
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Winter_1
+            Upgrade: Life_of_Winter_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 4
+              - Material: Energy_Of_Wind
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 14
+          - Enchant: Life_of_Winter_2
+            Upgrade: Life_of_Winter_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 5
+              - Material: Energy_Of_Wind
+                Amount: 16
+              - Material: Energy_Of_Water
+                Amount: 16
+          - Enchant: Life_of_Winter_3
+            Upgrade: Life_of_Winter_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 7
+              - Material: Energy_Of_Wind
+                Amount: 19
+              - Material: Energy_Of_Water
+                Amount: 19
+          - Enchant: Life_of_Winter_4
+            Upgrade: Life_of_Winter_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 10
+              - Material: Energy_Of_Wind
+                Amount: 23
+              - Material: Energy_Of_Water
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Winter_5
+            Upgrade: Life_of_Winter_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 28
+              - Material: Energy_Of_Water
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Winter_6
+            Upgrade: Life_of_Winter_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 19
+              - Material: Energy_Of_Wind
+                Amount: 34
+              - Material: Energy_Of_Water
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Winter_7
+            Upgrade: Life_of_Winter_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 25
+              - Material: Energy_Of_Wind
+                Amount: 41
+              - Material: Energy_Of_Water
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Winter_Material_1
+                Amount: 1
+              - Material: Winter_Material_2
+                Amount: 1
+              - Material: Winter_Material_3
+                Amount: 1
+          - Enchant: Life_of_Winter_8
+            Upgrade: Life_of_Winter_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 32
+              - Material: Energy_Of_Wind
+                Amount: 49
+              - Material: Energy_Of_Water
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Winter_Material_1
+                Amount: 3
+              - Material: Winter_Material_2
+                Amount: 3
+              - Material: Winter_Material_3
+                Amount: 3
+          - Enchant: Life_of_Winter_9
+            Upgrade: Life_of_Winter_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 40
+              - Material: Energy_Of_Wind
+                Amount: 58
+              - Material: Energy_Of_Water
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Winter_Material_1
+                Amount: 5
+              - Material: Winter_Material_2
+                Amount: 5
+              - Material: Winter_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Physical_Fruit_1
+            Upgrade: Physical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 2
+              - Material: Energy_Of_Wind
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 12
+          - Enchant: Physical_Fruit_2
+            Upgrade: Physical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 3
+              - Material: Energy_Of_Wind
+                Amount: 13
+              - Material: Energy_Of_Water
+                Amount: 13
+          - Enchant: Physical_Fruit_3
+            Upgrade: Physical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 5
+              - Material: Energy_Of_Wind
+                Amount: 15
+              - Material: Energy_Of_Water
+                Amount: 15
+          - Enchant: Physical_Fruit_4
+            Upgrade: Physical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 8
+              - Material: Energy_Of_Wind
+                Amount: 18
+              - Material: Energy_Of_Water
+                Amount: 18
+          - Enchant: Physical_Fruit_5
+            Upgrade: Physical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 22
+              - Material: Energy_Of_Water
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Fruit_6
+            Upgrade: Physical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 17
+              - Material: Energy_Of_Wind
+                Amount: 27
+              - Material: Energy_Of_Water
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Fruit_7
+            Upgrade: Physical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 23
+              - Material: Energy_Of_Wind
+                Amount: 33
+              - Material: Energy_Of_Water
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Fruit_8
+            Upgrade: Physical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 30
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Fruit_9
+            Upgrade: Physical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 38
+              - Material: Energy_Of_Wind
+                Amount: 48
+              - Material: Energy_Of_Water
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Physical_Seed_1
+            Upgrade: Physical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 1
+              - Material: Energy_Of_Wind
+                Amount: 10
+              - Material: Energy_Of_Water
+                Amount: 10
+          - Enchant: Physical_Seed_2
+            Upgrade: Physical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 2
+              - Material: Energy_Of_Wind
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 12
+          - Enchant: Physical_Seed_3
+            Upgrade: Physical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 3
+              - Material: Energy_Of_Wind
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 14
+          - Enchant: Physical_Seed_4
+            Upgrade: Physical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 4
+              - Material: Energy_Of_Wind
+                Amount: 16
+              - Material: Energy_Of_Water
+                Amount: 16
+          - Enchant: Physical_Seed_5
+            Upgrade: Physical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 5
+              - Material: Energy_Of_Wind
+                Amount: 18
+              - Material: Energy_Of_Water
+                Amount: 18
+          - Enchant: Physical_Seed_6
+            Upgrade: Physical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 6
+              - Material: Energy_Of_Wind
+                Amount: 20
+              - Material: Energy_Of_Water
+                Amount: 20
+          - Enchant: Physical_Seed_7
+            Upgrade: Physical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 7
+              - Material: Energy_Of_Wind
+                Amount: 22
+              - Material: Energy_Of_Water
+                Amount: 22
+          - Enchant: Physical_Seed_8
+            Upgrade: Physical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 8
+              - Material: Energy_Of_Wind
+                Amount: 24
+              - Material: Energy_Of_Water
+                Amount: 24
+          - Enchant: Physical_Seed_9
+            Upgrade: Physical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 9
+              - Material: Energy_Of_Wind
+                Amount: 26
+              - Material: Energy_Of_Water
+                Amount: 26
+          - Enchant: Physical_Seed_10
+            Upgrade: Physical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 30
+              - Material: Energy_Of_Water
+                Amount: 30
+              - Material: Winter_Material_1
+                Amount: 3
+              - Material: Winter_Material_2
+                Amount: 3
+              - Material: Winter_Material_3
+                Amount: 3
+          - Enchant: Physical_Leaf_1
+            Upgrade: Physical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 35
+              - Material: Energy_Of_Water
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Leaf_2
+            Upgrade: Physical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 16
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Leaf_3
+            Upgrade: Physical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 18
+              - Material: Energy_Of_Wind
+                Amount: 45
+              - Material: Energy_Of_Water
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Leaf_4
+            Upgrade: Physical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 20
+              - Material: Energy_Of_Wind
+                Amount: 50
+              - Material: Energy_Of_Water
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+  - Id: 124
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Life_of_Winter_1
+            Upgrade: Life_of_Winter_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 4
+              - Material: Energy_Of_Wind
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 14
+          - Enchant: Life_of_Winter_2
+            Upgrade: Life_of_Winter_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 5
+              - Material: Energy_Of_Wind
+                Amount: 16
+              - Material: Energy_Of_Water
+                Amount: 16
+          - Enchant: Life_of_Winter_3
+            Upgrade: Life_of_Winter_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 7
+              - Material: Energy_Of_Wind
+                Amount: 19
+              - Material: Energy_Of_Water
+                Amount: 19
+          - Enchant: Life_of_Winter_4
+            Upgrade: Life_of_Winter_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 10
+              - Material: Energy_Of_Wind
+                Amount: 23
+              - Material: Energy_Of_Water
+                Amount: 23
+              - Material: Grace_Of_Spirit
+                Amount: 5
+          - Enchant: Life_of_Winter_5
+            Upgrade: Life_of_Winter_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 28
+              - Material: Energy_Of_Water
+                Amount: 28
+              - Material: Grace_Of_Spirit
+                Amount: 7
+          - Enchant: Life_of_Winter_6
+            Upgrade: Life_of_Winter_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 19
+              - Material: Energy_Of_Wind
+                Amount: 34
+              - Material: Energy_Of_Water
+                Amount: 34
+              - Material: Grace_Of_Spirit
+                Amount: 9
+          - Enchant: Life_of_Winter_7
+            Upgrade: Life_of_Winter_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 25
+              - Material: Energy_Of_Wind
+                Amount: 41
+              - Material: Energy_Of_Water
+                Amount: 41
+              - Material: Grace_Of_Spirit
+                Amount: 11
+              - Material: Winter_Material_1
+                Amount: 1
+              - Material: Winter_Material_2
+                Amount: 1
+              - Material: Winter_Material_3
+                Amount: 1
+          - Enchant: Life_of_Winter_8
+            Upgrade: Life_of_Winter_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 32
+              - Material: Energy_Of_Wind
+                Amount: 49
+              - Material: Energy_Of_Water
+                Amount: 49
+              - Material: Grace_Of_Spirit
+                Amount: 13
+              - Material: Winter_Material_1
+                Amount: 3
+              - Material: Winter_Material_2
+                Amount: 3
+              - Material: Winter_Material_3
+                Amount: 3
+          - Enchant: Life_of_Winter_9
+            Upgrade: Life_of_Winter_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 40
+              - Material: Energy_Of_Wind
+                Amount: 58
+              - Material: Energy_Of_Water
+                Amount: 58
+              - Material: Grace_Of_Spirit
+                Amount: 15
+              - Material: Winter_Material_1
+                Amount: 5
+              - Material: Winter_Material_2
+                Amount: 5
+              - Material: Winter_Material_3
+                Amount: 5
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Physical_Fruit_1
+            Upgrade: Physical_Fruit_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 2
+              - Material: Energy_Of_Wind
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 12
+          - Enchant: Physical_Fruit_2
+            Upgrade: Physical_Fruit_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 3
+              - Material: Energy_Of_Wind
+                Amount: 13
+              - Material: Energy_Of_Water
+                Amount: 13
+          - Enchant: Physical_Fruit_3
+            Upgrade: Physical_Fruit_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 5
+              - Material: Energy_Of_Wind
+                Amount: 15
+              - Material: Energy_Of_Water
+                Amount: 15
+          - Enchant: Physical_Fruit_4
+            Upgrade: Physical_Fruit_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 8
+              - Material: Energy_Of_Wind
+                Amount: 18
+              - Material: Energy_Of_Water
+                Amount: 18
+          - Enchant: Physical_Fruit_5
+            Upgrade: Physical_Fruit_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 22
+              - Material: Energy_Of_Water
+                Amount: 22
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Fruit_6
+            Upgrade: Physical_Fruit_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 17
+              - Material: Energy_Of_Wind
+                Amount: 27
+              - Material: Energy_Of_Water
+                Amount: 27
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Fruit_7
+            Upgrade: Physical_Fruit_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 23
+              - Material: Energy_Of_Wind
+                Amount: 33
+              - Material: Energy_Of_Water
+                Amount: 33
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Fruit_8
+            Upgrade: Physical_Fruit_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 30
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Fruit_9
+            Upgrade: Physical_Fruit_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 38
+              - Material: Energy_Of_Wind
+                Amount: 48
+              - Material: Energy_Of_Water
+                Amount: 48
+              - Material: Grace_Of_Spirit
+                Amount: 10
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Physical_Seed_1
+            Upgrade: Physical_Seed_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 1
+              - Material: Energy_Of_Wind
+                Amount: 10
+              - Material: Energy_Of_Water
+                Amount: 10
+          - Enchant: Physical_Seed_2
+            Upgrade: Physical_Seed_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 2
+              - Material: Energy_Of_Wind
+                Amount: 12
+              - Material: Energy_Of_Water
+                Amount: 12
+          - Enchant: Physical_Seed_3
+            Upgrade: Physical_Seed_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 3
+              - Material: Energy_Of_Wind
+                Amount: 14
+              - Material: Energy_Of_Water
+                Amount: 14
+          - Enchant: Physical_Seed_4
+            Upgrade: Physical_Seed_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 4
+              - Material: Energy_Of_Wind
+                Amount: 16
+              - Material: Energy_Of_Water
+                Amount: 16
+          - Enchant: Physical_Seed_5
+            Upgrade: Physical_Seed_6
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 5
+              - Material: Energy_Of_Wind
+                Amount: 18
+              - Material: Energy_Of_Water
+                Amount: 18
+          - Enchant: Physical_Seed_6
+            Upgrade: Physical_Seed_7
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 6
+              - Material: Energy_Of_Wind
+                Amount: 20
+              - Material: Energy_Of_Water
+                Amount: 20
+          - Enchant: Physical_Seed_7
+            Upgrade: Physical_Seed_8
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 7
+              - Material: Energy_Of_Wind
+                Amount: 22
+              - Material: Energy_Of_Water
+                Amount: 22
+          - Enchant: Physical_Seed_8
+            Upgrade: Physical_Seed_9
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 8
+              - Material: Energy_Of_Wind
+                Amount: 24
+              - Material: Energy_Of_Water
+                Amount: 24
+          - Enchant: Physical_Seed_9
+            Upgrade: Physical_Seed_10
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 9
+              - Material: Energy_Of_Wind
+                Amount: 26
+              - Material: Energy_Of_Water
+                Amount: 26
+          - Enchant: Physical_Seed_10
+            Upgrade: Physical_Leaf_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 12
+              - Material: Energy_Of_Wind
+                Amount: 30
+              - Material: Energy_Of_Water
+                Amount: 30
+              - Material: Winter_Material_1
+                Amount: 3
+              - Material: Winter_Material_2
+                Amount: 3
+              - Material: Winter_Material_3
+                Amount: 3
+          - Enchant: Physical_Leaf_1
+            Upgrade: Physical_Leaf_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 14
+              - Material: Energy_Of_Wind
+                Amount: 35
+              - Material: Energy_Of_Water
+                Amount: 35
+              - Material: Grace_Of_Spirit
+                Amount: 2
+          - Enchant: Physical_Leaf_2
+            Upgrade: Physical_Leaf_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 16
+              - Material: Energy_Of_Wind
+                Amount: 40
+              - Material: Energy_Of_Water
+                Amount: 40
+              - Material: Grace_Of_Spirit
+                Amount: 4
+          - Enchant: Physical_Leaf_3
+            Upgrade: Physical_Leaf_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 18
+              - Material: Energy_Of_Wind
+                Amount: 45
+              - Material: Energy_Of_Water
+                Amount: 45
+              - Material: Grace_Of_Spirit
+                Amount: 6
+          - Enchant: Physical_Leaf_4
+            Upgrade: Physical_Leaf_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 20
+              - Material: Energy_Of_Wind
+                Amount: 50
+              - Material: Energy_Of_Water
+                Amount: 50
+              - Material: Grace_Of_Spirit
+                Amount: 8
+          - Enchant: Physical_Leaf_5
+            Upgrade: Physical_Flower_1
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 25
+              - Material: Winter_Material_1
+                Amount: 3
+              - Material: Winter_Material_2
+                Amount: 3
+              - Material: Winter_Material_3
+                Amount: 3
+              - Material: Circul_Of_Life
+                Amount: 10
+          - Enchant: Physical_Flower_1
+            Upgrade: Physical_Flower_2
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 30
+              - Material: Circul_Of_Life
+                Amount: 12
+          - Enchant: Physical_Flower_2
+            Upgrade: Physical_Flower_3
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 35
+              - Material: Circul_Of_Life
+                Amount: 14
+              - Material: Fruit_Of_Birth
+                Amount: 3
+              - Material: Fruit_Of_Extinction
+                Amount: 3
+          - Enchant: Physical_Flower_3
+            Upgrade: Physical_Flower_4
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 40
+              - Material: Circul_Of_Life
+                Amount: 16
+              - Material: Fruit_Of_Birth
+                Amount: 6
+              - Material: Fruit_Of_Extinction
+                Amount: 6
+              - Material: Truth_Of_Life
+                Amount: 3
+          - Enchant: Physical_Flower_4
+            Upgrade: Physical_Flower_5
+            Price: 0
+            Materials:
+              - Material: Energy_Of_Winter
+                Amount: 45
+              - Material: Circul_Of_Life
+                Amount: 18
+              - Material: Fruit_Of_Birth
+                Amount: 9
+              - Material: Fruit_Of_Extinction
+                Amount: 9
+              - Material: Truth_Of_Life
+                Amount: 5
+              - Material: Light_Of_Life
+                Amount: 3
+  - Id: 132
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Mettle_Jewel_1
+            Upgrade: Mettle_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Mettle_Jewel_2
+            Upgrade: Mettle_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Mettle_Jewel_3
+            Upgrade: Mettle_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Mettle_Jewel_4
+            Upgrade: Mettle_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Tenacity_Jewel_1
+            Upgrade: Tenacity_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Tenacity_Jewel_2
+            Upgrade: Tenacity_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Tenacity_Jewel_3
+            Upgrade: Tenacity_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Tenacity_Jewel_4
+            Upgrade: Tenacity_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Master_A_Jewel_1
+            Upgrade: Master_A_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Master_A_Jewel_2
+            Upgrade: Master_A_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Master_A_Jewel_3
+            Upgrade: Master_A_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Master_A_Jewel_4
+            Upgrade: Master_A_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Acute_Jewel_1
+            Upgrade: Acute_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Acute_Jewel_2
+            Upgrade: Acute_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Acute_Jewel_3
+            Upgrade: Acute_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Acute_Jewel_4
+            Upgrade: Acute_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Magic_E_Jewel_1
+            Upgrade: Magic_E_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Magic_E_Jewel_2
+            Upgrade: Magic_E_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Magic_E_Jewel_3
+            Upgrade: Magic_E_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Magic_E_Jewel_4
+            Upgrade: Magic_E_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Spell_Jewel_1
+            Upgrade: Spell_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Spell_Jewel_2
+            Upgrade: Spell_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Spell_Jewel_3
+            Upgrade: Spell_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Spell_Jewel_4
+            Upgrade: Spell_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Adamatine_Jewel_1
+            Upgrade: Adamatine_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Adamatine_Jewel_2
+            Upgrade: Adamatine_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Adamatine_Jewel_3
+            Upgrade: Adamatine_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Adamatine_Jewel_4
+            Upgrade: Adamatine_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+          - Enchant: Affection_Jewel_1
+            Upgrade: Affection_Jewel_2
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 175
+          - Enchant: Affection_Jewel_2
+            Upgrade: Affection_Jewel_3
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 225
+          - Enchant: Affection_Jewel_3
+            Upgrade: Affection_Jewel_4
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 275
+          - Enchant: Affection_Jewel_4
+            Upgrade: Affection_Jewel_5
+            Price: 0
+            Materials:
+              - Material: Time_D_Ma_Rune
+                Amount: 325
+  - Id: 163
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Ch01_S_E_Fighting05
+            Upgrade: Ch01_S_E_Fighting06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Prudence05
+            Upgrade: Ch01_S_E_Prudence06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Pride05
+            Upgrade: Ch01_S_E_Pride06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Sageness05
+            Upgrade: Ch01_S_E_Sageness06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Volition05
+            Upgrade: Ch01_S_E_Volition06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+          - Enchant: Ch01_S_E_Will05
+            Upgrade: Ch01_S_E_Will06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 250
+              - Material: Frontier_Stone_YL
+                Amount: 250
+              - Material: Frontier_Stone_GR
+                Amount: 200
+              - Material: Frontier_Stone_BK
+                Amount: 200
+              - Material: Dimension_Essence_BL
+                Amount: 75
+              - Material: Dimension_Essence_YL
+                Amount: 75
+              - Material: Dimension_Essence_GR
+                Amount: 75
+              - Material: Dimension_Essence_BK
+                Amount: 75
+      - Slot: 2
+        PerfectUpgrades:
+          - Enchant: Ch01_S_E_Flame05
+            Upgrade: Ch01_S_E_Flame06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Frozen05
+            Upgrade: Ch01_S_E_Frozen06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Earth05
+            Upgrade: Ch01_S_E_Earth06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Death05
+            Upgrade: Ch01_S_E_Death06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Poison05
+            Upgrade: Ch01_S_E_Poison06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+      - Slot: 3
+        PerfectUpgrades:
+          - Enchant: Ch01_S_E_Life05
+            Upgrade: Ch01_S_E_Life06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Regiment05
+            Upgrade: Ch01_S_E_Regiment06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_GAE05
+            Upgrade: Ch01_S_E_GAE06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Immo05
+            Upgrade: Ch01_S_E_Immo06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+          - Enchant: Ch01_S_E_Vain05
+            Upgrade: Ch01_S_E_Vain06
+            Price: 100000000
+            Materials:
+              - Material: Frontier_Stone_BL
+                Amount: 150
+              - Material: Frontier_Stone_YL
+                Amount: 150
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_BL
+                Amount: 25
+              - Material: Dimension_Essence_YL
+                Amount: 25
+              - Material: Dimension_Essence_GR
+                Amount: 25
+              - Material: Dimension_Essence_BK
+                Amount: 25
+  - Id: 164
+    Slots:
+      - Slot: 1
+        PerfectUpgrades:
+          - Enchant: Mettle_Jewel_6
+            Upgrade: Mettle_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Mettle_Jewel_7
+            Upgrade: Mettle_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Tenacity_Jewel_6
+            Upgrade: Tenacity_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Tenacity_Jewel_7
+            Upgrade: Tenacity_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Master_A_Jewel_6
+            Upgrade: Master_A_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Master_A_Jewel_7
+            Upgrade: Master_A_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Acute_Jewel_6
+            Upgrade: Acute_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Acute_Jewel_7
+            Upgrade: Acute_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Magic_E_Jewel_6
+            Upgrade: Magic_E_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Magic_E_Jewel_7
+            Upgrade: Magic_E_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Spell_Jewel_6
+            Upgrade: Spell_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Spell_Jewel_7
+            Upgrade: Spell_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Adamatine_Jewel_6
+            Upgrade: Adamatine_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Adamatine_Jewel_7
+            Upgrade: Adamatine_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Affection_Jewel_6
+            Upgrade: Affection_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Affection_Jewel_7
+            Upgrade: Affection_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Fierce_A_Jewel_6
+            Upgrade: Fierce_A_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Fierce_A_Jewel_7
+            Upgrade: Fierce_A_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
+          - Enchant: Great_C_Jewel_6
+            Upgrade: Great_C_Jewel_7
+            Price: 200000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 80
+              - Material: Frontier_Stone_BK
+                Amount: 80
+              - Material: Dimension_Essence_GR
+                Amount: 20
+              - Material: Dimension_Essence_BK
+                Amount: 20
+              - Material: Immortal_SpellScroll
+                Amount: 120
+          - Enchant: Great_C_Jewel_7
+            Upgrade: Great_C_Jewel_8
+            Price: 300000000
+            Materials:
+              - Material: Frontier_Stone_GR
+                Amount: 100
+              - Material: Frontier_Stone_BK
+                Amount: 100
+              - Material: Dimension_Essence_GR
+                Amount: 40
+              - Material: Dimension_Essence_BK
+                Amount: 40
+              - Material: Immortal_SpellScroll
+                Amount: 150
