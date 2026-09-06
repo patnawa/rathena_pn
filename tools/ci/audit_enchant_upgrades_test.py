@@ -168,6 +168,18 @@ class ClientNameTests(unittest.TestCase):
         self.assertEqual(resolve.aliases['마력1']['Id'], 4815)
         self.assertEqual(resolve('Missing'), 'Missing')
         self.assertEqual(resolve.unresolved, {'Missing'})
+        self.assertEqual(resolve.unresolved_details['Missing'],
+                         {'reason': 'client_name_missing', 'client_id': None})
+
+    def test_known_client_id_missing_on_server_is_not_a_missing_client_name(self):
+        data = HEADER + prototype(TABLE + [RETURN], CONSTANTS)
+        with patch('audit_enchant_upgrades.renewal_records', return_value=[]):
+            resolve = ClientItemNames(FakePath(data), None)
+        name = CONSTANTS[1]
+        self.assertEqual(resolve(name), name)
+        self.assertEqual(resolve.unresolved_details[name],
+                         {'reason': 'server_item_missing', 'client_id': 4815})
+        self.assertFalse(resolve.aliases)
 
     def test_client_recipe_resolves_sources_targets_and_materials(self):
         source = '  Table[1].Slot[2]:AddUpgradeEnchant("마력1","마력2",5,{"광석",2})  \t'

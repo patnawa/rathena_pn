@@ -142,6 +142,13 @@ def compare(client, server):
         if expected != actual:
             issues.append({'kind': kind, 'key': key, 'client': expected, 'server': actual})
 
+    for group_id in sorted(client.keys() - server.keys()):
+        group = client[group_id]
+        check('missing-server-group', [group_id], {
+            'targets': sorted(group['Targets']),
+            'normal_grade_tables': sum(len(s['Enchants']) for s in group['Slots'].values()),
+            'perfect_initial_recipes': sum(len(s['Perfect']) for s in group['Slots'].values()),
+        }, None)
     for group_id in sorted(client.keys() & server.keys()):
         expected, actual = client[group_id], server[group_id]
         check('targets', [group_id], sorted(expected['Targets']), sorted(actual['Targets']))
@@ -198,6 +205,10 @@ def main():
                               for s, slot in config['Slots'].items() for grade, outcomes in slot['Enchants'].items()
                               if sum(outcomes.values()) != 100000]
     print(json.dumps({'compared_groups': len(client.keys() & server.keys()), 'issues': issues if args.details else issues[:4],
+                      'client_groups': len(client), 'server_groups': len(server),
+                      'missing_server_groups': sorted(client.keys() - server.keys()),
+                      'server_only_groups': sorted(server.keys() - client.keys()),
+                      'client_perfect_initial_recipes_all_groups': sum(len(s['Perfect']) for c in client.values() for s in c['Slots'].values()),
                       'client_normal_grade_tables': sum(len(s['Enchants']) for g, c in client.items() if g in server for s in c['Slots'].values()),
                       'client_perfect_initial_recipes': sum(len(s['Perfect']) for g, c in client.items() if g in server for s in c['Slots'].values()),
                       'server_normal_grade_tables': sum(len(s['Enchants']) for c in server.values() for s in c['Slots'].values()),
@@ -205,7 +216,8 @@ def main():
                       'issues_by_group': dict(Counter(x['key'][0] for x in issues)),
                       'invalid_server_probability_totals': invalid_weights,
                       'invalid_client_probability_totals': invalid_client_weights,
-                      'unresolved_names': sorted(resolve.unresolved)}, ensure_ascii=False, indent=2))
+                      'unresolved_names': sorted(resolve.unresolved),
+                      'unresolved_details': resolve.unresolved_details}, ensure_ascii=False, indent=2))
     raise SystemExit(bool(issues or invalid_weights or invalid_client_weights or resolve.unresolved))
 
 

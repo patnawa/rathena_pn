@@ -90,11 +90,17 @@ register only the parent skill once, avoiding double bonuses if canonicalized.
   acquisition shops or currencies were guessed. Omitted price/weight properties
   retain the item database's zero defaults.
 - No enchant recipes or current-client files are modified by this item import.
-  Recipe wiring, material acquisition and the native client's missing Aegis
-  aliases are separate tasks. Defining an item alone does not make it obtainable.
+  Separate initial recipes are now provided by `druid_item_enchant.yml` (see
+  [recipe scope](druid_item_enchant_compatibility.md)); material acquisition is
+  still incomplete. Defining an item alone does not make it obtainable.
+- Correction: all 31 names and IDs already exist in the original active client
+  table (SHA256 `2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496`).
+  Earlier unresolved results were missing server records, not client aliases.
+  `tools/ci/audit_druid_item_names.py` verifies this without altering client data.
 - `client-patch/druid_items` supplies optional clean-room item metadata with the
   already-used `EpisodClear20` fallback resource. It contains no proprietary
-  artwork and is not installed automatically.
+  artwork and is not installed automatically by the item import. The fragment
+  was separately installed in the active client on 2026-09-06 with backups.
 
 Run the focused test from the repository root on Linux/WSL:
 

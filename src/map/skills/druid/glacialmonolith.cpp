@@ -6,6 +6,30 @@
 #include <config/core.hpp>
 
 #include "map/status.hpp"
+#include "map/unit.hpp"
+
+const skill_unit* druid_find_active_monolith(const block_list* src) {
+	if (src == nullptr || src->prev == nullptr || status_isdead(*src))
+		return nullptr;
+
+	const unit_data* ud = unit_bl2ud(src);
+	if (ud == nullptr)
+		return nullptr;
+
+	for (const auto& group : ud->skillunits) {
+		if (group == nullptr || group->skill_id != AT_GLACIER_MONOLITH ||
+			group->src_id != src->id || group->map != src->m || group->unit == nullptr)
+			continue;
+
+		for (int32 i = 0; i < group->unit_count; ++i) {
+			const skill_unit* unit = &group->unit[i];
+			if (unit->alive && unit->prev != nullptr && unit->m == src->m && unit->range >= 0 &&
+				distance_xy(src->x, src->y, unit->x, unit->y) <= unit->range)
+				return unit;
+		}
+	}
+	return nullptr;
+}
 
 SkillGlacialMonolith::SkillGlacialMonolith() : SkillImplRecursiveDamageSplash(AT_GLACIER_MONOLITH) {
 }

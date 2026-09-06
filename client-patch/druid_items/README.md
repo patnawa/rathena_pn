@@ -28,9 +28,11 @@ by the project's Episode Clear Ticket and other compatibility patches. No
 original Druid item artwork is included. Every record has zero physical slots
 and no equipment appearance.
 
-This itemInfo fragment **does not** add native-enchant `ItemDBNameTbl` aliases,
-server recipes, vendors or material drops. The currently extracted client name
-table lacks these 31 Aegis names; a separate supplemental name-table patch is
-required before their native enchant recipes can be considered client-ready.
-Do not replace the existing name table with the full external reference table:
-that could discard this client's localized aliases and custom entries.
+This itemInfo fragment does not add native-enchant `ItemDBNameTbl` aliases,
+server recipes, vendors or material drops. The original active client table
+already contains all 31 name/ID pairs in `item_name_aliases.json`; earlier
+unresolved audit results meant missing server item records, not missing client
+names. No client name-table patch or GRF priority change is needed.
+Run `tools/ci/audit_druid_item_names.py` with the extracted original table to
+verify both identities read-only. Separate server recipes are documented in
+`doc/druid_item_enchant_compatibility.md`; client clicks remain unverified.

@@ -50,11 +50,16 @@ class ClientItemNames:
             if 'AegisName' in record:
                 self.server[record['Id']] = record['AegisName']
         self.aliases, self.unresolved = {}, set()
+        self.unresolved_details = {}
 
     def __call__(self, name):
         item_id = self.client.get(name)
         if item_id not in self.server:
             self.unresolved.add(name)
+            self.unresolved_details[name] = {
+                'reason': 'client_name_missing' if item_id is None else 'server_item_missing',
+                'client_id': item_id,
+            }
             return name
         result = self.server[item_id]
         if result != name:
@@ -332,18 +337,23 @@ def main():
             if args.details:
                 issue.append({'client': recipe, 'server': server.get(key)})
             issues.append(issue)
+    missing_groups = sorted({k[0] for k in ordinary.keys() | perfect.keys()} - set(groups))
     print(json.dumps({'active_server_groups': len(groups),
+                      'missing_server_recipe_groups': missing_groups,
+                      'client_ordinary_recipes_in_missing_groups': sum(k[0] not in groups for k in ordinary),
+                      'client_perfect_recipes_in_missing_groups': sum(k[0] not in groups for k in perfect),
                       'item_name_resolution': None if resolve is None else {
                           'table_sha256': resolve.sha256,
                           'localized_aliases_resolved': len(resolve.aliases),
-                          'unresolved_names': sorted(resolve.unresolved)},
+                          'unresolved_names': sorted(resolve.unresolved),
+                          'unresolved_details': resolve.unresolved_details},
                       'client_ordinary_recipes_in_active_groups': sum(k[0] in groups for k in ordinary),
                       'client_perfect_recipes_in_active_groups': sum(k[0] in groups for k in perfect),
                       'server_only_ordinary_recipes_in_active_groups': sum(k[0] in groups and k not in ordinary for k in server_ordinary),
                       'issue_count': len(issues),
                       'issues_by_group': {str(group): sum(x[1][0] == group for x in issues) for group in sorted({x[1][0] for x in issues})},
                       'issues': issues if args.details else issues[:12]}, indent=2, ensure_ascii=False))
-    raise SystemExit(bool(issues) or bool(resolve and resolve.unresolved))
+    raise SystemExit(bool(issues or missing_groups) or bool(resolve and resolve.unresolved))
 
 
 if __name__ == '__main__':

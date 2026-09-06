@@ -8,6 +8,8 @@
 #include "map/clif.hpp"
 #include "map/status.hpp"
 
+#include "glacialmonolith.hpp"
+
 SkillGlacialNova::SkillGlacialNova() : SkillImplRecursiveDamageSplash(AT_GLACIER_NOVA) {
 }
 
@@ -28,17 +30,15 @@ void SkillGlacialNova::castendPos2(block_list* src, int32 x, int32 y, uint16 ski
 	if (sc == nullptr)
 		return;
 
-	const status_change_entry *sce = sc->getSCE(SC_GLACIER_SHEILD);
-
-	if (sce == nullptr)
+	if (!sc->hasSCE(SC_GLACIER_SHEILD))
 		return;
 
-	if (src->m != sce->val4)
+	const skill_unit* monolith = druid_find_active_monolith(src);
+	if (monolith == nullptr)
 		return;
 
-	// TODO : Should the distance to the player be checked?
-	// On official server SC_GLACIER_SHEILD does not save the position of glacial monolith
-
-	clif_skill_poseffect(*src, getSkillId(), skill_lv, sce->val2, sce->val3, tick);
-	SkillImplRecursiveDamageSplash::castendPos2(src, sce->val2, sce->val3, skill_lv, tick, flag);
+	const int16 monolith_x = monolith->x;
+	const int16 monolith_y = monolith->y;
+	clif_skill_poseffect(*src, getSkillId(), skill_lv, monolith_x, monolith_y, tick);
+	SkillImplRecursiveDamageSplash::castendPos2(src, monolith_x, monolith_y, skill_lv, tick, flag);
 }

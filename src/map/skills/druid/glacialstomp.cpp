@@ -11,6 +11,7 @@
 #include "map/unit.hpp"
 
 #include "glacialnova.hpp"
+#include "glacialmonolith.hpp"
 
 SkillGlacialStomp::SkillGlacialStomp() : SkillImplRecursiveDamageSplash(AT_GLACIER_STOMP) {
 }
@@ -29,8 +30,6 @@ void SkillGlacialStomp::calculateSkillRatio(const Damage*, const block_list* src
 }
 
 void SkillGlacialStomp::castendNoDamageId(block_list* src, block_list* target, uint16 skill_lv, t_tick tick, int32& flag) const {
-	clif_skill_nodamage(src, *target, getSkillId(), skill_lv);
-
 	status_change* sc = status_get_sc(src);
 
 	if (sc == nullptr) {
@@ -40,26 +39,25 @@ void SkillGlacialStomp::castendNoDamageId(block_list* src, block_list* target, u
 		return;
 	}
 
-	const status_change_entry *sce = sc->getSCE(SC_GLACIER_SHEILD);
-
-	if (sce == nullptr) {
+	if (!sc->hasSCE(SC_GLACIER_SHEILD)) {
 		if (map_session_data* sd = BL_CAST(BL_PC, src); sd != nullptr) {
 			clif_skill_fail(*sd, getSkillId(), USESKILL_FAIL);
 		}
 		return;
 	}
 
-	if (src->m != sce->val4) {
+	const skill_unit* monolith = druid_find_active_monolith(src);
+	if (monolith == nullptr) {
 		if (map_session_data* sd = BL_CAST(BL_PC, src); sd != nullptr) {
 			clif_skill_fail(*sd, getSkillId(), USESKILL_FAIL);
 		}
 		return;
 	}
 
-	// TODO : Should the distance to the player be checked?
 	// TODO : the player should be teleported to one cell from the center
-
-	if (!unit_movepos(src, sce->val2, sce->val3, 2, true)) {
+	const int16 monolith_x = monolith->x;
+	const int16 monolith_y = monolith->y;
+	if (!unit_movepos(src, monolith_x, monolith_y, 2, true)) {
 		if (map_session_data* sd = BL_CAST(BL_PC, src); sd != nullptr) {
 			clif_skill_fail(*sd, getSkillId(), USESKILL_FAIL);
 		}
@@ -67,6 +65,7 @@ void SkillGlacialStomp::castendNoDamageId(block_list* src, block_list* target, u
 	}
 
 	clif_fixpos(*src);
+	clif_skill_nodamage(src, *target, getSkillId(), skill_lv);
 
 	this->castendDamageId(src, target, skill_lv, tick, flag);
 }

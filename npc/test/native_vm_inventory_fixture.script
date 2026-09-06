@@ -1,0 +1,37 @@
+// Raw script body read only by tools/ci/native_script_vm_test.cpp.
+// Not an NPC loader file; intentionally excluded from normal *.txt configs.
+{
+	// The driver attaches a synthetic player whose inventory[0] is a real item
+	// struct with the maximum unsigned unique ID and Star of Spell Lv3.
+	.@result = modifyinventoryenchant(0,490136,"18446744073709551615",0,0,310709,0,2,310710);
+	if (.@result != 1) errormes "VM_FAIL: valid upgrade rejected";
+
+	// Every rejection must return zero, preserve the record, and issue no
+	// log/packet callbacks. The driver verifies those effects after this script.
+	if (modifyinventoryenchant(0,490136,"18446744073709551615",0,0,310709,0,2,310710) != 0)
+		errormes "VM_FAIL: stale card snapshot accepted";
+	if (modifyinventoryenchant(0,490136,"1",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: stale unique ID accepted";
+	if (modifyinventoryenchant(0,490136,"18446744073709551616",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: overflowing unique ID accepted";
+	if (modifyinventoryenchant(0,490136,"-1",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: negative unique ID accepted";
+	if (modifyinventoryenchant(0,490136,"18446744073709551615x",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: trailing unique-ID bytes accepted";
+	if (modifyinventoryenchant(0,490135,"18446744073709551615",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: wrong target identity accepted";
+	if (modifyinventoryenchant(0,490136,"18446744073709551615",0,1,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: unrelated stale card accepted";
+	if (modifyinventoryenchant(0,490136,"18446744073709551615",0,0,310710,0,0,310711) != 0)
+		errormes "VM_FAIL: physical card slot accepted";
+	if (modifyinventoryenchant(-1,490136,"18446744073709551615",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: negative inventory index accepted";
+	if (modifyinventoryenchant(1,490136,"18446744073709551615",0,0,310710,0,2,310711) != 0)
+		errormes "VM_FAIL: missing inventory item accepted";
+	if (modifyinventoryenchant(0,490136,"18446744073709551615",0,0,310710,0,2,999999) != 0)
+		errormes "VM_FAIL: absent enchant record accepted";
+	if (modifyinventoryenchant(0,490136,"18446744073709551615",0,0,310710,0,2,4001) != 0)
+		errormes "VM_FAIL: ordinary card accepted as enchant";
+	debugmes "NATIVE_VM_FIXTURE_COMPLETE: 13 builtin cases";
+	end;
+}

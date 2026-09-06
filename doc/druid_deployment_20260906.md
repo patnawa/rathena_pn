@@ -61,7 +61,10 @@ Backups of the two existing client files are in
 `server-work/client-before-druid-20260906/`. The Druid item fragment was a new
 file. Restarting the client is required to read the updated metadata.
 
-New initial-enchant recipes, native name aliases and material acquisition for
-the 31 extra items are still pending. Rendering, player-attached combat, job
+At this deployment, new initial-enchant recipes and material acquisition for
+the 31 extra items were still pending. Correction from the subsequent read-only
+identity audit: all 31 native names already exist in the original active client
+table; the earlier unresolved results were missing server records, not missing
+client aliases. No name-table patch is required. Rendering, player-attached combat, job
 changes, fashion effects and relog persistence remain unverified; deployment
 does not complete the broad episode/gameplay audit.

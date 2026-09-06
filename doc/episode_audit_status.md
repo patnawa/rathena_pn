@@ -86,20 +86,35 @@ tests and 13 sanitized source-extracted assertions pass. See
 [combat bindings](combat_bindings_audit.md).
 
 The broader local audit now reports 899 enabled scripts, 99 instances, 29,535
-item identities, 98 DB imports, 59 local fragments and 52 walkable arrival/service
+item identities, 99 DB imports, 60 local fragments and 52 walkable arrival/service
 cells, with zero integrity warnings. The additional 31 Druid-related item
 definitions have verified source IDs and supplied-MuhRO compatibility effects;
-their acquisition/initial-enchant recipes and active client name aliases are
-not yet wired. See [item provenance and limits](druid_item_compatibility.md).
+63 initial-enchant recipes and the Gray Wolf distribution are now wired in a
+separate Renewal overlay. All 31 identities already exist in the original client
+name table; previous unresolved results meant missing server definitions.
+Material acquisition and client interaction remain incomplete. See
+[item provenance and limits](druid_item_compatibility.md) and
+[recipe checks](druid_item_enchant_compatibility.md).
 
 These remain structural, source-driven and isolated build/startup checks.
 Attached-player combat, actual client clicks, relogging and official balance
 remain unproven. The broad audit is still in progress.
 
+The next Druid batch adds a live owned-Monolith/range check for Nova and Stomp,
+with 43 source-compiled ASan/UBSan regression checks. An isolated real-script-VM
+inventory test now passes 13 builtin cases and 21 native assertions; player
+lookup, logs and client delivery are explicit test boundaries, with networking
+denied by the kernel. This is not an actual client or persistence test. See
+[Monolith checks](druid_monolith_runtime_audit.md) and
+[native VM limits](../tools/ci/native_script_vm_README.md).
+
 The combined changes were deployed with matching login/char/map/web binaries
 on 2026-09-06 at 14:34 ICT, with no players online. All four containers are
 running and the map/char connection is online. See the
 [deployment receipt and backup details](druid_deployment_20260906.md).
+The six-file recipe/Monolith follow-up was deployed at 14:56 ICT; all four core
+containers are ready with zero restart counts. See
+[follow-up receipt](druid_recipes_monolith_deployment_20260906.md).
 
 ## Initial-enchant and remaining gameplay coverage
 
@@ -115,10 +130,14 @@ See the
   verification remain pending for the new guaranteed-upgrade path. Packet evidence
   comes from the bundled 2025 binary; the active 2026 client needs a runtime check.
 - The first initial-enchant/reset comparison covers 157 shared groups, 339 normal
-  grade tables and 2307 selectable initial recipes. It reports 89 differences:
-  missing newer item-dependent recipes/targets, one Gray Wolf distribution, and
-  ten deliberately customized Biosphere distributions. There are 71 unresolved
-  client item names across the full configuration. No item IDs/effects have been
+  grade tables and 2307 selectable initial recipes. After the Druid overlay it
+  reports 25 shared-group differences: two Gear_AT recipes, 13 equipment target
+  lists, and ten deliberately customized Biosphere distributions. The audit now
+  also reports missing server groups 128 and 166, for 27 total issues. Those
+  groups contain 30 additional selectable recipes, bringing the client total to
+  2337. Upgrade reports explicitly show 24 ordinary recipes in missing group 128.
+  All 40 unresolved identities are present in the client but missing on the
+  server; none is a missing client name. No item IDs/effects have been
   guessed. Compared reset settings and existing initial-recipe costs match.
   The 24 server-only upgrades remain preserved, not proven visible in the client.
   Client clicks and actual material charging remain unverified for corrected

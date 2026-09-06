@@ -90,3 +90,5 @@ Footer:
   - Path: db/import/grademk_item_enchant.yml
   - Path: db/import/grademk_service_enchants.yml
   - Path: db/import/perfect_item_enchant.yml
+  - Path: db/import/druid_item_enchant.yml
+    Mode: Renewal

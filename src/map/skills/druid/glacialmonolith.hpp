@@ -5,6 +5,10 @@
 
 #include "../skill_impl.hpp"
 
+// Resolve the caster's currently live Monolith and enforce its actual area.
+// A lingering Glacier Shield status alone is not proof that the unit exists.
+const skill_unit* druid_find_active_monolith(const block_list* src);
+
 class SkillGlacialMonolith : public SkillImplRecursiveDamageSplash {
 public:
 	SkillGlacialMonolith();

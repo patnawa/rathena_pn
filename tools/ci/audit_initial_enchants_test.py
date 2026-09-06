@@ -14,6 +14,17 @@ class ClientPath:
 
 
 class InitialEnchantTests(unittest.TestCase):
+    def test_missing_server_groups_cannot_disappear_from_comparison(self):
+        expected = {128: blank_group()}
+        expected[128]['Targets'] = {'Armor'}
+        expected[128]['Slots'][1] = blank_slot()
+        expected[128]['Slots'][1]['Perfect']['A'] = {'Price': 0, 'Materials': {}}
+        issues = compare(expected, {999: blank_group()})
+        self.assertEqual(issues, [{'kind': 'missing-server-group', 'key': [128],
+                                 'client': {'targets': ['Armor'], 'normal_grade_tables': 0,
+                                            'perfect_initial_recipes': 1}, 'server': None}])
+        self.assertEqual(compare({}, {999: blank_group()}), [])
+
     def test_client_initial_reset_grade_and_perfect_declarations(self):
         lines = '''Table[1] = CreateEnchantInfo()
 Table[1]:SetSlotOrder(3, 2)
