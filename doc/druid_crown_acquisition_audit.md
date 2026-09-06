@@ -140,3 +140,14 @@ used; this is not another fresh compilation. Receipt SHA256:
 `d0a80f059bc6025d9817933ed1ef6d7dee5cd61f271b5ad1fa459d19515e8989`.
 The tested Depth file is `6582a4b1401398f505b695f67e213e1d14f9b9978c875ae24b663623ce3b6988`;
 both broad-gate checks accepted NPC section `45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7`.
+
+## Document-exchange regression, 2026-09-06
+
+The next separate administrator repair is inverted only after both its exact
+old/new region pins are checked. The existing fusion exception remains pinned;
+every remaining crown/helper/access byte still compares exactly. Under the new
+Depth `3b94a446...` source and broad NPC pin `9aeeaab1...`, the full 4,152 /
+200,773 native suite passed again. Exact-source sanitizer objects were copied
+with hash verification and relinked, not freshly compiled for this run.
+Receipt `../document-exchange-crown-regression-20260906/receipt.json` SHA256:
+`38f82278ecccbd74efb4bd195aae25c0bf621c45add5e96d4742de5ec2e5580a`.

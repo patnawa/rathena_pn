@@ -36,7 +36,7 @@ REVIEW = '2026-09-06 current valid Biosphere 19-crown callbacks; not arbitrary p
 PINS = {
     'engine': '213aa0d386ab10a268a666095ce2aa2ab9355da8ab44aded401fe61c9f220c2f',
     'databases': '393c5f74fd82616b74a5667818cb4e5443d683a9ce693af1f3fd8d03f22df331',
-    'npcs': '45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7',
+    'npcs': '9aeeaab191be38b0d36f07c0a55a14b7fae6894f48c8d4e4e5d1d3cbeff330a7',
     'closure': '79513f7035bb459077a3eeae053c0db1f1df5c49c758abbfeab76a513a7f228c',
 }
 
@@ -53,7 +53,7 @@ PROFILES = {
         'pins': {
             'engine': '01a5af6f37959bd526b25cdbe47e48fabef1cc7ace0950570a6b96e369ae925a',
             'databases': 'a9a970c11e8c7e30bc3be916237b9e106a6358906c4ad3e537b970a2485a1088',
-            'npcs': '45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7',
+            'npcs': '9aeeaab191be38b0d36f07c0a55a14b7fae6894f48c8d4e4e5d1d3cbeff330a7',
             'closure': 'b516348011c7faab98fc5023cb3dd453f5ff67e767a72c37410bb9d8599c0d86',
         },
     },

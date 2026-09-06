@@ -12,6 +12,7 @@ import yaml
 
 from audit_enchant_upgrades import renewal_records
 from biosphere_crown_transaction_test import WRAPPERS as OLD_WRAPPERS
+from biosphere_regression_scope import restore_reviewed_document
 
 ROOT = Path(__file__).resolve().parents[2]
 QUESTS = 'npc/custom/varmundt_biosphere_quests.txt'
@@ -49,7 +50,7 @@ def reconstruct_original(path, data):
     No sibling snapshot or Git invocation is required by a clean clone.
     Newline-only normalization is a test view; raw runtime files are untouched.
     """
-    source = normal(data).decode('utf-8')
+    source = normal(restore_reviewed_document(data) if path == DEPTH else data).decode('utf-8')
     require(sha(source.encode()) == CANDIDATE[path], 'Reviewed candidate changed: ' + path)
     if path == QUESTS:
         start = source.index("// Only Omega's 17 material recipes")
@@ -187,7 +188,8 @@ def native(build, inputs, reuse=False, prepare=False):
     production=['src/map/pc.cpp','src/map/script.cpp','src/map/itemdb.cpp','src/map/clif.cpp',
                 'src/map/achievement.cpp','src/map/quest.cpp','src/common/malloc.cpp']
     tracked=production+[PREFIX,DRIVER,'tools/ci/biosphere_material_transaction_test.py',
-                        'tools/ci/biosphere_crown_transaction_test.py','tools/ci/biosphere_material_callback_audit.py']
+                        'tools/ci/biosphere_crown_transaction_test.py','tools/ci/biosphere_material_callback_audit.py',
+                        'tools/ci/biosphere_regression_scope.py']
     headers=sorted(p.relative_to(ROOT).as_posix() for tree in ('src','3rdparty') for p in (ROOT/tree).rglob('*')
                    if p.is_file() and p.suffix in ('.h','.hpp','.inl','.tcc'))
     tracked+=headers

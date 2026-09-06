@@ -206,3 +206,22 @@ Frozen runtime SHA-256 (both sources are currently LF, raw equals normalized):
 | --- | --- | --- |
 | `varmundt_biosphere_quests.txt` | `787f6ff54a4c43a60510e4a606dc5bd33a80c502853f113ad6756e257ac5aa5a` | `edec07ec166f5f8ae4a7e90ed52e38a5f9d76cf5781d139754a4ebd9a1ba0a7a` |
 | `varmundt_biosphere_depth.txt` | `40730ba4620a448e03ad2d71ff6d28f9398934fa5c1af1e22cb083e6ac392f28` | `6582a4b1401398f505b695f67e213e1d14f9b9978c875ae24b663623ce3b6988` |
+
+## Independent document-exchange repair regression
+
+The Depth administrator changes independently of the 41 material recipes. Before
+reconstructing the genuine old full-file control, this runner now inverts only
+that exact reviewed document region through `biosphere_regression_scope.py`.
+The old and fixed region hashes, unique inverse, and restored old region hash
+are all required; the old full-material-file hash check is unchanged. Actual
+current raw NPC bytes still feed the candidate and are recorded/rechecked.
+
+Against Depth `3b94a4467227b39eefb83ed8ce09314582b8ac9d610ba071ca2f8e385bc6f326`,
+the full 1,516 / 788,683 candidate and 100 / 25,787 original suites passed again,
+with the same 89,424 / 4,653 nested-condition counts and clean normal diagnostics.
+Both mandatory gate snapshots were equal. Seven exact-source/header/flag-checked
+sanitizer objects were copied with hash verification; the combined driver was
+freshly compiled and the binary relinked. No second all-units-fresh build claim.
+Receipt `../document-exchange-material-regression-20260906/receipt.json` SHA256:
+`c3f92bf5a14d9f5a50f7e1c16220f4c6013698b996e6cae19e049348c4886129`.
+This remains a material test, not a proof of the new reputation exchange.

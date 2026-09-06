@@ -328,3 +328,15 @@ binaries, not a newly compiled server. Receipt SHA256:
 `811248808d4e14a697cc65e32d4038bfbaa4b2ba698bec3283ac6113c06472d3`.
 All nine scoped callback negatives passed again against broad NPC pin
 `45b9138a14adaaae85d96a30b9a45da3cf5808577144680f7cf663c3dd1183b7`.
+
+## Document-exchange regression, 2026-09-06
+
+The separate administrator repair is now inverted only through its exact
+old/new region pins before this runner's existing protected-prefix comparison.
+No conversion recipe, payment, capacity or native source changes. All 225 /
+49,497 candidate checks, 8 / 177 original controls and 2 / 51 getter controls
+passed on the current `3b94a446...` Depth file, with required gates before/after.
+Six exact-source sanitizer objects were copied with hash verification; the
+combined driver was freshly compiled and the executable relinked. Receipt
+`../document-exchange-conversion-regression-20260906/receipt.json` SHA256:
+`e4ad4dc9f5ceb50c949951e47d51a1d524ec92f8d6192c815d5116fb8dd1e327`.

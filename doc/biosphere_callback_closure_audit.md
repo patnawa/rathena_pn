@@ -448,3 +448,40 @@ without assuming logical short-circuit evaluation in this VM. Native `inarray`
 is read-only and returns -1 for an empty/not-found list. The correction changes
 no reward or callback policy; native budget/invalid-index cases are a separate
 required test, not implied by the source pin. The draft was never deployed.
+
+## Document exchange manual re-review, 2026-09-06
+
+The next change is restricted to Depth Research Administrator's document-for-
+reputation block. Root read the complete diff plus native input, reputation
+getter/add/setter, registry and packet paths. The input status is now checked;
+current map/original access, current reputation/ceiling and document count are
+rechecked after the final suspension. The gain is computed from that fresh value
+before the existing deletion and native reputation addition. The two-to-three
+rate, 5000 cap, and final one/two-point pair are preserved. There is no new NPC
+provider, database, engine, item/status script, QI registration or import.
+
+The exact new Depth raw/LF SHA256 is
+`3b94a4467227b39eefb83ed8ce09314582b8ac9d610ba071ca2f8e385bc6f326`.
+Full project and explicit preserved-live expected-state collections were
+compared to the preceding deployed material/reward manifests. Exactly that one
+script hash changes; every other manifest field and all 3,688 file memberships
+remain identical. Both reviewed NPC section pins are now
+`9aeeaab191be38b0d36f07c0a55a14b7fae6894f48c8d4e4e5d1d3cbeff330a7`.
+Other section pins, preserved-live differences and acceptance rules are unchanged.
+
+This source re-review does not attest to a deployed document fix or to arbitrary
+corrupt/unloaded character registries. The new document dependency/native proof
+must cover the actual document, reputation/constant definitions, loaded in-range
+registry path and ba_in01 QI callbacks. The subnet router was offline at this
+initial re-review; expected-source collection was not live validation. Subsequent
+recovery and actual deployment checks are recorded separately in
+[the deployment receipt](biosphere_document_deployment_20260906.md).
+
+Older regressions use an exact document-region inverse in
+`biosphere_regression_scope.py`, rather than ignoring a changed prefix. Both
+allowed old/new region hashes are checked; only the uniquely identified reviewed
+edits are inverted, and the original region hash is checked again. The complete
+old material baseline is still reconstructed identically. Crown/conversion
+comparisons protect all remaining bytes. Four general LF/CRLF forms and six
+mutation controls, plus two document forms and six document mutation controls,
+passed. Behavioral regression results are separate evidence.

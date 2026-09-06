@@ -11,7 +11,7 @@ import sys
 import yaml
 
 from audit_enchant_upgrades import renewal_records
-from biosphere_regression_scope import without_reviewed_fusion
+from biosphere_regression_scope import reviewed_depth_baseline
 
 ROOT = Path(__file__).resolve().parents[2]
 NPC = 'npc/custom/varmundt_biosphere_depth.txt'
@@ -52,15 +52,15 @@ def validate():
     old = original.decode()
     new = current.decode().replace('\r\n', '\n').replace('\r', '\n')
     marker = '// Changes exactly one synthetic enchant slot'
-    require(without_reviewed_fusion(old.split(marker)[0].encode()) ==
-            without_reviewed_fusion(new.split('// Crown transaction guard.')[0].encode()),
+    require(reviewed_depth_baseline(old.split(marker)[0].encode()) ==
+            reviewed_depth_baseline(new.split('// Crown transaction guard.')[0].encode()),
             'Changes outside approved helper/Abyss Researcher prefix')
     crown_baseline = subprocess.check_output(['git', 'show', f'{CROWN_BASE}:{NPC}'], cwd=ROOT)
     require(sha(crown_baseline) == CROWN_BASE_SHA, 'Pinned deployed crown baseline drift')
-    # Other material services have separate proofs. Only their exact reviewed
-    # fusion region may differ; preserve every other crown/helper/access byte.
-    require(without_reviewed_fusion(crown_baseline.split(b'L_Convert:\n', 1)[0]) ==
-            without_reviewed_fusion(new.split('L_Convert:\n', 1)[0].encode()),
+    # Other services have separate proofs. Only their exact reviewed fusion and
+    # document repairs may differ; preserve every other crown/helper/access byte.
+    require(reviewed_depth_baseline(crown_baseline.split(b'L_Convert:\n', 1)[0]) ==
+            reviewed_depth_baseline(new.split('L_Convert:\n', 1)[0].encode()),
             'Previously deployed crown/helper/access source changed')
     match = re.search(r'setarray \.@crown_ids\[0\],([^;]+);', new)
     require(match and [int(x) for x in match[1].split(',')] == IDS, 'Exact supported 19-ID mapping changed')

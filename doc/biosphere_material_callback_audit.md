@@ -222,3 +222,19 @@ tree, and is not described as live deployment verification.
 
 No existing gate, engine, NPC, database, client, or remote file was changed by
 this auditor's implementation.
+
+## Document-exchange source-location follow-up
+
+Root subsequently reviewed the separate administrator repair in the Depth file,
+raw/LF SHA256 `3b94a4467227b39eefb83ed8ce09314582b8ac9d610ba071ca2f8e385bc6f326`.
+Its only effect on this material/QI inventory is two declaration line numbers:
+Ellie moves from 235 to 253, and Chirp from 274 to 292. Reversing exactly those
+two integers reconstructs the complete previous npc_scope section. All other
+five section hashes are identical, including all 33 conditions and 19 owners.
+The manually reviewed npc_scope pin is now
+`82946f4b836ae9dad3e3745fe8c2a19efe5509463b1b650f150ebdd62981ed95`.
+No collection/validation/negative-control acceptance logic changed.
+
+This gate still does not include document 1001289 or its reputation database
+binding. The new document-specific gate adds those dependencies; matching this
+material gate alone cannot certify the reputation exchange.

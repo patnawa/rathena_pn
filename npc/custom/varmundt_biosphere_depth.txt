@@ -221,11 +221,29 @@ ba_in01,292,104,4	script	Depth Research Administrator#bio_d1	4_EP17_MASTER_A,{
 	next;
 	mes "[Depth Research Administrator]";
 	mes "How many pairs should I process? Maximum: " + .@max + ".";
-	input .@amount,1,.@max;
-	delitem 1001289,.@amount * 2;
+	if (input(.@amount,1,.@max) != 0)
+		close;
+	if (strcharinfo(3) != "ba_in01")
+		close;
+	if (!callfunc("F_BioDepthQuestAccess"))
+		close;
+	// Revalidate the selected order after the final dialogue suspension.
+	.@rep = get_reputation_points(REPUTATION_BIOSPHERE_DEPTH1);
+	.@limit = (5000 - .@rep + 2) / 3;
+	if (.@amount < 1 || .@amount > .@limit) {
+		mes "Your research reputation changed. Please choose a new amount.";
+		close;
+	}
+	if (countitem(1001289) < .@amount * 2) {
+		mes "Your research documents changed. No documents were used.";
+		close;
+	}
 	.@gain = .@amount * 3;
 	if (.@gain > 5000 - .@rep)
 		.@gain = 5000 - .@rep;
+	// Keep the final partial-credit pair, but never consume redundant pairs.
+	// The reviewed ba_in01 callbacks do not mutate these payment resources.
+	delitem 1001289,.@amount * 2;
 	add_reputation_points REPUTATION_BIOSPHERE_DEPTH1,.@gain;
 	mes "Research registered. You gained ^33AA33" + .@gain + " Depth 1 reputation^000000.";
 	close;
