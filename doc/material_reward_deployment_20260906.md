@@ -131,3 +131,22 @@ The next source-only finding is documented separately in
 [the document-exchange follow-up](biosphere_document_exchange_followup_audit.md).
 That reputation exchange is unchanged by this deployment; its proposed fix and
 native cases remain future work, not part of the passing material recipe tests.
+
+## Post-push reachability change
+
+Runtime, tests and this deployment evidence were committed and pushed as
+`d4f4cd357bd885d241cce0d557cf2aebc7166b7d`; origin/main was independently checked.
+The subsequent final SSH session reset, a fresh port-22 connection timed out,
+ICMP received no replies and the port-5121 reachability check failed.
+
+Read-only local route/Tailscale checks at 2026-09-06T13:47Z showed the route to
+192.168.10.18 uses the `192.168.8.0/21` subnet through Tailscale. The local client
+was running/online with no reported health warnings, but the advertising subnet
+router `tsmopns` was offline, last seen **2026-09-06T13:44:44.1Z**. That loss of
+the configured route explains why further remote checks cannot be completed;
+it does not establish that any rAthena container stopped.
+
+The successful 13:41 deployment and subsequent four-container checks above are
+retained evidence, not a claim of present reachability after the router went
+offline. No network configuration, router, host or container was restarted to
+work around it. Further live verification requires restored subnet-router access.
