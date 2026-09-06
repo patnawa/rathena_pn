@@ -21,7 +21,7 @@ function	script	EP21_DailyKey	{
 function	script	EP21_GhostShipUnlocked	{
 	// The quest checks migrate characters that completed this section before
 	// the custom unlock variable was introduced.
-	return EP21_GhostShip_Access || isbegin_quest(16818) || isbegin_quest(16819) == 2;
+	return EP21_GhostShip_Access || isbegin_quest(16818) || isbegin_quest(16819) == 2 || callfunc("EP21_MainComplete");
 }
 
 function	script	EP21_AddReputation	{

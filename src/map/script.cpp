@@ -46,6 +46,7 @@
 #include "guild.hpp"
 #include "homunculus.hpp"
 #include "instance.hpp"
+#include "inventory_enchant.hpp"
 #include "intif.hpp"
 #include "itemdb.hpp"
 #include "log.hpp"
@@ -9905,6 +9906,65 @@ static_assert(script_equipment_slot_transition_mask(1, 0) == 0x1U);
 static_assert(script_equipment_slot_transition_mask(1, 1) == 0x0U);
 static_assert(script_equipment_slot_transition_mask(1, 4) == 0xeU);
 
+// Update one enchant on an unequipped inventory record, guarded by identity
+// and the complete card snapshot captured before the NPC's confirmation.
+BUILDIN_FUNC(modifyinventoryenchant) {
+	map_session_data* sd;
+	if (!script_charid2sd(11, sd)) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+	auto reject = [&]() -> int32 {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	};
+	const int32 index = script_getnum(st, 2);
+	const int64 expected_id = script_getnum64(st, 3);
+	const char* unique_id_text = script_getstr(st, 4);
+	const int32 slot = script_getnum(st, 9);
+	const int64 enchant_id = script_getnum64(st, 10);
+	if (index < 0 || index >= MAX_INVENTORY || sd->inventory_data[index] == nullptr ||
+		expected_id <= 0 || expected_id > UINT32_MAX || enchant_id <= 0 || enchant_id > UINT32_MAX ||
+		unique_id_text[0] < '0' || unique_id_text[0] > '9') {
+		return reject();
+	}
+	errno = 0;
+	char* end = nullptr;
+	const uint64 unique_id = strtoull(unique_id_text, &end, 10);
+	if (errno == ERANGE || *end != '\0') {
+		return reject();
+	}
+	std::array<t_itemid, MAX_SLOTS> cards;
+	for (int32 i = 0; i < MAX_SLOTS; ++i) {
+		const int64 card = script_getnum64(st, 5 + i);
+		if (card < 0 || card > UINT32_MAX) {
+			return reject();
+		}
+		cards[i] = static_cast<t_itemid>(card);
+	}
+	item_data* data = sd->inventory_data[index];
+	item& current = sd->inventory.u.items_inventory[index];
+	const auto enchant = item_db.find(static_cast<t_itemid>(enchant_id));
+	if (data->nameid != current.nameid ||
+		(data->type != IT_ARMOR && data->type != IT_WEAPON && data->type != IT_SHADOWGEAR) ||
+		itemdb_isspecial(current.card[0]) || enchant == nullptr ||
+		enchant->type != IT_CARD || enchant->subtype != CARD_ENCHANT) {
+		return reject();
+	}
+	item replacement;
+	if (!inventory_enchant_candidate(current, static_cast<t_itemid>(expected_id), unique_id,
+		cards, data->slots, slot, static_cast<t_itemid>(enchant_id), replacement)) {
+		return reject();
+	}
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, -1, &current);
+	current = replacement;
+	log_pick_pc(sd, LOG_TYPE_ENCHANT, 1, &current);
+	clif_delitem(*sd, index, 1, 3);
+	clif_additem(sd, index, 1, 0);
+	script_pushint(st, 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(modifyequipitem) {
 	TBL_PC* sd;
 
@@ -15716,6 +15776,7 @@ BUILDIN_FUNC(getinventorylist)
 		if(sd->inventory.u.items_inventory[i].nameid > 0 && sd->inventory.u.items_inventory[i].amount > 0){
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_id"), j),sd->inventory.u.items_inventory[i].nameid);
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_idx"), j),i);
+			pc_setregstr(sd,reference_uid(add_str("@inventorylist_uniqueid$"), j),std::to_string(sd->inventory.u.items_inventory[i].unique_id).c_str());
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_amount"), j),sd->inventory.u.items_inventory[i].amount);
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_equip"), j),sd->inventory.u.items_inventory[i].equip);
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_refine"), j),sd->inventory.u.items_inventory[i].refine);
@@ -28730,6 +28791,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(failedrefitem,"i?"),
 	BUILDIN_DEF(downrefitem,"i??"),
 	BUILDIN_DEF(modifyequipitem,"iiiiiii?"),
+	BUILDIN_DEF(modifyinventoryenchant,"iisiiiiii?"),
 	BUILDIN_DEF(resetequipenchants,"iiiiii?"),
 	BUILDIN_DEF(deleteequipitem,"iiiiiii?"),
 	BUILDIN_DEF(modifyequipenchantstate,"iiiiiiiiiiiii?"),

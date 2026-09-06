@@ -2,6 +2,12 @@
 // This file is loaded exclusively by npc/scripts_test.conf; the functions are
 // never called by production scripts.
 
+function	script	F_TestModifyInventoryEnchantSignature	{
+	.@result = modifyinventoryenchant(0,490136,"18446744073709551615",0,0,310709,0,2,310710);
+	.@result = modifyinventoryenchant(0,490136,"1",0,0,0,310710,3,310711,getcharid(0));
+	return .@result;
+}
+
 function	script	F_TestModifyEquipItemSignature	{
 	// Positive runtime fixture: RWC drilling may move an empty index across the
 	// intrinsic slot boundary (2966 Slots:0 -> 2967 Slots:1).

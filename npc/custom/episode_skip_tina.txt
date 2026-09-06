@@ -124,6 +124,11 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 			mes "You need ^FF0000" + .@price + " Zeny^000000 to buy this ticket.";
 			close;
 		}
+		if (!checkweight(.@ticket,1)) {
+			mes "[Temporal Tina]";
+			mes "Make room in your inventory and reduce your weight before buying a ticket.";
+			close;
+		}
 		set Zeny, Zeny - .@price;
 		getitem .@ticket,1;
 		mes "[Temporal Tina]";
@@ -133,6 +138,10 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 	}
 
 	if (.@done) {
+		// Repair the legacy ticket's missing Episode 19 progress variable for
+		// already-cleared characters, without consuming another ticket.
+		if (.@choice == 7)
+			ep19_main = max(ep19_main,100);
 		mes "[Temporal Tina]";
 		mes .@episode$ + " is already cleared.";
 		close;
@@ -160,6 +169,12 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 	if (select("Use the clear ticket","Cancel") == 2)
 		close;
 
+	// A confirmation yields: the selected ticket must still be present.
+	if (countitem(.@ticket) < 1) {
+		mes "[Temporal Tina]";
+		mes "The ticket is no longer in your inventory. No story gates were changed.";
+		close;
+	}
 	delitem .@ticket,1;
 
 	switch (.@choice) {
@@ -192,6 +207,7 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 		callfunc "F_CompleteEpisodeGate",18085;
 		break;
 	case 7:
+		ep19_main = 100;
 		callfunc "F_CompleteEpisodeGate",17649;
 		break;
 	case 8:

@@ -7,7 +7,8 @@
 //============================================================
 
 function	script	EP21_GimliComplete	{
-	return EP21_Gimli_Complete || isbegin_quest(17769) == 2;
+	// A completed campaign (including a story-clear ticket) includes Gimli.
+	return EP21_Gimli_Complete || isbegin_quest(17769) == 2 || callfunc("EP21_MainComplete");
 }
 
 function	script	EP21_EnterGimli	{

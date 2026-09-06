@@ -227,6 +227,29 @@ foreach ($service in @('npc/custom/healer.txt', 'npc/custom/grademk_services.txt
 	if ($enabledScripts -notcontains $service) { Fail "Required custom service is disabled: $service" }
 }
 
+# Regression guards supplement, but do not replace, the compiled behavioral
+# tests in tools/ci/inventory_enchant_test.cpp or an in-client service test.
+$workshopService = [IO.File]::ReadAllText((RepoPath 'npc/custom/grademk_services.txt'))
+foreach ($literal in @('modifyinventoryenchant(', '@inventorylist_uniqueid$', '.@unique_id$[.@pick]')) {
+	if (!$workshopService.Contains($literal)) { Fail "Missing guarded workshop upgrade: '$literal'" }
+}
+if ($workshopService -match '\b(?:delitemidx|getitembound4)\b') {
+	Fail 'Grade Workshop must not delete/recreate an existing enchanted item'
+}
+$ticketService = [IO.File]::ReadAllText((RepoPath 'npc/custom/episode_skip_tina.txt'))
+if ($ticketService -notmatch 'checkweight\(\.@ticket,1\)[\s\S]*?set Zeny, Zeny - \.@price') {
+	Fail 'Episode ticket purchase must check inventory capacity before charging'
+}
+if ($ticketService -notmatch 'case 7:\s+ep19_main = 100;\s+callfunc "F_CompleteEpisodeGate",17649;') {
+	Fail 'Episode 19 ticket must synchronize both story completion representations'
+}
+foreach ($relative in @('npc/custom/episode21/GimliInfiltration.txt', 'npc/custom/episode21/MysteriousGhostShip.txt')) {
+	$service = [IO.File]::ReadAllText((RepoPath $relative))
+	if ($service -notmatch 'return EP21_(?:Gimli_Complete|GhostShip_Access)[^;]+callfunc\("EP21_MainComplete"\);') {
+		Fail "Episode 21 story-clear compatibility is missing: $relative"
+	}
+}
+
 # Every imported database file must exist.
 $dbRoots = @(
 	'db/item_db.yml', 'db/item_group_db.yml', 'db/mob_db.yml',

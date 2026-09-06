@@ -141,7 +141,13 @@ L_UpgradeStarSpell:
 			.@enchant = (.@slot == 2) ? @inventorylist_card3[.@i] : @inventorylist_card4[.@i];
 			if (.@enchant != 310709 && .@enchant != 310710)
 				continue;
-			.@invpos[.@count] = .@i;
+			// Keep a private snapshot across both menu/confirmation yields.
+			.@invpos[.@count] = @inventorylist_idx[.@i];
+			.@unique_id$[.@count] = @inventorylist_uniqueid$[.@i];
+			.@card0[.@count] = @inventorylist_card1[.@i];
+			.@card1[.@count] = @inventorylist_card2[.@i];
+			.@card2[.@count] = @inventorylist_card3[.@i];
+			.@card3[.@count] = @inventorylist_card4[.@i];
 			.@slots[.@count] = .@slot;
 			.@levels[.@count] = .@enchant - 310706;
 			.@menu$ += sprintf("Star of Spell Lv%d -> Lv%d (enchant slot %d):", .@levels[.@count], .@levels[.@count] + 1, .@slot);
@@ -156,7 +162,7 @@ L_UpgradeStarSpell:
 	.@pick = select(.@menu$ + "Cancel") - 1;
 	if (.@pick == .@count)
 		close;
-	.@i = .@invpos[.@pick];
+	.@index = .@invpos[.@pick];
 	.@slot = .@slots[.@pick];
 	.@level = .@levels[.@pick];
 	if (.@slot == 3 && .@level == 3) {
@@ -193,25 +199,18 @@ L_UpgradeStarSpell:
 			close;
 		}
 	}
-	.@item_id = @inventorylist_id[.@i];
-	.@identify = @inventorylist_identify[.@i];
-	.@refine = @inventorylist_refine[.@i];
-	.@attribute = @inventorylist_attribute[.@i];
-	.@bound = @inventorylist_bound[.@i];
-	.@grade = @inventorylist_enchantgrade[.@i];
-	setarray .@card[0], @inventorylist_card1[.@i], @inventorylist_card2[.@i], @inventorylist_card3[.@i], @inventorylist_card4[.@i];
-	if (.@slot == 2)
-		.@card[2] = 310707 + .@level;
-	else
-		.@card[3] = 310707 + .@level;
-	setarray .@option_id[0], @inventorylist_option_id1[.@i], @inventorylist_option_id2[.@i], @inventorylist_option_id3[.@i], @inventorylist_option_id4[.@i], @inventorylist_option_id5[.@i];
-	setarray .@option_value[0], @inventorylist_option_value1[.@i], @inventorylist_option_value2[.@i], @inventorylist_option_value3[.@i], @inventorylist_option_value4[.@i], @inventorylist_option_value5[.@i];
-	setarray .@option_param[0], @inventorylist_option_parameter1[.@i], @inventorylist_option_parameter2[.@i], @inventorylist_option_parameter3[.@i], @inventorylist_option_parameter4[.@i], @inventorylist_option_parameter5[.@i];
-	delitemidx @inventorylist_idx[.@i],1;
+	// Validate and mutate before charging; there must be no yield from the
+	// material checks above through the deductions below.
+	if (!modifyinventoryenchant(.@index,490136,.@unique_id$[.@pick],
+		.@card0[.@pick],.@card1[.@pick],.@card2[.@pick],.@card3[.@pick],
+		.@slot,310707 + .@level)) {
+		mes "[Constellation Enchanter]";
+		mes "The selected item changed or is no longer available. Nothing was charged. Please select it again.";
+		close;
+	}
 	Zeny -= .@price;
 	for (.@j = 0; .@j < 6; ++.@j)
 		delitem .@material[.@j],.@need[.@j];
-	getitembound4 .@item_id,1,.@identify,.@refine,.@attribute,.@card[0],.@card[1],.@card[2],.@card[3],.@bound,.@grade,.@option_id,.@option_value,.@option_param;
 	specialeffect2 EF_SUCCESSPOISON;
 	mes "[Constellation Enchanter]";
 	mes sprintf("Upgrade complete: Star of Spell Lv%d.", .@level + 1);

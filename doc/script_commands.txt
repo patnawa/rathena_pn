@@ -3019,11 +3019,13 @@ of possible equipment slots.
 *getinventorylist {<char_id>};
 
 This command sets a bunch of arrays with a complete list of whatever the
-invoking character has in their inventory, including all the data needed to
-recreate these items perfectly if they are destroyed. Here's what you get:
+invoking character has in their inventory. Recreating an item with getitem commands
+does not preserve every field (notably its unique ID); use guarded in-place equipment
+commands when modifying an existing item. Here's what you get:
 
 @inventorylist_id[]                - array of item ids.
 @inventorylist_idx[]               - array of item inventory index.
+@inventorylist_uniqueid$[]          - unsigned 64-bit unique IDs as decimal strings.
 @inventorylist_amount[]            - their corresponding item amounts.
 @inventorylist_equip[]             - on which position the item is equipped (see EQP_* constants)
                                      It will contain 0 if the item is not equipped.
@@ -3064,7 +3066,7 @@ correctly handle an NPC trader for carded and named items who could resell them
 variables and recreate the items.
 
 Notice that the variables this command generates are all temporary, attached to
-the character, and integer.
+the character, and integer except for @inventorylist_uniqueid$.
 
 Be sure to use @inventorylist_count to go through these arrays, and not
 'getarraysize', because the arrays are not automatically cleared between runs
@@ -5814,6 +5816,25 @@ This command will downgrade an item in the specified equipment slot of the invok
 character by -1, or a count if given. For a list of equipment slots see 'getequipid'.
 This command will also display a 'refine failure' effect on the character and put
 appropriate messages into their chat window.
+
+---------------------------------------
+
+*modifyinventoryenchant(<inventory index>,<expected item id>,<expected unique id$>,<expected card 0>,<expected card 1>,<expected card 2>,<expected card 3>,<card slot>,<new enchant card id>{,<char_id>});
+
+Changes one synthetic enchant slot of an identified, unequipped weapon, armor, or
+shadow-equipment item in place. Returns 1 on success and 0 if validation fails.
+Use getinventorylist to obtain the index, unique ID string, and four card fields;
+copy them into local variables before a menu or other command that yields.
+
+The item ID, unsigned 64-bit unique ID, and every card must still match. The item
+must have amount 1 and the chosen zero-based card slot must be at or above its
+intrinsic physical slot count and below 4. Forged/created/pet metadata is rejected.
+The new card must be an existing Card with subtype Enchant. All other inventory
+fields, including refine, grade, random options, binding, expiry, favorite state,
+and unique ID, are retained. The old/new states are logged and the client refreshed.
+
+This command does not charge materials. Check costs, call the command, and deduct
+only after a successful result, with no yielding command in between.
 
 ---------------------------------------
 
