@@ -10,7 +10,8 @@ LIBCONFIG_AR = ../../3rdparty/libconfig/obj/libconfig.a
 LIBCONFIG_INCLUDE = -I../../3rdparty/libconfig
 
 COMMON_OBJ = ../common/obj/sql.o
-COMMON_H = ../common/sql.hpp
+# Keep all shared headers: mmo.hpp changes alter the char/map wire layout.
+# Replacing COMMON_H with sql.hpp leaves stale character-server objects.
 
 CHAR_OBJ = $(shell ls *.cpp | sed -e "s/\.cpp/\.o/g")
 CHAR_DIR_OBJ = $(CHAR_OBJ:%=obj/%)
