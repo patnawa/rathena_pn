@@ -34,7 +34,7 @@ PINS = {
     'achievements': '743058032b0e7c9c6940949bf7491f11c862d542f0a8c6507483d4e7a06a9e6c',
     'questinfo': '8b51fa5bd603905182137c4982904fab5a8e7d0cfe87bca72e6bb832151baa3d',
     'quests': '169ab22f64ae4a48e73d713310eef65b2d3da3dbb725c6567db33b654c4aac17',
-    'npc_scope': '82946f4b836ae9dad3e3745fe8c2a19efe5509463b1b650f150ebdd62981ed95',
+    'npc_scope': '7ab8a55ccd074c7e03d80f1351115b34c8e00fad29f5092dc9f7607c700c7be2',
 }
 
 

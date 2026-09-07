@@ -15,7 +15,6 @@ jor_crk,137,138,0	script	Rift Disturbance#ep21	CLEAR_NPC,2,2,{
 }
 
 jor_twig,187,198,4	script	Nyar Clone#ep21_sanctuary	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18356) == 1 || isbegin_quest(18357) == 1 || isbegin_quest(18358) == 1 || isbegin_quest(18359) == 1";
 	mes "[Nyar Clone]";
 	if (isbegin_quest(18356) == 1) {
 		changequest 18356,18357;
@@ -52,10 +51,14 @@ jor_twig,187,198,4	script	Nyar Clone#ep21_sanctuary	22006,{
 	}
 	mes "The repeating memory remains accessible through the rift.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18356) == 1 || isbegin_quest(18357) == 1 || isbegin_quest(18358) == 1 || isbegin_quest(18359) == 1";
+	end;
 }
 
 jor_crk,140,138,4	script	Nyar#ep21_complete	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18360) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(18360) != 1) {
 		mes "The rift repeats the same span of history, but it no longer threatens the present.";
@@ -76,6 +79,11 @@ jor_crk,140,138,4	script	Nyar#ep21_complete	22006,{
 	mes "Reward: ^3366FF70 Wigner vouchers^000000 and ^33AA3360 Gaebolg reputation^000000.";
 	mes "Episode 21 complete. Normal Final Battle is unlocked; Hard requires 1,000 reputation with all seven families.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18360) == 1";
+	end;
 }
 
 1@twbs2,1,1,0	script	#EP21_SilentSanctuary_Control	HIDDEN_NPC,{

@@ -15,12 +15,14 @@ import sys
 import yaml
 
 import finalbattle_reward_callback_audit as gate
+import episode20_21_questinfo_migration as questinfo_migration
 from biosphere_crown_transaction_test import WRAPPERS as CROWN_WRAPPERS
 
 ROOT = Path(__file__).resolve().parents[2]
 NPC = gate.NPC
 ORIGINAL_SHA = '7f8dc969e03879ec90bc11f01e553a5556beb2d931e155061523ee91cd6026cd'
-CURRENT_LF_SHA = '3873d72118f6cf83374c445e6891eaf9a79660fec71c5e12b3bb02872e4625f1'
+PRE_QI_CURRENT_LF_SHA = '3873d72118f6cf83374c445e6891eaf9a79660fec71c5e12b3bb02872e4625f1'
+CURRENT_LF_SHA = 'd93ccfe36f48cccaf041e15d24c6036cc2fd908afe89103bd5a1dd3924558ace'
 PREFIX = 'tools/ci/biosphere_crown_transaction_test.cpp'
 DRIVER = 'tools/ci/finalbattle_reward_capacity_test.cpp'
 RUNNER = 'tools/ci/finalbattle_reward_capacity_test.py'
@@ -37,9 +39,13 @@ def normal(data): return data.replace(b'\r\n', b'\n').replace(b'\r', b'\n')
 
 
 def validate_source(current):
-    """Accept newline-only checkout differences, never other source changes."""
-    source = normal(current).decode()
+    """Invert only the pinned questinfo relocation before capacity review."""
     require(sha(normal(current)) == CURRENT_LF_SHA, 'Frozen normalized NPC changed')
+    phase, source, migrated, _ = questinfo_migration.pair(NPC, current)
+    require(phase == 'after' and sha(migrated.encode()) == CURRENT_LF_SHA,
+            'Exact reviewed post-migration Final Battle source required')
+    require(sha(source.encode()) == PRE_QI_CURRENT_LF_SHA,
+            'Questinfo inverse did not reconstruct the exact capacity-fixed source')
     marker = '// Exact capacity for this file'
     require(source.count(marker) == 1, 'Exact helper insertion region')
     start, end = source.index(marker), source.index('jor_raise1,132,323,4')
@@ -51,7 +57,7 @@ def validate_source(current):
     helper = gate.body(source, 'EP21_FB_CheckPlainBatch')
     require(helper.count('getinventorylist;') == 1 and 'freeloop' not in source,
             'One snapshot and no script-budget bypass')
-    return old, helper
+    return old, helper, source.encode()
 
 
 def source_newline_controls(current):
@@ -77,7 +83,7 @@ def source_newline_controls(current):
 def validate():
     callbacks = gate.validate(ROOT)
     current = (ROOT/NPC).read_bytes()
-    old, helper = validate_source(current)
+    old, helper, pre_qi = validate_source(current)
     source_newline_controls(current)
     reader = gate.base.Reader(ROOT)
     _, rows = gate.base.database_graph(reader)
@@ -92,7 +98,7 @@ def validate():
     items = callbacks['outputs']['records'] + extra
     daily = gate.body(reader.text(gate.DAILY), 'EP21_DailyKey')
     print('FINALBATTLE_STATIC_OK: baseline exact except one helper/two checks; required callback gate PASS', flush=True)
-    return old, current, helper, items, relevant, callbacks, daily
+    return old, current, pre_qi, helper, items, relevant, callbacks, daily
 
 
 def check_output(result, mode):
@@ -142,7 +148,7 @@ def native(build, inputs, reuse=False):
     build = build.resolve()
     require(build != ROOT and ROOT not in build.parents, 'Artifacts must be outside repository')
     build.mkdir(parents=True, exist_ok=True)
-    old, current, helper, items, achievements, callbacks, daily = inputs
+    old, current, pre_qi, helper, items, achievements, callbacks, daily = inputs
     (build/'before.txt').write_bytes(old)
     (build/'after.txt').write_bytes(normal(current))
     (build/'helper.txt').write_text(helper)
@@ -161,7 +167,8 @@ def native(build, inputs, reuse=False):
     combined = build/'combined_finalbattle_test.cpp'
     combined.write_text(prefix.replace(remove, '')+'\n'+(ROOT/DRIVER).read_text())
     tracked = PRODUCTION + [PREFIX,DRIVER,RUNNER,'tools/ci/biosphere_crown_transaction_test.py',
-                            'tools/ci/finalbattle_reward_callback_audit.py']
+                            'tools/ci/finalbattle_reward_callback_audit.py',
+                            'tools/ci/episode20_21_questinfo_migration.py']
     hashes = {p:sha((ROOT/p).read_bytes()) for p in tracked}
     headers = sorted(p for root in ('src','3rdparty') for p in (ROOT/root).rglob('*')
                      if p.is_file() and p.suffix in ('.h','.hpp'))
@@ -225,6 +232,7 @@ def native(build, inputs, reuse=False):
     old_count = re.search(r'FINALBATTLE_OLD_FAILURES_OK cases=(\d+) assertions=(\d+)',outputs['original'])
     require(count and old_count, 'Native exact counts missing')
     receipt = {'result':'PASS','npc_sha256':sha(current),'before_sha256':sha(old),
+               'pre_questinfo_npc_lf_sha256':sha(pre_qi),
                'npc_lf_sha256':sha(normal(current)),
                'newline_controls':'LF and CRLF accepted; six non-newline content edits rejected',
                'executable_sha256':sha(executable.read_bytes()),'cases':int(count[1]),'assertions':int(count[2]),

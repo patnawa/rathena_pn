@@ -58,17 +58,20 @@ L_Daily:
 }
 
 mbase_in,118,186,4	script	Reinhardt#ep21_lugenburg	22304,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17770) == 1 || isbegin_quest(17772) == 1 || isbegin_quest(17774) == 1";
 	mes "[Reinhardt]";
 	if (isbegin_quest(17770) == 1) { mes "I joined the cult believing I could protect people from within. Tell Wilhelm I will answer him honestly."; changequest 17770,17771; close; }
 	if (isbegin_quest(17772) == 1) { mes "Good intentions do not erase the harm I caused. Tris should decide whether I can still serve here."; changequest 17772,17773; close; }
 	if (isbegin_quest(17774) == 1) { mes "I do not expect forgiveness, only the chance to repair what I broke. Tell Wilhelm."; changequest 17774,17775; close; }
 	mes "The brothers are learning to speak plainly again.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17770) == 1 || isbegin_quest(17772) == 1 || isbegin_quest(17774) == 1";
+	end;
 }
 
 jor_mbase,197,277,4	script	Tris#ep21_lugenburg	22301,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17773) == 1 || isbegin_quest(17776) == 1";
 	mes "[Tris]";
 	if (isbegin_quest(17773) == 1) { mes "Reinhardt can help, but trust must be rebuilt. Let him speak once more."; changequest 17773,17774; close; }
 	if (isbegin_quest(17776) == 1) {
@@ -83,6 +86,11 @@ jor_mbase,197,277,4	script	Tris#ep21_lugenburg	22301,{
 	}
 	mes "Family wounds take patience to heal.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17773) == 1 || isbegin_quest(17776) == 1";
+	end;
 }
 
 // Nyar's Primal Pouch: unlocks free access to storages 1-3.

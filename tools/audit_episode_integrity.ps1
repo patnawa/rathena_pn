@@ -222,9 +222,43 @@ foreach ($group in $enabledScriptEntries | Group-Object Path | Where-Object Coun
 $enabledScripts = @($enabledScriptEntries | Group-Object Path | ForEach-Object { $_.Group[0].Path })
 Write-Host "  unique enabled NPC scripts: $($enabledScripts.Count)"
 
+# map-server copies parsed NPC labels and local-function entry labels into a
+# NAME_LENGTH-sized record. Check the same statement-boundary tokens before a
+# candidate startup. Comments and quoted strings are masked so documentation
+# and dialogue cannot become false labels.
+$npcLabelMax = 24
+$nameLengthHeader = [IO.File]::ReadAllText((RepoPath 'src/common/mmo.hpp'))
+if ($nameLengthHeader -match '(?m)^\s*#define\s+NAME_LENGTH\s+\(\s*(\d+)\s*\+\s*1\s*\)\s*$') {
+	$npcLabelMax = [int]$Matches[1] + 1
+} else {
+	Fail 'Cannot derive map-server NAME_LENGTH from src/common/mmo.hpp'
+}
+$scriptLabelCount = 0
+foreach ($relative in $enabledScripts) {
+	$path = RepoPath $relative
+	if (!(Test-Path -LiteralPath $path -PathType Leaf)) { continue }
+	$structure = [regex]::Replace((Read-ScriptCode $path), '"(?:\\.|[^"\\])*"', '""')
+	$tokens = [regex]::Matches($structure, '(?m)(?:^|[;{}])[\t ]*([A-Za-z0-9_]+)[\t ]*:')
+	$tokens += [regex]::Matches($structure, '(?im)(?:^|[;{}])[\t ]*function[\t ]+([A-Za-z0-9_]+)[\t ]*\{')
+	foreach ($token in $tokens) {
+		if ($token.Groups[1].Value -ieq 'default') { continue }
+		$scriptLabelCount++
+		if ($token.Groups[1].Value.Length -gt $npcLabelMax) {
+			$lineNumber = 1 + [regex]::Matches($structure.Substring(0, $token.Index), '\n').Count
+			Fail "NPC script label exceeds map-server NAME_LENGTH ($npcLabelMax): '$($token.Groups[1].Value)' ($relative`:$lineNumber)"
+		}
+	}
+}
+Write-Host "  NPC/local-function labels within NAME_LENGTH ($npcLabelMax): $scriptLabelCount"
+
 # These persistent town services must not disappear during episode deployments.
 foreach ($service in @('npc/custom/healer.txt', 'npc/custom/grademk_services.txt', 'npc/custom/episode_skip_tina.txt', 'npc/custom/druid_mentor.txt')) {
 	if ($enabledScripts -notcontains $service) { Fail "Required custom service is disabled: $service" }
+}
+$healerService = [IO.File]::ReadAllText((RepoPath 'npc/custom/healer.txt'))
+$workshopHealer = "grademk,24,184,4`tduplicate(Healer)`tHealer#grademk`t909"
+if ([regex]::Matches($healerService, '(?m)^' + [regex]::Escape($workshopHealer) + '\r?$').Count -ne 1) {
+	Fail 'Grade Workshop must contain exactly one healer at grademk,24,184'
 }
 
 # Regression guards supplement, but do not replace, the compiled behavioral
@@ -515,6 +549,7 @@ $requiredCells = @(
 # The workshop counter blocks portions of row 183; row 181 is the approach aisle.
 # These also guard against accidentally deploying an incompatible map cache.
 $serviceCells = @(
+	@('grademk',24,181),
 	@('grademk',30,181), @('grademk',32,181), @('grademk',34,181), @('grademk',36,181),
 	@('grademk',38,181), @('grademk',40,181), @('grademk',42,181), @('grademk',44,181),
 	@('grademk',46,181), @('grademk',48,181), @('grademk',50,181),

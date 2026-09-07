@@ -79,6 +79,15 @@ PASS in `../episode21-daily-clock-utc-final2-20260906`:
 | Full repaired NPC, raw and LF-normalized | `58c336e56c135390cf47f98526f598433ec87f3384213ed6f3f4f46bba229965` |
 | Fresh `src/map/date.cpp` | `9cfa51180be76065af0849b95707a1661e28273fcef90cdea0e51dca49ca0f25` |
 
+After the Episode 20/21 QuestInfo and Family transaction installation, the
+same complete native matrix was rerun against the final source and repinned
+broad callback manifest. It again passed 173,268 fixed cases, 117 stable
+controls, 45 original defects, and 867,714 assertions. The current receipt is
+`../episode21-daily-clock-label-v2-20260907/receipt.json`, SHA-256
+`bdf9288a91f73b223025cb5f6b5bb980470e9ef4f5ca27c9ff302bfe3831288e`;
+the current executable SHA-256 is
+`feb5703b4e7e1f1b6801196a4e3447e4a333e60fc1726911cb3ccd126ed96b7d`.
+
 ## Live deployment
 
 The exact one-file archive was first applied to
@@ -109,3 +118,12 @@ the deployed archive is
 The recoverable pre-NPC archive is `dd2f01db...`; the SQL snapshot remains only
 on the server. This deployment proves source installation and startup health,
 not graphical client interaction or a real player crossing the reset boundary.
+
+## Cumulative Episode release deployment — 2026-09-07
+
+The clock repair was redeployed as part of the final eleven-file Episode 20/21
+set in the exact r7 release. Live readback matched current
+`MysteriousGhostShip.txt` SHA-256 `011f74d5...`, which includes the clock repair
+plus the reviewed QuestInfo migration. Candidate and live POST startup passed,
+and guarded SQL remained identical across the service restart. See the
+[combined deployment receipt](episode20_21_gudra_healer_deployment_20260907.md).

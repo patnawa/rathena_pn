@@ -56,6 +56,7 @@
 
 // Duplicates
 //============================================================
+grademk,24,184,4	duplicate(Healer)	Healer#grademk	909
 alberta,25,240,6	duplicate(Healer)	Healer#alb	909
 aldebaran,135,118,6	duplicate(Healer)	Healer#alde	909
 amatsu,200,79,4	duplicate(Healer)	Healer#ama	909

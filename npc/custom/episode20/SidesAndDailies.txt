@@ -60,7 +60,6 @@ function	script	EP20_RecordWorkAssignment	{
 
 // Side story 1: Spy Countermeasure Meeting (19158-19161).
 icas_in,100,62,4	script	Orlito Joveng#ep20	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 4 && !EP20_Side_AntiSpy";
 	mes "[Orlito Joveng]";
 	if (EP20_Step < 4) { mes "The Eagle Patrol cannot brief outsiders before the canyon infiltration is confirmed."; close; }
 	if (!EP20_Side_AntiSpy) {
@@ -98,29 +97,41 @@ icas_in,100,62,4	script	Orlito Joveng#ep20	4_M_REPAIR,{
 	if (.@choice == 1) { EP20_IntelReady = 0; mes "[Orlito Joveng]"; mes "Recover the intelligence cache on Snake God's Root F1."; }
 	else { EP20_SpyReady = 0; mes "[Orlito Joveng]"; mes "Find and question the suspicious Iwin in Ice Castle."; }
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 4 && !EP20_Side_AntiSpy";
+	end;
 }
 
 jor_root1,120,118,4	script	Espionage Cache#ep20	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(19166) == 1 && !EP20_IntelReady";
 	mes "[Espionage Cache]";
 	if (isbegin_quest(19166) != 1) { mes "The cache is empty."; close; }
 	EP20_IntelReady = 1;
 	mes "You recover the dispatched patrol's intelligence. Return to Orlito Joveng.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(19166) == 1 && !EP20_IntelReady";
+	end;
 }
 
 icecastle,171,202,4	script	Suspicious Iwin#ep20	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(19164) == 1 && !EP20_SpyReady";
 	mes "[Suspicious Iwin]";
 	if (isbegin_quest(19164) != 1) { mes "The Iwin gives the correct watchword."; close; }
 	EP20_SpyReady = 1;
 	mes "The false answer exposes a transformed Rgan. Report the successful search to Orlito Joveng.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(19164) == 1 && !EP20_SpyReady";
+	end;
 }
 
 // Side story 2: A New Beginning / A New Home (17712-17716).
 icecastle,46,164,4	script	Iwin Soldier#ep20_home	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 5 && !EP20_Side_Home && isbegin_quest(17712) == 0";
 	mes "[Iwin Soldier]";
 	if (EP20_Step < 5) { mes "We cannot shelter a captured Rgan until the Sacred Roots route is understood."; close; }
 	if (!EP20_Side_Home && isbegin_quest(17712) == 0) {
@@ -131,10 +142,14 @@ icecastle,46,164,4	script	Iwin Soldier#ep20_home	4_M_REPAIR,{
 	if (!EP20_Side_Home) { mes "Nadyagand is waiting inside Ice Castle."; close; }
 	mes "Nadyagand has begun a new life. His Taste of Leisure daily is available inside.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 5 && !EP20_Side_Home && isbegin_quest(17712) == 0";
+	end;
 }
 
 icas_in2,33,114,4	script	Nadyagand#ep20_home	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17712) == 1 || isbegin_quest(17713) == 1 || isbegin_quest(17714) == 1";
 	mes "[Nadyagand]";
 	if (isbegin_quest(17712) == 1) { callfunc "EP20_MoveQuest",17712,17713; mes "I am starving. Horr will explain what food can be gathered."; close; }
 	if (isbegin_quest(17713) == 1) { callfunc "EP20_MoveQuest",17713,17714; mes "Bring ten Snake Strawberries from Root F2."; close; }
@@ -147,10 +162,14 @@ icas_in2,33,114,4	script	Nadyagand#ep20_home	4_M_SCIENCE,{
 	}
 	mes "Leize is helping me learn a peaceful trade.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17712) == 1 || isbegin_quest(17713) == 1 || isbegin_quest(17714) == 1";
+	end;
 }
 
 icas_in2,32,120,4	script	Leize#ep20_home	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17715) == 1 || isbegin_quest(17716) == 1";
 	mes "[Leize]";
 	if (isbegin_quest(17715) == 1) { callfunc "EP20_MoveQuest",17715,17716; mes "Nadyagand can build a new life by working with Ice Castle."; close; }
 	if (isbegin_quest(17716) == 1) {
@@ -163,11 +182,15 @@ icas_in2,32,120,4	script	Leize#ep20_home	4_F_SCIENCE,{
 	}
 	mes "Nadyagand is adapting well.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17715) == 1 || isbegin_quest(17716) == 1";
+	end;
 }
 
 // Side story 3: Copo's Secret Base (11928-11947) and Sticky Sea.
 icecastle,109,241,4	script	Iwin Courier#ep20_delivery	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 7 && !EP20_Side_Delivery && isbegin_quest(11928) == 0";
 	mes "[Iwin Courier]";
 	if (EP20_Step < 7 || ep19_side_sea < 17) { mes "The Frozen Sea route must be secured before this delivery can leave."; close; }
 	if (!EP20_Side_Delivery && isbegin_quest(11928) == 0) {
@@ -177,10 +200,14 @@ icecastle,109,241,4	script	Iwin Courier#ep20_delivery	4_M_REPAIR,{
 	}
 	mes "Frederike and Lalaha are coordinating the search.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 7 && !EP20_Side_Delivery && isbegin_quest(11928) == 0";
+	end;
 }
 
 icas_in,35,121,4	script	Frederike#ep20_delivery	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11928) == 1 || isbegin_quest(11929) == 1 || isbegin_quest(11930) == 1 || isbegin_quest(11931) == 1 || isbegin_quest(11932) == 1";
 	mes "[Frederike]";
 	if (isbegin_quest(11928) == 1) { callfunc "EP20_MoveQuest",11928,11929; mes "The delivery arrived. Help send the young Copos home for their meal."; close; }
 	if (isbegin_quest(11929) == 1) { callfunc "EP20_MoveQuest",11929,11930; mes "One Copo has gone home."; close; }
@@ -189,91 +216,131 @@ icas_in,35,121,4	script	Frederike#ep20_delivery	4_F_SCIENCE,{
 	if (isbegin_quest(11932) == 1) { callfunc "EP20_MoveQuest",11932,11933; mes "Kapopo slipped away. Meet us outside his home."; close; }
 	mes "The children should be home by now.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11928) == 1 || isbegin_quest(11929) == 1 || isbegin_quest(11930) == 1 || isbegin_quest(11931) == 1 || isbegin_quest(11932) == 1";
+	end;
 }
 
 icecastle,61,160,4	script	Chachako#ep20_delivery	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11933) == 1 || isbegin_quest(11934) == 1";
 	mes "[Chachako]";
 	if (isbegin_quest(11933) == 1) { callfunc "EP20_MoveQuest",11933,11934; mes "Bring Kapopo to the house below Frederike's."; close; }
 	if (isbegin_quest(11934) == 1) { callfunc "EP20_MoveQuest",11934,11935; mes "Kapopo is safe. Return to Frederike's house."; close; }
 	mes "Kapopo is home.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11933) == 1 || isbegin_quest(11934) == 1";
+	end;
 }
 
 icecastle,65,213,4	script	Frederike#ep20_search	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11935) == 1";
 	mes "[Frederike]";
 	if (isbegin_quest(11935) != 1) { mes "Lalaha is still worried about Rorohyu."; close; }
 	callfunc "EP20_MoveQuest",11935,11936;
 	mes "Rorohyu is missing. Ask the courier whether he passed the eastern road.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11935) == 1";
+	end;
 }
 
 icecastle,109,241,4	script	Iwin Courier#ep20_search	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11936) == 1";
 	mes "[Iwin Courier]";
 	if (isbegin_quest(11936) != 1) { mes "I have not seen Rorohyu."; close; }
 	callfunc "EP20_MoveQuest",11936,11937;
 	mes "Ask the inner guard, then the village entrance guards.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11936) == 1";
+	end;
 }
 
 icas_in,113,38,4	script	Iwin Guard#ep20_search1	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11937) == 1";
 	mes "[Iwin Guard]";
 	if (isbegin_quest(11937) != 1) { mes "The search continues outside."; close; }
 	callfunc "EP20_MoveQuest",11937,11938;
 	mes "The gate guard saw Rorohyu near the village entrance.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11937) == 1";
+	end;
 }
 
 icecastle,25,124,4	script	Iwin Guard#ep20_search2	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11938) == 1 || isbegin_quest(11939) == 1";
 	mes "[Iwin Guard]";
 	if (isbegin_quest(11938) == 1) { callfunc "EP20_MoveQuest",11938,11939; mes "That shape is only a bundle of fluff."; close; }
 	if (isbegin_quest(11939) == 1) { callfunc "EP20_MoveQuest",11939,11940; mes "The fluff trail leads outside Ice Castle."; close; }
 	mes "Search north of the village.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11938) == 1 || isbegin_quest(11939) == 1";
+	end;
 }
 
 jor_back1,316,246,4	script	Rorohyu Fluff#ep20_1	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11940) == 1";
 	mes "[Rorohyu's Fluff]";
 	if (isbegin_quest(11940) != 1) { mes "A tuft of pale fluff points north."; close; }
 	callfunc "EP20_MoveQuest",11940,11941;
 	mes "The trail continues farther north.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11940) == 1";
+	end;
 }
 
 jor_back1,227,387,4	script	Rorohyu Fluff#ep20_2	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11941) == 1";
 	mes "[Rorohyu's Fluff]";
 	if (isbegin_quest(11941) != 1) { mes "The wind has scattered this tuft."; close; }
 	callfunc "EP20_MoveQuest",11941,11942;
 	mes "The trail crosses the Frozen Scale Plateau.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11941) == 1";
+	end;
 }
 
 jor_back2,17,246,4	script	Rorohyu Fluff#ep20_3	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11942) == 1";
 	mes "[Rorohyu's Fluff]";
 	if (isbegin_quest(11942) != 1) { mes "The trail continues toward the glacier."; close; }
 	callfunc "EP20_MoveQuest",11942,11943;
 	mes "The next tuft lies in the Frozen Scale Glacier.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11942) == 1";
+	end;
 }
 
 jor_back3,94,316,4	script	Rorohyu Fluff#ep20_4	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11943) == 1";
 	mes "[Rorohyu's Fluff]";
 	if (isbegin_quest(11943) != 1) { mes "The final trail leads to the beach."; close; }
 	callfunc "EP20_MoveQuest",11943,11944;
 	mes "Rorohyu reached the Frozen Scale Beach.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11943) == 1";
+	end;
 }
 
 jor_back4,98,258,4	script	Koko#ep20_sticky_entry	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11944) == 1 || isbegin_quest(11945) == 1 || isbegin_quest(11948) == 1 || isbegin_quest(11951) == 1";
 	mes "[Koko]";
 	if (isbegin_quest(11944) == 1) { callfunc "EP20_MoveQuest",11944,11945; mes "Rorohyu went into the pit to rescue a friend."; close; }
 	if (isbegin_quest(11945) == 1) callfunc "EP20_MoveQuest",11945,11946;
@@ -283,10 +350,14 @@ jor_back4,98,258,4	script	Koko#ep20_sticky_entry	22006,{
 	next;
 	if (select("Enter Sticky Sea.:Wait.") == 2) close;
 	callfunc "EP20_EnterInstance","Sticky Sea";
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11944) == 1 || isbegin_quest(11945) == 1 || isbegin_quest(11948) == 1 || isbegin_quest(11951) == 1";
+	end;
 }
 
 icecastle,70,213,4	script	Lalaha#ep20_delivery	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11947) == 1";
 	mes "[Lalaha]";
 	if (isbegin_quest(11947) == 1 && !EP20_Side_Delivery) {
 		if (!callfunc("EP20_CheckReward",10)) close;
@@ -325,12 +396,16 @@ icecastle,70,213,4	script	Lalaha#ep20_delivery	4_F_SCIENCE,{
 	if (.@choice == 2) mes "Calm ten Grey Icewinds in the eastern Ancient Ice Canyon.";
 	else mes "Calm ten Icewinds in the western Ancient Ice Canyon.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(11947) == 1";
+	end;
 }
 
 // Side story 4: I Probably Have a Lunch Box / Collection of Soft Delicacies
 // (8854-8855). The repeat uses 8857 below level 230 and 8858 at 230+.
 icas_in,243,66,4	script	Toryoryo#ep20_flavors	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 7 && !EP20_Side_Flowers";
 	mes "[Toryoryo]";
 	if (EP20_Step < 7) { mes "The Icy Zone delicacies are not safe to gather yet."; close; }
 	if (!EP20_Side_Flowers) {
@@ -367,6 +442,11 @@ icas_in,243,66,4	script	Toryoryo#ep20_flavors	4_F_SCIENCE,{
 	else
 		mes "Hunt twenty Angel, Snow Rabbit, and Melibe Iceslugs and bring ten cells of each flavor.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP20_Step >= 7 && !EP20_Side_Flowers";
+	end;
 }
 
 // Daily 3: Awin's Awin Worry.

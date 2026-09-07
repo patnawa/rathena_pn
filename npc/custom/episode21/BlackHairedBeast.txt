@@ -53,7 +53,6 @@ function	script	EP21_EnterInstance	{
 }
 
 jor_mbase,203,186,4	script	Tris#ep21_finale	22301,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && !EP21_MainComplete()";
 	mes "[Tris]";
 	if (!callfunc("EP21_GhostShipUnlocked")) {
 		mes "Resolve Maristella's Ghost Ship expedition before we launch the final operation.";
@@ -113,10 +112,14 @@ jor_mbase,203,186,4	script	Tris#ep21_finale	22301,{
 	}
 	mes "Repair Heine's tablet first. Our next move depends on what it remembers.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && !EP21_MainComplete()";
+	end;
 }
 
 mbase_in,71,126,4	script	Heine's Tablet#ep21_repair	4_VR_BOOK_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23249) == 1 || isbegin_quest(23250) == 1 || isbegin_quest(23251) == 1 || isbegin_quest(23252) == 1";
 	mes "[Heine's Tablet]";
 	if (isbegin_quest(23249) == 1) {
 		mes "The connection is stable, but these ancient circuits need fresh Vellelopy.";
@@ -155,10 +158,14 @@ mbase_in,71,126,4	script	Heine's Tablet#ep21_repair	4_VR_BOOK_BLUE,{
 	}
 	mes "The restored tablet projects a clear image of Heine.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23249) == 1 || isbegin_quest(23250) == 1 || isbegin_quest(23251) == 1 || isbegin_quest(23252) == 1";
+	end;
 }
 
 jor_mbase,209,186,4	script	Nadoyo#ep21_reports	22303,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23254) == 1";
 	mes "[Nadoyo]";
 	if (isbegin_quest(23254) != 1) {
 		mes "Something beneath the temple is drawing the cult together.";
@@ -168,6 +175,11 @@ jor_mbase,209,186,4	script	Nadoyo#ep21_reports	22303,{
 	EP21_ReportMask = 0;
 	mes "I saw an enormous serpent. Gather the three eyewitness reports, then return to Tris.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23254) == 1";
+	end;
 }
 
 jor_mbase,62,194,4	script	Wounded Soldier#ep21_report	4_M_KNIGHT_SILVER,{
@@ -218,7 +230,6 @@ jor_raise1,198,189,0	script	Rock Crevice#ep21	CLEAR_NPC,2,2,{
 	end;
 }
 luna_sf1,47,264,4	script	Nadoyo#ep21_crevice	22303,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18343) == 1";
 	mes "[Nadoyo]";
 	if (isbegin_quest(18343) == 1) {
 		changequest 18343,18344;
@@ -227,6 +238,11 @@ luna_sf1,47,264,4	script	Nadoyo#ep21_crevice	22303,{
 	}
 	mes "The hidden route is secure.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18343) == 1";
+	end;
 }
 luna_sf1,44,260,0	script	#EP21_CreviceExit	WARPNPC,2,2,{ warp "jor_raise1",198,186; end; }
 
@@ -240,7 +256,6 @@ jor_raise1,128,323,0	script	Decorative Door#ep21	CLEAR_NPC,2,2,{
 }
 
 jor_tmple1,170,304,4	script	Cult Priest#ep21_serpent	4_M_MONK,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18344) == 1";
 	mes "[Cult Priest]";
 	if (isbegin_quest(18344) == 1) {
 		changequest 18344,18345;
@@ -250,10 +265,14 @@ jor_tmple1,170,304,4	script	Cult Priest#ep21_serpent	4_M_MONK,{
 	}
 	mes "The sealed chamber hums with stolen mana.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18344) == 1";
+	end;
 }
 
 jor_tmple1,174,304,4	script	Nadoyo#ep21_temple	22303,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18345) == 1 || isbegin_quest(18347) == 1";
 	mes "[Nadoyo]";
 	if (isbegin_quest(18345) == 1) {
 		mes "Tris must know about the serpent now. I will return us to command.";
@@ -268,6 +287,11 @@ jor_tmple1,174,304,4	script	Nadoyo#ep21_temple	22303,{
 	}
 	mes "The battle route remains open for those carrying Heine's tablet.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18345) == 1 || isbegin_quest(18347) == 1";
+	end;
 }
 
 mbase_in,75,126,0	script	Small Door#ep21	CLEAR_NPC,2,2,{
@@ -280,7 +304,6 @@ mbase_in,75,126,0	script	Small Door#ep21	CLEAR_NPC,2,2,{
 }
 
 mbase_in,80,126,4	script	Nyar#ep21_plan	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18346) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(18346) != 1) {
 		mes "Changing history directly would collapse the route. Heine is looking for a narrower path.";
@@ -297,10 +320,14 @@ mbase_in,80,126,4	script	Nyar#ep21_plan	22006,{
 	mes "Heine can weave you into the remembered battle without changing its fixed events. Return to the Decorative Door.";
 	mes "Reward: ^3366FF10 Wigner vouchers^000000 and ^33AA3350 Gaebolg reputation^000000.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18346) == 1";
+	end;
 }
 
 jor_tmple1,178,304,4	script	Heine's Tablet#ep21_final	4_VR_BOOK_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18348) == 1";
 	mes "[Heine's Tablet]";
 	if (isbegin_quest(18348) != 1) {
 		mes "The tablet is waiting for every resistance captain to take position.";
@@ -311,10 +338,14 @@ jor_tmple1,178,304,4	script	Heine's Tablet#ep21_final	4_VR_BOOK_BLUE,{
 	if (select("Start Final Battle.:Wait.") == 2)
 		close;
 	callfunc "EP21_EnterInstance","Final Battle";
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18348) == 1";
+	end;
 }
 
 jor_tmple1,182,304,4	script	Nyar#ep21_after_final	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18349) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(18349) == 1) {
 		changequest 18349,18350;
@@ -325,6 +356,11 @@ jor_tmple1,182,304,4	script	Nyar#ep21_after_final	22006,{
 	}
 	mes "The Decorative Door is the recovery route for the final operation.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18349) == 1";
+	end;
 }
 
 jor_raise1,116,330,0	script	#EP21_RaisedReturn	WARPNPC,2,2,{ warp "jor_mbase",161,337; end; }

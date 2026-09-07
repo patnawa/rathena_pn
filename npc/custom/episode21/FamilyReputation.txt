@@ -15,7 +15,6 @@ function	script	EP21_AllFamilyReputation	{
 }
 
 jor_mbase,219,315,4	script	Mandel#ep21_reputation	4_M_MANAGER,{
-	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_Supply_Daily != EP21_DailyKey()";
 	mes "[Mandel]";
 	if (!callfunc("EP21_MainComplete")) {
 		mes "Supply Procurement opens after the Episode 21 campaign is complete.";
@@ -62,11 +61,18 @@ jor_mbase,219,315,4	script	Mandel#ep21_reputation	4_M_MANAGER,{
 		}
 		if (.@choice == 4)
 			close;
+		// The delivery menu can remain open across the 04:00 reset.
+		// Re-sample once after its final yield and use that key for this commit.
+		.@key = callfunc("EP21_DailyKey");
+		if (EP21_Supply_Daily == .@key) {
+			mes "Today's procurement contract is already complete. New contracts are posted at 04:00 server time.";
+			close;
+		}
 		if (countitem(.@item[.@i]) < 10) {
 			mes "You do not have all ten materials yet.";
 			close;
 		}
-		if (!checkweight(1001618,10)) {
+		if (!callsub(L_EP21VoucherCapacity)) {
 			mes "Make room for ten Wigner Merchant Guild Vouchers first.";
 			close;
 		}
@@ -79,6 +85,8 @@ jor_mbase,219,315,4	script	Mandel#ep21_reputation	4_M_MANAGER,{
 			completequest .@quest[.@i];
 		EP21_Supply_Daily = .@key;
 		EP21_SupplyFamily = 0;
+		// completequest refreshes before these two character markers change.
+		questinfo_refresh();
 		mes "Contract complete: ^3366FF10 Wigner vouchers^000000 and ^33AA33100 " + .@family$[.@i] + " reputation^000000.";
 		if (callfunc("EP21_AllFamilyReputation"))
 			mes "Every family now trusts you completely. Hard Final Battle is unlocked.";
@@ -92,8 +100,13 @@ jor_mbase,219,315,4	script	Mandel#ep21_reputation	4_M_MANAGER,{
 		goto L_Reputation;
 	if (.@choice == 9)
 		close;
+	// A completed row remains in the native quest log and must be recycled.
+	// Preserve an already-active selected row as a recovery path.
+	if (isbegin_quest(.@quest[.@choice]) == 2)
+		erasequest .@quest[.@choice];
+	if (!isbegin_quest(.@quest[.@choice]))
+		setquest .@quest[.@choice];
 	EP21_SupplyFamily = .@choice;
-	setquest .@quest[.@choice];
 	mes "Contract registered. Return with ten units of item ^3366FF" + .@item[.@choice] + "^000000.";
 	close;
 
@@ -106,4 +119,33 @@ L_Reputation:
 	else
 		mes "Hard Final Battle requires 1,000 with all seven families.";
 	close;
+	end;
+
+// Predict the exact plain getitem below. Native pc_checkadditem only checks an
+// item's ID; pc_additem instead uses the first matching bound/expiry/UID/cards
+// row, or the first empty allowed slot. Keep the conservative pre-debit policy.
+L_EP21VoucherCapacity:
+	if (getiteminfo(1001618,ITEMINFO_WEIGHT) != 0 || Weight > MaxWeight)
+		return false;
+	.@slots = getinventoryslots();
+	if (.@slots < 1 || .@slots > MAX_INVENTORY)
+		return false;
+	getinventorylist;
+	.@match = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_idx[.@i] < .@slots)
+			++.@occupied;
+		if (.@match >= 0 || @inventorylist_id[.@i] != 1001618)
+			continue;
+		if (@inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		.@match = .@i;
+	}
+	if (.@match >= 0)
+		return @inventorylist_idx[.@match] < .@slots && @inventorylist_amount[.@match] <= 29990;
+	return .@occupied < .@slots;
+
+OnInit:
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_Supply_Daily != EP21_DailyKey()";
+	end;
 }

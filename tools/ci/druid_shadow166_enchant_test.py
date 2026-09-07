@@ -252,7 +252,18 @@ class Shadow166Tests(unittest.TestCase):
             for race, amount in (('RC_All',20),('RC_Player_Human',-20),('RC_Player_Doram',-20)):
                 script += f'bonus2 {bonus},{race},{amount};\n'
         self.assertEqual(records[3]['Script'],script)
-        self.assertEqual(self.after[3],self.before[3]+self.combo_doc['Body'])
+        # The Shadow overlay is intentionally imported before the later Druid
+        # crown/weapon overlays.  Verify its exact contiguous import block, then
+        # remove only that block and compare every remaining effective record in
+        # order.  Assuming it is appended would make an unrelated later import
+        # look like combo drift.
+        body = self.combo_doc['Body']
+        starts = [index for index in range(len(self.after[3]) - len(body) + 1)
+                  if self.after[3][index:index + len(body)] == body]
+        self.assertEqual(len(starts), 1)
+        start = starts[0]
+        self.assertEqual(self.after[3][:start] + self.after[3][start + len(body):],
+                         self.before[3])
 
     def test_required_root_imports(self):
         if not OPTIONS.require_import: self.skipTest('pass --require-import after root integration')

@@ -7543,14 +7543,6 @@ OnInit:
 //-------------------------------------------------------------------
 // Quest: Collecting Folklore. Step 1 + 5 (final).
 wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
-	if (checkweight(1000405,20) == 0) {
-		mes "- Wait a minute !! -";
-		mes "- Currently you're carrying -";
-		mes "- too many items with you. -";
-		mes "- Please try again -";
-		mes "- after you loose some weight. -";
-		close;
-	}
 	if (ep18_main < 36) {
 		mes "[Folklorist Gudra]";
 		mes "I assume you must be a new villager around here. Who are you?";
@@ -7604,13 +7596,30 @@ wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
 			mes "[Folklorist Gudra]";
 			mes "The child's name is Dinar. The young person is a woman named Amira.";
 			mes "After that, you can go to Grandma Shania and write down her story.";
+			if (strcharinfo(3) != "wolfvill" || ep18_main < 36 || isbegin_quest(16554) != 0 || isbegin_quest(16551) != 0 || isbegin_quest(16552) != 0 || isbegin_quest(16553) != 0) {
+				mes "Your quest state has changed. Please speak to me again.";
+				close;
+			}
+			if (!callsub(L_GudraPlain,1000408,1,0)) {
+				mes "Please make room for the item before continuing.";
+				close;
+			}
 			setquest 16551;
 			setquest 16552;
 			setquest 16553;
 			getitem 1000408,1;	// Ep18_Recording_Note
 			close;
 		}
+		// Recover the Note without resetting first stories.
 		if (countitem(1000408) < 1) {
+			if (strcharinfo(3) != "wolfvill" || ep18_main < 36) {
+				mes "Your quest state has changed. Please speak to me again.";
+				close;
+			}
+			if (!callsub(L_GudraPlain,1000408,1,0)) {
+				mes "Please make room for the item before continuing.";
+				close;
+			}
 			getitem 1000408,1;	// Ep18_Recording_Note
 		}
 		mes "[Folklorist Gudra]";
@@ -7624,6 +7633,18 @@ wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
 		mes "Next, go to Grandma Shanina's place, listen to her story, and write it down.";
 		close;
 	case 1:
+		// The completed first stories also retain their lost-Note recovery.
+		if (countitem(1000408) < 1) {
+			if (strcharinfo(3) != "wolfvill" || ep18_main < 36) {
+				mes "Your quest state has changed. Please speak to me again.";
+				close;
+			}
+			if (!callsub(L_GudraPlain,1000408,1,0)) {
+				mes "Please make room for the item before continuing.";
+				close;
+			}
+			getitem 1000408,1;	// Ep18_Recording_Note
+		}
 		mes "[Folklorist Gudra]";
 		mes "Dinar and Amira, did you come to tell stories to Granny Shannina?";
 		mes "I'm excited to hear what stories they are. Please show me the notebook.";
@@ -7643,6 +7664,18 @@ wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
 		mes "[Folklorist Gudra]";
 		mes "I'd appreciate it if you could come back tomorrow and record the next part of this story.";
 		mes "Thank you. This is your payment for today's work.";
+		if (strcharinfo(3) != "wolfvill" || ep18_main < 36 || isbegin_quest(16554) != 1 || checkquest(16559,PLAYTIME) != -1 || isbegin_quest(16551) != 2 || isbegin_quest(16552) != 2 || isbegin_quest(16553) != 2) {
+			mes "Your quest state has changed. Please speak to me again.";
+			close;
+		}
+		if (countitem(1000408) < 1) {
+			mes "The Recording Note is missing. Please speak to me again.";
+			close;
+		}
+		if (!callsub(L_GudraPlain,1000405,20,1)) {
+			mes "Please make room for the item before continuing.";
+			close;
+		}
 		delitem 1000408,1;	// Ep18_Recording_Note
 		completequest 16554;
 		setquest 16559;
@@ -7706,18 +7739,44 @@ wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
 			mes "[Folklorist Gudra]";
 			mes "Oh, of course, I'll make sure you're paid for your work today too.";
 			mes "That's important too, isn't it? I understand.";
+			if (strcharinfo(3) != "wolfvill" || ep18_main < 36 || isbegin_quest(16558) != 0 || isbegin_quest(16555) != 0 || isbegin_quest(16556) != 0 || isbegin_quest(16557) != 0 || isbegin_quest(16554) != 2 || checkquest(16559,PLAYTIME) != -1) {
+				mes "Your quest state has changed. Please speak to me again.";
+				close;
+			}
+			if (!callsub(L_GudraPlain,1000408,1,0)) {
+				mes "Please make room for the item before continuing.";
+				close;
+			}
 			setquest 16555;
 			setquest 16556;
 			setquest 16557;
 			getitem 1000408,1;	// Ep18_Recording_Note
 			close;
 		}
+		// Recover the Note without resetting daily stories.
 		if (countitem(1000408) < 1) {
+			if (strcharinfo(3) != "wolfvill" || ep18_main < 36) {
+				mes "Your quest state has changed. Please speak to me again.";
+				close;
+			}
+			if (!callsub(L_GudraPlain,1000408,1,0)) {
+				mes "Please make room for the item before continuing.";
+				close;
+			}
 			getitem 1000408,1;	// Ep18_Recording_Note
 		}
 		break;
 	case 1:
+		// Recover the Note without resetting daily hand-in.
 		if (countitem(1000408) < 1) {
+			if (strcharinfo(3) != "wolfvill" || ep18_main < 36) {
+				mes "Your quest state has changed. Please speak to me again.";
+				close;
+			}
+			if (!callsub(L_GudraPlain,1000408,1,0)) {
+				mes "Please make room for the item before continuing.";
+				close;
+			}
 			getitem 1000408,1;	// Ep18_Recording_Note
 		}
 		mes "[Folklorist Gudra]";
@@ -7739,6 +7798,20 @@ wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
 		mes "[Folklorist Gudra]";
 		mes "I'd appreciate it if you could come back tomorrow and transcribe the next part of this story.";
 		mes "Thank you. This is your payment for today's work.";
+		if (strcharinfo(3) != "wolfvill" || ep18_main < 36 || isbegin_quest(16554) != 2 || isbegin_quest(16558) != 1 || checkquest(16559,PLAYTIME) != -1 || isbegin_quest(16555) != 2 || isbegin_quest(16556) != 2 || isbegin_quest(16557) != 2) {
+			mes "Your quest state has changed. Please speak to me again.";
+			close;
+		}
+		if (countitem(1000408) < 1) {
+			mes "The Recording Note is missing. Please speak to me again.";
+			close;
+		}
+		// Preserve the bonus determined after the original +30 reputation.
+		.@reward_amount = 3 + (get_reputation_points(REPUTATION_EP18) >= 4970);
+		if (!callsub(L_GudraPlain,1000405,.@reward_amount,1)) {
+			mes "Please make room for the item before continuing.";
+			close;
+		}
 		delitem 1000408,1;	// Ep18_Recording_Note
 		erasequest 16555;
 		erasequest 16556;
@@ -7763,6 +7836,57 @@ wolfvill,61,170,5	script	Folklorist Gudra#ep18	4_F_SHABBY,{
 	mes "[Folklorist Gudra]";
 	mes "Dinar and Amira, please go to Grandma Shani's house and listen to her story and write it down.";
 	close;
+
+// Exact plain grants for Gudra's two pinned Etc items. A hand-in may use the
+// slot released by the actual one-Note delitem selection. No script can yield
+// or mutate these resources in the reviewed wolfvill commit callback closure.
+L_GudraPlain:
+	.@output = getarg(0);
+	.@amount = getarg(1);
+	.@debit = getarg(2);
+	if ((.@output != 1000405 && .@output != 1000408) || .@amount < 1 || .@amount > 30000 || (.@debit != 0 && .@debit != 1))
+		return false;
+	if (.@debit && .@output != 1000405)
+		return false;
+	// Both current definitions are zero-weight, no-GUID, ordinary stackable Etc.
+	if (getiteminfo(1000405,ITEMINFO_WEIGHT) != 0 || getiteminfo(1000408,ITEMINFO_WEIGHT) != 0 || Weight > MaxWeight)
+		return false;
+	.@slots = getinventoryslots();
+	if (.@slots < 1 || .@slots > MAX_INVENTORY)
+		return false;
+	getinventorylist;
+	.@note = -1;
+	.@fallback = -1;
+	.@match = -1;
+	// getinventorylist visits valid positive inventory rows in ascending index.
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_idx[.@i] < .@slots)
+			++.@occupied;
+		if (.@debit && @inventorylist_id[.@i] == 1000408) {
+			if (.@fallback < 0)
+				.@fallback = .@i;
+			if (.@note < 0 && @inventorylist_equip[.@i] == 0 && @inventorylist_refine[.@i] == 0 && @inventorylist_card1[.@i] == 0 && @inventorylist_card2[.@i] == 0 && @inventorylist_card3[.@i] == 0 && @inventorylist_card4[.@i] == 0)
+				.@note = .@i;
+		}
+		if (.@match >= 0 || @inventorylist_id[.@i] != .@output)
+			continue;
+		if (@inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		.@match = .@i;
+	}
+	if (.@debit) {
+		if (.@note < 0)
+			.@note = .@fallback;
+		if (.@note < 0)
+			return false;
+		if (@inventorylist_idx[.@note] < .@slots && @inventorylist_amount[.@note] == 1)
+			--.@occupied;
+	}
+	if (.@match >= 0) {
+		// A failing first compatible native stack never falls back to a free slot.
+		return @inventorylist_idx[.@match] < .@slots && @inventorylist_amount[.@match] + .@amount <= 30000;
+	}
+	return .@occupied < .@slots;
 
 OnInit:
 	questinfo( QTYPE_QUEST, QMARK_YELLOW, "isbegin_quest(11724) == 2 && isbegin_quest(16554) == 0 && isbegin_quest(16551) == 0" );

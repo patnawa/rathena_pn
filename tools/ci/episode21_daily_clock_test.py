@@ -9,16 +9,22 @@ are accepted only through their exact previous source/byte binding.
 import argparse,hashlib,json,pathlib,re,subprocess,sys
 from biosphere_crown_transaction_test import WRAPPERS
 from finalbattle_reward_callback_audit import body
+import episode20_21_questinfo_migration as questinfo_migration
 
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 NPC='npc/custom/episode21/MysteriousGhostShip.txt'
 OLD_SHA='b6baf2dfdb5d2bc47a67a4a8f31b002eb46fbec2a9f66de963047c18e250b70d'
+FIXED_PRE_QI_SHA='58c336e56c135390cf47f98526f598433ec87f3384213ed6f3f4f46bba229965'
+CURRENT_QI_SHA='011f74d5b6abc6833be6dbb70cd19c7b123ed057a4a9bbe677528aa85f9318a6'
 RETAINED_BUILD_SHA='077f5fd1c2ab24909c3d959b8f6292a9ec491290401d4a985b98938948dce0a8'
 RETAINED_RECEIPT_SHA='bce8640ee1cd73b9fc91c9076f523762fd5223b99443059b0a0cec784514c9f1'
 EXPECTED_COUNTS=(173268,117,45,867714)
 BROAD_GATE='tools/ci/biosphere_callback_closure_audit.py'
+MATERIAL_GATE='tools/ci/biosphere_material_callback_audit.py'
 OLD_NPC_PIN=b'9aeeaab191be38b0d36f07c0a55a14b7fae6894f48c8d4e4e5d1d3cbeff330a7'
-NEW_NPC_PIN=b'bb7fb7a83501e786251566b1bb4480b521fa5dc91cffd36fd40550dcdc5a046b'
+NEW_NPC_PIN=b'b30a12514f46c5b8968800efd0b1affa5268be2b16a777aa99ed29d6b586e4e3'
+OLD_MATERIAL_NPC_PIN=b'82946f4b836ae9dad3e3745fe8c2a19efe5509463b1b650f150ebdd62981ed95'
+NEW_MATERIAL_NPC_PIN=b'7ab8a55ccd074c7e03d80f1351115b34c8e00fad29f5092dc9f7607c700c7be2'
 PREFIX='tools/ci/biosphere_crown_transaction_test.cpp'
 DRIVER='tools/ci/episode21_daily_clock_test.cpp'
 RUNNER='tools/ci/episode21_daily_clock_test.py'
@@ -33,10 +39,15 @@ def verify_frozen(pins,read=None):
     if read is None:read=lambda path:pathlib.Path(path).read_bytes()
     require(pins=={path:sha(read(path)) for path in pins},'Frozen input, executable or source bytes changed')
 def verify_retained_source(path,data,pin):
-    if path==BROAD_GATE:
-        require(data.count(NEW_NPC_PIN)==2 and OLD_NPC_PIN not in data,
-                'Only both exact reviewed broad-gate NPC pin replacements are accepted')
-        data=data.replace(NEW_NPC_PIN,OLD_NPC_PIN)
+    migrations = {
+      BROAD_GATE: (OLD_NPC_PIN,NEW_NPC_PIN,2),
+      MATERIAL_GATE: (OLD_MATERIAL_NPC_PIN,NEW_MATERIAL_NPC_PIN,1),
+    }
+    if path in migrations:
+        old,current,count=migrations[path]
+        require(data.count(current)==count and old not in data,
+                'Only the exact reviewed callback-gate pin replacements are accepted')
+        data=data.replace(current,old)
     require(sha(data)==pin,'Retained source drift: '+path)
 def check_output(result):
     result.check_returncode()
@@ -64,33 +75,42 @@ def controls():
         try:verify_frozen(pins,changed.__getitem__)
         except AssertionError:pass
         else:raise AssertionError('Frozen artifact mutation accepted')
-    old=b'prefix '+OLD_NPC_PIN+b' middle '+OLD_NPC_PIN+b' suffix'
-    current=old.replace(OLD_NPC_PIN,NEW_NPC_PIN);pin=sha(old)
-    verify_retained_source(BROAD_GATE,current,pin)
-    gate_bad=(current+b'x',current.replace(NEW_NPC_PIN,OLD_NPC_PIN,1),
-              current.replace(b'suffix',NEW_NPC_PIN+b' suffix'),old)
-    for changed in gate_bad:
-        try:verify_retained_source(BROAD_GATE,changed,pin)
-        except AssertionError:pass
-        else:raise AssertionError('Unreviewed retained gate drift accepted')
-    print('DAILY_CLOCK_GUARDS_OK: 9 output, 4 artifact and 4 retained-gate refusals',flush=True)
+    gate_cases=((BROAD_GATE,OLD_NPC_PIN,NEW_NPC_PIN,2),
+                (MATERIAL_GATE,OLD_MATERIAL_NPC_PIN,NEW_MATERIAL_NPC_PIN,1))
+    for path,old_pin,new_pin,count in gate_cases:
+        old=b'prefix '+(old_pin+b' middle ')*(count-1)+old_pin+b' suffix'
+        current=old.replace(old_pin,new_pin);pin=sha(old)
+        verify_retained_source(path,current,pin)
+        gate_bad=(current+b'x',current.replace(new_pin,old_pin,1),
+                  current.replace(b'suffix',new_pin+b' suffix'),old)
+        for changed in gate_bad:
+            try:verify_retained_source(path,changed,pin)
+            except AssertionError:pass
+            else:raise AssertionError('Unreviewed retained gate drift accepted')
+    print('DAILY_CLOCK_GUARDS_OK: 9 output, 4 artifact and 8 retained-gate refusals',flush=True)
 def native(build,retained,mode):
     build=build.resolve();retained=retained.resolve()
     require(build!=ROOT and ROOT not in build.parents and not build.exists(),'Fresh build outside repository required')
-    raw=(ROOT/NPC).read_bytes();text=raw.replace(b'\r\n',b'\n').decode()
-    if mode=='fixed':
-        require(text.count(NEW_LINES)==1 and OLD_LINE not in text,'Only exact reviewed snapshot repair accepted')
-        original=text.replace(NEW_LINES,OLD_LINE,1)
-    else:original=text
+    raw=(ROOT/NPC).read_bytes()
+    phase,fixed,current,_=questinfo_migration.pair(NPC,raw)
+    require(phase=='after' and sha(current.encode())==CURRENT_QI_SHA,
+            'Exact reviewed post-migration runtime source required')
+    require(sha(fixed.encode())==FIXED_PRE_QI_SHA,
+            'Questinfo inverse did not reconstruct the exact fixed pre-migration source')
+    require(fixed.count(NEW_LINES)==1 and OLD_LINE not in fixed,
+            'Only exact reviewed clock snapshot repair accepted')
+    original=fixed.replace(NEW_LINES,OLD_LINE,1)
     require(sha(original.encode())==OLD_SHA,'Entire genuine baseline changed')
     require(original.count(OLD_LINE)==1,'Unique original clock expression')
     candidate=original.replace(OLD_LINE,NEW_LINES,1)
+    require(candidate==fixed,'Clock-only forward reconstruction changed fixed source')
     require(sha((retained/'build.json').read_bytes())==RETAINED_BUILD_SHA,'Exact trusted retained producer binding required')
     require(sha((retained/'receipt.json').read_bytes())==RETAINED_RECEIPT_SHA,'Exact accepted retained producer receipt required')
     binding=json.loads((retained/'build.json').read_text())
     for path,pin in binding['sources'].items():verify_retained_source(path,(ROOT/path).read_bytes(),pin)
     for path,pin in binding['link_inputs_sha256'].items():require(sha(pathlib.Path(path).read_bytes())==pin,'Retained link-input drift: '+path)
-    paths=list(binding['sources'])+[NPC,'src/map/date.cpp',DRIVER,RUNNER,'tools/ci/finalbattle_reward_callback_audit.py']
+    paths=list(binding['sources'])+[NPC,'src/map/date.cpp',DRIVER,RUNNER,
+      'tools/ci/finalbattle_reward_callback_audit.py','tools/ci/episode20_21_questinfo_migration.py']
     hashes={path:sha((ROOT/path).read_bytes()) for path in paths}
     require(hashes[NPC]==sha(raw),'NPC source changed between initial and compiled-source snapshots')
     build.mkdir()
@@ -124,7 +144,9 @@ def native(build,retained,mode):
     verify_frozen(frozen)
     receipt={'result':'FIXED_SOURCE_NATIVE_PASS' if mode=='fixed' else 'ORIGINAL_REPRODUCED_AND_PROPOSED_SNAPSHOT_TESTED',
       'counts':dict(zip(('fixed_cases','stable_controls','original_defects','assertions'),counts)),
-      'runtime_raw_sha256':sha(raw),'original_normalized_sha256':OLD_SHA,'candidate_normalized_sha256':sha(candidate.encode()),
+      'runtime_raw_sha256':sha(raw),'runtime_normalized_sha256':sha(current.encode()),
+      'pre_questinfo_fixed_normalized_sha256':sha(fixed.encode()),
+      'original_normalized_sha256':OLD_SHA,'candidate_normalized_sha256':sha(candidate.encode()),
       'sources':hashes,'linked_inputs':input_hashes,'executable_sha256':frozen[str(exe)],'frozen_artifacts':frozen,
       'fixture_sha256':{path.name:sha(path.read_bytes()) for path in [combined,build/'before.txt',build/'after.txt']},
       'outputs':{stream:sha((build/(stream+'.txt')).read_bytes()) for stream in ('stdout','stderr')},
@@ -135,5 +157,5 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--native-build-dir',type=pathlib.Path,required=True)
     parser.add_argument('--retained-document-build',type=pathlib.Path,required=True)
-    parser.add_argument('--source-mode',choices=('original','fixed'),default='original')
+    parser.add_argument('--source-mode',choices=('fixed',),default='fixed')
     args=parser.parse_args();controls();native(args.native_build_dir,args.retained_document_build,args.source_mode)

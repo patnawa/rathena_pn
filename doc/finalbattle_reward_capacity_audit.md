@@ -125,7 +125,7 @@ Run in the repository's WSL Ubuntu environment:
 
 ```sh
 python3 -B tools/ci/finalbattle_reward_callback_audit.py --negative-controls
-python3 -B tools/ci/finalbattle_reward_capacity_test.py --native-build-dir ../finalbattle-reward-native-20260906
+python3 -B tools/ci/finalbattle_reward_capacity_test.py --native-build-dir ../finalbattle-reward-native-label-v2-20260907
 ```
 
 The native runner freshly compiles `pc.cpp`, `script.cpp`, `itemdb.cpp`, `clif.cpp`,
@@ -160,7 +160,11 @@ warning, sanitizer, loop-limit, or allocator diagnostics, including an otherwise
 expected original-failure process.
 
 The final receipt is
-`../finalbattle-reward-native-20260906/receipt.json`; separate stdout/stderr files,
+`../finalbattle-reward-native-label-v2-20260907/receipt.json`, SHA-256
+`a0800b0b87605f3edee5de26478b925eb9d8a51f657348325a078a509ee1780f`;
+callback-manifest SHA-256
+`1deabf174a0b4322a67c2af2c3b150dfb689e2add88874091f8b262ed55982a8`;
+separate stdout/stderr files,
 exact source fixtures, build/source/header/support-object manifests, and the
 executable accompany it. All required source/data gates were revalidated after
 native execution. Runtime remains frozen at the identity above.
@@ -197,3 +201,12 @@ Eight existing party regressions and the strict integrity audit passed. Existing
 encounter tests do not load these FinalBattle crystal bodies; no helper
 registration adaptation was needed and unrelated encounter binaries were not
 rebuilt for this claim. The new native suite supplies the actual crystal proof.
+
+## Live deployment addendum — 2026-09-07
+
+The repaired `FinalBattle.txt` was subsequently deployed in the exact r7
+release and read back at raw SHA-256 `d93ccfe3...`. Candidate and live startup,
+callback closure, exact map structure, guarded SQL equality, and service health
+all passed. This establishes deployment and startup, not a live-player reward
+walkthrough or crash-atomic inventory semantics. See the
+[deployment receipt](episode20_21_gudra_healer_deployment_20260907.md).

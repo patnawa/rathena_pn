@@ -74,7 +74,6 @@ function	script	EP21_FB_CheckPlainBatch	{
 }
 
 jor_raise1,132,323,4	script	Nyar#ep21_fb_daily	22006,{
-	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_FinalBattle_Daily != EP21_DailyKey()";
 	mes "[Nyar]";
 	if (!callfunc("EP21_MainComplete")) {
 		mes "This memory cannot be repeated until the Episode 21 main story is complete.";
@@ -110,6 +109,11 @@ jor_raise1,132,323,4	script	Nyar#ep21_fb_daily	22006,{
 		erasequest .@quest[.@choice];
 	setquest .@quest[.@choice];
 	callfunc "EP21_EnterInstance",.@name$[.@choice];
+	end;
+
+OnInit:
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_MainComplete() && EP21_FinalBattle_Daily != EP21_DailyKey()";
+	end;
 }
 
 1@ep21b,1,1,0	script	#EP21_FinalBattle_Control	HIDDEN_NPC,{

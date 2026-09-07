@@ -81,7 +81,6 @@ function	script	EP21_EnterGhostShip	{
 
 // Story entrance. Gimli Infiltration is the published prerequisite.
 jor_albe,190,186,4	script	Maristella Walter#ep21gs	22306,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && EP21_GimliComplete() && isbegin_quest(16816) == 0 && !EP21_GhostShipUnlocked()";
 	mes "[Maristella Walter]";
 	if (BaseLevel < 230) {
 		mes "The Ghost Ship is too dangerous. Return after reaching Base Level 230.";
@@ -119,12 +118,16 @@ jor_albe,190,186,4	script	Maristella Walter#ep21gs	22306,{
 	if (!isbegin_quest(16816))
 		setquest 16816;
 	callfunc "EP21_EnterGhostShip";
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 230 && EP21_GimliComplete() && isbegin_quest(16816) == 0 && !EP21_GhostShipUnlocked()";
+	end;
 }
 
 // Daily entrance and report NPC. Published daily access unlocks after the
 // story reward and resets at 04:00 server time.
 jor_albe,195,179,4	script	Nillem#ep21gs_daily	4_M_SAGE_C,{
-	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && EP21_GhostShip_Daily != EP21_DailyKey()";
 	mes "[Nillem]";
 	if (!callfunc("EP21_GhostShipUnlocked")) {
 		mes "Maristella's first expedition has not identified the Ghost Ship yet.";
@@ -172,10 +175,14 @@ jor_albe,195,179,4	script	Nillem#ep21gs_daily	4_M_SAGE_C,{
 	if (!isbegin_quest(16821))
 		setquest 16821;
 	callfunc "EP21_EnterGhostShip";
+	end;
+
+OnInit:
+	questinfo QTYPE_DAILYQUEST,QMARK_YELLOW,"EP21_GhostShipUnlocked() && EP21_GhostShip_Daily != EP21_DailyKey()";
+	end;
 }
 
 jor_albe,194,186,4	script	Wigner Executive#ep21gs	4_M_MANAGER,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16819) == 1";
 	mes "[Wigner Executive]";
 	if (isbegin_quest(16819) != 1) {
 		mes "I handle compensation for the Walter expedition. Maristella will tell you when the report is ready.";
@@ -194,6 +201,11 @@ jor_albe,194,186,4	script	Wigner Executive#ep21gs	4_M_MANAGER,{
 	mes "Reward: ^3366FF70 Wigner Merchant Guild Vouchers^000000 and ^33AA3390 Gaebolg Command reputation^000000.";
 	mes "The daily Mysterious Ghost Ship expedition is now unlocked through Nillem.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16819) == 1";
+	end;
 }
 
 // Instance controller and encounter state.

@@ -209,7 +209,6 @@ function	script	EP20_EnterInstance	{
 
 // Part 1: Expand Exploration Range / Ancient Ice Canyon.
 icecastle,27,126,4	script	Horuru#ep20_start	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 215 && isbegin_quest(17649) == 2 && isbegin_quest(17650) == 2 && ep19_side_saint >= 20 && ep19_side_sea >= 17 && !EP20_MainComplete()";
 	callfunc "EP20_SyncStep";
 	mes "[Horuru]";
 	if (callfunc("EP20_MainComplete")) {
@@ -232,10 +231,14 @@ icecastle,27,126,4	script	Horuru#ep20_start	4_M_REPAIR,{
 	close2;
 	warp "jor_back5",353,73;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 215 && isbegin_quest(17649) == 2 && isbegin_quest(17650) == 2 && ep19_side_saint >= 20 && ep19_side_sea >= 17 && !EP20_MainComplete()";
+	end;
 }
 
 jor_back5,353,73,4	script	Lehar#ep20_gorge	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16691) == 1";
 	mes "[Lehar]";
 	if (isbegin_quest(16691) != 1) { mes "Search the canyon only under Horuru's authority."; close; }
 	callfunc "EP20_MoveQuest",16691,16692;
@@ -243,10 +246,14 @@ jor_back5,353,73,4	script	Lehar#ep20_gorge	4_M_REPAIR,{
 	close2;
 	warp "jor_safty1",64,328;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16691) == 1";
+	end;
 }
 
 jor_safty1,64,328,4	script	Lehar#ep20_refuge	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16692) == 1";
 	mes "[Lehar]";
 	if (isbegin_quest(16692) != 1) { mes "The shelter is quiet."; close; }
 	callfunc "EP20_MoveQuest",16692,16693;
@@ -254,10 +261,14 @@ jor_safty1,64,328,4	script	Lehar#ep20_refuge	4_M_REPAIR,{
 	close2;
 	warp "jor_back5",355,352;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16692) == 1";
+	end;
 }
 
 jor_back5,355,352,4	script	Miriam#ep20_evidence	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16693) == 1";
 	mes "[Miriam]";
 	if (isbegin_quest(16693) != 1) { mes "The Rgan installation has been removed."; close; }
 	callfunc "EP20_MoveQuest",16693,16694;
@@ -265,10 +276,14 @@ jor_back5,355,352,4	script	Miriam#ep20_evidence	4_F_SCIENCE,{
 	close2;
 	warp "icas_in",261,197;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16693) == 1";
+	end;
 }
 
 icas_in,261,197,4	script	Leon#ep20_report1	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16694) == 1";
 	mes "[Leon]";
 	if (isbegin_quest(16694) != 1) { mes "Vellgunde is studying the recovered devices."; close; }
 	if (!callfunc("EP20_CheckReward",20)) close;
@@ -277,11 +292,15 @@ icas_in,261,197,4	script	Leon#ep20_report1	4_M_SCIENCE,{
 	callfunc "EP20_Reward",20,90,0,0;
 	mes "The evidence is a mana absorber. Horr wants to discuss suspicious activity in private.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16694) == 1";
+	end;
 }
 
 // Part 2: Suspicious Signs.
 icas_in,259,219,4	script	Horr#ep20_signs	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16695) == 1 || isbegin_quest(16699) == 1";
 	mes "[Horr]";
 	if (isbegin_quest(16695) == 1) {
 		callfunc "EP20_MoveQuest",16695,16696;
@@ -295,37 +314,53 @@ icas_in,259,219,4	script	Horr#ep20_signs	4_M_REPAIR,{
 	}
 	mes "Keep the investigation discreet.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16695) == 1 || isbegin_quest(16699) == 1";
+	end;
 }
 
 icas_in,113,41,4	script	Torr#ep20_camp	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16696) == 1";
 	mes "[Torr]";
 	if (isbegin_quest(16696) != 1) { mes "Every soldier is accounted for."; close; }
 	callfunc "EP20_MoveQuest",16696,16697;
 	mes "No one from the camp is missing. Inspect the lodging house next.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16696) == 1";
+	end;
 }
 
 icas_in,92,113,4	script	Lodge Register#ep20	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16697) == 1";
 	mes "[Lodge Register]";
 	if (isbegin_quest(16697) != 1) { mes "The guest list is complete."; close; }
 	callfunc "EP20_MoveQuest",16697,16698;
 	mes "Every guest is present. Inspect the back alley outside.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16697) == 1";
+	end;
 }
 
 icecastle,209,237,4	script	Suspicious Sign#ep20	4_ENERGY_RED,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16698) == 1";
 	mes "[Suspicious Sign]";
 	if (isbegin_quest(16698) != 1) { mes "Faint tracks vanish beneath the snow."; close; }
 	callfunc "EP20_MoveQuest",16698,16699;
 	mes "Something entered this alley but never left. Report to Horr.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16698) == 1";
+	end;
 }
 
 icas_in,141,216,4	script	Vellgunde#ep20_device	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16700) == 1";
 	mes "[Vellgunde]";
 	if (isbegin_quest(16700) != 1) { mes "The recovered apparatus stores stolen mana."; close; }
 	if (!callfunc("EP20_CheckReward",20)) close;
@@ -334,30 +369,42 @@ icas_in,141,216,4	script	Vellgunde#ep20_device	4_F_SCIENCE,{
 	callfunc "EP20_Reward",20,90,0,0;
 	mes "Bagot likely built the absorber. Lehar is preparing a Canyon Exploration outside the castle.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16700) == 1";
+	end;
 }
 
 // Part 3: Canyon Exploration story instance.
 icecastle,201,171,4	script	Lehar#ep20_canyon_entry	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16701) == 1";
 	mes "[Lehar]";
 	if (isbegin_quest(16701) != 1) { mes "There is no canyon operation scheduled."; close; }
 	mes "Create the Canyon Exploration expedition and expose the transformed Rgan patrol.";
 	next;
 	if (select("Enter Canyon Exploration.:Wait.") == 2) close;
 	callfunc "EP20_EnterInstance","Canyon Exploration";
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16701) == 1";
+	end;
 }
 
 icas_in,259,200,4	script	Miriam#ep20_canyon_report	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16702) == 1";
 	mes "[Miriam]";
 	if (isbegin_quest(16702) != 1) { mes "Lehar has not returned from the canyon."; close; }
 	callfunc "EP20_MoveQuest",16702,16703;
 	mes "Tell Lazy what Bagot and Lasgand revealed and how the White Cat opened the escape.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16702) == 1";
+	end;
 }
 
 icas_in,263,200,4	script	Lazy#ep20_recent	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16703) == 1";
 	mes "[Lazy]";
 	if (isbegin_quest(16703) != 1) { mes "We must learn how deeply the transformed Rgan have infiltrated."; close; }
 	if (!callfunc("EP20_CheckReward",20)) close;
@@ -366,11 +413,15 @@ icas_in,263,200,4	script	Lazy#ep20_recent	4_M_SCIENCE,{
 	callfunc "EP20_Reward",20,90,0,0;
 	mes "We will answer espionage with espionage. Meet me before the Snake's Nest.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16703) == 1";
+	end;
 }
 
 // Part 4: Era of Cold War and Espionage / infiltrating the lair.
 jor_nest,36,274,4	script	Lazy#ep20_nestdoor	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16704) == 1";
 	mes "[Lazy]";
 	if (isbegin_quest(16704) != 1) { mes "The sealed door only reacts to a transformed Rgan."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -379,10 +430,14 @@ jor_nest,36,274,4	script	Lazy#ep20_nestdoor	4_M_SCIENCE,{
 	close2;
 	warp "icas_in",262,202;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(16704) == 1";
+	end;
 }
 
 icas_in,262,202,4	script	Vellgunde#ep20_site2	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17690) == 1";
 	mes "[Vellgunde]";
 	if (isbegin_quest(17690) != 1) { mes "Use an Rgan Transformation Scroll before entering their lair."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -391,10 +446,14 @@ icas_in,262,202,4	script	Vellgunde#ep20_site2	4_F_SCIENCE,{
 	close2;
 	warp "jor_root1",32,34;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17690) == 1";
+	end;
 }
 
 jor_root1,32,34,4	script	Rgan Shaman#ep20_infiltrate	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17691) == 1 || isbegin_quest(17692) == 1";
 	mes "[Rgan Shaman]";
 	if ((isbegin_quest(17691) == 1 || isbegin_quest(17692) == 1) && !callfunc("EP20_RequireRganDisguise")) close;
 	if (isbegin_quest(17691) == 1) {
@@ -409,10 +468,14 @@ jor_root1,32,34,4	script	Rgan Shaman#ep20_infiltrate	4_M_SCIENCE,{
 	}
 	mes "The shaman watches your movements.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17691) == 1 || isbegin_quest(17692) == 1";
+	end;
 }
 
 jor_root2,239,243,4	script	Leize#ep20_hidden	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17693) == 1 || isbegin_quest(17694) == 1 || isbegin_quest(17695) == 1";
 	mes "[Leize]";
 	if (isbegin_quest(17693) == 1) {
 		if (checkquest(17693,HUNTING) != 2) { mes "The two groups of Rgan shamans are still watching the route."; close; }
@@ -437,11 +500,15 @@ jor_root2,239,243,4	script	Leize#ep20_hidden	4_F_SCIENCE,{
 	}
 	mes "The hidden sanctuary route is quiet.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17693) == 1 || isbegin_quest(17694) == 1 || isbegin_quest(17695) == 1";
+	end;
 }
 
 // Part 5: Sacred and Divine / earning trust / maze trail.
 jor_sanct,155,85,4	script	Bishop Rgan#ep20_sacred	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17696) == 1 || isbegin_quest(17697) == 1 || isbegin_quest(17698) == 1";
 	mes "[Bishop Rgan]";
 	if ((isbegin_quest(17696) == 1 || isbegin_quest(17697) == 1 || isbegin_quest(17698) == 1) && !callfunc("EP20_RequireRganDisguise")) close;
 	if (isbegin_quest(17696) == 1) {
@@ -463,10 +530,14 @@ jor_sanct,155,85,4	script	Bishop Rgan#ep20_sacred	4_M_SCIENCE,{
 	}
 	mes "Do not break your disguise.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17696) == 1 || isbegin_quest(17697) == 1 || isbegin_quest(17698) == 1";
+	end;
 }
 
 jor_sanct,178,125,4	script	Device Bishop#ep20	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17699) == 1";
 	mes "[Bishop Rgan]";
 	if (isbegin_quest(17699) != 1) { mes "Mana is gathered here for Lasgand."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -475,10 +546,14 @@ jor_sanct,178,125,4	script	Device Bishop#ep20	4_M_SCIENCE,{
 	getitem 1001218,1;
 	mes "The devices absorb mana and support transformations. You receive a Horsepower Recovery Device; another bishop knows Lasgand's work assignments.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17699) == 1";
+	end;
 }
 
 jor_sanct,42,105,4	script	Silent Bishop#ep20	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17700) == 1";
 	mes "[Bishop Rgan]";
 	if (isbegin_quest(17700) != 1) { mes "Efficiency is devotion."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -487,10 +562,14 @@ jor_sanct,42,105,4	script	Silent Bishop#ep20	4_M_SCIENCE,{
 	callfunc "EP20_Reward",20,90,0,0;
 	mes "Help Pamoshgand with the guarded Maze route to prove your loyalty.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17700) == 1";
+	end;
 }
 
 jor_sanct,257,115,4	script	Pamoshgand#ep20_trust	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17701) == 1 || (EP20_Step >= 6 && (isbegin_quest(8845) == 1 || EP20_DailyCanAccept(8845)))";
 	mes "[Pamoshgand]";
 	if (isbegin_quest(17701) == 1) {
 		if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -520,10 +599,14 @@ jor_sanct,257,115,4	script	Pamoshgand#ep20_trust	4_M_SCIENCE,{
 	if (!callfunc("EP20_DailyStart",8845)) { mes "The next Example of Silent Answer begins after 04:00."; close; }
 	mes "Bring 20 Large Gray Feathers for today's Example of Silent Answer.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17701) == 1 || (EP20_Step >= 6 && (isbegin_quest(8845) == 1 || EP20_DailyCanAccept(8845)))";
+	end;
 }
 
 jor_sanct,22,283,4	script	Maze Supervisor#ep20	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17702) == 1 || isbegin_quest(17703) == 1";
 	mes "[Maze Supervisor]";
 	if ((isbegin_quest(17702) == 1 || isbegin_quest(17703) == 1) && !callfunc("EP20_RequireRganDisguise")) close;
 	if (isbegin_quest(17702) == 1) {
@@ -543,28 +626,40 @@ jor_sanct,22,283,4	script	Maze Supervisor#ep20	4_M_REPAIR,{
 	}
 	mes "The Maze route is under guard.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17702) == 1 || isbegin_quest(17703) == 1";
+	end;
 }
 
 jor_maze,15,47,4	script	Saergand Trace#ep20_1	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17704) == 1";
 	mes "[Trace]";
 	if (isbegin_quest(17704) != 1) { mes "No fresh tracks remain."; close; }
 	callfunc "EP20_MoveQuest",17704,17705;
 	mes "The trail continues across the Maze.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17704) == 1";
+	end;
 }
 
 jor_maze,17,153,4	script	Saergand Trace#ep20_2	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17705) == 1";
 	mes "[Trace]";
 	if (isbegin_quest(17705) != 1) { mes "No fresh tracks remain."; close; }
 	callfunc "EP20_MoveQuest",17705,17706;
 	mes "The last trace leads to a shaking wall.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17705) == 1";
+	end;
 }
 
 jor_maze,140,71,4	script	Shaky Wall#ep20_drift	4_ENERGY_RED,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17706) == 1 || isbegin_quest(17707) == 1";
 	mes "[Shaky Wall]";
 	if (isbegin_quest(17706) == 1)
 		callfunc "EP20_MoveQuest",17706,17707;
@@ -573,10 +668,14 @@ jor_maze,140,71,4	script	Shaky Wall#ep20_drift	4_ENERGY_RED,{
 	next;
 	if (select("Enter Drift Ice Zone.:Wait.") == 2) close;
 	callfunc "EP20_EnterInstance","Drift Ice Zone";
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17706) == 1 || isbegin_quest(17707) == 1";
+	end;
 }
 
 jor_sanct,150,150,4	script	Nyar#ep20_drift_report	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17708) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(17708) != 1) { mes "The drifting ice hides old paths beneath it."; close; }
 	callfunc "EP20_MoveQuest",17708,17709;
@@ -584,10 +683,14 @@ jor_sanct,150,150,4	script	Nyar#ep20_drift_report	22006,{
 	close2;
 	warp "icas_in",226,255;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17708) == 1";
+	end;
 }
 
 icas_in,226,255,4	script	Lehar#ep20_infil_report	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17709) == 1";
 	mes "[Lehar]";
 	if (isbegin_quest(17709) != 1) { mes "We still need a path back to the White Cat."; close; }
 	if (!callfunc("EP20_CheckReward",20)) close;
@@ -596,11 +699,15 @@ icas_in,226,255,4	script	Lehar#ep20_infil_report	4_M_REPAIR,{
 	callfunc "EP20_Reward",20,90,0,0;
 	mes "A Diving Iwin outside can reach the ancient deep sea where the White Cat appeared.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(17709) == 1";
+	end;
 }
 
 // Part 7: Ancient Deep Sea and Nest of Small Branches.
 icecastle,141,212,4	script	Diving Iwin#ep20_sea	4_EP19_IWIN_DIVER,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23100) == 1 || isbegin_quest(23101) == 1 || isbegin_quest(23102) == 1";
 	mes "[Diving Iwin]";
 	if (isbegin_quest(23100) == 1) {
 		callfunc "EP20_MoveQuest",23100,23101;
@@ -633,10 +740,14 @@ icecastle,141,212,4	script	Diving Iwin#ep20_sea	4_EP19_IWIN_DIVER,{
 	close2;
 	warp "jor_twice",235,111;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23100) == 1 || isbegin_quest(23101) == 1 || isbegin_quest(23102) == 1";
+	end;
 }
 
 jor_twice,235,111,4	script	Kokoro#ep20_icy	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23103) == 1 || isbegin_quest(23106) == 1";
 	mes "[Kokoro]";
 	if (isbegin_quest(23103) == 1) {
 		callfunc "EP20_MoveQuest",23103,23104;
@@ -651,28 +762,40 @@ jor_twice,235,111,4	script	Kokoro#ep20_icy	4_M_REPAIR,{
 	}
 	mes "The Icy Zone shifts with the old serpent's power.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23103) == 1 || isbegin_quest(23106) == 1";
+	end;
 }
 
 jor_twice,238,323,4	script	Ancient Trace#ep20_1	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23104) == 1";
 	mes "[Ancient Trace]";
 	if (isbegin_quest(23104) != 1) { mes "The trace is faint."; close; }
 	callfunc "EP20_MoveQuest",23104,23105;
 	mes "The power continues to the other side of the Icy Zone.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23104) == 1";
+	end;
 }
 
 jor_twice,159,239,4	script	Ancient Trace#ep20_2	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23105) == 1";
 	mes "[Ancient Trace]";
 	if (isbegin_quest(23105) != 1) { mes "The trace points toward the World Tree."; close; }
 	callfunc "EP20_MoveQuest",23105,23106;
 	mes "The White Cat led Leo and Aurelie into a hidden nest. Meet Kokoro and Lehar.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23105) == 1";
+	end;
 }
 
 jor_twice,161,243,4	script	Aurelie#ep20_nest_report	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23107) == 1 || isbegin_quest(23108) == 1 || isbegin_quest(23109) == 1";
 	mes "[Aurelie]";
 	if (isbegin_quest(23107) == 1) {
 		callfunc "EP20_MoveQuest",23107,23108;
@@ -695,11 +818,15 @@ jor_twice,161,243,4	script	Aurelie#ep20_nest_report	4_F_SCIENCE,{
 	}
 	mes "The nest must remain hidden.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23107) == 1 || isbegin_quest(23108) == 1 || isbegin_quest(23109) == 1";
+	end;
 }
 
 // Part 8: The Serpent's Maze / the Cat at the end.
 jor_maze,142,73,4	script	Lehar#ep20_rumors	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23112) == 1";
 	mes "[Lehar]";
 	if (isbegin_quest(23112) != 1) { mes "Listen carefully; the followers reveal more than they intend."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -709,40 +836,56 @@ jor_maze,142,73,4	script	Lehar#ep20_rumors	4_M_REPAIR,{
 	if (isbegin_quest(23115) == 0) setquest 23115;
 	mes "Listen at all three marked gatherings, then report to Miriam.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23112) == 1";
+	end;
 }
 
 jor_maze,52,238,4	script	Rgan Rumor#ep20_1	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23113) == 1";
 	mes "[Rgan Followers]";
 	if (isbegin_quest(23113) != 1) { mes "They mutter about Jormungandr."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
 	completequest 23113;
 	mes "They want to find Jormungandr first and receive her blessing.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23113) == 1";
+	end;
 }
 
 jor_maze,154,244,4	script	Rgan Rumor#ep20_2	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23114) == 1";
 	mes "[Rgan Followers]";
 	if (isbegin_quest(23114) != 1) { mes "They argue about the serpent's appearance."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
 	completequest 23114;
 	mes "None of them has seen Jormungandr; Lasgand controls their information.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23114) == 1";
+	end;
 }
 
 jor_maze,281,191,4	script	Rgan Rumor#ep20_3	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23115) == 1";
 	mes "[Rgan Followers]";
 	if (isbegin_quest(23115) != 1) { mes "They insist the serpent must resemble a Rgan."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
 	completequest 23115;
 	mes "The followers believe every Rgan descends from Jormungandr.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23115) == 1";
+	end;
 }
 
 jor_maze,150,33,4	script	Miriam#ep20_rumor_report	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23113) == 2 && isbegin_quest(23114) == 2 && isbegin_quest(23115) == 2 && isbegin_quest(23116) == 0 || isbegin_quest(23116) == 1 || isbegin_quest(23117) == 1";
 	mes "[Miriam]";
 	if (isbegin_quest(23113) == 2 && isbegin_quest(23114) == 2 && isbegin_quest(23115) == 2 && isbegin_quest(23116) == 0) {
 		setquest 23116;
@@ -763,10 +906,14 @@ jor_maze,150,33,4	script	Miriam#ep20_rumor_report	4_F_SCIENCE,{
 	}
 	mes "Gather every rumor first.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23113) == 2 && isbegin_quest(23114) == 2 && isbegin_quest(23115) == 2 && isbegin_quest(23116) == 0 || isbegin_quest(23116) == 1 || isbegin_quest(23117) == 1";
+	end;
 }
 
 jor_maze,197,35,4	script	White Cat#ep20_maze_end	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23118) == 1";
 	mes "[White Cat]";
 	if (isbegin_quest(23118) != 1) { mes "The cat watches the maze without blinking."; close; }
 	callfunc "EP20_MoveQuest",23118,18220;
@@ -775,20 +922,28 @@ jor_maze,197,35,4	script	White Cat#ep20_maze_end	22006,{
 	close2;
 	warp "icas_in",111,228;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(23118) == 1";
+	end;
 }
 
 // Part 9: Deep-rooted Rgan investigation.
 icas_in,111,228,4	script	Leon#ep20_find_lehar	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18220) == 1";
 	mes "[Leon]";
 	if (isbegin_quest(18220) != 1) { mes "Lasgand must be stopped before he reaches the World Tree."; close; }
 	callfunc "EP20_MoveQuest",18220,18221;
 	mes "Lehar left markers on Root F1 while searching for Bagot's laboratory.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18220) == 1";
+	end;
 }
 
 jor_root1,32,75,4	script	Lehar's Marker#ep20	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18221) == 1";
 	mes "[Lehar's Marker]";
 	if (isbegin_quest(18221) != 1) { mes "The mark points toward three side passages."; close; }
 	completequest 18221;
@@ -798,34 +953,50 @@ jor_root1,32,75,4	script	Lehar's Marker#ep20	4_ENERGY_BLUE,{
 	setquest 18225;
 	mes "Investigate all three paired marks on Root F1.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18221) == 1";
+	end;
 }
 
 jor_root1,69,128,4	script	Lehar's Mark#ep20_1	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18223) == 1";
 	mes "[Lehar's Mark]";
 	if (isbegin_quest(18223) == 1) { completequest 18223; mes "The passage is a decoy."; }
 	else mes "This passage was already checked.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18223) == 1";
+	end;
 }
 
 jor_root1,35,211,4	script	Lehar's Mark#ep20_2	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18224) == 1";
 	mes "[Lehar's Mark]";
 	if (isbegin_quest(18224) == 1) { completequest 18224; mes "This tunnel ends in a false wall."; }
 	else mes "This passage was already checked.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18224) == 1";
+	end;
 }
 
 jor_root1,254,66,4	script	Lehar's Mark#ep20_3	4_ENERGY_BLUE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18225) == 1";
 	mes "[Lehar's Mark]";
 	if (isbegin_quest(18225) == 1) { completequest 18225; mes "No laboratory lies behind this mark."; }
 	else mes "This passage was already checked.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18225) == 1";
+	end;
 }
 
 jor_sanct,133,86,4	script	Lehar#ep20_marks	4_M_REPAIR,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18222) == 1 || isbegin_quest(18226) == 1";
 	mes "[Lehar]";
 	if (isbegin_quest(18222) == 1) {
 		if (isbegin_quest(18223) != 2 || isbegin_quest(18224) != 2 || isbegin_quest(18225) != 2) { mes "Inspect all three marked passages first."; close; }
@@ -843,10 +1014,14 @@ jor_sanct,133,86,4	script	Lehar#ep20_marks	4_M_REPAIR,{
 	}
 	mes "The investigation has moved to the central sanctuary.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18222) == 1 || isbegin_quest(18226) == 1";
+	end;
 }
 
 jor_sanct,150,207,4	script	Bishop Rgan#ep20_prayer	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18227) == 1";
 	mes "[Bishop Rgan]";
 	if (isbegin_quest(18227) != 1) { mes "Lasgand calls every follower to prayer."; close; }
 	if (!callfunc("EP20_RequireRganDisguise")) close;
@@ -855,48 +1030,68 @@ jor_sanct,150,207,4	script	Bishop Rgan#ep20_prayer	4_M_SCIENCE,{
 	close2;
 	warp "jor_twig",187,198;
 	end;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18227) == 1";
+	end;
 }
 
 // Part 10: Nyar's Call and Separated Sanctuary.
 jor_twig,187,198,4	script	White Cat#ep20_call	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18228) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(18228) != 1) { mes "The World Tree trembles."; close; }
 	callfunc "EP20_MoveQuest",18228,18229;
 	mes "Bagot and Lasgand entered the nest. Follow the inner branch.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18228) == 1";
+	end;
 }
 
 jor_twig,180,123,4	script	White Cat#ep20_inner	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18229) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(18229) != 1) { mes "A trail of white light crosses the branch."; close; }
 	callfunc "EP20_MoveQuest",18229,18230;
 	mes "Bagot calls his experiment a new god. Hurry to the confrontation.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18229) == 1";
+	end;
 }
 
 jor_twig,142,153,4	script	Nyar#ep20_confront	22006,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18230) == 1";
 	mes "[Nyar]";
 	if (isbegin_quest(18230) != 1) { mes "The dimensional seal strains against Lasgand."; close; }
 	callfunc "EP20_MoveQuest",18230,18231;
 	mes "I separated Lasgand into another dimension. Ask Leon how to reach him.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18230) == 1";
+	end;
 }
 
 jor_twig,138,157,4	script	Leon#ep20_sanctuary	4_M_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18231) == 1";
 	mes "[Leon]";
 	if (isbegin_quest(18231) != 1) { mes "Nyar is holding the dimensional seal."; close; }
 	callfunc "EP20_MoveQuest",18231,18232;
 	EP20_Step = 10;
 	mes "Orelli can open the Separated Sanctuary. Neutralize Lasgand and recover the corrupted Heart Fragment.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18231) == 1";
+	end;
 }
 
 jor_twig,138,152,4	script	Orelli#ep20_final	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18232) == 1 || isbegin_quest(18233) == 1";
 	mes "[Orelli]";
 	if (isbegin_quest(18232) == 1) {
 		mes "Nyar can suppress Lasgand only briefly. Enter the Separated Sanctuary when ready.";
@@ -913,10 +1108,14 @@ jor_twig,138,152,4	script	Orelli#ep20_final	4_F_SCIENCE,{
 	if (callfunc("EP20_MainComplete")) { mes "Lasgand remains sealed."; close; }
 	mes "The Separated Sanctuary has not been opened.";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18232) == 1 || isbegin_quest(18233) == 1";
+	end;
 }
 
 icas_in2,248,112,4	script	Voglinde#ep20_epilogue	4_F_SCIENCE,{
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18233) == 1";
 	mes "[Voglinde]";
 	if (callfunc("EP20_MainComplete")) { mes "Nyar's seal is stable, for now."; close; }
 	if (isbegin_quest(18233) != 1 || countitem(1001254) < 1) {
@@ -931,6 +1130,11 @@ icas_in2,248,112,4	script	Voglinde#ep20_epilogue	4_F_SCIENCE,{
 	mes "Bagot will answer for his experiment. Nyar, Leon, and Aurelie will reinforce the seal.";
 	mes "^33AA33Episode 20: The Immortal is complete.^000000";
 	close;
+	end;
+
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"isbegin_quest(18233) == 1";
+	end;
 }
 
 // White Cats Union economy. Gravity publishes three 1,000-point tiers,
