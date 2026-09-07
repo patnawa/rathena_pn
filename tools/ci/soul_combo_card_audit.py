@@ -56,15 +56,10 @@ def main():
     assert '\\"SOA_TALISMAN_OF_RED_PHOENIX\\",\\"SOA_TALISMAN_OF_BLACK_TORTOISE\\",5,1000' in frontier
     print(f'Audited {len(cards)} cards/enchant records, {combo_count} combos, {len(scripts)} scripts')
     print('PASS: Soul Ascetic Dimensions/Frontier trigger names, grade/skill gates and duration')
-    # Existing unsupported card-granted skill variants need a gameplay decision;
-    # do not silently replace these with ordinary party songs.
-    known={'27213: unknown skill BA_POEMBRAGI2','27219: unknown skill DC_FORTUNEKISS2'}
-    for issue in sorted(set(failures)&known):print('OPEN: '+issue)
-    failures=[issue for issue in failures if issue not in known]
     if failures:
         print('\n'.join(sorted(set(failures))[:50]))
         raise AssertionError(f'{len(set(failures))} reference problems')
-    print('PASS: remaining card/combo bonus constants and skill/item references (two documented card exceptions)')
+    print('PASS: card/combo bonus constants and skill/item references; no exceptions')
     source=(ROOT/'src/map/skill.cpp').read_text()
     body=source.split('int32 skill_onskillusage(',1)[1].split('\n}\n',1)[0]
     checks=re.findall(r'if \((rnd_value\(0, \d+\) >= it->rate)\)',body)

@@ -40393,7 +40393,7 @@ Body:
          .@b = 10;
       }
       if (getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_MUSICAL || getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_WHIP) {
-         skill "BA_POEMBRAGI2",.@a;
+         skill "BA_POEMBRAGI",.@a;
       }
       bonus bFlee,(readparam(bVit)>=110) ? (.@b*2) : .@b;
   - Id: 27214
@@ -40503,13 +40503,13 @@ Body:
     Script: |
       if (getrefine()<15) {
          if (getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_MUSICAL || getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_WHIP) {
-            skill "DC_FORTUNEKISS2",5;
+            skill "DC_FORTUNEKISS",5;
          }
          bonus bFlee,(readparam(bVit)>=110) ? 20 : 10;
       }
       else {
          if (getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_MUSICAL || getiteminfo(getequipid(EQI_HAND_R), ITEMINFO_VIEW) == W_WHIP) {
-            skill "DC_FORTUNEKISS2",7;
+            skill "DC_FORTUNEKISS",7;
          }
          bonus bFlee,(readparam(bVit)>=110) ? 30 : 15;
       }

@@ -50,14 +50,21 @@ incoming elemental damage. Monster defenses and chosen attack element matter.
 
 Run: `python3 tools/ci/soul_combo_card_audit.py` (Linux/WSL, PyYAML, g++).
 
-## Known exceptions — not certified bug-free
+## Sealed card follow-up
 
-Sealed Clown Card 27213 references `BA_POEMBRAGI2`; Sealed Gypsy Card 27219
-references `DC_FORTUNEKISS2`. Enum entries exist, but active Renewal skill database
-records do not. Their conditional skill grants cannot be certified functional.
-The audit explicitly reports these exceptions. Replacing them with ordinary
-party songs without verifying intended card behavior would change functionality.
-Neither card is in MSCSoul's loadout.
+The initial audit found Sealed Clown Card 27213 referencing `BA_POEMBRAGI2` and
+Sealed Gypsy Card 27219 referencing `DC_FORTUNEKISS2`. Those enum entries have no
+active Renewal skill records. The follow-up repair uses `BA_POEMBRAGI` and
+`DC_FORTUNEKISS`, matching the working unsealed cards 4560/4566 and the local
+client descriptions. The sealed instrument/whip checks, grants of level 5 below
++15 and level 7 at +15 or higher, and FLEE/VIT thresholds are unchanged.
+
+`tools/ci/sealed_performer_cards_test.py` executes narrowly translated script
+expressions for 48 combinations (refine 0/14/15/20, VIT 109/110, instrument/whip/
+staff). This is a logic regression, not a full native VM or in-game casting test.
+The broad card/combo audit no longer has an exception allowlist. Neither card is
+in MSCSoul's current loadout. The repaired item database was activated live on
+2026-09-07 with a backup and map-server restart; startup reported no script errors.
 
 Card autospells also retain their configured attack triggers: an on-normal-attack
 effect is not promised to trigger from magic skills. Runtime parsing at startup
