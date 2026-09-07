@@ -1,0 +1,55 @@
+# Appearance-only compatibility for the February 2026 client.
+# These custom IDs have no client JobNameTable entries. Preserve all gameplay
+# data; replace only the transmitted appearance until native assets are installed.
+Header:
+  Type: MOB_AVAIL_DB
+  Version: 1
+Body:
+  - Mob: CH2_DRAGONCLAM
+    Sprite: STALACTIC_GOLEM
+  - Mob: CH2_FLAMEBULL
+    Sprite: MINOROUS
+  - Mob: CH2_UROCHS
+    Sprite: BAPHOMET
+  - Mob: CH2_LOGIDOGI
+    Sprite: SALAMANDER
+  - Mob: CH2_FIRECOTTON
+    Sprite: MAGMARING
+  - Mob: CH2_NAMUNSE
+    Sprite: PASANA
+  - Mob: CH2_NAMUNI
+    Sprite: GOLEM
+  - Mob: CH2_DUDULSON
+    Sprite: IMP
+  - Mob: CH2_GARAKSON
+    Sprite: PASANA
+  - Mob: CH2_TUKTAKSON
+    Sprite: GOLEM
+  - Mob: CH2_PARUSON
+    Sprite: SALAMANDER
+  - Mob: CH2_MORBANG
+    Sprite: MAGMARING
+  - Mob: CH2_FIRECLAW
+    Sprite: KASA
+  - Mob: CH2_FLAMEANIMA
+    Sprite: KASA
+  - Mob: CH2_FROST_MORBANG
+    Sprite: ICE_TITAN
+  - Mob: CH2_ALPURING
+    Sprite: MARIN
+  - Mob: CH2_ICYBLAST
+    Sprite: GAZETI
+  - Mob: CH2_ICENEEDLE
+    Sprite: ICE_TITAN
+  - Mob: CH2_FOLNIR_NILF
+    Sprite: DARK_PRIEST
+  - Mob: CH2_FOLNIR_MYRK
+    Sprite: RYBIO
+  - Mob: CH2_FOLNIR_HRE
+    Sprite: PHENDARK
+  - Mob: CH2_FEEOS
+    Sprite: DARK_LORD
+  - Mob: CH2_ANTIRRHINUM
+    Sprite: DOPPELGANGER
+  - Mob: CH2_ANTIRRHINUM2
+    Sprite: DARK_LORD
