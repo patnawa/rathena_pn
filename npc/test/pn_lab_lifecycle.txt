@@ -1,0 +1,18 @@
+// Isolated test ONLY. Explicitly enable with an alternate map config.
+// Exercises cloning + OnInstanceInit, which startup-only parsing did not cover.
+-	script	PN Lab Lifecycle Test	-1,{
+OnInit:
+	for (.@i=0; .@i<3; .@i++) {
+		.@id = instance_create("PN Damage Lab",IM_NONE,0);
+		if (.@id <= 0) { debugmes "PNLAB_LIFECYCLE_FAIL creation"; end; }
+		.@map$ = instance_mapname("guild_vs1",.@id);
+		if (!getmapflag(.@map$,mf_nobranch) || !getmapflag(.@map$,mf_noloot) || getmapflag(.@map$,mf_gvg)) {
+			debugmes "PNLAB_LIFECYCLE_FAIL flags";
+			instance_destroy .@id;
+			end;
+		}
+		instance_destroy .@id;
+	}
+	debugmes "PNLAB_LIFECYCLE_PASS 3 create/destroy cycles";
+	end;
+}

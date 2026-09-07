@@ -31,6 +31,10 @@ def main():
     assert "gettimetick(2) >= 'Until" in service
     assert 'if (.@invalid)' in service and '.@damage*1000/max(1,.@elapsed)' in service
     assert 'killmonsterall .@map$;' in service and 'IM_CHAR' in service
+    source = (ROOT / 'src/map/map.cpp').read_text()
+    clone = source.split('int32 map_addinstancemap(', 1)[1].split('static int32 map_instancemap_leave', 1)[0]
+    assert 'dst_map->initMapFlags();' in clone, 'NoMapFlag clone must initialize flag storage'
+    assert 'npc/test/pn_lab_lifecycle.txt' not in config, 'Lifecycle test must stay isolated'
     record = yaml.safe_load((ROOT / 'db/import/quality_lab_instance_db.yml').read_text())['Body'][0]
     assert record['Id'] == 1000 and record['Name'] == 'PN Damage Lab'
     assert 'quality_lab_instance_db.yml' in (ROOT / 'db/instance_db.yml').read_text()

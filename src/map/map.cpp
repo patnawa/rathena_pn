@@ -2885,6 +2885,10 @@ int32 map_addinstancemap(int32 src_m, int32 instance_id, bool no_mapflag)
 
 	if(!no_mapflag)
 		map_data_copy(dst_map, src_map);
+	else
+		// New instance slots have an empty flag vector; recycled slots may retain
+		// old flags. NoMapFlag means fresh defaults, not uninitialized storage.
+		dst_map->initMapFlags();
 
 	ShowInfo("[Instance] Created map '%s' (%d) from '%s' (%d).\n", dst_map->name, dst_map->m, name, src_map->m);
 
