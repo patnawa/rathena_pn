@@ -2174,7 +2174,7 @@ ACMD_FUNC(go)
 		{ "oz_dun01",      223, 116 }, // 52=Oz Labyrinth
 		{ "jor_tail",      233,  41 }, // 53=Isgard Airship
 		{ "bl_grass",        0,   0 }, // 54=Grass Rune
-		{ "clock_01",        0,   0 }, // 55=Constellation Tower
+		{ "e_tower",        83, 105 }, // 55=Constellation Tower (Oscar entrance)
 		{ "nif_dun01",     145,  85 }, // 56=Niflheim Dungeon
 		{ "bl_depth1",       0,   0 }, // 57=Biosphere Depth
 		{ "pub_cat",       150, 105 }, // 58=Cat on a Bullet
@@ -2337,7 +2337,7 @@ ACMD_FUNC(go)
 		town = 53;
 	} else if (strncmp(map_name, "grassrune", 5) == 0 || strncmp(map_name, "bl_grass", 4) == 0) {
 		town = 54;
-	} else if (strncmp(map_name, "constella", 5) == 0 || strncmp(map_name, "clock_01", 5) == 0) {
+	} else if (strncmp(map_name, "constella", 5) == 0) {
 		town = 55;
 	} else if (strncmp(map_name, "nifdun", 4) == 0 || strncmp(map_name, "nif_dun01", 4) == 0) {
 		town = 56;

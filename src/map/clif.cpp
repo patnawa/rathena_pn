@@ -11054,8 +11054,6 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
 		clif_configuration( sd, CONFIG_DISABLE_SHOWCOSTUMES, sd->status.disable_showcostumes );
 #endif
 
-		clif_reputation_list( *sd );
-
 		if (sd->guild && battle_config.guild_notice_changemap == 1){
 			// Displays after VIP
 			clif_guild_notice( *sd );
@@ -11122,6 +11120,11 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
 			channel_mjoin(sd); //join new map
 
 		clif_pk_mode_message(sd);
+	}
+
+	// The client starts with empty reputation values on a fresh connection too.
+	if( sd->state.connect_new || sd->state.changemap ){
+		clif_reputation_list( *sd );
 	}
 	
 	if( sd->guild && ( battle_config.guild_notice_changemap == 2 || guild_notice ) ){

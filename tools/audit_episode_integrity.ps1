@@ -1168,6 +1168,7 @@ $routeAssertions = @(
 	@('src/map/atcommand.cpp', 'ACMD_FUNC(bs)', 'live battle-status command implementation'),
 	@('src/map/atcommand.cpp', 'ACMD_DEF(bs)', 'live battle-status command registration'),
 	@('src/map/atcommand.cpp', '{ "icecastle",    185, 212 }', 'Episode 19 @go destination'),
+	@('src/map/atcommand.cpp', '{ "e_tower",        83, 105 }, // 55=Constellation Tower', 'Constellation Tower @go 55 entrance'),
 	@('src/map/atcommand.cpp', '{ "bl_depth1",       0,   0 }', 'Biosphere Depth @go destination'),
 	@('src/map/atcommand.cpp', '{ "itemmall",       22,  43 }', 'service-mall @go destination'),
 	@('client-patch/chapter2/install_client_patch.ps1', '& $questInstaller -DataRoot $clientRoot', 'Chapter 2 quest installer client-root handoff'),

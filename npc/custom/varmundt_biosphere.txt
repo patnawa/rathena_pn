@@ -207,8 +207,7 @@ OnTouch:
 bl_depth1,179,179,0	warp	#biosphere_depth1_out	2,2,ba_in01,296,104
 
 // Depth 2 route through the ba_chess hub (Base Level 250 required).
-ba_maison,242,122,0	script	#biosphere_depth2_hub_in	HIDDEN_WARP_NPC,1,1,{
-    end;
+ba_maison,242,122,0	script	#biosphere_depth2_hub_in	PORTAL,1,1,{
 OnTouch:
     if (!callfunc("F_BiosphereDepth2Access"))
         end;
@@ -216,8 +215,7 @@ OnTouch:
     end;
 }
 ba_chess,13,16,0	warp	#biosphere_depth2_hub_out	2,2,ba_maison,242,119
-ba_chess,13,36,0	script	#biosphere_depth2_in	HIDDEN_WARP_NPC,1,1,{
-    end;
+ba_chess,13,36,0	script	#biosphere_depth2_in	PORTAL,1,1,{
 OnTouch:
     if (!callfunc("F_BiosphereDepth2Access"))
         end;
