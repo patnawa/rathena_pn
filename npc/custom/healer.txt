@@ -3,7 +3,7 @@
 //===== By: ==================================================
 //= Euphy
 //===== Current Version: =====================================
-//= 1.1
+//= 1.2
 //===== Compatible With: =====================================
 //= rAthena Project
 //===== Description: =========================================
@@ -11,6 +11,7 @@
 //===== Additional Comments: =================================
 //= 1.0 Initial script.
 //= 1.1 Aligned coordinates with @go.
+//= 1.2 Identify inventory items when healing.
 //============================================================
 
 -	script	Healer	-1,{
@@ -32,6 +33,9 @@
 	specialeffect2 EF_HEAL2;
 	percentheal 100,100;
 	healap MaxAp;
+	.@Identified = identifyall(true);
+	if (.@Identified > 0)
+		message strcharinfo(0), "Identified " + .@Identified + " inventory item(s).";
 	if (.@Buffs) {
 		// Free 30-minute full buff package.
 		specialeffect2 EF_INCAGILITY;

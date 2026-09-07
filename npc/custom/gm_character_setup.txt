@@ -1,0 +1,36 @@
+// Opt-in, attached-character-only magic test preset. Never edits SQL or equipment.
+function	script	PN_GMSetup	{
+	mes "[GM Character Setup]";
+	if (getgmlevel() < 99) { mes "GM level 99 required."; return; }
+	if (Class != JOB_SOUL_ASCETIC && Class != JOB_ELEMENTAL_MASTER) {
+		mes "The verified magic preset supports existing Soul Ascetic and Elemental Master characters only.";
+		mes "Change jobs through your normal job service first."; return;
+	}
+	mes "Apply level 275/60 and replace your base stats and traits with the magic test preset?";
+	mes "STR 30 AGI 70 VIT 90 INT 130 DEX 120 LUK 100; SPL 110 CON 110 STA 65.";
+	mes "Skills, quests, equipment and inventory are preserved. Allocate any earned skill points yourself.";
+	if (select("Cancel:Apply to this character") != 2) return;
+	if (getgmlevel() < 99) return;
+	BaseLevel = 275;
+	JobLevel = 60;
+	statusup2 bStr,30-readparam(bStr);
+	statusup2 bAgi,70-readparam(bAgi);
+	statusup2 bVit,90-readparam(bVit);
+	statusup2 bInt,130-readparam(bInt);
+	statusup2 bDex,120-readparam(bDex);
+	statusup2 bLuk,100-readparam(bLuk);
+	StatusPoint = 4;
+	traitstatusup2 bPow,-readparam(bPow);
+	traitstatusup2 bSta,65-readparam(bSta);
+	traitstatusup2 bWis,-readparam(bWis);
+	traitstatusup2 bSpl,110-readparam(bSpl);
+	traitstatusup2 bCon,110-readparam(bCon);
+	traitstatusup2 bCrt,-readparam(bCrt);
+	TraitPoint = 0;
+	setlook LOOK_BODY2,Class;
+	percentheal 100,100;
+	healap 100;
+	logmes "PNSETUP magic preset applied to char="+getcharid(0)+" class="+Class;
+	mes "Preset applied. Use Skill Supplies for job consumables; your items were not changed.";
+	return;
+}

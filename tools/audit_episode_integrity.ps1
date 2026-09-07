@@ -32,12 +32,15 @@ function Read-InstanceEntries([string[]]$Files) {
 				$current = [pscustomobject]@{
 					Id = [int]$Matches[1]
 					Name = $null
+					NoMapFlag = $false
 					File = $relative
 					Maps = [Collections.Generic.List[string]]::new()
 				}
 				continue
 			}
 			if ($null -eq $current) { continue }
+			if ($line -match '^\s+NoMapFlag:\s*(true|false)\s*$') { $current.NoMapFlag = $Matches[1] -eq 'true'; continue }
+			if ($line -match '^\s+(?:NoNpc|Destroyable):') { continue }
 			if ($line -match '^\s+Name:\s*(.+?)\s*$') { $current.Name = $Matches[1]; continue }
 			if ($line -match '^\s+Map:\s*([A-Za-z0-9_@]+)\s*$') { $current.Maps.Add($Matches[1]); continue }
 			if ($line -match '^\s+([A-Za-z0-9_@]+):\s*(?:true|false)\s*$') { $current.Maps.Add($Matches[1]) }
@@ -1347,6 +1350,20 @@ foreach ($file in $enabledFiles) {
 $requiredInstanceMapFlags = @('nobranch','nomemo','noteleport','monster_noteleport','nowarpto','partylock','restricted')
 $instanceSourceMaps = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($instance in $instances) {
+	if ($instance.NoMapFlag) {
+		# Non-inherited flags must instead be explicitly installed on each clone.
+		foreach ($mapName in $instance.Maps) {
+			foreach ($flag in $requiredInstanceMapFlags) {
+				$pattern = 'setmapflag\s+instance_mapname\("' + [regex]::Escape($mapName) + '"\),\s*mf_' + $flag + '\b'
+				$found = $false
+				foreach ($file in $enabledFiles) {
+					if ((Read-ScriptCode $file.FullName) -match $pattern) { $found = $true; break }
+				}
+				if (!$found) { Fail "Instance '$($instance.Name)' lacks explicit clone mapflag '$flag' on '$mapName'" }
+			}
+		}
+		continue
+	}
 	foreach ($mapName in $instance.Maps) { [void]$instanceSourceMaps.Add($mapName) }
 }
 foreach ($mapName in $instanceSourceMaps) {

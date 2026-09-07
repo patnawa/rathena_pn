@@ -1,0 +1,161 @@
+// Player diagnostics and private measured-damage lab. No quest bypasses.
+-	script	PN Services	-1,{
+	mes "[PN Services]";
+	switch(select("Private damage lab:Dungeon access check:Client checklist:GM character setup:Leave")) {
+	case 1:
+		.@id = instance_id(IM_CHAR);
+		if (.@id > 0 && instance_live_info(ILI_NAME,.@id) != "PN Damage Lab") {
+			mes "Finish your other solo instance first."; close;
+		}
+		if (.@id <= 0) .@id = instance_create("PN Damage Lab",IM_CHAR,getcharid(0));
+		if (.@id <= 0) { mes "Could not create the room."; close; }
+		.@result = instance_enter("PN Damage Lab",-1,-1,getcharid(0),.@id);
+		if (.@result != IE_OK) mes "The room is preparing. Talk to me again shortly.";
+		close;
+	case 2:
+		switch(select("Zero Cell:Chapter 2:Devoured Geffenia:Cancel")) {
+		case 1:
+			if (!ZC_HasAccess()) {
+				mes "BLOCKED: Robin's investigation (quest 27093).";
+				if (!CH1_Complete()) mes "First complete Chapter 1: Bring Down the Air Fortress.";
+				if (isbegin_quest(18379) != 2) mes "Also complete A Hazy Gate (18379).";
+				mes "Robin: ygg_edge 173,185.";
+				navigateto "ygg_edge",173,185;
+			} else {
+				mes "Investigation: COMPLETE.";
+				mes "Lux/Nox: level 260; permit costs 50 Mana Rings.";
+				mes "Vita/Ark: level 270; permit costs 70 Mana Rings.";
+				mes "Your level: " + BaseLevel;
+				mes "Lux/Nox permit seconds: " + max(0,ZC_Auth_LN-gettimetick(2));
+				mes "Vita/Ark permit seconds: " + max(0,ZC_Auth_VA-gettimetick(2));
+				mes "Mana Rings held: " + countitem(1001996);
+				mes "Newt: ch1fild1 106,84.";
+				navigateto "ch1fild1",106,84;
+			}
+			break;
+		case 2:
+			mes "Chapter 2 requires level 225 and Chapter 1 completion.";
+			mes "Your level: " + BaseLevel + "; Chapter 1 complete: " + CH1_Complete();
+			mes "Current Chapter 2 step: " + CH2_Step;
+			if (!CH2_Step) mes "Bring 5 Apples to start; held: " + countitem(512);
+			mes "Guardian El: ygg_edge 156,179.";
+			navigateto "ygg_edge",156,179;
+			break;
+		case 3:
+			mes "Requires level 260, A Hazy Gate complete, and stronger dimensional resistance.";
+			mes "Your level: " + BaseLevel + "; quest complete: " + (isbegin_quest(18379)==2);
+			mes "Required resistance active: " + getstatus(SC_CONTENTS_38);
+			mes "Continue Rubiel's Chapter 1 investigation if either requirement is missing.";
+		}
+		close;
+	case 3:
+		mes "Client acceptance checklist:";
+		mes "1. Correct job sprite in selection and on the map.";
+		mes "2. Skill names, icons and effects display without errors.";
+		mes "3. Test F1-F9 and letter shortcuts outside chat input; check /bm and keyboard language.";
+		mes "4. Visit Chapter 1/2 maps and inspect gear/enchant descriptions.";
+		mes "Report the exact map, skill, item ID and screenshot if anything fails.";
+		close;
+	case 4:
+		callfunc "PN_GMSetup";
+		close;
+	default: close;
+	}
+}
+izlude,140,146,4	duplicate(PN Services)	PN Services#iz0	4_M_01
+izlude_a,140,146,4	duplicate(PN Services)	PN Services#iza	4_M_01
+izlude_b,140,146,4	duplicate(PN Services)	PN Services#izb	4_M_01
+izlude_c,140,146,4	duplicate(PN Services)	PN Services#izc	4_M_01
+izlude_d,140,146,4	duplicate(PN Services)	PN Services#izd	4_M_01
+grademk,46,180,4	duplicate(PN Services)	PN Services#grade	4_M_01
+
+guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
+	if (!instance_id()) { mes "Use PN Services to create your private lab."; close; }
+	// Attached scripts stop on logout. Expire their lock and clean up on re-entry.
+	if ('Running && gettimetick(2) >= 'Until) {
+		killmonsterall instance_mapname("guild_vs1");
+		'Running = 0;
+	}
+	if ('Running) { mes "A test is already running. Wait up to 75 seconds after an interrupted run."; close; }
+	mes "[Private Damage Lab]";
+	mes "60-second HP-loss measurement. No rewards. Use identical gear, buffs, element and rotation for comparisons.";
+	mes "Target cannot move or attack and is status/knockback immune. This is a controlled dummy, not a full boss encounter.";
+	switch(select("Configure and run:Last result:Exit and destroy room")) {
+	case 2:
+		mes "Last run: " + @PNLabLabel$;
+		mes "Damage: " + @PNLabDamage + "; elapsed ms: " + @PNLabMs;
+		mes "DPS: " + @PNLabDps;
+		close;
+	case 3:
+		.@id = instance_id();
+		warp "izlude",140,144;
+		instance_destroy .@id;
+		end;
+	}
+	mes "Give this run a short label (e.g. Fenrir / Ultra).";
+	input .@label$;
+	mes "Size:"; .@size = select("Small:Medium:Large")-1;
+	mes "Race:"; .@race = select("Formless:Undead:Brute:Plant:Insect:Fish:Demon:Demi-Human:Angel:Dragon")-1;
+	mes "Defending element:"; .@element = select("Neutral:Water:Earth:Fire:Wind:Poison:Holy:Dark:Ghost:Undead")-1;
+	mes "Element level (1-4):"; input .@elelv,1,4;
+	mes "MDEF (0-1000):"; input .@mdef,0,1000;
+	mes "MRES (0-1000):"; input .@mres,0,1000;
+	mes "Prepare all buffs before continuing. Timing starts after the countdown.";
+	mes "Boss-only bonuses are NOT represented by this normal-class dummy.";
+	if (select("Start:Cancel")==2) close;
+	close2;
+	'Running = 1;
+	'Until = gettimetick(2)+75;
+	.@map$ = instance_mapname("guild_vs1");
+	killmonsterall .@map$;
+	monster .@map$,50,50,"Damage Lab Target",1002,1;
+	.@mob = $@mobid[0];
+	setunitdata .@mob,UMOB_MODE,MD_STATUSIMMUNE|MD_KNOCKBACKIMMUNE;
+	setunitdata .@mob,UMOB_SIZE,.@size;
+	setunitdata .@mob,UMOB_RACE,.@race;
+	setunitdata .@mob,UMOB_ELETYPE,.@element;
+	setunitdata .@mob,UMOB_ELELEVEL,.@elelv;
+	setunitdata .@mob,UMOB_DEF,0;
+	setunitdata .@mob,UMOB_MDEF,.@mdef;
+	setunitdata .@mob,UMOB_MRES,.@mres;
+	setunitdata .@mob,UMOB_FLEE,0;
+	setunitdata .@mob,UMOB_MAXHP,2000000000;
+	setunitdata .@mob,UMOB_HP,2000000000;
+	setunitdata .@mob,UMOB_DMGIMMUNE,1;
+	for (.@i=3; .@i>0; .@i--) { dispbottom "Test starts in " + .@i; sleep2 1000; }
+	setunitdata .@mob,UMOB_DMGIMMUNE,0;
+	.@start = gettimetick(0);
+	dispbottom "GO: 60 seconds. Keep equipment and buffs consistent.";
+	while (gettimetick(0)-.@start < 60000) {
+		sleep2 100;
+		if (strcharinfo(3) != .@map$ || !unitexists(.@mob)) { .@invalid=1; break; }
+		getunitdata .@mob,.@data;
+		.@damage += 2000000000-.@data[UMOB_HP];
+		setunitdata .@mob,UMOB_HP,2000000000;
+	}
+	.@elapsed = gettimetick(0)-.@start;
+	if (unitexists(.@mob)) setunitdata .@mob,UMOB_DMGIMMUNE,1;
+	killmonsterall .@map$;
+	'Running = 0;
+	if (.@invalid) { dispbottom "INVALID: left room or target died. No DPS result saved."; end; }
+	@PNLabLabel$ = .@label$;
+	@PNLabDamage = .@damage;
+	@PNLabMs = .@elapsed;
+	@PNLabDps = .@damage*1000/max(1,.@elapsed);
+	dispbottom "RESULT " + .@label$ + ": damage=" + .@damage + " time_ms=" + .@elapsed + " DPS=" + @PNLabDps;
+	logmes "PNLAB label="+.@label$+" damage="+.@damage+" ms="+.@elapsed+" size="+.@size+" race="+.@race+" element="+.@element+" elelv="+.@elelv+" mdef="+.@mdef+" mres="+.@mres;
+	end;
+OnInstanceInit:
+	'Running = 0;
+	setmapflag instance_mapname("guild_vs1"),mf_nobranch;
+	setmapflag instance_mapname("guild_vs1"),mf_nomemo;
+	setmapflag instance_mapname("guild_vs1"),mf_noteleport;
+	setmapflag instance_mapname("guild_vs1"),mf_monster_noteleport;
+	setmapflag instance_mapname("guild_vs1"),mf_nowarpto;
+	setmapflag instance_mapname("guild_vs1"),mf_partylock;
+	setmapflag instance_mapname("guild_vs1"),mf_restricted,7;
+	setmapflag instance_mapname("guild_vs1"),mf_noexp;
+	setmapflag instance_mapname("guild_vs1"),mf_noloot;
+	setmapflagnosave instance_mapname("guild_vs1"),"izlude",140,144;
+	end;
+}

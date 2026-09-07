@@ -1,0 +1,13 @@
+Header:
+  Type: INSTANCE_DB
+  Version: 2
+Body:
+  - Id: 1000
+    Name: PN Damage Lab
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    NoMapFlag: true
+    Enter:
+      Map: guild_vs1
+      X: 50
+      Y: 45

@@ -50,3 +50,4 @@ Footer:
   - Path: db/import/instance_db.yml
   - Path: db/import/episode20_instance_db.yml
   - Path: db/import/chapter2_instance_db.yml
+  - Path: db/import/quality_lab_instance_db.yml
