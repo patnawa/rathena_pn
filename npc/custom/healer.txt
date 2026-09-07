@@ -68,6 +68,10 @@ geffen,115,72,6	duplicate(Healer)	Healer#gef	909
 gonryun,156,122,6	duplicate(Healer)	Healer#gon	909
 hugel,89,150,6	duplicate(Healer)	Healer#hug	909
 izlude,121,150,6	duplicate(Healer)	Healer#izl	909	//Pre-RE: (125,118)
+izlude_a,121,150,6	duplicate(Healer)	Healer#izla	909
+izlude_b,121,150,6	duplicate(Healer)	Healer#izlb	909
+izlude_c,121,150,6	duplicate(Healer)	Healer#izlc	909
+izlude_d,121,150,6	duplicate(Healer)	Healer#izld	909
 jawaii,250,139,4	duplicate(Healer)	Healer#jaw	909
 lighthalzen,152,100,6	duplicate(Healer)	Healer#lhz	909
 louyang,226,103,4	duplicate(Healer)	Healer#lou	909

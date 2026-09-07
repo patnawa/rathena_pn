@@ -16626,8 +16626,8 @@ Body:
     Script: |
       bonus bMatk,20;
       bonus2 bMagicAddSize,Size_All,10;
-      bonus2 bSkillAtk,"WZ_METEORSTORM",min(BaseLevel,180)/15*2;
-      autobonus3 "{ bonus2 bSkillAtk,\"WZ_METEORSTORM\",35; }",1000,60000,"ST_PRESERVE";
+      bonus2 bSkillAtk,"WZ_METEOR",min(BaseLevel,180)/15*2;
+      autobonus3 "{ bonus2 bSkillAtk,\"WZ_METEOR\",35; }",1000,60000,"ST_PRESERVE";
   - Combos:
       - Combo:
           - Boost_Dagger    # 510001
@@ -33548,7 +33548,7 @@ Body:
     Script: |
       if (getequiprefinerycnt(EQI_SHOES)+getequiprefinerycnt(EQI_HEAD_TOP) >= 21) {
          bonus2 bSkillAtk,"MG_COLDBOLT",50;
-         autobonus "{ bonus2 bSkillAtk,\"MG_COLDBOLT\",100; bonus2 bSkillAtk,\"MG_FIREBOLTBOLT\",100; bonus2 bSkillAtk,\"MG_LIGHTNINGBOLT\",100; }",15,10000,BF_WEAPON|BF_MAGIC;
+         autobonus "{ bonus2 bSkillAtk,\"MG_COLDBOLT\",100; bonus2 bSkillAtk,\"MG_FIREBOLT\",100; bonus2 bSkillAtk,\"MG_LIGHTNINGBOLT\",100; }",15,10000,BF_WEAPON|BF_MAGIC;
       }
   - Combos:
       - Combo:

@@ -1712,7 +1712,7 @@ int32 skill_onskillusage(map_session_data *sd, block_list *bl, uint16 skill_id, 
 			for (auto &it : sd->autobonus3) {
 				if (it == nullptr)
 					continue;
-				if (rnd_value(0, 1000) >= it->rate)
+				if (rnd_value(0, 999) >= it->rate)
 					continue;
 				if (it->atk_type != skill_id)
 					continue;
@@ -1726,7 +1726,7 @@ int32 skill_onskillusage(map_session_data *sd, block_list *bl, uint16 skill_id, 
 			for (auto &it : sd->pd->autobonus3) {
 				if (it == nullptr)
 					continue;
-				if (rnd_value(0, 1000) >= it->rate)
+				if (rnd_value(0, 999) >= it->rate)
 					continue;
 				if (it->atk_type != skill_id)
 					continue;

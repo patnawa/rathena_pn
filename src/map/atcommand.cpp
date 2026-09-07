@@ -2192,10 +2192,10 @@ ACMD_FUNC(go)
 	memset(map_name, '\0', sizeof(map_name));
 	memset(atcmd_output, '\0', sizeof(atcmd_output));
 
-	// get the number
-	town = atoi(message);
+	// Unknown names must not silently become destination zero (atoi).
+	town = -1;
 
-	if (!message || !*message || sscanf(message, "%11s", map_name) < 1 || town < 0 || town >= ARRAYLENGTH(data))
+	if (!message || !*message || sscanf(message, "%11s", map_name) < 1)
 	{// no value matched so send the list of locations
 		const char* text;
 
@@ -2210,6 +2210,14 @@ ACMD_FUNC(go)
 		}
 
 		return -1;
+	}
+
+	// Accept only a complete unsigned destination number, without overflow.
+	if (strspn(message, "0123456789") == strlen(message)) {
+		char* number_end = nullptr;
+		long number = strtol(message, &number_end, 10);
+		if (*number_end == '\0' && number >= 0 && number < ARRAYLENGTH(data))
+			town = static_cast<int32>(number);
 	}
 
 	// get possible name of the city
@@ -2301,7 +2309,7 @@ ACMD_FUNC(go)
 		town = 35;
 	} else if (strncmp(map_name, "lasagna", 2) == 0) {
 		town = 36;
-	} else if (strncmp(map_name, "icecastle", 3) == 0 || strncmp(map_name, "isgard", 3) == 0 || strncmp(map_name, "issgard", 3) == 0) {
+	} else if (strncmp(map_name, "icecastle", 3) == 0 || strcmp(map_name, "isgard") == 0 || strcmp(map_name, "issgard") == 0) {
 		town = 37;
 	} else if (strncmp(map_name, "rockridge", 4) == 0 || strncmp(map_name, "harboro1", 4) == 0) {
 		town = 38;
@@ -2349,6 +2357,15 @@ ACMD_FUNC(go)
 		town = 59;
 	} else if (strcmp(map_name, "mall") == 0 || strcmp(map_name, "servicemall") == 0 || strcmp(map_name, "service_mall") == 0 || strcmp(map_name, "itemmall") == 0) {
 		town = 60;
+	}
+
+	// Exact configured map names outrank legacy abbreviations. In particular,
+	// jor_albe/base/crk/tail must not all match the earlier jor_mbase prefix.
+	for (i = 0; i < ARRAYLENGTH(data); ++i) {
+		if (strcmp(map_name, data[i].map) == 0) {
+			town = i;
+			break;
+		}
 	}
 
 	if (town >= 0 && town < ARRAYLENGTH(data))

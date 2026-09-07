@@ -862,7 +862,7 @@ foreach ($relative in @('db/re/item_enchant.yml', 'db/import/item_enchant.yml', 
 foreach ($id in @(7,8,9,10,11,12,13,15,16,17,18,19,52,53,54,55,117,118,119,120,121,122,123,124,128,142,163,164)) {
 	if (!$workshopGroupIds.Contains($id)) { Fail "Grade Workshop NPC references missing enchant group $id" }
 }
-if ($workshopService -notmatch 'grademk,40,184,4\s+script\s+Shadow Gear Enchanter#grademk' -or $workshopService -notmatch 'item_enchant\(128\);') {
+if ($workshopService -notmatch 'grademk,40,180,4\s+script\s+Shadow Gear Enchanter#grademk' -or $workshopService -notmatch 'item_enchant\(128\);') {
 	Fail 'Shadow Gear Enchanter service or group-128 entry point is missing'
 }
 Write-Host '  Grade Workshop native enchant dependencies: 28 groups'

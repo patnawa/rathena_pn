@@ -221,7 +221,8 @@ OnInit:
 	end;
 }
 
-grademk,40,184,4	script	Shadow Gear Enchanter#grademk	4_M_REPAIR,{
+// Clear floor below the service counters; (40,184) is a blocked wall tile.
+grademk,40,180,4	script	Shadow Gear Enchanter#grademk	4_M_REPAIR,{
 	mes "[Shadow Gear Enchanter]";
 	mes "I enchant Full Power, Full Rate and Full Spell Shadow armor and shoes.";
 	mes "I also handle Focusing, Stout, Centering and Witty Shadow pendants and earrings.";

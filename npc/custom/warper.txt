@@ -1625,6 +1625,10 @@ gonryun,162,122,4	duplicate(Warper)	Warper#gon	811
 hugel,101,151,4	duplicate(Warper)	Warper#hug	811
 izlu2dun,110,92,4	duplicate(Warper)	Warper#izd	811
 izlude,134,150,4	duplicate(Warper)	Warper#izl	811	//Pre-RE: (132,120)
+izlude_a,134,150,4	duplicate(Warper)	Warper#izla	811
+izlude_b,134,150,4	duplicate(Warper)	Warper#izlb	811
+izlude_c,134,150,4	duplicate(Warper)	Warper#izlc	811
+izlude_d,134,150,4	duplicate(Warper)	Warper#izld	811
 jawaii,253,138,4	duplicate(Warper)	Warper#jaw	811
 lighthalzen,162,102,4	duplicate(Warper)	Warper#lhz	811
 louyang,208,103,6	duplicate(Warper)	Warper#lou	811

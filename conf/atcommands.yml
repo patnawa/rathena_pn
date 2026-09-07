@@ -474,10 +474,11 @@ Body:
   - Command: go
     Help: |
       Params: <city name|number>
-      Warps you to a city.
-      -3: (Memo point 2)  14: louyang         31: mora
-      -2: (Memo point 1)  15: start point     32: dewata
-      -1: (Memo point 0)  16: prison/jail     33: malangdo island
+      Warps to a listed destination (0-60). Exact listed map names also work.
+      Use the Warper NPC for additional progression-gated routes.
+      14: louyang         31: mora
+      15: start point     32: dewata
+      16: prison/jail     33: malangdo island
        0: prontera              17: jawaii             34: malaya port
        1: morocc                18: ayothaya       35: eclage
        2: geffen                  19: einbroch       36: lasagna
@@ -495,6 +496,7 @@ Body:
       42: ashwood             50: rudus             58: cat on a bullet
       43: lunaforma base      51: amicitia          59: training zone
       44: fishing alberta     52: oz labyrinth
+      60: service mall (itemmall)
        9: yuno                     26: midgard camp
       10: amatsu               27: manuk
       11: gonryun              28: splendide
