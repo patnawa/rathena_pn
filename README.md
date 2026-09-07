@@ -1,81 +1,118 @@
-<img src="doc/logo.png" align="right" height="90" />
+# rAthena PN — Renewal Server Build
 
-# rAthena
-![clang](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_clang.yml?label=clang%20build&logo=llvm) 
-![cmake](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_cmake.yml?label=cmake%20build&logo=cmake)
-![gcc](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_gcc.yml?label=gcc%20build&logo=gnu) 
-![ms](https://img.shields.io/github/actions/workflow/status/rathena/rathena/build_servers_msbuild.yml?label=ms%20build&logo=visualstudio) 
-![GitHub](https://img.shields.io/github/license/rathena/rathena.svg) 
-![commit activity](https://img.shields.io/github/commit-activity/w/rathena/rathena) 
-![GitHub repo size](https://img.shields.io/github/repo-size/rathena/rathena.svg)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rathena/rathena)
+A customized Ragnarok Online Renewal server built on rAthena, bringing together expanded class support, endgame content, equipment progression, and coordinated client compatibility work.
 
+This repository contains our server source, custom databases and NPC scripts, client patch tooling, and engineering documentation. It is a customization of rAthena, not an official upstream release or a complete game-client distribution.
 
-> rAthena is a collaborative software development project revolving around the creation of a robust massively multiplayer online role playing game (MMORPG) server package. Written in C++, the program is very versatile and provides NPCs, warps and modifications. The project is jointly managed by a group of volunteers located around the world as well as a tremendous community providing QA and support. rAthena is a continuation of the eAthena project.
+[Features](#features) · [Getting started](#getting-started) · [Client compatibility](#client-compatibility) · [Validation](#validation) · [Documentation](#documentation) · [License](#license)
 
-[Forum](https://rathena.org/board)|[Discord](https://rathena.org/discord)|[Wiki](https://github.com/rathena/rathena/wiki)|[FluxCP](https://github.com/rathena/FluxCP)|[Crowdfunding](https://rathena.org/board/crowdfunding/)|[Fork and Pull Request Q&A](https://rathena.org/board/topic/86913-pull-request-qa/)
---------|--------|--------|--------|--------|--------
+## Features
 
-### Table of Contents
-1. [Prerequisites](#1-prerequisites)
-2. [Installation](#2-installation)
-3. [Troubleshooting](#3-troubleshooting)
-4. [More Documentation](#4-more-documentation)
-5. [How to Contribute](#5-how-to-contribute)
-6. [License](#6-license)
+### Classes and combat
 
-## 1. Prerequisites
-Before installing rAthena there are certain tools and applications you will need which
-differs between the varying operating systems available.
+- Renewal and fourth-job systems, with custom combat and equipment integration.
+- Druid → Karnos → Alitea progression, including skills, transformations, job handling, equipment eligibility, and progression services.
+- Druid-specific equipment, crowns, acquisition routes, and shadow enchant support.
 
-### Hardware
-Hardware Type | Minimum | Recommended
-------|------|------
-CPU | 1 Core | 2 Cores
-RAM | 1 GB | 2 GB
-Disk Space | 300 MB | 500 MB
+See the [Druid integration notes](doc/druid_integration.md) and [client/progression coverage](doc/druid_client_progression.md) for provenance and implementation limits. Server implementation does not imply complete client rendering or gameplay certification.
 
-### Operating System & Preferred Compiler
-Operating System | Compiler
-------|------
-Linux  | [gcc-6 or newer](https://www.gnu.org/software/gcc/gcc-6/) / [Make](https://www.gnu.org/software/make/)
-Windows | [MS Visual Studio 2017 or newer](https://www.visualstudio.com/downloads/)
+### World and progression
 
-### Required Applications
-Application | Name
-------|------
-Database | [MySQL 5 or newer](https://www.mysql.com/downloads/) / [MariaDB 5 or newer](https://downloads.mariadb.org/)
-Git | [Windows](https://gitforwindows.org/) / [Linux](https://git-scm.com/download/linux)
+- Custom episode progression and access services, with targeted quest, reward, re-entry, and party-progression fixes.
+- Varmundt Biosphere services and Depth 2 access, plus Zero Cell monster and reward definitions.
+- Grademk equipment services, healer-related fixes, and corrected travel entry points.
+- Reputation initialization on login and map changes, with supporting deployment notes.
 
-### Optional Applications
-Application | Name
-------|------
-Database | [MySQL Workbench 5 or newer](http://www.mysql.com/downloads/workbench/)
+### Equipment and enchantments
 
-## 2. Installation 
+- Native enchant-window integration for supported equipment groups.
+- Grade Workshop services for equipment families including Constellation, seasonal gear, Frontier, Time Dimensions, and Biosphere.
+- Ordinary and guaranteed upgrade handling, with recipe and client metadata audits.
+- Inventory-preserving enchant changes and targeted checks for eligibility, material costs, capacity, and stale item state.
 
-### Full Installation Instructions
-  * [Windows](https://github.com/rathena/rathena/wiki/Install-on-Windows)
-  * [CentOS](https://github.com/rathena/rathena/wiki/Install-on-Centos)
-  * [Debian](https://github.com/rathena/rathena/wiki/Install-on-Debian)
-  * [FreeBSD](https://github.com/rathena/rathena/wiki/Install-on-FreeBSD)
+### Engineering and operations
 
-## 3. Troubleshooting
+- Docker build and runtime definitions for database and server services.
+- Scoped client patch generators and installers with compatibility documentation.
+- Source-level audits, native regression tests, and isolated startup validation tooling.
+- Deployment records covering verification evidence, rollback preparation, and remaining checks.
 
-If you're having problems with starting your server, the first thing you should
-do is check what's happening on your consoles. More often that not, all support issues
-can be solved simply by looking at the error messages given. Check out the [wiki](https://github.com/rathena/rathena/wiki)
-or [forums](https://rathena.org/board) if you need more support on troubleshooting.
+## Repository layout
 
-## 4. More Documentation
-rAthena has a large collection of help files and sample NPC scripts located in the /doc/
-directory. These include detailed explanations of NPC script commands, atcommands (@),
-group permissions, item bonuses, and packet structures, among many other topics. We
-recommend that all users take the time to look over this directory before asking for
-assistance elsewhere.
+| Path | Purpose |
+| --- | --- |
+| [src/](src/) | Server engine, networking, combat, and scripting |
+| [db/import/](db/import/) | Custom database definitions and overrides |
+| [npc/custom/](npc/custom/) | Custom NPCs, services, and progression scripts |
+| [conf/](conf/) | Server configuration and import structure |
+| [sql-files/](sql-files/) | Database schemas and upgrade scripts |
+| [client-patch/](client-patch/) | Client compatibility patches and tooling |
+| [tools/docker/](tools/docker/) | Container definitions and build helpers |
+| [tools/ci/](tools/ci/) | Audits, regression tests, and validation utilities |
+| [doc/](doc/) | Technical references and deployment records |
 
-## 5. How to Contribute
-Details on how to contribute to rAthena can be found in [CONTRIBUTING.md](https://github.com/rathena/rathena/blob/master/.github/CONTRIBUTING.md)!
+## Getting started
 
-## 6. License
-Copyright (c) rAthena Development Team - Licensed under [GNU General Public License v3.0](https://github.com/rathena/rathena/blob/master/LICENSE)
+Treat a fresh checkout as a development environment first. The supplied Docker configuration is a starting point, **not a hardened production deployment**.
+
+1. Review the [Docker setup](tools/docker/README.md), [configuration guide](conf/readme.md), and [database notes](sql-files/README.md).
+2. Prepare an isolated database and local configuration. Replace example credentials, set correct advertised addresses, and restrict database access before exposing services.
+3. Select the client executable and matching packet version before compiling. Do not assume the sample Docker packet version matches the deployed client.
+4. Build compatible login, character, and map binaries together. Shared structure changes require coordinated rebuilds; mixing older character binaries with newer map binaries can prevent login.
+5. Apply the required client patches and run relevant audits and isolated startup checks before admitting players.
+
+Use the [login/character compatibility repair](doc/login_character_abi_repair_20260907.md) and [Druid deployment requirements](doc/druid_integration.md#deployment-requirement) as references when changing shared server structures.
+
+### Deployment discipline
+
+- Back up the database, configuration, and previous binaries before changes.
+- Keep credentials, account data, and private deployment details out of commits.
+- Review schema upgrades individually; do not re-import initialization SQL into an existing live database.
+- Validate in an isolated candidate environment, then coordinate service restarts during maintenance.
+- Inspect logs and test login, character loading, map travel, and changed gameplay after deployment. A running container alone does not establish a successful release.
+
+## Client compatibility
+
+Server data and client resources must be released as a matched set. Adding an item, job, map, or enchant recipe on the server does not automatically supply its client metadata, sprites, or interface support.
+
+Start with the relevant package:
+
+- [Druid item patch](client-patch/druid_items/README.md) and [compatibility report](doc/druid_item_compatibility.md)
+- [Chapter 2 native enchant integration](client-patch/chapter2_native/README.md)
+- [Biosphere patch](client-patch/biosphere/README.md)
+- [Zero Cell patch](client-patch/zero_cell/README.md)
+- [Enchant target metadata](client-patch/enchant_target_metadata/README.md)
+
+Follow each package's prerequisites and installation instructions. Some tools generate review artifacts only; generation is not installation. Preserve the intended GRF load order and test the actual client executable. External reference archives are not automatically authorized for redistribution.
+
+## Validation
+
+Run checks from the repository root. Python audits may require PyYAML; native tests and client-resource tests have additional dependencies documented alongside their runners.
+
+For example, run the strict episode integrity audit through PowerShell:
+
+```powershell
+powershell -NoProfile -File tools/audit_episode_integrity.ps1 -StrictContent
+```
+
+Choose regression tests for the area being changed rather than treating one audit as a full release gate. See [Druid reproducible checks](doc/druid_integration.md#reproducible-checks), [native script VM tests](tools/ci/native_script_vm_README.md), and [enchant protocol evidence](doc/enchant_upgrade_protocol.md).
+
+**Verification scope:** source checks and clean startup logs are not substitutes for end-to-end playthroughs. Episode encounters, class behavior, reward flows, and client interactions have separate coverage limits. Consult the dated [episode audit status](doc/episode_audit_status.md) and feature-specific reports for evidence; historical deployment records are not a live health dashboard.
+
+## Documentation
+
+- [Grademk equipment services](doc/grademk_equipment_service_audit.md)
+- [Druid gear and enchants](doc/druid_gear_enchants_audit.md)
+- [Chapter 2 client coverage](doc/chapter2_native_client_coverage.md)
+- [Reputation, Constellation travel, and Depth 2 repairs](doc/reputation_login_and_go55_repair_20260907.md)
+- [Script commands](doc/script_commands.txt), [item bonuses](doc/item_bonus.txt), and [GM commands](doc/atcommands.txt)
+
+## Contributing
+
+Keep changes scoped and preserve unrelated customizations. Include affected server definitions, client requirements, regression checks, and deployment or rollback notes where applicable. Report what was tested and what still requires in-game verification. Follow the [contribution guidelines](.github/CONTRIBUTING.md) for upstream conventions.
+
+## License
+
+Based on rAthena, with credit to the rAthena Development Team, the eAthena project, and their contributors. Original copyright and attribution notices are retained in the source.
+
+The server source is distributed under the [GNU General Public License v3.0](LICENSE). Third-party components retain their respective licenses. This server-source license does not grant rights to redistribute Ragnarok Online client assets or third-party GRF archives.
