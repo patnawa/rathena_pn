@@ -37,6 +37,10 @@ def run(build, sanitizer):
         raise SystemExit('The effective Renewal imports must contain reviewed group 128 with 14 targets')
     if 166 not in groups or len(groups[166]['Targets']) != 4:
         raise SystemExit('The effective Renewal imports must contain reviewed group 166 with four targets')
+    if any(group not in groups for group in range(70, 89)) or sum(len(groups[group]['Targets']) for group in range(70, 89)) != 74:
+        raise SystemExit('The effective Renewal imports must contain Master groups 70 through 88 with 74 targets')
+    if any(groups[group].get('Reset', {}).get('Enabled', False) for group in (*range(70, 89), 128, 166)):
+        raise SystemExit('Shadow service no-reset description no longer matches effective recipes')
     expected = {24872: ('S_Full_Power_Armor', 'ShadowGear'), 1001253: ('S_Enchant_Essence', 'Etc')}
     items = {}
     for record in renewal_records(ROOT, 'db/item_db.yml'):
@@ -46,7 +50,7 @@ def run(build, sanitizer):
         actual = (items.get(item_id, {}).get('AegisName'), items.get(item_id, {}).get('Type'))
         if actual != metadata:
             raise SystemExit(f'Synthetic inventory identity drift: {item_id}: {actual} != {metadata}')
-    print('Effective groups 128/166 and synthetic inventory identities verified; native fixture tests existence only', flush=True)
+    print('Effective groups 70-88/128/166, disabled resets and synthetic inventory identities verified; native fixture tests existence only', flush=True)
     npc = ROOT / 'npc/custom/grademk_services.txt'
     print('Production NPC source SHA256 ' + hashlib.sha256(npc.read_bytes()).hexdigest(), flush=True)
     objects = sorted(p for p in (ROOT / 'src/map/obj').rglob('*.o') if p.name != 'script.o')
@@ -82,10 +86,12 @@ def run(build, sanitizer):
         raise SystemExit('Native sanitizer/allocator/error diagnostic detected')
     if 'Memory manager: No memory leaks found.' not in result.stdout:
         raise SystemExit('Native allocator did not confirm clean teardown')
-    for case in ('Cancel', 'Open', 'Alitea', 'Escape'):
-        if result.stdout.count('SHADOW_SERVICE_CASE_PASS: ' + case) != 1:
-            raise SystemExit('Missing or duplicate actual-VM completion marker for ' + case)
-    if 'PASS actual Shadow Gear Enchanter VM: 4 paths;' not in result.stdout:
+    cases = [(2, 0), (1, 0), (3, 0), (255, 0)] + [(4, family) for family in range(1, 21)] + [(4, 255)]
+    for main, sub in cases:
+        marker = f'SHADOW_SERVICE_CASE_PASS: main={main} sub={sub}\n'
+        if result.stdout.count(marker) != 1:
+            raise SystemExit('Missing or duplicate actual-VM completion marker for ' + marker.strip())
+    if 'PASS actual Shadow Gear Enchanter VM: 25 paths;' not in result.stdout:
         raise SystemExit('Native postconditions did not complete')
 
 

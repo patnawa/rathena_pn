@@ -99,3 +99,4 @@ Footer:
   - Path: db/import/constellation_tower_mob_db.yml
   - Path: db/import/airship_crash_mob_db.yml
   - Path: db/import/garden_of_time_combat_mob_db.yml
+  - Path: db/import/rune_tablet_mob_groups.yml

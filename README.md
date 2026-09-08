@@ -59,6 +59,9 @@ Locations below come from the enabled custom NPC scripts. GM accounts can use
 
 | Service | Location | Function |
 | --- | --- | --- |
+| Main Office | `@office` / `pn_office,100,40` | Searchable directory across 50 lobby, training and fashion desks |
+| Rune Tablet | Office training floor and `grademk,46,178` | Account collection/rewards; character tablets and enhancement |
+| Battle statistics | `@battlestats` / `@bs`, `@battlestats2` / `@bs2` | Offensive and defensive snapshots with detailed, paginated modifiers |
 | PN Services | `izlude,140,146` and `grademk,46,180` | Damage lab, access diagnostics, navigation |
 | Skill Supplies | `izlude,137,150` and `grademk,42,180` | Consumables required to use skills |
 | Reset Girl | `prontera,150,193` | Skills: 5,000 zeny; stats: 5,000 zeny; both: 9,000 zeny |
@@ -68,6 +71,14 @@ Locations below come from the enabled custom NPC scripts. GM accounts can use
 PN Services and Skill Supplies also have placements on the configured Izlude
 variants. The reset and card removal NPCs are enabled through
 [`npc/scripts_custom.conf`](npc/scripts_custom.conf).
+
+The [Main Office guide](doc/main_office.md) covers its three maps, client patch,
+service behavior and rollout. Rune Tablet uses NPC menus with account-shared
+piece unlocks and one active character tablet; see
+[transactions and persistence](doc/rune_tablet_transactions.md) and
+[bonus implementation](doc/pn_rune_tablet_bonus_notes.md).
+Use `@bs help`, `@bs race`, `@bs casting` or `@bs2 element` to inspect a build;
+the [battle-stat guide](doc/pn_battlestats.md) explains the values and limits.
 
 **Card removal terms:** 200,000 zeny plus 25,000 per card, one Star Crumb, and one
 Yellow Gemstone. Current failure outcomes can destroy cards, equipment, or both.
@@ -190,8 +201,14 @@ Choose regression tests for the area being changed rather than treating one audi
 
 ## Documentation
 
+- [2026-09-08 service release, validation and rollback](doc/pn_services_release_20260908.md)
 - [Docker build and development](tools/docker/README.md)
 - [PN Services and damage lab](doc/quality_services.md)
+- [Main Office and client installation](doc/main_office.md)
+- [Battle-stat commands](doc/pn_battlestats.md)
+- [Rune Tablet transactions](doc/rune_tablet_transactions.md) and [bonuses](doc/pn_rune_tablet_bonus_notes.md)
+- [Chapter 2 reference audit](doc/chapter2_reference_audit_20260908.md) and [progression repairs](doc/chapter2_runtime_audit_20260908.md)
+- [Shadow Gear coverage audit](doc/shadow_gear_reference_audit_20260908.md)
 - [Reset and card removal activation](doc/reset_services_deployment_20260908.md)
 - [Grademk equipment services](doc/grademk_equipment_service_audit.md)
 - [Druid gear and enchants](doc/druid_gear_enchants_audit.md)

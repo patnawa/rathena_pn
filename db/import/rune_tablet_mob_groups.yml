@@ -1,0 +1,664 @@
+# PN Rune Tablet episode damage groups.
+# Explicit membership follows the existing database EP18_/EP19_/EP20_/EP21_
+# AegisName namespaces, including instance variants. Never inferred from ID ranges.
+# This overlay adds only RaceGroups; existing stats, drops and groups are retained.
+Header:
+  Type: MOB_DB
+  Version: 5
+Body:
+  # EP18_ARMED_VILLAGER01 (db/re/mob_db.yml)
+  - Id: 21292
+    RaceGroups:
+      PN_EP18: true
+  # EP18_ARMED_VILLAGER02 (db/re/mob_db.yml)
+  - Id: 21293
+    RaceGroups:
+      PN_EP18: true
+  # EP18_ARMED_VILLAGER03 (db/re/mob_db.yml)
+  - Id: 21294
+    RaceGroups:
+      PN_EP18: true
+  # EP18_ASH_TOAD (db/re/mob_db.yml)
+  - Id: 21295
+    RaceGroups:
+      PN_EP18: true
+  # EP18_RAKEHAND (db/re/mob_db.yml)
+  - Id: 21296
+    RaceGroups:
+      PN_EP18: true
+  # EP18_SPARK (db/re/mob_db.yml)
+  - Id: 21297
+    RaceGroups:
+      PN_EP18: true
+  # EP18_HOT_MOLAR (db/re/mob_db.yml)
+  - Id: 21298
+    RaceGroups:
+      PN_EP18: true
+  # EP18_VOLCARING (db/re/mob_db.yml)
+  - Id: 21299
+    RaceGroups:
+      PN_EP18: true
+  # EP18_LAVA_TOAD (db/re/mob_db.yml)
+  - Id: 21300
+    RaceGroups:
+      PN_EP18: true
+  # EP18_BURNING_FANG (db/re/mob_db.yml)
+  - Id: 21301
+    RaceGroups:
+      PN_EP18: true
+  # EP18_ASHHOPPER (db/re/mob_db.yml)
+  - Id: 21302
+    RaceGroups:
+      PN_EP18: true
+  # EP18_ASHRING (db/re/mob_db.yml)
+  - Id: 21303
+    RaceGroups:
+      PN_EP18: true
+  # EP18_GREY_WOLF (db/re/mob_db.yml)
+  - Id: 21304
+    RaceGroups:
+      PN_EP18: true
+  # EP18_TUMBLE_RING (db/re/mob_db.yml)
+  - Id: 21305
+    RaceGroups:
+      PN_EP18: true
+  # EP18_FIREWIND_KITE (db/re/mob_db.yml)
+  - Id: 21306
+    RaceGroups:
+      PN_EP18: true
+  # EP18_PHANTOM_WOLF (db/re/mob_db.yml)
+  - Id: 21307
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_HEARTHUNTER_A (db/re/mob_db.yml)
+  - Id: 21308
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_THOR_GUARD (db/re/mob_db.yml)
+  - Id: 21309
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_GUARD_A (db/re/mob_db.yml)
+  - Id: 21310
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_GUARD_B (db/re/mob_db.yml)
+  - Id: 21311
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_HEARTHUNTER_R (db/re/mob_db.yml)
+  - Id: 21312
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_HEARTHUNTER_F (db/re/mob_db.yml)
+  - Id: 21313
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_SCHULANG (db/re/mob_db.yml)
+  - Id: 21314
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_DEMI_FREYJA (db/re/mob_db.yml)
+  - Id: 21315
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_SCHULANG_R (db/re/mob_db.yml)
+  - Id: 21316
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_DEMI_FREYJA_R (db/re/mob_db.yml)
+  - Id: 21317
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_SANARE_R (db/re/mob_db.yml)
+  - Id: 21318
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_HEARTHUNTER_R2 (db/re/mob_db.yml)
+  - Id: 21319
+    RaceGroups:
+      PN_EP18: true
+  # EP18_NPC_MARAM (db/re/mob_db.yml)
+  - Id: 21320
+    RaceGroups:
+      PN_EP18: true
+  # EP18_NPC_MIRIAM (db/re/mob_db.yml)
+  - Id: 21321
+    RaceGroups:
+      PN_EP18: true
+  # EP18_NPC_SUAD (db/re/mob_db.yml)
+  - Id: 21322
+    RaceGroups:
+      PN_EP18: true
+  # EP18_GREY_GOAT (db/re/mob_db.yml)
+  - Id: 21323
+    RaceGroups:
+      PN_EP18: true
+  # EP18_GREY_WOLF_BABY (db/re/mob_db.yml)
+  - Id: 21324
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_SCHULANG_L (db/re/mob_db.yml)
+  - Id: 21360
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_DEMI_FREYJA_L (db/re/mob_db.yml)
+  - Id: 21361
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_SANARE_L (db/re/mob_db.yml)
+  - Id: 21377
+    RaceGroups:
+      PN_EP18: true
+  # EP18_MD_HEARTHUNTER_L (db/re/mob_db.yml)
+  - Id: 21378
+    RaceGroups:
+      PN_EP18: true
+  # EP19_NPC_IWIN (db/import/mob_db.yml)
+  - Id: 21513
+    RaceGroups:
+      PN_EP19: true
+  # EP19_NPC_IWIN_SN (db/import/mob_db.yml)
+  - Id: 21514
+    RaceGroups:
+      PN_EP19: true
+  # EP19_NPC_IWIN_SY (db/import/mob_db.yml)
+  - Id: 21515
+    RaceGroups:
+      PN_EP19: true
+  # EP19_NPC_IWIN_SB (db/import/mob_db.yml)
+  - Id: 21516
+    RaceGroups:
+      PN_EP19: true
+  # EP19_NPC_IWIN_SG (db/import/mob_db.yml)
+  - Id: 21517
+    RaceGroups:
+      PN_EP19: true
+  # EP19_NPC_IWIN_SR (db/import/mob_db.yml)
+  - Id: 21518
+    RaceGroups:
+      PN_EP19: true
+  # EP19_NPC_LEHAR (db/import/mob_db.yml)
+  - Id: 21519
+    RaceGroups:
+      PN_EP19: true
+  # EP19_LIMACINA (db/import/mob_db.yml)
+  - Id: 21520
+    RaceGroups:
+      PN_EP19: true
+  # EP19_UNFROST_FLOWER (db/import/mob_db.yml)
+  - Id: 21521
+    RaceGroups:
+      PN_EP19: true
+  # EP19_CALMARING (db/import/mob_db.yml)
+  - Id: 21522
+    RaceGroups:
+      PN_EP19: true
+  # EP19_ICE_STRAW (db/import/mob_db.yml)
+  - Id: 21523
+    RaceGroups:
+      PN_EP19: true
+  # EP19_SHINING_SEAWEED (db/import/mob_db.yml)
+  - Id: 21524
+    RaceGroups:
+      PN_EP19: true
+  # EP19_ICE_GANGU (db/import/mob_db.yml)
+  - Id: 21525
+    RaceGroups:
+      PN_EP19: true
+  # EP19_RGAN_A (db/import/mob_db.yml)
+  - Id: 21526
+    RaceGroups:
+      PN_EP19: true
+  # EP19_RGAN_B (db/import/mob_db.yml)
+  - Id: 21527
+    RaceGroups:
+      PN_EP19: true
+  # EP19_RGAN_C (db/import/mob_db.yml)
+  - Id: 21528
+    RaceGroups:
+      PN_EP19: true
+  # EP19_RGAN_D (db/import/mob_db.yml)
+  - Id: 21529
+    RaceGroups:
+      PN_EP19: true
+  # EP19_RGAN_E (db/import/mob_db.yml)
+  - Id: 21530
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_AQUILA (db/import/mob_db.yml)
+  - Id: 21531
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_JUNCEA (db/import/mob_db.yml)
+  - Id: 21532
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_JUNCEA_S (db/import/mob_db.yml)
+  - Id: 21533
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_RGAN_E (db/import/mob_db.yml)
+  - Id: 21534
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_RGAN_D (db/import/mob_db.yml)
+  - Id: 21535
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_HEARTHUNTER_AT (db/import/mob_db.yml)
+  - Id: 21536
+    RaceGroups:
+      PN_EP19: true
+  # EP19_LIMACINA_BOSS (db/import/mob_db.yml)
+  - Id: 21537
+    RaceGroups:
+      PN_EP19: true
+  # EP19_WASTED_RGAN_A (db/import/mob_db.yml)
+  - Id: 21538
+    RaceGroups:
+      PN_EP19: true
+  # EP19_WASTED_RGAN_C (db/import/mob_db.yml)
+  - Id: 21539
+    RaceGroups:
+      PN_EP19: true
+  # EP19_CAVE_CALMARING (db/import/mob_db.yml)
+  - Id: 21540
+    RaceGroups:
+      PN_EP19: true
+  # EP19_CAVE_FLOWER (db/import/mob_db.yml)
+  - Id: 21541
+    RaceGroups:
+      PN_EP19: true
+  # EP19_HALLUCIGENIA (db/import/mob_db.yml)
+  - Id: 21542
+    RaceGroups:
+      PN_EP19: true
+  # EP19_HALLUCIGENIA_BABY (db/import/mob_db.yml)
+  - Id: 21543
+    RaceGroups:
+      PN_EP19: true
+  # EP19_ONE_EYE_DOLLOCARIS (db/import/mob_db.yml)
+  - Id: 21544
+    RaceGroups:
+      PN_EP19: true
+  # EP19_DOLLOCARIS (db/import/mob_db.yml)
+  - Id: 21545
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_AQUILA_B (db/import/mob_db.yml)
+  - Id: 21588
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_RGAN_ES (db/import/mob_db.yml)
+  - Id: 21590
+    RaceGroups:
+      PN_EP19: true
+  # EP19_HEARTHUNTER_AT (db/import/mob_db.yml)
+  - Id: 21599
+    RaceGroups:
+      PN_EP19: true
+  # EP19_RE_RGAN_E (db/import/mob_db.yml)
+  - Id: 21600
+    RaceGroups:
+      PN_EP19: true
+  # EP19_ET_RGAN_D (db/import/mob_db.yml)
+  - Id: 21601
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_BOX1 (db/import/mob_db.yml)
+  - Id: 21853
+    RaceGroups:
+      PN_EP19: true
+  # EP19_MD_BOX2 (db/import/mob_db.yml)
+  - Id: 21854
+    RaceGroups:
+      PN_EP19: true
+  # EP20_COPO (db/import/episode20_mob_db.yml)
+  - Id: 21965
+    RaceGroups:
+      PN_EP20: true
+  # EP20_ICEWIND1 (db/import/episode20_mob_db.yml)
+  - Id: 21966
+    RaceGroups:
+      PN_EP20: true
+  # EP20_ICEWIND2 (db/import/episode20_mob_db.yml)
+  - Id: 21967
+    RaceGroups:
+      PN_EP20: true
+  # EP20_EGGCOPO (db/import/episode20_mob_db.yml)
+  - Id: 21968
+    RaceGroups:
+      PN_EP20: true
+  # EP20_RABBIT_ICESLUG (db/import/episode20_mob_db.yml)
+  - Id: 21969
+    RaceGroups:
+      PN_EP20: true
+  # EP20_MELIBE_ICESLUG (db/import/episode20_mob_db.yml)
+  - Id: 21970
+    RaceGroups:
+      PN_EP20: true
+  # EP20_ICEBEAR (db/import/episode20_mob_db.yml)
+  - Id: 21971
+    RaceGroups:
+      PN_EP20: true
+  # EP20_JORMUNGUARD1 (db/import/episode20_mob_db.yml)
+  - Id: 21972
+    RaceGroups:
+      PN_EP20: true
+  # EP20_JORMUNGUARD2 (db/import/episode20_mob_db.yml)
+  - Id: 21973
+    RaceGroups:
+      PN_EP20: true
+  # EP20_FAKE_IWIN_SN (db/import/episode20_mob_db.yml)
+  - Id: 21974
+    RaceGroups:
+      PN_EP20: true
+  # EP20_FAKE_IWIN_SY (db/import/episode20_mob_db.yml)
+  - Id: 21975
+    RaceGroups:
+      PN_EP20: true
+  # EP20_FAKE_IWIN_SB (db/import/episode20_mob_db.yml)
+  - Id: 21976
+    RaceGroups:
+      PN_EP20: true
+  # EP20_FAKE_IWIN_SG (db/import/episode20_mob_db.yml)
+  - Id: 21977
+    RaceGroups:
+      PN_EP20: true
+  # EP20_FAKE_IWIN_SR (db/import/episode20_mob_db.yml)
+  - Id: 21978
+    RaceGroups:
+      PN_EP20: true
+  # EP20_DEMIGOD_LASGAND (db/import/mob_db.yml)
+  - Id: 21979
+    RaceGroups:
+      PN_EP20: true
+  # EP20_BOSS_CLANER (db/import/episode20_mob_db.yml)
+  - Id: 21980
+    RaceGroups:
+      PN_EP20: true
+  # EP20_ANGEL_ICESLUG (db/import/episode20_mob_db.yml)
+  - Id: 21983
+    RaceGroups:
+      PN_EP20: true
+  # EP20_ICEEGG (db/import/episode20_mob_db.yml)
+  - Id: 21984
+    RaceGroups:
+      PN_EP20: true
+  # EP20_RGAN_WARLOCK (db/import/episode20_mob_db.yml)
+  - Id: 21985
+    RaceGroups:
+      PN_EP20: true
+  # EP20_RGAN_HEALER (db/import/episode20_mob_db.yml)
+  - Id: 21986
+    RaceGroups:
+      PN_EP20: true
+  # EP20_JORGAN_WARLOCK (db/import/episode20_mob_db.yml)
+  - Id: 21987
+    RaceGroups:
+      PN_EP20: true
+  # EP20_JORGAN_HEALER (db/import/episode20_mob_db.yml)
+  - Id: 21988
+    RaceGroups:
+      PN_EP20: true
+  # EP20_JORGAN_GUARDIAN (db/import/episode20_mob_db.yml)
+  - Id: 21989
+    RaceGroups:
+      PN_EP20: true
+  # EP20_JORGAN_CLEANER (db/import/episode20_mob_db.yml)
+  - Id: 21990
+    RaceGroups:
+      PN_EP20: true
+  # EP20_MD_HEARTHUNTER1 (db/import/episode20_mob_db.yml)
+  - Id: 21994
+    RaceGroups:
+      PN_EP20: true
+  # EP20_SNOW_ANGEL (db/import/episode20_mob_db.yml)
+  - Id: 21996
+    RaceGroups:
+      PN_EP20: true
+  # EP21_NYAR_VIEW (db/import/mob_db.yml)
+  - Id: 22006
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_SERPENT (db/import/mob_db.yml)
+  - Id: 22300
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_TRIS (db/import/mob_db.yml)
+  - Id: 22301
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_TAN (db/import/mob_db.yml)
+  - Id: 22302
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_NADOYO (db/import/mob_db.yml)
+  - Id: 22303
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_REINHARDT (db/import/mob_db.yml)
+  - Id: 22304
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_WILHELM (db/import/mob_db.yml)
+  - Id: 22305
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_MARISTELLA (db/import/mob_db.yml)
+  - Id: 22306
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_YOHAN (db/import/mob_db.yml)
+  - Id: 22307
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_RICHARD (db/import/mob_db.yml)
+  - Id: 22308
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_EIBA (db/import/mob_db.yml)
+  - Id: 22309
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_GUNTER (db/import/mob_db.yml)
+  - Id: 22310
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_IVAN (db/import/mob_db.yml)
+  - Id: 22311
+    RaceGroups:
+      PN_EP21: true
+  # EP21_NPC_GALAXIA (db/import/mob_db.yml)
+  - Id: 22312
+    RaceGroups:
+      PN_EP21: true
+  # EP21_SEAWIND (db/import/mob_db.yml)
+  - Id: 22313
+    RaceGroups:
+      PN_EP21: true
+  # EP21_SCALLEG (db/import/mob_db.yml)
+  - Id: 22314
+    RaceGroups:
+      PN_EP21: true
+  # EP21_VELELLING (db/import/mob_db.yml)
+  - Id: 22315
+    RaceGroups:
+      PN_EP21: true
+  # EP21_LETTERSTER (db/import/mob_db.yml)
+  - Id: 22316
+    RaceGroups:
+      PN_EP21: true
+  # EP21_ROCKSTRIKER (db/import/mob_db.yml)
+  - Id: 22317
+    RaceGroups:
+      PN_EP21: true
+  # EP21_ICESEAHORSE (db/import/mob_db.yml)
+  - Id: 22318
+    RaceGroups:
+      PN_EP21: true
+  # EP21_SKIPSKIPPER (db/import/mob_db.yml)
+  - Id: 22319
+    RaceGroups:
+      PN_EP21: true
+  # EP21_CLIOLIMA (db/import/mob_db.yml)
+  - Id: 22320
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORKER_A (db/import/mob_db.yml)
+  - Id: 22321
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORKER_B (db/import/mob_db.yml)
+  - Id: 22322
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSTER_A (db/import/mob_db.yml)
+  - Id: 22323
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSTER_B (db/import/mob_db.yml)
+  - Id: 22324
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSTER_C (db/import/mob_db.yml)
+  - Id: 22325
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSTER_D (db/import/mob_db.yml)
+  - Id: 22326
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSTER_E (db/import/mob_db.yml)
+  - Id: 22327
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORMI_A (db/import/mob_db.yml)
+  - Id: 22353
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORMI_B (db/import/mob_db.yml)
+  - Id: 22354
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORDOS_A (db/import/mob_db.yml)
+  - Id: 22355
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORDOS_B (db/import/mob_db.yml)
+  - Id: 22356
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORDOS_C (db/import/mob_db.yml)
+  - Id: 22357
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSCOPUS_A (db/import/mob_db.yml)
+  - Id: 22358
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSCOPUS_B (db/import/mob_db.yml)
+  - Id: 22359
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORTUS_A (db/import/mob_db.yml)
+  - Id: 22360
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORTUS_B (db/import/mob_db.yml)
+  - Id: 22361
+    RaceGroups:
+      PN_EP21: true
+  # EP21_ICEHORN (db/import/mob_db.yml)
+  - Id: 22362
+    RaceGroups:
+      PN_EP21: true
+  # EP21_B_YORTUS_A (db/import/mob_db.yml)
+  - Id: 22363
+    RaceGroups:
+      PN_EP21: true
+  # EP21_B_YORTUS_B (db/import/mob_db.yml)
+  - Id: 22364
+    RaceGroups:
+      PN_EP21: true
+  # EP21_MD_SAILOR (db/import/mob_db.yml)
+  - Id: 22369
+    RaceGroups:
+      PN_EP21: true
+  # EP21_MD_CAPTAIN (db/import/mob_db.yml)
+  - Id: 22370
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOR_TAN (db/import/mob_db.yml)
+  - Id: 22371
+    RaceGroups:
+      PN_EP21: true
+  # EP21_MD_CAPTAIN_B (db/import/mob_db.yml)
+  - Id: 22372
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOR_TAN_B (db/import/mob_db.yml)
+  - Id: 22373
+    RaceGroups:
+      PN_EP21: true
+  # EP21_MD_BOX1 (db/import/mob_db.yml)
+  - Id: 22374
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOR_TAN_H (db/import/mob_db.yml)
+  - Id: 22410
+    RaceGroups:
+      PN_EP21: true
+  # EP21_MD_BOX2 (db/import/mob_db.yml)
+  - Id: 22411
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORTUS_A_H (db/import/mob_db.yml)
+  - Id: 22412
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORTUS_B_H (db/import/mob_db.yml)
+  - Id: 22413
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORDOS_A_H (db/import/mob_db.yml)
+  - Id: 22414
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORDOS_B_H (db/import/mob_db.yml)
+  - Id: 22415
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORDOS_C_H (db/import/mob_db.yml)
+  - Id: 22416
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORMI_A_H (db/import/mob_db.yml)
+  - Id: 22417
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YORMI_B_H (db/import/mob_db.yml)
+  - Id: 22418
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSCOPUS_A_H (db/import/mob_db.yml)
+  - Id: 22419
+    RaceGroups:
+      PN_EP21: true
+  # EP21_YOSCOPUS_B_H (db/import/mob_db.yml)
+  - Id: 22420
+    RaceGroups:
+      PN_EP21: true
+  # EP21_B_YORTUS_A_H (db/import/mob_db.yml)
+  - Id: 22421
+    RaceGroups:
+      PN_EP21: true
+  # EP21_B_YORTUS_B_H (db/import/mob_db.yml)
+  - Id: 22422
+    RaceGroups:
+      PN_EP21: true
+  # EP20_ARMOERDCOPO (db/import/episode20_mob_db.yml)
+  - Id: 23060
+    RaceGroups:
+      PN_EP20: true

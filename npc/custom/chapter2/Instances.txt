@@ -11,9 +11,16 @@ function	script	CH2_ClaimInstanceClear	{
 	.@roster$ = getinstancevar('ch2_roster$,.@iid);
 	if (getcharid(1) != .@party_id || .@roster$ == "" || !compare(.@roster$,","+getcharid(0)+","))
 		return 0;
+	// A story clear must not be reused as a daily after reporting the story
+	// during the exit grace period. Original members may still claim on reentry.
+	.@claimed$ = getinstancevar('ch2_claimed$,.@iid);
+	.@cid$ = ","+getcharid(0)+",";
+	if (compare(.@claimed$,.@cid$))
+		return 0;
 	switch (.@mode) {
 	case 1:
 		if (CH2_Step == 2 && !CH2_Crossroads) {
+			setinstancevar 'ch2_claimed$,.@claimed$+.@cid$,.@iid;
 			CH2_Crossroads = 1;
 			callfunc "CH2_GiveInstanceItem",1002700,3;
 			dispbottom "Crossroads clear: 3 Flame Coins. Report to Guardian El.";
@@ -22,6 +29,7 @@ function	script	CH2_ClaimInstanceClear	{
 		break;
 	case 2:
 		if ((CH2_Step == 8 || CH2_Step == 9) && !CH2_Nyrholt) {
+			setinstancevar 'ch2_claimed$,.@claimed$+.@cid$,.@iid;
 			CH2_Nyrholt = 1;
 			callfunc "CH2_GiveInstanceItem",1002700,4;
 			dispbottom "Nyrholt clear: 4 Flame Coins. Return to the Nyrholt Keeper.";
@@ -32,12 +40,14 @@ function	script	CH2_ClaimInstanceClear	{
 		// Story credit and repeatable credit are deliberately disjoint.
 		// A first story clear must never pre-arm quest 27119's daily turn-in.
 		if (!callfunc("CH2_Complete") && CH2_Step == 11 && !CH2_Phantom) {
+			setinstancevar 'ch2_claimed$,.@claimed$+.@cid$,.@iid;
 			CH2_Phantom = 1;
 			callfunc "CH2_GiveInstanceItem",1002700,3;
 			dispbottom "Phantom story clear: 3 Flame Coins. Use the exit and report to Guardian El.";
 			return 1;
 		}
 		if (callfunc("CH2_Complete") && isbegin_quest(27119) == 1 && !CH2_DailyPhantom) {
+			setinstancevar 'ch2_claimed$,.@claimed$+.@cid$,.@iid;
 			CH2_DailyPhantom = 1;
 			dispbottom "Phantom daily clear recorded. Claim 3 Flame Coins at the Phantom Gate or mission board.";
 			return 1;
@@ -320,7 +330,10 @@ OnTimer1000:
 			'ch2_groggy_ticks = 10;
 			setunitdata 'ch2_boss_gid,UMOB_DAMAGETAKEN,100;
 			setunitdata 'ch2_boss_gid,UMOB_MODE,('ch2_boss_mode | MD_NOCAST) & ~(MD_CANMOVE | MD_CANATTACK | MD_AGGRESSIVE);
-			unitskilluseid 'ch2_boss_gid,"NPC_GROGGY_ON",5,'ch2_boss_gid,-10000;
+			// Apply directly: a unit skill is refused while the boss is casting,
+			// and level 5 only supplied a five-second status. This status also
+			// interrupts an existing cast through its native StopCasting flag.
+			sc_start SC_GROGGY,10000,10,10000,SCSTART_NOAVOID | SCSTART_NOTICKDEF | SCSTART_NORATEDEF,'ch2_boss_gid;
 			instance_announce instance_id(),"Artea's circle resonates! The Phantom is groggy and takes full damage for 10 seconds.",bc_map,0x66FFCC;
 			break;
 		}

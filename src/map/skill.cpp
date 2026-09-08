@@ -1917,6 +1917,10 @@ int32 skill_counter_additional_effect (block_list* src, block_list *bl, uint16 s
 
 	// Check for player and pet autobonuses when attacking
 	if (sd != nullptr) {
+		// This section is reached only after a damaging hit (dmg_lv >= ATK_DEF).
+		// Physical, magical and miscellaneous damage may trigger Burning Fang.
+		if (sd->bonus.pn_rune_sp_regen_proc && rnd() % 10000 < 200)
+			pc_rune_sp_regen_start(*sd);
 		// Player
 		if (!sd->autobonus.empty()) {
 			for (auto& it : sd->autobonus) {

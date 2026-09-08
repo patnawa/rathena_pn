@@ -1,0 +1,387 @@
+// PN Rune Tablet services. Catalog is data-only; this file owns transactions.
+// Native rune IDs are collection keys, NOT inventory items.
+// Account collection: #PNRTPiece[]. Character progression: PNRT*.
+function	script	PN_RT_OwnedCount	{
+	if (!callfunc("PN_RT_LoadSet",getarg(0))) return 0;
+	.@n = 0;
+	for (.@i=0; .@i<@RT_PieceCount; ++.@i)
+		if (#PNRTPiece[@RT_PieceIds[.@i]-1263000]) ++.@n;
+	return .@n;
+}
+
+// Costs are always reloaded and checked AFTER the last dialog yield.
+function	script	PN_RT_ShowCost	{
+	for (.@i=0; .@i<@RT_CostCount; ++.@i)
+		mes @RT_CostAmounts[.@i]+" x "+getitemname(@RT_CostIds[.@i])+" (have "+countitem(@RT_CostIds[.@i])+")";
+	return;
+}
+function	script	PN_RT_HasCost	{
+	for (.@i=0; .@i<@RT_CostCount; ++.@i)
+		if (@RT_CostAmounts[.@i]<1 || countitem(@RT_CostIds[.@i])<@RT_CostAmounts[.@i]) return 0;
+	return 1;
+}
+function	script	PN_RT_PayCost	{
+	// Only call after HasCost, without any intervening dialog/wait.
+	for (.@i=0; .@i<@RT_CostCount; ++.@i)
+		delitem @RT_CostIds[.@i],@RT_CostAmounts[.@i];
+	return;
+}
+
+// Additional exact metadata/slot guard around native checkweight2's ID-only
+// stack prediction. All catalog outputs are plain, stackable, no-GUID items.
+// Capacity is checked before debit (conservative: no credit for freed slots).
+function	script	PN_RT_CanGrant	{
+	.@n=getarg(2);
+	copyarray .@ids[0],getarg(0),.@n;
+	copyarray .@amounts[0],getarg(1),.@n;
+	if (.@n<1 || !checkweight2(.@ids,.@amounts)) return 0;
+	.@slots=getinventoryslots();
+	if (.@slots<1 || .@slots>MAX_INVENTORY) return 0;
+	getinventorylist;
+	.@occupied=0; .@needed=0;
+	for (.@r=0; .@r<@inventorylist_count; ++.@r)
+		if (@inventorylist_idx[.@r]<.@slots) ++.@occupied;
+	for (.@i=0; .@i<.@n; ++.@i) {
+		if (.@amounts[.@i]<1 || .@amounts[.@i]>30000) return 0;
+		.@match=-1;
+		for (.@r=0; .@r<@inventorylist_count; ++.@r) {
+			if (@inventorylist_id[.@r]!=.@ids[.@i] || @inventorylist_bound[.@r] || @inventorylist_expire[.@r] || @inventorylist_uniqueid$[.@r]!="0" || @inventorylist_card1[.@r] || @inventorylist_card2[.@r] || @inventorylist_card3[.@r] || @inventorylist_card4[.@r]) continue;
+			.@match=.@r; break;
+		}
+		if (.@match>=0) {
+			if (@inventorylist_idx[.@match]>=.@slots || @inventorylist_amount[.@match]+.@amounts[.@i]>30000) return 0;
+		} else ++.@needed;
+	}
+	return .@occupied+.@needed<=.@slots;
+}
+function	script	PN_RT_CanGrantOne	{
+	setarray .@id[0],getarg(0);
+	setarray .@amount[0],getarg(1);
+	return callfunc("PN_RT_CanGrant",.@id,.@amount,1);
+}
+
+// Validate a fresh equipment instance using its inventory-list row.
+function	script	PN_RT_FreshGear	{
+	.@r=getarg(0);
+	if (@inventorylist_equip[.@r] || @inventorylist_refine[.@r] || @inventorylist_enchantgrade[.@r] || @inventorylist_expire[.@r] || @inventorylist_bound[.@r] || @inventorylist_attribute[.@r] || !@inventorylist_identify[.@r]) return 0;
+	for (.@k=1; .@k<=4; ++.@k)
+		if (getd("@inventorylist_card"+.@k+"["+.@r+"]")) return 0;
+	for (.@k=1; .@k<=5; ++.@k)
+		if (getd("@inventorylist_option_id"+.@k+"["+.@r+"]") || getd("@inventorylist_option_value"+.@k+"["+.@r+"]") || getd("@inventorylist_option_parameter"+.@k+"["+.@r+"]")) return 0;
+	return 1;
+}
+
+function	script	PN_RT_Service	{
+	while (1) {
+		mes "[PN Rune Stone]";
+		mes "Rune collection and tablet workshop";
+		if (PNRTActive && callfunc("PN_RT_LoadSet",PNRTActive))
+			mes "Active: "+@RT_Name$+" +"+PNRTLevel[PNRTActive-1260000];
+		else mes "Active: none";
+		next;
+		switch(select("Browse tablets:Register a rune piece:Current tablet:Imprint equipment:Rune shop:Decompose cards:Sealed card exchange:How it works:Leave")) {
+		case 1: callfunc "PN_RT_Browse",0; break;
+		case 2: callfunc "PN_RT_Browse",1; break;
+		case 3:
+			if (PNRTActive) callfunc "PN_RT_SetMenu",PNRTActive;
+			else { mes "[PN Rune Stone]"; mes "Browse tablets to activate your first collection."; next; }
+			break;
+		case 4: callfunc "PN_RT_Print"; break;
+		case 5: callfunc "PN_RT_Shop"; break;
+		case 6: callfunc "PN_RT_Decompose"; break;
+		case 7: callfunc "PN_RT_Seal"; break;
+		case 8:
+			mes "[PN Rune Stone]";
+			mes "Registered rune pieces are permanent and shared by characters on this RO login account.";
+			mes "Each character pays a tablet's activation cost once. Switching between paid tablets is free; only one tablet can be active.";
+			mes "One piece allows activation. Bonuses start at two pieces. Upgrades belong to this character; milestone rewards are shared across the account.";
+			next;
+			mes "[PN Rune Stone]";
+			mes "Enhancement materials are consumed on every attempt. Failure keeps your level and raises the next success chance. Success resets that bonus chance.";
+			mes "Rewards are claimed once per milestone and RO login account. Empty inventory space is required before collecting or exchanging.";
+			mes "Imprinting permanently consumes the chosen clean equipment and 10 Imperfect Runes.";
+			next; break;
+		default: return;
+		}
+	}
+}
+
+function	script	PN_RT_Browse	{
+	.@register=getarg(0);
+	.@count=callfunc("PN_RT_ListSets");
+	copyarray .@ids[0],@RT_SetIds[0],.@count;
+	copyarray .@names$[0],@RT_SetNames$[0],.@count;
+	.@page=0;
+	while (1) {
+		.@menu$="";
+		.@end=min(.@page+12,.@count);
+		for (.@i=.@page; .@i<.@end; ++.@i) .@menu$+=.@names$[.@i]+":";
+		.@rows=.@end-.@page;
+		.@pick=select(.@menu$+"Next page:Previous page:Search by name:Back")-1;
+		if (.@pick<.@rows) {
+			if (.@register) callfunc "PN_RT_Register",.@ids[.@page+.@pick];
+			else callfunc "PN_RT_SetMenu",.@ids[.@page+.@pick];
+		} else if (.@pick==.@rows) .@page=(.@end>=.@count?0:.@end);
+		else if (.@pick==.@rows+1) .@page=max(0,.@page-12);
+		else if (.@pick==.@rows+2) {
+			mes "[PN Rune Stone]"; mes "Enter part of a tablet name."; input .@query$; clear;
+			.@found=0;
+			for (.@i=0; .@i<.@count; ++.@i) {
+				if (compare(strtolower(.@names$[.@i]),strtolower(.@query$))) { .@page=(.@i/12)*12; .@found=1; break; }
+			}
+			if (!.@found) { mes "No matching tablet."; next; }
+		} else return;
+	}
+}
+
+function	script	PN_RT_SetMenu	{
+	.@id=getarg(0); .@s=.@id-1260000;
+	while (callfunc("PN_RT_LoadSet",.@id)) {
+		.@total=@RT_PieceCount;
+		.@owned=callfunc("PN_RT_OwnedCount",.@id);
+		mes "["+@RT_Name$+"]";
+		mes "Runes registered: "+.@owned+" / "+.@total;
+		mes "Enhancement: +"+PNRTLevel[.@s]+" / "+@RT_MaxLevel;
+		mes (PNRTPaid[.@s]?"Activation paid":"Activation not paid")+(PNRTActive==.@id?" | ACTIVE":"");
+		mes @RT_Description$;
+		next;
+		switch(select("Register piece:Activate / equip:Enhance:Claim milestone rewards:Unequip this tablet:Back")) {
+		case 1: callfunc "PN_RT_Register",.@id; break;
+		case 2:
+			if (PNRTActive==.@id) { mes "This tablet is already active."; next; break; }
+			if (!callfunc("PN_RT_OwnedCount",.@id)) { mes "Register at least one piece first."; next; break; }
+			mes "[Activate tablet]";
+			if (!PNRTPaid[.@s]) {
+				if (!callfunc("PN_RT_Cost","activate",.@id)) { mes "Activation data unavailable."; next; break; }
+				callfunc "PN_RT_ShowCost";
+			} else mes "Already paid: switching is free.";
+			if (select("Activate:Cancel")==2) { clear; break; }
+			if (!callfunc("PN_RT_OwnedCount",.@id)) { mes "Collection changed. Nothing charged."; next; break; }
+			if (!PNRTPaid[.@s]) {
+				if (!callfunc("PN_RT_Cost","activate",.@id) || !callfunc("PN_RT_HasCost")) { mes "Required materials are missing. Nothing charged."; next; break; }
+				callfunc "PN_RT_PayCost";
+				PNRTPaid[.@s]=1;
+			}
+			PNRTActive=.@id;
+			callfunc "PN_RT_Refresh";
+			mes "Tablet activated. Claim any available milestone rewards from this menu."; next; break;
+		case 3: callfunc "PN_RT_Upgrade",.@id; break;
+		case 4: callfunc "PN_RT_Claim",.@id; break;
+		case 5:
+			if (PNRTActive==.@id) { PNRTActive=0; callfunc "PN_RT_Refresh"; }
+			mes "Tablet unequipped. Its progress is saved."; next; break;
+		default: return;
+		}
+	}
+	return;
+}
+
+function	script	PN_RT_Register	{
+	.@id=getarg(0);
+	if (!callfunc("PN_RT_LoadSet",.@id)) return;
+	.@n=@RT_PieceCount;
+	copyarray .@pieces[0],@RT_PieceIds[0],.@n;
+	.@menu$="";
+	for (.@i=0; .@i<.@n; ++.@i) {
+		callfunc "PN_RT_LoadPiece",.@pieces[.@i];
+		.@menu$+=@RT_PieceName$+(#PNRTPiece[.@pieces[.@i]-1263000]?" [registered]":"")+":";
+	}
+	.@pick=select(.@menu$+"Back")-1;
+	if (.@pick>=.@n) return;
+	.@piece=.@pieces[.@pick]; .@p=.@piece-1263000;
+	if (#PNRTPiece[.@p]) { mes "Already registered for your account."; next; return; }
+	callfunc "PN_RT_LoadPiece",.@piece;
+	mes "[Register "+@RT_PieceName$+"]";
+	mes "This permanently unlocks the rune on this RO account.";
+	if (!callfunc("PN_RT_Cost","piece",.@piece)) { mes "Registration data unavailable."; next; return; }
+	callfunc "PN_RT_ShowCost";
+	if (select("Register:Cancel")==2) { clear; return; }
+	if (#PNRTPiece[.@p]) { mes "Already registered. Nothing charged."; next; return; }
+	if (!callfunc("PN_RT_Cost","piece",.@piece) || !callfunc("PN_RT_HasCost")) { mes "Required materials are missing. Nothing charged."; next; return; }
+	callfunc "PN_RT_PayCost";
+	#PNRTPiece[.@p]=1;
+	callfunc "PN_RT_Refresh";
+	mes "Rune registered permanently."; next;
+	return;
+}
+
+function	script	PN_RT_Upgrade	{
+	.@id=getarg(0); .@s=.@id-1260000;
+	if (!callfunc("PN_RT_LoadSet",.@id) || !PNRTPaid[.@s]) { mes "Activate this tablet first."; next; return; }
+	.@level=PNRTLevel[.@s];
+	if (.@level>=@RT_MaxLevel) { mes "This tablet is at its maximum enhancement level."; next; return; }
+	.@chance=min(100000,@RT_Base[.@level]+PNRTPity[.@s]);
+	mes "[Enhance tablet]";
+	mes "+"+.@level+" -> +"+(.@level+1);
+	mes "Success chance: "+(.@chance/1000)+"."+sprintf("%03d",.@chance%1000)+"%";
+	mes "Failure keeps the current level and adds "+(@RT_PityStep[.@level]/1000)+"."+sprintf("%03d",@RT_PityStep[.@level]%1000)+" percentage points, capped at 100%.";
+	if (!callfunc("PN_RT_Cost","upgrade",.@id,.@level+1)) { mes "Upgrade data unavailable."; next; return; }
+	callfunc "PN_RT_ShowCost";
+	if (select("Attempt enhancement:Cancel")==2) { clear; return; }
+	if (!PNRTPaid[.@s] || PNRTLevel[.@s]!=.@level || !callfunc("PN_RT_LoadSet",.@id) || .@level>=@RT_MaxLevel || !callfunc("PN_RT_Cost","upgrade",.@id,.@level+1) || !callfunc("PN_RT_HasCost")) { mes "Progress or inventory changed. Nothing charged."; next; return; }
+	.@chance=min(100000,@RT_Base[.@level]+PNRTPity[.@s]);
+	.@step=@RT_PityStep[.@level];
+	callfunc "PN_RT_PayCost";
+	if (rand(100000)<.@chance) {
+		PNRTLevel[.@s]++; PNRTPity[.@s]=0;
+		callfunc "PN_RT_Refresh";
+		mes "Success! Enhancement is now +"+PNRTLevel[.@s]+".";
+	} else {
+		PNRTPity[.@s]=min(100000-@RT_Base[.@level],PNRTPity[.@s]+.@step);
+		mes "Enhancement failed. Level retained; next chance is "+((@RT_Base[.@level]+PNRTPity[.@s])/1000)+"."+sprintf("%03d",(@RT_Base[.@level]+PNRTPity[.@s])%1000)+"%.";
+	}
+	next; return;
+}
+
+function	script	PN_RT_Claim	{
+	.@id=getarg(0); .@s=.@id-1260000;
+	if (!PNRTPaid[.@s]) { mes "Activate this tablet first."; next; return; }
+	.@owned=callfunc("PN_RT_OwnedCount",.@id); .@total=@RT_PieceCount;
+	.@menu$=""; .@n=0;
+	for (.@tier=1; .@tier<=7; ++.@tier) {
+		if ((#PNRTClaims[.@s] & (1 << (.@tier-1))) || (.@tier>1 && .@tier<7 && .@owned<.@tier) || (.@tier==7 && .@owned<.@total)) continue;
+		if (!callfunc("PN_RT_LoadReward",.@id,.@tier) || !@RT_RewardCount) continue;
+		.@tiers[.@n++]=.@tier;
+		.@menu$+=(.@tier==1?"Activation":(.@tier==7?"Complete collection":.@tier+" registered pieces"))+":";
+	}
+	if (!.@n) { mes "No unclaimed milestone rewards are available."; next; return; }
+	.@pick=select(.@menu$+"Back")-1;
+	if (.@pick>=.@n) return;
+	.@tier=.@tiers[.@pick]; .@mask=1 << (.@tier-1);
+	callfunc "PN_RT_LoadReward",.@id,.@tier;
+	mes "[Milestone reward]";
+	for (.@i=0; .@i<@RT_RewardCount; ++.@i) mes @RT_RewardAmounts[.@i]+" x "+getitemname(@RT_RewardIds[.@i]);
+	if (select("Claim:Cancel")==2) { clear; return; }
+	.@owned=callfunc("PN_RT_OwnedCount",.@id); .@total=@RT_PieceCount;
+	if (!PNRTPaid[.@s] || (#PNRTClaims[.@s] & .@mask) || (.@tier>1 && .@tier<7 && .@owned<.@tier) || (.@tier==7 && .@owned<.@total) || !callfunc("PN_RT_LoadReward",.@id,.@tier) || !@RT_RewardCount) { mes "This reward is no longer available."; next; return; }
+	if (!callfunc("PN_RT_CanGrant",@RT_RewardIds,@RT_RewardAmounts,@RT_RewardCount)) { mes "Make room for the entire reward first. Nothing claimed."; next; return; }
+	// Mark before granting, with no yield between mark and full delivery.
+	#PNRTClaims[.@s] |= .@mask;
+	for (.@i=0; .@i<@RT_RewardCount; ++.@i) getitem @RT_RewardIds[.@i],@RT_RewardAmounts[.@i];
+	mes "Milestone reward claimed."; next; return;
+}
+
+function	script	PN_RT_Print	{
+	.@n=callfunc("PN_RT_ListPrints");
+	copyarray .@base[0],@RT_PrintIds[0],.@n;
+	copyarray .@output[0],@RT_PrintOutputs[0],.@n;
+	getinventorylist;
+	.@menu$=""; .@count=0;
+	for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+		if (!callfunc("PN_RT_FreshGear",.@i)) continue;
+		for (.@p=0; .@p<.@n; ++.@p) {
+			if (@inventorylist_id[.@i]!=.@base[.@p]) continue;
+			.@idx[.@count]=@inventorylist_idx[.@i]; .@uid$[.@count]=@inventorylist_uniqueid$[.@i];
+			.@ids[.@count]=.@base[.@p]; .@outputs[.@count]=.@output[.@p];
+			.@menu$+=getitemname(.@base[.@p])+" (slot "+@inventorylist_idx[.@i]+") :";
+			++.@count; break;
+		}
+		if (.@count>=20) break;
+	}
+	mes "[Equipment imprint]";
+	mes "Only identified, unequipped, unrefined, ungraded, uncarded equipment without options, damage, binding or expiry is eligible. Showing up to 20 instances.";
+	if (!.@count) { mes "You have no eligible imprint equipment."; next; return; }
+	.@pick=select(.@menu$+"Back")-1;
+	if (.@pick>=.@count) { clear; return; }
+	.@in=.@ids[.@pick]; .@out=.@outputs[.@pick]; .@slot=.@idx[.@pick]; .@uid$=.@uid$[.@pick];
+	mes "Permanently consume "+getitemname(.@in)+" from slot "+.@slot+" and 10 Imperfect Runes to receive "+getitemname(.@out)+".";
+	if (select("Imprint this exact item:Cancel")==2) { clear; return; }
+	getinventorylist;
+	.@found=0;
+	for (.@i=0; .@i<@inventorylist_count; ++.@i)
+		if (@inventorylist_idx[.@i]==.@slot && @inventorylist_id[.@i]==.@in && @inventorylist_uniqueid$[.@i]==.@uid$ && callfunc("PN_RT_FreshGear",.@i)) { .@found=1; break; }
+	if (!.@found || countitem(1001282)<10 || !callfunc("PN_RT_CanGrantOne",.@out,1)) { mes "Equipment or materials changed, or there is no room. Nothing consumed."; next; return; }
+	// delitemidx returns boolean in this core. Do not charge currency on failure.
+	if (!delitemidx(.@slot,1)) { mes "Exact equipment removal failed. Runes were not charged."; next; return; }
+	delitem 1001282,10;
+	getitem .@out,1;
+	mes "Equipment imprinted."; next; return;
+}
+
+function	script	PN_RT_Shop	{
+	.@n=callfunc("PN_RT_ListShop");
+	copyarray .@ids[0],@RT_ShopIds[0],.@n;
+	.@menu$="";
+	for (.@i=0; .@i<.@n; ++.@i) .@menu$+=getitemname(.@ids[.@i])+":";
+	.@pick=select(.@menu$+"Back")-1;
+	if (.@pick>=.@n) return;
+	.@out=.@ids[.@pick];
+	mes "[Rune shop]"; mes "Exchange for 1 x "+getitemname(.@out);
+	if (!callfunc("PN_RT_Cost","shop",.@out)) { mes "Exchange unavailable."; next; return; }
+	callfunc "PN_RT_ShowCost";
+	if (select("Exchange:Cancel")==2) { clear; return; }
+	if (!callfunc("PN_RT_Cost","shop",.@out) || !callfunc("PN_RT_HasCost") || !callfunc("PN_RT_CanGrantOne",.@out,1)) { mes "Missing materials or inventory room. Nothing consumed."; next; return; }
+	callfunc "PN_RT_PayCost";
+	getitem .@out,1;
+	mes "Exchange completed."; next; return;
+}
+
+function	script	PN_RT_Decompose	{
+	getinventorylist;
+	.@n=0; .@menu$="";
+	for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+		.@id=@inventorylist_id[.@i];
+		if (!callfunc("PN_RT_LoadDecomp",.@id,1)) continue;
+		if (inarray(.@ids,.@id)>=0) continue;
+		.@ids[.@n++]=.@id;
+		.@menu$+=getitemname(.@id)+":";
+		if (.@n>=20) break;
+	}
+	mes "[Card decomposition]";
+	mes "Only supported native decomposition categories are offered. This destroys loose cards. Showing up to 20 card types.";
+	if (!.@n) { mes "No supported cards found."; next; return; }
+	.@pick=select(.@menu$+"Back")-1;
+	if (.@pick>=.@n) { clear; return; }
+	.@id=.@ids[.@pick];
+	.@choice=select("Decompose 1:Decompose 30:Cancel");
+	if (.@choice==3) { clear; return; }
+	.@batch=(.@choice==1?1:30);
+	if (!callfunc("PN_RT_LoadDecomp",.@id,.@batch)) { mes "This batch is unsupported."; next; return; }
+	mes "Consume "+.@batch+" x "+getitemname(.@id)+". Possible rewards:";
+	for (.@i=0; .@i<@RT_DecompCount; ++.@i)
+		mes getitemname(@RT_DecompIds[.@i])+": "+@RT_DecompMin[.@i]+"-"+@RT_DecompMax[.@i]+" ("+(@RT_DecompChance[.@i]/1000)+"."+sprintf("%03d",@RT_DecompChance[.@i]%1000)+"%)";
+	if (select("Destroy cards:Cancel")==2) { clear; return; }
+	if (countitem(.@id)<.@batch || !callfunc("PN_RT_LoadDecomp",.@id,.@batch)) { mes "Cards changed. Nothing consumed."; next; return; }
+	// Reserve capacity for the full maximum batch BEFORE drawing probabilities.
+	if (!callfunc("PN_RT_CanGrant",@RT_DecompIds,@RT_DecompMax,@RT_DecompCount)) { mes "Make room for all possible rewards. Nothing consumed."; next; return; }
+	delitem .@id,.@batch;
+	for (.@i=0; .@i<@RT_DecompCount; ++.@i) {
+		if (rand(100000)>=@RT_DecompChance[.@i]) continue;
+		.@quantity=@RT_DecompMin[.@i];
+		// rAthena evaluates ternary operands eagerly; use a real branch here.
+		if (@RT_DecompMin[.@i]!=@RT_DecompMax[.@i]) .@quantity=rand(@RT_DecompMin[.@i],@RT_DecompMax[.@i]);
+		getitem @RT_DecompIds[.@i],.@quantity;
+	}
+	mes "Cards decomposed."; next; return;
+}
+
+function	script	PN_RT_Seal	{
+	.@n=callfunc("PN_RT_ListSeals");
+	copyarray .@all[0],@RT_SealIds[0],.@n;
+	.@count=0; .@menu$="";
+	for (.@i=0; .@i<.@n; ++.@i) {
+		if (!countitem(.@all[.@i])) continue;
+		.@ids[.@count++]=.@all[.@i];
+		.@menu$+=getitemname(.@all[.@i])+":";
+	}
+	mes "[Rune Seal exchange]";
+	if (!.@count) { mes "You have no supported sealed MVP cards."; next; return; }
+	.@pick=select(.@menu$+"Back")-1;
+	if (.@pick>=.@count) { clear; return; }
+	.@id=.@ids[.@pick];
+	mes "Permanently exchange 1 x "+getitemname(.@id)+" for 1 Rune Seal.";
+	if (select("Exchange:Cancel")==2) { clear; return; }
+	// Revalidate against the explicit catalog list, never an item-ID range.
+	.@n=callfunc("PN_RT_ListSeals");
+	if (inarray(@RT_SealIds,.@id)<0 || countitem(.@id)<1 || !callfunc("PN_RT_CanGrantOne",1001594,1)) { mes "Card unavailable or no inventory room. Nothing consumed."; next; return; }
+	delitem .@id,1;
+	getitem 1001594,1;
+	mes "Rune Seal received."; next; return;
+}
+
+-	script	PN Rune Stone	-1,{
+	callfunc "PN_RT_Service";
+	close;
+}
+
+grademk,46,178,4	duplicate(PN Rune Stone)	Rune Stone#PNWorkshop	4_M_SAGE_C

@@ -33,6 +33,20 @@ Header:
   Version: 1
 
 Body:
+  - Command: bs
+    Aliases:
+      - battlestats
+    Help: |
+      Params: [summary|stats|race|size|element|class|groups|skills|casting|drops|help] [page]
+      Shows your current offensive battle stats, including Rune Tablet modifiers.
+      Use @bs2 for defense. Target and skill rules can affect the final result.
+  - Command: bs2
+    Aliases:
+      - battlestats2
+    Help: |
+      Params: [summary|stats|race|size|element|class|groups|skills|casting|drops|help] [page]
+      Shows your current defensive battle stats and damage reductions.
+      Detailed tables show nonzero modifiers, with twelve rows per page.
   - Command: accept
     Help: |
       Accepts an invitation to a duel.

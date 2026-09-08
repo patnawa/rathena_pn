@@ -17,16 +17,31 @@ class ShadowServiceTests(unittest.TestCase):
 
     def test_service_closes_cancel_and_dialog_before_native_window(self):
         text = (ROOT / 'npc/custom/grademk_services.txt').read_text()
-        match = re.search(r'(?ms)^grademk,40,184,4\tscript\tShadow Gear Enchanter#grademk\t4_M_REPAIR,\{\n(.*?)^\}', text)
+        match = re.search(r'(?ms)^grademk,40,180,4\tscript\tShadow Gear Enchanter#grademk\t4_M_REPAIR,\{\n(.*?)^\}', text)
         self.assertIsNotNone(match)
         body = match[1]
         self.assertEqual(body.count('item_enchant(128);'), 1)
         self.assertEqual(body.count('item_enchant(166);'), 1)
-        self.assertIn('select("Open Shadow Enchant:Cancel:M. Alitea Shadow Enchant")', body)
-        self.assertRegex(body, r'if \(\.@service == 2\)\s+close;\s+close2;\s+if \(\.@service == 3\) \{\s+item_enchant\(166\);\s+end;\s+\}\s+item_enchant\(128\);\s+end;')
+        self.assertIn('select("Open Shadow Enchant:Cancel:M. Alitea Shadow Enchant:Master class enchants")', body)
+        self.assertRegex(body, r'if \(\.@service == 2\)\s+close;')
+        self.assertRegex(body, r'close2;\s+if \(\.@service == 3\) \{\s+item_enchant\(166\);\s+end;\s+\}\s+item_enchant\(128\);\s+end;')
+        self.assertRegex(body, r'if \(\.@master < 1 \|\| \.@master > 19\)\s+close;\s+close2;\s+item_enchant\(69 \+ \.@master\);\s+end;')
         self.assertIn('retain or lower', body)
         self.assertIn('no reset', body)
         self.assertNotRegex(body, r'\b(?:getitem|delitem|Zeny)\b')
+
+    def test_master_submenu_has_exact_native_whitelist(self):
+        text=(ROOT/'npc/custom/grademk_services.txt').read_text()
+        choices=re.search(r'\.@master = select\("([^"]+)"\)',text)[1].split(':')
+        self.assertEqual(len(choices),20)
+        self.assertEqual(choices[0],'Master Weapon / Shield')
+        self.assertEqual(choices[12],'Elemental Master')
+        self.assertEqual(choices[17],'Soul Ascetic')
+        self.assertEqual(choices[-2:],["Hyper Novice","Cancel"])
+        effective={}
+        for row in renewal_records(ROOT,'db/item_enchant.yml'):
+            effective.setdefault(row['Id'],{}).update(row)
+        self.assertEqual(sum(len(effective[i]['TargetItems']) for i in range(70,89)),74)
 
     def test_enabled_file_and_collision_free_coordinate(self):
         config = (ROOT / 'npc/scripts_custom.conf').read_text()
@@ -34,7 +49,7 @@ class ShadowServiceTests(unittest.TestCase):
         declarations = []
         for path in (ROOT / 'npc').rglob('*.txt'):
             for line in path.read_text(errors='replace').splitlines():
-                if line.startswith('grademk,40,184,'):
+                if line.startswith('grademk,40,180,'):
                     declarations.append(line)
         self.assertEqual(len(declarations), 1)
 

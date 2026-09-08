@@ -676,8 +676,10 @@ public:
 		int16 critical_rangeatk;
 		int16 weapon_atk_rate, weapon_matk_rate;
 		int32 skill_ratio;
+		bool pn_rune_sp_regen_proc;
 	} bonus;
 	// zeroed vars end here.
+	int pn_rune_sp_regen_timer = INVALID_TIMER;
 
 	int32 castrate,hprate,sprate,aprate,dsprate;
 	int32 hprecov_rate,sprecov_rate;
@@ -1476,6 +1478,8 @@ TIMER_FUNC(pc_endautobonus);
 void pc_delautobonus(map_session_data &sd, std::vector<std::shared_ptr<s_autobonus>> &bonus, bool restore);
 
 void pc_bonus(map_session_data *sd, int32 type, int32 val);
+void pc_rune_sp_regen_start(map_session_data& sd);
+void pc_rune_sp_regen_clear(map_session_data& sd);
 void pc_bonus2(map_session_data *sd, int32 type, int32 type2, int32 val);
 void pc_bonus3(map_session_data *sd, int32 type, int32 type2, int32 type3, int32 val);
 void pc_bonus4(map_session_data *sd, int32 type, int32 type2, int32 type3, int32 type4, int32 val);

@@ -1,0 +1,190 @@
+// PN Main Office: original service hub using existing server rules.
+// Map assets are aliases of the owner's standard client maps.
+-	script	PN Office Directory	-1,{
+	callfunc "PN_OfficeIndex";
+	mes "[PN Main Office]";
+	mes "Lobby: everyday services and progression.";
+	mes "Training: damage lab, repairs and equipment.";
+	mes "Upper floor: fashion, clans and lounge.";
+	switch(select("Browse all services:Search for a service:Lobby:Training and equipment:Fashion and lounge:Return to Prontera:Leave")) {
+	case 3: close2; warp "pn_office",100,40; end;
+	case 4: close2; warp "pn_train",50,35; end;
+	case 5: close2; warp "pn_style",140,140; end;
+	case 6: close2; warp "prontera",150,185; end;
+	case 7: close;
+	case 2:
+		mes "Enter part of a service name, for example card, shadow, fashion or storage.";
+		input .@query$;
+		if (.@query$ == "") close;
+	}
+	for (.@i=0; .@i<getarraysize(@PNDeskNames$); .@i++) {
+		if (.@query$ != "" && !compare(strtolower(@PNDeskNames$[.@i]),strtolower(.@query$))) continue;
+		.@choices[.@count++] = .@i;
+		.@menu$ += @PNDeskNames$[.@i]+":";
+	}
+	if (!.@count) { mes "No matching service. Try a shorter name."; close; }
+	.@pick=select(.@menu$+"Cancel")-1;
+	if (.@pick == .@count) close;
+	.@i=.@choices[.@pick];
+	mes "Go to "+@PNDeskNames$[.@i]+"?";
+	mes "Map: "+@PNDeskMaps$[.@i]+" ("+@PNDeskX[.@i]+","+@PNDeskY[.@i]+").";
+	if (select("Go to the desk:Cancel") == 2) close;
+	close2;
+	warp @PNDeskMaps$[.@i],@PNDeskX[.@i],@PNDeskY[.@i];
+	end;
+}
+
+-	script	PN Office Access	-1,{
+	mes "[PN Main Office]";
+	mes "Visit our service hub: daily essentials, equipment, training and fashion.";
+	if(select("Enter Main Office:Leave") == 2) close;
+	close2;
+	warp "pn_office",100,40;
+	end;
+OnOffice:
+	.@map$=strcharinfo(3);
+	// A global command NPC has instance_id()==0 even inside an instance.
+	// Native instance_generate_mapname always uses the '#' separator.
+	if (Hp <= 0 || compare(.@map$,"#") || getmapflag(.@map$,mf_noteleport) || getmapflag(.@map$,mf_nowarp) || getmapflag(.@map$,mf_noreturn)
+	 || getmapflag(.@map$,mf_nogo) || getmapflag(.@map$,mf_pvp) || getmapflag(.@map$,mf_gvg)
+	 || getmapflag(.@map$,mf_gvg_dungeon) || getmapflag(.@map$,mf_gvg_castle) || getmapflag(.@map$,mf_gvg_te) || getmapflag(.@map$,mf_gvg_te_castle)
+	 || getmapflag(.@map$,mf_battleground)) {
+		dispbottom "Return to an unrestricted town before using @office."; end;
+	}
+	warp "pn_office",100,40;
+	end;
+OnInit:
+	bindatcmd "office",strnpcinfo(3)+"::OnOffice",0,99;
+	end;
+}
+
+-	script	PN Office Storage	-1,{
+	mes "[Office Kafra]";
+	switch(select("Open storage:Save respawn in the office:Leave")) {
+	case 1: close2; openstorage; end;
+	case 2:
+		mes "Save your respawn point in the Main Office lobby?";
+		if(select("Save here:Cancel") == 1) { savepoint "pn_office",100,40; mes "Respawn point saved."; }
+	}
+	close;
+}
+
+-	script	PN Office Repair	-1,{
+	callfunc "repairmain","Office Repair";
+	close;
+}
+
+-	script	PN Platinum Skills	-1,{
+	mes "[Platinum Skills]";
+	mes "Learn the quest skills supported for your current job by the server's platinum-skill service.";
+	if(select("Learn supported skills:Cancel") == 1) callfunc "F_GetPlatinumSkills";
+	close;
+}
+
+-	shop	PN Tool Shop	-1,501:-1,502:-1,503:-1,504:-1,505:-1,506:-1,601:-1,602:-1,610:-1,611:-1,645:-1,656:-1
+-	shop	PN Cafe Shop	-1,512:-1,513:-1,514:-1,515:-1,518:-1
+
+-	script	PN Copy Teacher	-1,{
+	mes "[Skill Copy Teacher]";
+	if (!getskilllv("RG_PLAGIARISM") && !getskilllv("SC_REPRODUCE")) {
+		mes "Learn Plagiarism or Reproduce before using this service."; close;
+	}
+	mes "The normal copy rules apply. Preserve blocks Plagiarism; activate Reproduce to use its copy slot.";
+	mes "This replaces a copied skill only if the server accepts the selected skill.";
+	setarray .@ids,28,19,14,20,89,79,254,77;
+	setarray .@names$,"Heal","Fire Bolt","Cold Bolt","Lightning Bolt","Storm Gust","Magnus Exorcismus","Grand Cross","Turn Undead";
+	.@pick=select("Heal:Fire Bolt:Cold Bolt:Lightning Bolt:Storm Gust:Magnus Exorcismus:Grand Cross:Turn Undead:Cancel")-1;
+	if (.@pick == 8) close;
+	mes "Copy "+.@names$[.@pick]+"? Your learned copy level and skill database determine the result.";
+	if(select("Copy skill:Cancel") == 2) close;
+	// Every offered skill is copyable by both modes (validated against skill DB).
+	// Native eligibility prefers active Reproduce. Its CAST level is val1;
+	// the independently learned Plagiarism level must not lower that copy slot.
+	.@copycap=getskilllv("RG_PLAGIARISM");
+	if (getstatus(SC__REPRODUCE,1)>0 && getskilllv("SC_REPRODUCE"))
+		.@copycap=getstatus(SC__REPRODUCE,1);
+	if (.@copycap <= 0) { mes "Activate Reproduce or learn Plagiarism first."; close; }
+	if (plagiarizeskill(.@ids[.@pick],min(10,.@copycap))) mes "Skill copied.";
+	else mes "Copy rejected. Check your copy-skill level, Preserve/Reproduce state and skill eligibility.";
+	close;
+}
+
+-	script	PN Progression Guide	-1,{
+	mes "[Progression Guide]";
+	mes "Your base/job level: "+BaseLevel+" / "+JobLevel+".";
+	mes "Start with Job Master and Skill Supplies. Druid characters have a separate Mentor.";
+	mes "Visit Training for upgrades and a measured damage test; visit Fashion for costume services.";
+	next;
+	switch(select("Chapter 1 and Zero Cell:Chapter 2:Episode services:Equipment progression:Leave")) {
+	case 1:
+		mes "Chapter 1 complete: "+CH1_Complete()+".";
+		mes "Zero Cell investigation complete: "+ZC_HasAccess()+".";
+		mes "Speak to Robin at ygg_edge 173,185. PN Services explains remaining entry requirements.";
+		break;
+	case 2:
+		mes "Chapter 2: level 225 and Chapter 1 completion. Current step: "+CH2_Step+".";
+		mes "Guardian El is at ygg_edge 156,179. Your existing quest progress is preserved.";
+		break;
+	case 3:
+		mes "Temporal Tina offers the existing episode ticket service with its listed prices and requirements.";
+		mes "Travel Desk includes instance destinations. Entrance NPCs enforce their own prerequisites and cooldowns.";
+		break;
+	case 4:
+		mes "Equipment, crown, shadow and constellation desks share the existing Grade Workshop recipes.";
+		mes "Check target compatibility and materials before confirming. The office does not change their costs.";
+	}
+	close;
+}
+
+-	script	PN Instance Desk	-1,{
+	mes "[Instance Desk]";
+	.@solo=instance_id(IM_CHAR);
+	.@party=instance_id(IM_PARTY);
+	if (.@solo) mes "Your personal instance: "+instance_live_info(ILI_NAME,.@solo)+".";
+	if (.@party) mes "Your party instance: "+instance_live_info(ILI_NAME,.@party)+".";
+	if (!.@solo && !.@party) mes "No active personal or party instance found.";
+	mes "Use Travel Desk > Instances to reach the entrance NPC. It checks that instance's access and cooldown.";
+	mes "Use PN Services for Chapter 2, Zero Cell and Devoured Geffenia access details.";
+	close;
+}
+
+-	script	PN Build Notes	-1,{
+	mes "[Build Notebook]";
+	mes "Keep three character-specific build notes for comparison. This notebook does not change stats, skills or equipment.";
+	.@slot=select("Notebook 1:Notebook 2:Notebook 3:Leave")-1;
+	if (.@slot == 3) close;
+	if (PNBuildNote$[.@slot] != "") {
+		mes PNBuildNote$[.@slot];
+		mes PNBuildStats$[.@slot];
+	}
+	if(select("Save current stats with a note:Leave") == 2) close;
+	mes "Enter a short build or rotation note (up to 120 characters).";
+	input .@note$;
+	if (.@note$ == "" || getstrlen(.@note$)>120) { mes "Please use 1-120 characters."; close; }
+	if(PNBuildNote$[.@slot] != "" && select("Replace this notebook:Cancel") == 2) close;
+	PNBuildNote$[.@slot]=.@note$;
+	PNBuildStats$[.@slot]="STR "+readparam(bStr)+" AGI "+readparam(bAgi)+" VIT "+readparam(bVit)+" INT "+readparam(bInt)+" DEX "+readparam(bDex)+" LUK "+readparam(bLuk);
+	mes "Saved. Use the private damage lab with consistent targets to compare your builds.";
+	close;
+}
+
+pn_office	mapflag	nobranch
+pn_office	mapflag	nomemo
+pn_office	mapflag	loadevent
+pn_office	mapflag	town
+pn_train	mapflag	nobranch
+pn_train	mapflag	nomemo
+pn_train	mapflag	loadevent
+pn_train	mapflag	town
+pn_style	mapflag	nobranch
+pn_style	mapflag	nomemo
+pn_style	mapflag	loadevent
+pn_style	mapflag	town
+
+-	script	PN Office Welcome	-1,{
+OnPCLoadMapEvent:
+	if (strcharinfo(3) == "pn_office") dispbottom "PN Main Office | Directory: search a service or change floors. @office returns to the lobby.";
+	if (strcharinfo(3) == "pn_train") dispbottom "Training & Equipment | Private damage lab, repairs and upgrade services. Use Directory for any desk.";
+	if (strcharinfo(3) == "pn_style") dispbottom "Fashion & Lounge | Costume services, clans, skill copying and cafe. Use Directory to change floors.";
+	end;
+}

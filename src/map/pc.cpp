@@ -4289,6 +4289,9 @@ void pc_bonus(map_session_data *sd,int32 type,int32 val)
 			if (sd->state.lr_flag != LR_FLAG_ARROW)
 				sd->bonus.skill_ratio += val;
 			break;
+		case SP_PN_RUNE_SP_REGEN_PROC:
+			sd->bonus.pn_rune_sp_regen_proc = val > 0;
+			break;
 		case SP_SHORT_ATK_RATE:
 			if (sd->state.lr_flag != LR_FLAG_ARROW)	//[Lupus] it should stack, too. As any other cards rate bonuses
 				sd->bonus.short_attack_atk_rate+=val;
@@ -9788,8 +9791,36 @@ void pc_close_npc(map_session_data *sd,int32 flag)
 /*==========================================
  * Invoked when a player has negative current hp
  *------------------------------------------*/
+// Burning Fang: a single renewable four-tick proc, independent of equipment.
+// Timer identity prevents an old session's pending callback affecting a relog.
+static TIMER_FUNC(pc_rune_sp_regen_timer) {
+	map_session_data* sd = map_id2sd(id);
+	if (sd == nullptr || sd->pn_rune_sp_regen_timer != tid)
+		return 0;
+	sd->pn_rune_sp_regen_timer = INVALID_TIMER;
+	if (!sd->bonus.pn_rune_sp_regen_proc || pc_isdead(sd))
+		return 0;
+	status_heal(sd, 0, 200, 0);
+	if (data > 1)
+		sd->pn_rune_sp_regen_timer = add_timer(tick + 1000, pc_rune_sp_regen_timer, sd->id, data - 1);
+	return 0;
+}
+
+void pc_rune_sp_regen_clear(map_session_data& sd) {
+	if (sd.pn_rune_sp_regen_timer != INVALID_TIMER) {
+		delete_timer(sd.pn_rune_sp_regen_timer, pc_rune_sp_regen_timer);
+		sd.pn_rune_sp_regen_timer = INVALID_TIMER;
+	}
+}
+
+void pc_rune_sp_regen_start(map_session_data& sd) {
+	pc_rune_sp_regen_clear(sd);
+	sd.pn_rune_sp_regen_timer = add_timer(gettick() + 1000, pc_rune_sp_regen_timer, sd.id, 4);
+}
+
 int32 pc_dead(map_session_data *sd,block_list *src)
 {
+	pc_rune_sp_regen_clear(*sd);
 	int32 i=0,k=0;
 	t_tick tick = gettick();
 	struct map_data *mapdata = map_getmapdata(sd->m);
@@ -16157,6 +16188,7 @@ void do_init_pc(void) {
 	captcha_db.load();
 
 	add_timer_func_list(pc_invincible_timer, "pc_invincible_timer");
+	add_timer_func_list(pc_rune_sp_regen_timer, "pc_rune_sp_regen_timer");
 	add_timer_func_list(pc_eventtimer, "pc_eventtimer");
 	add_timer_func_list(pc_inventory_rental_end, "pc_inventory_rental_end");
 	add_timer_func_list(pc_calc_pvprank_timer, "pc_calc_pvprank_timer");

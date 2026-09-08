@@ -3647,6 +3647,11 @@
 	export_constant(RC2_GLAST_HEIM_ABYSS);
 	export_constant(RC2_DESTROYED_VALKYRIE_REALM);
 	export_constant(RC2_ENCROACHED_GEPHENIA);
+	export_constant(RC2_PN_EP18);
+	export_constant(RC2_PN_EP19);
+	export_constant(RC2_PN_EP20);
+	export_constant(RC2_PN_EP21);
+	export_constant2("bPNRuneSPRegenProc", SP_PN_RUNE_SP_REGEN_PROC);
 	export_deprecated_constant(RC2_MAX);	// Mar. 2025
 
 	/* monster ai */

@@ -97,12 +97,19 @@ function	script	CH2_Instance	{
 function	script	CH2_GiveReward	{
 	.@quest = getarg(0);
 	.@coins = getarg(1);
+	// Revalidate after the gate's confirmation dialog and before committing.
+	if (isbegin_quest(.@quest) != 1 || (.@quest == 27119 && !CH2_DailyPhantom)) {
+		mes "[Flame Branch Mission]";
+		mes "This mission has no unclaimed clear reward.";
+		close;
+	}
 	if (!checkweight(1002700,.@coins)) {
 		mes "[Flame Branch Mission]";
 		mes "Make room for " + .@coins + " Flame Coins before filing this mission.";
 		close;
 	}
 	completequest .@quest;
+	if (.@quest == 27119) CH2_DailyPhantom = 0;
 	setd("CH2_Daily_CD_"+.@quest,gettimetick(2)+14400);
 	getitem 1002700,.@coins;
 	CH2_Reputation += 2;
@@ -216,9 +223,10 @@ veledor,136,65,4	script	Guardian El#ch2main	4_F_FAIRYKID5,{
 	}
 	if (CH2_Step >= 12 && !CH2_Complete()) {
 		if (!CH2_Phantom) { mes "[Guardian El]"; mes "The Phantom of Nyrholt remains."; close; }
-		if (!checkweight(1002700,10)) { mes "[Guardian El]"; mes "Make room for 10 Flame Coins first."; close; }
 		mes "[Guardian El]"; mes "You restored the severed Flame Branch and gave every refuge a future.";
 		next;
+		if (CH2_Complete()) { mes "[Guardian El]"; mes "Your Chapter 2 completion reward has already been claimed."; close; }
+		if (!checkweight(1002700,10)) { mes "[Guardian El]"; mes "Make room for 10 Flame Coins first."; close; }
 		mes "Your reputation now grants access to the Flame Branch exchange and all Chapter 2 routes.";
 		completequest 27101;
 		CH2_Reputation = max(CH2_Reputation,100);
@@ -328,7 +336,6 @@ ch2safe4,86,146,4	script	Phantom Gate#ch2main	4_ENERGY_RED,{
 			mes "The Snapdragon Phantom has fallen. Claim the 3 Flame Coin clear reward?";
 			next;
 			if (select("Claim reward:Later") == 1) {
-				CH2_DailyPhantom = 0;
 				callfunc "CH2_GiveReward",27119,3;
 			}
 			close;
@@ -488,7 +495,7 @@ kindlbrk,121,219,4	script	Flame Branch Mission Board	4_BOARD3,{
 	}
 	if (.@pick == 10) {
 		if (!CH2_DailyPhantom) { mes "Use the Phantom Gate and defeat Phantom Snapdragon first."; close2; callfunc "CH2_Instance","Phantom of Nyrholt"; end; }
-		CH2_DailyPhantom = 0; callfunc "CH2_GiveReward",.@qid,3;
+		callfunc "CH2_GiveReward",.@qid,3;
 	}
 	close;
 }

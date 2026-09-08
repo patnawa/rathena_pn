@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <set>
+#include <sstream>
 #include <unordered_map>
 
 #include <common/cbasetypes.hpp>
@@ -9936,43 +9937,145 @@ ACMD_FUNC(itemlist)
 	return 0;
 }
 
-/*==========================================
- * Display the invoking character's calculated battle status.
- *------------------------------------------*/
-ACMD_FUNC(bs)
-{
-	nullpo_retr(-1, sd);
-
-	const status_data& status = sd->battle_status;
-	const int32 aspd = ( AMOTION_ZERO_ASPD - status.amotion ) / AMOTION_INTERVAL;
-
-	clif_displaymessage(fd, "======== Battle Stats ========");
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "HP %u/%u | SP %u/%u | AP %u/%u",
-		status.hp, status.max_hp, status.sp, status.max_sp, status.ap, status.max_ap);
-	clif_displaymessage(fd, atcmd_output);
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "ATK %d~%d | MATK %u~%u | Range %u",
-		status.batk + status.rhw.atk, status.batk + status.rhw.atk2, status.matk_min, status.matk_max, status.rhw.range);
-	clif_displaymessage(fd, atcmd_output);
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "DEF %d + %d | MDEF %d + %d | RES %d | MRES %d",
-		status.def, status.def2, status.mdef, status.mdef2, status.res, status.mres);
-	clif_displaymessage(fd, atcmd_output);
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "HIT %d | FLEE %d | Perfect Dodge %d.%d | CRIT %d.%d",
-		status.hit, status.flee, status.flee2 / 10, abs(status.flee2 % 10), status.cri / 10, abs(status.cri % 10));
-	clif_displaymessage(fd, atcmd_output);
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "ASPD %d | P.ATK %d | S.MATK %d | H.Plus %d | C.Rate %d",
-		aspd, status.patk, status.smatk, status.hplus, status.crate);
-	clif_displaymessage(fd, atcmd_output);
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "STR %d | AGI %d | VIT %d | INT %d | DEX %d | LUK %d",
-		status.str, status.agi, status.vit, status.int_, status.dex, status.luk);
-	clif_displaymessage(fd, atcmd_output);
-	safesnprintf(atcmd_output, sizeof(atcmd_output), "POW %d | STA %d | WIS %d | SPL %d | CON %d | CRT %d",
-		status.pow, status.sta, status.wis, status.spl, status.con, status.crt);
-	clif_displaymessage(fd, atcmd_output);
-	clif_displaymessage(fd, "==============================");
-
+// Player-readable snapshots of actual calculated fields. Target/skill-dependent
+// combat formulas remain in battle.cpp/skill.cpp; this command never simulates a
+// cast (doing so can consume statuses such as Memorize).
+static int pn_battlestats(const int fd, map_session_data& sd, const char* message, bool defense) {
+	std::string section = "summary";
+	int page = 1;
+	std::istringstream input(message ? message : "");
+	if (input >> section) {
+		if (!(input >> std::ws).eof() && (!(input >> page) || !(input >> std::ws).eof() || page < 1)) {
+			clif_displaymessage(fd, "Usage: @bs <topic> [page], or @bs2 <topic> [page]. Use help for topics.");
+			return -1;
+		}
+	}
+	std::vector<std::string> lines;
+	auto add = [&](const char* format, auto... args) {
+		if constexpr (sizeof...(args) == 0) {
+			lines.emplace_back(format);
+		} else {
+			char line[CHAT_SIZE_MAX]; safesnprintf(line, sizeof(line), format, args...); lines.emplace_back(line);
+		}
+	};
+	const status_data& s = sd.battle_status;
+	const auto& b = sd.indexed_bonus;
+	const auto& r = sd.right_weapon;
+	const auto& l = sd.left_weapon;
+	static const char* races[] = {"Formless","Undead","Brute","Plant","Insect","Fish","Demon","Demi-Human","Angel","Dragon","Player Human","Player Doram","All"};
+	static const char* sizes[] = {"Small","Medium","Large","All"};
+	static const char* elements[] = {"Neutral","Water","Earth","Fire","Wind","Poison","Holy","Shadow","Ghost","Undead","All"};
+	static const char* classes[] = {"Normal","Boss","Guardian","Unused","Battlefield","Event","All"};
+	static_assert(std::size(classes) == CLASS_MAX, "Battle stat class labels must match engine enums");
+	static_assert(std::size(races) == RC_MAX && std::size(sizes) == SZ_MAX && std::size(elements) == ELE_MAX, "Battle stat labels must match engine enums");
+	if (section == "help") {
+		add("@battlestats / @bs: offense. @battlestats2 / @bs2: defense.");
+		add("Topics: summary, stats, race, size, element, class, groups, skills, casting, drops.");
+		add("Append a page number, e.g. @bs skills 2. Only nonzero modifier rows are shown.");
+		add("R/L = right/left-hand physical bonuses; M = magic. All-target entries are included.");
+		add("Snapshot includes recalculated equipment, cards, Rune Tablets and applicable buffs.");
+		add("Conditional buffs, skill rules, target defenses, caps and map rules can change the result.");
+	} else if (section == "summary") {
+		add("Base %u | Job %u | HP %u/%u | SP %u/%u | AP %u/%u", sd.status.base_level,sd.status.job_level,s.hp,s.max_hp,s.sp,s.max_sp,s.ap,s.max_ap);
+		if (defense) {
+			add("DEF hard %d + soft %d | MDEF hard %d + soft %d | RES %d | MRES %d",s.def,s.def2,s.mdef,s.mdef2,s.res,s.mres);
+			add("FLEE %d | Perfect dodge %.1f | Armor %s Lv%u",s.flee,s.flee2/10.0,s.def_ele<ELE_ALL?elements[s.def_ele]:"Unknown",s.ele_lv);
+			add("Damage reduction: melee %+d%% | ranged %+d%% | magic %+d%% | misc %+d%%",sd.bonus.near_attack_def_rate,sd.bonus.long_attack_def_rate,sd.bonus.magic_def_rate,sd.bonus.misc_def_rate);
+			add("Critical-damage reduction %+d%% | H.Plus %d",sd.bonus.crit_def_rate,s.hplus);
+		} else {
+			add("Status ATK %d | Equip ATK %d | MATK %u~%u",s.batk,s.eatk,s.matk_min,s.matk_max);
+			add("Right weapon ATK %u / refine ATK %u | Left weapon ATK %u / refine ATK %u",s.rhw.atk,s.rhw.atk2,s.lhw.atk,s.lhw.atk2);
+			add("HIT %d | CRIT %.1f | ASPD %.2f | Range %u",s.hit,s.cri/10.0,(AMOTION_ZERO_ASPD-s.amotion)/(double)AMOTION_INTERVAL,s.rhw.range);
+			add("P.ATK %d | S.MATK %d | C.Rate %d | Attack element R %s / L %s",s.patk,s.smatk,s.crate,s.rhw.ele<ELE_ALL?elements[s.rhw.ele]:"Unknown",s.lhw.ele<ELE_ALL?elements[s.lhw.ele]:"Unknown");
+			add("Melee %+d%% | Ranged %+d%% | Crit damage %+d%% | ATK %+d%% | MATK %+d%%",sd.bonus.short_attack_atk_rate,sd.bonus.long_attack_atk_rate,sd.bonus.crit_atk_rate,sd.bonus.atk_rate,sd.matk_rate-100);
+			add("Mastery damage is weapon/skill/target-dependent; no single total is reported.");
+		}
+		add("Movement %.2f cells/s (%u ms/cell). Use help for detailed topics.",s.speed?1000.0/s.speed:0.0,s.speed);
+	} else if (section == "stats") {
+		const int base[]={sd.status.str,sd.status.agi,sd.status.vit,sd.status.int_,sd.status.dex,sd.status.luk,sd.status.pow,sd.status.sta,sd.status.wis,sd.status.spl,sd.status.con,sd.status.crt};
+		const int total[]={s.str,s.agi,s.vit,s.int_,s.dex,s.luk,s.pow,s.sta,s.wis,s.spl,s.con,s.crt};
+		const char* names[]={"STR","AGI","VIT","INT","DEX","LUK","POW","STA","WIS","SPL","CON","CRT"};
+		auto job=job_db.find(pc_mapid2jobid(sd.class_,sd.status.sex));
+		for (size_t i=0;i<std::size(base);++i) {
+			const int bonus=job && sd.status.job_level>0 && sd.status.job_level<=job->job_bonus.size()?job->job_bonus[sd.status.job_level-1][i]:0;
+			add("%s %d = base %d + job %d + other %+d",names[i],total[i],base[i],bonus,total[i]-base[i]-bonus);
+		}
+	} else if (section == "race") {
+		for (int i=0;i<RC_ALL;++i) {
+			if (defense) { const int value=b.subrace[i]+b.subrace[RC_ALL];if(value)add("%s reduction %+d%%",races[i],value); }
+			else { const int rv=r.addrace[i]+r.addrace[RC_ALL],lv=l.addrace[i]+l.addrace[RC_ALL],mv=b.magic_addrace[i]+b.magic_addrace[RC_ALL],av=b.arrow_addrace[i]+b.arrow_addrace[RC_ALL];
+				if(rv||lv||mv||av)add("%s R %+d%% / L %+d%% / M %+d%% / ammo %+d%%",races[i],rv,lv,mv,av); }
+		}
+	} else if (section == "size") {
+		for (int i=0;i<SZ_ALL;++i) {
+			if(defense) { const int a=b.subsize[i]+b.subsize[SZ_ALL],p=b.weapon_subsize[i]+b.weapon_subsize[SZ_ALL],m=b.magic_subsize[i]+b.magic_subsize[SZ_ALL];if(a||p||m)add("%s reduction: shared %+d%% / physical-only %+d%% / magic-only %+d%%",sizes[i],a,p,m); }
+			else { const int rv=r.addsize[i]+r.addsize[SZ_ALL],lv=l.addsize[i]+l.addsize[SZ_ALL],mv=b.magic_addsize[i]+b.magic_addsize[SZ_ALL],av=b.arrow_addsize[i]+b.arrow_addsize[SZ_ALL];if(rv||lv||mv||av)add("%s R %+d%% / L %+d%% / M %+d%% / ammo %+d%%",sizes[i],rv,lv,mv,av); }
+		}
+	} else if (section == "element") {
+		for (int i=0;i<ELE_ALL;++i) {
+			if(defense) { const int attack=b.subele[i]+b.subele[ELE_ALL]+b.subele_script[i]+b.subele_script[ELE_ALL],p=b.subdefele[i]+b.subdefele[ELE_ALL],m=b.magic_subdefele[i]+b.magic_subdefele[ELE_ALL];if(attack||p||m)add("%s reduction: incoming attack %+d%% / enemy armor P %+d%% M %+d%%",elements[i],attack,p,m); }
+			else { const int rv=r.addele[i]+r.addele[ELE_ALL],lv=l.addele[i]+l.addele[ELE_ALL],mv=b.magic_addele[i]+b.magic_addele[ELE_ALL]+b.magic_addele_script[i]+b.magic_addele_script[ELE_ALL],cast=b.magic_atk_ele[i]+b.magic_atk_ele[ELE_ALL];if(rv||lv||mv||cast)add("%s enemy armor R %+d%% / L %+d%% / M %+d%%; spell element %+d%%",elements[i],rv,lv,mv,cast); }
+		}
+	} else if (section == "class") {
+		for(int i=0;i<CLASS_ALL;++i) {
+			if(i==3)continue; // No class uses this reserved engine value.
+			const char* name=classes[i];
+			if(defense) { const int value=b.subclass[i]+b.subclass[CLASS_ALL];if(value)add("%s reduction %+d%%",name,value); }
+			else { const int rv=r.addclass[i]+r.addclass[CLASS_ALL],lv=l.addclass[i]+l.addclass[CLASS_ALL],mv=b.magic_addclass[i]+b.magic_addclass[CLASS_ALL];if(rv||lv||mv)add("%s R %+d%% / L %+d%% / M %+d%%",name,rv,lv,mv); }
+		}
+	} else if (section == "groups") {
+		for(int i=RC2_NONE+1;i<RC2_MAX;++i) {
+			const char* name=script_get_constant_str("RC2_",i);if(!name)name="Unknown group";
+			if(defense) { if(b.subrace2[i])add("%s reduction %+d%%",name,b.subrace2[i]); }
+			else if(r.addrace2[i]||l.addrace2[i]||b.magic_addrace2[i])add("%s R %+d%% / L %+d%% / M %+d%%",name,r.addrace2[i],l.addrace2[i],b.magic_addrace2[i]);
+		}
+	} else if (section == "skills") {
+		for(const auto& skill : defense?sd.subskill:sd.skillatk)if(skill.val)add("%s (%u): %s %+d%%",skill_get_desc(skill.id),skill.id,defense?"damage reduction":"damage modifier",skill.val);
+	} else if (section == "casting") {
+#ifdef RENEWAL_CAST
+		const int scale=battle_config.vcast_stat_scale;
+		const double stats=scale>0?std::min(1.0,std::sqrt(std::max(0.0,(2.0*s.dex+s.int_)/scale))):0.0;
+		add("VCT stat reduction %.2f%% (2*DEX+INT=%d, configured scale=%d)",stats*100,2*s.dex+s.int_,scale);
+		add("VCT script reduction %+d%%, flat adjustment %+d ms",sd.bonus.varcastrate,sd.bonus.add_varcast);
+		add("FCT script reduction %+d%%, flat adjustment %+d ms",-sd.bonus.fixcastrate,sd.bonus.add_fixcast);
+#else
+		add("Cast-time script adjustment %+d%% (pre-Renewal casting rules)",sd.castrate-100);
+#endif
+		add("After-cast delay script adjustment %+d%% | SP cost adjustment %+d%%",sd.bonus.delayrate,sd.dsprate-100);
+		add("FCT has no general DEX/INT reduction. Skill flags and cast-time buffs apply separately.");
+		for(const auto& skill:sd.skillcastrate)if(skill.val)add("%s VCT reduction %+d%%",skill_get_desc(skill.id),skill.val);
+		for(const auto& skill:sd.skillfixcast)if(skill.val)add("%s fixed cast adjustment %+d ms",skill_get_desc(skill.id),skill.val);
+	} else if (section == "drops") {
+		int boost=0;
+		if(auto* sc=sd.sc.getSCE(SC_ITEMBOOST))boost+=sc->val1;
+		if(auto* sc=sd.sc.getSCE(SC_PERIOD_RECEIVEITEM_2ND))boost+=sc->val1;
+		add("General drop modifiers: race-all %+d%% + class-all %+d%% + item buffs %+d%%",b.dropaddrace[RC_ALL],b.dropaddclass[CLASS_ALL],boost);
+		for(int i=0;i<RC_ALL;++i)if(b.dropaddrace[i])add("%s additional drop modifier %+d%%",races[i],b.dropaddrace[i]);
+		for(int i=0;i<CLASS_ALL;++i)if(i!=3 && b.dropaddclass[i])add("%s additional drop modifier %+d%%",classes[i],b.dropaddclass[i]);
+		add("Final chance uses the monster/item drop table, server rates, caps and applicable VIP/other rules.");
+		add("There is no universal MVP-card chance. Use @mi <monster> for its drop information.");
+	} else {
+		clif_displaymessage(fd,"Unknown battle-stat topic. Use @bs help or @bs2 help.");return -1;
+	}
+	if(lines.empty())lines.emplace_back("No nonzero modifiers in this category.");
+	constexpr size_t per_page=12;
+	const size_t pages=(lines.size()+per_page-1)/per_page;
+	if(static_cast<size_t>(page)>pages) { clif_displaymessage(fd,"That page does not exist. Start with page 1.");return -1; }
+	char heading[128];safesnprintf(heading,sizeof(heading),"[%s: %s | page %d/%zu]",defense?"Defense":"Offense",section.c_str(),page,pages);clif_displaymessage(fd,heading);
+	for(size_t i=(page-1)*per_page;i<std::min(lines.size(),page*per_page);++i)clif_displaymessage(fd,lines[i].c_str());
+	clif_displaymessage(fd,"Current snapshot; conditional effects and target/skill rules may differ. @bs help");
 	return 0;
 }
 
+ACMD_FUNC(bs) {
+	nullpo_retr(-1,sd);
+	return pn_battlestats(fd,*sd,message,false);
+}
+
+ACMD_FUNC(bs2) {
+	nullpo_retr(-1,sd);
+	return pn_battlestats(fd,*sd,message,true);
+}
 ACMD_FUNC(stats)
 {
 	char job_jobname[100];
@@ -11896,6 +11999,7 @@ void atcommand_basecommands(void) {
 		ACMD_DEF2("cartlist", itemlist),
 		ACMD_DEF(itemlist),
 		ACMD_DEF(bs),
+		ACMD_DEF(bs2),
 		ACMD_DEF(stats),
 		ACMD_DEF(delitem),
 		ACMD_DEF(charcommands),

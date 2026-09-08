@@ -3,6 +3,7 @@
 	mes "[PN Services]";
 	switch(select("Private damage lab:Dungeon access check:Client checklist:GM character setup:Leave")) {
 	case 1:
+		@PNLabOffice = (strcharinfo(3) == "pn_train") ? 2 : ((strcharinfo(3) == "pn_office") ? 1 : 0);
 		.@id = instance_id(IM_CHAR);
 		if (.@id > 0 && instance_live_info(ILI_NAME,.@id) != "PN Damage Lab") {
 			mes "Finish your other solo instance first."; close;
@@ -88,7 +89,9 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 		close;
 	case 3:
 		.@id = instance_id();
-		warp "izlude",140,144;
+		if (@PNLabOffice == 2) warp "pn_train",50,35;
+		else if (@PNLabOffice == 1) warp "pn_office",100,40;
+		else warp "izlude",140,144;
 		instance_destroy .@id;
 		end;
 	}

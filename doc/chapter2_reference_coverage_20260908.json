@@ -1,0 +1,465 @@
+{
+  "schema": 1,
+  "audited_at": "2026-09-08",
+  "method": "Static inspection of all 18 linked quest guide pages, server scripts and effective recursive Renewal database imports; no live gameplay certification.",
+  "reference_index": "https://wiki.midgardtales.com/Chapter_2",
+  "scope": {
+    "main_pages": 10,
+    "side_pages": 1,
+    "daily_pages": 7,
+    "daily_reference_tasks": 9,
+    "local_board_tasks": 10
+  },
+  "local_state": {
+    "completion_quest": 27101,
+    "variable": "CH2_Step",
+    "stages": 12,
+    "objective_quests": [
+      27102,
+      27103,
+      27104
+    ],
+    "daily_quests": [
+      27110,
+      27111,
+      27112,
+      27113,
+      27114,
+      27115,
+      27116,
+      27117,
+      27118,
+      27119
+    ]
+  },
+  "references": [
+    {
+      "page": "Guardian's Call",
+      "url": "https://wiki.midgardtales.com/Guardian%27s_Call",
+      "revision": 27710,
+      "kind": "main",
+      "quest_ids": [
+        26035,
+        26036,
+        26037,
+        26038
+      ],
+      "coverage": "partial",
+      "local_stages": [
+        1,
+        2
+      ],
+      "findings": [
+        "Crossroads represented with compatibility encounter",
+        "Different NPC handoffs; five-Apple start gate added",
+        "Reference index and detailed guide use different starting coordinates"
+      ]
+    },
+    {
+      "page": "To Sanctuary Veledor",
+      "url": "https://wiki.midgardtales.com/To_Sanctuary_Veledor",
+      "revision": 27305,
+      "kind": "main",
+      "quest_ids": [
+        18397,
+        18398,
+        18399
+      ],
+      "coverage": "condensed",
+      "local_stages": [
+        2,
+        3
+      ],
+      "findings": [
+        "El/Newt/safe-spot chain absent"
+      ]
+    },
+    {
+      "page": "Between Cold and Heat",
+      "url": "https://wiki.midgardtales.com/Between_Cold_and_Heat",
+      "revision": 27330,
+      "kind": "main",
+      "quest_ids": [
+        24160,
+        24161,
+        24162,
+        24163,
+        24164,
+        24165,
+        24166,
+        24167,
+        24168,
+        24169,
+        24170,
+        24171,
+        24172,
+        24173,
+        24174
+      ],
+      "coverage": "mostly_absent",
+      "local_stages": [
+        3,
+        4,
+        5
+      ],
+      "findings": [
+        "Interviews, White Ash, boat, Chez/Dew and Strange Hal absent"
+      ]
+    },
+    {
+      "page": "Encounter at the Dead Root",
+      "url": "https://wiki.midgardtales.com/Encounter_at_the_Dead_Root",
+      "revision": 27367,
+      "kind": "main",
+      "quest_id_ranges": [
+        [
+          23388,
+          23420
+        ]
+      ],
+      "coverage": "mostly_absent",
+      "local_stages": [
+        5,
+        6
+      ],
+      "findings": [
+        "Survey/Gemis/cryo/device objectives absent",
+        "Five-Fluffy-Ember story handoff absent"
+      ]
+    },
+    {
+      "page": "Fragments of the End",
+      "url": "https://wiki.midgardtales.com/Fragments_of_the_End",
+      "revision": 27377,
+      "kind": "main",
+      "quest_ids": [
+        18400,
+        18401,
+        8932,
+        8933,
+        8934
+      ],
+      "coverage": "partial_reordered",
+      "local_quests": [
+        27102
+      ],
+      "findings": [
+        "20-Shadow-Jailer count exists but local timing and NPC differ"
+      ]
+    },
+    {
+      "page": "Residents of Ragsruth",
+      "url": "https://wiki.midgardtales.com/Residents_of_Ragsruth",
+      "revision": 27395,
+      "kind": "main",
+      "quest_id_ranges": [
+        [
+          27141,
+          27158
+        ]
+      ],
+      "coverage": "condensed",
+      "local_stages": [
+        8,
+        9
+      ],
+      "findings": [
+        "Reference requires five Apples then one Apple; local consumes five total",
+        "Resident dialogue chain absent"
+      ]
+    },
+    {
+      "page": "Into Nyrholt",
+      "url": "https://wiki.midgardtales.com/Into_Nyrholt",
+      "revision": 27408,
+      "kind": "main",
+      "quest_ids": [
+        12668,
+        12669
+      ],
+      "coverage": "partial",
+      "local_stages": [
+        9
+      ],
+      "findings": [
+        "Party instance and Snapdragon represented",
+        "Compatibility placement and simplified narrative"
+      ]
+    },
+    {
+      "page": "True Face of Ragsruth",
+      "url": "https://wiki.midgardtales.com/True_Face_of_Ragsruth",
+      "revision": 27723,
+      "kind": "main",
+      "quest_ids": [
+        27159,
+        27160,
+        27161,
+        27162,
+        8935,
+        8936,
+        8937,
+        8985,
+        18403
+      ],
+      "coverage": "mostly_absent_reordered",
+      "local_quests": [
+        27103
+      ],
+      "findings": [
+        "Second Shadow Jailer hunt locally precedes Nyrholt instead of following it",
+        "Roarin/Jasminna/branch/One/Zero transitions absent"
+      ]
+    },
+    {
+      "page": "News from Kindlebrook",
+      "url": "https://wiki.midgardtales.com/News_from_Kindlebrook",
+      "revision": 27449,
+      "kind": "main",
+      "quest_id_ranges": [
+        [
+          26039,
+          26060
+        ]
+      ],
+      "coverage": "absent_story",
+      "local_quests": [],
+      "findings": [
+        "Daily27115 resembles one subtask but does not represent main story",
+        "Machine, frozen-node, Gemis, delivery and nursery chain absent"
+      ]
+    },
+    {
+      "page": "Distorted Ragsruth",
+      "url": "https://wiki.midgardtales.com/Distorted_Ragsruth",
+      "revision": 27472,
+      "kind": "main",
+      "quest_id_ranges": [
+        [
+          27163,
+          27171
+        ]
+      ],
+      "quest_ids": [
+        12671,
+        18404
+      ],
+      "coverage": "partial",
+      "local_stages": [
+        10,
+        11,
+        12
+      ],
+      "findings": [
+        "Local story requires Phantom Snapdragon; reference story describes tree exit",
+        "Local completion ensures reputation minimum100",
+        "Native completion IDs not in effective quest DB"
+      ]
+    },
+    {
+      "page": "When It's Time to Do Hal Work.",
+      "url": "https://wiki.midgardtales.com/When_It%27s_Time_to_Do_Hal_Work.",
+      "revision": 27684,
+      "kind": "side",
+      "quest_ids": [
+        24175,
+        24176,
+        24177,
+        24178
+      ],
+      "coverage": "absent",
+      "findings": [
+        "Tamarin/Harvan introduction and daily unlock not implemented"
+      ]
+    },
+    {
+      "page": "Even a Handful of Mana",
+      "url": "https://wiki.midgardtales.com/Even_a_Handful_of_Mana",
+      "revision": 27663,
+      "kind": "daily",
+      "quest_ids": [
+        27173
+      ],
+      "local_quests": [
+        27117
+      ],
+      "coverage": "partial",
+      "findings": [
+        "Ten-item count matches",
+        "Reference grass piles50%; local unconditional Ice Needle8% base drop"
+      ]
+    },
+    {
+      "page": "Okay, Calm Down",
+      "url": "https://wiki.midgardtales.com/Okay%2C_Calm_Down",
+      "revision": 27752,
+      "kind": "daily",
+      "quest_ids": [
+        27176
+      ],
+      "local_quests": [
+        27118
+      ],
+      "coverage": "objective_match_with_scope_caveat",
+      "findings": [
+        "100 kills matches; local eligible targets three Folnir species",
+        "Reference does not enumerate species"
+      ]
+    },
+    {
+      "page": "Dream of Perpetual Motion",
+      "url": "https://wiki.midgardtales.com/Dream_of_Perpetual_Motion",
+      "revision": 27671,
+      "kind": "daily",
+      "quest_ids": [
+        23421
+      ],
+      "local_quests": [
+        27113
+      ],
+      "coverage": "objective_match",
+      "findings": [
+        "15 each of22691,22692,22693",
+        "Different NPC and payout; no first-completion bonus"
+      ]
+    },
+    {
+      "page": "Helping Hands at the Nursery",
+      "url": "https://wiki.midgardtales.com/Helping_Hands_at_the_Nursery",
+      "kind": "daily",
+      "quest_ids": [
+        26061,
+        26065
+      ],
+      "local_quests": [
+        27114
+      ],
+      "coverage": "partial",
+      "findings": [
+        "Ten Hal Puff count matches",
+        "Bartum/Lutem introduction absent",
+        "Reference three quest-conditional sources; local one unconditional Tuktakson12.5% base drop"
+      ]
+    },
+    {
+      "page": "Tamarin's Hal Work",
+      "url": "https://wiki.midgardtales.com/Tamarin%27s_Hal_Work",
+      "revision": 27690,
+      "kind": "daily",
+      "quest_ids": [
+        24179,
+        24181,
+        24183
+      ],
+      "local_quests": [
+        27110,
+        27111,
+        27112
+      ],
+      "coverage": "objective_match",
+      "findings": [
+        "Three10enemy+5material tasks match",
+        "Side prerequisite and NPC absent"
+      ]
+    },
+    {
+      "page": "Research Assistance",
+      "url": "https://wiki.midgardtales.com/Research_Assistance",
+      "revision": 27694,
+      "kind": "daily",
+      "quest_ids": [
+        26076
+      ],
+      "local_quests": [
+        27116
+      ],
+      "coverage": "objective_match",
+      "findings": [
+        "10FireCotton+3FluffyEmber matches",
+        "Board replaces Samra"
+      ]
+    },
+    {
+      "page": "Shelter Visit",
+      "url": "https://wiki.midgardtales.com/Shelter_Visit",
+      "revision": 27755,
+      "kind": "daily",
+      "quest_ids": [
+        26067,
+        26068,
+        26069,
+        26070,
+        26071,
+        26072,
+        26073,
+        26074
+      ],
+      "local_quests": [
+        27115
+      ],
+      "coverage": "partial",
+      "findings": [
+        "Hunts10+10 and materials5+5 match",
+        "Frozen-node and tube/screw delivery chain absent"
+      ]
+    }
+  ],
+  "economy": {
+    "classification": "Reference server policy differences, not automatically implementation defects",
+    "local_daily_cooldown_seconds": 14400,
+    "local_daily_reward": {
+      "currency_item": 1002700,
+      "amounts": [
+        3,
+        6
+      ],
+      "reputation": 2,
+      "base_exp": 12000000,
+      "job_exp": 8400000
+    },
+    "reference_daily_currency": "Explorer Bookmark with VIP modifiers",
+    "kindle_hal": {
+      "item_ids": [
+        1002751,
+        1002752,
+        1002753
+      ],
+      "local_zeny": [
+        200000,
+        400000,
+        700000
+      ],
+      "reference_outright_zeny": [
+        2000000,
+        4000000,
+        7000000
+      ],
+      "reference_discounted_zeny": [
+        200000,
+        400000,
+        700000
+      ],
+      "reference_discount_requires_materials": true,
+      "local_discount_material_variants": false
+    },
+    "azure_exchange": "Matches reference11equipment purchase coin/zeny tiers",
+    "leaf_ring_coin_exchange": "Matches reference listed numeric costs"
+  },
+  "unverified": [
+    "Live quest traversal",
+    "Client walkability",
+    "Every equipment stat formula",
+    "Official kRO policy",
+    "Migration from historical native quest IDs"
+  ],
+  "mutations_performed": [],
+  "local_source_sha256": {
+    "npc/custom/chapter2/Chapter2.txt": "ad6b9aa6ad0d0b0af06b0da5f7cc59c6f55b9ba1b83bec023db115690cbd72d3",
+    "npc/custom/chapter2/Instances.txt": "15410c6bb09a97bd8d9050a8ce124ae7d0cfe051dd4870e7973daf151a321d9a",
+    "npc/custom/chapter2/SOURCE_INFO.txt": "672f2623cdd1fb0a0c65c5bac69057d19ace03872f04ceb9489b7797665145c2",
+    "db/import/chapter2_quest_db.yml": "fec55bd3c072347d26ffe5c18abcb13ad57a8dfc87a348f295855363835167b4",
+    "db/re/item_db_etc.yml": "bdefb46135f7579e29c2a3457ec6b0a0205ba6a4d9d99fb8a98ea10a39945998",
+    "db/import/mob_db.yml": "34284c46845fd149256c225e0ffe2f43291aefd07411360fc0b6ae6211b3c3f4",
+    "db/import/chapter2_mob_db.yml": "d8a6b1e13c3a4d25a0d426da3f754ebf3d74341498a7e2d027823fbf6bd48c77"
+  }
+}

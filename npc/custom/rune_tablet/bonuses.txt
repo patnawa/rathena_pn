@@ -1,0 +1,326 @@
+// PN Rune Tablet effects. Reference: MuhRO Rune_Tablet_System, retrieved 2026-09-08.
+// Stable client set/piece IDs; original implementation of published numeric rules.
+// Hook is unique, survives death/dispel, and is removed on logout then restored.
+// Recalculation reads persistent state, so no effects accumulate across refreshes.
+function	script	PN_RT_Refresh	{
+	// Keep milliseconds within bonus_script's uint32 duration. Renew daily.
+	bonus_script "{ callfunc \"PN_RT_Bonus\"; }",604800,1544;
+	recalculatestat;
+	return;
+}
+
+-	script	PN Rune Bonus Lifecycle	-1,{
+OnPCLoginEvent:
+OnRenew:
+	callfunc "PN_RT_Refresh";
+	addtimer 86400000,"PN Rune Bonus Lifecycle::OnRenew";
+	end;
+}
+
+function	script	PN_RT_Bonus	{
+	.@set = PNRTActive;
+	if (.@set < 1260000 || .@set > 1260057) return;
+	.@index = .@set - 1260000;
+	if (!PNRTPaid[.@index]) return;
+	.@lv = max(0,min(15,PNRTLevel[.@index]));
+	.@q3 = .@lv / 3;
+	.@q5 = .@lv / 5;
+	switch (.@set) {
+	case 1260000: // Rt_Ep17_Doubt
+		.@n = (#PNRTPiece[0] > 0) + (#PNRTPiece[1] > 0) + (#PNRTPiece[2] > 0) + (#PNRTPiece[3] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,2*.@q3; bonus bMatk,2*.@q3; }
+		if (.@n >= 4) { bonus2 bAddSize,Size_All,1; bonus2 bMagicAddSize,Size_All,1; bonus bBaseAtk,10; bonus bMatk,10; }
+		break;
+	case 1260001: // Rt_Ep17_Auto
+		.@n = (#PNRTPiece[4] > 0) + (#PNRTPiece[5] > 0);
+		if (.@n >= 2) { bonus bDef,100; bonus bMdef,25; bonus bMaxHPrate,.@q3; }
+		break;
+	case 1260002: // Rt_Ep17_Secret
+		.@n = (#PNRTPiece[6] > 0) + (#PNRTPiece[7] > 0) + (#PNRTPiece[9] > 0);
+		if (.@n >= 2) { bonus2 bAddEle,Ele_Poison,2*.@q3; bonus2 bMagicAddEle,Ele_Poison,2*.@q3; }
+		if (.@n >= 3) { bonus bAspdRate,4; }
+		break;
+	case 1260003: // Rt_Ep17_Mutant
+		.@n = (#PNRTPiece[8] > 0) + (#PNRTPiece[11] > 0) + (#PNRTPiece[10] > 0);
+		if (.@n >= 2) { bonus bVariableCastrate,-.@q5; }
+		if (.@n >= 3) { bonus2 bMagicAtkEle,Ele_Neutral,3; }
+		break;
+	case 1260004: // Rt_Ep17_Miguel
+		.@n = (#PNRTPiece[12] > 0) + (#PNRTPiece[28] > 0) + (#PNRTPiece[30] > 0);
+		if (.@n >= 2) { bonus bCritAtkRate,3+2*.@q5; }
+		if (.@n >= 3) { bonus bCritAtkRate,8; }
+		break;
+	case 1260005: // Rt_Ep17_Overload
+		.@n = (#PNRTPiece[13] > 0) + (#PNRTPiece[14] > 0) + (#PNRTPiece[15] > 0) + (#PNRTPiece[16] > 0);
+		if (.@n >= 2) { bonus bMatk,15+3*.@q3; }
+		if (.@n >= 3) { bonus2 bMagicAtkEle,Ele_All,1; }
+		if (.@n >= 4) { bonus2 bMagicAtkEle,Ele_All,4; }
+		break;
+	case 1260006: // Rt_Ep17_Bath
+		.@n = (#PNRTPiece[23] > 0) + (#PNRTPiece[17] > 0) + (#PNRTPiece[21] > 0);
+		if (.@n >= 2) { bonus2 bAddRace,RC_Brute,.@q5; bonus2 bMagicAddRace,RC_Brute,.@q5; bonus2 bAddRace,RC_Fish,.@q5; bonus2 bMagicAddRace,RC_Fish,.@q5; }
+		if (.@n >= 3) { bonus2 bAddRace,RC_Brute,2; bonus2 bMagicAddRace,RC_Brute,2; bonus2 bAddRace,RC_Fish,2; bonus2 bMagicAddRace,RC_Fish,2; }
+		break;
+	case 1260007: // Rt_Ep17_Garden
+		.@n = (#PNRTPiece[18] > 0) + (#PNRTPiece[27] > 0) + (#PNRTPiece[25] > 0) + (#PNRTPiece[26] > 0) + (#PNRTPiece[19] > 0) + (#PNRTPiece[20] > 0);
+		if (.@n >= 2) { bonus2 bAddRace,RC_Plant,.@q5; bonus2 bMagicAddRace,RC_Plant,.@q5; bonus2 bAddRace,RC_Insect,.@q5; bonus2 bMagicAddRace,RC_Insect,.@q5; }
+		if (.@n >= 4) { bonus2 bAddRace,RC_Plant,2; bonus2 bMagicAddRace,RC_Plant,2; bonus2 bAddRace,RC_Insect,2; bonus2 bMagicAddRace,RC_Insect,2; }
+		if (.@n >= 6) { bonus2 bSubDefEle,Ele_All,3; bonus2 bMagicSubDefEle,Ele_All,3; }
+		break;
+	case 1260008: // Rt_Ep17_Green
+		.@n = (#PNRTPiece[26] > 0) + (#PNRTPiece[27] > 0) + (#PNRTPiece[22] > 0) + (#PNRTPiece[24] > 0) + (#PNRTPiece[29] > 0);
+		if (.@n >= 2) { bonus2 bAddRace,RC_Formless,.@q5; bonus2 bMagicAddRace,RC_Formless,.@q5; bonus2 bAddRace,RC_DemiHuman,.@q5; bonus2 bMagicAddRace,RC_DemiHuman,.@q5; }
+		if (.@n >= 3) { bonus2 bAddRace,RC_Formless,2; bonus2 bMagicAddRace,RC_Formless,2; bonus2 bAddRace,RC_DemiHuman,3; bonus2 bMagicAddRace,RC_DemiHuman,3; }
+		if (.@n >= 5) { bonus bAtkRate,7; bonus bMatkRate,7; }
+		break;
+	case 1260009: // Rt_Ep17_Malfun
+		.@n = (#PNRTPiece[28] > 0) + (#PNRTPiece[27] > 0) + (#PNRTPiece[20] > 0) + (#PNRTPiece[17] > 0);
+		if (.@n >= 2) { bonus2 bAddSize,Size_Large,.@q3; }
+		if (.@n >= 3) { bonus bLongAtkRate,2; }
+		if (.@n >= 4) { bonus bLongAtkRate,5; }
+		break;
+	case 1260010: // Rt_Ep17_Wing
+		.@n = (#PNRTPiece[26] > 0) + (#PNRTPiece[18] > 0) + (#PNRTPiece[25] > 0) + (#PNRTPiece[7] > 0) + (#PNRTPiece[19] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,3*.@q3; bonus bMatk,3*.@q3; bonus bMaxHPrate,.@q5; bonus bMaxSPrate,.@q5; }
+		if (.@n >= 4) { bonus bBaseAtk,15; bonus bMatk,15; bonus bMaxHPrate,1; bonus bMaxSPrate,1; }
+		if (.@n >= 5) { bonus bBaseAtk,45; bonus bMatk,45; bonus bMaxHPrate,3; bonus bMaxSPrate,3; }
+		break;
+	case 1260011: // Rt_Ep17_Harmful
+		.@n = (#PNRTPiece[6] > 0) + (#PNRTPiece[14] > 0) + (#PNRTPiece[8] > 0) + (#PNRTPiece[11] > 0) + (#PNRTPiece[16] > 0);
+		if (.@n >= 2) { bonus2 bAddEle,Ele_Dark,.@q5; bonus2 bMagicAddEle,Ele_Dark,.@q5; }
+		if (.@n >= 4) { bonus2 bAddEle,Ele_Dark,3; bonus2 bMagicAddEle,Ele_Dark,3; }
+		if (.@n >= 5) { if (.@lv == 15) bonus2 bHPDrainRate,20,2; }
+		break;
+	case 1260012: // Rt_Ep17_Boss
+		.@n = (#PNRTPiece[12] > 0) + (#PNRTPiece[30] > 0) + (#PNRTPiece[9] > 0) + (#PNRTPiece[13] > 0) + (#PNRTPiece[28] > 0) + (#PNRTPiece[29] > 0);
+		if (.@n >= 2) { bonus2 bAddRace,RC_DemiHuman,.@q3; bonus2 bMagicAddRace,RC_DemiHuman,.@q3; }
+		if (.@n >= 4) { bonus2 bAddRace,RC_DemiHuman,2; bonus2 bMagicAddRace,RC_DemiHuman,2; }
+		if (.@n >= 6) { if (.@lv == 15) bonus2 bSPDrainRate,10,1; }
+		break;
+	case 1260013: // Rt_21th_Event
+		.@n = (#PNRTPiece[31] > 0) + (#PNRTPiece[32] > 0) + (#PNRTPiece[33] > 0) + (#PNRTPiece[34] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,.@q3; bonus bMatk,.@q3; }
+		if (.@n >= 3) { bonus2 bAddItemHealRate,1100010,100; bonus2 bAddItemHealRate,1100011,100; }
+		if (.@n >= 4) { bonus bBaseAtk,10; bonus bMatk,10; }
+		break;
+	case 1260014: // Rt_Ep18_Armor
+		.@n = (#PNRTPiece[35] > 0) + (#PNRTPiece[36] > 0);
+		if (.@n >= 2) { bonus2 bAddRace2,RC2_PN_EP18,10+.@q3; bonus2 bMagicAddRace2,RC2_PN_EP18,10+.@q3; }
+		break;
+	case 1260015: // Rt_Ep18_Melee
+		.@n = (#PNRTPiece[37] > 0) + (#PNRTPiece[38] > 0) + (#PNRTPiece[44] > 0);
+		if (.@n >= 2) { bonus bShortAtkRate,.@q5; }
+		if (.@n >= 3) { bonus bShortAtkRate,3; }
+		break;
+	case 1260016: // Rt_Ep18_Magic
+		.@n = (#PNRTPiece[40] > 0) + (#PNRTPiece[41] > 0) + (#PNRTPiece[45] > 0);
+		if (.@n >= 2) { bonus2 bMagicAtkEle,Ele_All,.@q5; }
+		if (.@n >= 3) { bonus2 bMagicAtkEle,Ele_All,3; }
+		break;
+	case 1260017: // Rt_Ep18_Range
+		.@n = (#PNRTPiece[39] > 0) + (#PNRTPiece[43] > 0) + (#PNRTPiece[42] > 0);
+		if (.@n >= 2) { bonus bLongAtkRate,.@q5; }
+		if (.@n >= 3) { bonus bLongAtkRate,3; }
+		break;
+	case 1260018: // Rt_Ep18_Field
+		.@n = (#PNRTPiece[49] > 0) + (#PNRTPiece[48] > 0) + (#PNRTPiece[47] > 0) + (#PNRTPiece[46] > 0);
+		if (.@n >= 2) { bonus bCritAtkRate,2; }
+		if (.@n >= 3) { bonus bCritical,3+.@q3; }
+		if (.@n >= 4) { bonus bCritAtkRate,3; }
+		break;
+	case 1260019: // Rt_Ep18_Lava
+		.@n = (#PNRTPiece[46] > 0) + (#PNRTPiece[50] > 0) + (#PNRTPiece[51] > 0);
+		if (.@n >= 2) { bonus2 bMagicAtkEle,Ele_Dark,3; }
+		if (.@n >= 3) { bonus2 bMagicAtkEle,Ele_Earth,3; bonus2 bMagicAtkEle,Ele_Fire,2*.@q3; }
+		break;
+	case 1260020: // Rt_Ep18_Total
+		.@n = (#PNRTPiece[47] > 0) + (#PNRTPiece[49] > 0) + (#PNRTPiece[46] > 0) + (#PNRTPiece[48] > 0) + (#PNRTPiece[50] > 0) + (#PNRTPiece[51] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,10+3*.@q3; bonus bMatk,10+3*.@q3; }
+		if (.@n >= 4) { bonus bVariableCastrate,-.@q3; bonus bAspdRate,.@q3; }
+		if (.@n >= 6) { bonus bMaxHPrate,2+.@q3; bonus bMaxSPrate,2+.@q3; }
+		break;
+	case 1260021: // Rt_Ep18_Fang
+		.@n = (#PNRTPiece[51] > 0) + (#PNRTPiece[52] > 0) + (#PNRTPiece[50] > 0);
+		if (.@n >= 2) { bonus bPNRuneSPRegenProc,1; }
+		if (.@n >= 3) { bonus bUseSPrate,-5-2*.@q3; }
+		break;
+	case 1260022: // Rt_Ep18_Demi
+		.@n = (#PNRTPiece[53] > 0) + (#PNRTPiece[48] > 0) + (#PNRTPiece[49] > 0);
+		if (.@n >= 2) { bonus2 bAddClass,Class_Boss,10; bonus2 bMagicAddClass,Class_Boss,10; }
+		if (.@n >= 3) { bonus2 bAddClass,Class_Boss,15+3*.@q3; bonus2 bMagicAddClass,Class_Boss,15+3*.@q3; }
+		break;
+	case 1260023: // Rt_Ep19_SnowFlower
+		.@n = (#PNRTPiece[54] > 0) + (#PNRTPiece[55] > 0);
+		if (.@n >= 2) { bonus2 bAddRace2,RC2_PN_EP19,10+.@q3; bonus2 bMagicAddRace2,RC2_PN_EP19,10+.@q3; }
+		break;
+	case 1260024: // Rt_Ep19_Glacier
+		.@n = (#PNRTPiece[56] > 0) + (#PNRTPiece[57] > 0) + (#PNRTPiece[58] > 0) + (#PNRTPiece[59] > 0) + (#PNRTPiece[60] > 0) + (#PNRTPiece[61] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,35; bonus bMatk,35; }
+		if (.@n >= 4) { bonus bPAtk,2+.@q5; bonus bSMatk,2+.@q5; }
+		if (.@n >= 6) { bonus bShortAtkRate,4; bonus bLongAtkRate,4; bonus2 bMagicAtkEle,Ele_All,3; }
+		break;
+	case 1260025: // Rt_Ep19_Ulrali
+		.@n = (#PNRTPiece[62] > 0) + (#PNRTPiece[65] > 0);
+		if (.@n >= 2) { bonus bRes,55+5*.@q3; bonus bMRes,55+5*.@q3; bonus bWis,2*.@q3; bonus bSta,2*.@q3; }
+		break;
+	case 1260026: // Rt_Ep19_Juncea
+		.@n = (#PNRTPiece[63] > 0) + (#PNRTPiece[70] > 0);
+		if (.@n >= 2) { bonus bSMatk,15; bonus2 bSubEle,Ele_All,-15+3*.@q3; bonus2 bMagicAtkEle,Ele_Poison,4*.@q3; bonus2 bMagicAtkEle,Ele_Fire,4*.@q3; }
+		break;
+	case 1260027: // Rt_Ep19_snowfield
+		.@n = (#PNRTPiece[64] > 0) + (#PNRTPiece[65] > 0) + (#PNRTPiece[66] > 0);
+		if (.@n >= 2) { bonus bPAtk,2; bonus bUseSPrate,5; bonus bLongAtkRate,.@q3; }
+		if (.@n >= 3) { bonus bLongAtkRate,4; bonus bUseSPrate,-5; }
+		break;
+	case 1260028: // Rt_Ep19_Family
+		.@n = (#PNRTPiece[66] > 0) + (#PNRTPiece[67] > 0) + (#PNRTPiece[68] > 0);
+		if (.@n >= 2) { bonus bMaxHPrate,.@q5; bonus bMaxSPrate,.@q5; }
+		if (.@n >= 3) { bonus bMaxHPrate,4; bonus bMaxSPrate,4; }
+		break;
+	case 1260029: // Rt_Ep19_Irritation
+		.@n = (#PNRTPiece[64] > 0) + (#PNRTPiece[65] > 0) + (#PNRTPiece[69] > 0);
+		if (.@n >= 2) { bonus bCritical,-3; bonus bCritAtkRate,-4; }
+		if (.@n >= 3) { bonus bCRate,1; bonus bCritical,2*.@q3; bonus bCritAtkRate,2*.@q3; }
+		break;
+	case 1260030: // Rt_Ep19_Basement
+		.@n = (#PNRTPiece[67] > 0) + (#PNRTPiece[68] > 0) + (#PNRTPiece[70] > 0);
+		if (.@n >= 2) { bonus bSMatk,3; bonus bUseSPrate,5; bonus2 bMagicAtkEle,Ele_Water,.@q5; bonus2 bMagicAtkEle,Ele_Poison,.@q5; bonus2 bMagicAtkEle,Ele_Dark,.@q5; bonus2 bMagicAtkEle,Ele_Fire,.@q5; }
+		if (.@n >= 3) { bonus2 bMagicAtkEle,Ele_Water,5; bonus2 bMagicAtkEle,Ele_Poison,5; bonus2 bMagicAtkEle,Ele_Dark,5; bonus2 bMagicAtkEle,Ele_Fire,5; bonus bUseSPrate,-5; }
+		break;
+	case 1260031: // Rt_Ep19_Rgan
+		.@n = (#PNRTPiece[70] > 0) + (#PNRTPiece[68] > 0) + (#PNRTPiece[69] > 0);
+		if (.@n >= 2) { bonus bPAtk,2; bonus bUseSPrate,5; bonus bShortAtkRate,.@q3; }
+		if (.@n >= 3) { bonus bShortAtkRate,4; bonus bUseSPrate,-5; }
+		break;
+	case 1260032: // Rt_Ep19_Rabre
+		.@n = (#PNRTPiece[65] > 0) + (#PNRTPiece[64] > 0) + (#PNRTPiece[67] > 0) + (#PNRTPiece[66] > 0);
+		if (.@n >= 2) { bonus2 bAddRace,RC_Plant,6+3*.@q5; bonus2 bMagicAddRace,RC_Plant,6+3*.@q5; }
+		if (.@n >= 3) { bonus2 bAddRace,RC_Fish,6+3*.@q5; bonus2 bMagicAddRace,RC_Fish,6+3*.@q5; }
+		if (.@n >= 4) { bonus2 bAddRace,RC_Insect,6+3*.@q5; bonus2 bMagicAddRace,RC_Insect,6+3*.@q5; }
+		break;
+	case 1260034: // Rt_22nd_Event
+		.@n = (#PNRTPiece[31] > 0) + (#PNRTPiece[32] > 0) + (#PNRTPiece[33] > 0) + (#PNRTPiece[72] > 0) + (#PNRTPiece[73] > 0) + (#PNRTPiece[34] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,.@q3; bonus bMatk,.@q3; }
+		if (.@n >= 4) { bonus bBaseAtk,10; bonus bMatk,10; }
+		if (.@n >= 5) { bonus bAspdRate,.@q5; bonus bVariableCastrate,-.@q5; }
+		if (.@n >= 6) { bonus bMaxHP,1000+100*.@q3; bonus bMaxSP,500+10*.@q3; }
+		break;
+	case 1260035: // Rt_IfritA_Event
+		.@n = (#PNRTPiece[74] > 0) + (#PNRTPiece[75] > 0) + (#PNRTPiece[76] > 0) + (#PNRTPiece[77] > 0) + (#PNRTPiece[78] > 0) + (#PNRTPiece[79] > 0);
+		if (.@n >= 2) { bonus bBaseAtk,10+.@q3; }
+		if (.@n >= 3) { bonus2 bExpAddRace,RC_All,3; }
+		if (.@n >= 4) { bonus bUseSPrate,-2; }
+		if (.@n >= 6) { bonus bAllStats,2+.@q5; }
+		break;
+	case 1260036: // Rt_IfritB_Event
+		.@n = (#PNRTPiece[74] > 0) + (#PNRTPiece[75] > 0) + (#PNRTPiece[76] > 0) + (#PNRTPiece[77] > 0) + (#PNRTPiece[78] > 0) + (#PNRTPiece[79] > 0);
+		if (.@n >= 2) { bonus bMatk,10+.@q3; }
+		if (.@n >= 3) { bonus2 bExpAddRace,RC_All,3; }
+		if (.@n >= 4) { bonus bUseSPrate,-2; }
+		if (.@n >= 6) { bonus bAllStats,2+.@q5; }
+		break;
+	case 1260037: // Rt_Ep20_Glacier
+		.@n = (#PNRTPiece[80] > 0) + (#PNRTPiece[81] > 0) + (#PNRTPiece[82] > 0);
+		if (.@n >= 2) { bonus2 bAddRace2,RC2_PN_EP20,.@q3; bonus2 bMagicAddRace2,RC2_PN_EP20,.@q3; }
+		if (.@n >= 3) { bonus2 bAddRace2,RC2_PN_EP20,7; bonus2 bMagicAddRace2,RC2_PN_EP20,7; }
+		break;
+	case 1260038: // Rt_Ep20_Sanctuary
+		.@n = (#PNRTPiece[89] > 0) + (#PNRTPiece[91] > 0) + (#PNRTPiece[88] > 0);
+		if (.@n >= 2) { bonus bMaxHPrate,2+.@q5; bonus bMaxSPrate,.@q5; bonus bPow,3; bonus bCon,3; }
+		if (.@n >= 3) { bonus bMaxHPrate,5+.@q3; bonus bPow,5+.@q3; bonus bCon,5+.@q3; }
+		break;
+	case 1260039: // Rt_Ep20_Predator
+		.@n = (#PNRTPiece[87] > 0) + (#PNRTPiece[92] > 0);
+		if (.@n >= 2) { bonus bPAtk,20; bonus2 bSubEle,Ele_All,-15+2*.@q3; bonus bShortAtkRate,4*.@q3; bonus bLongAtkRate,4*.@q3; }
+		break;
+	case 1260040: // Rt_Ep20_Guardian
+		.@n = (#PNRTPiece[86] > 0) + (#PNRTPiece[90] > 0) + (#PNRTPiece[89] > 0);
+		if (.@n >= 2) { bonus bVariableCastrate,-7-.@q5; bonus bPAtk,2; }
+		if (.@n >= 3) { bonus bShortAtkRate,4; bonus bLongAtkRate,4; bonus bUseSPrate,-4; }
+		break;
+	case 1260041: // Rt_Ep20_Sangel
+		.@n = (#PNRTPiece[85] > 0) + (#PNRTPiece[87] > 0) + (#PNRTPiece[88] > 0);
+		if (.@n >= 2) { bonus bMaxHPrate,2+.@q5; bonus bMaxSPrate,.@q5; bonus bSpl,3; bonus bCon,3; }
+		if (.@n >= 3) { bonus bMaxHPrate,5+.@q3; bonus bSpl,5+.@q3; bonus bCon,5+.@q3; }
+		break;
+	case 1260042: // Rt_Ep20_Day
+		.@n = (#PNRTPiece[83] > 0) + (#PNRTPiece[84] > 0) + (#PNRTPiece[86] > 0);
+		if (.@n >= 2) { bonus bVariableCastrate,-7-.@q5; bonus bSMatk,2; }
+		if (.@n >= 3) { bonus2 bMagicAtkEle,Ele_Fire,5; bonus2 bMagicAtkEle,Ele_Wind,5; bonus2 bMagicAtkEle,Ele_Holy,5; bonus2 bMagicAtkEle,Ele_Neutral,5; bonus bUseSPrate,-4; }
+		break;
+	case 1260043: // Rt_Ep20_Retire
+		.@n = (#PNRTPiece[86] > 0) + (#PNRTPiece[90] > 0) + (#PNRTPiece[83] > 0) + (#PNRTPiece[88] > 0);
+		if (.@n >= 2) { bonus bCritical,3; bonus bCritAtkRate,3; }
+		if (.@n >= 4) { bonus bCritical,5; bonus bCritAtkRate,10; bonus bCRate,3; }
+		break;
+	case 1260044: // Rt_Ep20_Roots
+		.@n = (#PNRTPiece[83] > 0) + (#PNRTPiece[84] > 0) + (#PNRTPiece[85] > 0) + (#PNRTPiece[89] > 0) + (#PNRTPiece[90] > 0);
+		if (.@n >= 2) { bonus bShortAtkRate,4; bonus bLongAtkRate,4; bonus2 bMagicAtkEle,Ele_All,3; }
+		if (.@n >= 4) { bonus bRes,15+3*.@q3; bonus bMRes,15+3*.@q3; }
+		if (.@n >= 5) { bonus bDelayrate,-5-.@q3; }
+		break;
+	case 1260045: // Rt_Ch01_Armor
+		.@n = (#PNRTPiece[93] > 0) + (#PNRTPiece[94] > 0);
+		if (.@n >= 2) { bonus2 bAddRace2,RC2_DESTROYED_VALKYRIE_REALM,2+3*.@q3; bonus2 bMagicAddRace2,RC2_DESTROYED_VALKYRIE_REALM,2+3*.@q3; }
+		break;
+	case 1260046: // Rt_Ch01_Dimen
+		.@n = (#PNRTPiece[95] > 0) + (#PNRTPiece[96] > 0) + (#PNRTPiece[97] > 0) + (#PNRTPiece[98] > 0) + (#PNRTPiece[99] > 0);
+		if (.@n >= 2) { bonus2 bAddRace2,RC2_ENCROACHED_GEPHENIA,10+3*.@q3; bonus2 bMagicAddRace2,RC2_ENCROACHED_GEPHENIA,10+3*.@q3; }
+		if (.@n >= 3) { bonus bPow,10; bonus bSpl,10; bonus bCon,10; bonus bCrt,10; bonus bPAtk,15; bonus bSMatk,15; }
+		if (.@n >= 5) { bonus bMaxHPrate,5+3*.@q3; }
+		break;
+	case 1260047: // Rt_Ch01_Extra
+		.@n = (#PNRTPiece[100] > 0) + (#PNRTPiece[103] > 0) + (#PNRTPiece[101] > 0) + (#PNRTPiece[104] > 0) + (#PNRTPiece[102] > 0) + (#PNRTPiece[105] > 0);
+		// Chaso/Chaos: the published and client descriptions define no bonus.
+		break;
+	case 1260048: // Rt_Ep21_Gaebolg
+		.@n = (#PNRTPiece[106] > 0) + (#PNRTPiece[107] > 0);
+		if (.@n >= 2) { bonus2 bAddRace2,RC2_PN_EP21,7+.@q3; bonus2 bMagicAddRace2,RC2_PN_EP21,7+.@q3; }
+		break;
+	case 1260049: // Rt_Ep21_Icy
+		.@n = (#PNRTPiece[110] > 0) + (#PNRTPiece[108] > 0) + (#PNRTPiece[109] > 0);
+		if (.@n >= 2) { bonus2 bAddRace,RC_Undead,10; bonus2 bMagicAddRace,RC_Undead,10; bonus2 bAddRace,RC_Insect,10; bonus2 bMagicAddRace,RC_Insect,10; }
+		if (.@n >= 3) { bonus2 bAddSize,Size_Small,3+.@q3; bonus2 bMagicAddSize,Size_Small,3+.@q3; }
+		break;
+	case 1260050: // Rt_Ep21_Yorker
+		.@n = (#PNRTPiece[111] > 0) + (#PNRTPiece[112] > 0);
+		if (.@n >= 2) { bonus bShortAtkRate,4+.@q3; }
+		break;
+	case 1260051: // Rt_Ep21_Working
+		.@n = (#PNRTPiece[112] > 0) + (#PNRTPiece[113] > 0);
+		if (.@n >= 2) { bonus bMaxHPrate,3+3*.@q5; }
+		break;
+	case 1260052: // Rt_Ep21_Admin
+		.@n = (#PNRTPiece[115] > 0) + (#PNRTPiece[114] > 0) + (#PNRTPiece[116] > 0);
+		if (.@n >= 2) { bonus2 bMagicAddSize,Size_Medium,2+.@q3; bonus2 bMagicAddSize,Size_Large,2+.@q3; }
+		if (.@n >= 3) { bonus2 bMagicAddSize,Size_Medium,3; bonus2 bMagicAddSize,Size_Large,3; }
+		break;
+	case 1260053: // Rt_Ep21_Purify
+		.@n = (#PNRTPiece[108] > 0) + (#PNRTPiece[109] > 0) + (#PNRTPiece[112] > 0) + (#PNRTPiece[113] > 0) + (#PNRTPiece[116] > 0);
+		if (.@n >= 2) { bonus bLongAtkRate,4+.@q3; }
+		if (.@n >= 3) { bonus bCRate,3; bonus bCritAtkRate,12; }
+		if (.@n >= 5) { bonus bVariableCastrate,-6-.@q3; }
+		break;
+	case 1260054: // Rt_Ep21_Aid
+		.@n = (#PNRTPiece[110] > 0) + (#PNRTPiece[111] > 0) + (#PNRTPiece[112] > 0) + (#PNRTPiece[114] > 0);
+		if (.@n >= 2) { bonus bMaxSPrate,5+2*.@q3; }
+		if (.@n >= 4) { bonus bDelayrate,-5-.@q5; }
+		break;
+	case 1260055: // Rt_Ep21_Company
+		.@n = (#PNRTPiece[118] > 0) + (#PNRTPiece[116] > 0) + (#PNRTPiece[115] > 0) + (#PNRTPiece[114] > 0) + (#PNRTPiece[113] > 0) + (#PNRTPiece[112] > 0);
+		if (.@n >= 2) { bonus bShortAtkRate,6+.@q3; bonus bLongAtkRate,6+.@q3; }
+		if (.@n >= 4) { bonus bPAtk,20; bonus bShortAtkRate,4; bonus bLongAtkRate,4; }
+		if (.@n >= 6) { bonus bCritical,15; bonus bCritAtkRate,35+5*.@q3; }
+		break;
+	case 1260056: // Rt_Ep21_Horn
+		.@n = (#PNRTPiece[110] > 0) + (#PNRTPiece[111] > 0) + (#PNRTPiece[117] > 0) + (#PNRTPiece[108] > 0) + (#PNRTPiece[109] > 0);
+		if (.@n >= 2) { bonus bSMatk,20+4*.@q3; }
+		if (.@n >= 5) { bonus2 bMagicAtkEle,Ele_Poison,25+3*.@q3; bonus2 bMagicAtkEle,Ele_Earth,25+3*.@q3; bonus2 bMagicAtkEle,Ele_Wind,25+3*.@q3; bonus2 bMagicAtkEle,Ele_Water,25+3*.@q3; }
+		break;
+	case 1260057: // Rt_Ep21_Tan
+		.@n = (#PNRTPiece[119] > 0) + (#PNRTPiece[120] > 0);
+		if (.@n >= 2) { bonus2 bAddClass,Class_Boss,20+.@lv; bonus2 bAddClass,Class_Normal,5+.@lv; }
+		break;
+	}
+	return;
+}

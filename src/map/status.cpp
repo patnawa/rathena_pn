@@ -4201,6 +4201,8 @@ int32 status_calc_pc_sub(map_session_data* sd, uint8 opt)
 	}
 
 	pc_bonus_script(sd);
+	if (!sd->bonus.pn_rune_sp_regen_proc)
+		pc_rune_sp_regen_clear(*sd);
 
 	if( sd->pd ) { // Pet Bonus
 		pet_data *pd = sd->pd;

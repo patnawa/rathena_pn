@@ -1,0 +1,718 @@
+{
+  "entrances": {
+    "pn_office": [
+      100,
+      40
+    ],
+    "pn_train": [
+      50,
+      35
+    ],
+    "pn_style": [
+      140,
+      140
+    ]
+  },
+  "desks": [
+    {
+      "name": "Directory",
+      "map": "pn_office",
+      "npc": [
+        104,
+        41
+      ],
+      "approach": [
+        104,
+        40
+      ],
+      "source": "PN Office Directory",
+      "unique_name": "Directory#O"
+    },
+    {
+      "name": "Healer",
+      "map": "pn_office",
+      "npc": [
+        92,
+        40
+      ],
+      "approach": [
+        92,
+        39
+      ],
+      "source": "Healer",
+      "unique_name": "Healer#O"
+    },
+    {
+      "name": "Storage",
+      "map": "pn_office",
+      "npc": [
+        108,
+        40
+      ],
+      "approach": [
+        108,
+        39
+      ],
+      "source": "PN Office Storage",
+      "unique_name": "Storage#O"
+    },
+    {
+      "name": "Reset Girl",
+      "map": "pn_office",
+      "npc": [
+        84,
+        55
+      ],
+      "approach": [
+        84,
+        54
+      ],
+      "source": "Reset Girl",
+      "unique_name": "Reset Girl#O"
+    },
+    {
+      "name": "Card Remover",
+      "map": "pn_office",
+      "npc": [
+        116,
+        55
+      ],
+      "approach": [
+        115,
+        55
+      ],
+      "source": "Wise Old Woman#eAcustom",
+      "unique_name": "Card Remover#O"
+    },
+    {
+      "name": "Job Master",
+      "map": "pn_office",
+      "npc": [
+        46,
+        40
+      ],
+      "approach": [
+        46,
+        39
+      ],
+      "source": "Job Master",
+      "unique_name": "Job Master#O"
+    },
+    {
+      "name": "Druid Mentor",
+      "map": "pn_office",
+      "npc": [
+        56,
+        40
+      ],
+      "approach": [
+        56,
+        39
+      ],
+      "source": "Druid Mentor",
+      "unique_name": "Druid Mentor#O"
+    },
+    {
+      "name": "Platinum Skills",
+      "map": "pn_office",
+      "npc": [
+        66,
+        40
+      ],
+      "approach": [
+        66,
+        39
+      ],
+      "source": "PN Platinum Skills",
+      "unique_name": "Platinum Skills#O"
+    },
+    {
+      "name": "Rental Service",
+      "map": "pn_office",
+      "npc": [
+        45,
+        50
+      ],
+      "approach": [
+        45,
+        49
+      ],
+      "source": "Universal Rental NPC",
+      "unique_name": "Rental Service#O"
+    },
+    {
+      "name": "Skill Supplies",
+      "map": "pn_office",
+      "npc": [
+        60,
+        50
+      ],
+      "approach": [
+        60,
+        49
+      ],
+      "source": "Skill Supplies",
+      "unique_name": "Skill Supplies#O"
+    },
+    {
+      "name": "Tool Dealer",
+      "map": "pn_office",
+      "npc": [
+        140,
+        40
+      ],
+      "approach": [
+        140,
+        39
+      ],
+      "source": "PN Tool Shop",
+      "unique_name": "Tool Dealer#O"
+    },
+    {
+      "name": "Pet Food",
+      "map": "pn_office",
+      "npc": [
+        132,
+        50
+      ],
+      "approach": [
+        132,
+        49
+      ],
+      "source": "Pet Enthusiast",
+      "unique_name": "Pet Food#O"
+    },
+    {
+      "name": "Pet Care",
+      "map": "pn_office",
+      "npc": [
+        150,
+        47
+      ],
+      "approach": [
+        150,
+        46
+      ],
+      "source": "#PetGroomer",
+      "unique_name": "Pet Care#O"
+    },
+    {
+      "name": "Travel Desk",
+      "map": "pn_office",
+      "npc": [
+        92,
+        80
+      ],
+      "approach": [
+        92,
+        79
+      ],
+      "source": "Warper",
+      "unique_name": "Travel Desk#O"
+    },
+    {
+      "name": "Progression Guide",
+      "map": "pn_office",
+      "npc": [
+        108,
+        80
+      ],
+      "approach": [
+        108,
+        79
+      ],
+      "source": "PN Progression Guide",
+      "unique_name": "Progression Guide#O"
+    },
+    {
+      "name": "Temporal Tina",
+      "map": "pn_office",
+      "npc": [
+        84,
+        89
+      ],
+      "approach": [
+        84,
+        88
+      ],
+      "source": "Temporal Tina#episode",
+      "unique_name": "Temporal Tina#O"
+    },
+    {
+      "name": "Instance Desk",
+      "map": "pn_office",
+      "npc": [
+        116,
+        88
+      ],
+      "approach": [
+        116,
+        87
+      ],
+      "source": "PN Instance Desk",
+      "unique_name": "Instance Desk#O"
+    },
+    {
+      "name": "PN Services",
+      "map": "pn_office",
+      "npc": [
+        100,
+        109
+      ],
+      "approach": [
+        99,
+        109
+      ],
+      "source": "PN Services",
+      "unique_name": "PN Services#O"
+    },
+    {
+      "name": "Directory",
+      "map": "pn_train",
+      "npc": [
+        56,
+        35
+      ],
+      "approach": [
+        56,
+        34
+      ],
+      "source": "PN Office Directory",
+      "unique_name": "Directory#T"
+    },
+    {
+      "name": "Damage Lab",
+      "map": "pn_train",
+      "npc": [
+        50,
+        65
+      ],
+      "approach": [
+        50,
+        64
+      ],
+      "source": "PN Services",
+      "unique_name": "Damage Lab#T"
+    },
+    {
+      "name": "Rune Tablet",
+      "map": "pn_train",
+      "npc": [
+        50,
+        75
+      ],
+      "approach": [
+        50,
+        74
+      ],
+      "source": "PN Rune Stone",
+      "unique_name": "Rune Tablet#T"
+    },
+    {
+      "name": "Healer",
+      "map": "pn_train",
+      "npc": [
+        44,
+        35
+      ],
+      "approach": [
+        44,
+        34
+      ],
+      "source": "Healer",
+      "unique_name": "Healer#T"
+    },
+    {
+      "name": "Storage",
+      "map": "pn_train",
+      "npc": [
+        36,
+        40
+      ],
+      "approach": [
+        36,
+        39
+      ],
+      "source": "PN Office Storage",
+      "unique_name": "Storage#T"
+    },
+    {
+      "name": "Repair",
+      "map": "pn_train",
+      "npc": [
+        64,
+        40
+      ],
+      "approach": [
+        64,
+        39
+      ],
+      "source": "PN Office Repair",
+      "unique_name": "Repair#T"
+    },
+    {
+      "name": "Equipment Enchants",
+      "map": "pn_train",
+      "npc": [
+        36,
+        60
+      ],
+      "approach": [
+        36,
+        59
+      ],
+      "source": "Equipment Enchanter#grademk",
+      "unique_name": "Equipment Enchants#T"
+    },
+    {
+      "name": "Shadow Enchants",
+      "map": "pn_train",
+      "npc": [
+        64,
+        60
+      ],
+      "approach": [
+        64,
+        59
+      ],
+      "source": "Shadow Gear Enchanter#grademk",
+      "unique_name": "Shadow Enchants#T"
+    },
+    {
+      "name": "Master Refiner",
+      "map": "pn_train",
+      "npc": [
+        32,
+        50
+      ],
+      "approach": [
+        32,
+        49
+      ],
+      "source": "Master Refiner#grademk",
+      "unique_name": "Master Refiner#T"
+    },
+    {
+      "name": "Ore Dealer",
+      "map": "pn_train",
+      "npc": [
+        68,
+        50
+      ],
+      "approach": [
+        68,
+        49
+      ],
+      "source": "Ore and Material Dealer#grademk",
+      "unique_name": "Ore Dealer#T"
+    },
+    {
+      "name": "Rune Crowns",
+      "map": "pn_train",
+      "npc": [
+        42,
+        68
+      ],
+      "approach": [
+        42,
+        67
+      ],
+      "source": "Frontier Rune Crown Enchanter#grademk",
+      "unique_name": "Rune Crowns#T"
+    },
+    {
+      "name": "Varmundt Runes",
+      "map": "pn_train",
+      "npc": [
+        58,
+        68
+      ],
+      "approach": [
+        58,
+        67
+      ],
+      "source": "Varmundt Rune Enchanter#grademk",
+      "unique_name": "Varmundt Runes#T"
+    },
+    {
+      "name": "Constellation",
+      "map": "pn_train",
+      "npc": [
+        42,
+        55
+      ],
+      "approach": [
+        42,
+        54
+      ],
+      "source": "Constellation Enchanter#grademk",
+      "unique_name": "Constellation#T"
+    },
+    {
+      "name": "Build Notes",
+      "map": "pn_train",
+      "npc": [
+        57,
+        55
+      ],
+      "approach": [
+        57,
+        54
+      ],
+      "source": "PN Build Notes",
+      "unique_name": "Build Notes#T"
+    },
+    {
+      "name": "Card Remover",
+      "map": "pn_train",
+      "npc": [
+        42,
+        45
+      ],
+      "approach": [
+        42,
+        44
+      ],
+      "source": "Wise Old Woman#eAcustom",
+      "unique_name": "Card Remover#T"
+    },
+    {
+      "name": "Reset Girl",
+      "map": "pn_train",
+      "npc": [
+        57,
+        45
+      ],
+      "approach": [
+        57,
+        44
+      ],
+      "source": "Reset Girl",
+      "unique_name": "Reset Girl#T"
+    },
+    {
+      "name": "Directory",
+      "map": "pn_style",
+      "npc": [
+        140,
+        145
+      ],
+      "approach": [
+        140,
+        144
+      ],
+      "source": "PN Office Directory",
+      "unique_name": "Directory#F"
+    },
+    {
+      "name": "Stylist",
+      "map": "pn_style",
+      "npc": [
+        128,
+        130
+      ],
+      "approach": [
+        128,
+        129
+      ],
+      "source": "Stylist#custom_stylist",
+      "unique_name": "Stylist#F"
+    },
+    {
+      "name": "Gold Points",
+      "map": "pn_style",
+      "npc": [
+        136,
+        130
+      ],
+      "approach": [
+        136,
+        129
+      ],
+      "source": "Gold Point Manager#FP",
+      "unique_name": "Gold Points#F"
+    },
+    {
+      "name": "Fashion Designer",
+      "map": "pn_style",
+      "npc": [
+        144,
+        130
+      ],
+      "approach": [
+        144,
+        129
+      ],
+      "source": "Fashion Designer#FP",
+      "unique_name": "Fashion Designer#F"
+    },
+    {
+      "name": "Fashion Recycler",
+      "map": "pn_style",
+      "npc": [
+        152,
+        130
+      ],
+      "approach": [
+        152,
+        129
+      ],
+      "source": "Gregio Grumani#FP",
+      "unique_name": "Fashion Recycler#F"
+    },
+    {
+      "name": "Fashion Boxes",
+      "map": "pn_style",
+      "npc": [
+        160,
+        130
+      ],
+      "approach": [
+        160,
+        129
+      ],
+      "source": "Fashion Box Shop#FP",
+      "unique_name": "Fashion Boxes#F"
+    },
+    {
+      "name": "Fashion Catalogue",
+      "map": "pn_style",
+      "npc": [
+        128,
+        138
+      ],
+      "approach": [
+        128,
+        137
+      ],
+      "source": "Fashion Catalogue#FP",
+      "unique_name": "Fashion Catalogue#F"
+    },
+    {
+      "name": "Fashion Enchants",
+      "map": "pn_style",
+      "npc": [
+        160,
+        138
+      ],
+      "approach": [
+        160,
+        137
+      ],
+      "source": "Complete Fashion Enchanter#FP",
+      "unique_name": "Fashion Enchants#F"
+    },
+    {
+      "name": "Copy Teacher",
+      "map": "pn_style",
+      "npc": [
+        128,
+        146
+      ],
+      "approach": [
+        128,
+        145
+      ],
+      "source": "PN Copy Teacher",
+      "unique_name": "Copy Teacher#F"
+    },
+    {
+      "name": "Sword Clan",
+      "map": "pn_style",
+      "npc": [
+        136,
+        149
+      ],
+      "approach": [
+        136,
+        148
+      ],
+      "source": "Raffam Oranpere",
+      "unique_name": "Sword Clan#F"
+    },
+    {
+      "name": "Arc Wand Clan",
+      "map": "pn_style",
+      "npc": [
+        144,
+        149
+      ],
+      "approach": [
+        144,
+        148
+      ],
+      "source": "Devon Aire",
+      "unique_name": "Arc Wand Clan#F"
+    },
+    {
+      "name": "Golden Mace Clan",
+      "map": "pn_style",
+      "npc": [
+        152,
+        149
+      ],
+      "approach": [
+        152,
+        148
+      ],
+      "source": "Berman Aire",
+      "unique_name": "Golden Mace Clan#F"
+    },
+    {
+      "name": "Crossbow Clan",
+      "map": "pn_style",
+      "npc": [
+        160,
+        146
+      ],
+      "approach": [
+        160,
+        145
+      ],
+      "source": "Shaam Rumi",
+      "unique_name": "Crossbow Clan#F"
+    },
+    {
+      "name": "Cafe",
+      "map": "pn_style",
+      "npc": [
+        136,
+        126
+      ],
+      "approach": [
+        135,
+        126
+      ],
+      "source": "PN Cafe Shop",
+      "unique_name": "Cafe#F"
+    },
+    {
+      "name": "Storage",
+      "map": "pn_style",
+      "npc": [
+        141,
+        126
+      ],
+      "approach": [
+        140,
+        126
+      ],
+      "source": "PN Office Storage",
+      "unique_name": "Storage#F"
+    },
+    {
+      "name": "Healer",
+      "map": "pn_style",
+      "npc": [
+        152,
+        126
+      ],
+      "approach": [
+        151,
+        126
+      ],
+      "source": "Healer",
+      "unique_name": "Healer#F"
+    }
+  ]
+}
