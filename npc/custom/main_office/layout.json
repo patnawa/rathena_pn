@@ -267,6 +267,20 @@
       "unique_name": "PN Services#O"
     },
     {
+      "name": "Player Settings",
+      "map": "pn_office",
+      "npc": [
+        76,
+        69
+      ],
+      "approach": [
+        76,
+        68
+      ],
+      "source": "PN Player Settings",
+      "unique_name": "Player Settings#O"
+    },
+    {
       "name": "Directory",
       "map": "pn_train",
       "npc": [
@@ -489,6 +503,20 @@
       ],
       "source": "Reset Girl",
       "unique_name": "Reset Girl#T"
+    },
+    {
+      "name": "Grade Enhancer",
+      "map": "pn_train",
+      "npc": [
+        32,
+        70
+      ],
+      "approach": [
+        32,
+        69
+      ],
+      "source": "Sratos#sratos",
+      "unique_name": "Grade Enhancer#T"
     },
     {
       "name": "Directory",

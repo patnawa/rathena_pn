@@ -2927,6 +2927,24 @@ map_session_data* mob_data::get_mvp_player(map_session_data* first_sd) {
 	return mvp_sd;
 }
 
+// Count the existing loot-credit owner once, independent of a monster's NPC label.
+// Permanent registry APIs keep these counters shared with the player's script menu.
+static void mob_player_killcounter( map_session_data* sd, const mob_data& md, const block_list* src, bool rebirth ){
+	if( sd == nullptr || src == nullptr || rebirth || md.state.npc_killmonster )
+		return;
+	const int32 mob_variable = add_str("PNKCMob");
+	const int32 count_variable = add_str("PNKCKills");
+	for( uint32 slot = 0; slot < 5; ++slot ){
+		if( pc_readregistry(sd, reference_uid(mob_variable, slot)) != md.mob_id )
+			continue;
+		const int64 key = reference_uid(count_variable, slot);
+		const int64 count = pc_readregistry(sd, key);
+		// Saturate before addition so even a corrupt registry cannot overflow.
+		if( count < INT32_MAX )
+			pc_setregistry(sd, key, count < 0 ? 1 : count + 1);
+	}
+}
+
 /*==========================================
  * Signals death of mob.
  * type&1 -> no drops, type&2 -> no exp
@@ -3542,6 +3560,7 @@ int32 mob_dead(mob_data *md, block_list *src, int32 type)
 		first_sd = nullptr;
 
 	rebirth =  ( md->sc.getSCE(SC_KAIZEL) || md->sc.getSCE(SC_ULTIMATE_S) || (md->sc.getSCE(SC_REBIRTH) && !md->state.rebirth) );
+	mob_player_killcounter( first_sd, *md, src, rebirth );
 	if( !rebirth ) { // Only trigger event on final kill
 		if( src ) {
 			switch( src->type ) { //allowed type

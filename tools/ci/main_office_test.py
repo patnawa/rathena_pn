@@ -68,7 +68,7 @@ def static():
         except AssertionError: pass
         else: raise AssertionError('Client/server walkability mismatch accepted')
     layout=json.loads((ROOT/'npc/custom/main_office/layout.json').read_text());rows=layout['desks']
-    assert len(rows)==50 and len({r['unique_name'] for r in rows})==50
+    assert len(rows)==52 and len({r['unique_name'] for r in rows})==52
     effective={}
     for path in ('db/import/map_cache.dat','db/re/map_cache.dat','db/map_cache.dat'):
         if (ROOT/path).exists():
@@ -106,7 +106,7 @@ def static():
             else:old[key]=value
     for row in renewal_records(ROOT,'db/skill_db.yml'):overlay(skills.setdefault(row['Id'],{}),row)
     for id in ids: assert skills[id]['CopyFlags']['Skill']=={'Plagiarism':True,'Reproduce':True},id
-    print('OFFICE_STATIC_OK: GRF roundtrip, source preservation, collision/drift refusals, 50 reachable desks, active inherited templates, copy eligibility')
+    print('OFFICE_STATIC_OK: GRF roundtrip, source preservation, collision/drift refusals, 52 reachable desks, active inherited templates, copy eligibility')
     return skills,ids
 
 def native(builddir,skills,ids):

@@ -17,6 +17,7 @@ pn_office,108,80,4	duplicate(PN Progression Guide)	Progression Guide#O	4_M_SAGE_
 pn_office,84,89,4	duplicate(Temporal Tina#episode)	Temporal Tina#O	4_F_KAFRA6
 pn_office,116,88,4	duplicate(PN Instance Desk)	Instance Desk#O	4_BOARD3
 pn_office,100,109,4	duplicate(PN Services)	PN Services#O	4_M_01
+pn_office,76,69,4	duplicate(PN Player Settings)	Player Settings#O	4_F_KAFRA1
 pn_train,56,35,4	duplicate(PN Office Directory)	Directory#T	4_BOARD3
 pn_train,50,65,4	duplicate(PN Services)	Damage Lab#T	4_M_01
 pn_train,50,75,4	duplicate(PN Rune Stone)	Rune Tablet#T	4_ENERGY_BLUE
@@ -33,6 +34,7 @@ pn_train,42,55,4	duplicate(Constellation Enchanter#grademk)	Constellation#T	4_M_
 pn_train,57,55,4	duplicate(PN Build Notes)	Build Notes#T	4_BOARD3
 pn_train,42,45,4	duplicate(Wise Old Woman#eAcustom)	Card Remover#T	78
 pn_train,57,45,4	duplicate(Reset Girl)	Reset Girl#T	124
+pn_train,32,70,4	duplicate(Sratos#sratos)	Grade Enhancer#T	4_JP_GARM_H
 pn_style,140,145,4	duplicate(PN Office Directory)	Directory#F	4_BOARD3
 pn_style,128,130,4	duplicate(Stylist#custom_stylist)	Stylist#F	122
 pn_style,136,130,4	duplicate(Gold Point Manager#FP)	Gold Points#F	4_M_MAYOR
@@ -51,10 +53,10 @@ pn_style,141,126,4	duplicate(PN Office Storage)	Storage#F	4_F_KAFRA2
 pn_style,152,126,4	duplicate(Healer)	Healer#F	4_F_KAFRA1
 
 function	script	PN_OfficeIndex	{
-	setarray @PNDeskNames$,"[Lobby] Directory","[Lobby] Healer","[Lobby] Storage","[Lobby] Reset Girl","[Lobby] Card Remover","[Lobby] Job Master","[Lobby] Druid Mentor","[Lobby] Platinum Skills","[Lobby] Rental Service","[Lobby] Skill Supplies","[Lobby] Tool Dealer","[Lobby] Pet Food","[Lobby] Pet Care","[Lobby] Travel Desk","[Lobby] Progression Guide","[Lobby] Temporal Tina","[Lobby] Instance Desk","[Lobby] PN Services","[Training] Directory","[Training] Damage Lab","[Training] Rune Tablet","[Training] Healer","[Training] Storage","[Training] Repair","[Training] Equipment Enchants","[Training] Shadow Enchants","[Training] Master Refiner","[Training] Ore Dealer","[Training] Rune Crowns","[Training] Varmundt Runes","[Training] Constellation","[Training] Build Notes","[Training] Card Remover","[Training] Reset Girl","[Fashion] Directory","[Fashion] Stylist","[Fashion] Gold Points","[Fashion] Fashion Designer","[Fashion] Fashion Recycler","[Fashion] Fashion Boxes","[Fashion] Fashion Catalogue","[Fashion] Fashion Enchants","[Fashion] Copy Teacher","[Fashion] Sword Clan","[Fashion] Arc Wand Clan","[Fashion] Golden Mace Clan","[Fashion] Crossbow Clan","[Fashion] Cafe","[Fashion] Storage","[Fashion] Healer";
-	setarray @PNDeskMaps$,"pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style";
-	setarray @PNDeskX,104,92,108,84,115,46,56,66,45,60,140,132,150,92,108,84,116,99,56,50,50,44,36,64,36,64,32,68,42,58,42,57,42,57,140,128,136,144,152,160,128,160,128,136,144,152,160,135,140,151;
-	setarray @PNDeskY,40,39,39,54,55,39,39,39,49,49,39,49,46,79,79,88,87,109,34,64,74,34,39,39,59,59,49,49,67,67,54,54,44,44,144,129,129,129,129,129,137,137,145,148,148,148,145,126,126,126;
+	setarray @PNDeskNames$,"[Lobby] Directory","[Lobby] Healer","[Lobby] Storage","[Lobby] Reset Girl","[Lobby] Card Remover","[Lobby] Job Master","[Lobby] Druid Mentor","[Lobby] Platinum Skills","[Lobby] Rental Service","[Lobby] Skill Supplies","[Lobby] Tool Dealer","[Lobby] Pet Food","[Lobby] Pet Care","[Lobby] Travel Desk","[Lobby] Progression Guide","[Lobby] Temporal Tina","[Lobby] Instance Desk","[Lobby] PN Services","[Lobby] Player Settings","[Training] Directory","[Training] Damage Lab","[Training] Rune Tablet","[Training] Healer","[Training] Storage","[Training] Repair","[Training] Equipment Enchants","[Training] Shadow Enchants","[Training] Master Refiner","[Training] Ore Dealer","[Training] Rune Crowns","[Training] Varmundt Runes","[Training] Constellation","[Training] Build Notes","[Training] Card Remover","[Training] Reset Girl","[Training] Grade Enhancer","[Fashion] Directory","[Fashion] Stylist","[Fashion] Gold Points","[Fashion] Fashion Designer","[Fashion] Fashion Recycler","[Fashion] Fashion Boxes","[Fashion] Fashion Catalogue","[Fashion] Fashion Enchants","[Fashion] Copy Teacher","[Fashion] Sword Clan","[Fashion] Arc Wand Clan","[Fashion] Golden Mace Clan","[Fashion] Crossbow Clan","[Fashion] Cafe","[Fashion] Storage","[Fashion] Healer";
+	setarray @PNDeskMaps$,"pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_office","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_train","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style","pn_style";
+	setarray @PNDeskX,104,92,108,84,115,46,56,66,45,60,140,132,150,92,108,84,116,99,76,56,50,50,44,36,64,36,64,32,68,42,58,42,57,42,57,32,140,128,136,144,152,160,128,160,128,136,144,152,160,135,140,151;
+	setarray @PNDeskY,40,39,39,54,55,39,39,39,49,49,39,49,46,79,79,88,87,109,68,34,64,74,34,39,39,59,59,49,49,67,67,54,54,44,44,69,144,129,129,129,129,129,137,137,145,148,148,148,145,126,126,126;
 	return;
 }
 

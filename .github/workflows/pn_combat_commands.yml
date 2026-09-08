@@ -1,0 +1,32 @@
+name: PN combat and player command regression checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['src/map/**', 'db/**', 'conf/**', 'npc/custom/player_commands.txt', 'tools/ci/**', '.github/workflows/pn_combat_commands.yml']
+  pull_request:
+    paths: ['src/map/**', 'db/**', 'conf/**', 'npc/custom/player_commands.txt', 'tools/ci/**', '.github/workflows/pn_combat_commands.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  focused:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install test dependencies
+        run: sudo apt-get update && sudo apt-get install -y g++ python3-yaml
+      - name: Element, refinement and grading handlers
+        run: |
+          python3 tools/ci/element_system_test.py
+          python3 tools/ci/refine_transaction_test.py
+          python3 tools/ci/grade_system_test.py
+      - name: Player commands and permission boundaries
+        run: |
+          python3 tools/ci/player_commands_native_test.py
+          python3 tools/ci/player_command_permissions_test.py
+          python3 tools/ci/player_killcounter_test.py
+          python3 tools/ci/aloot_sets_test.py

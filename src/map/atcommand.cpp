@@ -7105,6 +7105,121 @@ ACMD_FUNC(autoloot)
 /*==========================================
  * @alootid
  *------------------------------------------*/
+// PN account loot profiles contain preferences only, serialized into one registry
+// value so a failed write cannot leave half of a profile updated.
+static int pn_aloot_set_command(map_session_data& sd, int fd, const char* message, bool load_only)
+{
+	if (!sd.vars_ok) {
+		clif_displaymessage(fd, "Account preferences are not loaded yet. Please try again shortly.");
+		return -1;
+	}
+	auto help = [&]() {
+		clif_displaymessage(fd, "@alootconfig save <1-10> [name] | load <1-10> | delete <1-10> | list");
+		clif_displaymessage(fd, "@alootset <1-10> loads an account profile for this session. Aliases: @alc / @als.");
+		clif_displaymessage(fd, "Saves rate, included item IDs and item types. No blacklist, master-account scope or automatic login selection.");
+	};
+	const std::string raw = message ? message : "";
+	if (std::any_of(raw.begin(), raw.end(), [](unsigned char c) { return c < 32 || c == 127; })) { help(); return -1; }
+	std::istringstream input(raw);
+	std::string action, slot_text, extra;
+	if (load_only) {
+		action = "load";
+		if (!(input >> slot_text)) { help(); return 0; }
+	} else if (!(input >> action)) {
+		action = "list";
+	}
+	if (action == "list" || action == "help") {
+		if (input >> extra) { help(); return -1; }
+		help();
+		if (action == "help") return 0;
+		for (int slot = 1; slot <= 10; ++slot) {
+			const char* value = pc_readregistry_str(&sd, reference_uid(add_str("#PNALootSet$"), slot));
+			if (!value || !*value) continue;
+			std::istringstream stored(value);
+			int version, rate, types, count;
+			std::string name;
+			int64 id;
+			bool valid = bool(stored >> version >> rate >> types >> count) && version == 1 && count == AUTOLOOTITEM_SIZE;
+			for (int i = 0; valid && i < count; ++i) valid = bool(stored >> id);
+			if (valid) std::getline(stored >> std::ws, name);
+			char line[160];
+			safesnprintf(line, sizeof(line), "Loot set %d: %s", slot, valid ? name.c_str() : "invalid profile; save it again");
+			clif_displaymessage(fd, line);
+		}
+		return 0;
+	}
+	if (action != "save" && action != "load" && action != "delete") { help(); return -1; }
+	if (!load_only && !(input >> slot_text)) { help(); return -1; }
+	// Strict decimal slots: no signs, fractions, overflow, trailing suffix or scopes.
+	if (slot_text.empty() || slot_text.size() > 2 || slot_text.find_first_not_of("0123456789") != std::string::npos) { help(); return -1; }
+	int slot = std::stoi(slot_text);
+	if (slot < 1 || slot > 10) { help(); return -1; }
+	std::string name;
+	std::getline(input >> std::ws, name);
+	if (action != "save" && !name.empty()) { help(); return -1; }
+	const int64 key = reference_uid(add_str("#PNALootSet$"), slot);
+	if (action == "delete") {
+		if (!pc_setregistry_str(&sd, key, "")) return -1;
+		clif_displaymessage(fd, "Saved account loot set deleted. Current loot preferences are unchanged.");
+		return 0;
+	}
+	if (action == "save") {
+		if (name.empty()) name = "Set " + std::to_string(slot);
+		if (name.size() > 32 || std::any_of(name.begin(), name.end(), [](unsigned char c) { return c < 32 || c > 126 || c == '^'; })) {
+			clif_displaymessage(fd, "Use a name of at most 32 plain ASCII characters, without color codes.");
+			return -1;
+		}
+		std::ostringstream stored;
+		stored << 1 << ' ' << sd.state.autoloot << ' ' << sd.state.autoloottype << ' ' << AUTOLOOTITEM_SIZE;
+		for (const auto id : sd.state.autolootid) stored << ' ' << id;
+		stored << ' ' << name;
+		if (!pc_setregistry_str(&sd, key, stored.str().c_str())) {
+			clif_displaymessage(fd, "Unable to save the account loot set.");
+			return -1;
+		}
+		clif_displaymessage(fd, "Account loot set saved. Use @alootset <slot> to apply it on any character of this RO account.");
+		return 0;
+	}
+	const char* value = pc_readregistry_str(&sd, key);
+	if (!value || !*value) {
+		clif_displaymessage(fd, "That account loot set is empty. Save it with @alootconfig save <slot> [name].");
+		return -1;
+	}
+	std::istringstream stored(value);
+	int version = 0, rate = 0, types = 0, count = 0;
+	t_itemid ids[AUTOLOOTITEM_SIZE] = {};
+	bool valid = bool(stored >> version >> rate >> types >> count) && version == 1 && rate >= 0 && rate <= 10000 && types >= 0 && (types & ~1533) == 0 && count == AUTOLOOTITEM_SIZE;
+	bool any = false;
+	for (int i = 0; valid && i < AUTOLOOTITEM_SIZE; ++i) {
+		int64 id = 0;
+		valid = bool(stored >> id) && id >= 0 && id <= UINT32_MAX;
+		if (!valid) break;
+		ids[i] = static_cast<t_itemid>(id);
+		if (ids[i]) {
+			valid = item_db.find(ids[i]) != nullptr && std::find(ids, ids + i, ids[i]) == ids + i;
+			any = true;
+		}
+	}
+	std::getline(stored >> std::ws, name);
+	valid = valid && !name.empty() && name.size() <= 32 && std::none_of(name.begin(), name.end(), [](unsigned char c) { return c < 32 || c > 126 || c == '^'; });
+	if (!valid) {
+		clif_displaymessage(fd, "Saved loot set is invalid or contains an unavailable item. Current preferences are unchanged; save the set again.");
+		return -1;
+	}
+	// All parsing and item checks completed before touching any active preference.
+	sd.state.autoloot = static_cast<uint16>(rate);
+	sd.state.autoloottype = static_cast<uint16>(types);
+	std::copy(ids, ids + AUTOLOOTITEM_SIZE, sd.state.autolootid);
+	sd.state.autolooting = any;
+	char line[160];
+	safesnprintf(line, sizeof(line), "Loaded loot set %d (%s): %.2f%% rate; item/type lists replaced for this session.", slot, name.c_str(), rate / 100.0);
+	clif_displaymessage(fd, line);
+	return 0;
+}
+
+ACMD_FUNC(alootconfig) { return pn_aloot_set_command(*sd, fd, message, false); }
+ACMD_FUNC(alootset) { return pn_aloot_set_command(*sd, fd, message, true); }
+
 ACMD_FUNC(autolootitem)
 {
 	std::shared_ptr<item_data> item_data;
@@ -9253,9 +9368,126 @@ ACMD_FUNC(mapflag) {
 /*===================================
  * Remove some messages
  *-----------------------------------*/
+// Shared explicit state parser: no argument keeps the historical toggle behavior.
+static int32 pn_command_toggle( const char* message, bool current ){
+	std::istringstream input( message ? message : "" );
+	std::string value, extra;
+	if( !( input >> value ) )
+		return !current;
+	if( input >> extra )
+		return -1;
+	if( !strcasecmp( value.c_str(), "on" ) )
+		return 1;
+	if( !strcasecmp( value.c_str(), "off" ) )
+		return 0;
+	return -1;
+}
+
+ACMD_FUNC(navi)
+{
+	std::istringstream input( message ? message : "" );
+	std::string destination, extra;
+	int32 x, y;
+	if( !( input >> destination >> x >> y ) || ( input >> extra ) ){
+		clif_displaymessage( fd, "Usage: @navi <map> <x> <y> or @navi2 <map> <x> <y>." );
+		return -1;
+	}
+	int16 m = map_mapname2mapid( destination.c_str() );
+	if( m < 0 || x < 0 || y < 0 || x >= map_getmapdata(m)->xs || y >= map_getmapdata(m)->ys || map_getcell(m, x, y, CELL_CHKNOPASS) ){
+		clif_displaymessage( fd, "Choose a loaded map and walkable coordinates inside it." );
+		return -1;
+	}
+	// Navigation supplies client directions only; it never warps or grants map access.
+	clif_navigateTo( sd, map_getmapdata(m)->name, x, y, NAV_KAFRA_AND_AIRSHIP, strcasecmp(command + 1, "navi2") != 0, 0 );
+	return 0;
+}
+
+ACMD_FUNC(unequipall)
+{
+	if( message && *message ){
+		clif_displaymessage( fd, "Usage: @unequipall" );
+		return -1;
+	}
+	if( pc_cant_act(sd) || pc_isdead(sd) ){
+		clif_displaymessage( fd, "You cannot change equipment right now." );
+		return -1;
+	}
+	int32 removed = 0, blocked = 0;
+	for( int32 i = 0; i < MAX_INVENTORY; ++i ){
+		if( sd->inventory.u.items_inventory[i].equip ){
+			// Flag 1 recalculates status; flag 2 would bypass unequip restrictions.
+			if( pc_unequipitem(sd, i, 1) ) ++removed; else ++blocked;
+		}
+	}
+	char text[128];
+	snprintf( text, sizeof(text), "Unequipped %d item(s); %d item(s) blocked by equipment restrictions.", removed, blocked );
+	clif_displaymessage( fd, text );
+	return 0;
+}
+
+ACMD_FUNC(clearfav)
+{
+	if( message && *message ){
+		clif_displaymessage( fd, "Usage: @clearfav" );
+		return -1;
+	}
+	if( pc_cant_act(sd) ){
+		clif_displaymessage( fd, "Close other inventory interfaces before clearing favorites." );
+		return -1;
+	}
+	int32 cleared = 0;
+	for( int32 i = 0; i < MAX_INVENTORY; ++i ){
+		auto& item = sd->inventory.u.items_inventory[i];
+		if( !item.nameid || !item.favorite ) continue;
+		item.favorite = 0;
+#if PACKETVER >= 20111122
+		PACKET_ZC_INVENTORY_TAB p = {};
+		p.packetType = HEADER_ZC_INVENTORY_TAB;
+		p.index = i + 2; // Client inventory indices begin at 2.
+		p.favorite = true; // The packet flag means normal tab, not favorite tab.
+		clif_send( &p, sizeof(p), sd, SELF );
+#endif
+		++cleared;
+	}
+	char text[128];
+	snprintf( text, sizeof(text), "Cleared %d inventory favorite mark(s).", cleared );
+	clif_displaymessage( fd, text );
+	return 0;
+}
+
+ACMD_FUNC(autospells)
+{
+	if( message && *message ){
+		clif_displaymessage( fd, "Usage: @autospells" );
+		return -1;
+	}
+	clif_displaymessage( fd, "Active bonus autospells: base chance per eligible trigger (not a DPS estimate)." );
+	int32 count = 0;
+	auto list = [&]( const std::vector<s_autospell>& spells, const char* trigger ){
+		for( const auto& spell : spells ){
+			char text[256];
+			snprintf( text, sizeof(text), "%s: %s [%u] Lv.%u%s, %.1f%%; trigger skill %u; battle mask 0x%X; source item %u.",
+				trigger, skill_get_desc(spell.id), spell.id, spell.lv ? spell.lv : 1,
+				(spell.flag & AUTOSPELL_FORCE_RANDOM_LEVEL) ? " (random 1..level)" : "",
+				cap_value(spell.rate, 0, 1000) / 10.0, spell.trigger_skill, static_cast<uint16>(spell.battle_flag), spell.card_id );
+			clif_displaymessage( fd, text );
+			++count;
+		}
+	};
+	list( sd->autospell, "On attack" );
+	list( sd->autospell2, "When hit" );
+	list( sd->autospell3, "On skill" );
+	if( !count ) clif_displaymessage( fd, "No active bonus autospells." );
+	clif_displaymessage( fd, "Attack procs use half rate for arrow attacks; when-hit procs use half for long physical hits. Skill restrictions still apply." );
+	clif_displaymessage( fd, "Status skills and arbitrary autobonus scripts are not included in these bonus lists." );
+	return 0;
+}
+
 ACMD_FUNC(showexp)
 {
-	if (sd->state.showexp) {
+	int32 enabled = pn_command_toggle(message, sd->state.showexp);
+	if( enabled < 0 ){ clif_displaymessage(fd, "Usage: @showexp [on|off]"); return -1; }
+	if (!enabled) {
 		sd->state.showexp = 0;
 		clif_displaymessage(fd, msg_txt(sd,1316)); // Gained exp will not be shown.
 		return 0;
@@ -9268,7 +9500,9 @@ ACMD_FUNC(showexp)
 
 ACMD_FUNC(showzeny)
 {
-	if (sd->state.showzeny) {
+	int32 enabled = pn_command_toggle(message, sd->state.showzeny);
+	if( enabled < 0 ){ clif_displaymessage(fd, "Usage: @showzeny [on|off]"); return -1; }
+	if (!enabled) {
 		sd->state.showzeny = 0;
 		clif_displaymessage(fd, msg_txt(sd,1318)); // Gained zeny will not be shown.
 		return 0;
@@ -9281,7 +9515,9 @@ ACMD_FUNC(showzeny)
 
 ACMD_FUNC(showdelay)
 {
-	if (sd->state.showdelay) {
+	int32 enabled = pn_command_toggle(message, sd->state.showdelay);
+	if( enabled < 0 ){ clif_displaymessage(fd, "Usage: @showdelay [on|off]"); return -1; }
+	if (!enabled) {
 		sd->state.showdelay = 0;
 		clif_displaymessage(fd, msg_txt(sd,1320)); // Skill delay failures will not be shown.
 		return 0;
@@ -9607,7 +9843,9 @@ ACMD_FUNC(clone)
  *-------------------------------------*/
 ACMD_FUNC(noask)
 {
-	if(sd->state.noask) {
+	int32 enabled = pn_command_toggle(message, sd->state.noask);
+	if( enabled < 0 ){ clif_displaymessage(fd, "Usage: @noask [on|off]"); return -1; }
+	if(!enabled) {
 		clif_displaymessage(fd, msg_txt(sd,391)); // Autorejecting is deactivated.
 		sd->state.noask = 0;
 	} else {
@@ -11731,6 +11969,11 @@ void atcommand_basecommands(void) {
 #include <custom/atcommand_def.inc>
 		ACMD_DEF(mapmove),
 		ACMD_DEF(where),
+		ACMD_DEF(navi),
+		ACMD_DEF2("navi2", navi),
+		ACMD_DEF(unequipall),
+		ACMD_DEF(clearfav),
+		ACMD_DEF(autospells),
 		ACMD_DEF(jumpto),
 		ACMD_DEF(jump),
 		ACMD_DEF(who),
@@ -11939,6 +12182,8 @@ void atcommand_basecommands(void) {
 		ACMD_DEF(changelook),
 		ACMD_DEF(autoloot),
 		ACMD_DEF(autolootitem),
+		ACMD_DEF(alootconfig),
+		ACMD_DEF(alootset),
 		ACMD_DEF(autoloottype),
 		ACMD_DEF(mobinfo),
 		ACMD_DEF(exp),

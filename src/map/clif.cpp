@@ -22570,6 +22570,10 @@ void clif_parse_refineui_close( int32 fd, map_session_data* sd ){
  */
 void clif_refineui_info( map_session_data* sd, uint16 index ){
 #if PACKETVER >= 20161012
+	if( index >= MAX_INVENTORY || sd->state.trading || sd->state.vending || sd->state.buyingstore || sd->state.storage_flag ){
+		return;
+	}
+
 	int32 fd = sd->fd;
 
 	// Get the item db reference
@@ -22603,6 +22607,12 @@ void clif_refineui_info( map_session_data* sd, uint16 index ){
 	p->packetType = HEADER_ZC_REFINING_MATERIAL_LIST;
 	p->packetLength = sizeof( *p );
 	p->itemIndex = client_index( index );
+
+	// Refining equipped or switch-registered gear would leave its cached bonuses stale.
+	if( item->equip || item->equipSwitch ){
+		clif_displaymessage( sd->fd, "Unequip this item and remove it from equipment switching before refining." );
+		return;
+	}
 
 	std::shared_ptr<s_refine_level_info> info = refine_db.findLevelInfo( *id, *item );
 
@@ -22665,6 +22675,10 @@ void clif_parse_refineui_add( int32 fd, map_session_data* sd ){
  */
 void clif_parse_refineui_refine( int32 fd, map_session_data* sd ){
 #if PACKETVER >= 20161012
+	if( sd->state.trading || sd->state.vending || sd->state.buyingstore || sd->state.storage_flag ){
+		return;
+	}
+
 	const PACKET_CZ_REQ_REFINING* p = reinterpret_cast<PACKET_CZ_REQ_REFINING*>( RFIFOP( fd, 0 ) );
 
 	uint16 index = server_index( p->index );
@@ -22708,6 +22722,12 @@ void clif_parse_refineui_refine( int32 fd, map_session_data* sd ){
 	}
 
 	std::shared_ptr<s_refine_level_info> info = refine_db.findLevelInfo( *id, *item );
+
+	// Recheck after selection: the client must not refine equipped/switch gear.
+	if( item->equip || item->equipSwitch ){
+		clif_displaymessage( sd->fd, "Unequip this item and remove it from equipment switching before refining." );
+		return;
+	}
 
 	// No refine possible
 	if( info == nullptr ){
@@ -22778,7 +22798,7 @@ void clif_parse_refineui_refine( int32 fd, map_session_data* sd ){
 	}
 
 	// Try to refine the item
-	if( cost->chance >= ( rnd() % 10000 ) ){
+	if( ( rnd() % 10000 ) < cost->chance ){
 		log_pick_pc( sd, LOG_TYPE_OTHER, -1, item );
 		// Success
 		item->refine = cap_value( item->refine + 1, 0, MAX_REFINE );
@@ -23979,6 +23999,21 @@ void clif_enchantgrade_add( map_session_data& sd, uint16 index = UINT16_MAX, std
 #endif
 }
 
+// Selection is not authorization: validate the current slot again on commit.
+static bool clif_enchantgrade_target_valid( map_session_data& sd, uint16 index ){
+	if( !sd.state.enchantgrade_open || sd.state.trading || sd.state.vending || sd.state.buyingstore || sd.state.storage_flag || index >= MAX_INVENTORY )
+		return false;
+	const item_data* data = sd.inventory_data[index];
+	const item& target = sd.inventory.u.items_inventory[index];
+	if( data == nullptr || target.nameid == 0 || target.nameid != data->nameid || target.amount != 1 || !target.identify || target.attribute || !data->flag.gradable || target.refine > MAX_REFINE || target.enchantgrade >= MAX_ENCHANTGRADE )
+		return false;
+	if( target.equip || target.equipSwitch ){
+		clif_displaymessage( sd.fd, "Unequip this item and remove it from equipment switching before grading." );
+		return false;
+	}
+	return true;
+}
+
 void clif_parse_enchantgrade_add( int32 fd, map_session_data* sd ){
 #if PACKETVER_MAIN_NUM >= 20200916 || PACKETVER_RE_NUM >= 20200724
 	nullpo_retv( sd );
@@ -23991,7 +24026,7 @@ void clif_parse_enchantgrade_add( int32 fd, map_session_data* sd ){
 
 	uint16 index = server_index( p->index );
 
-	if( index >= MAX_INVENTORY || sd->inventory_data[index] == nullptr ){
+	if( !clif_enchantgrade_target_valid( *sd, index ) ){
 		return;
 	}
 
@@ -24085,7 +24120,7 @@ void clif_parse_enchantgrade_start( int32 fd, map_session_data* sd ){
 
 	uint16 index = server_index( p->index );
 
-	if( index >= MAX_INVENTORY || sd->inventory_data[index] == nullptr ){
+	if( !clif_enchantgrade_target_valid( *sd, index ) ){
 		return;
 	}
 
@@ -24118,7 +24153,7 @@ void clif_parse_enchantgrade_start( int32 fd, map_session_data* sd ){
 		return;
 	}
 
-	uint16 totalChance = enchantgradelevel->chances[sd->inventory.u.items_inventory[index].refine];
+	uint32 totalChance = enchantgradelevel->chances[sd->inventory.u.items_inventory[index].refine];
 
 	// No chance to increase the enchantgrade
 	if( totalChance == 0 ){
@@ -24133,73 +24168,33 @@ void clif_parse_enchantgrade_start( int32 fd, map_session_data* sd ){
 	}
 
 	// Not enough zeny
-	if( sd->status.zeny < option->zeny ){
+	if( option->zeny > MAX_ZENY || sd->status.zeny < option->zeny ){
 		return;
 	}
 
-	uint16 steps = min( p->blessing_amount, enchantgradelevel->catalyst.maximumSteps );
-	std::unordered_map<uint16, uint16> requiredItems;
-
-	if( p->blessing_flag ){
-		// If the catalysator item is the same as the option item build the sum of amounts
-		if( enchantgradelevel->catalyst.item == option->item ){
-			uint16 amount = enchantgradelevel->catalyst.amountPerStep * steps + option->amount;
-
-			int16 index = pc_search_inventory( sd, enchantgradelevel->catalyst.item );
-
-			if( index < 0 ){
-				return;
-			}
-
-			if( sd->inventory.u.items_inventory[index].amount < amount ){
-				return;
-			}
-
-			requiredItems[index] = amount;
-		}else{
-			uint16 amount = enchantgradelevel->catalyst.amountPerStep * steps;
-
-			// Check catalysator item
-			int16 index = pc_search_inventory( sd, enchantgradelevel->catalyst.item );
-
-			if( index < 0 ){
-				return;
-			}
-
-			if( sd->inventory.u.items_inventory[index].amount < amount ){
-				return;
-			}
-
-			requiredItems[index] = amount;
-
-			// Check option item
-			index = pc_search_inventory( sd, option->item );
-
-			if( index < 0 ){
-				return;
-			}
-
-			if( sd->inventory.u.items_inventory[index].amount < option->amount ){
-				return;
-			}
-
-			requiredItems[index] = option->amount;
-		}
-
-		totalChance += steps * enchantgradelevel->catalyst.chanceIncrease;
-	}else{
-		// Check option item
-		int16 index = pc_search_inventory( sd, option->item );
-
-		if( index < 0 ){
+	const uint16 steps = p->blessing_flag ? min( p->blessing_amount, enchantgradelevel->catalyst.maximumSteps ) : 0;
+	std::map<uint16, uint32> requiredItems;
+	// Preflight every debit using wide arithmetic; never consume the target slot.
+	auto require_item = [&]( t_itemid nameid, uint64 amount ) {
+		if( nameid == 0 || amount == 0 || amount > MAX_AMOUNT )
+			return false;
+		const int16 slot = pc_search_inventory( sd, nameid );
+		if( slot < 0 || slot >= MAX_INVENTORY || slot == index )
+			return false;
+		const item& reagent = sd->inventory.u.items_inventory[slot];
+		const uint64 total = requiredItems[slot] + amount;
+		if( sd->inventory_data[slot] == nullptr || sd->inventory_data[slot]->nameid != reagent.nameid || reagent.equip || reagent.equipSwitch || total > MAX_AMOUNT || reagent.amount < total )
+			return false;
+		requiredItems[slot] = static_cast<uint32>( total );
+		return true;
+	};
+	if( !require_item( option->item, option->amount ) )
+		return;
+	if( steps > 0 ){
+		const auto& catalyst = enchantgradelevel->catalyst;
+		if( !require_item( catalyst.item, static_cast<uint64>( catalyst.amountPerStep ) * steps ) )
 			return;
-		}
-
-		if( sd->inventory.u.items_inventory[index].amount < option->amount ){
-			return;
-		}
-
-		requiredItems[index] = option->amount;
+		totalChance = static_cast<uint32>( std::min<uint64>( 10000, totalChance + static_cast<uint64>( steps ) * catalyst.chanceIncrease ) );
 	}
 
 	// All items should be there, start deleting

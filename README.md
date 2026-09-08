@@ -59,7 +59,11 @@ Locations below come from the enabled custom NPC scripts. GM accounts can use
 
 | Service | Location | Function |
 | --- | --- | --- |
-| Main Office | `@office` / `pn_office,100,40` | Searchable directory across 50 lobby, training and fashion desks |
+| Main Office | `@office` / `pn_office,100,40` | Searchable directory across 52 lobby, training and fashion desks |
+| Player settings | `@settings` / Office lobby | Save character or game-account login preferences with immediate application |
+| Loot presets | `@alc save 1 Farming`, `@als 1` | Ten named game-account sets for autoloot rate, included items and types |
+| Kill counter | `@kc 1002 1`, `@kc status` | Five persistent character slots; `@kc reset [slot]` clears them |
+| Grade Enhancer | Office training floor / `grademk,34,184` | Native grading and Etel exchange with existing costs and risk options |
 | Rune Tablet | Office training floor and `grademk,46,178` | Account collection/rewards; character tablets and enhancement |
 | Battle statistics | `@battlestats` / `@bs`, `@battlestats2` / `@bs2` | Offensive and defensive snapshots with detailed, paginated modifiers |
 | PN Services | `izlude,140,146` and `grademk,46,180` | Damage lab, access diagnostics, navigation |
@@ -90,6 +94,18 @@ Configure target properties and repeat comparable runs; the normal-class dummy
 does not reproduce boss AI or boss-only effects. See [PN Services](doc/quality_services.md)
 for measurement limits and [the instance crash repair](doc/pn_lab_crash_fix_20260907.md)
 for lifecycle validation.
+
+The [player command guide](doc/player_commands_reference_audit_20260908.md) lists
+available commands, exact aliases and compatibility limits. Use `@commands` and
+`@help <command>` for native command discovery. Saved Settings cover autoloot,
+EXP/zeny messages, skill-delay messages and invitation rejection. Character
+overrides take priority over game-account preferences.
+
+See the [element audit](doc/element_system_audit_20260908.md),
+[refinement audit](doc/refine_system_audit_20260908.md) and
+[grading audit](doc/grade_system_audit_20260908.md) for formulas, confirmed fixes
+and test boundaries. Native refine/grade windows now require unequipped items
+that are also removed from equipment-switch registration.
 
 ## Repository layout
 

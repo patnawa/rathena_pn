@@ -46,6 +46,52 @@ Body:
     Name: Player
     Level: 0
     Commands:
+      # PN player conveniences: native self-service only; no charcommands or GM permissions.
+      commands: true
+      help: true
+      rates: true
+      uptime: true
+      exp: true
+      jailtime: true
+      hominfo: true
+      homstats: true
+      showdelay: true
+      servertime: true
+      iteminfo: true
+      mobinfo: true
+      whodrops: true
+      whereis: true
+      go: true
+      load: true
+      kill: true
+      refresh: true
+      ksprotection: true
+      noask: true
+      navi: true
+      navi2: true
+      unequipall: true
+      clearfav: true
+      autospells: true
+      showexp: true
+      showzeny: true
+      autoloot: true
+      autolootitem: true
+      alootconfig: true
+      alootset: true
+      autoloottype: true
+      autotrade: true
+      channel: true
+      langtype: true
+      me: true
+      pettalk: true
+      homtalk: true
+      party: true
+      changegm: true
+      breakguild: true
+      duel: true
+      accept: true
+      reject: true
+      leave: true
       bs: true
       bs2: true
       changedress: true

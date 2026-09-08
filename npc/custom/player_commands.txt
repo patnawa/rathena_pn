@@ -1,0 +1,103 @@
+// PN player conveniences. Persistent values are owned by this RO account/character.
+// Encoded setting: 0 = inherit/unset, value + 1 = explicitly saved (including off).
+function	script	PN_ApplyPlayerSetting	{
+	.@i=getarg(0);
+	.@value=getd("PNSetting["+.@i+"]");
+	if (!.@value) .@value=getd("#PNSetting["+.@i+"]");
+	if (!.@value && !getarg(1,0)) return;
+	.@value=max(0,.@value-1);
+	setarray .@commands$,"autoloot","showexp","showzeny","showdelay","noask";
+	if (.@i == 0) atcommand "@autoloot "+.@value;
+	else atcommand "@"+.@commands$[.@i]+" "+(.@value ? "on" : "off");
+	return;
+}
+
+-	script	PN Player Settings	-1,{
+OnSettings:
+	mes "[Player Settings]";
+	mes "Save login preferences for this character or this game account.";
+	mes "Character overrides take priority. Changes apply immediately; other characters receive account changes on their next login.";
+	mes "Manual commands change this session. Use this desk to save preferences.";
+	while (1) {
+		next;
+		mes "[Player Settings]";
+		setarray .@names$,"Autoloot rate","Show EXP","Show zeny","Show skill delay","Reject invitations";
+		for (.@i=0;.@i<5;.@i++) {
+			.@char=getd("PNSetting["+.@i+"]");
+			.@acc=getd("#PNSetting["+.@i+"]");
+			.@v=(.@char ? .@char : .@acc);
+			mes .@names$[.@i]+": "+(!.@v ? "not saved" : (.@i == 0 ? (.@v-1)+"%" : (.@v == 1 ? "off" : "on")))+(.@char ? " (character)" : (.@acc ? " (account)" : ""));
+		}
+		.@i=select("Autoloot rate:Show EXP:Show zeny:Show skill delay:Reject invitations:Close")-1;
+		if (.@i == 5) close;
+		.@scope=select("This character:This game account:Cancel");
+		if (.@scope == 3) continue;
+		.@key$=(.@scope == 1 ? "PNSetting[" : "#PNSetting[")+ .@i+"]";
+		.@action=select("Save a value:Clear this override:Cancel");
+		if (.@action == 3) continue;
+		if (.@action == 2) setd .@key$,0;
+		else {
+			if (.@i == 0) {
+				mes "Enter an autoloot drop-rate threshold from 0 to 100 percent. Zero disables autoloot.";
+				input .@value,0,100;
+			} else .@value=(select("Off:On") == 2);
+			setd .@key$,.@value+1;
+		}
+		callfunc "PN_ApplyPlayerSetting",.@i,1;
+		mes "Preference updated. Clearing both scopes restores Off for this setting.";
+		if (.@scope == 2 && getd("PNSetting["+.@i+"]")) mes "This character still has an override. Clear it to use the account setting.";
+	}
+OnPCLoginEvent:
+	for (.@i=0;.@i<5;.@i++) callfunc "PN_ApplyPlayerSetting",.@i;
+	end;
+OnInit:
+	bindatcmd "settings",strnpcinfo(3)+"::OnSettings",0,99;
+	end;
+}
+
+-	script	PN Kill Counter	-1,{
+OnCommand:
+	if (!.@atcmd_numparameters || .@atcmd_parameters$[0] == "status") {
+		dispbottom "Kill counter: your credited monster kills; five saved character slots.";
+		for (.@i=0;.@i<5;.@i++) {
+			if (PNKCMob[.@i]) dispbottom "["+(.@i+1)+"] "+getmonsterinfo(PNKCMob[.@i],MOB_NAME)+" ("+PNKCMob[.@i]+"): "+PNKCKills[.@i];
+			else dispbottom "["+(.@i+1)+"] Empty";
+		}
+		dispbottom "@kc <monster ID> <slot 1-5> | @kc reset [slot] | @kc status";
+		end;
+	}
+	if (.@atcmd_parameters$[0] == "reset" && .@atcmd_numparameters == 1) {
+		deletearray PNKCMob[0],5;
+		deletearray PNKCKills[0],5;
+		dispbottom "All kill-counter slots cleared.";
+		end;
+	}
+	if (.@atcmd_numparameters != 2 || getstrlen(.@atcmd_parameters$[1]) != 1 || atoi(.@atcmd_parameters$[1]) < 1 || atoi(.@atcmd_parameters$[1]) > 5) {
+		dispbottom "Usage: @kc <monster ID> <slot 1-5> or @kc reset [slot]."; end;
+	}
+	.@slot=atoi(.@atcmd_parameters$[1])-1;
+	if (.@atcmd_parameters$[0] == "reset") {
+		PNKCMob[.@slot]=0; PNKCKills[.@slot]=0;
+		dispbottom "Kill-counter slot "+(.@slot+1)+" cleared."; end;
+	}
+	.@id$=.@atcmd_parameters$[0];
+	.@length=getstrlen(.@id$);
+	if (.@length < 1 || .@length > 9) {
+		dispbottom "Use a numeric monster ID from @mobinfo."; end;
+	}
+	for (.@i=0;.@i<.@length;.@i++) {
+		if (compare("0123456789",charat(.@id$,.@i))) continue;
+		dispbottom "Use a numeric monster ID from @mobinfo."; end;
+	}
+	.@mob=atoi(.@atcmd_parameters$[0]);
+	if (.@mob <= 0 || .@mob > 65535 || getmonsterinfo(.@mob,MOB_NAME) == "null") {
+		dispbottom "Unknown monster ID."; end;
+	}
+	PNKCMob[.@slot]=.@mob; PNKCKills[.@slot]=0;
+	dispbottom "Slot "+(.@slot+1)+": counting "+getmonsterinfo(.@mob,MOB_NAME)+". Previous count reset.";
+	end;
+OnInit:
+	bindatcmd "killcounter",strnpcinfo(3)+"::OnCommand",0,99;
+	bindatcmd "kc",strnpcinfo(3)+"::OnCommand",0,99;
+	end;
+}

@@ -1,6 +1,6 @@
 # PN Main Office
 
-The Main Office brings 50 service desks into three connected service areas.
+The Main Office brings 52 service desks into three connected service areas.
 Use `@office` or the Main Office attendant in Prontera, Izlude (including its
 configured variants), or the Grade Workshop. Each floor has a directory with
 case-insensitive search and transport to a reachable cell beside the selected
@@ -76,3 +76,11 @@ Restart the character and map servers during a no-player maintenance window
 when adding map indexes. Check the native startup log, not just the process
 exit status. Isolated startup validation and cell connectivity do not prove
 rendered client appearance or a player's complete service transaction.
+
+## Equipment audit and command update ? 8 September 2026
+
+The lobby now includes Player Settings (also `@settings`), and Training includes
+Grade Enhancer, sharing Sratos' existing grading and Etel exchange service.
+The generated layout verifies all 52 desk approaches with NPC cells blocked.
+Native grading and refining require inventory targets: unequip the item and
+remove it from equipment switching before selecting it.

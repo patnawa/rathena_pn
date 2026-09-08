@@ -31,6 +31,7 @@ DESKS={
   ('Temporal Tina','Temporal Tina#episode',84,90,'4_F_KAFRA6'),
   ('Instance Desk','PN Instance Desk',116,90,'4_BOARD3'),
   ('PN Services','PN Services',100,110,'4_M_01'),
+  ('Player Settings','PN Player Settings',76,70,'4_F_KAFRA1'),
  ],
  'pn_train':[
   ('Directory','PN Office Directory',56,35,'4_BOARD3'),
@@ -49,6 +50,7 @@ DESKS={
   ('Build Notes','PN Build Notes',58,55,'4_BOARD3'),
   ('Card Remover','Wise Old Woman#eAcustom',42,45,'78'),
   ('Reset Girl','Reset Girl',58,45,'124'),
+  ('Grade Enhancer','Sratos#sratos',32,70,'4_JP_GARM_H'),
  ],
  'pn_style':[
   ('Directory','PN Office Directory',140,145,'4_BOARD3'),

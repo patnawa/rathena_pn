@@ -33,6 +33,43 @@ Header:
   Version: 1
 
 Body:
+  - Command: alootconfig
+    Aliases:
+      - alc
+    Help: |
+      Params: save <1-10> [name] | load <1-10> | delete <1-10> | list
+      Saves named loot profiles shared by characters of your RO account.
+      Profiles contain the current percentage, included item IDs and item-type list.
+      Saving an occupied slot replaces that profile. Loading replaces current session preferences.
+      Names: up to 32 plain ASCII characters. No blacklist or master-account sharing.
+  - Command: alootset
+    Aliases:
+      - als
+    Help: |
+      Params: <1-10>
+      Loads a saved account loot profile into your current session.
+      Create profiles with @alootconfig save <slot> [name].
+      Does not choose a login default; scope suffixes are not supported by this shortcut.
+  - Command: navi
+    Help: |
+      Params: <map> <x> <y>
+      Requests client navigation directions to valid map coordinates; does not warp you.
+      Route availability depends on the client's navigation data, especially for custom maps.
+  - Command: navi2
+    Help: |
+      Params: <map> <x> <y>
+      Requests navigation directions and opens the navigation window; does not warp you.
+  - Command: unequipall
+    Help: |
+      Removes currently equipped items using normal equipment restrictions.
+  - Command: clearfav
+    Help: |
+      Clears favorite marks on items currently in your inventory.
+      Does not modify storage items or remembered storage preferences.
+  - Command: autospells
+    Help: |
+      Lists active automatic-spell bonus entries, skill IDs, trigger conditions and rates.
+      Lists currently calculated bonuses; conditional item scripts may add other effects later.
   - Command: bs
     Aliases:
       - battlestats
@@ -118,9 +155,13 @@ Body:
     Help: |
       Opens the auction window.
   - Command: autoloot
+    Aliases:
+      - al
     Help: |
       Params: <on|off|#>
       Makes items go straight into your inventory.
+      A number selects the maximum drop-rate percentage to loot (0 to 100).
+      Native manual changes apply to this login session; use @settings for saved preferences.
   - Command: autolootitem
     Aliases:
       - alootid
@@ -130,6 +171,7 @@ Body:
       Params: -<Item ID> to remove an item ID
       Params: reset to remove all item IDs
       Makes items of this specific item ID go straight into your inventory.
+      Submit one change per command; pipe-chained changes and blacklist mode are not supported.
   - Command: autoloottype
     Aliases:
       - aloottype
@@ -1013,6 +1055,7 @@ Body:
       Enables night mode on all maps, all characters are affected.
   - Command: noask
     Help: |
+      Params: [on|off]. Without a parameter, toggles the current setting.
       Auto rejects deals/invites.
   - Command: npcmove
     Help: |
@@ -1294,9 +1337,11 @@ Body:
       Activates the quest with quest ID <quest ID>.
   - Command: showdelay
     Help: |
+      Params: [on|off]. Without a parameter, toggles the current setting.
       Shows/hides the "There is a delay after this skill" message.
   - Command: showexp
     Help: |
+      Params: [on|off]. Without a parameter, toggles the current setting.
       Displays/hides experience gained.
   - Command: showmobs
     Help: |
@@ -1313,6 +1358,7 @@ Body:
       Enable or disable to show the rate information on every mapchange.
   - Command: showzeny
     Help: |
+      Params: [on|off]. Without a parameter, toggles the current setting.
       Displays/hides Zeny gained.
   - Command: size
     Help: |
@@ -1495,6 +1541,8 @@ Body:
       Params: <char name>
       Tells you the location of a character.
   - Command: whereis
+    Aliases:
+      - wi
     Help: |
       Params: <monster name/ID>
       Displays the maps in which monster <monster name/ID> normally spawns.
@@ -1513,6 +1561,8 @@ Body:
       Params: [<name>]
       Shows a list of online players and their location.
   - Command: whodrops
+    Aliases:
+      - wd
     Help: |
       Params: <item name|ID>
       Shows who drops an item (monster with highest drop rates).
