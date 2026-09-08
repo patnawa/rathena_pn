@@ -4,7 +4,22 @@ A customized Ragnarok Online Renewal server built on rAthena, bringing together 
 
 This repository contains our server source, custom databases and NPC scripts, client patch tooling, and engineering documentation. It is a customization of rAthena, not an official upstream release or a complete game-client distribution.
 
-[Features](#features) · [Getting started](#getting-started) · [Client compatibility](#client-compatibility) · [Validation](#validation) · [Documentation](#documentation) · [License](#license)
+[Features](#features) · [Player services](#player-services) · [Getting started](#getting-started) · [Docker build](#docker-build) · [Client compatibility](#client-compatibility) · [Validation](#validation) · [Operations](#operations) · [Documentation](#documentation)
+
+## Project at a glance
+
+| Area | Repository baseline |
+| --- | --- |
+| Game rules | Customized Renewal with fourth-job and Druid integration |
+| Server processes | Login, character, map, and web |
+| Docker build | Alpine Linux; four server binaries compiled together |
+| PN packet baseline | `20260219`, explicitly selected by Docker configuration and CI |
+| Content configuration | Enabled NPC scripts plus tracked custom database imports |
+| Client delivery | Scoped patch sources and tools; executable and complete GRFs are separate |
+| Verification | Compilation, integrity audits, focused native tests, documented deployment checks |
+
+The client baseline is a build setting. Match the intended executable, packet
+version, client resources, and server revision for each release.
 
 ## Features
 
@@ -37,6 +52,34 @@ See the [Druid integration notes](doc/druid_integration.md) and [client/progress
 - Source-level audits, native regression tests, and isolated startup validation tooling.
 - Deployment records covering verification evidence, rollback preparation, and remaining checks.
 
+## Player services
+
+Locations below come from the enabled custom NPC scripts. GM accounts can use
+`@warp <map> <x> <y>` when permitted.
+
+| Service | Location | Function |
+| --- | --- | --- |
+| PN Services | `izlude,140,146` and `grademk,46,180` | Damage lab, access diagnostics, navigation |
+| Skill Supplies | `izlude,137,150` and `grademk,42,180` | Consumables required to use skills |
+| Reset Girl | `prontera,150,193` | Skills: 5,000 zeny; stats: 5,000 zeny; both: 9,000 zeny |
+| Wise Old Woman — Card Remover | `prt_in,28,73` | Remove cards from equipped items |
+| Druid Mentor | `prontera,153,193` | Custom Druid → Karnos → Alitea progression |
+
+PN Services and Skill Supplies also have placements on the configured Izlude
+variants. The reset and card removal NPCs are enabled through
+[`npc/scripts_custom.conf`](npc/scripts_custom.conf).
+
+**Card removal terms:** 200,000 zeny plus 25,000 per card, one Star Crumb, and one
+Yellow Gemstone. Current failure outcomes can destroy cards, equipment, or both.
+Read the confirmation dialogue before proceeding.
+
+**Damage lab:** the Poring is an intentional training dummy. The service creates
+a private 30-minute instance and measures approximately 60 seconds of HP loss.
+Configure target properties and repeat comparable runs; the normal-class dummy
+does not reproduce boss AI or boss-only effects. See [PN Services](doc/quality_services.md)
+for measurement limits and [the instance crash repair](doc/pn_lab_crash_fix_20260907.md)
+for lifecycle validation.
+
 ## Repository layout
 
 | Path | Purpose |
@@ -63,13 +106,59 @@ Treat a fresh checkout as a development environment first. The supplied Docker c
 
 Use the [login/character compatibility repair](doc/login_character_abi_repair_20260907.md) and [Druid deployment requirements](doc/druid_integration.md#deployment-requirement) as references when changing shared server structures.
 
-### Deployment discipline
+## Docker build
+
+Use a separate development checkout: compilation writes binaries into the mounted
+repository. From the repository root in Bash or WSL:
+
+```sh
+docker build -t rathena-pn-build:local tools/docker
+docker run --rm --network none \
+  -v "$PWD:/rathena" \
+  -e BUILDER_CONFIGURE=--enable-packetver=20260219 \
+  -e BUILDER_FORCE_BUILD=1 -e BUILD_JOBS=2 \
+  rathena-pn-build:local sh tools/docker/builder.sh
+```
+
+This compiles `login-server`, `char-server`, `map-server`, and `web-server` without
+starting services or accessing a database. Building the image alone installs the
+toolchain. Linux outputs require the matching Alpine runtime.
+
+See the [Docker guide](tools/docker/README.md) for PowerShell commands, Compose
+startup, packet overrides, database initialization, and troubleshooting.
+The [PN Docker workflow](.github/workflows/build_servers_docker.yml) compiles
+relevant changes pushed to `main` and retains binaries with checksums as CI
+artifacts; it does not deploy them.
+
+## Operations
+
+### Release checklist
 
 - Back up the database, configuration, and previous binaries before changes.
 - Keep credentials, account data, and private deployment details out of commits.
 - Review schema upgrades individually; do not re-import initialization SQL into an existing live database.
 - Validate in an isolated candidate environment, then coordinate service restarts during maintenance.
 - Inspect logs and test login, character loading, map travel, and changed gameplay after deployment. A running container alone does not establish a successful release.
+
+Record the source commit, configure flags, binary checksums, script/DB changes,
+and client archive order for each release. Restore-test database backups in
+isolation and retain a matching previous set of binaries for rollback.
+
+For script changes, preserve live overrides and apply a reviewed file delta.
+Schedule reloads or restarts with online players and active instances in mind.
+Shared engine changes require matching rebuilt server binaries. SQL migrations
+need a separate backup and recovery procedure.
+
+### Common operational checks
+
+| Symptom | First checks |
+| --- | --- |
+| Character selection disconnects | Matching login/char/map builds, packet version, advertised addresses |
+| Missing custom NPC | Enabled script, live file, map name, fresh startup errors |
+| Poring in the damage lab | Expected appearance; start measurement through the service |
+| Missing map or sprite | Active GRF order, map assets, sprite mappings, compatibility patch |
+| Missing enchant options | Client metadata, target IDs, server import, supported packet path |
+| Unexpected reward result | Quest state, capacity, item identity, relevant script logs |
 
 ## Client compatibility
 
@@ -101,6 +190,9 @@ Choose regression tests for the area being changed rather than treating one audi
 
 ## Documentation
 
+- [Docker build and development](tools/docker/README.md)
+- [PN Services and damage lab](doc/quality_services.md)
+- [Reset and card removal activation](doc/reset_services_deployment_20260908.md)
 - [Grademk equipment services](doc/grademk_equipment_service_audit.md)
 - [Druid gear and enchants](doc/druid_gear_enchants_audit.md)
 - [Chapter 2 client coverage](doc/chapter2_native_client_coverage.md)

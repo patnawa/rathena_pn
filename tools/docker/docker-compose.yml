@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
     db:
         image: "mariadb:noble"
@@ -31,7 +29,9 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            BUILDER_CONFIGURE: "--enable-packetver=20211103"
+            BUILDER_CONFIGURE: "${BUILDER_CONFIGURE:---enable-packetver=20260219}"
+            BUILDER_FORCE_BUILD: "${BUILDER_FORCE_BUILD:-0}"
+            BUILD_JOBS: "${BUILD_JOBS:-2}"
 
     login:
         image: "rathena:local"

@@ -1,0 +1,58 @@
+name: Build PN servers with Docker
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - '3rdparty/**'
+      - 'configure*'
+      - '**/Makefile.in'
+      - 'tools/docker/**'
+      - '.github/workflows/build_servers_docker.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - '3rdparty/**'
+      - 'configure*'
+      - '**/Makefile.in'
+      - 'tools/docker/**'
+      - '.github/workflows/build_servers_docker.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pn-docker-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux toolchain image
+        run: docker build -t rathena-pn-build:ci tools/docker
+      - name: Compile all server binaries
+        run: |
+          docker run --rm --network none \
+            -v "$PWD:/rathena" \
+            -e BUILDER_CONFIGURE=--enable-packetver=20260219 \
+            -e BUILDER_FORCE_BUILD=1 -e BUILD_JOBS=2 \
+            rathena-pn-build:ci sh tools/docker/builder.sh
+      - name: Record artifact checksums
+        run: sha256sum login-server char-server map-server web-server > server-binaries.sha256
+      - name: Upload Linux build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pn-linux-amd64-packetver-20260219
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            login-server
+            char-server
+            map-server
+            web-server
+            server-binaries.sha256

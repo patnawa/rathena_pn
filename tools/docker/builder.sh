@@ -1,21 +1,31 @@
-if [ ! -f /rathena/login-server ]; then
-  export runBuild=1;
-elif [ ! -f /rathena/char-server ]; then
-  export runBuild=1;
-elif [ ! -f /rathena/map-server ]; then
-  export runBuild=1;
-else
-  export runBuild=0;
+#!/bin/sh
+set -eu
+
+cd /rathena
+force_build=${BUILDER_FORCE_BUILD:-0}
+build_jobs=${BUILD_JOBS:-2}
+case "$force_build" in
+  0|1) ;;
+  *) echo "BUILDER_FORCE_BUILD must be 0 or 1" >&2; exit 2 ;;
+esac
+case "$build_jobs" in
+  ''|*[!0-9]*|0) echo "BUILD_JOBS must be a positive integer" >&2; exit 2 ;;
+esac
+
+if [ "$force_build" = 0 ] && [ -x login-server ] && [ -x char-server ] \
+    && [ -x map-server ] && [ -x web-server ]; then
+  echo "Server binaries already exist. Set BUILDER_FORCE_BUILD=1 after source or packet-version changes."
+  exit 0
 fi
 
-if [ "${runBuild}" -eq "1" ]; then
-  ### checking that ./configure has ran by looking for make file
-  if [ ! -f /rathena/make ]; then
-    echo "Warning: ./configure will be executed with provided values";
-    echo "Make sure you have set the variables you want in the docker-compose.yml file";
-    echo $BUILDER_CONFIGURE
-    ./configure $BUILDER_CONFIGURE
-  fi
-
-  make clean server;
-fi
+: "${BUILDER_CONFIGURE:?Set BUILDER_CONFIGURE, including --enable-packetver=YYYYMMDD}"
+# Configure flags are space-separated arguments, never evaluated as shell code.
+set -f
+./configure $BUILDER_CONFIGURE
+# Complete cleanup before parallel compilation to avoid clean/build races.
+make clean
+make -j"$build_jobs" server
+for server_binary in login-server char-server map-server web-server; do
+  test -x "$server_binary"
+done
+echo "Built login, character, map and web servers successfully."
