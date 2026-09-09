@@ -1,6 +1,12 @@
 # Enchantment client patch
 
-Close the game before installation. Back up `DATA.INI` and `SystemEN/itemInfo.lua`, then copy `DATA.INI`, `enchant_repair.grf` and the `SystemEN` directory into the matching server client directory. Restart the game.
+Build the generated archive first with Python 3 (no extra packages):
+
+```sh
+python client-patch/enchant_repair/build_grf.py
+```
+
+Close the game before installation. Back up `DATA.INI` and `SystemEN/itemInfo.lua`, then copy `DATA.INI`, the generated `enchant_repair.grf` and the `SystemEN` directory into the matching server client directory. Restart the game. The generated GRF is ignored by Git; its source tables and builder are tracked.
 
 The supplied DATA.INI preserves this client's existing eight archives and loads enchant_repair.grf first. For other client layouts, merge the archive entry and the final itemInfo_EnchantRepair loader/merge calls into their existing files instead of replacing them.
 

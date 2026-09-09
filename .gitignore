@@ -80,6 +80,12 @@ Thumbs.db
 !/db/import/thanatos_mob_db.yml
 !/db/import/thanatos_mob_skill_db.txt
 !/db/import/thanatos_quest_db.yml
+!/db/import/enchant_repair.yml
+!/db/import/enchant_repair_combos.yml
+!/db/import/enchant_repair_items.yml
+!/db/import/shadow_repair_items.yml
+!/db/import/shadow_repair_laphine.yml
+!/db/import/shadow_repair_options.yml
 
 # /conf/
 /conf/import
@@ -128,6 +134,9 @@ Thumbs.db
 /tools/*.exe
 /tools/*.ilk
 /tools/*.pdb
+/tools/**/*.exe
+/tools/**/*.ilk
+/tools/**/*.pdb
 
 # Visual Studio
 .vs
@@ -167,4 +176,10 @@ Thumbs.db
 
 # generated files
 generated
-/tools/ci/__pycache__/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+/.codex-tmp*/
+/client-patch/enchant_repair/enchant_repair.grf
