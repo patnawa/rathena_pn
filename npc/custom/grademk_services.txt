@@ -82,7 +82,15 @@ grademk,44,184,4	script	Frontier Rune Crown Enchanter#grademk	4_M_REPAIR,{
 	.@choice = select("Dimension Footwear:Frontier / Time Rune Crown:Cancel");
 	if (.@choice == 3)
 		close;
+	if (.@choice == 2 && get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2) < 1500) {
+		mes "Crown enchanting requires 1,500 Varmundt Depth 2 reputation.";
+		close;
+	}
 	close2;
+	if (.@choice == 2 && get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2) < 1500) {
+		dispbottom "Crown enchanting requires 1,500 Varmundt Depth 2 reputation.";
+		end;
+	}
 	item_enchant((.@choice == 1) ? 163 : 164);
 	end;
 

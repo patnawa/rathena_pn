@@ -1,0 +1,41 @@
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+- Id: 23720
+  Name: Standard Shadow Enchant
+- Id: 100205
+  Name: Class Shadow Spellbook (Physical)
+- Id: 100206
+  Name: Class Shadow Spellbook (Magical)
+- Id: 100207
+  Name: Skill Shadow Spellbook (Physical)
+- Id: 100208
+  Name: Skill Shadow Spellbook (Magical)
+- Id: 101177
+  Name: Advanced Shadow Spellbook
+- Id: 101261
+  Name: Advanced Shadow Spellbook (Melee)
+- Id: 101262
+  Name: Advanced Shadow Spellbook (Range)
+- Id: 101264
+  Name: Advanced Shadow Spellbook (Magic)
+- Id: 101260
+  Name: Advanced Shadow Spellbook (Support)
+- Id: 50033
+  AegisName: Muh_Shadow
+  Name: Shadow
+  Type: Etc
+  Buy: 0
+  Sell: 0
+  Weight: 0
+- Id: 50034
+  AegisName: Muh_Shadow_Crate
+  Name: Shadow Crate
+  Type: Usable
+  Buy: 0
+  Sell: 0
+  Weight: 10
+  Script: |
+    if (!checkweight(50033,20)) { dispbottom "Make room for 20 Shadow first."; getitem 50034,1; end; }
+    getitem 50033,20;

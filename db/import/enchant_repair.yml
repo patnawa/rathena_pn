@@ -1,0 +1,23 @@
+Header:
+  Type: ITEM_ENCHANT_DB
+  Version: 1
+Body:
+- Id: 16
+  Reset:
+    Chance: 100000
+- Id: 17
+  Reset:
+    Chance: 100000
+- Id: 18
+  Reset:
+    Chance: 100000
+- Id: 19
+  Reset:
+    Chance: 100000
+- Id: 36
+  TargetItems:
+    SC_B_Axe: true
+    NP_B_Dagger: true
+- Id: 164
+  TargetItems:
+    Frontier_R_Crown_AT: true

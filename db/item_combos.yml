@@ -47,3 +47,5 @@ Footer:
     Mode: Renewal
   - Path: db/import/druid_missing_weapon_combos.yml
     Mode: Renewal
+  - Path: db/import/enchant_repair_combos.yml
+    Mode: Renewal

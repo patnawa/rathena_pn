@@ -1,0 +1,90 @@
+// Shadow enchant supplies and recycling. Wiki prices; crates yield 20 Shadow.
+// Native Laphine performs the equipment mutation after a book is used.
+grademk,26,184,4	script	Rayja#EnchantRepair	4_F_01,{
+	mes "[Rayja]";
+	mes "I sell Shadow enchant books and exchange Shadow materials.";
+	switch(select("Enchant books:Shadow materials:Recycle equipped Shadow gear:Leave")) {
+	case 1:
+		.@book = select("Standard:Class Physical:Class Magical:Skill Physical:Skill Magical:Advanced:Advanced Melee:Advanced Ranged:Advanced Magic:Advanced Support:Cancel")-1;
+		if (.@book<0 || .@book>=10) close;
+		setarray .@books[0],23720,100205,100206,100207,100208,101177,101261,101262,101264,101260;
+		setarray .@fruits[0],1,2,2,2,2,4,6,6,6,6;
+		.@item = .@books[.@book];
+		.@fruit = .@fruits[.@book];
+		.@price = .@fruit*500000;
+		mes "[Rayja]";
+		mes getitemname(.@item)+": "+.@price+" zeny or "+.@fruit+" Nyangvine Fruit.";
+		mes "Unequip the target, then use the book. Its window lists eligible gear up to +10.";
+		mes "The book rerolls all random option lines. Refine, grade and card enchants are preserved.";
+		mes "Standard, class and skill books give one line. Advanced books give two lines.";
+		mes "Each listed option has equal selection odds; values are random within the displayed range.";
+		next;
+		.@pay = select("Pay zeny:Pay Nyangvine Fruit:Cancel");
+		if (.@pay<1 || .@pay>2) close;
+		if (!checkweight(.@item,1)) { mes "Make inventory space first."; close; }
+		if (.@pay==1) {
+			if (Zeny<.@price) { mes "You need more zeny."; close; }
+			Zeny-=.@price;
+		} else {
+			if (countitem(6909)<.@fruit) { mes "You need more Nyangvine Fruit."; close; }
+			delitem 6909,.@fruit;
+		}
+		getitem .@item,1;
+		mes "Your enchant book is ready.";
+		close;
+	case 2:
+		.@choice = select("Shadow Crate - 5 Shadowdecon:Shadow Essence - 200 Shadow and 5,000,000 zeny:Shadow Essence - 15 Shadow Energy Stones:Cancel");
+		if (.@choice<1 || .@choice>3) close;
+		if (.@choice==1) { .@reward=50034; .@material=25729; .@amount=5; .@zeny=0; }
+		if (.@choice==2) { .@reward=1001253; .@material=50033; .@amount=200; .@zeny=5000000; }
+		if (.@choice==3) { .@reward=1001253; .@material=1001174; .@amount=15; .@zeny=0; }
+		mes "[Rayja]";
+		mes "Receive 1 "+getitemname(.@reward)+" for "+.@amount+" "+getitemname(.@material)+" and "+.@zeny+" zeny.";
+		if (.@choice==1) mes "Each Shadow Crate on this server contains exactly 20 Shadow.";
+		next;
+		if (select("Exchange:Cancel")!=1) close;
+		if (!checkweight(.@reward,1)) { mes "Make inventory space first."; close; }
+		if (countitem(.@material)<.@amount || Zeny<.@zeny) { mes "You do not have the required payment."; close; }
+		delitem .@material,.@amount;
+		Zeny-=.@zeny;
+		getitem .@reward,1;
+		mes "Exchange complete.";
+		close;
+	case 3:
+		mes "[Rayja]";
+		mes "Recycle one equipped Shadow item for 20 Shadow. Its refine, grade and all enchants will be lost.";
+		.@choice=select("Armor:Weapon:Shield:Shoes:Right Accessory:Left Accessory:Cancel")-1;
+		if (.@choice<0 || .@choice>=6) close;
+		setarray .@slots[0],EQI_SHADOW_ARMOR,EQI_SHADOW_WEAPON,EQI_SHADOW_SHIELD,EQI_SHADOW_SHOES,EQI_SHADOW_ACC_R,EQI_SHADOW_ACC_L;
+		setarray .@masks[0],EQP_SHADOW_ARMOR,EQP_SHADOW_WEAPON,EQP_SHADOW_SHIELD,EQP_SHADOW_SHOES,EQP_SHADOW_ACC_R,EQP_SHADOW_ACC_L;
+		.@slot=.@slots[.@choice];
+		.@mask=.@masks[.@choice];
+		.@id=getequipid(.@slot);
+		if (.@id<=0 || getiteminfo(.@id,ITEMINFO_TYPE)!=IT_SHADOWGEAR) { mes "Equip a Shadow item in that slot first."; close; }
+		.@uid$=getequipuniqueid(.@slot);
+		.@refine=getequiprefinerycnt(.@slot);
+		for (.@i=0;.@i<4;++.@i) .@cards[.@i]=getequipcardid(.@slot,.@i);
+		mes "Destroy +"+.@refine+" "+getitemname(.@id)+" for 20 Shadow?";
+		next;
+		if (select("Destroy and recycle:Cancel")!=1) close;
+		if (getequipid(.@slot)!=.@id || getequipuniqueid(.@slot)!=.@uid$) { mes "Your equipment changed. Please start again."; close; }
+		getinventorylist;
+		.@eligible=0;
+		for (.@i=0;.@i<@inventorylist_count;++.@i) {
+			if ((@inventorylist_equip[.@i]&.@mask)==0) continue;
+			if (@inventorylist_id[.@i]!=.@id || @inventorylist_uniqueid$[.@i]!=.@uid$) continue;
+			if (@inventorylist_bound[.@i] || @inventorylist_expire[.@i] || !@inventorylist_identify[.@i] || @inventorylist_attribute[.@i]) continue;
+			.@eligible=1;
+		}
+		if (!.@eligible) { mes "Bound, rental, unidentified or broken equipment cannot be recycled."; close; }
+		if (!checkweight(50033,20)) { mes "Make room for 20 Shadow first."; close; }
+		if (!deleteequipitem(.@slot,.@id,.@refine,.@cards[0],.@cards[1],.@cards[2],.@cards[3])) { mes "The item changed. Nothing was exchanged."; close; }
+		getitem 50033,20;
+		mes "You received 20 Shadow.";
+		close;
+	default:
+		close;
+	}
+}
+
+pn_train,62,60,4	duplicate(Rayja#EnchantRepair)	Rayja#PNEnchantRepair	4_F_01

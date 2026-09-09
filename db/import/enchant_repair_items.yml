@@ -1,0 +1,144 @@
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+- Id: 510200
+  AegisName: NP_B_Dagger
+  Name: Gust Hail Booster Dagger
+  Type: Weapon
+  Weight: 0
+  Range: 1
+  Slots: 0
+  Jobs:
+    Karnos: true
+  WeaponLevel: 4
+  EquipLevelMin: 100
+  Refineable: false
+  SubType: Dagger
+  Attack: 190
+  Locations:
+    Right_Hand: true
+  Script: |
+    .@r = getrefine();
+    bonus bAtkRate,2;
+    bonus bBaseAtk,3*.@r+3*(min(BaseLevel,195)/15);
+    if (.@r>=7) bonus bLongAtkRate,getskilllv("KR_RAPTORIAL_INSTINCT");
+    if (.@r>=9) {
+      bonus bAspd,1;
+      bonus2 bSkillAtk,"KR_SHARPEN_GUST",25;
+      bonus2 bSkillAtk,"KR_SHARPEN_HAIL",25;
+    }
+    if (.@r>=11) {
+      bonus2 bAddSize,Size_All,15;
+      bonus bLongAtkRate,15;
+    }
+    if (.@r>=13) {
+      bonus2 bSkillAtk,"KR_SHARPEN_GUST",15;
+      bonus2 bSkillAtk,"KR_SHARPEN_HAIL",15;
+    }
+- Id: 620064
+  AegisName: SC_B_Axe
+  Name: Slash ChopChop Booster Axe
+  Type: Weapon
+  Weight: 0
+  Range: 1
+  Slots: 0
+  Jobs:
+    Karnos: true
+  WeaponLevel: 4
+  EquipLevelMin: 100
+  Refineable: false
+  SubType: 2hAxe
+  Attack: 300
+  Locations:
+    Both_Hand: true
+  Script: |
+    .@r = getrefine();
+    bonus bUnbreakableWeapon;
+    bonus bAtkRate,2;
+    bonus bBaseAtk,3*.@r+3*(min(BaseLevel,195)/15);
+    if (.@r>=7) bonus bShortAtkRate,getskilllv("KR_WOLF_INSTINCT");
+    if (.@r>=9) {
+      bonus bDelayrate,-5;
+      bonus2 bSkillAtk,"KR_DOUBLE_SLASH",25;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",25;
+    }
+    if (.@r>=11) {
+      bonus bDelayrate,-10;
+      bonus2 bAddSize,Size_All,20;
+    }
+    if (.@r>=13) {
+      bonus2 bSkillAtk,"KR_DOUBLE_SLASH",15;
+      bonus2 bSkillAtk,"KR_CHOP_CHOP",15;
+    }
+- Id: 401195
+  AegisName: Frontier_R_Crown_AT
+  Name: Frontier Rune Crown (Alitea)
+  Type: Armor
+  Weight: 1000
+  Defense: 60
+  Slots: 1
+  Jobs:
+    Alitea: true
+  Classes:
+    Fourth: true
+  Locations:
+    Head_Top: true
+  ArmorLevel: 2
+  EquipLevelMin: 265
+  Refineable: true
+  Gradable: true
+  View: 2733
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bAtkRate,4*(.@r/3);
+    bonus2 bSkillAtk,"AT_FERAL_CLAW",5*(.@r/4);
+    bonus2 bSkillAtk,"AT_ALPHA_CLAW",5*(.@r/4);
+    if (.@r>=7) bonus bShortAtkRate,10;
+    if (.@r>=9) {
+      bonus2 bAddRace,RC_All,15;
+      bonus2 bAddRace,RC_Player_Human,-15;
+      bonus2 bAddRace,RC_Player_Doram,-15;
+      bonus bPAtk,7;
+    }
+    if (.@r>=12) { bonus bCritical,10; bonus bCritAtkRate,15; }
+    if (.@g>=ENCHANTGRADE_D) bonus bPAtk,5;
+    if (.@g>=ENCHANTGRADE_C) { bonus bMaxHPrate,5; bonus bMaxSPrate,5; }
+    if (.@g>=ENCHANTGRADE_B) bonus bShortAtkRate,10;
+    if (.@g>=ENCHANTGRADE_A) bonus2 bAddSize,Size_All,15;
+- Id: 520055
+  AegisName: Frontier_AT_Axe
+  Name: Frontier Claw Axe
+  Type: Weapon
+  SubType: 1hAxe
+  Weight: 340
+  Attack: 280
+  Range: 1
+  Slots: 2
+  Jobs:
+    Alitea: true
+  Classes:
+    Fourth: true
+  Locations:
+    Right_Hand: true
+  WeaponLevel: 5
+  EquipLevelMin: 265
+  Refineable: true
+  Gradable: true
+  Script: |
+    .@r = getrefine();
+    .@g = getenchantgrade();
+    bonus bUnbreakableWeapon;
+    bonus bCritical,5;
+    bonus2 bSkillAtk,"AT_FERAL_CLAW",15;
+    bonus bBaseAtk,25*(.@r/2);
+    bonus bAtkRate,.@r/2;
+    bonus2 bSkillAtk,"AT_ALPHA_CLAW",5*(.@r/3);
+    if (.@r>=9) { bonus bCritical,15; bonus bCRate,5; }
+    if (.@r>=11) bonus2 bSkillAtk,"AT_ALPHA_CLAW",20;
+    if (.@r>=12) { bonus2 bSkillAtk,"AT_FERAL_CLAW",20; bonus2 bSkillAtk,"AT_ALPHA_CLAW",20; }
+    if (.@g>=ENCHANTGRADE_D) { bonus bCritical,5; bonus bPAtk,5; }
+    if (.@g>=ENCHANTGRADE_C) bonus2 bSkillAtk,"AT_ALPHA_CLAW",10;
+    if (.@g>=ENCHANTGRADE_B) bonus bShortAtkRate,15;
+    if (.@g>=ENCHANTGRADE_A) bonus bPAtk,3*(.@r/2);

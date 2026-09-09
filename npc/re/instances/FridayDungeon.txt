@@ -714,7 +714,7 @@ gef_tower,57,167,3	script	Amateur Collector#pa0829	1_F_01,{
 			close;
 		}
 
-		if (rand(100) > .@success) {
+		if (rand(100) >= .@success) {
 			if (!deleteequipitem(.@slot,.@equip_id,.@equip_refine,.@card[0],.@card[1],.@card[2],.@card[3])) {
 				getitem 25235,10;
 				Zeny += 100000;

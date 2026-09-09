@@ -113,3 +113,7 @@ Footer:
     Mode: Renewal
   - Path: db/import/druid_missing_weapons.yml
     Mode: Renewal
+  - Path: db/import/enchant_repair_items.yml
+    Mode: Renewal
+  - Path: db/import/shadow_repair_items.yml
+    Mode: Renewal
