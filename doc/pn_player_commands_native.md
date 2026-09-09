@@ -1,6 +1,6 @@
 # PN native player convenience commands
 
-Implemented from the requested [MuhRO Player Commands reference](https://wiki.muhro.eu/Player_Commands), using this server's own inventory, navigation, equipment, and bonus APIs. This subset does not assert complete MuhRO feature parity. Command permissions and Settings NPC persistence are configured separately.
+Implemented from the requested reference server Player Commands reference, using this server's own inventory, navigation, equipment, and bonus APIs. This subset does not assert complete reference server feature parity. Command permissions and Settings NPC persistence are configured separately.
 
 | Command | Behavior |
 |---|---|
@@ -20,7 +20,7 @@ Navigation sends directions only. It never warps, changes a quest, or grants acc
 
 Unequip-all uses the same nonforced `pc_unequipitem(..., 1)` operation as the native client's unequip-all handler. Action restrictions, death, and per-item prohibitions such as Pyroclastic remain effective. It does not remove equipment-switch registrations. A blocked item stays equipped; successful removals use normal status recalculation and acknowledgements.
 
-Clear-favorites changes only the favorite flag of existing inventory items, leaving quantities, equipment, refinements and other attributes intact. The `0x0908` update uses client index `inventory index + 2`; its `favorite=true` packet field selects the **normal tab**, matching rAthena's inverted packet convention. No separate remembered-favorite storage registry exists in this implementation, so MuhRO's additional remembered-storage reset behavior is not claimed. Close other inventory interfaces first.
+Clear-favorites changes only the favorite flag of existing inventory items, leaving quantities, equipment, refinements and other attributes intact. The `0x0908` update uses client index `inventory index + 2`; its `favorite=true` packet field selects the **normal tab**, matching rAthena's inverted packet convention. No separate remembered-favorite storage registry exists in this implementation, so reference server's additional remembered-storage reset behavior is not claimed. Close other inventory interfaces first.
 
 Autospell output reads the three current bonus vectors, including contributions already merged by status calculation. Rates are per eligible trigger, with 1,000 units representing 100%; it shows base chance rather than simulated damage or an unconditional chance per attack. The output notes arrow-attack and long-physical-hit rate halving. It also exposes trigger skill, battle mask, source item, and random-level flags. Arbitrary `autobonus` scripts, status-based skill autocasts, and conditions that are not currently contributing to these vectors are outside this list. Normal skill/range/map restrictions still govern actual casts.
 

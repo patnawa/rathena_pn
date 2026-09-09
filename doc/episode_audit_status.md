@@ -61,7 +61,7 @@ See [protocol evidence and limits](enchant_upgrade_protocol.md).
   row 183 are the counter, not player standing cells.
 - `admin`'s character `MSCESXi` still has all 15 saved reputation/mirror variables
   at their configured maxima. No account values were changed in this follow-up.
-- RockMMO and MuhRO references were inventoried. Their tested GRF payloads are
+- RockMMO and reference data were inventoried. Their tested GRF payloads are
   not standard zlib; no protected assets were imported. See the
   [reference inventory and comparison command](client_reference_grfs.md).
 
@@ -88,7 +88,7 @@ tests and 13 sanitized source-extracted assertions pass. See
 The broader local audit now reports 899 enabled scripts, 99 instances, 29,535
 item identities, 100 DB imports, 61 local fragments and 54 walkable arrival/service
 cells, with zero integrity warnings. The additional 31 Druid-related item
-definitions have verified source IDs and supplied-MuhRO compatibility effects;
+definitions have verified source IDs and supplied-reference server compatibility effects;
 63 initial-enchant recipes and the Gray Wolf distribution are now wired in a
 separate Renewal overlay. All 31 identities already exist in the original client
 name table; previous unresolved results meant missing server definitions.

@@ -1,7 +1,7 @@
 # Druid-family enchant item compatibility - 2026-09-06
 
 This import adds 28 enchant cards and three non-usable enchant materials. It is
-an explicitly **MuhRO-reference-compatible implementation**, not a claim that
+an explicitly **reference-compatible implementation**, not a claim that
 these effects or display labels have been independently verified against current
 official Gravity balance.
 
@@ -22,7 +22,7 @@ pinned to ROenglishRE commit `66cdfec631603fda6a90ba4bbe26ab07b5204c84`
 | Ice_F_Stone_Skill_55-57 | 1002350-1002352 |
 
 Effects were independently read by these numeric IDs from the user-supplied
-`MuhRO/MuhRO/System` directory, without extracting or importing protected GRFs:
+`ReferenceClient/System` directory, without extracting or importing protected GRFs:
 
 - `itemInfo_EN_db_fallback.lua`, SHA256
   `235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a`:

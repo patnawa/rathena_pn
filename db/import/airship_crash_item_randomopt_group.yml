@@ -1,8 +1,6 @@
 # Copyright (c) 2026 rAthena contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
-#
 # Airship Crash / Ymir Beads published enchant ranges:
-# https://wiki.gemstonero.com/doku.php?id=guides:muhro:airship_crash
 # The shipped LapineUpgradeBox.lub confirms that item 100476 applies to all
 # six Unknown Stat Boots and always supplies up to two option lines.
 

@@ -706,7 +706,7 @@ foreach ($file in $enabledFiles) {
 					continue
 				}
 				$id = [int]$token
-				# Muh Coin is an optional server-specific item. The Fashion NPC
+				# Server Coin is an optional server-specific item. The Fashion NPC
 				# probes it with getiteminfo and disables that payment path if absent.
 				if ($id -eq 50000 -and $relative -eq 'npc/custom/fashion_points/FashionPoints.txt') { continue }
 				if (!$itemIds.Contains($id)) { Fail "Missing item ID $id at ${relative}:$lineNumber" }
@@ -800,7 +800,7 @@ foreach ($literal in @('REPUTATION_BIOSPHERE_DEPTH1','REPUTATION_BIOSPHERE_DEPTH
 Write-Host "  required Biosphere quests: $($requiredBiosphereQuests.Count)"
 
 # The custom quest range must also be reproducible on the client. Stock quest
-# records 16739-16770 are overridden because MuhRO separates samples and hunts.
+# records 16739-16770 are overridden because reference server separates samples and hunts.
 $biosphereClientPatch = [IO.File]::ReadAllText((RepoPath 'client-patch/biosphere/OngoingQuests_Biosphere.lua'))
 foreach ($id in 900100..900107) {
 	if ($biosphereClientPatch -notmatch "(?<!\d)$id(?!\d)") { Fail "Biosphere client patch is missing custom quest ID $id" }

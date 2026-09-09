@@ -3,7 +3,7 @@ Header:
   Version: 1
 Body:
 - Item: Shadow_Random_Mix
-  RandomOptionGroup: MUH_SHADOW_23720
+  RandomOptionGroup: PN_SHADOW_23720
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -952,7 +952,7 @@ Body:
   - Item: S_AT_Earring
   - Item: S_AT_Pendant
 - Item: Class_Sha_R_M_Melee
-  RandomOptionGroup: MUH_SHADOW_100205
+  RandomOptionGroup: PN_SHADOW_100205
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -1049,7 +1049,7 @@ Body:
   - Item: S_Thief_earring
   - Item: S_Archer_earring
 - Item: Class_Sha_R_M_Magic
-  RandomOptionGroup: MUH_SHADOW_100206
+  RandomOptionGroup: PN_SHADOW_100206
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -1146,7 +1146,7 @@ Body:
   - Item: S_Thief_earring
   - Item: S_Archer_earring
 - Item: Skill_Sha_R_M_Melee
-  RandomOptionGroup: MUH_SHADOW_100207
+  RandomOptionGroup: PN_SHADOW_100207
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -1505,7 +1505,7 @@ Body:
   - Item: S_NW_NF_Armor
   - Item: S_NW_NF_Shoes
 - Item: Skill_Sha_R_M_Magic
-  RandomOptionGroup: MUH_SHADOW_100208
+  RandomOptionGroup: PN_SHADOW_100208
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -1864,7 +1864,7 @@ Body:
   - Item: S_NW_NF_Armor
   - Item: S_NW_NF_Shoes
 - Item: FullPenest_Shadow_Up
-  RandomOptionGroup: MUH_SHADOW_101177
+  RandomOptionGroup: PN_SHADOW_101177
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -1959,7 +1959,7 @@ Body:
   - Item: S_Fatal_M_Earring
   - Item: S_Fatal_M_Pendant
 - Item: M_Blitz_Shadow_Up
-  RandomOptionGroup: MUH_SHADOW_101261
+  RandomOptionGroup: PN_SHADOW_101261
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -2054,7 +2054,7 @@ Body:
   - Item: S_Fatal_M_Earring
   - Item: S_Fatal_M_Pendant
 - Item: Absorb_Shadow_Up
-  RandomOptionGroup: MUH_SHADOW_101262
+  RandomOptionGroup: PN_SHADOW_101262
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -2149,7 +2149,7 @@ Body:
   - Item: S_Fatal_M_Earring
   - Item: S_Fatal_M_Pendant
 - Item: Mammoth_Shadow_Up
-  RandomOptionGroup: MUH_SHADOW_101264
+  RandomOptionGroup: PN_SHADOW_101264
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0
@@ -2244,7 +2244,7 @@ Body:
   - Item: S_Fatal_M_Earring
   - Item: S_Fatal_M_Pendant
 - Item: R_Bearers_Shadow_Up
-  RandomOptionGroup: MUH_SHADOW_101260
+  RandomOptionGroup: PN_SHADOW_101260
   MinimumRefine: 0
   MaximumRefine: 10
   RequiredRandomOptions: 0

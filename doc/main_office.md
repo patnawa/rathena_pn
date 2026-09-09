@@ -12,10 +12,10 @@ desk. The directory also provides floor travel and a return to Prontera.
 | Training and equipment | `pn_train,50,35` | Private damage lab, Rune Tablet, repairs, equipment/shadow enchants, refining, ores, Frontier crowns, Varmundt runes, Constellation, build notes, reset and card removal |
 | Fashion and lounge | `pn_style,140,140` | Stylist, Fashion Points services, recycling, costume enchants, skill copying, four clans, cafe, healing and storage |
 
-The service concept is inspired by the [MuhRO Main Office](https://wiki.muhro.eu/Main_Office).
+The service concept is inspired by the reference server Main Office.
 This is an original PN arrangement using existing client academy and arena
 resources, with independent map names and town flags. The source arena's PvP
-flags do not apply to the training floor. It does not contain MuhRO's custom
+flags do not apply to the training floor. It does not contain reference server's custom
 map artwork, economy, or every NPC from that server.
 
 ## Behavior

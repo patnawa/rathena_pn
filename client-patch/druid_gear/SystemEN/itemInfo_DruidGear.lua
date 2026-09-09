@@ -1,4 +1,4 @@
--- Clean-room Druid Gear enchant metadata; effects follow the permitted MuhRO reference.
+-- Clean-room Druid Gear enchant metadata; effects follow the permitted reference server reference.
 -- Uses the existing generic EpisodClear20 resource, without importing artwork.
 -- Load as tbl_druidgear through the existing multi-itemInfo loader.
 local items = {}

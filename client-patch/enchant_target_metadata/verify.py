@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify only the twelve reviewed target metadata additions; never install.
 
-Uses effective Renewal records, pinned user-supplied MuhRO references, read-only
+Uses effective Renewal records, pinned user-supplied reference data, read-only
 GRF indexing, and actual Win32 Lua 5.1 execution of the active itemInfo merger.
 """
 import argparse
@@ -39,8 +39,10 @@ def windows_path(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--muhro-system', type=Path,
-                        default=CLIENT.parent.parent / 'MuhRO/MuhRO/System')
+    parser.add_argument('--reference-system', type=Path, required=True,
+                        help='Directory containing the pinned reference resource table')
+    parser.add_argument('--reference-items', type=Path, required=True,
+                        help='Pinned reference item-properties Lua file (any filename)')
     parser.add_argument('--lua', type=Path,
                         default=ROOT.parent / 'chapter2-lua51-runtime-20260906/runtime/lua5.1.exe')
     parser.add_argument('--grf-reader', type=Path, default=ROOT / 'tools/grf_v3_extract/grf_v3_extract.exe')
@@ -76,8 +78,8 @@ def main():
     items = {row['id']: row for row in manifest['items']}
     require(set(items) == expected_ids and len(manifest['items']) == 12, 'Reviewed item scope changed')
     sources = {
-        'muhro_item_info': args.muhro_system / 'itemInfo_muh.lua',
-        'muhro_resource_table': args.muhro_system / 'itemInfo_EN_db.lua',
+        'reference_item_info': args.reference_items,
+        'reference_resource_table': args.reference_system / 'itemInfo_EN_db.lua',
         'original_enchant_list': ROOT.parent / 'audit-client-enchants-20260906/nebula/data/luafiles514/lua files/Enchant/EnchantList.lub',
         'original_item_names': ROOT.parent / 'audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub',
         'active_enchant_helper': ROOT.parent / 'audit-client-enchants-20260906/new/data/luafiles514/lua files/Enchant/EnchantList_f.lub',
@@ -98,7 +100,7 @@ def main():
               'jobs': 'Jobs', 'classes': 'Classes', 'refineable': 'Refineable', 'gradable': 'Gradable'}
     # Only selected ASCII literal fields are read here; no lossy decoding of
     # Korean descriptions or copying of full third-party effect text occurs.
-    resources = sources['muhro_resource_table'].read_bytes().decode('latin1')
+    resources = sources['reference_resource_table'].read_bytes().decode('latin1')
     for item_id, row in items.items():
         actual = server[item_id]
         require(actual.get('Type') == 'Armor' and actual.get('Locations') == {'Head_Top': True},
@@ -141,7 +143,7 @@ def main():
     targets = sorted(set(re.findall(r':AddTargetItem(?:_Duplicate)?\("([^"]+)"',
                                     sources['original_enchant_list'].read_text(encoding='cp949'))))
     values = '\n'.join(name + '=' + json.dumps(windows_path(path)) for name, path in {
-        'MUH_PATH': sources['muhro_item_info'], 'NAMES_PATH': sources['original_item_names'],
+        'REFERENCE_PATH': sources['reference_item_info'], 'NAMES_PATH': sources['original_item_names'],
         'HELPER_PATH': sources['active_enchant_helper'],
         'FRAGMENT_PATH': PACKAGE / 'SystemEN/itemInfo_EnchantTargets.lua',
         'BEFORE_LOADER': before_loader, 'CHECKED_LOADER': checked_loader,
@@ -157,7 +159,7 @@ assert(_VERSION == "Lua 5.1")
 os.execute, io.popen = nil, nil
 MessageBox = function(message) error(message) end
 local environment = {}
-local load_reference = assert(loadfile(MUH_PATH))
+local load_reference = assert(loadfile(REFERENCE_PATH))
 setfenv(load_reference, environment)
 load_reference()
 for id, expected in pairs(EXPECTED) do

@@ -1,4 +1,4 @@
-// PN Rune Tablet effects. Reference: MuhRO Rune_Tablet_System, retrieved 2026-09-08.
+// PN Rune Tablet effects. Reference: reference server Rune_Tablet_System, retrieved 2026-09-08.
 // Stable client set/piece IDs; original implementation of published numeric rules.
 // Hook is unique, survives death/dispel, and is removed on logout then restored.
 // Recalculation reads persistent state, so no effects accumulate across refreshes.

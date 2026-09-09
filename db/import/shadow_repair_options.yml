@@ -3,7 +3,7 @@ Header:
   Version: 1
 Body:
 - Id: 61000
-  Group: MUH_SHADOW_23720
+  Group: PN_SHADOW_23720
   Slots:
   - Slot: 1
     Options:
@@ -88,7 +88,7 @@ Body:
       MaxValue: 5
       Chance: 10000
 - Id: 61001
-  Group: MUH_SHADOW_100205
+  Group: PN_SHADOW_100205
   Slots:
   - Slot: 1
     Options:
@@ -197,7 +197,7 @@ Body:
       MaxValue: 7
       Chance: 10000
 - Id: 61002
-  Group: MUH_SHADOW_100206
+  Group: PN_SHADOW_100206
   Slots:
   - Slot: 1
     Options:
@@ -306,7 +306,7 @@ Body:
       MaxValue: 7
       Chance: 10000
 - Id: 61003
-  Group: MUH_SHADOW_100207
+  Group: PN_SHADOW_100207
   Slots:
   - Slot: 1
     Options:
@@ -395,7 +395,7 @@ Body:
       MaxValue: 5
       Chance: 10000
 - Id: 61004
-  Group: MUH_SHADOW_100208
+  Group: PN_SHADOW_100208
   Slots:
   - Slot: 1
     Options:
@@ -484,7 +484,7 @@ Body:
       MaxValue: 5
       Chance: 10000
 - Id: 61005
-  Group: MUH_SHADOW_101177
+  Group: PN_SHADOW_101177
   Slots:
   - Slot: 1
     Options:
@@ -627,7 +627,7 @@ Body:
       MaxValue: 15
       Chance: 10000
 - Id: 61006
-  Group: MUH_SHADOW_101261
+  Group: PN_SHADOW_101261
   Slots:
   - Slot: 1
     Options:
@@ -694,7 +694,7 @@ Body:
       MaxValue: 15
       Chance: 10000
 - Id: 61007
-  Group: MUH_SHADOW_101262
+  Group: PN_SHADOW_101262
   Slots:
   - Slot: 1
     Options:
@@ -761,7 +761,7 @@ Body:
       MaxValue: 15
       Chance: 10000
 - Id: 61008
-  Group: MUH_SHADOW_101264
+  Group: PN_SHADOW_101264
   Slots:
   - Slot: 1
     Options:
@@ -828,7 +828,7 @@ Body:
       MaxValue: 15
       Chance: 10000
 - Id: 61009
-  Group: MUH_SHADOW_101260
+  Group: PN_SHADOW_101260
   Slots:
   - Slot: 1
     Options:

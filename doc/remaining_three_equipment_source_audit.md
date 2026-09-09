@@ -32,15 +32,15 @@ or any other comparison difference. This is two affected groups and three
 missing targets, not two missing recipe groups. Unsupported target additions
 remain deliberately withheld with their server item dependencies.
 
-## Exact permitted MuhRO evidence
+## Exact permitted reference server evidence
 
 Reference root:
-`C:\Users\Alpha\Downloads\Compressed\MuhRO\MuhRO`.
+`C:\Users\Alpha\Downloads\Compressed\reference server\reference server`.
 
 The following rows are from its loose `System` files, not inferred from a
 similarly named item or a numeric-ID pattern:
 
-| ID | Literal property row in `itemInfo_muh.lua` | Resource row in `itemInfo_EN_db.lua` | Description row in `itemInfo_EN_db_fallback.lua` |
+| ID | Literal property row in `itemInfo_reference.lua` | Resource row in `itemInfo_EN_db.lua` | Description row in `itemInfo_EN_db_fallback.lua` |
 | ---: | ---: | ---: | ---: |
 | 401195 | 13337 | 392938 | 322871 |
 | 510200 | 15149 | 345593 | 402585 |
@@ -56,11 +56,11 @@ Process-launch APIs were disabled. It completed with `true, "good"` and emitted:
 | 510200 | Gust Hail Booster Dagger | `NP_B_Dagger` | 0 | 31 | Unidentified Dagger / `uknife` |
 | 620064 | Slash ChopChop Booster Axe | `SC_B_Axe` | 0 | 7 | Unidentified Two-Handed Axe / `uaxe` |
 
-These numbers describe the supplied MuhRO loader's output. In particular,
+These numbers describe the supplied reference server loader's output. In particular,
 dagger ClassNum 31 is not silently replaced with category 1, nor asserted to be
 the correct native animation choice for this project's client.
 
-Its actual merge/description rules use literal `itemInfo_muh.lua` properties,
+Its actual merge/description rules use literal `itemInfo_reference.lua` properties,
 the identified resource from `itemInfo_EN_db.lua`, and the fallback description
 when the main row has no description. The three main rows contain their
 identified resource only, so the effect prose comes from the fallback file.
@@ -81,7 +81,7 @@ only when the property is present and printed none for either Booster. Omission
 does not establish weight zero. It also does not justify importing an arbitrary
 level-scaling cap, price, trade policy, or acquisition route.
 
-MuhRO is the direct source for its own supplied compatibility data; these local
+reference server is the direct source for its own supplied compatibility data; these local
 files are not authoritative Gravity item specifications. A comment labelling a
 base table "official" does not establish provenance for every per-item property
 or for the separate generated fallback. Prior reviewed items had material
@@ -128,7 +128,7 @@ Korean directories above represent the original CP949 GRF name bytes, which the
 reader exposes through Latin-1. The indexed uncompressed sizes corroborate the
 roles: inventory BMPs 1782/1654/1654 bytes, collection BMPs 22856 bytes each,
 ground ACTs 116 bytes each, ground SPRs 1306/1197/1297 bytes, and each worn crown
-ACT/SPR 48276/3178 bytes. `MuhRO\MuhRO\muh.grf` separately indexes these same
+ACT/SPR 48276/3178 bytes. `reference server\reference server\reference.grf` separately indexes these same
 16 resource paths. No reference asset was copied.
 
 Actual Lua execution of the existing extracted client accessory tables returned
@@ -140,10 +140,10 @@ Important limit: this pass inspected archive indexes, not decoded asset payloads
 and performed no graphical client rendering. Presence, type and length are not
 a new decompression, integrity, animation, or in-game visual proof.
 
-An exact-stem search for the MuhRO unidentified resources `uheadgear`, `uknife`,
+An exact-stem search for the reference server unidentified resources `uheadgear`, `uknife`,
 and `uaxe`, with BMP/SPR/ACT extensions, returned no matches across all six active
 GRFs. This does not characterize native missing-resource fallback or every loose
-file, but it prevents claiming the full MuhRO registration is already proven
+file, but it prevents claiming the full reference server registration is already proven
 drop-in compatible. No arbitrary unidentified-resource placeholder was chosen.
 
 ## RockMMO cross-check
@@ -168,10 +168,10 @@ SHA-256 values for the unchanged evidence files:
 
 | Source | SHA-256 |
 | --- | --- |
-| MuhRO `System/itemInfo_muh.lua` | `a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4` |
-| MuhRO `System/itemInfo_EN.lua` | `379a308e3392c3cc385d8a862b9eb05fa4d2ffe3c9f7d7c68804b437decc501b` |
-| MuhRO `System/itemInfo_EN_db.lua` | `2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6` |
-| MuhRO `System/itemInfo_EN_db_fallback.lua` | `235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a` |
+| reference server `System/itemInfo_reference.lua` | `a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4` |
+| reference server `System/itemInfo_EN.lua` | `379a308e3392c3cc385d8a862b9eb05fa4d2ffe3c9f7d7c68804b437decc501b` |
+| reference server `System/itemInfo_EN_db.lua` | `2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6` |
+| reference server `System/itemInfo_EN_db_fallback.lua` | `235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a` |
 | Original `audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub` | `2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496` |
 | Extracted `datainfo/accessoryid.lub` | `6667e70ecceb3743939d749c0db1af045be086dce12f4ac7a6e88def7254745c` |
 | Extracted `datainfo/accname.lub` | `6e8126b68ea009201318964903ba5adfe75430a0d5f6dbe0266186ab5c286ba2` |

@@ -1,7 +1,6 @@
 //===== rAthena Script =======================================
 //= Episode 20 story and repeatable instances
 //===== Sources: =============================================
-//= https://wiki.muhro.eu/20_The_Immortal
 //= https://renewal.playragnarok.com/news/updatedetail.aspx?id=424
 //============================================================
 
@@ -433,7 +432,7 @@ OnBossDead:
 		mes "The storage is inert.";
 		close;
 	}
-	// Keep this order synchronized with .@rates. MuHRO's 2026-08-11
+	// Keep this order synchronized with .@rates. reference server's 2026-08-11
 	// Suspicious Storage table lists these as independent rolls, including
 	// the Pure materials that can also drop directly from Lasgand.
 	setarray .@pool[0],1001029,1001030,1001248,1001031,1001032,1001249,1001250,1001251,450270,470197,480283,480284,450271,470198;

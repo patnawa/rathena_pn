@@ -1671,10 +1671,10 @@
 // Modern Thanatos Tower monster skills. Rows for the normal tower monsters
 // (20773-20783, 20844-20845) reproduce the published current rAthena data.
 // Rows for the Memory-instance monsters (20784-20800) retain crazyarashi's
-// public implementation because MuHRO does not publish its exact skill table.
+// public implementation because reference server does not publish its exact skill table.
 // Upstream Empathizer/Happiness Giver MobID typos and malformed legacy row
 // widths are corrected in this fragment.
-// The public boss AI includes NPC_CHANGEUNDEAD while MuHRO's guide only names
+// The public boss AI includes NPC_CHANGEUNDEAD while reference server's guide only names
 // Ghost/Dark/Holy shifts; it is retained instead of inventing an undocumented
 // replacement or trigger pattern.
 //

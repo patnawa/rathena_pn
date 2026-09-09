@@ -2,7 +2,7 @@
 
 Audit date: 2026-09-08. Scope: item identity, acquisition declarations, item-use recipes, refinement targeting, random options and native enchant entry points. This is a static audit of the shared working tree; it does not certify every combat effect or live client interaction.
 
-Reference pages inspected: [Shadow Gear](https://wiki.muhro.eu/Shadow_Gear), revision 62112; [Shadow Enchanting](https://wiki.muhro.eu/Shadow_Enchanting); [Refinement](https://wiki.muhro.eu/Refinement); [Eden Market](https://wiki.muhro.eu/Eden_Market). These describe MuhRO policy, not necessarily Gravity or PN balance. The machine report stores the downloaded main-page hash, all item IDs, native recipe presence and local source hashes: [shadow_gear_reference_coverage_20260908.json](shadow_gear_reference_coverage_20260908.json).
+Reference pages inspected: Shadow Gear, revision 62112; Shadow Enchanting; Refinement; Eden Market. These describe reference server policy, not necessarily Gravity or PN balance. The machine report stores the downloaded main-page hash, all item IDs, native recipe presence and local source hashes: [shadow_gear_reference_coverage_20260908.json](shadow_gear_reference_coverage_20260908.json).
 
 ## Result
 
@@ -25,7 +25,7 @@ Counts use recursive Renewal imports, normalized `ShadowGear`/`Shadowgear` type 
 
 ### 1. Twenty-one declared item-use paths lack a server recipe
 
-These are actual internal inconsistencies: the effective item script calls an API that looks up a nonexistent recipe. They can be reproduced independently of MuhRO costs by giving a test character the item and using it. `src/map/script.cpp` rejects the missing recipe before opening the corresponding window.
+These are actual internal inconsistencies: the effective item script calls an API that looks up a nonexistent recipe. They can be reproduced independently of reference server costs by giving a test character the item and using it. `src/map/script.cpp` rejects the missing recipe before opening the corresponding window.
 
 | IDs | Current script API | Missing effective recipe families |
 | --- | --- | --- |
@@ -68,7 +68,7 @@ Groups 128/166 are card-slot enchants; item 23720 and class/advanced spellbooks 
 
 ## Acquisition, crafting and recycling
 
-No enabled PN implementation of the reference's Clark/Dala/Eno/Gina/Milo/Rayja vendor network was found. MuhRO's Shadow currency/crate and star-stone IDs are missing locally, so its vendor, recycling and Master crafting recipes cannot be copied as functioning paths without a deliberate economy implementation. The reference's class purchase cost is 80 Shadow, five Fire Dragon Scales and 15 Shadowdecon; that is a private-server recipe, not a missing native rAthena requirement.
+No enabled PN implementation of the reference's Clark/Dala/Eno/Gina/Milo/Rayja vendor network was found. reference server's Shadow currency/crate and star-stone IDs are missing locally, so its vendor, recycling and Master crafting recipes cannot be copied as functioning paths without a deliberate economy implementation. The reference's class purchase cost is 80 Shadow, five Fire Dragon Scales and 15 Shadowdecon; that is a private-server recipe, not a missing native rAthena requirement.
 
 The native item group DB includes **800 of the 840 equipment pieces** as container rewards. This demonstrates reward definitions, not access to their parent containers. No direct mob drop was found for those 840 items. The machine report records container IDs and NPC token references separately to avoid mistaking a mention, cost, comment or random numeric match for an actual grant.
 

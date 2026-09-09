@@ -1,7 +1,7 @@
 # Druid client and progression checks - 2026-09-06
 
 The current 2026-02-19 client already contains matching class/skill data; no
-RockMMO/MuhRO protected GRF resources were imported for this integration.
+RockMMO/reference server protected GRF resources were imported for this integration.
 The active DATA.INI order is nebula_upgrade_v2, server, english, new, data.
 The first two archives contain no matching job/skill tables and the corresponding
 loose override paths are absent.

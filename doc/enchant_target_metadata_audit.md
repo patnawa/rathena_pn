@@ -10,7 +10,7 @@ files, or shared test/generator files were changed.
 
 All twelve original group-165 targets lacked records in the supplied client's
 original merged SystemEN itemInfo table. Every one has an explicit server
-`Slots: 1`, independently matching `slots = 1` in the user-supplied MuhRO
+`Slots: 1`, independently matching `slots = 1` in the user-supplied reference server
 metadata. The numeric IDs already resolve through the original compiled
 ItemDB_To_ItemID; no new identity alias is needed.
 
@@ -62,7 +62,7 @@ are both Refineable and Gradable; those flags are checked against the server.
 
 The fragment's identifiedDisplayName is the exact effective server Name,
 including existing translation variations such as
-`Rune Crown of the Sky (Spiritualist)`. MuhRO's corresponding label is
+`Rune Crown of the Sky (Spiritualist)`. reference server's corresponding label is
 `Sky Rune Crown (Spirit Handler)`, but both sources agree on ID, slot count
 and View. These translation differences are not identity conflicts. Several
 server Name fields retain TODO translation comments; this work does not claim
@@ -169,16 +169,16 @@ The verifier reconstructs effective records and compares the reviewed fields
 by numeric ID before running any Lua.
 
 The user-permitted reference directory is
-`C:/Users/Alpha/Downloads/Compressed/MuhRO/MuhRO/System/`:
+`C:/Users/Alpha/Downloads/Compressed/ReferenceClient/System/`:
 
 | Input | Purpose | SHA-256 |
 | --- | --- | --- |
-| itemInfo_muh.lua | Literal slots, names, View; selected records at lines 13318–13330 | a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4 |
+| itemInfo_reference.lua | Literal slots, names, View; selected records at lines 13318–13330 | a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4 |
 | itemInfo_EN_db.lua | Explicit identifiedResourceName for all twelve IDs | 2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6 |
-| itemInfo_EN.lua | Actual MuhRO loader shows DATA.slots and DATA.view feed AddItem, resource comes from the main table | 379a308e3392c3cc385d8a862b9eb05fa4d2ffe3c9f7d7c68804b437decc501b |
+| itemInfo_EN.lua | Actual reference server loader shows DATA.slots and DATA.view feed AddItem, resource comes from the main table | 379a308e3392c3cc385d8a862b9eb05fa4d2ffe3c9f7d7c68804b437decc501b |
 | itemInfo_EN_db_fallback.lua | Inspected for scope only; effect descriptions are not copied | 235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a |
 
-MuhRO is a user-supplied compatibility reference, not asserted official
+reference server is a user-supplied compatibility reference, not asserted official
 Gravity provenance. The current server's explicit slots are authoritative for
 this project's actual equipment behavior, with the independent reference
 providing corroboration. No decryption was used. A text scan of the supplied
@@ -204,7 +204,7 @@ Original client evidence is pinned in the optional package manifest:
 
 ## Graphics verification
 
-The four identified resource names above are explicit MuhRO mappings.
+The four identified resource names above are explicit reference server mappings.
 Read-only indexing across the active GRFs in DATA.INI order verified each
 has an item BMP, collection BMP, item SPR and item ACT: sixteen matching
 entries, all from original data.grf, with no higher-priority override.
@@ -245,7 +245,7 @@ python3 -B client-patch/enchant_target_metadata/run_native_bonus_vm_test.py
 On Windows use `wsl -d Ubuntu --exec` before the command. The default runtime
 is the previously verified matching native 32-bit Lua 5.1.5 executable under
 `../chapter2-lua51-runtime-20260906/runtime/`; no bytecode-width conversion is
-performed. Pass `--lua`, `--muhro-system`, or `--grf-reader` only to select
+performed. Pass `--lua`, `--reference-system`, or `--grf-reader` only to select
 explicit equivalent local inputs.
 
 Ten focused regressions pass, including exact complete generated

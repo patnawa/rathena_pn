@@ -1,6 +1,6 @@
 # Druid-family enchant compatibility items.
 # IDs: ROenglishRE ItemDBNameTbl, commit 66cdfec631603fda6a90ba4bbe26ab07b5204c84.
-# Effects: user-supplied MuhRO System itemInfo_EN_db/fallback descriptions.
+# Effects: user-supplied reference server System itemInfo_EN_db/fallback descriptions.
 # This is a reference-compatible implementation, not verified Gravity balance.
 # See doc/druid_item_compatibility.md for exact provenance, hashes and limitations.
 # Prices, weights, drop/trade rules and acquisition recipes are not invented here.

@@ -7173,7 +7173,7 @@ Body:
 # Varmundt rune materials - added 2026-09-02
 # rAthena never implemented the bl_* Biosphere maps, so these 8 materials
 # had no drop source and the Varmundt Rune Enchanter (grademk) was unusable.
-# Rates follow wiki.muhro.eu/Varmundt's_Biosphere: fragment 15%, rune 3%,
+# Rates follow external reference's_Biosphere: fragment 15%, rune 3%,
 # essence 1%. Drops are appended to the existing tables (parseDropNode
 # appends; it does not clear), one element per Varmundt area.
 # =====================================================================

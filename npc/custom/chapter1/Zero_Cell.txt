@@ -3,7 +3,7 @@
 //===== Description: =========================================
 //= Post-story investigation, one-hour sector authorization,
 //= daily cleanup quests, access enforcement, and field spawns.
-//= Reference: https://wiki.muhro.eu/Zero_Cell_Sector
+//= Reference: External reference snapshot.
 //============================================================
 
 function	script	ZC_HasAccess	{

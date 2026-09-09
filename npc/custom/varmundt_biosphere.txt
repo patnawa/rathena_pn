@@ -1,5 +1,5 @@
 // Varmundt's Biosphere entrances, exits, and official open-map spawns.
-// Source: wiki.muhro.eu/Varmundt's_Biosphere and current kRO map data.
+// Source: external reference's_Biosphere and current kRO map data.
 
 function	script	F_BiosphereAccess	{
 	if (BaseLevel < 240) {

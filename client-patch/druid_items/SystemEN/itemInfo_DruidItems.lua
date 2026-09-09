@@ -1,5 +1,5 @@
 -- Clean-room Druid-family item metadata; not original Gravity artwork/text.
--- Effects follow the supplied MuhRO reference. See doc/druid_item_compatibility.md.
+-- Effects follow the supplied reference server reference. See doc/druid_item_compatibility.md.
 -- Generic known-safe icon only; does not install official item artwork.
 -- Load as tbl_druiditems using the existing multi-itemInfo loader.
 local items = {}

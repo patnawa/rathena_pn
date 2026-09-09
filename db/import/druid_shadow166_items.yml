@@ -1,7 +1,7 @@
 # Group 166 targets and Alitea Soul enchants. No acquisition changes.
 # kRO Gravity item pages supply the four targets' properties/set effects.
 # Gravity Game Link's 2020-02-26 Shadow Gear guide supplies generic HP/refine.
-# Soul effects follow the user-permitted loose MuhRO fallback descriptions.
+# Soul effects follow the user-permitted loose reference server fallback descriptions.
 # See doc/druid_shadow166_audit.md for source boundaries and Master dependency.
 Header:
   Type: ITEM_DB

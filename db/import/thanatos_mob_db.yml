@@ -2,16 +2,15 @@
 # Modern Thanatos Tower monsters. IDs 20773-20783 and 20844-20845 are the
 # normal upper-tower variants, with published kRO stats/drops; IDs 20784-20800
 # are the distinct Memory-instance variants adapted from crazyarashi's public
-# rAthena implementation and aligned to MuHRO's visible HP/type table. Exact
+# rAthena implementation and aligned to reference server's visible HP/type table. Exact
 # Aegis identities were cross-checked against the matching 2022 client table.
-# MuHRO does not publish complete instance ATK/stat data, so unobservable
+# reference server does not publish complete instance ATK/stat data, so unobservable
 # combat fields retain the public implementation's values. Unpublished drop
 # rates are deliberately omitted rather than fabricated.
 # Only intrinsic monster drops belong here. The normal tower's map-scoped
-# shard drops and MuHRO's shared instance accessory pool require MAP_DROP_DB;
+# shard drops and reference server's shared instance accessory pool require MAP_DROP_DB;
 # encoding them as universal mob drops would change their documented scope.
 # The existing local mob 20562 is deliberately not overridden.
-#
 # Integration note: this staging fragment must be merged into or explicitly
 # imported by db/import/mob_db.yml.
 
@@ -663,7 +662,7 @@ Body:
     AttackDelay: 1000
     AttackMotion: 1000
     DamageMotion: 1000
-  # MuHRO documents a shared low-chance pool of all twelve Brilliant/Sinful
+  # reference server documents a shared low-chance pool of all twelve Brilliant/Sinful
   # accessories for every instance monster, but not its rate. That map-wide
   # pool cannot be represented faithfully as per-mob drops in this fragment
   # and is intentionally left for a separately sourced MAP_DROP_DB import.
@@ -715,7 +714,7 @@ Body:
     ChaseRange: 12
     Size: Medium
     Race: Angel
-    # MuHRO's table has this row's HP/type cells transposed; its visible type
+    # reference server's table has this row's HP/type cells transposed; its visible type
     # is Angel / Neutral 4 / Medium, which differs from the normal 20774 mob.
     Element: Neutral
     ElementLevel: 4

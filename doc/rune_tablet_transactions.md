@@ -2,7 +2,7 @@
 
 The PN Rune Stone exposes the Rune Tablet collection through ordinary server NPC dialogs. Talk to the Rune Stone at `grademk,46,178` or its Main Office desk. The service supports catalog browsing and name search, rune registration, tablet activation and switching, enhancement, milestone rewards, equipment imprinting, Rune Shop exchanges, supported card/rune-stone decomposition, and sealed MVP card conversion.
 
-The catalog follows the published [Rune Tablet System](https://wiki.muhro.eu/Rune_Tablet_System) and the matching client data. The native rune and tablet IDs identify persistent collection entries; they are not fabricated inventory items. This implementation does not claim to provide the client's native Rune Tablet window.
+The catalog follows the published Rune Tablet System and the matching client data. The native rune and tablet IDs identify persistent collection entries; they are not fabricated inventory items. This implementation does not claim to provide the client's native Rune Tablet window.
 
 ## Player progression
 

@@ -1,11 +1,9 @@
 # Garden of Time NPC skill metadata.
-#
 # Sources:
 # - Current RO client skill IDs/names/scales (ROenglishRE data, 2026-07-27)
 # - Public Garden of Time implementation by crazyarashi for server-side shape,
 #   elements, hit counts, durations, and unit settings
-# - https://wiki.muhro.eu/Lake_of_Fire for the encounter relationships
-#
+# -  for the encounter relationships
 # IMPORTANT: Do not add this file to db/skill_db.yml until the matching source
 # handlers and SC_TARGET_MARKER/SC_BLOCK_SEAL/SC_FROST_STORM/SC_WARM_SHIELD
 # constants are compiled into map-server.  The stock engine only reserves these

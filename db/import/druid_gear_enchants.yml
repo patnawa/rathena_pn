@@ -1,6 +1,6 @@
 # Druid-family Clock Tower tuning enchant items.
 # Identities: original active ItemDBNameTbl and pinned ROenglishRE name table.
-# Effects: user-permitted MuhRO itemInfo_EN_db_fallback.lua, IDs 314269/314270.
+# Effects: user-permitted reference server itemInfo_EN_db_fallback.lua, IDs 314269/314270.
 # Reference-compatible effects, not independently verified Gravity balance.
 # See doc/druid_gear_enchants_audit.md for provenance and integration boundaries.
 Header:

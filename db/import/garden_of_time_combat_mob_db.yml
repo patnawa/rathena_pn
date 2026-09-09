@@ -1,4 +1,4 @@
-# MuhRO-visible identity correction for the four Lake of Fire bosses.
+# reference server-visible identity correction for the four Lake of Fire bosses.
 # Existing server data has monster 22180 copied as Plant/Wind; the current
 # public database documents Monarch Penguin as Large/Dragon/Water 1.
 # Import this after db/import/mob_db.yml so these partial rows override it.

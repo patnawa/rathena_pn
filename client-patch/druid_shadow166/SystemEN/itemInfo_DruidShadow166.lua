@@ -1,5 +1,5 @@
 -- Clean-room metadata. Sources and limits: doc/druid_shadow166_audit.md.
--- Existing generic art only; no MuhRO resource/texture is imported.
+-- Existing generic art only; no reference server resource/texture is imported.
 local items = {}
 local function add(id, name, descriptions)
   items[id] = {

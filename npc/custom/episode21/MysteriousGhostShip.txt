@@ -5,8 +5,6 @@
 //= Implements the published deck order, investigation objects,
 //= captain battle, rewards, reputation and daily reset.
 //= References:
-//= https://wiki.muhro.eu/Mysterious_Ghost_Ship
-//= https://wiki.muhro.eu/21_Age_of_Heroes/en
 //============================================================
 
 function	script	EP21_DailyKey	{

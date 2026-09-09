@@ -2,7 +2,6 @@
 //= Fashion Points / Gold Points
 //===== License / provenance =================================
 //= Clean-room implementation from the published player-facing rules at:
-//= https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
 //= Application and recovery use the dedicated compensated-transaction service
 //= in this package. The stock Malangdo tables are intentionally not extended.
 //============================================================
@@ -12,19 +11,19 @@
 //= * Costume trade: 15 Fashion Points; Bio5/Tomb costume: 1 point.
 //= * Listed enchant-stone trade: 10 Fashion Points.
 //= * Removing one recoverable stone costs 30 Fashion Points, 10 of
-//=   item 50000 (Muh Coin), or 1,000,000 Zeny.
+//=   item 50000 (Server Coin), or 1,000,000 Zeny.
 //= * Top/Mid/Low/Garment-slot-1 boxes cost 50 points; Garment-slot-2
 //=   costs 300 points.
 //============================================================
 //= Compatibility policy / intentionally unpublished behavior:
 //= * rAthena has no "master account" above a login account. #FP_* are
 //=   login-account variables, so linked login accounts do not share points.
-//= * This repository has mal_in01 but not MuhRO's main_office/mal_in maps.
+//= * This repository has mal_in01 but not reference server's main_office/mal_in maps.
 //=   The service NPCs are therefore grouped by the stock Malangdo costume
 //=   NPCs. This placement is compatibility policy, not a published coordinate.
 //= * The wiki publishes box contents but not per-item probabilities. Per the
 //=   requested clean-room compatibility policy, each box selects uniformly
-//=   from its published outcomes. This is NOT claimed to be MuhRO's rate table.
+//=   from its published outcomes. This is NOT claimed to be reference server's rate table.
 //= * The wiki does not publish Fashion Point prices for the costume catalogue;
 //=   the catalogue is view-only here rather than assigning invented prices.
 //= * The local GPL Malangdo enchanters map only 196 of the 366 published pairs.
@@ -188,7 +187,7 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 	if (.@choice == 3) close;
 	if (.@choice == 2) {
 		mes "[Gold Point Manager]";
-		mes "This implementation stores points on your rAthena login account. MuhRO's published 'master account' can span linked game accounts, but stock rAthena has no equivalent relationship.";
+		mes "Fashion Points belong to your login account. Separate login accounts do not share points.";
 		close;
 	}
 	if (#FP_Gold < 1) {
@@ -353,10 +352,10 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 	mes "Choose the published per-stone payment.";
 	next;
 	.@coin_ok=(getiteminfo(50000,ITEMINFO_TYPE) >= 0);
-	.@pay=select("30 Fashion Points:" + (.@coin_ok ? "10 Muh Coins:" : "^77777710 Muh Coins (item 50000 unavailable):") + "1,000,000 Zeny:Cancel");
+	.@pay=select("30 Fashion Points:" + (.@coin_ok ? "10 Server Coins:" : "^77777710 Server Coins (item 50000 unavailable):") + "1,000,000 Zeny:Cancel");
 	if (.@pay == 4) close;
 	if (.@pay == 1 && #FP_Fashion < 30) { mes "[Gregio Grumani]"; mes "You need 30 Fashion Points."; close; }
-	if (.@pay == 2 && (!.@coin_ok || countitem(50000) < 10)) { mes "[Gregio Grumani]"; mes "The Muh Coin option is unavailable or you have fewer than 10."; close; }
+	if (.@pay == 2 && (!.@coin_ok || countitem(50000) < 10)) { mes "[Gregio Grumani]"; mes "The Server Coin option is unavailable or you have fewer than 10."; close; }
 	if (.@pay == 3 && Zeny < 1000000) { mes "[Gregio Grumani]"; mes "You need 1,000,000 Zeny."; close; }
 	mes "[Gregio Grumani]";
 	mes "The same costume and unique ID are retained. If the guarded in-place removal fails, the staged stone is removed and your payment is refunded.";
@@ -389,7 +388,7 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 	if (.@idx < 0) { mes "[Gregio Grumani]"; mes "I could not locate that equipped item safely."; close; }
 	if (.@pay==2 && .@coin_need>0) {
 		mes "[Gregio Grumani]";
-		mes "You need 10 permanent, non-favorite Muh Coins in inventory. Nothing was charged.";
+		mes "You need 10 permanent, non-favorite Server Coins in inventory. Nothing was charged.";
 		close;
 	}
 	if (!@inventorylist_identify[.@idx] || @inventorylist_amount[.@idx]!=1) {
@@ -462,7 +461,7 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 		close;
 	}
 
-	// Commit the selected payment. Exact Muh Coin rows are used so mixed
+	// Commit the selected payment. Exact Server Coin rows are used so mixed
 	// bindings are restored correctly on any later mutation failure.
 	if (.@pay==1)
 		#FP_Fashion-=30;
@@ -476,7 +475,7 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 					else getitem 50000,.@coin_take[.@j];
 				}
 				mes "[Gregio Grumani]";
-				mes "Muh Coin payment could not be committed. The staged stone was removed and deducted coins were refunded.";
+				mes "Server Coin payment could not be committed. The staged stone was removed and deducted coins were refunded.";
 				close;
 			}
 			++.@paid_rows;
@@ -513,7 +512,7 @@ mal_in01,27,120,4	script	Fashion Box Shop#FP	4_F_KAFRA1,{
 	mes "[Fashion Box Shop]";
 	mes "Fashion Points: ^cc33cc" + #FP_Fashion + "^000000";
 	mes "The published costs are 50 points for boxes 1-20 and 300 points for the garment second-slot box.";
-	mes "^ff0000MuhRO outcome rates are unpublished. This clean-room implementation selects uniformly from the listed contents.^000000";
+	mes "Each listed item has an equal chance of being selected.";
 	next;
 	.@menu$="";
 	for (.@i=0; .@i<21; ++.@i) .@menu$ += .@name$[.@i] + " - " + ((.@i==20)?300:50) + " FP:";

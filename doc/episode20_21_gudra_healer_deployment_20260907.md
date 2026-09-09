@@ -99,7 +99,7 @@ The live source contains exactly one GradeMK healer at
 `grademk,24,184` and the warper route to `grademk,34,184`. The retained Druid
 implementation also passed its postcheck: `npc/scripts_custom.conf` enables one
 `Druid Mentor` at `prontera,153,193`, and the rebuilt Druid-capable map binary
-retained its pinned hash through this deployment. Prior GRF/MuhRO comparison
+retained its pinned hash through this deployment. Prior GRF/reference server comparison
 found the required client metadata already present, so this release required no
 additional client archive mutation.
 

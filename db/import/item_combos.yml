@@ -56,7 +56,7 @@ Body:
     Script: |
       bonus bMatkRate,10; bonus2 bMagicAtkEle,Ele_All,10; bonus2 bMagicAddRace,RC_All,15;
 
-  # Chapter 2 card set bonuses documented by MuhRO.
+  # Chapter 2 card set bonuses documented by reference server.
   # Scripts below contain only the set bonus; each card's standalone effect lives
   # in db/import/chapter2_item_db.yml and must not be repeated here.
   - Combos:

@@ -1,7 +1,7 @@
 # Player command coverage — 8 September 2026
 
-This is an implementation audit against the [MuhRO player-command reference](https://wiki.muhro.eu/Player_Commands),
-not a claim that PN implements MuhRO's private server. Command names below identify
+This is an implementation audit against the reference server player-command reference,
+not a claim that PN implements reference server's private server. Command names below identify
 compatibility targets; behavior findings come from this repository's native handlers
 and script bindings.
 

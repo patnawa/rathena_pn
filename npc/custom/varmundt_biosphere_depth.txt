@@ -1,8 +1,6 @@
 //===== rAthena Script =======================================
 //= Varmundt's Biosphere Depth 1 and Depth 2 progression
 //===== Sources: =============================================
-//= https://wiki.muhro.eu/Varmundt%27s_Biosphere_Depth
-//= https://wiki.muhro.eu/Varmundt%27s_Biosphere_Depth_2
 //= Current kRO quest, reputation, item-enchant and reform data
 //============================================================
 
@@ -87,7 +85,7 @@ L_Mission:
 	close;
 }
 
-// MuhRO maps the eight I quests to 30-sample submissions and the eight II
+// reference server maps the eight I quests to 30-sample submissions and the eight II
 // quests to 80+80 monster hunts. This intentionally differs from stock kRO's
 // combined QuestInfo wording; see SOURCE_INFO.txt for the required client text.
 function	script	F_BioD1ElementResearch	{

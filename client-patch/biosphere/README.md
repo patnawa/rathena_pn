@@ -1,6 +1,6 @@
 # Biosphere client quest patch
 
-The server uses MuhRO-compatible quest behavior for Varmundt's Biosphere,
+The server uses reference server-compatible quest behavior for Varmundt's Biosphere,
 Depth 1, and Depth 2. The current translated kRO quest table still describes
 the older combined Depth 1 objectives and has no records for the custom Soul,
 Venom, Temple, or 3,000-kill quests.

@@ -2,7 +2,7 @@
 
 This patch accompanies the server implementation sourced from revision 61305
 (2026-07-29) of the published
-[MuhRO Fashion Points page](https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)).
+reference server Fashion Points page.
 `SystemEN/LuaFiles514/itemInfo_fashion_points.lua` defines the 37 items added by
 the isolated server imports: 21 boxes, 8 physical stones, and 8 enchant cards.
 

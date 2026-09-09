@@ -12,7 +12,7 @@ A character could finish the story, obtain the daily quest, re-enter the same
 cleared ship and obtain a daily completion without another battle. Keeping an
 instance across the daily reset allowed the same repeated use on later days.
 
-The project's [MuhRO reference](https://wiki.muhro.eu/Mysterious_Ghost_Ship)
+The project's reference server reference
 describes a daily expedition with a captain battle followed by its reward.
 It does not specify late-arrival enrollment or a per-character participation
 cutoff, so this fix does not invent one as purported official behavior.

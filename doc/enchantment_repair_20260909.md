@@ -7,15 +7,15 @@ The repair is installed on `192.168.10.18` and in this workspace's game client. 
 - Corrected accessory reset probabilities from 21%/81% to the documented 20%/80%.
 - Set the twelve original Varmundt Rune equipment resets (groups 16–19) to 100%, in both server and client.
 - Corrected ten client Time Dimension crown probability tables to match the server and the reviewed wiki values.
-- Added complete definitions and client metadata for missing enchant targets NP_B_Dagger, SC_B_Axe and Frontier_R_Crown_AT, plus the Frontier_AT_Axe set partner. Definitions use the supplied MuhRO client descriptions; existing client archives contain the required art.
+- Added complete definitions and client metadata for missing enchant targets NP_B_Dagger, SC_B_Axe and Frontier_R_Crown_AT, plus the Frontier_AT_Axe set partner. Definitions use the supplied reference server client descriptions; existing client archives contain the required art.
 - Required 1,500 Biosphere Depth 2 reputation for the alternate crown workshop route.
 - Activated ten Shadow enchant books with matching native server option pools and client target lists. Added Shadow currency, Shadow Crates, supplies and recycling through Rayja at `grademk,26,184` and `pn_train,62,60`.
 
-Reference: [MuhRO enchantment category](https://wiki.muhro.eu/Category:Enchantment), [accessories](https://wiki.muhro.eu/Accessories_Enchantment), [Royal Guard Ring](https://wiki.muhro.eu/Royal_Guard_Ring_Enchantment), [Varmundt Rune](https://wiki.muhro.eu/Varmundt_Rune_Enchant), [Time Dimension crowns](https://wiki.muhro.eu/Time_Dimension_Rune_Crown_Enchantment), [Shadow enchanting](https://wiki.muhro.eu/Shadow_Enchanting) and [Shadow gear](https://wiki.muhro.eu/Shadow_Gear).
+Reference: reference server enchantment category, accessories, Royal Guard Ring, Varmundt Rune, Time Dimension crowns, Shadow enchanting and Shadow gear.
 
 Shadow book prices are 500,000 / 1,000,000 / 2,000,000 / 3,000,000 zeny, or 1 / 2 / 4 / 6 Nyangvine Fruit, by book tier. Recycling destroys the selected equipped Shadow item and pays 20 Shadow after confirmation and identity checks; bound and rental items are rejected. Books use native Laphine handling and reroll random options while preserving refine, grade and card enchants. Targets must be unequipped and refined +0 through +10.
 
-**Server policy choices:** the reviewed references did not establish exact selection weights or crate contents. Each option in a Shadow line has equal selection weight, and each crate contains exactly 20 Shadow. These choices are displayed to players and are not asserted to reproduce unpublished MuhRO odds.
+**Server policy choices:** the reviewed references did not establish exact selection weights or crate contents. Each option in a Shadow line has equal selection weight, and each crate contains exactly 20 Shadow. These choices are displayed to players and are not asserted to reproduce unpublished reference server odds.
 
 ## Validation
 
@@ -54,4 +54,4 @@ The deployed source package, startup logs, runtime evidence and historical pre-r
 
 ## Limits
 
-This closes the confirmed repair findings and adds the described Shadow enchant supply workflow. It does not certify every mechanic on all 94 wiki page families: the category-wide inventory is not a full semantic comparison. Unmapped costume/chapter items, broader MuhRO crafting vendors, scroll recycling and monster drops remain outside this implementation. New equipment definitions do not establish every acquisition route. No live character playthrough, disconnect/relog persistence test or combat-effect test was performed. Native startup and data agreement cannot establish that the entire game is bug-free.
+This closes the confirmed repair findings and adds the described Shadow enchant supply workflow. It does not certify every mechanic on all 94 wiki page families: the category-wide inventory is not a full semantic comparison. Unmapped costume/chapter items, broader reference server crafting vendors, scroll recycling and monster drops remain outside this implementation. New equipment definitions do not establish every acquisition route. No live character playthrough, disconnect/relog persistence test or combat-effect test was performed. Native startup and data agreement cannot establish that the entire game is bug-free.

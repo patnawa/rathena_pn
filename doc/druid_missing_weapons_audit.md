@@ -74,7 +74,7 @@ registration, including the existing independent three-armor-piece bonuses.
   all four enchant indexes `3,2,1,0`, with perfect recipes on all four. Two card
   slots would collide with its last two enchant slots in the server's real
   `slot < item->slots` guard. This delivery uses 0, supported by explicit primary
-  prose, original recipe structure and the permitted loose MuhRO property.
+  prose, original recipe structure and the permitted loose reference server property.
   The conflicting header is not silently discarded as if it never existed.
 - `Solid_Whinger`: the primary divisors are 2 for Quill, 3 for Pinion and 4 for
   ranged damage, unlike the permitted fallback's repeated divisor 2.
@@ -95,7 +95,7 @@ registration, including the existing independent three-armor-piece bonuses.
   claim of independently documented reach for each weapon. Native default
   sex, prices and trade behavior are left unchanged; no fabricated price or
   custom restriction field is added. Client `ClassNum` uses native category
-  numbers 1/6/7/8, not the supplied MuhRO dagger value 31.
+  numbers 1/6/7/8, not the supplied reference server dagger value 31.
 - `Jobs: Alitea` plus `Classes: Fourth` represents the primary Alitea restriction
   with the separately reviewed trait-era eligibility fix already in this tree.
   `Jobs: Karnos` on the Repeat dagger intentionally covers Karnos and Alitea's
@@ -105,7 +105,7 @@ registration, including the existing independent three-armor-piece bonuses.
 ### Booster gap: meaningful alternatives checked
 
 Both original numeric names are verified. Permitted loose fallback descriptions
-and literal MuhRO records have substantial effect information, but no explicit
+and literal reference server records have substantial effect information, but no explicit
 weight. `itemInfo_EN.lua` renders weight only when present; it does not establish
 a zero default. Repeated official item-page requests (including alternate
 scheme/itemSeq), official-domain name searches, and direct read-only HTTP

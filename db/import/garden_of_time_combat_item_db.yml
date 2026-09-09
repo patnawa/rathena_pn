@@ -1,9 +1,7 @@
 # Missing scripts for the two Lake of Fire counter-items.
-#
-# MuhRO and current client metadata specify a 60-second Warm Shield.  The older
+# reference server and current client metadata specify a 60-second Warm Shield.  The older
 # public community patch used 30 seconds and did not clear an already-active
 # Frost Storm; this overlay follows the current documented behavior instead.
-#
 # IMPORTANT: Do not add this file to db/item_db.yml until SC_BLOCK_SEAL,
 # SC_FROST_STORM, and SC_WARM_SHIELD are compiled/exported by map-server.
 Header:

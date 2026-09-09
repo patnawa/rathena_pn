@@ -1,5 +1,5 @@
 // Chapter 2 - Song of the World Tree: Fragments of the End
-// Playable implementation based on the published MuhRO/RockMMO progression.
+// Playable implementation based on the published reference server/RockMMO progression.
 
 function	script	CH2_Complete	{
 	return isbegin_quest(27101) == 2;

@@ -1,8 +1,8 @@
 # Fashion Points enchant-box item shells.
-# Source for IDs/names/categories: https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
+# Source for IDs/names/categories: External reference snapshot.
 # Compatibility policy: published contents have no published probabilities.
 # These DelayConsume boxes uniformly select one published outcome and consume
-# only after a successful award. Uniformity is not claimed to match MuhRO.
+# only after a successful award. Uniformity is not claimed to match reference server.
 Header:
   Type: ITEM_DB
   Version: 3

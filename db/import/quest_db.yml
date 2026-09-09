@@ -241,7 +241,7 @@ Body:
   TimeLimit: 4h
 - Id: 16801
   Title: Depth Abyss Research Achievement
-# Current kRO IDs used by MuhRO's four original open-map Biosphere dailies.
+# Current kRO IDs used by reference server's four original open-map Biosphere dailies.
 - Id: 17607
   Title: Varmundt's Biosphere Research Guide
 - Id: 17608
@@ -284,7 +284,7 @@ Body:
 - Id: 17615
   Title: 'Standby: Biosphere Death Research'
   TimeLimit: 4h
-# MuhRO extensions not present in the 2025 kRO QuestInfo set.  These IDs live
+# reference server extensions not present in the 2025 kRO QuestInfo set.  These IDs live
 # in the server's reserved custom range and are installed client-side by the
 # Biosphere compatibility patch.
 - Id: 900100
@@ -1807,11 +1807,11 @@ Body:
 - Id: 16651
   Title: Silent Infiltration
 - Id: 16652
-  Title: Silent Infiltration    
+  Title: Silent Infiltration
 - Id: 16653
-  Title: Accumulating Doubts 
+  Title: Accumulating Doubts
 - Id: 16654
-  Title: Accumulating Doubts 
+  Title: Accumulating Doubts
 - Id: 16655
   Title: Slight Difference
 - Id: 16656

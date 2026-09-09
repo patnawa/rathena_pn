@@ -3,17 +3,13 @@
 //===== Provenance / compatibility ===========================
 //= Stone -> enchant mappings and slot families are the complete 366-pair set
 //= from revision 61305 of:
-//= https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
-//=
 //= The page does not publish an application chance. This service therefore
 //= applies one supported stone deterministically; a validation or mutation
 //= failure consumes nothing. This is a declared compatibility policy, not a
-//= claim about an unpublished MuhRO probability.
-//=
+//= claim about an unpublished reference server probability.
 //= The stock Malangdo NPC covers only 196 pairs. This service covers all 366
 //= pairs, including Druid/Karnos/Alitea with the integrated class skills.
 //= FP_EnchantSupported still validates every record's card/enchant type.
-//=
 //= The custom modifyequipitem command changes the enchant slot on the original
 //= inventory record. Unique ID, binding, expiry, favorite state, refine, grade,
 //= attribute, unrelated cards and random options are retained exactly. The

@@ -7,12 +7,9 @@
 //= through 8@thts. This file intentionally excludes the public
 //= mot_init, daily, barter, and enchant sections so the active
 //= classic Thanatos quest and NPCs remain untouched.
-//=
 //= Public implementation adapted and audited from crazyarashi:
 //= https://github.com/hayakawakaki/rathena-script-collection
 //= Current target behavior and completion reward:
-//= https://wiki.muhro.eu/Memories_of_Thanatos
-//=
 //= Requirements: Base Lv. 180, classic Thanatos employment
 //= contract (thana_tower), a party, instance "Thanatos Tower"
 //= (ID 66), quests 18026/18027/18028, item 102572, and mobs

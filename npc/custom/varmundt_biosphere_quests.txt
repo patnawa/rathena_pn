@@ -1,11 +1,10 @@
 //===== rAthena Script =======================================
 //= Varmundt's Biosphere open-map daily research
 //===== Sources: =============================================
-//= https://wiki.muhro.eu/Varmundt%27s_Biosphere
 //= Current kRO QuestInfo IDs 17607-17615
 //============================================================
 
-// Research Beta offers all seven MuhRO daily hunts from its documented
+// Research Beta offers all seven reference server daily hunts from its documented
 // location.  The first four use current kRO IDs; Soul, Venom and Temple use
 // reserved custom IDs because current kRO QuestInfo has no equivalent quests.
 ba_in01,252,353,4	script	Research Admin Beta#biosphere	4_EP17_MASTER_A,{
@@ -61,7 +60,7 @@ ba_in01,252,353,4	script	Research Admin Beta#biosphere	4_EP17_MASTER_A,{
 }
 
 // Current client navigation places the regular Biosphere service cluster at
-// ba_in01 359-371, 50-55.  The recipes below mirror MuhRO's published economy.
+// ba_in01 359-371, 50-55.  The recipes below mirror reference server's published economy.
 ba_in01,365,50,4	script	Omega#biosphere_materials	4_EP17_CLEANER,{
 	mes "[Omega]";
 	if (!callfunc("F_BiosphereAccess"))

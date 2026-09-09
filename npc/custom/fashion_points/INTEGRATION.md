@@ -1,7 +1,7 @@
 # Fashion Points integration
 
 This implementation follows revision 61305 (2026-07-29) of the published
-[MuhRO Fashion Points page](https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)).
+reference server Fashion Points page.
 Its 21 box tables contain all 366 published physical-stone/enchant pairs in the
 published order. Of those, 358 have functional enchant records in this server
 build; the eight Druid/Karnos/Alitea outcomes are deliberately withheld.
@@ -41,7 +41,7 @@ the package spans item, combo, item-script, and NPC data.
   mappings. The page publishes no application probability, so application is
   guaranteed by declared compatibility policy; no probability is invented.
 - `Gregio Grumani#FP` at `mal_in01,24,120` recovers a recognized stone for the
-  published choice of 30 Fashion Points, 10 Muh Coins, or 1,000,000 Zeny.
+  published choice of 30 Fashion Points, 10 Server Coins, or 1,000,000 Zeny.
 - Both services validate the item type, costume location, requested card slot,
   intrinsic socket count, exact cost inventory index, and empty/expected
   enchant. The C++ mutation repeats the item/card checks after forced unequip,
@@ -56,7 +56,7 @@ the package spans item, combo, item-script, and NPC data.
   spare equipment slot or temporary equipment weight.
 - Recovery stages and verifies only the returned stone, then charges the exact
   selected payment. A mutation failure removes the staged stone and refunds
-  Fashion Points, Zeny, or each exact Muh Coin binding group. Recovery needs
+  Fashion Points, Zeny, or each exact Server Coin binding group. Recovery needs
   capacity only for its one returned stone.
 - The core logs old/new item states as enchant transactions, refreshes the same
   client inventory entry, and attempts to restore its equip position. If a new

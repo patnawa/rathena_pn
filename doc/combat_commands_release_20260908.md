@@ -5,7 +5,7 @@
 The Renewal element table is correct against the reviewed upstream table. Native
 refining and grading had confirmed validation/probability defects; the fixes
 preserve the configured economy. Player-command additions use PN engine APIs and
-existing services. Remaining MuhRO-specific systems are listed in the
+existing services. Remaining reference server-specific systems are listed in the
 [player-command coverage report](player_commands_reference_audit_20260908.md).
 
 ## Effective configuration

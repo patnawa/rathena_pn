@@ -4,10 +4,8 @@
 //= Complete playable implementation of the selectable level
 //= 1-10 challenge, both wings, corruption-root timing phase,
 //= boss mechanics, rewards, exchanges and Temporal Circlet
-//= enchantment. Values follow the published MuhRO tables.
+//= enchantment. Values follow the published reference server tables.
 //= References:
-//= https://wiki.muhro.eu/Old_Glast_Heim_Challenge_Mode
-//= https://wiki.muhro.eu/Temporal_Circlet
 //============================================================
 
 function	script	OGHCM_MaxLevel	{

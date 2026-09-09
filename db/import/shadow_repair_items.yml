@@ -23,14 +23,14 @@ Body:
 - Id: 101260
   Name: Advanced Shadow Spellbook (Support)
 - Id: 50033
-  AegisName: Muh_Shadow
+  AegisName: PN_Shadow
   Name: Shadow
   Type: Etc
   Buy: 0
   Sell: 0
   Weight: 0
 - Id: 50034
-  AegisName: Muh_Shadow_Crate
+  AegisName: PN_Shadow_Crate
   Name: Shadow Crate
   Type: Usable
   Buy: 0

@@ -4,12 +4,8 @@
 //= Story prerequisite, Normal and Advanced purification,
 //= Cursed King Schmidt battle, rewards, equipment exchange,
 //= enchantment/reset, and dismantling machines.
-//=
 //= References:
 //= https://iro.ragnarokonline.com/news/updatedetail.aspx?id=353
-//= https://wiki.muhro.eu/Fall_of_Glastheim
-//= https://wiki.muhro.eu/King_Schmidts_Insignias_Enchants
-//= https://wiki.muhro.eu/King_Schmidts_%26_Young_Leaf
 //============================================================
 
 function	script	FOGH_IsEquipment	{

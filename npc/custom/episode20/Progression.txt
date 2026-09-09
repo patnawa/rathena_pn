@@ -4,9 +4,7 @@
 //= Clean-room, rAthena-compatible reconstruction of the ten
 //= published story parts. The client quest IDs and navigation
 //= coordinates are retained; conversations are condensed.
-//=
 //= Sources checked 2026-09-05:
-//= https://wiki.muhro.eu/20_The_Immortal
 //= https://renewal.playragnarok.com/news/updatedetail.aspx?id=422
 //= SystemEN/OngoingQuests.lub (local 2026 client data)
 //============================================================
@@ -48,7 +46,7 @@ function	script	EP20_SyncStep	{
 
 function	script	EP20_Prerequisite	{
 	// Do not strand characters that began Episode 20 before this gate was
-	// installed. New starts require every prerequisite listed by MuhRO.
+	// installed. New starts require every prerequisite listed by reference server.
 	if (callfunc("EP20_EffectiveStep") > 0)
 		return true;
 	return BaseLevel >= 215 && isbegin_quest(17649) == 2 &&

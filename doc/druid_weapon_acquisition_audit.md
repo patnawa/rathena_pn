@@ -66,7 +66,7 @@ Concrete counterpart targets:
 Neither item 105211 nor a registered Garz tablet recipe/reward exists in
 effective items/synthesis. The original compiled item-name table has no
 105211 mapping, so a new `Mocadas_Slabs24` identifier must not be guessed.
-The permitted loose MuhRO record calls it Slate Garz but has an empty
+The permitted loose reference server record calls it Slate Garz but has an empty
 description; this is not missing server recipe evidence. No material drop
 entry was located in the checked effective mob data. A supported material
 list alone therefore does not make Garz obtainable.
@@ -168,7 +168,7 @@ The concrete family target is `db/re/item_reform.yml:7198` onward,
 Both examples use `ChangeRefine: -20` and `RandomOptionGroup: Group_0`.
 Neither cost tier or retention policy may be chosen by analogy for the
 Druid axe. Existing Flush equipment boxes are also counterpart outputs,
-not proof of a new Druid box or its supply. The permitted loose MuhRO
+not proof of a new Druid box or its supply. The permitted loose reference server
 blueprint description is empty; it does not close these recipe gaps.
 
 ## 6. Dim Glacier: published drop method, not exact Druid drops
@@ -217,7 +217,7 @@ a nearby episode NPC or a similarly named weapon is insufficient.
 
 Read-only alternatives included exact identity searches, effective Renewal
 imports, enabled counterpart NPC paths, original client item aliases,
-permitted loose MuhRO/Rock metadata, and direct official item/update pages.
+permitted loose reference server/Rock metadata, and direct official item/update pages.
 Metadata descriptions are not server NPC/synthesis code. No protected GRF
 contents were extracted or decrypted. No third-party server's economy is
 claimed as Gravity behavior.

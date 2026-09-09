@@ -4,7 +4,6 @@
 //= Clean-room reconstruction of the published pre-Gimli route.
 //= Requires Base Level 230 and Episode 20 quest 18233 complete.
 //= Sources:
-//= https://wiki.muhro.eu/21_Age_of_Heroes/en
 //= https://ratemyragnarok.com/episodes/21/yorscalp/
 //= https://rockragnarok.com/rockwiki/index.php?title=Episode_21_Age_Of_Heroes
 //============================================================

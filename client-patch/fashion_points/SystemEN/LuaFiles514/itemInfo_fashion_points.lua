@@ -1,7 +1,5 @@
 -- Fashion Points itemInfo metadata fragment.
 -- Clean-room metadata from the published item names/effects at
--- https://wiki.muhro.eu/Costume_Enchants_(Fashion_Points)
---
 -- This file returns a table. Merge each returned [item_id] record into the
 -- client's main itemInfo table; stock clients do not auto-load this filename.
 -- Exact proprietary icon resources are unavailable locally. Use the known
@@ -46,7 +44,7 @@ for _, box in ipairs(boxes) do
 		"Contains one currently supported published costume enchant stone.",
 		"One supported outcome is selected uniformly by server compatibility policy.",
 		"Includes the supported Druid, Karnos and Alitea stones.",
-		"MuhRO's original per-item probabilities are not published.",
+		"Each listed item has an equal chance of being selected.",
 		"_______________________",
 		"^0000CCFashion Point cost:^000000 " .. box[3],
 		"^0000CCType:^000000 Container",

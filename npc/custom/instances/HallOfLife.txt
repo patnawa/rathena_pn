@@ -7,23 +7,17 @@
 //= access, key consumption, account-shared barrier progress,
 //= failure regression, two Rigel phases, moving portals,
 //= phantom-space illusions, groggy window, sanctuary, and the
-//= published 20-level MuhRO reward table.
-//=
+//= published 20-level reference server reward table.
 //= Public rules/rewards (retrieved 2026-09-04):
-//= https://wiki.muhro.eu/Hall_of_Life
-//= https://wiki.muhro.eu/index.php?title=Hall_of_Life&action=raw
-//= Official Gravity reference (mechanics, not MuhRO timers):
+//= Official Gravity reference (mechanics, not reference server timers):
 //= https://renewal.playragnarok.com/news/updatedetail.aspx?id=415
-//=
-//= The server target is MuhRO behavior, so the re-entry delay is
+//= The server target is reference server behavior, so the re-entry delay is
 //= one minute and the reward reset is Friday at 09:45 server time.
 //= Gravity iRO currently documents one hour / Monday 04:00.
-//=
 //= Difficulty stat formulas and moving-portal coordinates are
 //= taken from the public implementation by crazyarashi:
 //= https://github.com/hayakawakaki/rathena-script-collection
 //= They are kept separate from the exact published reward table.
-//=
 //= Required existing data: instance "Hall of Life" (ID 202), map
 //= 1@ba_go, mobs 22174/22175/22176/20562, item 1001415,
 //= equipment 420231, enchants 312453-312472, and reward items
@@ -102,7 +96,7 @@ function	script	F_PNHoL_CheckFailure	{
 	return 1;
 }
 
-// Exact Hall of Life table from the current MuhRO raw wiki page.
+// Exact Hall of Life table from the current reference server raw wiki page.
 // Returns 0 without granting anything when inventory capacity is low.
 function	script	F_PNHoL_GrantReward	{
 	.@level = getarg(0);
@@ -134,7 +128,7 @@ function	script	F_PNHoL_GrantReward	{
 	return 1;
 }
 
-// MuhRO entrance: Garden of Time 172,235.
+// reference server entrance: Garden of Time 172,235.
 t_garden,172,235,2	script	Hall of Life#pn_hol	GATE_SKYBLUE,{
 	.@instance$ = "Hall of Life";
 	.@now = gettimetick(2);

@@ -1,7 +1,7 @@
 # Druid-family enchant item metadata
 
 Optional clean-room names and descriptions for the 31 records in
-`db/import/druid_item_db.yml`. Effects follow the supplied MuhRO reference;
+`db/import/druid_item_db.yml`. Effects follow the supplied reference server reference;
 these are compatibility labels, not claimed official translations. See
 `doc/druid_item_compatibility.md` for source hashes and gameplay limits.
 

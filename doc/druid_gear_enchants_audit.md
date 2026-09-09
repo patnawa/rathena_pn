@@ -1,7 +1,7 @@
 # Druid Gear enchant compatibility — 2026-09-06
 
 The isolated item overlay `db/import/druid_gear_enchants.yml` defines the two
-missing Clock Tower tuning enchants. Effects are **MuhRO-reference-compatible**;
+missing Clock Tower tuning enchants. Effects are **reference-compatible**;
 this is not a claim of independently verified official Gravity balance.
 
 ## Identity and permitted effect evidence
@@ -13,7 +13,7 @@ The prior [coverage audit](remaining_enchant_coverage_audit.md) records that
 independent name-table comparison and full source hashes.
 
 Effects were read directly from the user-permitted loose file
-`C:/Users/Alpha/Downloads/Compressed/MuhRO/MuhRO/System/itemInfo_EN_db_fallback.lua`,
+`C:/Users/Alpha/Downloads/Compressed/ReferenceClient/System/itemInfo_EN_db_fallback.lua`,
 lines 301340–301373, SHA256
 `235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a`.
 No protected GRF was opened or decrypted. `itemInfo_EN_db.lua` only gives the
@@ -115,7 +115,7 @@ each cumulative grade threshold, the separate physical all-size bonus, type
 Enchant, and weight 0. They make no acquisition claim.
 
 Both identification states use the already-known generic `EpisodClear20` resource.
-The fragment does not assume that MuhRO's `Gear_AT` artwork exists in the active
+The fragment does not assume that reference server's `Gear_AT` artwork exists in the active
 client, and includes no artwork. The separate parent-owned installation step
 copies this fragment to `SystemEN`, adds `itemInfo_DruidGear.lua` to `ImportFiles`,
 and adds `druidgear` to `ImportTables` in the existing loader.
@@ -147,7 +147,7 @@ Run the complete source and native checks from the repository root in WSL/Linux:
 python3 tools/ci/druid_gear_enchants_test.py --native-vm --require-import \
   --client '../audit-client-enchants-20260906/nebula/data/luafiles514/lua files/Enchant/EnchantList.lub' \
   --client-item-names '../audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub' \
-  --effect-reference '/mnt/c/Users/Alpha/Downloads/Compressed/MuhRO/MuhRO/System/itemInfo_EN_db_fallback.lua' \
+  --effect-reference '/mnt/c/Users/Alpha/Downloads/Compressed/ReferenceClient/System/itemInfo_EN_db_fallback.lua' \
   --lua '../chapter2-lua51-runtime-20260906/runtime/lua5.1.exe' -v
 ```
 

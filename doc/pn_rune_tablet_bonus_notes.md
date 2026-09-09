@@ -1,7 +1,7 @@
 # Rune Tablet bonus implementation
 
 The 57 published sets use stable client set and piece IDs. Numeric effects follow
-the retrieved [Rune Tablet System reference](https://wiki.muhro.eu/Rune_Tablet_System)
+the retrieved Rune Tablet System reference
 (2026-09-08), with cumulative piece thresholds and integer enhancement divisions.
 The catalog contains the matching source provenance and player-facing descriptions.
 The Chaos set has no defined effect in either the reference or client description;

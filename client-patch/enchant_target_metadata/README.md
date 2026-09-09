@@ -6,7 +6,7 @@ aliases, recipes, gameplay effects, or acquisition routes. The parent agent
 installed this reviewed package separately after the candidate checks.
 
 All twelve card-slot counts are explicitly 1 in both effective server data
-and supplied MuhRO metadata. ClassNum follows their matching server View.
+and supplied reference server metadata. ClassNum follows their matching server View.
 Identified resource names are reference-backed and present in the active
 GRFs; the unidentified icon is the verified generic EpisodClear20 fallback.
 Names preserve current server labels, including unfinished translations.
@@ -25,7 +25,7 @@ From the repository root, using Python 3, PyYAML and the already supplied
 matching Win32 Lua 5.1 runtime:
 
 ```sh
-python3 -B client-patch/enchant_target_metadata/verify.py
+python3 -B client-patch/enchant_target_metadata/verify.py --reference-system /path/to/reference/System --reference-items /path/to/reference/items.lua
 python3 -B client-patch/enchant_target_metadata/test_effects.py
 ```
 
@@ -48,7 +48,7 @@ After a separately authorized installation, verify the real current loader
 against a pre-install backup, not an ephemeral candidate merge:
 
 ```sh
-python3 -B client-patch/enchant_target_metadata/verify.py --installed \
+python3 -B client-patch/enchant_target_metadata/verify.py --reference-system /path/to/reference/System --reference-items /path/to/reference/items.lua --installed \
   --before-loader ../client-before-enchant-crowns-20260906/SystemEN/itemInfo.lua
 ```
 
@@ -98,7 +98,7 @@ changes the active metadata baseline. Reproduce this package's exact installed
 checkpoint with:
 
 ```sh
-python3 -B client-patch/enchant_target_metadata/verify.py --installed \
+python3 -B client-patch/enchant_target_metadata/verify.py --reference-system /path/to/reference/System --reference-items /path/to/reference/items.lua --installed \
   --before-loader ../client-before-enchant-crowns-20260906/SystemEN/itemInfo.lua \
   --loader ../client-before-druid-shadow166-20260906/SystemEN/itemInfo.lua
 ```
@@ -111,3 +111,5 @@ pointed at the expanded active loader; it does not hide them as preserved
 crown-only state. Ten other group-165 crowns were outside this patch, so
 this is not complete group-165 or whole-client enchant support. No live game UI,
 rendering, charging or live combat verification is claimed.
+
+Reference input paths are explicit; the verifier accepts the original filename and checks the pinned content hashes.

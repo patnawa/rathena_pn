@@ -4,7 +4,7 @@ All player groups can use `@battlestats` (`@bs`) for offense and `@battlestats2`
 (`@bs2`) for defense. The commands report the current character only and never
 alter stats, equipment, quests or combat statuses.
 
-The [MuhRO battle-stat feature](https://wiki.muhro.eu/Battlestats) is the functional
+The reference server battle-stat feature is the functional
 reference. Values are calculated from this server's actual fields and formulas;
 the reference's illustrative numbers and mislabeled descriptions are not copied.
 

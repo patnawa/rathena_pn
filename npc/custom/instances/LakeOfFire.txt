@@ -4,23 +4,19 @@
 //= Copyright (C) rAthena contributors. GPL-3.0-or-later.
 //===== Description: =========================================
 //= Clean-room party-instance controller based on published
-//= MuhRO and official Gravity mechanics:
+//= reference server and official Gravity mechanics:
 //= - Base level 250+, Garden access quest, daily midnight reset.
 //= - One random seasonal divine beast and a 60-minute limit.
 //= - Invulnerable lure phase with eight one-use traps.
 //= - Five-second groggy windows and a final combat arena.
 //= - Bosses take 99% less damage and reject five listed debuffs.
 //= - Per-character exit claim with account-scoped full reward.
-//=
 //= Public references (retrieved 2026-09-04):
-//= https://wiki.muhro.eu/Lake_of_Fire
 //= https://iro.ragnarokonline.com/news/updatedetail.aspx?id=415&p=1
-//=
 //= Seven coordinates are corroborated by public server guides.
-//= The eighth is read from the current MuhRO trap map; it was
+//= The eighth is read from the current reference server trap map; it was
 //= added after older seven-trap regional implementations.
-//=
-//= MuhRO's "master account" link is proprietary. In stock
+//= reference server's "master account" link is proprietary. In stock
 //= rAthena, #PNLake_FullRewardToken uses the closest native
 //= equivalent: the login-account scope. A site-side master-
 //= account bridge may mirror this variable across linked logins.

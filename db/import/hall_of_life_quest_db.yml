@@ -1,5 +1,5 @@
-# MuhRO timing overrides for Hall of Life.
-# Source: https://wiki.muhro.eu/Hall_of_Life (retrieved 2026-09-04).
+# reference server timing overrides for Hall of Life.
+# Source:  (retrieved 2026-09-04).
 # The account variables in HallOfLife.txt remain authoritative; these quest
 # entries make the client quest timers display the same policy.
 Header:

@@ -23,7 +23,7 @@ the independently verified identities in
 [druid_item_compatibility.md](druid_item_compatibility.md). No name-table patch
 or supplementary resolver is required. Other unknown names remain unresolved.
 
-The item effects themselves are explicitly MuhRO-reference-compatible; adding
+The item effects themselves are explicitly reference-compatible; adding
 client-exact recipes does not convert their provenance into independently
 verified official Gravity item balance.
 

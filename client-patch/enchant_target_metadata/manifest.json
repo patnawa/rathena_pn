@@ -2,8 +2,8 @@
   "schema": 2,
   "scope": "Twelve existing-server group-165 targets only; does not define missing server items.",
   "source_hashes": {
-    "muhro_item_info": "a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4",
-    "muhro_resource_table": "2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6",
+    "reference_item_info": "a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4",
+    "reference_resource_table": "2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6",
     "original_enchant_list": "664a6083b051233496611664af4c84d4ccd1c9e6ceb685edac6cacf60feda80d",
     "original_item_names": "2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496",
     "active_enchant_helper": "bfee2e2ade0437fbb3a101e93e2e1a81986c3a484e4e96b9ec7fe10d52ac75cb"

@@ -4,7 +4,7 @@ The owner supplied these local reference clients under
 `C:/Users/Alpha/Downloads/Compressed/`:
 
 - `RockMMO Jormungand 220126/RockMMO Jormungand 220126/`
-- `MuhRO/MuhRO/`
+- `ReferenceClient/`
 
 They are reference data, not drop-in replacements for the running client's
 configuration, custom items, executable, protection libraries, or GRF priority.
@@ -19,17 +19,17 @@ lists the Grademk map trio. The sampled payloads do not decode as standard zlib,
 although the GRF entry flags report type 1. The stock extractor cannot import
 these entries. No decryption or executable modification was attempted.
 
-MuhRO's `muh.grf` uses the Event Horizon 0x300 container. Its index lists
+reference server's `reference.grf` uses the Event Horizon 0x300 container. Its index lists
 `data/grademk.gat`, `.gnd`, `.rsw`, enchant tables, the item-name table, and NPC
-job/sprite mappings. The tested Grademk payload starts with `MUHVLT2`, a custom
+job/sprite mappings. The tested Grademk payload starts with `a proprietary wrapper signature`, a custom
 wrapper unsupported by the standard extractor. Its 60-byte overhead is visible
-in the entry, but the wrapper has not been decoded. Archive priority for MuhRO
+in the entry, but the wrapper has not been decoded. Archive priority for reference server
 has not been established, so its base GRF is not treated as effective client data.
 
 Readable loose reference files include RockMMO's `System/itemInfo_EN.lua` (its
-header dates that particular file to 2023-08-26) and MuhRO's
+header dates that particular file to 2023-08-26) and reference server's
 `System/itemInfo_EN.lua` loader with `itemInfo_EN_db.lua`,
-`itemInfo_EN_db_fallback.lua`, and `itemInfo_muh.lua`. These can support future
+`itemInfo_EN_db_fallback.lua`, and `itemInfo_reference.lua`. These can support future
 ID-based description checks. Their descriptions do not establish server item
 effects or enchant costs. Display/resource names are not Aegis identifiers.
 

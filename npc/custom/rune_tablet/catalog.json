@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provenance": {
-    "reference_url": "https://wiki.muhro.eu/Rune_Tablet_System",
+    "reference_url": "",
     "reference_sha256": "57af1c396e6f5884c34623b8a4447176137b38c411cd5723e9d6be4b997463a5",
     "client_sha256": {
       "itemDecom.lua": "7197fed8ac40fef2d79002ba66d5d12d6362f5002cac371a2a79802dc138a2b0",

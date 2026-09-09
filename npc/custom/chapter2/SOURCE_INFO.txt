@@ -1,6 +1,5 @@
 Chapter 2 implementation references (checked 2026-09-05):
 
-- https://wiki.muhro.eu/Chapter_2
 - https://rockragnarok.com/rockwiki/Chapter_2_-_Song_of_the_World_Tree:_Fragments_of_the_End
 - https://wiki.gemstonero.com/quests/midgard/chapter_2
 - https://wiki.gemstonero.com/equipment/midgard/item_reform
@@ -10,7 +9,7 @@ Chapter 2 implementation references (checked 2026-09-05):
 - https://www.divine-pride.net/database/monster/22711
 - https://ragnaplace.com/th/kro/mob/22711
 
-MuhRO marks its guide as not yet implemented. This server implementation uses
+reference server marks its guide as not yet implemented. This server implementation uses
 the published quest order, requirements, field populations, four-hour standby
 timers, exchange/reform/refinement/enchant costs, official IDs and item effects.
 The three instances are party-owned: the leader creates and snapshotted party

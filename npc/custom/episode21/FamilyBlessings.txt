@@ -4,7 +4,7 @@
 //= Each blessing requires 1,000 reputation, costs five Wigner
 //= vouchers, lasts one hour, stacks, and is removed on death.
 //= All seven together cost 40 vouchers.
-//= Source: https://wiki.muhro.eu/21_Age_of_Heroes/en
+//= Source: External reference snapshot.
 //============================================================
 
 jor_mbase,217,172,4	script	Mandel#ep21_blessings	4_M_MANAGER,{

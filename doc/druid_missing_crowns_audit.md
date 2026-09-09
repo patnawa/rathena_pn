@@ -4,7 +4,7 @@ Date: 2026-09-06. This batch is **partial: 12 of 13 requested crowns**, plus 11 
 
 ## Evidence and scope
 
-Every supported crown was absent from the effective Renewal item load chain at the start of the audit. The original active compiled `ItemDBNameTbl` already contains all 23 exact name/ID pairs. The supplied MuhRO loose files were used for resource identities, not as authoritative effect text. No full third-party description was copied.
+Every supported crown was absent from the effective Renewal item load chain at the start of the audit. The original active compiled `ItemDBNameTbl` already contains all 23 exact name/ID pairs. The supplied reference server loose files were used for resource identities, not as authoritative effect text. No full third-party description was copied.
 
 Gravity's item pages are the primary property/effect sources. The reviewed clean-room typed facts, individual item source URLs, every refine divisor, grade threshold, learned-skill gate, and set condition are recorded in `client-patch/druid_missing_crowns/facts.py` and its deterministic manifest. Each source below uses `itemSeq=2` for crowns and `itemSeq=1` for weapons.
 
@@ -27,7 +27,7 @@ The unusual aliases `Sky_Music_Viollin` and `Sky_Frost_Humma` are preserved exac
 
 ## Corrections to supplied reference metadata
 
-| Property | Supplied MuhRO | Gravity value implemented |
+| Property | Supplied reference server | Gravity value implemented |
 |---|---:|---:|
 | Furious Alitea crown minimum level | 205 | 235 |
 | Sky Thorns Sword ATK | 230 | 220 |

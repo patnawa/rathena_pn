@@ -298,7 +298,7 @@ OnPhantomDead:
 	'ch2_clear_mode = 3;
 	'ch2_boss_gid = 0;
 	.@credited = callfunc("CH2_RewardInstanceClear",'ch2_map$,3,instance_id());
-	// MuhRO documents one 10% crystal chance as boss loot. Roll once per
+	// reference server documents one 10% crystal chance as boss loot. Roll once per
 	// successful party clear, not once per member, and deliver safely to killer.
 	if (.@credited > 0 && rand(100) < 10)
 		callfunc "CH2_GiveInstanceItem",106441,1;

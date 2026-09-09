@@ -9,7 +9,7 @@ perfect-enchant recipes. It does not define a new equipment acquisition economy.
 The original active client supplies numeric identity and recipes. Gravity kRO's
 item database supplies the four targets' unique effects and properties. The
 official Gravity Game Link guide supplies the generic Shadow refinement rule.
-The seven Soul effects use the user's explicitly permitted loose MuhRO reference;
+The seven Soul effects use the user's explicitly permitted loose reference server reference;
 they are reference-compatible effects, not independently verified kRO balance.
 No protected GRF was decrypted, and no artwork was imported.
 
@@ -29,7 +29,7 @@ Primary pages inspected on 2026-09-06 (short paraphrases, not copied description
 +2% named-skill damage plus another +1% per two refine levels. Its target equipment
 records stop at 1270182, so it cannot supply the four new target effects.
 `itemInfo_EN_db.lua` has only BK artwork aliases for those four IDs. Those aliases
-are not effect evidence. `itemInfo_muh.lua` also lacks their literal records.
+are not effect evidence. `itemInfo_reference.lua` also lacks their literal records.
 
 Read-only upstream checks included [Druid PR #9765](https://github.com/rathena/rathena/pull/9765)
 at head `92224e78e5f480c648363f07a908ba747436cdff` and current official rAthena
@@ -42,9 +42,9 @@ Local evidence paths are relative to the repository unless absolute:
 | --- | --- |
 | `../audit-client-enchants-20260906/nebula/data/luafiles514/lua files/Enchant/EnchantList.lub` (CP949; original group 166) | `664a6083b051233496611664af4c84d4ccd1c9e6ceb685edac6cacf60feda80d` |
 | `../audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub` (original Lua 5.1 binary) | `2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496` |
-| `C:/Users/Alpha/Downloads/Compressed/MuhRO/MuhRO/System/itemInfo_EN_db_fallback.lua` | `235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a` |
+| `C:/Users/Alpha/Downloads/Compressed/ReferenceClient/System/itemInfo_EN_db_fallback.lua` | `235ea192329fba3be4eb9dec0ee76bf866a96efc26b2149a43bd84e47c5f0f7a` |
 | Same directory, `itemInfo_EN_db.lua` | `2834833d0438219b46e03224e19ebe94f0b018c725aa43dab7df94fe5ef4a4e6` |
-| Same directory, `itemInfo_muh.lua` | `a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4` |
+| Same directory, `itemInfo_reference.lua` | `a07836ff04fcc3525dc07f12c03139562ac237fdcc2f47547f1320f310c30fa4` |
 
 The eleven numeric names also agree with the previously pinned
 [ROenglishRE name table](https://github.com/llchrisll/ROenglishRE/blob/66cdfec631603fda6a90ba4bbe26ab07b5204c84/Additions/data/luafiles514/lua%20files/ItemDBNameTbl.lub).
@@ -205,5 +205,5 @@ Run from the repository in PowerShell (requires the current root-owned native
 eligibility correction and three root imports):
 
 ```powershell
-wsl --distribution Ubuntu --exec python3 tools/ci/druid_shadow166_enchant_test.py --native-vm --require-import --client '../audit-client-enchants-20260906/nebula/data/luafiles514/lua files/Enchant/EnchantList.lub' --client-item-names '../audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub' --effect-reference '/mnt/c/Users/Alpha/Downloads/Compressed/MuhRO/MuhRO/System/itemInfo_EN_db_fallback.lua' --lua '../chapter2-lua51-runtime-20260906/runtime/lua5.1.exe' -v
+wsl --distribution Ubuntu --exec python3 tools/ci/druid_shadow166_enchant_test.py --native-vm --require-import --client '../audit-client-enchants-20260906/nebula/data/luafiles514/lua files/Enchant/EnchantList.lub' --client-item-names '../audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub' --effect-reference '/mnt/c/Users/Alpha/Downloads/Compressed/ReferenceClient/System/itemInfo_EN_db_fallback.lua' --lua '../chapter2-lua51-runtime-20260906/runtime/lua5.1.exe' -v
 ```

@@ -1,7 +1,6 @@
 //===== rAthena Script =======================================
 //= Episode 20 field population
 //===== Source: ==============================================
-//= https://wiki.muhro.eu/20_The_Immortal#Fields.2FDungeons_with_Monsters
 //= https://divine-pride.net/database/monster (kROM spawn records)
 //============================================================
 

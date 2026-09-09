@@ -16,7 +16,7 @@
       "limitations": "Native VM test doubles only the outgoing enchant-window request; it does not execute live transport or full recipes. Baseline source hashes below remain the pre-fix evidence."
     }
   },
-  "reference_url": "https://wiki.muhro.eu/Shadow_Gear",
+  "reference_url": "",
   "reference_sha256": "f36aa52543ce7aadaf0d086769e94de4d4c30bc6b5ff1c28b0124ec243922974",
   "reference_revision": 62112,
   "counts": {

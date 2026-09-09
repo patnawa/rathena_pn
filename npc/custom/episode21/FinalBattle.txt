@@ -4,7 +4,7 @@
 //= Implements the one-time story battle and daily Easy,
 //= Normal, and Hard encounters with published access gates,
 //= completion rewards, shadow windows, and crystal loot.
-//= Reference: https://wiki.muhro.eu/Final_Battle
+//= Reference: External reference snapshot.
 //============================================================
 
 // Exact capacity for this file's 21 plain crystal outputs. The focused audit

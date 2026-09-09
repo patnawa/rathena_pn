@@ -1,7 +1,6 @@
 //===== rAthena Script =======================================
 //= Episode 21 - Published side quests and daily services
 //===== Sources: =============================================
-//= https://wiki.muhro.eu/21_Age_of_Heroes/en
 //= https://ratemyragnarok.com/episodes/21/side-quests/
 //============================================================
 

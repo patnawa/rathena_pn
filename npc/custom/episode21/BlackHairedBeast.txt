@@ -2,7 +2,7 @@
 //= Episode 21 - Black-Haired Beast and finale bridge
 //= Connects Ghost Ship to Final Battle through the published
 //= tablet repair, eyewitnesses, and serpent investigation.
-//= Reference: https://wiki.muhro.eu/21_Age_of_Heroes/en
+//= Reference: External reference snapshot.
 //============================================================
 
 function	script	EP21_MainComplete	{

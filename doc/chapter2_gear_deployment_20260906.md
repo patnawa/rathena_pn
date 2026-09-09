@@ -9,7 +9,7 @@ Three runtime files were installed into the existing dirty `/app/rathena`
 checkout, preserving unrelated changes:
 
 - `db/import/druid_gear_enchants.yml`: Gear_AT2 314269 (Pinion Shot) and
-  Gear_AT1 314270 (Quill Spear), using permitted MuhRO effect evidence.
+  Gear_AT1 314270 (Quill Spear), using permitted reference server effect evidence.
 - `db/item_db.yml`: exactly one Renewal-only import of that overlay.
 - `db/import/druid_item_enchant.yml`: two group-24 slot-2 perfect recipes,
   zero zeny and 150 each ClockTower_Gear, Shadowdecon, and Zelunium.
