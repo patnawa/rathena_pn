@@ -7,7 +7,8 @@ import zlib
 
 
 def load_maps(path, wanted):
-    data = open(path, "rb").read()
+    with open(path, "rb") as stream:
+        data = stream.read()
     _, count = struct.unpack_from("<IH", data, 0)
     offset = 8
     result = {}

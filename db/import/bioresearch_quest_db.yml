@@ -1,0 +1,15 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  # Client quest identities for EDDA's virtual record interpretation.
+  # Shared daily standby quest 16390 is defined in db/re/quest_db.yml.
+  - Id: 16388
+    Title: First Road
+  - Id: 16392
+    Title: Away's Journey-Reward
+  - Id: 16399
+    Title: The Path of Exploration
+  - Id: 16400
+    Title: Road of Battle

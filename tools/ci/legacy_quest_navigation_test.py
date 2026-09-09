@@ -50,6 +50,13 @@ for _, id in ipairs({14995,16147,8886,8916,21946}) do
   assert(not text:find("<NAVI>", 1, true), "inactive route still clickable")
   assert(text:find("This quest is not available on this server.", 1, true))
 end
+local battle = QuestInfoList[16400]
+assert(#battle.RewardItemList == 3)
+local rewards = {}; for _, item in ipairs(battle.RewardItemList) do rewards[item.ItemID] = item.ItemNum end
+assert(rewards[25786] == 9 and rewards[25787] == 15 and rewards[102571] == 1)
+assert(table.concat(battle.Description):find("one random EDDA weapon", 1, true))
+local expedition = QuestInfoList[16399].RewardItemList
+assert(#expedition == 1 and expedition[1].ItemID == 25787 and expedition[1].ItemNum == 2)
 local once = clone(QuestInfoList)
 dofile(PATCH)
 assert(equal(QuestInfoList, once), "reloading creates duplicate notes or changes")

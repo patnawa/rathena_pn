@@ -52,6 +52,7 @@ ROUTES = {
     66: ('Poring Village','prt_fild05',145,235),
     67: ('Wave Mode (Forest / Sky)','prontera',146,75),
     68: ('Chapter 2 - Phantom of Nyrholt','ch2safe4',86,146),
+    69: ('Bioresearch Laboratory','yuno',216,343),
 }
 
 
@@ -110,6 +111,8 @@ def scenarios():
     add(67,'Wave Mode public entrance',True,level=1)
     add(68,'Phantom requires Chapter2 completion',False,complete=False)
     add(68,'Phantom completed campaign',True)
+    add(69,'Bioresearch level169',False,level=169)
+    add(69,'Bioresearch level170',True,level=170)
     return cases
 
 

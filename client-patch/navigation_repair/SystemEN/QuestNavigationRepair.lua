@@ -287,3 +287,15 @@ QuestInfoList[2301] = QuestInfoList[2301] or {["IconName"]="ico_nq.bmp",["Summar
 QuestInfoList[2302] = QuestInfoList[2302] or {["IconName"]="ico_nq.bmp",["Summary"]="",["Title"]="Quest 2302",["Description"]={[1]=""}}
 QuestInfoList[18360] = QuestInfoList[18360] or {["IconName"]="ico_nq.bmp",["Summary"]="",["Title"]="Episode 21 - Story Gate",["Description"]={[1]=""}}
 QuestInfoList[18368] = QuestInfoList[18368] or {["IconName"]="ico_nq.bmp",["Summary"]="",["Title"]="Chapter 1 - Story Progress",["Description"]={[1]=""}}
+
+-- Battle-mode completion rewards; expedition quest 16399 retains its own reward.
+if QuestInfoList[16400] then
+    QuestInfoList[16400].Description = {
+        "Complete all seven combat zones and defeat the Unknown Swordsman. Speak with Sierra in the final chamber to claim all completion rewards, including one random EDDA weapon."
+    }
+    QuestInfoList[16400].RewardItemList = {
+        {ItemID = 25786, ItemNum = 9},
+        {ItemID = 25787, ItemNum = 15},
+        {ItemID = 102571, ItemNum = 1}
+    }
+end

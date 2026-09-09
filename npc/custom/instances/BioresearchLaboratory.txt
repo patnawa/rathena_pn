@@ -1,0 +1,444 @@
+// EDDA Bioresearch Laboratory. Original encounter dialogue and wave tuning.
+// Both modes share admission quest 16390; reconnects use this live instance's CID roster.
+function	script	F_BioReady	{
+	.@party = getarg(0);
+	.@map$ = getarg(1);
+	.@radius = getarg(2,0);
+	.@count = getpartymember(.@party,1,.@cid);
+	getpartymember .@party,2,.@aid;
+	if (!.@count) return 0;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i])) {
+			if ('bio_started_count) continue;
+			return 0;
+		}
+		++.@online;
+		if ('bio_started_count) {
+			if (!'bio_started_member[.@cid[.@i]]) return 0;
+		}
+		if (!'bio_admitted[.@cid[.@i]]) return 0;
+		if (readparam(Hp,.@cid[.@i]) <= 0) return 0;
+		getmapxy .@where$,.@x,.@y,BL_PC,rid2name(.@aid[.@i]);
+		if (.@where$ != .@map$) return 0;
+		if (.@radius) {
+			if (distance(.@x,.@y,118,22) > .@radius) return 0;
+		}
+	}
+	return .@online > 0;
+}
+
+function	script	F_BioMove	{
+	.@map$ = getarg(0); .@x = getarg(1); .@y = getarg(2);
+	for (.@i = 0; .@i < getarraysize('bio_roster); ++.@i) {
+		.@cid = 'bio_roster[.@i]; .@aid = 'bio_accounts[.@i];
+		if (!isloggedin(.@aid,.@cid)) continue;
+		if (getcharid(1,rid2name(.@aid)) != 'bio_party) continue;
+		getmapxy .@where$,.@px,.@py,BL_PC,rid2name(.@aid);
+		if (.@where$ != instance_mapname("1@gol1") && .@where$ != instance_mapname("1@gol2")) continue;
+		warp .@map$,.@x,.@y,.@cid;
+	}
+	return;
+}
+
+function	script	F_BioBarrier	{
+	.@wave = getarg(0); .@closed = getarg(1);
+	setarray .@x[0],110,119,105,126;
+	setarray .@y[0],18,21,69,72;
+	.@cx = .@x[.@wave]; .@cy = .@y[.@wave];
+	.@map$ = instance_mapname("1@gol1");
+	// Each 7x7 perimeter is natively walkable; restore only those same cells.
+	setcell .@map$,.@cx-3,.@cy-3,.@cx+3,.@cy-3,CELL_WALKABLE,!.@closed;
+	setcell .@map$,.@cx-3,.@cy+3,.@cx+3,.@cy+3,CELL_WALKABLE,!.@closed;
+	setcell .@map$,.@cx-3,.@cy-2,.@cx-3,.@cy+2,CELL_WALKABLE,!.@closed;
+	setcell .@map$,.@cx+3,.@cy-2,.@cx+3,.@cy+2,CELL_WALKABLE,!.@closed;
+	for (.@i = 0; .@i < 4; ++.@i) {
+		.@npc$ = instance_npcname("Containment Flame#bio"+.@wave+"_"+.@i);
+		if (.@closed) enablenpc .@npc$;
+		else disablenpc .@npc$;
+	}
+	return;
+}
+
+yuno,216,345,4	script	Sierra#bio_gate	4_F_SCIENCE,{
+	mes "[Sierra]";
+	if (BaseLevel < 170) { mes "The virtual laboratory requires Base Level 170."; close; }
+	.@party = getcharid(1);
+	if (!.@party) { mes "Form a party before entering the virtual record."; close; }
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid) {
+		if (instance_live_info(ILI_NAME,.@iid) != "Bioresearch Laboratory") { mes "Your party already has another active instance."; close; }
+		if (getinstancevar('bio_party,.@iid) != .@party) close;
+	}
+	.@returning = 0;
+	if (.@iid) .@returning = getinstancevar('bio_admitted[getcharid(0)],.@iid);
+	if (!.@returning) {
+		if (checkquest(16390,PLAYTIME) == 2) erasequest 16390;
+		if (isbegin_quest(16390)) { mes "You have entered a virtual record today. Both modes reset together at 04:00."; close; }
+		if (.@iid) {
+			if (getinstancevar('bio_zone,.@iid)) { mes "This expedition has already started."; close; }
+		}
+	}
+	if (!.@iid) {
+		if (!is_party_leader()) { mes "Ask your party leader to reserve the laboratory."; close; }
+		if (select("Reserve the laboratory.:Leave.") == 2) close;
+		if (getcharid(1) != .@party || !is_party_leader()) close;
+		if (instance_id(IM_PARTY)) close;
+		.@iid = instance_create("Bioresearch Laboratory",IM_PARTY,.@party);
+		if (.@iid < 1) { mes "The laboratory could not be reserved. Please try again."; close; }
+		setinstancevar 'bio_party,.@party,.@iid;
+	} else {
+		if (select("Enter the laboratory.:Leave.") == 2) close;
+	}
+	// Revalidate after menu suspension; another member may have started meanwhile.
+	if (getcharid(1) != .@party || instance_id(IM_PARTY) != .@iid) close;
+	if (instance_live_info(ILI_NAME,.@iid) != "Bioresearch Laboratory") close;
+	if (getinstancevar('bio_party,.@iid) != .@party) close;
+	// Numeric IDs may be reused while the menu is open; read live admission again.
+	.@returning = getinstancevar('bio_admitted[getcharid(0)],.@iid);
+	if (!.@returning) {
+		if (checkquest(16390,PLAYTIME) == 2) erasequest 16390;
+		if (isbegin_quest(16390)) { mes "Your daily admission is already used."; close; }
+	}
+	.@zone = getinstancevar('bio_zone,.@iid);
+	if (!.@returning && .@zone) { mes "This expedition has already started."; close; }
+	if (.@zone) {
+		if (!getinstancevar('bio_started_member[getcharid(0)],.@iid)) { mes "You were not part of this expedition's starting roster."; close; }
+	}
+	if (.@zone >= 9 || getinstancevar('bio_boss_started,.@iid)) {
+		if (!getinstancevar('bio_eligible[getcharid(0)],.@iid)) { mes "Only the locked encounter roster may return now."; close; }
+	}
+	if (instance_enter("Bioresearch Laboratory",-1,-1,getcharid(0),.@iid) != IE_OK) { mes "The laboratory map is not ready."; close; }
+	if (!.@returning) {
+		setinstancevar 'bio_admitted[getcharid(0)],1,.@iid;
+		if (!isbegin_quest(16388)) setquest 16388;
+		if (isbegin_quest(16392)) erasequest 16392;
+		if (isbegin_quest(16399)) erasequest 16399;
+		if (isbegin_quest(16400)) erasequest 16400;
+		setquest 16390;
+	}
+	if (.@zone >= 8) warp instance_mapname("1@gol2",.@iid),50,12;
+	else if (.@zone) warp instance_mapname("1@gol1",.@iid),getinstancevar('bio_x,.@iid),getinstancevar('bio_y,.@iid);
+	end;
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 170";
+	end;
+}
+
+1@gol1,197,40,4	script	Sierra#bio_start	4_F_SCIENCE,{
+	if ('bio_zone || getcharid(1) != 'bio_party || !'bio_admitted[getcharid(0)]) end;
+	mes "[Sierra]";
+	if (!is_party_leader()) { mes "Your leader can begin once everyone is here."; close; }
+	mes "Expedition follows a lighter combat record. Battle contains stronger waves and a final swordsman encounter.";
+	.@mode = select("Expedition:Battle:Leave");
+	if (.@mode == 3) close;
+	close2;
+	if ('bio_zone || getcharid(1) != 'bio_party || !is_party_leader()) end;
+	if (!callfunc("F_BioReady",'bio_party,instance_mapname("1@gol1"))) { dispbottom "All party members must be admitted, alive, and inside before starting."; end; }
+	'bio_started_count = getpartymember('bio_party,1,'bio_roster);
+	getpartymember 'bio_party,2,'bio_accounts;
+	'bio_mode = .@mode;
+	'bio_zone = 1; 'bio_wave = 0;
+	for (.@i = 0; .@i < 'bio_started_count; ++.@i) {
+		.@cid = 'bio_roster[.@i];
+		'bio_started_member[.@cid] = 1;
+		if (isbegin_quest(16388,.@cid) == 1) completequest 16388,.@cid;
+		setquest (.@mode == 1 ? 16399:16400),.@cid;
+	}
+	donpcevent instance_npcname("#BioControl")+"::OnZone";
+	end;
+}
+
+1@gol1,118,24,4	script	Sierra#bio_regroup	4_F_SCIENCE,{
+	if ('bio_zone != 5 || !'bio_waiting || getcharid(1) != 'bio_party || !is_party_leader()) end;
+	mes "[Sierra]";
+	mes "The containment sequence requires everyone together. Gather near the relay before opening the next section.";
+	close2;
+	if ('bio_zone != 5 || !'bio_waiting || !is_party_leader() || getcharid(1) != 'bio_party) end;
+	if (!callfunc("F_BioReady",'bio_party,instance_mapname("1@gol1"),12)) { dispbottom "Gather every connected expedition member alive beside this relay."; end; }
+	'bio_waiting = 0;
+	donpcevent instance_npcname("#BioControl")+"::OnSpawn";
+	end;
+}
+
+1@gol1,167,186,4	script	Gas Device#bio	4_ENERGY_WHITE,{
+	if ('bio_zone != 1 || !'bio_admitted[getcharid(0)]) end;
+	'bio_gas_off = 1;
+	sc_end SC_SLEEP;
+	dispbottom "The gas device is disabled until the next research section.";
+	end;
+}
+
+1@gol1,46,155,4	script	Vision Device#bio	4_ENERGY_WHITE,{
+	if ('bio_zone != 4 || !'bio_admitted[getcharid(0)]) end;
+	sc_end SC_BLIND;
+	dispbottom "The vision device clears the interference.";
+	end;
+}
+
+1@gol2,53,15,4	script	Sierra#bio_boss	4_F_SCIENCE,{
+	if ('bio_zone != 8 || 'bio_boss_started || getcharid(1) != 'bio_party || !is_party_leader()) end;
+	mes "[Sierra]";
+	mes "Gather the connected party members here alive. Disconnected members are excluded when the final encounter starts.";
+	if (select("Begin the final encounter.:Wait.") == 2) close;
+	close2;
+	if ('bio_zone != 8 || 'bio_boss_started || getcharid(1) != 'bio_party || !is_party_leader()) end;
+	if (!callfunc("F_BioReady",'bio_party,instance_mapname("1@gol2"))) { dispbottom "Every connected expedition member must be alive in this chamber."; end; }
+	'bio_boss_started = 1;
+	.@count = getpartymember('bio_party,1,.@present);
+	getpartymember 'bio_party,2,.@accounts;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@accounts[.@i],.@present[.@i])) continue;
+		'bio_eligible[.@present[.@i]] = 1;
+	}
+	monster instance_mapname("1@gol2"),50,60,"Unknown Swordsman",20536,1,instance_npcname("#BioControl")+"::OnBossDead";
+	end;
+}
+
+1@gol2,50,49,4	script	Sierra#bio_reward	4_F_SCIENCE,{
+	if ('bio_zone != 9 || getcharid(1) != 'bio_party || !'bio_eligible[getcharid(0)]) end;
+	.@cid = getcharid(0);
+	mes "[Sierra]";
+	if ('bio_claimed[.@cid]) { mes "You already received this record's reward."; close; }
+	if ('bio_mode == 1) {
+		setarray .@items[0],25787; setarray .@amounts[0],2;
+	} else {
+		if (!'bio_weapon[.@cid]) 'bio_weapon[.@cid] = groupranditem(IG_BIO_W_BOX,6);
+		setarray .@items[0],25786,25787,102571,'bio_weapon[.@cid];
+		setarray .@amounts[0],9,15,1,1;
+	}
+	if (!checkweight2(.@items,.@amounts)) { mes "Make room for all rewards, then speak with me again."; close; }
+	'bio_claimed[.@cid] = 1;
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) getitem .@items[.@i],.@amounts[.@i];
+	.@quest = ('bio_mode == 1 ? 16399:16400);
+	if (isbegin_quest(.@quest) == 1) completequest .@quest;
+	if (!isbegin_quest(16392)) setquest 16392;
+	if (isbegin_quest(16392) == 1) completequest 16392;
+	mes "Your contribution to the record has been preserved. The two modes share the next 04:00 admission reset.";
+	close;
+}
+
+1@gol2,47,49,4	script	Exit Record#bio	4_ENERGY_WHITE,{
+	if (select("Return to Yuno.:Stay.") == 1) warp "yuno",216,342;
+	end;
+}
+
+1@gol1,1,1,0	script	#BioControl	-1,{
+	end;
+OnZone:
+	if ('bio_zone < 1 || 'bio_zone > 7 || 'bio_zone_applied == 'bio_zone) end;
+	'bio_zone_applied = 'bio_zone;
+	setarray .@x[0],0,167,62,109,46,118,149,185;
+	setarray .@y[0],0,184,267,186,152,22,106,263;
+	'bio_x = .@x['bio_zone]; 'bio_y = .@y['bio_zone];
+	callfunc "F_BioMove",instance_mapname("1@gol1"),'bio_x,'bio_y;
+	'bio_wave = 0;
+	if ('bio_zone == 5) {
+		'bio_waiting = 1;
+		mapannounce instance_mapname("1@gol1"),"Containment relay: gather beside Sierra before each section.",bc_map;
+		end;
+	}
+	donpcevent instance_npcname("#BioControl")+"::OnSpawn";
+	end;
+OnSpawn:
+	if ('bio_zone < 1 || 'bio_zone > 7 || 'bio_waiting || 'bio_spawning || 'bio_wave_active) end;
+	.@event$ = instance_npcname("#BioControl")+"::OnWave"+'bio_zone;
+	if (mobcount(instance_mapname("1@gol1"),.@event$)) end;
+	'bio_spawning = 1;
+	'bio_wave_active = 1;
+	'bio_gas_off = 0;
+	setarray .@counts[0],0,2,3,3,4,4,2,3;
+	if ('bio_zone == 1) {
+		setarray .@sx[0],160,173;
+		setarray .@sy[0],190,200;
+	}
+	if ('bio_zone == 2) {
+		setarray .@sx[0],68,65,25;
+		setarray .@sy[0],283,307,314;
+	}
+	if ('bio_zone == 3) {
+		setarray .@sx[0],124,124,89;
+		setarray .@sy[0],230,250,250;
+	}
+	if ('bio_zone == 4) {
+		setarray .@sx[0],82,90,87,48;
+		setarray .@sy[0],151,136,90,110;
+	}
+	if ('bio_zone == 5) {
+		setarray .@sx[0],110,119,105,126;
+		setarray .@sy[0],18,21,69,72;
+	}
+	if ('bio_zone == 6) {
+		setarray .@sx[0],168,187;
+		setarray .@sy[0],111,149;
+	}
+	if ('bio_zone == 7) {
+		setarray .@sx[0],173,165,186;
+		setarray .@sy[0],266,293,319;
+	}
+
+	.@n = ('bio_mode == 1 ? 1:3);
+	.@x = .@sx['bio_wave]; .@y = .@sy['bio_wave];
+	if ('bio_zone == 5) {
+		'bio_x = .@x; 'bio_y = .@y;
+		callfunc "F_BioMove",instance_mapname("1@gol1"),.@x,.@y;
+		callfunc "F_BioBarrier",'bio_wave,1;
+	}
+	monster instance_mapname("1@gol1"),.@x,.@y,"Laboratory Guard",20542,.@n,.@event$;
+	if ('bio_mode == 2) {
+		monster instance_mapname("1@gol1"),.@x,.@y,"Nameless Subject",20537+('bio_wave%4),2,.@event$;
+		monster instance_mapname("1@gol1"),.@x,.@y,"Research Team",20541+('bio_wave%3),1,.@event$;
+	}
+	'bio_spawning = 0;
+	mapannounce instance_mapname("1@gol1"),"Zone "+'bio_zone+": clear the research section at ("+.@x+","+.@y+").",bc_map;
+	setnpctimer 0;
+	initnpctimer;
+	end;
+OnTimer10000:
+	if (!'bio_wave_active) { stopnpctimer; end; }
+	if ('bio_zone != 1 && 'bio_zone != 4) { stopnpctimer; end; }
+	for (.@i = 0; .@i < 'bio_started_count; ++.@i) {
+		.@cid = 'bio_roster[.@i]; .@aid = 'bio_accounts[.@i];
+		if (!isloggedin(.@aid,.@cid)) continue;
+		if (getcharid(1,rid2name(.@aid)) != 'bio_party) continue;
+		getmapxy .@map$,.@x,.@y,BL_PC,rid2name(.@aid);
+		if (.@map$ != instance_mapname("1@gol1")) continue;
+		if ('bio_zone == 1 && !'bio_gas_off) sc_start SC_SLEEP,3000,1,10000,0,.@aid;
+		if ('bio_zone == 4) sc_start SC_BLIND,15000,1,10000,0,.@aid;
+	}
+	setnpctimer 0;
+	end;
+OnWave1:
+	if ('bio_zone != 1) end;
+	callsub OnCleared;
+	end;
+OnWave2:
+	if ('bio_zone != 2) end;
+	callsub OnCleared;
+	end;
+OnWave3:
+	if ('bio_zone != 3) end;
+	callsub OnCleared;
+	end;
+OnWave4:
+	if ('bio_zone != 4) end;
+	callsub OnCleared;
+	end;
+OnWave5:
+	if ('bio_zone != 5) end;
+	callsub OnCleared;
+	end;
+OnWave6:
+	if ('bio_zone != 6) end;
+	callsub OnCleared;
+	end;
+OnWave7:
+	if ('bio_zone != 7) end;
+	callsub OnCleared;
+	end;
+OnCleared:
+	if ('bio_spawning || 'bio_waiting || !'bio_wave_active) return;
+	if (mobcount(instance_mapname("1@gol1"),instance_npcname("#BioControl")+"::OnWave"+'bio_zone)) return;
+	'bio_wave_active = 0;
+	if ('bio_zone == 5) callfunc "F_BioBarrier",'bio_wave,0;
+	setarray .@counts[0],0,2,3,3,4,4,2,3;
+	++'bio_wave;
+	if ('bio_wave < .@counts['bio_zone]) {
+		if ('bio_zone == 5) {
+			'bio_waiting = 1;
+			'bio_x = 118; 'bio_y = 22;
+			callfunc "F_BioMove",instance_mapname("1@gol1"),118,22;
+		} else donpcevent instance_npcname("#BioControl")+"::OnSpawn";
+		return;
+	}
+	++'bio_zone;
+	if ('bio_zone <= 7) donpcevent instance_npcname("#BioControl")+"::OnZone";
+	else {
+		stopnpctimer;
+		callfunc "F_BioMove",instance_mapname("1@gol2"),50,12;
+		// Expedition concludes without the Battle-only swordsman encounter.
+		if ('bio_mode == 1) {
+			for (.@i = 0; .@i < 'bio_started_count; ++.@i) 'bio_eligible['bio_roster[.@i]] = 1;
+			'bio_zone = 9;
+		}
+	}
+	return;
+OnBossDead:
+	if ('bio_zone != 8 || !'bio_boss_started) end;
+	if (mobcount(instance_mapname("1@gol2"),instance_npcname("#BioControl")+"::OnBossDead")) end;
+	'bio_zone = 9;
+	mapannounce instance_mapname("1@gol2"),"The final record is complete. Speak with Sierra for your reward.",bc_map;
+	end;
+}
+
+1@gol1	mapflag	nomemo
+1@gol1	mapflag	nosave	SavePoint
+1@gol1	mapflag	noteleport
+1@gol1	mapflag	nobranch
+1@gol2	mapflag	nomemo
+1@gol2	mapflag	nosave	SavePoint
+1@gol2	mapflag	noteleport
+1@gol2	mapflag	nobranch
+
+1@gol1,107,18,4	script(DISABLED)	Containment Flame#bio0_0	4_BONFIRE,{
+	end;
+}
+
+1@gol1,113,18,4	script(DISABLED)	Containment Flame#bio0_1	4_BONFIRE,{
+	end;
+}
+
+1@gol1,110,15,4	script(DISABLED)	Containment Flame#bio0_2	4_BONFIRE,{
+	end;
+}
+
+1@gol1,110,21,4	script(DISABLED)	Containment Flame#bio0_3	4_BONFIRE,{
+	end;
+}
+
+1@gol1,116,21,4	script(DISABLED)	Containment Flame#bio1_0	4_BONFIRE,{
+	end;
+}
+
+1@gol1,122,21,4	script(DISABLED)	Containment Flame#bio1_1	4_BONFIRE,{
+	end;
+}
+
+1@gol1,119,18,4	script(DISABLED)	Containment Flame#bio1_2	4_BONFIRE,{
+	end;
+}
+
+1@gol1,119,24,4	script(DISABLED)	Containment Flame#bio1_3	4_BONFIRE,{
+	end;
+}
+
+1@gol1,102,69,4	script(DISABLED)	Containment Flame#bio2_0	4_BONFIRE,{
+	end;
+}
+
+1@gol1,108,69,4	script(DISABLED)	Containment Flame#bio2_1	4_BONFIRE,{
+	end;
+}
+
+1@gol1,105,66,4	script(DISABLED)	Containment Flame#bio2_2	4_BONFIRE,{
+	end;
+}
+
+1@gol1,105,72,4	script(DISABLED)	Containment Flame#bio2_3	4_BONFIRE,{
+	end;
+}
+
+1@gol1,123,72,4	script(DISABLED)	Containment Flame#bio3_0	4_BONFIRE,{
+	end;
+}
+
+1@gol1,129,72,4	script(DISABLED)	Containment Flame#bio3_1	4_BONFIRE,{
+	end;
+}
+
+1@gol1,126,69,4	script(DISABLED)	Containment Flame#bio3_2	4_BONFIRE,{
+	end;
+}
+
+1@gol1,126,75,4	script(DISABLED)	Containment Flame#bio3_3	4_BONFIRE,{
+	end;
+}
