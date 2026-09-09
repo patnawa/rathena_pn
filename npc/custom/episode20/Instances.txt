@@ -377,8 +377,11 @@ OnTimer4000:
 	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1 || !unitexists('ep20_undying_gid)) { stopnpctimer; end; }
 	'ep20_undying_ticks++;
 	.@dead = 0;
-	for (.@i = 0; .@i < getarraysize('ep20_undying_roster); ++.@i)
-		if (isloggedin('ep20_undying_accounts[.@i],'ep20_undying_roster[.@i]) && readparam(Hp,'ep20_undying_roster[.@i]) <= 0) .@dead = 1;
+	for (.@i = 0; .@i < getarraysize('ep20_undying_roster); ++.@i) {
+		// Script boolean expressions evaluate both operands, including offline reads.
+		if (!isloggedin('ep20_undying_accounts[.@i],'ep20_undying_roster[.@i])) continue;
+		if (readparam(Hp,'ep20_undying_roster[.@i]) <= 0) .@dead = 1;
+	}
 	setunitdata 'ep20_undying_gid,UMOB_DMGIMMUNE,.@dead;
 	if (.@dead != 'ep20_undying_dead) {
 		'ep20_undying_dead = .@dead;

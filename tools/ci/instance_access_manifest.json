@@ -1,0 +1,7787 @@
+{
+  "review_date": "2026-09-09",
+  "scope": "Unique instance guide categories, enabled Renewal import graph, effective instance DB, Warper menu and installed client map presence. Entry candidates require gate review; presence is not a completed gameplay test.",
+  "enabled_npc_file_count": 915,
+  "local_instance_count": 100,
+  "unique_client_map_count": 120,
+  "unavailable_client_maps": [],
+  "reference_catalog": [
+    {
+      "name": "Airship Crash",
+      "local_instance_ids": [
+        65
+      ],
+      "database_names": [
+        "Airship Crash"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Airship Crash"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/AirshipCrash.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/AirshipCrash.txt",
+          "line": 270,
+          "map": "dali02",
+          "x": 137,
+          "y": 86,
+          "name": "Dr. Strong#acr"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Airship Destruction",
+      "local_instance_ids": [
+        77
+      ],
+      "database_names": [
+        "Airship Destruction"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 19 - Airship Destruction"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode19/AirshipDestruction.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/AirshipDestruction.txt",
+          "line": 16,
+          "map": "jor_nest",
+          "x": 22,
+          "y": 255,
+          "name": "Rope#whl"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Airship Raid",
+      "local_instance_ids": [
+        20
+      ],
+      "database_names": [
+        "Assault on the Airship"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Airship Raid"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/AirshipAssault.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/AirshipAssault.txt",
+          "line": 24,
+          "map": "dali02",
+          "x": 142,
+          "y": 81,
+          "name": "Dimensional Device#air1"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Alice Twisted Madness",
+      "local_instance_ids": [],
+      "database_names": [],
+      "status": "unimplemented",
+      "warper_labels": [],
+      "warper_status": "not_applicable",
+      "enabled_scripts": [],
+      "entry_npc_candidates": [],
+      "client_map_status": "not_applicable"
+    },
+    {
+      "name": "Bakonawa Lake",
+      "local_instance_ids": [
+        10
+      ],
+      "database_names": [
+        "Bakonawa Lake"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Bakonawa Lake"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/BakonawaLake.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/BakonawaLake.txt",
+          "line": 21,
+          "map": "ma_scene01",
+          "x": 174,
+          "y": 179,
+          "name": "Taho"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Bangungot Hospital",
+      "local_instance_ids": [
+        8
+      ],
+      "database_names": [
+        "Bangungot Hospital 2F"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Bangungot Hospital 2F"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/BangungotHospital.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/BangungotHospital.txt",
+          "line": 22,
+          "map": "ma_dun01",
+          "x": 147,
+          "y": 10,
+          "name": "Nurse#ma_dun01"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Bioresearch Laboratory",
+      "local_instance_ids": [],
+      "database_names": [],
+      "status": "unimplemented",
+      "warper_labels": [],
+      "warper_status": "not_applicable",
+      "enabled_scripts": [],
+      "entry_npc_candidates": [],
+      "client_map_status": "not_applicable"
+    },
+    {
+      "name": "Bios Island",
+      "local_instance_ids": [
+        25
+      ],
+      "database_names": [
+        "Isle of Bios"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Bios Island"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/IsleOfBios.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/IsleOfBios.txt",
+          "line": 10,
+          "map": "moro_cav",
+          "x": 50,
+          "y": 64,
+          "name": "Yellow Seed#bios"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Buwaya Cave",
+      "local_instance_ids": [
+        9
+      ],
+      "database_names": [
+        "Buwaya Cave"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Buwaya Cave"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/BuwayaCave.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/BuwayaCave.txt",
+          "line": 19,
+          "map": "ma_fild02",
+          "x": 312,
+          "y": 317,
+          "name": "Guard#buwaya_cave"
+        },
+        {
+          "script": "npc/re/instances/BuwayaCave.txt",
+          "line": 104,
+          "map": "ma_fild02",
+          "x": 315,
+          "y": 323,
+          "name": "Cave Entrance#buwaya"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Central Laboratory",
+      "local_instance_ids": [
+        28
+      ],
+      "database_names": [
+        "Central Laboratory"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Central Laboratory"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/CentralLaboratory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/CentralLaboratory.txt",
+          "line": 11,
+          "map": "verus01",
+          "x": 153,
+          "y": 155,
+          "name": "Temporary Dimension-mov#pa0829_01"
+        },
+        {
+          "script": "npc/re/instances/CentralLaboratory.txt",
+          "line": 48,
+          "map": "verus01",
+          "x": 149,
+          "y": 155,
+          "name": "Civilization Explorer#pa0829_01"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Chapter 1 - Instances",
+      "local_instance_ids": [
+        120,
+        121
+      ],
+      "database_names": [
+        "Ominous Dark Whisper",
+        "Simulated Dark Whisper"
+      ],
+      "status": "chapter_overview",
+      "warper_labels": [
+        "Chapter 1 - Simulated Dark Whisper"
+      ],
+      "warper_status": "not_applicable",
+      "enabled_scripts": [
+        "npc/custom/chapter1/CH1.c"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter1/CH1.c",
+          "line": 14198,
+          "map": "hem_dun01",
+          "x": 209,
+          "y": 248,
+          "name": "Est#wsp1"
+        },
+        {
+          "script": "npc/custom/chapter1/CH1.c",
+          "line": 14108,
+          "map": "hem_dun01",
+          "x": 205,
+          "y": 248,
+          "name": "Wizard Professor#w1"
+        }
+      ],
+      "client_map_status": "all_available",
+      "notes": "Overview groups story and repeatable content; never add a bypass into story instances."
+    },
+    {
+      "name": "Charleston Crisis",
+      "local_instance_ids": [
+        30
+      ],
+      "database_names": [
+        "Charleston in Distress"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Charleston Crisis"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/CharlestonCrisis.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/CharlestonCrisis.txt",
+          "line": 123,
+          "map": "verus04",
+          "x": 81,
+          "y": 112,
+          "name": "Machine#mcd"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Constellation Tower",
+      "local_instance_ids": [
+        62
+      ],
+      "database_names": [
+        "Constellation Tower"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Constellation Tower"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/ConstellationTower.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/ConstellationTower.txt",
+          "line": 49,
+          "map": "e_tower",
+          "x": 83,
+          "y": 105,
+          "name": "Oscar#ct_gate"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Cor Mission",
+      "local_instance_ids": [
+        43
+      ],
+      "database_names": [
+        "Cor Memorial"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 17.1 - Cor Memorial"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 6220,
+          "map": "sp_cor",
+          "x": 180,
+          "y": 169,
+          "name": "Elena Volkova#rm171_1"
+        },
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 7694,
+          "map": "sp_cor",
+          "x": 113,
+          "y": 130,
+          "name": "Rebellion#rm171_8"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Devil Tower",
+      "local_instance_ids": [
+        19
+      ],
+      "database_names": [
+        "Devil's Tower"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Devil Tower"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/DevilTower.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/DevilTower.txt",
+          "line": 216,
+          "map": "dali02",
+          "x": 137,
+          "y": 121,
+          "name": "Magic Scholar Artie#tnm"
+        },
+        {
+          "script": "npc/re/instances/DevilTower.txt",
+          "line": 275,
+          "map": "dali02",
+          "x": 141,
+          "y": 120,
+          "name": "Dimensional Device#tnm0"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Endless Cellar / Endless Tower",
+      "local_instance_ids": [
+        1
+      ],
+      "database_names": [
+        "Endless Tower"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Endless Tower"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/instances/EndlessTower.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/EndlessTower.txt",
+          "line": 205,
+          "map": "e_tower",
+          "x": 81,
+          "y": 105,
+          "name": "Tower Protection Stone"
+        }
+      ],
+      "client_map_status": "all_available",
+      "notes": "Endless Tower exists; a separate Endless Cellar mode is not verified."
+    },
+    {
+      "name": "Faceworms Nest",
+      "local_instance_ids": [
+        17
+      ],
+      "database_names": [
+        "Faceworm's Nest"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Faceworms Nest"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/FacewormsNest.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/FacewormsNest.txt",
+          "line": 321,
+          "map": "dali",
+          "x": 80,
+          "y": 60,
+          "name": "Magic Scholar"
+        },
+        {
+          "script": "npc/re/instances/FacewormsNest.txt",
+          "line": 392,
+          "map": "dali",
+          "x": 72,
+          "y": 55,
+          "name": "Interdimensional Device"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Fall of Glastheim",
+      "local_instance_ids": [
+        51,
+        52,
+        154
+      ],
+      "database_names": [
+        "Fall of Glast Heim (Normal)",
+        "Fall of Glast Heim (Advanced)",
+        "Fall of Glast Heim (Scenario)"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Fall of Glast Heim"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/FallOfGlastHeim.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/FallOfGlastHeim.txt",
+          "line": 18,
+          "map": "glast_01",
+          "x": 241,
+          "y": 290,
+          "name": "Oscar#fogh_gate"
+        },
+        {
+          "script": "npc/custom/instances/FallOfGlastHeim.txt",
+          "line": 18,
+          "map": "glast_01",
+          "x": 241,
+          "y": 290,
+          "name": "Oscar#fogh_gate"
+        },
+        {
+          "script": "npc/custom/instances/FallOfGlastHeim.txt",
+          "line": 18,
+          "map": "glast_01",
+          "x": 241,
+          "y": 290,
+          "name": "Oscar#fogh_gate"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Final Battle",
+      "local_instance_ids": [
+        149,
+        152,
+        153
+      ],
+      "database_names": [
+        "Final Battle",
+        "Final Battle(Hard)",
+        "Final Battle(Normal)"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 21 - Final Battle"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode21/BlackHairedBeast.txt",
+        "npc/custom/episode21/FinalBattle.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode21/BlackHairedBeast.txt",
+          "line": 366,
+          "map": "jor_tmple1",
+          "x": 178,
+          "y": 304,
+          "name": "Heine's Tablet#ep21_final"
+        },
+        {
+          "script": "npc/custom/episode21/FinalBattle.txt",
+          "line": 76,
+          "map": "jor_raise1",
+          "x": 132,
+          "y": 323,
+          "name": "Nyar#ep21_fb_daily"
+        },
+        {
+          "script": "npc/custom/episode21/FinalBattle.txt",
+          "line": 76,
+          "map": "jor_raise1",
+          "x": 132,
+          "y": 323,
+          "name": "Nyar#ep21_fb_daily"
+        },
+        {
+          "script": "npc/custom/episode21/FinalBattle.txt",
+          "line": 76,
+          "map": "jor_raise1",
+          "x": 132,
+          "y": 323,
+          "name": "Nyar#ep21_fb_daily"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Friday",
+      "local_instance_ids": [
+        46
+      ],
+      "database_names": [
+        "Friday Dungeon"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Friday Memorial"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/FridayDungeon.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/FridayDungeon.txt",
+          "line": 11,
+          "map": "gef_tower",
+          "x": 57,
+          "y": 170,
+          "name": "Marry Jay"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Geffen Magic Tournament",
+      "local_instance_ids": [
+        15
+      ],
+      "database_names": [
+        "Geffen Magic Tournament"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Geffen Magic Tournament"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/official/GeffenMagicTournament.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/official/GeffenMagicTournament.txt",
+          "line": 614,
+          "map": "dali",
+          "x": 100,
+          "y": 147,
+          "name": "Dimensional Device#gefma"
+        },
+        {
+          "script": "npc/custom/official/GeffenMagicTournament.txt",
+          "line": 683,
+          "map": "dali",
+          "x": 98,
+          "y": 141,
+          "name": "Emmitt White"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Geffen Night Arena",
+      "local_instance_ids": [
+        64
+      ],
+      "database_names": [
+        "Geffen Night Arena"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Geffen Night Arena"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/GeffenNightArena.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/GeffenNightArena.txt",
+          "line": 88,
+          "map": "dali02",
+          "x": 79,
+          "y": 60,
+          "name": "Geffen Night Arena Gate#gna"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Ghost Palace",
+      "local_instance_ids": [
+        18
+      ],
+      "database_names": [
+        "Ghost Palace"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Ghost Palace"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/GhostPalace.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/GhostPalace.txt",
+          "line": 11,
+          "map": "dali02",
+          "x": 43,
+          "y": 129,
+          "name": "Unpleasant Royal Guard#"
+        },
+        {
+          "script": "npc/re/instances/GhostPalace.txt",
+          "line": 65,
+          "map": "dali02",
+          "x": 40,
+          "y": 134,
+          "name": "Interdimensional Device#dk"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Hall of Life",
+      "local_instance_ids": [
+        202
+      ],
+      "database_names": [
+        "Hall of Life"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Hall of Life"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/HallOfLife.txt",
+        "npc/re/quests/garden_of_time.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/garden_of_time.txt",
+          "line": 1039,
+          "map": "t_garden",
+          "x": 173,
+          "y": 235,
+          "name": "Dimensional Prison#2"
+        },
+        {
+          "script": "npc/custom/instances/HallOfLife.txt",
+          "line": 132,
+          "map": "t_garden",
+          "x": 172,
+          "y": 235,
+          "name": "Hall of Life#pn_hol"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Hazy Forest",
+      "local_instance_ids": [
+        5
+      ],
+      "database_names": [
+        "Mistwood Maze"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Hazy Forest"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/HazyForest.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HazyForest.txt",
+          "line": 20,
+          "map": "bif_fild01",
+          "x": 158,
+          "y": 340,
+          "name": "Laphine Soldier#mist"
+        },
+        {
+          "script": "npc/re/instances/HazyForest.txt",
+          "line": 136,
+          "map": "bif_fild01",
+          "x": 161,
+          "y": 355,
+          "name": "Log Tunnel"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Heart Hunter War Base",
+      "local_instance_ids": [
+        34,
+        35
+      ],
+      "database_names": [
+        "Heart Hunter War Base 1",
+        "Heart Hunter War Base 2"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Heart Hunter War Base"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/HeartHunterWarBase.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 11,
+          "map": "ein_fild04",
+          "x": 275,
+          "y": 342,
+          "name": "Striker Unit Commander#"
+        },
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 77,
+          "map": "ein_fild04",
+          "x": 281,
+          "y": 337,
+          "name": "Julian#ep16.2"
+        },
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 11,
+          "map": "ein_fild04",
+          "x": 275,
+          "y": 342,
+          "name": "Striker Unit Commander#"
+        },
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 77,
+          "map": "ein_fild04",
+          "x": 281,
+          "y": 337,
+          "name": "Julian#ep16.2"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Hey! Sweety!",
+      "local_instance_ids": [
+        54
+      ],
+      "database_names": [
+        "Hey! Sweety"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Hey! Sweety"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/TwilightGarden.txt",
+        "npc/re/quests/quests_17_2.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_2.txt",
+          "line": 9153,
+          "map": "ba_in01",
+          "x": 28,
+          "y": 255,
+          "name": "Manager Beta Almond#ep172_amd01"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Hidden Flower Garden",
+      "local_instance_ids": [
+        58,
+        59,
+        60
+      ],
+      "database_names": [
+        "Hidden Flower Garden",
+        "Security Area 1",
+        "Security Area 2"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 17.2 - Security Area 1 / 2"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/HiddenGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HiddenGarden.txt",
+          "line": 32,
+          "map": "ba_maison",
+          "x": 120,
+          "y": 321,
+          "name": "#he_admin1"
+        },
+        {
+          "script": "npc/re/instances/HiddenGarden.txt",
+          "line": 79,
+          "map": "ba_maison",
+          "x": 120,
+          "y": 321,
+          "name": "#he_admin2"
+        },
+        {
+          "script": "npc/re/instances/HiddenGarden.txt",
+          "line": 79,
+          "map": "ba_maison",
+          "x": 120,
+          "y": 321,
+          "name": "#he_admin2"
+        }
+      ],
+      "client_map_status": "all_available",
+      "notes": "Story instance58 is not exposed directly; its repeatable Security Area1/2 variants59/60 share the gated daily entrance."
+    },
+    {
+      "name": "Horror Toy Factory",
+      "local_instance_ids": [
+        16
+      ],
+      "database_names": [
+        "Horror Toy Factory"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Horror Toy Factory"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/HorrorToyFactory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HorrorToyFactory.txt",
+          "line": 11,
+          "map": "xmas",
+          "x": 237,
+          "y": 303,
+          "name": "Catherine Jet Johnson"
+        },
+        {
+          "script": "npc/re/instances/HorrorToyFactory.txt",
+          "line": 174,
+          "map": "xmas",
+          "x": 233,
+          "y": 305,
+          "name": "Factory Dimension Telep"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Immortal",
+      "local_instance_ids": [
+        309
+      ],
+      "database_names": [
+        "The Undying"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "The Immortal"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode20/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/Instances.txt",
+          "line": 346,
+          "map": "jor_twig",
+          "x": 117,
+          "y": 145,
+          "name": "World Tree Branch#ep20_undying"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Infinite Space",
+      "local_instance_ids": [
+        38
+      ],
+      "database_names": [
+        "Infinite Space"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Infinite Space (Normal / Hard)"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/InfiniteSpace.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/InfiniteSpace.txt",
+          "line": 13,
+          "map": "cmd_fild07",
+          "x": 58,
+          "y": 278,
+          "name": "Reckless Explorer#pa0829_01"
+        },
+        {
+          "script": "npc/re/instances/InfiniteSpace.txt",
+          "line": 106,
+          "map": "cmd_fild07",
+          "x": 54,
+          "y": 280,
+          "name": "Temporary Entrance#pa0829_01"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Instance Antiquity",
+      "local_instance_ids": [],
+      "database_names": [],
+      "status": "reward_reference_not_instance",
+      "warper_labels": [],
+      "warper_status": "not_applicable",
+      "enabled_scripts": [],
+      "entry_npc_candidates": [],
+      "client_map_status": "not_applicable"
+    },
+    {
+      "name": "Iwin Patrol",
+      "local_instance_ids": [
+        76
+      ],
+      "database_names": [
+        "Iwin Patrol"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 19 - Iwin Patrol"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode19/IwinPatrol.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/IwinPatrol.txt",
+          "line": 11,
+          "map": "icecastle",
+          "x": 23,
+          "y": 115,
+          "name": "Captain#iws"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Lake of Fire",
+      "local_instance_ids": [
+        201
+      ],
+      "database_names": [
+        "Lake of Fire"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Lake of Fire"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/LakeOfFire.txt",
+        "npc/re/quests/garden_of_time.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/garden_of_time.txt",
+          "line": 983,
+          "map": "t_garden",
+          "x": 158,
+          "y": 235,
+          "name": "Dimensional Prison#1"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Last Room",
+      "local_instance_ids": [
+        29
+      ],
+      "database_names": [
+        "Last room"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Last Room"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/LastRoom.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/LastRoom.txt",
+          "line": 11,
+          "map": "un_myst",
+          "x": 163,
+          "y": 38,
+          "name": "Mark"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Lost in Time",
+      "local_instance_ids": [
+        55
+      ],
+      "database_names": [
+        "Farm Lost in Time"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 17.2 - Farm Lost in Time"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/LostFarm.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/LostFarm.txt",
+          "line": 12,
+          "map": "ba_maison",
+          "x": 311,
+          "y": 206,
+          "name": "Luina#greeen"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Malangdo Culvert",
+      "local_instance_ids": [
+        6
+      ],
+      "database_names": [
+        "Culvert"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Malangdo Culvert"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/MalangdoCulvert.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/MalangdoCulvert.txt",
+          "line": 270,
+          "map": "mal_in01",
+          "x": 160,
+          "y": 34,
+          "name": "Missing, the Cleaner"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Memories of Thanatos",
+      "local_instance_ids": [
+        66
+      ],
+      "database_names": [
+        "Thanatos Tower"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Memories of Thanatos"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/ThanatosTowerMemory.txt",
+        "npc/re/quests/eden/eden_121_130.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/eden/eden_121_130.txt",
+          "line": 565,
+          "map": "moc_para01",
+          "x": 17,
+          "y": 77,
+          "name": "Aigu#1"
+        },
+        {
+          "script": "npc/custom/instances/ThanatosTowerMemory.txt",
+          "line": 23,
+          "map": "thana_step",
+          "x": 154,
+          "y": 367,
+          "name": "Lumin#mot"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Morses Cave",
+      "local_instance_ids": [
+        26
+      ],
+      "database_names": [
+        "Morse's Cave"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Morse's Cave"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/MorseCave.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/MorseCave.txt",
+          "line": 11,
+          "map": "moro_cav",
+          "x": 61,
+          "y": 69,
+          "name": "Senior Tracker#a1"
+        },
+        {
+          "script": "npc/re/instances/MorseCave.txt",
+          "line": 201,
+          "map": "moro_cav",
+          "x": 57,
+          "y": 69,
+          "name": "Red Flower#a1"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Mysterious Ghost Ship",
+      "local_instance_ids": [
+        148
+      ],
+      "database_names": [
+        "Mysterious Ghost Ship"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 21 - Mysterious Ghost Ship"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode21/MysteriousGhostShip.txt"
+      ],
+      "entry_npc_candidates": [],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Nidhoggur's Nest",
+      "local_instance_ids": [
+        4
+      ],
+      "database_names": [
+        "Nidhoggur's Nest"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Nidhoggur's Nest"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/instances/NydhoggsNest.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/NydhoggsNest.txt",
+          "line": 23,
+          "map": "nyd_dun02",
+          "x": 100,
+          "y": 201,
+          "name": "Yggdrasil Gatekeeper"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Nightmarish Jitterbug",
+      "local_instance_ids": [
+        24
+      ],
+      "database_names": [
+        "Nightmarish Jitterbug"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Nightmarish Jitterbug"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/NightmarishJitterbug.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/NightmarishJitterbug.txt",
+          "line": 116,
+          "map": "moc_para01",
+          "x": 29,
+          "y": 95,
+          "name": "Runane#sara"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Octopus Cave",
+      "local_instance_ids": [
+        7
+      ],
+      "database_names": [
+        "Octopus Cave"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Octopus Cave"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/OctopusCave.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/OctopusCave.txt",
+          "line": 19,
+          "map": "mal_dun01",
+          "x": 151,
+          "y": 235,
+          "name": "Starfish"
+        },
+        {
+          "script": "npc/re/instances/OctopusCave.txt",
+          "line": 115,
+          "map": "mal_dun01",
+          "x": 153,
+          "y": 237,
+          "name": "Weird Entrance"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Old Glast Heim",
+      "local_instance_ids": [
+        12
+      ],
+      "database_names": [
+        "Old Glast Heim"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Old Glast Heim"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/OldGlastHeim.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/OldGlastHeim.txt",
+          "line": 24,
+          "map": "glast_01",
+          "x": 204,
+          "y": 273,
+          "name": "Hugin"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Old Glast Heim Challenge Mode",
+      "local_instance_ids": [
+        49
+      ],
+      "database_names": [
+        "Old Glast Heim (Challenge Mode)"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Old Glast Heim",
+        "Old Glast Heim Challenge"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/OldGlastHeimChallenge.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/OldGlastHeimChallenge.txt",
+          "line": 44,
+          "map": "glast_01",
+          "x": 143,
+          "y": 288,
+          "name": "Oscar#oghcm_gate"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Orc's Memory",
+      "local_instance_ids": [
+        3
+      ],
+      "database_names": [
+        "Orc's Memory"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Orc's Memory"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/instances/OrcsMemory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/OrcsMemory.txt",
+          "line": 38,
+          "map": "gef_fild10",
+          "x": 242,
+          "y": 202,
+          "name": "Dimensional Gorge Piece"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "OS Mission",
+      "local_instance_ids": [
+        41
+      ],
+      "database_names": [
+        "OS Occupation"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 17.1 - OS Occupation"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 7569,
+          "map": "sp_cor",
+          "x": 163,
+          "y": 56,
+          "name": "Est#171_ocp"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Poring Village",
+      "local_instance_ids": [
+        47
+      ],
+      "database_names": [
+        "Poring Village"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Poring Village"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/PoringVillage.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/PoringVillage.txt",
+          "line": 171,
+          "map": "prt_fild05",
+          "x": 145,
+          "y": 235,
+          "name": "Emily#0"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Recreated Dark Whisper",
+      "local_instance_ids": [
+        121
+      ],
+      "database_names": [
+        "Simulated Dark Whisper"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Chapter 1 - Simulated Dark Whisper"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/chapter1/CH1.c"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter1/CH1.c",
+          "line": 14108,
+          "map": "hem_dun01",
+          "x": 205,
+          "y": 248,
+          "name": "Wizard Professor#w1"
+        }
+      ],
+      "client_map_status": "all_available",
+      "notes": "Local implementation is named Simulated Dark Whisper; its 1@ch1b client map uses an intentional resource alias."
+    },
+    {
+      "name": "Sanctuary Purification",
+      "local_instance_ids": [
+        70
+      ],
+      "database_names": [
+        "Sanctuary Purification"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 18 - Sanctuary Purification"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/Wolves.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/Wolves.txt",
+          "line": 127,
+          "map": "rachel",
+          "x": 167,
+          "y": 244,
+          "name": "Priest#sms01"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Sarah and Fenrir",
+      "local_instance_ids": [
+        21
+      ],
+      "database_names": [
+        "Fenrir and Sarah"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Sarah and Fenrir"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/SarahAndFenrir.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/SarahAndFenrir.txt",
+          "line": 10,
+          "map": "dali02",
+          "x": 97,
+          "y": 142,
+          "name": "Professor Bernhard#a1"
+        },
+        {
+          "script": "npc/re/instances/SarahAndFenrir.txt",
+          "line": 141,
+          "map": "dali02",
+          "x": 99,
+          "y": 148,
+          "name": "Dimensional Device#XX1"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Sarah's Memory",
+      "local_instance_ids": [
+        14
+      ],
+      "database_names": [
+        "Sara's Memories"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Sara Memory"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/SaraMemory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/SaraMemory.txt",
+          "line": 156,
+          "map": "dali",
+          "x": 139,
+          "y": 118,
+          "name": "Dimensional Device#sara"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Sealed Shrine",
+      "local_instance_ids": [
+        2
+      ],
+      "database_names": [
+        "Sealed Catacomb"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Sealed Shrine"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/instances/SealedShrine.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/SealedShrine.txt",
+          "line": 34,
+          "map": "monk_test",
+          "x": 309,
+          "y": 146,
+          "name": "Friar Patrick#edq"
+        },
+        {
+          "script": "npc/instances/SealedShrine.txt",
+          "line": 204,
+          "map": "monk_test",
+          "x": 306,
+          "y": 151,
+          "name": "Grave of Baphomet#edq"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Simulation Battle",
+      "local_instance_ids": [
+        78
+      ],
+      "database_names": [
+        "Simulation Battle"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 19 - Simulation Battle"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode19/BagotLaboratory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/BagotLaboratory.txt",
+          "line": 317,
+          "map": "jor_nest",
+          "x": 66,
+          "y": 260,
+          "name": "Arorong#ep19re2"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Sky Fortress",
+      "local_instance_ids": [
+        33
+      ],
+      "database_names": [
+        "Sky Fortress Invasion"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Sky Fortress Invasion"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/SkyFortress.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 63,
+          "map": "prt_q",
+          "x": 249,
+          "y": 79,
+          "name": "Scientist Doyeon#a1"
+        },
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 338,
+          "map": "prt_q",
+          "x": 243,
+          "y": 75,
+          "name": "Fortress Entry Warp Portal#1"
+        },
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 404,
+          "map": "dali02",
+          "x": 115,
+          "y": 61,
+          "name": "Fortress Entry Warp Portal#2"
+        },
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 451,
+          "map": "dali02",
+          "x": 122,
+          "y": 63,
+          "name": "Scientist Doyeon#a2"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Sticky Sea",
+      "local_instance_ids": [
+        308
+      ],
+      "database_names": [
+        "Sticky Sea"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 20 - Sticky Sea"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/episode20/Instances.txt",
+        "npc/custom/episode20/SidesAndDailies.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/SidesAndDailies.txt",
+          "line": 343,
+          "map": "jor_back4",
+          "x": 98,
+          "y": 258,
+          "name": "Koko#ep20_sticky_entry"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Temple God",
+      "local_instance_ids": [
+        27
+      ],
+      "database_names": [
+        "Temple of the Demon God"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Temple of the Demon God"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/TempleOfDemonGod.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/TempleOfDemonGod.txt",
+          "line": 10,
+          "map": "moro_cav",
+          "x": 41,
+          "y": 73,
+          "name": "Guardian Nidhogg#epeom01"
+        },
+        {
+          "script": "npc/re/instances/TempleOfDemonGod.txt",
+          "line": 110,
+          "map": "moro_cav",
+          "x": 45,
+          "y": 75,
+          "name": "Yggdrasil Lookalike#eom_gate"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Tomb of Remorse",
+      "local_instance_ids": [
+        63
+      ],
+      "database_names": [
+        "Tomb of Remorse"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Tomb of Remorse"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/TombOfRemorse.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/TombOfRemorse.txt",
+          "line": 194,
+          "map": "dali02",
+          "x": 78,
+          "y": 116,
+          "name": "Princess Tiara#tor_gate"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Tower of Trials",
+      "local_instance_ids": [],
+      "database_names": [],
+      "status": "unimplemented",
+      "warper_labels": [],
+      "warper_status": "not_applicable",
+      "enabled_scripts": [],
+      "entry_npc_candidates": [],
+      "client_map_status": "not_applicable"
+    },
+    {
+      "name": "Villa of Deception",
+      "local_instance_ids": [
+        72,
+        73
+      ],
+      "database_names": [
+        "Villa of Deception",
+        "Villa of Deception Advanced"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 18 - Villa of Deception (Normal / Advanced)"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/VillaofDeception.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/VillaofDeception.txt",
+          "line": 25,
+          "map": "wolfvill",
+          "x": 79,
+          "y": 260,
+          "name": "Aira#con"
+        },
+        {
+          "script": "npc/re/instances/VillaofDeception.txt",
+          "line": 25,
+          "map": "wolfvill",
+          "x": 79,
+          "y": 260,
+          "name": "Aira#con"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Water Garden",
+      "local_instance_ids": [
+        56,
+        57
+      ],
+      "database_names": [
+        "Water Garden",
+        "Water Garden Hard"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Episode 17.2 - Water Garden (Normal / Hard)"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/WaterGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WaterGarden.txt",
+          "line": 13,
+          "map": "ba_maison",
+          "x": 238,
+          "y": 44,
+          "name": "Harad#jh_ba1"
+        },
+        {
+          "script": "npc/re/instances/WaterGarden.txt",
+          "line": 13,
+          "map": "ba_maison",
+          "x": 238,
+          "y": 44,
+          "name": "Harad#jh_ba1"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Wave Mode",
+      "local_instance_ids": [
+        22,
+        23
+      ],
+      "database_names": [
+        "Wave Mode - Forest",
+        "Wave Mode - Sky"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Wave Mode (Forest / Sky)"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/WaveMode.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WaveMode.txt",
+          "line": 136,
+          "map": "prontera",
+          "x": 146,
+          "y": 75,
+          "name": "Zonda Rep#pron"
+        },
+        {
+          "script": "npc/re/instances/WaveMode.txt",
+          "line": 136,
+          "map": "prontera",
+          "x": 146,
+          "y": 75,
+          "name": "Zonda Rep#pron"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Weekend Memorial",
+      "local_instance_ids": [
+        45
+      ],
+      "database_names": [
+        "Weekend Dungeon"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Weekend Memorial"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/WeekendDungeon.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WeekendDungeon.txt",
+          "line": 10,
+          "map": "pay_arche",
+          "x": 44,
+          "y": 124,
+          "name": "Marry Jae"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Werner's Laboratory",
+      "local_instance_ids": [
+        36,
+        37
+      ],
+      "database_names": [
+        "Werner Laboratory central room#1",
+        "Werner Laboratory central room#2"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Werner Laboratory (Daily)"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/WernerLaboratoryCentralRoom.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 19,
+          "map": "slabw01",
+          "x": 236,
+          "y": 91,
+          "name": "Rookie#ep162_04"
+        },
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 150,
+          "map": "slabw01",
+          "x": 246,
+          "y": 88,
+          "name": "Central_room#evt_gate01"
+        },
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 19,
+          "map": "slabw01",
+          "x": 236,
+          "y": 91,
+          "name": "Rookie#ep162_04"
+        },
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 150,
+          "map": "slabw01",
+          "x": 246,
+          "y": 88,
+          "name": "Central_room#evt_gate01"
+        }
+      ],
+      "client_map_status": "all_available"
+    },
+    {
+      "name": "Wolfchev's Laboratory",
+      "local_instance_ids": [
+        11
+      ],
+      "database_names": [
+        "Wolfchev's Laboratory"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Wolfchev's Laboratory"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/re/instances/WolfchevLaboratory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WolfchevLaboratory.txt",
+          "line": 653,
+          "map": "lhz_dun04",
+          "x": 151,
+          "y": 276,
+          "name": "Researcher#memo"
+        },
+        {
+          "script": "npc/re/instances/WolfchevLaboratory.txt",
+          "line": 862,
+          "map": "lhz_dun04",
+          "x": 147,
+          "y": 279,
+          "name": "Laboratory Entrance#memo"
+        }
+      ],
+      "client_map_status": "all_available"
+    }
+  ],
+  "local_instances": [
+    {
+      "id": 1,
+      "name": "Endless Tower",
+      "maps": [
+        "1@tower",
+        "2@tower",
+        "3@tower",
+        "4@tower",
+        "5@tower",
+        "6@tower"
+      ],
+      "name_references": [
+        "npc/instances/EndlessTower.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/EndlessTower.txt",
+          "line": 205,
+          "map": "e_tower",
+          "x": 81,
+          "y": 105,
+          "name": "Tower Protection Stone"
+        }
+      ],
+      "warper_labels": [
+        "Endless Tower"
+      ],
+      "client_maps": {
+        "1@tower": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@tower.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@tower.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@tower.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@tower": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@tower.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@tower.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@tower.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "3@tower": {
+          "gat": {
+            "direct": true,
+            "resolved": "3@tower.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "3@tower.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "3@tower.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "4@tower": {
+          "gat": {
+            "direct": true,
+            "resolved": "4@tower.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "4@tower.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "4@tower.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "5@tower": {
+          "gat": {
+            "direct": true,
+            "resolved": "5@tower.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "5@tower.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "5@tower.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "6@tower": {
+          "gat": {
+            "direct": true,
+            "resolved": "6@tower.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "6@tower.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "6@tower.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 2,
+      "name": "Sealed Catacomb",
+      "maps": [
+        "1@cata",
+        "2@cata"
+      ],
+      "name_references": [
+        "npc/instances/SealedShrine.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/SealedShrine.txt",
+          "line": 34,
+          "map": "monk_test",
+          "x": 309,
+          "y": 146,
+          "name": "Friar Patrick#edq"
+        },
+        {
+          "script": "npc/instances/SealedShrine.txt",
+          "line": 204,
+          "map": "monk_test",
+          "x": 306,
+          "y": 151,
+          "name": "Grave of Baphomet#edq"
+        }
+      ],
+      "warper_labels": [
+        "Sealed Shrine"
+      ],
+      "client_maps": {
+        "1@cata": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@cata.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@cata.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@cata.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@cata": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@cata.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@cata.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@cata.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 3,
+      "name": "Orc's Memory",
+      "maps": [
+        "1@orcs",
+        "2@orcs"
+      ],
+      "name_references": [
+        "npc/instances/OrcsMemory.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/OrcsMemory.txt",
+          "line": 38,
+          "map": "gef_fild10",
+          "x": 242,
+          "y": 202,
+          "name": "Dimensional Gorge Piece"
+        }
+      ],
+      "warper_labels": [
+        "Orc's Memory"
+      ],
+      "client_maps": {
+        "1@orcs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@orcs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@orcs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@orcs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@orcs": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@orcs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@orcs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@orcs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 4,
+      "name": "Nidhoggur's Nest",
+      "maps": [
+        "1@nyd",
+        "2@nyd"
+      ],
+      "name_references": [
+        "npc/instances/NydhoggsNest.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/instances/NydhoggsNest.txt",
+          "line": 23,
+          "map": "nyd_dun02",
+          "x": 100,
+          "y": 201,
+          "name": "Yggdrasil Gatekeeper"
+        }
+      ],
+      "warper_labels": [
+        "Nidhoggur's Nest"
+      ],
+      "client_maps": {
+        "1@nyd": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@nyd.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@nyd.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@nyd.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@nyd": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@nyd.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@nyd.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@nyd.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 5,
+      "name": "Mistwood Maze",
+      "maps": [
+        "1@mist"
+      ],
+      "name_references": [
+        "npc/re/instances/HazyForest.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HazyForest.txt",
+          "line": 20,
+          "map": "bif_fild01",
+          "x": 158,
+          "y": 340,
+          "name": "Laphine Soldier#mist"
+        },
+        {
+          "script": "npc/re/instances/HazyForest.txt",
+          "line": 136,
+          "map": "bif_fild01",
+          "x": 161,
+          "y": 355,
+          "name": "Log Tunnel"
+        }
+      ],
+      "warper_labels": [
+        "Hazy Forest"
+      ],
+      "client_maps": {
+        "1@mist": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@mist.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@mist.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@mist.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 6,
+      "name": "Culvert",
+      "maps": [
+        "1@pump",
+        "2@pump"
+      ],
+      "name_references": [
+        "npc/re/instances/MalangdoCulvert.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/MalangdoCulvert.txt",
+          "line": 270,
+          "map": "mal_in01",
+          "x": 160,
+          "y": 34,
+          "name": "Missing, the Cleaner"
+        }
+      ],
+      "warper_labels": [
+        "Malangdo Culvert"
+      ],
+      "client_maps": {
+        "1@pump": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@pump.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@pump.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@pump.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@pump": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@pump.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@pump.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@pump.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 7,
+      "name": "Octopus Cave",
+      "maps": [
+        "1@cash"
+      ],
+      "name_references": [
+        "npc/re/instances/OctopusCave.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/OctopusCave.txt",
+          "line": 19,
+          "map": "mal_dun01",
+          "x": 151,
+          "y": 235,
+          "name": "Starfish"
+        },
+        {
+          "script": "npc/re/instances/OctopusCave.txt",
+          "line": 115,
+          "map": "mal_dun01",
+          "x": 153,
+          "y": 237,
+          "name": "Weird Entrance"
+        }
+      ],
+      "warper_labels": [
+        "Octopus Cave"
+      ],
+      "client_maps": {
+        "1@cash": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@cash.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@cash.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@cash.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 8,
+      "name": "Bangungot Hospital 2F",
+      "maps": [
+        "1@ma_h"
+      ],
+      "name_references": [
+        "npc/re/instances/BangungotHospital.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/BangungotHospital.txt",
+          "line": 22,
+          "map": "ma_dun01",
+          "x": 147,
+          "y": 10,
+          "name": "Nurse#ma_dun01"
+        }
+      ],
+      "warper_labels": [
+        "Bangungot Hospital 2F"
+      ],
+      "client_maps": {
+        "1@ma_h": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ma_h.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ma_h.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ma_h.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 9,
+      "name": "Buwaya Cave",
+      "maps": [
+        "1@ma_c"
+      ],
+      "name_references": [
+        "npc/re/instances/BuwayaCave.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/BuwayaCave.txt",
+          "line": 19,
+          "map": "ma_fild02",
+          "x": 312,
+          "y": 317,
+          "name": "Guard#buwaya_cave"
+        },
+        {
+          "script": "npc/re/instances/BuwayaCave.txt",
+          "line": 104,
+          "map": "ma_fild02",
+          "x": 315,
+          "y": 323,
+          "name": "Cave Entrance#buwaya"
+        }
+      ],
+      "warper_labels": [
+        "Buwaya Cave"
+      ],
+      "client_maps": {
+        "1@ma_c": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ma_c.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ma_c.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ma_c.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 10,
+      "name": "Bakonawa Lake",
+      "maps": [
+        "1@ma_b"
+      ],
+      "name_references": [
+        "npc/re/instances/BakonawaLake.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/BakonawaLake.txt",
+          "line": 21,
+          "map": "ma_scene01",
+          "x": 174,
+          "y": 179,
+          "name": "Taho"
+        }
+      ],
+      "warper_labels": [
+        "Bakonawa Lake"
+      ],
+      "client_maps": {
+        "1@ma_b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ma_b.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ma_b.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ma_b.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 11,
+      "name": "Wolfchev's Laboratory",
+      "maps": [
+        "1@lhz"
+      ],
+      "name_references": [
+        "npc/re/instances/WolfchevLaboratory.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WolfchevLaboratory.txt",
+          "line": 653,
+          "map": "lhz_dun04",
+          "x": 151,
+          "y": 276,
+          "name": "Researcher#memo"
+        },
+        {
+          "script": "npc/re/instances/WolfchevLaboratory.txt",
+          "line": 862,
+          "map": "lhz_dun04",
+          "x": 147,
+          "y": 279,
+          "name": "Laboratory Entrance#memo"
+        }
+      ],
+      "warper_labels": [
+        "Wolfchev's Laboratory"
+      ],
+      "client_maps": {
+        "1@lhz": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@lhz.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@lhz.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@lhz.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 12,
+      "name": "Old Glast Heim",
+      "maps": [
+        "1@gl_k",
+        "2@gl_k"
+      ],
+      "name_references": [
+        "npc/re/instances/OldGlastHeim.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/OldGlastHeim.txt",
+          "line": 24,
+          "map": "glast_01",
+          "x": 204,
+          "y": 273,
+          "name": "Hugin"
+        }
+      ],
+      "warper_labels": [
+        "Old Glast Heim"
+      ],
+      "client_maps": {
+        "1@gl_k": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gl_k.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gl_k.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gl_k.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@gl_k": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@gl_k.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@gl_k.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@gl_k.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 13,
+      "name": "Eclage Interior",
+      "maps": [
+        "1@ecl"
+      ],
+      "name_references": [
+        "npc/re/instances/EclageInterior.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/EclageInterior.txt",
+          "line": 17,
+          "map": "ecl_hub01",
+          "x": 132,
+          "y": 12,
+          "name": "Chief of Staff#tl02"
+        },
+        {
+          "script": "npc/re/instances/EclageInterior.txt",
+          "line": 57,
+          "map": "ecl_hub01",
+          "x": 130,
+          "y": 15,
+          "name": "It is closed shut."
+        }
+      ],
+      "warper_labels": [
+        "Eclage Interior"
+      ],
+      "client_maps": {
+        "1@ecl": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ecl.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ecl.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ecl.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 14,
+      "name": "Sara's Memories",
+      "maps": [
+        "1@sara"
+      ],
+      "name_references": [
+        "npc/re/instances/SaraMemory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/SaraMemory.txt",
+          "line": 156,
+          "map": "dali",
+          "x": 139,
+          "y": 118,
+          "name": "Dimensional Device#sara"
+        }
+      ],
+      "warper_labels": [
+        "Sara Memory"
+      ],
+      "client_maps": {
+        "1@sara": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@sara.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@sara.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@sara.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 15,
+      "name": "Geffen Magic Tournament",
+      "maps": [
+        "1@gef",
+        "1@gef_in",
+        "1@ge_st"
+      ],
+      "name_references": [
+        "npc/custom/warper.txt",
+        "npc/custom/official/GeffenMagicTournament.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/official/GeffenMagicTournament.txt",
+          "line": 614,
+          "map": "dali",
+          "x": 100,
+          "y": 147,
+          "name": "Dimensional Device#gefma"
+        },
+        {
+          "script": "npc/custom/official/GeffenMagicTournament.txt",
+          "line": 683,
+          "map": "dali",
+          "x": 98,
+          "y": 141,
+          "name": "Emmitt White"
+        }
+      ],
+      "warper_labels": [
+        "Geffen Magic Tournament"
+      ],
+      "client_maps": {
+        "1@gef": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gef.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gef.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gef.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@gef_in": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gef_in.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gef_in.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gef_in.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@ge_st": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ge_st.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ge_st.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ge_st.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 16,
+      "name": "Horror Toy Factory",
+      "maps": [
+        "1@xm_d"
+      ],
+      "name_references": [
+        "npc/re/instances/HorrorToyFactory.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HorrorToyFactory.txt",
+          "line": 11,
+          "map": "xmas",
+          "x": 237,
+          "y": 303,
+          "name": "Catherine Jet Johnson"
+        },
+        {
+          "script": "npc/re/instances/HorrorToyFactory.txt",
+          "line": 174,
+          "map": "xmas",
+          "x": 233,
+          "y": 305,
+          "name": "Factory Dimension Telep"
+        }
+      ],
+      "warper_labels": [
+        "Horror Toy Factory"
+      ],
+      "client_maps": {
+        "1@xm_d": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@xm_d.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@xm_d.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@xm_d.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 17,
+      "name": "Faceworm's Nest",
+      "maps": [
+        "1@face"
+      ],
+      "name_references": [
+        "npc/re/instances/FacewormsNest.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/FacewormsNest.txt",
+          "line": 321,
+          "map": "dali",
+          "x": 80,
+          "y": 60,
+          "name": "Magic Scholar"
+        },
+        {
+          "script": "npc/re/instances/FacewormsNest.txt",
+          "line": 392,
+          "map": "dali",
+          "x": 72,
+          "y": 55,
+          "name": "Interdimensional Device"
+        }
+      ],
+      "warper_labels": [
+        "Faceworms Nest"
+      ],
+      "client_maps": {
+        "1@face": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@face.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@face.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@face.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 18,
+      "name": "Ghost Palace",
+      "maps": [
+        "1@spa"
+      ],
+      "name_references": [
+        "npc/re/instances/GhostPalace.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/GhostPalace.txt",
+          "line": 11,
+          "map": "dali02",
+          "x": 43,
+          "y": 129,
+          "name": "Unpleasant Royal Guard#"
+        },
+        {
+          "script": "npc/re/instances/GhostPalace.txt",
+          "line": 65,
+          "map": "dali02",
+          "x": 40,
+          "y": 134,
+          "name": "Interdimensional Device#dk"
+        }
+      ],
+      "warper_labels": [
+        "Ghost Palace"
+      ],
+      "client_maps": {
+        "1@spa": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@spa.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@spa.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@spa.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 19,
+      "name": "Devil's Tower",
+      "maps": [
+        "1@tnm1",
+        "1@tnm2",
+        "1@tnm3"
+      ],
+      "name_references": [
+        "npc/re/instances/DevilTower.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/DevilTower.txt",
+          "line": 216,
+          "map": "dali02",
+          "x": 137,
+          "y": 121,
+          "name": "Magic Scholar Artie#tnm"
+        },
+        {
+          "script": "npc/re/instances/DevilTower.txt",
+          "line": 275,
+          "map": "dali02",
+          "x": 141,
+          "y": 120,
+          "name": "Dimensional Device#tnm0"
+        }
+      ],
+      "warper_labels": [
+        "Devil Tower"
+      ],
+      "client_maps": {
+        "1@tnm1": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@tnm1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@tnm1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@tnm1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@tnm2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@tnm2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@tnm2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@tnm2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@tnm3": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@tnm3.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@tnm3.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@tnm3.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 20,
+      "name": "Assault on the Airship",
+      "maps": [
+        "1@air1",
+        "1@air2"
+      ],
+      "name_references": [
+        "npc/re/instances/AirshipAssault.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/AirshipAssault.txt",
+          "line": 24,
+          "map": "dali02",
+          "x": 142,
+          "y": 81,
+          "name": "Dimensional Device#air1"
+        }
+      ],
+      "warper_labels": [
+        "Airship Raid"
+      ],
+      "client_maps": {
+        "1@air1": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@air1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@air1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@air1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@air2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@air2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@air2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@air2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 21,
+      "name": "Fenrir and Sarah",
+      "maps": [
+        "1@glast"
+      ],
+      "name_references": [
+        "npc/re/instances/SarahAndFenrir.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/SarahAndFenrir.txt",
+          "line": 10,
+          "map": "dali02",
+          "x": 97,
+          "y": 142,
+          "name": "Professor Bernhard#a1"
+        },
+        {
+          "script": "npc/re/instances/SarahAndFenrir.txt",
+          "line": 141,
+          "map": "dali02",
+          "x": 99,
+          "y": 148,
+          "name": "Dimensional Device#XX1"
+        }
+      ],
+      "warper_labels": [
+        "Sarah and Fenrir"
+      ],
+      "client_maps": {
+        "1@glast": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@glast.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@glast.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@glast.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 22,
+      "name": "Wave Mode - Forest",
+      "maps": [
+        "1@def01"
+      ],
+      "name_references": [
+        "npc/re/instances/WaveMode.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WaveMode.txt",
+          "line": 136,
+          "map": "prontera",
+          "x": 146,
+          "y": 75,
+          "name": "Zonda Rep#pron"
+        }
+      ],
+      "warper_labels": [
+        "Wave Mode (Forest / Sky)"
+      ],
+      "client_maps": {
+        "1@def01": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@def01.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@def01.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@def01.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 23,
+      "name": "Wave Mode - Sky",
+      "maps": [
+        "1@def02"
+      ],
+      "name_references": [
+        "npc/re/instances/WaveMode.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WaveMode.txt",
+          "line": 136,
+          "map": "prontera",
+          "x": 146,
+          "y": 75,
+          "name": "Zonda Rep#pron"
+        }
+      ],
+      "warper_labels": [
+        "Wave Mode (Forest / Sky)"
+      ],
+      "client_maps": {
+        "1@def02": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@def02.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@def02.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@def02.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 24,
+      "name": "Nightmarish Jitterbug",
+      "maps": [
+        "1@jtb"
+      ],
+      "name_references": [
+        "npc/re/instances/NightmarishJitterbug.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/NightmarishJitterbug.txt",
+          "line": 116,
+          "map": "moc_para01",
+          "x": 29,
+          "y": 95,
+          "name": "Runane#sara"
+        }
+      ],
+      "warper_labels": [
+        "Nightmarish Jitterbug"
+      ],
+      "client_maps": {
+        "1@jtb": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@jtb.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@jtb.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@jtb.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 25,
+      "name": "Isle of Bios",
+      "maps": [
+        "1@dth1",
+        "1@dth2",
+        "1@dth3"
+      ],
+      "name_references": [
+        "npc/re/instances/IsleOfBios.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/IsleOfBios.txt",
+          "line": 10,
+          "map": "moro_cav",
+          "x": 50,
+          "y": 64,
+          "name": "Yellow Seed#bios"
+        }
+      ],
+      "warper_labels": [
+        "Bios Island"
+      ],
+      "client_maps": {
+        "1@dth1": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@dth1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@dth1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@dth1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@dth2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@dth2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@dth2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@dth2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@dth3": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@dth3.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@dth3.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@dth3.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 26,
+      "name": "Morse's Cave",
+      "maps": [
+        "1@rev"
+      ],
+      "name_references": [
+        "npc/re/instances/MorseCave.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/MorseCave.txt",
+          "line": 11,
+          "map": "moro_cav",
+          "x": 61,
+          "y": 69,
+          "name": "Senior Tracker#a1"
+        },
+        {
+          "script": "npc/re/instances/MorseCave.txt",
+          "line": 201,
+          "map": "moro_cav",
+          "x": 57,
+          "y": 69,
+          "name": "Red Flower#a1"
+        }
+      ],
+      "warper_labels": [
+        "Morse's Cave"
+      ],
+      "client_maps": {
+        "1@rev": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@rev.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@rev.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@rev.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 27,
+      "name": "Temple of the Demon God",
+      "maps": [
+        "1@eom"
+      ],
+      "name_references": [
+        "npc/re/instances/TempleOfDemonGod.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/TempleOfDemonGod.txt",
+          "line": 10,
+          "map": "moro_cav",
+          "x": 41,
+          "y": 73,
+          "name": "Guardian Nidhogg#epeom01"
+        },
+        {
+          "script": "npc/re/instances/TempleOfDemonGod.txt",
+          "line": 110,
+          "map": "moro_cav",
+          "x": 45,
+          "y": 75,
+          "name": "Yggdrasil Lookalike#eom_gate"
+        }
+      ],
+      "warper_labels": [
+        "Temple of the Demon God"
+      ],
+      "client_maps": {
+        "1@eom": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@eom.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@eom.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@eom.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 28,
+      "name": "Central Laboratory",
+      "maps": [
+        "1@lab"
+      ],
+      "name_references": [
+        "npc/re/instances/CentralLaboratory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/CentralLaboratory.txt",
+          "line": 11,
+          "map": "verus01",
+          "x": 153,
+          "y": 155,
+          "name": "Temporary Dimension-mov#pa0829_01"
+        },
+        {
+          "script": "npc/re/instances/CentralLaboratory.txt",
+          "line": 48,
+          "map": "verus01",
+          "x": 149,
+          "y": 155,
+          "name": "Civilization Explorer#pa0829_01"
+        }
+      ],
+      "warper_labels": [
+        "Central Laboratory"
+      ],
+      "client_maps": {
+        "1@lab": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@lab.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@lab.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@lab.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 29,
+      "name": "Last room",
+      "maps": [
+        "1@uns"
+      ],
+      "name_references": [
+        "npc/re/instances/LastRoom.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/LastRoom.txt",
+          "line": 11,
+          "map": "un_myst",
+          "x": 163,
+          "y": 38,
+          "name": "Mark"
+        }
+      ],
+      "warper_labels": [
+        "Last Room"
+      ],
+      "client_maps": {
+        "1@uns": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@uns.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@uns.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@uns.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 30,
+      "name": "Charleston in Distress",
+      "maps": [
+        "1@mcd"
+      ],
+      "name_references": [
+        "npc/re/instances/CharlestonCrisis.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/CharlestonCrisis.txt",
+          "line": 123,
+          "map": "verus04",
+          "x": 81,
+          "y": 112,
+          "name": "Machine#mcd"
+        }
+      ],
+      "warper_labels": [
+        "Charleston Crisis"
+      ],
+      "client_maps": {
+        "1@mcd": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@mcd.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@mcd.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@mcd.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 31,
+      "name": "Ritual of Blessing",
+      "maps": [
+        "2@mir"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_16_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_16_1.txt",
+          "line": 1634,
+          "map": "prt_lib",
+          "x": 91,
+          "y": 85,
+          "name": "Mage Nillem#ep16_warp"
+        },
+        {
+          "script": "npc/re/quests/quests_16_1.txt",
+          "line": 1829,
+          "map": "prt_lib",
+          "x": 88,
+          "y": 90,
+          "name": "Room of Consciousness#evt_gate01"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "2@mir": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@mir.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@mir.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@mir.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 32,
+      "name": "Room of Consciousness",
+      "maps": [
+        "1@mir"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_16_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_16_1.txt",
+          "line": 2368,
+          "map": "prt_lib_q",
+          "x": 91,
+          "y": 85,
+          "name": "Nillem#ep16_lib_q"
+        },
+        {
+          "script": "npc/re/quests/quests_16_1.txt",
+          "line": 2661,
+          "map": "prt_lib_q",
+          "x": 88,
+          "y": 90,
+          "name": "Swaying Space#evt_gate02"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@mir": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@mir.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@mir.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@mir.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 33,
+      "name": "Sky Fortress Invasion",
+      "maps": [
+        "1@sthb",
+        "1@sthc",
+        "1@sthd"
+      ],
+      "name_references": [
+        "npc/re/instances/SkyFortress.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 63,
+          "map": "prt_q",
+          "x": 249,
+          "y": 79,
+          "name": "Scientist Doyeon#a1"
+        },
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 338,
+          "map": "prt_q",
+          "x": 243,
+          "y": 75,
+          "name": "Fortress Entry Warp Portal#1"
+        },
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 404,
+          "map": "dali02",
+          "x": 115,
+          "y": 61,
+          "name": "Fortress Entry Warp Portal#2"
+        },
+        {
+          "script": "npc/re/instances/SkyFortress.txt",
+          "line": 451,
+          "map": "dali02",
+          "x": 122,
+          "y": 63,
+          "name": "Scientist Doyeon#a2"
+        }
+      ],
+      "warper_labels": [
+        "Sky Fortress Invasion"
+      ],
+      "client_maps": {
+        "1@sthb": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@sthb.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@sthb.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@sthb.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@sthc": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@sthc.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@sthc.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@sthc.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@sthd": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@sthd.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@sthd.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@sthd.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 34,
+      "name": "Heart Hunter War Base 1",
+      "maps": [
+        "1@swat"
+      ],
+      "name_references": [
+        "npc/re/instances/HeartHunterWarBase.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 11,
+          "map": "ein_fild04",
+          "x": 275,
+          "y": 342,
+          "name": "Striker Unit Commander#"
+        },
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 77,
+          "map": "ein_fild04",
+          "x": 281,
+          "y": 337,
+          "name": "Julian#ep16.2"
+        }
+      ],
+      "warper_labels": [
+        "Heart Hunter War Base"
+      ],
+      "client_maps": {
+        "1@swat": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@swat.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@swat.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@swat.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 35,
+      "name": "Heart Hunter War Base 2",
+      "maps": [
+        "1@swat"
+      ],
+      "name_references": [
+        "npc/re/instances/HeartHunterWarBase.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 11,
+          "map": "ein_fild04",
+          "x": 275,
+          "y": 342,
+          "name": "Striker Unit Commander#"
+        },
+        {
+          "script": "npc/re/instances/HeartHunterWarBase.txt",
+          "line": 77,
+          "map": "ein_fild04",
+          "x": 281,
+          "y": 337,
+          "name": "Julian#ep16.2"
+        }
+      ],
+      "warper_labels": [
+        "Heart Hunter War Base"
+      ],
+      "client_maps": {
+        "1@swat": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@swat.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@swat.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@swat.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 36,
+      "name": "Werner Laboratory central room#1",
+      "maps": [
+        "1@slw"
+      ],
+      "name_references": [
+        "npc/re/instances/WernerLaboratoryCentralRoom.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 19,
+          "map": "slabw01",
+          "x": 236,
+          "y": 91,
+          "name": "Rookie#ep162_04"
+        },
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 150,
+          "map": "slabw01",
+          "x": 246,
+          "y": 88,
+          "name": "Central_room#evt_gate01"
+        }
+      ],
+      "warper_labels": [
+        "Werner Laboratory (Daily)"
+      ],
+      "client_maps": {
+        "1@slw": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@slw.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@slw.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@slw.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 37,
+      "name": "Werner Laboratory central room#2",
+      "maps": [
+        "1@slw"
+      ],
+      "name_references": [
+        "npc/re/instances/WernerLaboratoryCentralRoom.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 19,
+          "map": "slabw01",
+          "x": 236,
+          "y": 91,
+          "name": "Rookie#ep162_04"
+        },
+        {
+          "script": "npc/re/instances/WernerLaboratoryCentralRoom.txt",
+          "line": 150,
+          "map": "slabw01",
+          "x": 246,
+          "y": 88,
+          "name": "Central_room#evt_gate01"
+        }
+      ],
+      "warper_labels": [
+        "Werner Laboratory (Daily)"
+      ],
+      "client_maps": {
+        "1@slw": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@slw.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@slw.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@slw.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 38,
+      "name": "Infinite Space",
+      "maps": [
+        "1@infi"
+      ],
+      "name_references": [
+        "npc/re/instances/InfiniteSpace.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/InfiniteSpace.txt",
+          "line": 13,
+          "map": "cmd_fild07",
+          "x": 58,
+          "y": 278,
+          "name": "Reckless Explorer#pa0829_01"
+        },
+        {
+          "script": "npc/re/instances/InfiniteSpace.txt",
+          "line": 106,
+          "map": "cmd_fild07",
+          "x": 54,
+          "y": 280,
+          "name": "Temporary Entrance#pa0829_01"
+        }
+      ],
+      "warper_labels": [
+        "Infinite Space (Normal / Hard)"
+      ],
+      "client_maps": {
+        "1@infi": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@infi.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@infi.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@infi.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 39,
+      "name": "Regenschirm",
+      "maps": [
+        "1@rgsr"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 882,
+          "map": "lighthalzen",
+          "x": 55,
+          "y": 278,
+          "name": "Rekenber Guard Oscar#171_light"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@rgsr": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@rgsr.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@rgsr.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@rgsr.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 40,
+      "name": "Sealed OS",
+      "maps": [
+        "1@os_b"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 629,
+          "map": "ein_fild03",
+          "x": 278,
+          "y": 269,
+          "name": "Rebellion Crew#171_einf"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@os_b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@os_b.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@os_b.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@os_b.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 41,
+      "name": "OS Occupation",
+      "maps": [
+        "1@os_a"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 7569,
+          "map": "sp_cor",
+          "x": 163,
+          "y": 56,
+          "name": "Est#171_ocp"
+        }
+      ],
+      "warper_labels": [
+        "Episode 17.1 - OS Occupation"
+      ],
+      "client_maps": {
+        "1@os_a": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@os_a.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@os_a.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@os_a.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 42,
+      "name": "2nd OS Search",
+      "maps": [
+        "1@os_a"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 7633,
+          "map": "sp_cor",
+          "x": 160,
+          "y": 55,
+          "name": "Operation Officer#171_ocp"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@os_a": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@os_a.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@os_a.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@os_a.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 43,
+      "name": "Cor Memorial",
+      "maps": [
+        "1@cor"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_17_1.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 6220,
+          "map": "sp_cor",
+          "x": 180,
+          "y": 169,
+          "name": "Elena Volkova#rm171_1"
+        },
+        {
+          "script": "npc/re/quests/quests_17_1.txt",
+          "line": 7694,
+          "map": "sp_cor",
+          "x": 113,
+          "y": 130,
+          "name": "Rebellion#rm171_8"
+        }
+      ],
+      "warper_labels": [
+        "Episode 17.1 - Cor Memorial"
+      ],
+      "client_maps": {
+        "1@cor": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@cor.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@cor.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@cor.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 44,
+      "name": "Half Moon In The Daylight",
+      "maps": [
+        "1@pop1",
+        "1@pop2",
+        "1@pop3"
+      ],
+      "name_references": [
+        "npc/re/instances/EddaHalfMoonInTheDaylight.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/EddaHalfMoonInTheDaylight.txt",
+          "line": 11,
+          "map": "rachel",
+          "x": 174,
+          "y": 138,
+          "name": "High Priestess Niren#HM"
+        },
+        {
+          "script": "npc/re/instances/EddaHalfMoonInTheDaylight.txt",
+          "line": 273,
+          "map": "rachel",
+          "x": 176,
+          "y": 145,
+          "name": "Dream#poent"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@pop1": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@pop1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@pop1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@pop1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@pop2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@pop2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@pop2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@pop2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@pop3": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@pop3.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@pop3.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@pop3.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 45,
+      "name": "Weekend Dungeon",
+      "maps": [
+        "1@md_pay"
+      ],
+      "name_references": [
+        "npc/re/instances/WeekendDungeon.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WeekendDungeon.txt",
+          "line": 10,
+          "map": "pay_arche",
+          "x": 44,
+          "y": 124,
+          "name": "Marry Jae"
+        }
+      ],
+      "warper_labels": [
+        "Weekend Memorial"
+      ],
+      "client_maps": {
+        "1@md_pay": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@md_pay.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@md_pay.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@md_pay.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 46,
+      "name": "Friday Dungeon",
+      "maps": [
+        "1@md_gef"
+      ],
+      "name_references": [
+        "npc/re/instances/FridayDungeon.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/FridayDungeon.txt",
+          "line": 11,
+          "map": "gef_tower",
+          "x": 57,
+          "y": 170,
+          "name": "Marry Jay"
+        }
+      ],
+      "warper_labels": [
+        "Friday Memorial"
+      ],
+      "client_maps": {
+        "1@md_gef": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@md_gef.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@md_gef.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@md_gef.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 47,
+      "name": "Poring Village",
+      "maps": [
+        "1@begi"
+      ],
+      "name_references": [
+        "npc/re/instances/PoringVillage.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/PoringVillage.txt",
+          "line": 171,
+          "map": "prt_fild05",
+          "x": 145,
+          "y": 235,
+          "name": "Emily#0"
+        }
+      ],
+      "warper_labels": [
+        "Poring Village"
+      ],
+      "client_maps": {
+        "1@begi": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@begi.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@begi.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@begi.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 49,
+      "name": "Old Glast Heim (Challenge Mode)",
+      "maps": [
+        "1@gl_he"
+      ],
+      "name_references": [
+        "npc/custom/instances/OldGlastHeimChallenge.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/OldGlastHeimChallenge.txt",
+          "line": 44,
+          "map": "glast_01",
+          "x": 143,
+          "y": 288,
+          "name": "Oscar#oghcm_gate"
+        }
+      ],
+      "warper_labels": [
+        "Old Glast Heim",
+        "Old Glast Heim Challenge"
+      ],
+      "client_maps": {
+        "1@gl_he": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gl_he.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gl_he.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gl_he.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 50,
+      "name": "Old Glast Heim (Beginner)",
+      "maps": [
+        "1@gl_k2"
+      ],
+      "name_references": [
+        "npc/custom/instances/OldGlastHeimBeginner.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/OldGlastHeimBeginner.txt",
+          "line": 25,
+          "map": "glast_01",
+          "x": 196,
+          "y": 235,
+          "name": "Unique Clown#oghb"
+        }
+      ],
+      "warper_labels": [
+        "Old Glast Heim",
+        "Old Glast Heim Beginner"
+      ],
+      "client_maps": {
+        "1@gl_k2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gl_k.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gl_k.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gl_k.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 51,
+      "name": "Fall of Glast Heim (Normal)",
+      "maps": [
+        "1@gl_prq"
+      ],
+      "name_references": [
+        "npc/custom/instances/FallOfGlastHeim.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/FallOfGlastHeim.txt",
+          "line": 18,
+          "map": "glast_01",
+          "x": 241,
+          "y": 290,
+          "name": "Oscar#fogh_gate"
+        }
+      ],
+      "warper_labels": [
+        "Fall of Glast Heim"
+      ],
+      "client_maps": {
+        "1@gl_prq": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gl_prq.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gl_prq.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gl_prq.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 52,
+      "name": "Fall of Glast Heim (Advanced)",
+      "maps": [
+        "1@gl_prq"
+      ],
+      "name_references": [
+        "npc/custom/instances/FallOfGlastHeim.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/FallOfGlastHeim.txt",
+          "line": 18,
+          "map": "glast_01",
+          "x": 241,
+          "y": 290,
+          "name": "Oscar#fogh_gate"
+        }
+      ],
+      "warper_labels": [
+        "Fall of Glast Heim"
+      ],
+      "client_maps": {
+        "1@gl_prq": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gl_prq.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gl_prq.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gl_prq.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 53,
+      "name": "Twilight Garden",
+      "maps": [
+        "1@bamn",
+        "1@bamq"
+      ],
+      "name_references": [
+        "npc/re/quests/quests_17_2.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_2.txt",
+          "line": 3890,
+          "map": "ba_in01",
+          "x": 51,
+          "y": 157,
+          "name": "Est#ep172_est01"
+        }
+      ],
+      "warper_labels": [
+        "Twilight Garden (Story)"
+      ],
+      "client_maps": {
+        "1@bamn": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@bamn.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@bamn.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@bamn.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@bamq": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@bamq.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@bamq.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@bamq.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 54,
+      "name": "Hey! Sweety",
+      "maps": [
+        "1@bamq",
+        "1@bamn"
+      ],
+      "name_references": [
+        "npc/re/instances/TwilightGarden.txt",
+        "npc/re/quests/quests_17_2.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/quests_17_2.txt",
+          "line": 9153,
+          "map": "ba_in01",
+          "x": 28,
+          "y": 255,
+          "name": "Manager Beta Almond#ep172_amd01"
+        }
+      ],
+      "warper_labels": [
+        "Hey! Sweety"
+      ],
+      "client_maps": {
+        "1@bamq": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@bamq.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@bamq.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@bamq.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@bamn": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@bamn.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@bamn.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@bamn.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 55,
+      "name": "Farm Lost in Time",
+      "maps": [
+        "1@lost"
+      ],
+      "name_references": [
+        "npc/re/instances/LostFarm.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/LostFarm.txt",
+          "line": 12,
+          "map": "ba_maison",
+          "x": 311,
+          "y": 206,
+          "name": "Luina#greeen"
+        }
+      ],
+      "warper_labels": [
+        "Episode 17.2 - Farm Lost in Time"
+      ],
+      "client_maps": {
+        "1@lost": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@lost.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@lost.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@lost.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 56,
+      "name": "Water Garden",
+      "maps": [
+        "1@ghg"
+      ],
+      "name_references": [
+        "npc/re/instances/WaterGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WaterGarden.txt",
+          "line": 13,
+          "map": "ba_maison",
+          "x": 238,
+          "y": 44,
+          "name": "Harad#jh_ba1"
+        }
+      ],
+      "warper_labels": [
+        "Episode 17.2 - Water Garden (Normal / Hard)"
+      ],
+      "client_maps": {
+        "1@ghg": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ghg.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ghg.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ghg.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 57,
+      "name": "Water Garden Hard",
+      "maps": [
+        "1@ghg"
+      ],
+      "name_references": [
+        "npc/re/instances/WaterGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/WaterGarden.txt",
+          "line": 13,
+          "map": "ba_maison",
+          "x": 238,
+          "y": 44,
+          "name": "Harad#jh_ba1"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@ghg": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ghg.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ghg.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ghg.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 58,
+      "name": "Hidden Flower Garden",
+      "maps": [
+        "1@herbs"
+      ],
+      "name_references": [
+        "npc/re/instances/HiddenGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HiddenGarden.txt",
+          "line": 32,
+          "map": "ba_maison",
+          "x": 120,
+          "y": 321,
+          "name": "#he_admin1"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@herbs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@herbs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@herbs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@herbs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 59,
+      "name": "Security Area 1",
+      "maps": [
+        "1@herbs"
+      ],
+      "name_references": [
+        "npc/re/instances/HiddenGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HiddenGarden.txt",
+          "line": 79,
+          "map": "ba_maison",
+          "x": 120,
+          "y": 321,
+          "name": "#he_admin2"
+        }
+      ],
+      "warper_labels": [
+        "Episode 17.2 - Security Area 1 / 2"
+      ],
+      "client_maps": {
+        "1@herbs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@herbs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@herbs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@herbs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 60,
+      "name": "Security Area 2",
+      "maps": [
+        "1@herbs"
+      ],
+      "name_references": [
+        "npc/re/instances/HiddenGarden.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/HiddenGarden.txt",
+          "line": 79,
+          "map": "ba_maison",
+          "x": 120,
+          "y": 321,
+          "name": "#he_admin2"
+        }
+      ],
+      "warper_labels": [
+        "Episode 17.2 - Security Area 1 / 2"
+      ],
+      "client_maps": {
+        "1@herbs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@herbs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@herbs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@herbs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 61,
+      "name": "Sunken Tower",
+      "maps": [
+        "1@ch_u"
+      ],
+      "name_references": [
+        "npc/custom/warper.txt",
+        "npc/custom/instances/SunkenTower.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/SunkenTower.txt",
+          "line": 29,
+          "map": "alberta",
+          "x": 214,
+          "y": 74,
+          "name": "Leticia#sunken_tower"
+        }
+      ],
+      "warper_labels": [
+        "Sunken Tower"
+      ],
+      "client_maps": {
+        "1@ch_u": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch_u.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ch_u.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch_u.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 62,
+      "name": "Constellation Tower",
+      "maps": [
+        "1@ch_t",
+        "2@ch_t",
+        "3@ch_t"
+      ],
+      "name_references": [
+        "npc/custom/warper.txt",
+        "npc/custom/instances/ConstellationTower.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/ConstellationTower.txt",
+          "line": 49,
+          "map": "e_tower",
+          "x": 83,
+          "y": 105,
+          "name": "Oscar#ct_gate"
+        }
+      ],
+      "warper_labels": [
+        "Constellation Tower"
+      ],
+      "client_maps": {
+        "1@ch_t": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch_t.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ch_t.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch_t.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@ch_t": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@ch_t.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@ch_t.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@ch_t.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "3@ch_t": {
+          "gat": {
+            "direct": true,
+            "resolved": "3@ch_t.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "3@ch_t.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "3@ch_t.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 63,
+      "name": "Tomb of Remorse",
+      "maps": [
+        "1@spa2"
+      ],
+      "name_references": [
+        "npc/custom/warper.txt",
+        "npc/custom/instances/TombOfRemorse.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/TombOfRemorse.txt",
+          "line": 194,
+          "map": "dali02",
+          "x": 78,
+          "y": 116,
+          "name": "Princess Tiara#tor_gate"
+        }
+      ],
+      "warper_labels": [
+        "Tomb of Remorse"
+      ],
+      "client_maps": {
+        "1@spa2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@spa2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@spa2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@spa2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 64,
+      "name": "Geffen Night Arena",
+      "maps": [
+        "1@ge_sn"
+      ],
+      "name_references": [
+        "npc/custom/warper.txt",
+        "npc/custom/instances/GeffenNightArena.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/GeffenNightArena.txt",
+          "line": 88,
+          "map": "dali02",
+          "x": 79,
+          "y": 60,
+          "name": "Geffen Night Arena Gate#gna"
+        }
+      ],
+      "warper_labels": [
+        "Geffen Night Arena"
+      ],
+      "client_maps": {
+        "1@ge_sn": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ge_sn.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ge_sn.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ge_sn.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 65,
+      "name": "Airship Crash",
+      "maps": [
+        "1@mjo1",
+        "1@mjo2"
+      ],
+      "name_references": [
+        "npc/custom/warper.txt",
+        "npc/custom/instances/AirshipCrash.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/AirshipCrash.txt",
+          "line": 270,
+          "map": "dali02",
+          "x": 137,
+          "y": 86,
+          "name": "Dr. Strong#acr"
+        }
+      ],
+      "warper_labels": [
+        "Airship Crash"
+      ],
+      "client_maps": {
+        "1@mjo1": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@mjo1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@mjo1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@mjo1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@mjo2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@mjo2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@mjo2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@mjo2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 66,
+      "name": "Thanatos Tower",
+      "maps": [
+        "1@thts",
+        "2@thts",
+        "3@thts",
+        "4@thts",
+        "5@thts",
+        "6@thts",
+        "7@thts",
+        "8@thts"
+      ],
+      "name_references": [
+        "npc/re/quests/eden/eden_121_130.txt",
+        "npc/custom/warper.txt",
+        "npc/custom/instances/ThanatosTowerMemory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/eden/eden_121_130.txt",
+          "line": 565,
+          "map": "moc_para01",
+          "x": 17,
+          "y": 77,
+          "name": "Aigu#1"
+        },
+        {
+          "script": "npc/custom/instances/ThanatosTowerMemory.txt",
+          "line": 23,
+          "map": "thana_step",
+          "x": 154,
+          "y": 367,
+          "name": "Lumin#mot"
+        }
+      ],
+      "warper_labels": [
+        "Memories of Thanatos"
+      ],
+      "client_maps": {
+        "1@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "3@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "3@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "3@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "3@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "4@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "4@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "4@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "4@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "5@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "5@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "5@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "5@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "6@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "6@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "6@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "6@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "7@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "7@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "7@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "7@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "8@thts": {
+          "gat": {
+            "direct": true,
+            "resolved": "8@thts.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "8@thts.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "8@thts.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 67,
+      "name": "Oz Labyrinth",
+      "maps": [
+        "1@oz"
+      ],
+      "name_references": [
+        "npc/re/instances/MazeofOz.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/MazeofOz.txt",
+          "line": 11,
+          "map": "ra_fild10",
+          "x": 179,
+          "y": 176,
+          "name": "Merchant#ep18_gorge"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@oz": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@oz.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@oz.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@oz.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 68,
+      "name": "Thor Military Base",
+      "maps": [
+        "1@tcamp"
+      ],
+      "name_references": [
+        "npc/re/instances/ThorGunsuBase.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/ThorGunsuBase.txt",
+          "line": 11,
+          "map": "que_thr",
+          "x": 133,
+          "y": 53,
+          "name": "Maram#Armybase1"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@tcamp": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@tcamp.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@tcamp.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@tcamp.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 69,
+      "name": "Wolves Gathering Place",
+      "maps": [
+        "1@nyr",
+        "2@nyr"
+      ],
+      "name_references": [
+        "npc/re/instances/Wolves.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/Wolves.txt",
+          "line": 15,
+          "map": "rachel",
+          "x": 169,
+          "y": 245,
+          "name": "Ordinary Person#sms04"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@nyr": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@nyr.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@nyr.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@nyr.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@nyr": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@nyr.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@nyr.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@nyr.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 70,
+      "name": "Sanctuary Purification",
+      "maps": [
+        "1@nyr",
+        "2@nyr"
+      ],
+      "name_references": [
+        "npc/re/instances/Wolves.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/Wolves.txt",
+          "line": 127,
+          "map": "rachel",
+          "x": 167,
+          "y": 244,
+          "name": "Priest#sms01"
+        }
+      ],
+      "warper_labels": [
+        "Episode 18 - Sanctuary Purification"
+      ],
+      "client_maps": {
+        "1@nyr": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@nyr.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@nyr.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@nyr.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@nyr": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@nyr.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@nyr.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@nyr.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 71,
+      "name": "High Priest's Villa",
+      "maps": [
+        "1@adv"
+      ],
+      "name_references": [
+        "npc/re/instances/VillaofHighPriest.txt",
+        "npc/re/quests/quests_18.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/VillaofHighPriest.txt",
+          "line": 11,
+          "map": "oz_dun01",
+          "x": 219,
+          "y": 117,
+          "name": "Ira#c12_01"
+        },
+        {
+          "script": "npc/re/quests/quests_18.txt",
+          "line": 5082,
+          "map": "oz_dun01",
+          "x": 223,
+          "y": 116,
+          "name": "Appointment Point#c12_evt01"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@adv": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@adv.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@adv.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@adv.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 72,
+      "name": "Villa of Deception",
+      "maps": [
+        "1@advs"
+      ],
+      "name_references": [
+        "npc/re/instances/VillaofDeception.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/VillaofDeception.txt",
+          "line": 25,
+          "map": "wolfvill",
+          "x": 79,
+          "y": 260,
+          "name": "Aira#con"
+        }
+      ],
+      "warper_labels": [
+        "Episode 18 - Villa of Deception (Normal / Advanced)"
+      ],
+      "client_maps": {
+        "1@advs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@advs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@advs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@advs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 73,
+      "name": "Villa of Deception Advanced",
+      "maps": [
+        "1@advs"
+      ],
+      "name_references": [
+        "npc/re/instances/VillaofDeception.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/instances/VillaofDeception.txt",
+          "line": 25,
+          "map": "wolfvill",
+          "x": 79,
+          "y": 260,
+          "name": "Aira#con"
+        }
+      ],
+      "warper_labels": [
+        "Episode 18 - Villa of Deception (Normal / Advanced)"
+      ],
+      "client_maps": {
+        "1@advs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@advs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@advs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@advs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 74,
+      "name": "Bagot Laboratory",
+      "maps": [
+        "1@jorlab"
+      ],
+      "name_references": [
+        "npc/custom/episode19/BagotLaboratory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/BagotLaboratory.txt",
+          "line": 16,
+          "map": "jor_dun03",
+          "x": 57,
+          "y": 63,
+          "name": "Juncea#ep19re2"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@jorlab": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@jorlab.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@jorlab.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@jorlab.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 75,
+      "name": "Confused Snake's Nest",
+      "maps": [
+        "1@jorchs"
+      ],
+      "name_references": [
+        "npc/custom/episode19/ConfusedSnakesNest.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/ConfusedSnakesNest.txt",
+          "line": 11,
+          "map": "jor_que",
+          "x": 32,
+          "y": 37,
+          "name": "Lehar#i19ms21"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@jorchs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@jorchs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@jorchs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@jorchs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 76,
+      "name": "Iwin Patrol",
+      "maps": [
+        "1@iwp"
+      ],
+      "name_references": [
+        "npc/custom/episode19/IwinPatrol.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/IwinPatrol.txt",
+          "line": 11,
+          "map": "icecastle",
+          "x": 23,
+          "y": 115,
+          "name": "Captain#iws"
+        }
+      ],
+      "warper_labels": [
+        "Episode 19 - Iwin Patrol"
+      ],
+      "client_maps": {
+        "1@iwp": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@iwp.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@iwp.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@iwp.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 77,
+      "name": "Airship Destruction",
+      "maps": [
+        "1@whl"
+      ],
+      "name_references": [
+        "npc/custom/episode19/AirshipDestruction.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/AirshipDestruction.txt",
+          "line": 16,
+          "map": "jor_nest",
+          "x": 22,
+          "y": 255,
+          "name": "Rope#whl"
+        }
+      ],
+      "warper_labels": [
+        "Episode 19 - Airship Destruction"
+      ],
+      "client_maps": {
+        "1@whl": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@whl.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@whl.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@whl.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 78,
+      "name": "Simulation Battle",
+      "maps": [
+        "1@jorlab"
+      ],
+      "name_references": [
+        "npc/custom/episode19/BagotLaboratory.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode19/BagotLaboratory.txt",
+          "line": 317,
+          "map": "jor_nest",
+          "x": 66,
+          "y": 260,
+          "name": "Arorong#ep19re2"
+        }
+      ],
+      "warper_labels": [
+        "Episode 19 - Simulation Battle"
+      ],
+      "client_maps": {
+        "1@jorlab": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@jorlab.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@jorlab.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@jorlab.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 79,
+      "name": "Deep Forest",
+      "maps": [
+        "1@exsh"
+      ],
+      "name_references": [
+        "npc/re/jobs/doram/spirit_handler.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/jobs/doram/spirit_handler.txt",
+          "line": 1076,
+          "map": "pay_fild09",
+          "x": 108,
+          "y": 346,
+          "name": "Suspicious Light#JQ_SH"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@exsh": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@exsh.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@exsh.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@exsh.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 120,
+      "name": "Ominous Dark Whisper",
+      "maps": [
+        "1@ch1a"
+      ],
+      "name_references": [
+        "npc/custom/chapter1/CH1.c"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter1/CH1.c",
+          "line": 14198,
+          "map": "hem_dun01",
+          "x": 209,
+          "y": 248,
+          "name": "Est#wsp1"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@ch1a": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch1a.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ch1a.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch1a.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 121,
+      "name": "Simulated Dark Whisper",
+      "maps": [
+        "1@ch1b"
+      ],
+      "name_references": [
+        "npc/custom/chapter1/CH1.c"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter1/CH1.c",
+          "line": 14108,
+          "map": "hem_dun01",
+          "x": 205,
+          "y": 248,
+          "name": "Wizard Professor#w1"
+        }
+      ],
+      "warper_labels": [
+        "Chapter 1 - Simulated Dark Whisper"
+      ],
+      "client_maps": {
+        "1@ch1b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch1a.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": false,
+            "resolved": "1@ch1a.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch1a.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 147,
+      "name": "Gimli Infiltration",
+      "maps": [
+        "1@mdtem",
+        "2@mdtem"
+      ],
+      "name_references": [
+        "npc/custom/episode21/GimliInfiltration.txt"
+      ],
+      "entry_npc_candidates": [],
+      "warper_labels": [
+        "Episode 21 - Gimli Infiltration"
+      ],
+      "client_maps": {
+        "1@mdtem": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@mdtem.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@mdtem.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@mdtem.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "2@mdtem": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@mdtem.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@mdtem.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@mdtem.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 148,
+      "name": "Mysterious Ghost Ship",
+      "maps": [
+        "1@wtgs"
+      ],
+      "name_references": [
+        "npc/custom/episode21/MysteriousGhostShip.txt"
+      ],
+      "entry_npc_candidates": [],
+      "warper_labels": [
+        "Episode 21 - Mysterious Ghost Ship"
+      ],
+      "client_maps": {
+        "1@wtgs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@wtgs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@wtgs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@wtgs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 149,
+      "name": "Final Battle",
+      "maps": [
+        "1@ep21b"
+      ],
+      "name_references": [
+        "npc/custom/episode21/BlackHairedBeast.txt",
+        "npc/custom/episode21/FinalBattle.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode21/BlackHairedBeast.txt",
+          "line": 366,
+          "map": "jor_tmple1",
+          "x": 178,
+          "y": 304,
+          "name": "Heine's Tablet#ep21_final"
+        },
+        {
+          "script": "npc/custom/episode21/FinalBattle.txt",
+          "line": 76,
+          "map": "jor_raise1",
+          "x": 132,
+          "y": 323,
+          "name": "Nyar#ep21_fb_daily"
+        }
+      ],
+      "warper_labels": [
+        "Episode 21 - Final Battle"
+      ],
+      "client_maps": {
+        "1@ep21b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ep21b.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ep21b.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ep21b.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 150,
+      "name": "Secret Altar",
+      "maps": [
+        "1@ep21a"
+      ],
+      "name_references": [
+        "npc/custom/episode21/BlackHairedBeast.txt",
+        "npc/custom/episode21/SecretAltar.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode21/SecretAltar.txt",
+          "line": 23,
+          "map": "jor_crk_p",
+          "x": 90,
+          "y": 95,
+          "name": "Shining Door#ep21"
+        }
+      ],
+      "warper_labels": [
+        "Episode 21 - Secret Altar"
+      ],
+      "client_maps": {
+        "1@ep21a": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ep21a.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ep21a.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ep21a.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 151,
+      "name": "Silent Sanctuary",
+      "maps": [
+        "1@twbs2"
+      ],
+      "name_references": [
+        "npc/custom/episode21/BlackHairedBeast.txt",
+        "npc/custom/episode21/SilentSanctuary.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode21/SilentSanctuary.txt",
+          "line": 17,
+          "map": "jor_twig",
+          "x": 187,
+          "y": 198,
+          "name": "Nyar Clone#ep21_sanctuary"
+        }
+      ],
+      "warper_labels": [
+        "Episode 21 - Silent Sanctuary"
+      ],
+      "client_maps": {
+        "1@twbs2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@twbs2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@twbs2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@twbs2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 152,
+      "name": "Final Battle(Hard)",
+      "maps": [
+        "1@ep21b"
+      ],
+      "name_references": [
+        "npc/custom/episode21/BlackHairedBeast.txt",
+        "npc/custom/episode21/FinalBattle.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode21/FinalBattle.txt",
+          "line": 76,
+          "map": "jor_raise1",
+          "x": 132,
+          "y": 323,
+          "name": "Nyar#ep21_fb_daily"
+        }
+      ],
+      "warper_labels": [
+        "Episode 21 - Final Battle"
+      ],
+      "client_maps": {
+        "1@ep21b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ep21b.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ep21b.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ep21b.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 153,
+      "name": "Final Battle(Normal)",
+      "maps": [
+        "1@ep21b"
+      ],
+      "name_references": [
+        "npc/custom/episode21/BlackHairedBeast.txt",
+        "npc/custom/episode21/FinalBattle.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode21/FinalBattle.txt",
+          "line": 76,
+          "map": "jor_raise1",
+          "x": 132,
+          "y": 323,
+          "name": "Nyar#ep21_fb_daily"
+        }
+      ],
+      "warper_labels": [
+        "Episode 21 - Final Battle"
+      ],
+      "client_maps": {
+        "1@ep21b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ep21b.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ep21b.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ep21b.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 154,
+      "name": "Fall of Glast Heim (Scenario)",
+      "maps": [
+        "1@gl_prq"
+      ],
+      "name_references": [
+        "npc/custom/instances/FallOfGlastHeim.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/FallOfGlastHeim.txt",
+          "line": 18,
+          "map": "glast_01",
+          "x": 241,
+          "y": 290,
+          "name": "Oscar#fogh_gate"
+        }
+      ],
+      "warper_labels": [
+        "Fall of Glast Heim"
+      ],
+      "client_maps": {
+        "1@gl_prq": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@gl_prq.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@gl_prq.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@gl_prq.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 201,
+      "name": "Lake of Fire",
+      "maps": [
+        "1@f_lake"
+      ],
+      "name_references": [
+        "npc/re/quests/garden_of_time.txt",
+        "npc/custom/warper.txt",
+        "npc/custom/instances/LakeOfFire.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/garden_of_time.txt",
+          "line": 983,
+          "map": "t_garden",
+          "x": 158,
+          "y": 235,
+          "name": "Dimensional Prison#1"
+        }
+      ],
+      "warper_labels": [
+        "Lake of Fire"
+      ],
+      "client_maps": {
+        "1@f_lake": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@f_lake.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@f_lake.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@f_lake.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 202,
+      "name": "Hall of Life",
+      "maps": [
+        "1@ba_go"
+      ],
+      "name_references": [
+        "npc/re/quests/garden_of_time.txt",
+        "npc/custom/warper.txt",
+        "npc/custom/instances/HallOfLife.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/re/quests/garden_of_time.txt",
+          "line": 1039,
+          "map": "t_garden",
+          "x": 173,
+          "y": 235,
+          "name": "Dimensional Prison#2"
+        },
+        {
+          "script": "npc/custom/instances/HallOfLife.txt",
+          "line": 132,
+          "map": "t_garden",
+          "x": 172,
+          "y": 235,
+          "name": "Hall of Life#pn_hol"
+        }
+      ],
+      "warper_labels": [
+        "Hall of Life"
+      ],
+      "client_maps": {
+        "1@ba_go": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ba_go.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ba_go.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ba_go.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 301,
+      "name": "Crossroads of Tangled Mana",
+      "maps": [
+        "1@ch2b"
+      ],
+      "name_references": [
+        "npc/custom/chapter2/Chapter2.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter2/Chapter2.txt",
+          "line": 241,
+          "map": "veledor",
+          "x": 140,
+          "y": 65,
+          "name": "Tangled Mana Gate#ch2"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@ch2b": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch2b.gat",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ch2b.gnd",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch2b.rsw",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 302,
+      "name": "Nyrholt",
+      "maps": [
+        "1@ch2a"
+      ],
+      "name_references": [
+        "npc/custom/chapter2/Chapter2.txt",
+        "npc/custom/chapter2/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter2/Chapter2.txt",
+          "line": 287,
+          "map": "ragsruth",
+          "x": 88,
+          "y": 58,
+          "name": "Nyrholt Keeper#ch2main"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@ch2a": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch2a.gat",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ch2a.gnd",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch2a.rsw",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 303,
+      "name": "Phantom of Nyrholt",
+      "maps": [
+        "1@ch2a"
+      ],
+      "name_references": [
+        "npc/custom/chapter2/Chapter2.txt",
+        "npc/custom/chapter2/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/chapter2/Chapter2.txt",
+          "line": 314,
+          "map": "ch2safe4",
+          "x": 86,
+          "y": 146,
+          "name": "Phantom Gate#ch2main"
+        },
+        {
+          "script": "npc/custom/chapter2/Chapter2.txt",
+          "line": 432,
+          "map": "kindlbrk",
+          "x": 121,
+          "y": 219,
+          "name": "Flame Branch Mission Board"
+        }
+      ],
+      "warper_labels": [
+        "Chapter 2 - Phantom of Nyrholt"
+      ],
+      "client_maps": {
+        "1@ch2a": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@ch2a.gat",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@ch2a.gnd",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@ch2a.rsw",
+            "origin": "chapter2_maps.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 304,
+      "name": "Drift Ice Zone",
+      "maps": [
+        "1@twsd"
+      ],
+      "name_references": [
+        "npc/custom/episode20/Progression.txt",
+        "npc/custom/episode20/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/Progression.txt",
+          "line": 660,
+          "map": "jor_maze",
+          "x": 140,
+          "y": 71,
+          "name": "Shaky Wall#ep20_drift"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@twsd": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@twsd.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@twsd.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@twsd.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 305,
+      "name": "Separated Sanctuary",
+      "maps": [
+        "1@twas",
+        "1@twbs"
+      ],
+      "name_references": [
+        "npc/custom/episode20/Progression.txt",
+        "npc/custom/episode20/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/Progression.txt",
+          "line": 1092,
+          "map": "jor_twig",
+          "x": 138,
+          "y": 152,
+          "name": "Orelli#ep20_final"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@twas": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@twas.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@twas.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@twas.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@twbs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@twbs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@twbs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@twbs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 306,
+      "name": "Canyon Exploration",
+      "maps": [
+        "1@20cn1",
+        "1@20cn2"
+      ],
+      "name_references": [
+        "npc/custom/episode20/Progression.txt",
+        "npc/custom/episode20/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/Progression.txt",
+          "line": 378,
+          "map": "icecastle",
+          "x": 201,
+          "y": 171,
+          "name": "Lehar#ep20_canyon_entry"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@20cn1": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@20cn1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@20cn1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@20cn1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        },
+        "1@20cn2": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@20cn2.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@20cn2.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@20cn2.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 307,
+      "name": "Nest of Small Branches",
+      "maps": [
+        "1@twig"
+      ],
+      "name_references": [
+        "npc/custom/episode20/Progression.txt",
+        "npc/custom/episode20/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/Progression.txt",
+          "line": 748,
+          "map": "jor_twice",
+          "x": 235,
+          "y": 111,
+          "name": "Kokoro#ep20_icy"
+        }
+      ],
+      "warper_labels": [],
+      "client_maps": {
+        "1@twig": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@twig.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@twig.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@twig.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 308,
+      "name": "Sticky Sea",
+      "maps": [
+        "1@slug"
+      ],
+      "name_references": [
+        "npc/custom/episode20/Instances.txt",
+        "npc/custom/episode20/SidesAndDailies.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/SidesAndDailies.txt",
+          "line": 343,
+          "map": "jor_back4",
+          "x": 98,
+          "y": 258,
+          "name": "Koko#ep20_sticky_entry"
+        }
+      ],
+      "warper_labels": [
+        "Episode 20 - Sticky Sea"
+      ],
+      "client_maps": {
+        "1@slug": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@slug.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@slug.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@slug.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 309,
+      "name": "The Undying",
+      "maps": [
+        "1@twbs"
+      ],
+      "name_references": [
+        "npc/custom/episode20/Instances.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/episode20/Instances.txt",
+          "line": 346,
+          "map": "jor_twig",
+          "x": 117,
+          "y": 145,
+          "name": "World Tree Branch#ep20_undying"
+        }
+      ],
+      "warper_labels": [
+        "The Immortal"
+      ],
+      "client_maps": {
+        "1@twbs": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@twbs.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@twbs.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@twbs.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
+      "id": 1000,
+      "name": "PN Damage Lab",
+      "maps": [
+        "guild_vs1"
+      ],
+      "name_references": [
+        "npc/custom/quality_services.txt"
+      ],
+      "entry_npc_candidates": [],
+      "warper_labels": [],
+      "client_maps": {
+        "guild_vs1": {
+          "gat": {
+            "direct": true,
+            "resolved": "guild_vs1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "guild_vs1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "guild_vs1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    }
+  ],
+  "required_warper_labels": [
+    "Airship Crash",
+    "Airship Raid",
+    "Bakonawa Lake",
+    "Bangungot Hospital 2F",
+    "Bios Island",
+    "Buwaya Cave",
+    "Central Laboratory",
+    "Chapter 1 - Simulated Dark Whisper",
+    "Chapter 2 - Phantom of Nyrholt",
+    "Charleston Crisis",
+    "Constellation Tower",
+    "Devil Tower",
+    "Eclage Interior",
+    "Endless Tower",
+    "Episode 17.1 - Cor Memorial",
+    "Episode 17.1 - OS Occupation",
+    "Episode 17.2 - Farm Lost in Time",
+    "Episode 17.2 - Security Area 1 / 2",
+    "Episode 17.2 - Water Garden (Normal / Hard)",
+    "Episode 18 - Sanctuary Purification",
+    "Episode 18 - Villa of Deception (Normal / Advanced)",
+    "Episode 19 - Airship Destruction",
+    "Episode 19 - Iwin Patrol",
+    "Episode 19 - Simulation Battle",
+    "Episode 20 - Sticky Sea",
+    "Episode 21 - Final Battle",
+    "Episode 21 - Gimli Infiltration",
+    "Episode 21 - Mysterious Ghost Ship",
+    "Episode 21 - Secret Altar",
+    "Episode 21 - Silent Sanctuary",
+    "Faceworms Nest",
+    "Fall of Glast Heim",
+    "Friday Memorial",
+    "Geffen Magic Tournament",
+    "Geffen Night Arena",
+    "Ghost Palace",
+    "Hall of Life",
+    "Hazy Forest",
+    "Heart Hunter War Base",
+    "Hey! Sweety",
+    "Horror Toy Factory",
+    "Infinite Space (Normal / Hard)",
+    "Lake of Fire",
+    "Last Room",
+    "Malangdo Culvert",
+    "Memories of Thanatos",
+    "Morse's Cave",
+    "Nidhoggur's Nest",
+    "Nightmarish Jitterbug",
+    "Octopus Cave",
+    "Old Glast Heim",
+    "Old Glast Heim Beginner",
+    "Old Glast Heim Challenge",
+    "Orc's Memory",
+    "Poring Village",
+    "Sara Memory",
+    "Sarah and Fenrir",
+    "Sealed Shrine",
+    "Sky Fortress Invasion",
+    "Sunken Tower",
+    "Temple of the Demon God",
+    "The Immortal",
+    "Tomb of Remorse",
+    "Twilight Garden (Story)",
+    "Wave Mode (Forest / Sky)",
+    "Weekend Memorial",
+    "Werner Laboratory (Daily)",
+    "Wolfchev's Laboratory"
+  ]
+}

@@ -22,6 +22,7 @@ TESTS = (
     'database_backup_test.py',
     'mob_sql_schema_test.py',
     'client_archive_stack_test.py',
+    'instance_access_manifest_test.py',
 )
 
 
@@ -80,7 +81,8 @@ def main():
         checks.append({'name': 'database_yaml_syntax', 'passed': True, 'files': count})
         tests = TESTS + (('chapter1_protection_test.py', 'instance_entry_native_test.py',
                          'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
-                         'mob_matk_range_test.py', 'immortal_instance_test.py') if args.phase == 'full' else ())
+                         'mob_matk_range_test.py', 'immortal_instance_test.py',
+                         'instance_warper_test.py') if args.phase == 'full' else ())
         commands = [(name, [sys.executable, str(ROOT / 'tools/ci' / name)]) for name in tests]
         commands.append(('client_compat_assets', [sys.executable,
                          str(ROOT / 'client-patch/client_compat/validate.py'), '--assets-only']))

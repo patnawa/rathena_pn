@@ -73,7 +73,7 @@ function Go {
 }
 function ValidateWarp {
 	.@map$ = getarg(0);
-	// Episode 19: preserve the same milestones as the story's airship and
+	// Episode 19 - preserve the same milestones as the story's airship and
 	// dungeon entrances.  Direct warps must not skip the Issgard introduction.
 	if ((.@map$ == "jor_back1" || .@map$ == "jor_back2" || .@map$ == "jor_back3" || .@map$ == "jor_tail") && ep19_main < 7) {
 		message strcharinfo(0),"Reach Issgard aboard Ginger's airship in Episode 19 first.";
@@ -102,24 +102,33 @@ function ValidateWarp {
 	if ((.@map$ == "jor_back4" || .@map$ == "jor_back5" || .@map$ == "jor_back6" || .@map$ == "jor_safty1" ||
 		.@map$ == "jor_root1" || .@map$ == "jor_root2" || .@map$ == "icas_in2" || .@map$ == "jor_safty2" ||
 		.@map$ == "jor_sanct" || .@map$ == "jor_maze" || .@map$ == "jor_twice" || .@map$ == "jor_twig" ||
-		.@map$ == "jor_root3") && !callfunc("EP20_WarperAccess",.@map$))
-		return false;
+		.@map$ == "jor_root3")) {
+		if (!callfunc("EP20_WarperAccess",.@map$)) return false;
+	}
+	// Boolean operands are eager in the script VM. Only run a region's
+	// access helper for that region, or unrelated warps emit its denial text.
 	if ((.@map$ == "bl_ice" || .@map$ == "bl_lava" || .@map$ == "bl_grass" || .@map$ == "bl_death" ||
-		.@map$ == "bl_soul" || .@map$ == "bl_venom" || .@map$ == "bl_temple") && !callfunc("F_BiosphereAccess"))
-		return false;
-	if (.@map$ == "bl_depth1" && !callfunc("F_BiosphereDepth1Access"))
-		return false;
-	if ((.@map$ == "ba_chess" || .@map$ == "bl_depth2") && !callfunc("F_BiosphereDepth2Access"))
-		return false;
+		.@map$ == "bl_soul" || .@map$ == "bl_venom" || .@map$ == "bl_temple")) {
+		if (!callfunc("F_BiosphereAccess")) return false;
+	}
+	if (.@map$ == "bl_depth1") {
+		if (!callfunc("F_BiosphereDepth1Access")) return false;
+	}
+	if (.@map$ == "ba_chess" || .@map$ == "bl_depth2") {
+		if (!callfunc("F_BiosphereDepth2Access")) return false;
+	}
 	if (.@map$ == "bl_depth2")
 		callfunc "F_BiosphereDepth2Purge";
 	if ((.@map$ == "jor_crk" || .@map$ == "jor_mbase" || .@map$ == "jor_albe" ||
 		.@map$ == "jor_raise1" || .@map$ == "jor_raise2" || .@map$ == "jor_tmple1" || .@map$ == "jor_tmple2" ||
-		.@map$ == "jor_sklf1" || .@map$ == "jor_sklf2") && !callfunc("EP21_WarperAccess",.@map$))
-		return false;
-	if (.@map$ == "jor_base" && !callfunc("EP21_GaebolgComplete")) {
-		message strcharinfo(0),"Complete the Gaebolg Resistance assignment first.";
-		return false;
+		.@map$ == "jor_sklf1" || .@map$ == "jor_sklf2")) {
+		if (!callfunc("EP21_WarperAccess",.@map$)) return false;
+	}
+	if (.@map$ == "jor_base") {
+		if (!callfunc("EP21_GaebolgComplete")) {
+			message strcharinfo(0),"Complete the Gaebolg Resistance assignment first.";
+			return false;
+		}
 	}
 	if ((.@map$ == "ygg_edge" || .@map$ == "ygg_roots" || .@map$ == "uknw_ruin" || .@map$ == "uknw_ruin2" ||
 		.@map$ == "hem_fild") && (BaseLevel < 200 || !isbegin_quest(18368))) {
@@ -144,14 +153,18 @@ function ValidateWarp {
 		message strcharinfo(0),"Advance the Chapter 1 Dark Whisper investigation before entering this area.";
 		return false;
 	}
-	if (.@map$ == "ch1fild1" && !callfunc("ZC_HasAccess")) {
-		message strcharinfo(0),"Complete Robin's Zero Cell investigation first.";
-		return false;
+	if (.@map$ == "ch1fild1") {
+		if (!callfunc("ZC_HasAccess")) {
+			message strcharinfo(0),"Complete Robin's Zero Cell investigation first.";
+			return false;
+		}
 	}
-	if ((.@map$ == "ch1zero1" || .@map$ == "ch1zero2") && !callfunc("ZC_CanEnter",1))
-		return false;
-	if ((.@map$ == "ch1zero3" || .@map$ == "ch1zero4") && !callfunc("ZC_CanEnter",2))
-		return false;
+	if (.@map$ == "ch1zero1" || .@map$ == "ch1zero2") {
+		if (!callfunc("ZC_CanEnter",1)) return false;
+	}
+	if (.@map$ == "ch1zero3" || .@map$ == "ch1zero4") {
+		if (!callfunc("ZC_CanEnter",2)) return false;
+	}
 	if (.@map$ == "veledor" && !CH2_Step) {
 		message strcharinfo(0),"Start Chapter 2 with Guardian El at Ashridge first.";
 		return false;
@@ -786,15 +799,15 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Nidhoggur's Nest",I13, "Octopus Cave",I14, "Old Glast Heim",I15,
 		"Orc's Memory",I16, "Sarah and Fenrir",I17, "Sara Memory",I18,
 		"Sealed Shrine",I19, "Wolfchev's Laboratory",I20,
-		"Episode 21: Gimli Infiltration",I21, "Episode 21: Mysterious Ghost Ship",I22,
-		"Episode 21: Final Battle",I23, "Episode 21: Secret Altar",I24,
-		"Episode 21: Silent Sanctuary",I25, "Old Glast Heim Challenge",I26,
+		"Episode 21 - Gimli Infiltration",I21, "Episode 21 - Mysterious Ghost Ship",I22,
+		"Episode 21 - Final Battle",I23, "Episode 21 - Secret Altar",I24,
+		"Episode 21 - Silent Sanctuary",I25, "Old Glast Heim Challenge",I26,
 		"Old Glast Heim Beginner",I27, "Fall of Glast Heim",I28,
 		"Twilight Garden (Story)",I29, "Hey! Sweety",I30,
 		"Sunken Tower",I31, "Geffen Night Arena",I32,
 		"Lake of Fire",I33, "Hall of Life",I34,
 		"Tomb of Remorse",I35, "Constellation Tower",I36,
-		"Airship Crash",I37, "Memories of Thanatos",I38, "The Immortal",I39;
+		"Airship Crash",I37, "Memories of Thanatos",I38, "The Immortal",I39, "More Episode Instances",I_Episodes, "More Classic Instances",I_Classic;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -879,6 +892,217 @@ I39: Restrict("RE");
 		end;
 	}
 	Go("jor_twig",117,145);
+
+
+// Shared entrances retain their NPC difficulty, party and cooldown checks.
+I40: Restrict("RE");
+	if (!(isbegin_quest(11603) == 2 || isbegin_quest(12452) == 2)) {
+		message strcharinfo(0),"Complete the railroad operation before starting OS Occupation.";
+		end;
+	}
+	Go("sp_cor",162,56);
+I41: Restrict("RE");
+	if (!(isbegin_quest(16360) == 2)) {
+		message strcharinfo(0),"Complete the Cor Memorial story before repeating it.";
+		end;
+	}
+	Go("sp_cor",113,130);
+I42: Restrict("RE");
+	if (!(BaseLevel >= 150 && ep17_2_main >= 9)) {
+		message strcharinfo(0),"Reach Episode 17.2 step 9 and Base Level 150 first.";
+		end;
+	}
+	Go("ba_maison",311,206);
+I43: Restrict("RE");
+	if (!(ep172_watergarden >= 3)) {
+		message strcharinfo(0),"Advance the Water Garden investigation until Harad opens the daily route.";
+		end;
+	}
+	Go("ba_maison",238,44);
+I44: Restrict("RE");
+	if (!(BaseLevel >= 150 && ep17_2_main >= 1 && isbegin_quest(12497) == 2)) {
+		message strcharinfo(0),"Complete Hidden Flower Garden and reach Base Level 150 first.";
+		end;
+	}
+	Go("ba_maison",120,320);
+I45: Restrict("RE");
+	if (!(BaseLevel >= 170 && ep18_main >= 52)) {
+		message strcharinfo(0),"Complete the Wolves Gathering Place investigation and reach Base Level 170 first.";
+		end;
+	}
+	Go("rachel",169,245);
+I46: Restrict("RE");
+	if (!(BaseLevel >= 170 && ep18_main >= 57)) {
+		message strcharinfo(0),"Advance Episode 18 to the Villa operation and reach Base Level 170 first.";
+		end;
+	}
+	Go("wolfvill",79,260);
+I47: Restrict("RE");
+	if (!(ep19_main >= 10)) {
+		message strcharinfo(0),"Receive the Episode 19 patrol assignment first.";
+		end;
+	}
+	Go("icecastle",23,115);
+I48: Restrict("RE");
+	if (!(ep19_main >= 33)) {
+		message strcharinfo(0),"Receive Reiji's airship assignment in Episode 19 first.";
+		end;
+	}
+	Go("jor_nest",22,255);
+I49: Restrict("RE");
+	if (!(ep19_main >= 100)) {
+		message strcharinfo(0),"Complete Episode 19 before entering the Juncea simulation.";
+		end;
+	}
+	Go("jor_nest",66,260);
+I50: Restrict("RE");
+	if (!(isbegin_quest(11944) == 1 || isbegin_quest(11945) == 1 || isbegin_quest(11946) == 1 || isbegin_quest(11948) == 1 || isbegin_quest(11949) == 1 || isbegin_quest(11951) == 1)) {
+		message strcharinfo(0),"Receive the Copo rescue or Sticky Sea daily request first.";
+		end;
+	}
+	Go("jor_back4",98,258);
+I51: Restrict("RE");
+	if (!(isbegin_quest(12660) > 0)) {
+		message strcharinfo(0),"Receive the Wizard Professor's invitation first.";
+		end;
+	}
+	Go("hem_dun01",202,248);
+
+// Public quest givers remain responsible for enrollment and reservations.
+I52: Restrict("RE");
+	if (!(BaseLevel >= 125)) {
+		message strcharinfo(0),"Reach Base Level 125 first.";
+		end;
+	}
+	Go("dali02",142,81);
+I53: Restrict("RE");
+	if (!(BaseLevel >= 120)) {
+		message strcharinfo(0),"Reach Base Level 120 first.";
+		end;
+	}
+	Go("moc_para01",26,95);
+I54: Restrict("RE");
+	if (!(BaseLevel >= 160 && isbegin_quest(15006) > 0)) {
+		message strcharinfo(0),"Reach Base Level 160 and receive the Wandering Old Man's request first.";
+		end;
+	}
+	Go("moro_cav",50,66);
+I55: Restrict("RE");
+	if (!(BaseLevel >= 160 && ep14_3_isle > 0)) {
+		message strcharinfo(0),"Reach Base Level 160 and complete the Bios Island introduction first.";
+		end;
+	}
+	Go("moro_cav",61,69);
+I56: Restrict("RE");
+	if (!(isbegin_quest(7593) > 0)) {
+		message strcharinfo(0),"Receive Commander Hiva Agip's Demon God Subjugation quest first.";
+		end;
+	}
+	Go("moro_cav",41,73);
+I57: Restrict("RE");
+	if (!(BaseLevel >= 135)) {
+		message strcharinfo(0),"Reach Base Level 135 first.";
+		end;
+	}
+	Go("verus01",149,155);
+I58: Restrict("RE");
+	if (!(BaseLevel >= 150)) {
+		message strcharinfo(0),"Reach Base Level 150 first.";
+		end;
+	}
+	Go("un_myst",163,38);
+I59: Restrict("RE");
+	if (!(BaseLevel >= 130)) {
+		message strcharinfo(0),"Reach Base Level 130 first.";
+		end;
+	}
+	Go("verus04",75,114);
+I60: Restrict("RE");
+	if (!(BaseLevel >= 145)) {
+		message strcharinfo(0),"Reach Base Level 145 first.";
+		end;
+	}
+	Go("dali02",122,63);
+I61: Restrict("RE");
+	if (!(terra_gloria_main >= 19)) {
+		message strcharinfo(0),"Advance Terra Gloria to the Heart Hunter operation first.";
+		end;
+	}
+	Go("ein_fild04",281,337);
+I62: Restrict("RE");
+	if (!(terra_gloria_main >= 23)) {
+		message strcharinfo(0),"Complete the Werner Laboratory story before using the daily route.";
+		end;
+	}
+	Go("slabw01",236,91);
+I63: Restrict("RE");
+	if (!(BaseLevel >= 100)) {
+		message strcharinfo(0),"Reach Base Level 100 first.";
+		end;
+	}
+	Go("cmd_fild07",55,278);
+I64: Restrict("RE");
+	if (!(BaseLevel >= 60)) {
+		message strcharinfo(0),"Reach Base Level 60 first. The entrance NPC handles weekend opening hours.";
+		end;
+	}
+	Go("pay_arche",44,124);
+I65: Restrict("RE");
+	if (!(BaseLevel >= 130)) {
+		message strcharinfo(0),"Reach Base Level 130 first. The entrance NPC handles Friday opening hours.";
+		end;
+	}
+	Go("gef_tower",57,170);
+I66: Restrict("RE");
+	if (!(BaseLevel >= 30 && BaseLevel <= 60)) {
+		message strcharinfo(0),"Poring Village is available at Base Levels 30 through 60.";
+		end;
+	}
+	Go("prt_fild05",145,235);
+I67: Restrict("RE");
+	Go("prontera",146,75);
+I68: Restrict("RE");
+	if (!(callfunc("CH2_Complete"))) {
+		message strcharinfo(0),"Complete the Chapter 2 story before entering the repeatable Phantom expedition.";
+		end;
+	}
+	Go("ch2safe4",86,146);
+
+I_Episodes:
+menu	"Episode 17.1 - OS Occupation",I40,
+		"Episode 17.1 - Cor Memorial",I41,
+		"Episode 17.2 - Farm Lost in Time",I42,
+		"Episode 17.2 - Water Garden (Normal / Hard)",I43,
+		"Episode 17.2 - Security Area 1 / 2",I44,
+		"Episode 18 - Sanctuary Purification",I45,
+		"Episode 18 - Villa of Deception (Normal / Advanced)",I46,
+		"Episode 19 - Iwin Patrol",I47,
+		"Episode 19 - Airship Destruction",I48,
+		"Episode 19 - Simulation Battle",I49,
+		"Episode 20 - Sticky Sea",I50,
+		"Chapter 1 - Simulated Dark Whisper",I51,
+		"Chapter 2 - Phantom of Nyrholt",I68,
+		"Back to Instances",Instances;
+
+
+I_Classic:
+menu	"Airship Raid",I52,
+		"Nightmarish Jitterbug",I53,
+		"Bios Island",I54,
+		"Morse's Cave",I55,
+		"Temple of the Demon God",I56,
+		"Central Laboratory",I57,
+		"Last Room",I58,
+		"Charleston Crisis",I59,
+		"Sky Fortress Invasion",I60,
+		"Heart Hunter War Base",I61,
+		"Werner Laboratory (Daily)",I62,
+		"Infinite Space (Normal / Hard)",I63,
+		"Weekend Memorial",I64,
+		"Friday Memorial",I65,
+		"Poring Village",I66,
+		"Wave Mode (Forest / Sky)",I67,
+		"Back to Instances",Instances;
 
 // --------------------------------------------------
 	Special:
@@ -967,6 +1191,35 @@ OnNaviGenerate:
 	naviregisterwarp("Warper > dali02", "dali02", 137, 86);
 	naviregisterwarp("Warper > thana_step", "thana_step", 154, 367);
 	naviregisterwarp("Warper > The Immortal", "jor_twig", 117, 145);
+	naviregisterwarp("Warper > Airship Raid", "dali02", 142, 81);
+	naviregisterwarp("Warper > Nightmarish Jitterbug", "moc_para01", 26, 95);
+	naviregisterwarp("Warper > Bios Island", "moro_cav", 50, 66);
+	naviregisterwarp("Warper > Morse's Cave", "moro_cav", 61, 69);
+	naviregisterwarp("Warper > Temple of the Demon God", "moro_cav", 41, 73);
+	naviregisterwarp("Warper > Central Laboratory", "verus01", 149, 155);
+	naviregisterwarp("Warper > Last Room", "un_myst", 163, 38);
+	naviregisterwarp("Warper > Charleston Crisis", "verus04", 75, 114);
+	naviregisterwarp("Warper > Sky Fortress Invasion", "dali02", 122, 63);
+	naviregisterwarp("Warper > Heart Hunter War Base", "ein_fild04", 281, 337);
+	naviregisterwarp("Warper > Werner Laboratory (Daily)", "slabw01", 236, 91);
+	naviregisterwarp("Warper > Infinite Space (Normal / Hard)", "cmd_fild07", 55, 278);
+	naviregisterwarp("Warper > Weekend Memorial", "pay_arche", 44, 124);
+	naviregisterwarp("Warper > Friday Memorial", "gef_tower", 57, 170);
+	naviregisterwarp("Warper > Poring Village", "prt_fild05", 145, 235);
+	naviregisterwarp("Warper > Wave Mode (Forest / Sky)", "prontera", 146, 75);
+	naviregisterwarp("Warper > Chapter 2 - Phantom of Nyrholt", "ch2safe4", 86, 146);
+	naviregisterwarp("Warper > Episode 17.1 - OS Occupation", "sp_cor", 162, 56);
+	naviregisterwarp("Warper > Episode 17.1 - Cor Memorial", "sp_cor", 113, 130);
+	naviregisterwarp("Warper > Episode 17.2 - Farm Lost in Time", "ba_maison", 311, 206);
+	naviregisterwarp("Warper > Episode 17.2 - Water Garden (Normal / Hard)", "ba_maison", 238, 44);
+	naviregisterwarp("Warper > Episode 17.2 - Security Area 1 / 2", "ba_maison", 120, 320);
+	naviregisterwarp("Warper > Episode 18 - Sanctuary Purification", "rachel", 169, 245);
+	naviregisterwarp("Warper > Episode 18 - Villa of Deception (Normal / Advanced)", "wolfvill", 79, 260);
+	naviregisterwarp("Warper > Episode 19 - Iwin Patrol", "icecastle", 23, 115);
+	naviregisterwarp("Warper > Episode 19 - Airship Destruction", "jor_nest", 22, 255);
+	naviregisterwarp("Warper > Episode 19 - Simulation Battle", "jor_nest", 66, 260);
+	naviregisterwarp("Warper > Episode 20 - Sticky Sea", "jor_back4", 98, 258);
+	naviregisterwarp("Warper > Chapter 1 - Simulated Dark Whisper", "hem_dun01", 202, 248);
 	naviregisterwarp("Warper > Prontera", "prontera", 155, 183);
 	naviregisterwarp("Warper > Alberta", "alberta", 28, 234);
 	naviregisterwarp("Warper > Al De Baran", "aldebaran", 140, 131);
@@ -1618,7 +1871,6 @@ OnNaviGenerate:
 		naviregisterwarp("Warper > Kafragarten", "teg_dun01", 42, 36);
 		naviregisterwarp("Warper > Gloria", "teg_dun02", 26, 160);
 	}
-	end;
 
 	// instances
 	naviregisterwarp("Warper > Endless Tower", "e_tower", 72, 112);

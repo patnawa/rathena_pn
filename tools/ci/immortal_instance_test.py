@@ -23,6 +23,7 @@ int64 clock_now=100000;
 int selection=1, random_value=0;
 unsigned random_calls=0, timer_calls=0;
 int vision_distance=3;
+int32 offline_id=0;
 std::vector<int> cast_delays;
 std::vector<int64> armor_divisors;
 bool present[4]={true,true,false,false};
@@ -33,9 +34,9 @@ void array_value(script_state* st, int argument, int index, int64 value) {
     set_reg_num(st,nullptr,reference_uid(reference_getid(data),reference_getindex(data)+index),get_str(reference_getid(data)),value,reference_getref(data));
 }
 extern "C" map_session_data* immortal_char(int32) asm("__wrap__Z13map_charid2sdi");
-extern "C" map_session_data* immortal_char(int32 id) { for (auto& p:players) if (p->status.char_id==id) return p.get(); return nullptr; }
+extern "C" map_session_data* immortal_char(int32 id) { for (auto& p:players) if (p->status.char_id==id && p->id!=offline_id) return p.get(); return nullptr; }
 extern "C" block_list* immortal_bl(int32) asm("__wrap__Z9map_id2bli");
-extern "C" block_list* immortal_bl(int32 id) { for (auto& p:players) if (p->id==id) return p.get(); return id==NPC ? &npc : nullptr; }
+extern "C" block_list* immortal_bl(int32 id) { for (auto& p:players) if (p->id==id && p->id!=offline_id) return p.get(); return id==NPC ? &npc : nullptr; }
 extern "C" map_session_data* immortal_nick(const char*,bool) asm("__wrap__Z11map_nick2sdPKcb");
 extern "C" map_session_data* immortal_nick(const char* name,bool) { for (auto& p:players) if (!std::strcmp(p->status.name,name)) return p.get(); return nullptr; }
 '''
@@ -45,7 +46,7 @@ WORLD = r'''
     else if (command == "instance_live_info") script_pushstrcopy(st,"The Undying");
     else if (command == "getmapunits") {
         unsigned count=0;
-        for (unsigned i=0;i<players.size();++i) if (present[i]) array_value(st,4,count++,players[i]->id);
+        for (unsigned i=0;i<players.size();++i) if (present[i] && players[i]->id!=offline_id) array_value(st,4,count++,players[i]->id);
         script_pushint(st,count);
     } else if (command == "rand") { ++random_calls; script_pushint(st,random_value); }
     else if (command == "checkweight2") script_pushint(st,capacity);
@@ -98,7 +99,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
     const char* start="Lasgand#ep20_undying_start";
     const char* storage="Mysterious Storage#ep20";
     auto setup=[&]() {
-        reset(); clock_now=100000; selection=1; random_value=0; random_calls=timer_calls=0;
+        offline_id=0; reset(); clock_now=100000; selection=1; random_value=0; random_calls=timer_calls=0;
         unit_changes.clear(); present[0]=present[1]=true; present[2]=present[3]=false;
         armor_divisors.clear(); cast_delays.clear(); vision_distance=3;
         for (auto& p:players) { p->status.party_id=17; registries[p->id]["EP20_Main_Complete"]=1; }
@@ -154,6 +155,15 @@ extern "C" int __wrap_main(int argc,char** argv) {
     check(stage("'ep20_undying_dead")==0,"revived participant releases protection");
     win(); unit_changes.clear(); finish("#EP20_Undying_Control::OnTimer4000");
     check(unit_changes.empty(),"completed fight cannot resume timed effects");
+    setup(); finish(start); players[1]->battle_status.hp=0;
+    finish("#EP20_Undying_Control::OnTimer4000");
+    offline_id=players[1]->id; stage("'ep20_undying_ticks",8); cast_delays.clear();
+    auto before_timer=timer_calls;
+    finish("#EP20_Undying_Control::OnTimer4000");
+    check(stage("'ep20_undying_dead")==0,"offline fallen participant no longer holds protection");
+    check(timer_calls>before_timer && cast_delays.size()==4,"offline participant cannot abort controller timer or vision casts");
+    check(errors==0,"offline participant is never passed to readparam");
+    offline_id=0;
     for (int distance:{3,8,14}) {
         setup(); finish(start); vision_distance=distance; stage("'ep20_undying_ticks",8);
         finish("#EP20_Undying_Control::OnTimer4000");
@@ -226,6 +236,7 @@ def main():
     names=['gettimetick','select','instance_live_info','getmapunits','rand','checkweight2','getunitdata','setunitdata','unitexists','mobcount','setnpctimer','initnpctimer','stopnpctimer','sc_start','sc_start4','sc_end','killmonster','unitskilluseid','unitskillusepos','getmapxy','unittalk']
     prefix=prefix.replace('"getexp", "callfunc"};','"getexp", "callfunc",'+','.join(json.dumps(x) for x in names)+'};',1)
     native.WRAPPERS += ('_Z13map_charid2sdi','_Z9map_id2bli','_Z11map_nick2sdPKcb')
+    prefix=prefix.replace('if (p->id == id) return p.get();','if (p->id == id && p->id != offline_id) return p.get();')
     native.CPP=prefix+MAIN; native.fixtures=fixtures
     def run(directory):
         directory.mkdir(parents=True,exist_ok=True)
