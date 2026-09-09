@@ -1,0 +1,21 @@
+Header:
+  Type: ITEM_REFORM_DB
+  Version: 1
+Body:
+- Item: Fron_Fix_AT_Axe
+  BaseItems:
+  - BaseItem: Encroached_Axe
+    MinimumRefine: 10
+    MaximumRefine: 20
+    Materials:
+    - Material: Ch1_Mana_Ring
+      Amount: 200
+    - Material: Frontier_Stone_BL
+      Amount: 15
+    - Material: Frontier_Stone_YL
+      Amount: 10
+    - Material: Frontier_Stone_GR
+      Amount: 5
+    - Material: Physical_TuningScroll
+      Amount: 5
+    ResultItem: Frontier_AT_Axe

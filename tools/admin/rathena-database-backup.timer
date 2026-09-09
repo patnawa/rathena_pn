@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily game database backup with isolated restore verification
+
+[Timer]
+OnCalendar=*-*-* 04:00:00
+RandomizedDelaySec=10min
+Persistent=true
+Unit=rathena-database-backup.service
+
+[Install]
+WantedBy=timers.target

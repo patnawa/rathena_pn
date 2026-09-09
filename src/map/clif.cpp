@@ -24319,7 +24319,7 @@ void clif_reputation_open( map_session_data& sd, uint64 tabID, uint64 repID ) {
 #endif
 }
 
-void clif_item_reform_open( map_session_data& sd, t_itemid item ){
+void clif_item_reform_open( map_session_data& sd, t_itemid item, int16 consume_index ){
 #if PACKETVER_MAIN_NUM >= 20201118 || PACKETVER_RE_NUM >= 20211103 || PACKETVER_ZERO_NUM >= 20221024
 	PACKET_ZC_OPEN_REFORM_UI p = {};
 
@@ -24329,6 +24329,8 @@ void clif_item_reform_open( map_session_data& sd, t_itemid item ){
 	clif_send( &p, sizeof( p ), &sd, SELF );
 
 	sd.state.item_reform = item;
+	// Bind delayed consumption to the inventory cell used to open this window.
+	sd.state.item_reform_index = consume_index;
 #endif
 }
 
@@ -24399,7 +24401,7 @@ void clif_parse_item_reform_start( int32 fd, map_session_data* sd ){
 	}
 
 	// If target item is equipped
-	if( selected_item.equip != 0 ){
+	if( selected_item.equip != 0 || selected_item.equipSwitch != 0 || selected_item.amount != 1 ){
 		return;
 	}
 
@@ -24437,13 +24439,18 @@ void clif_parse_item_reform_start( int32 fd, map_session_data* sd ){
 		}
 	}
 
+	const auto result_data = item_db.find( base->resultItemId );
+	if( result_data == nullptr ){
+		return;
+	}
+
 	std::unordered_map<uint16, uint16> materials;
 
 	// Check if all materials exist
 	for( const auto& material : base->materials ){
 		int16 material_index = pc_search_inventory( sd, material.first );
 
-		if( material_index < 0 ){
+		if( material_index < 0 || material_index == index || sd->inventory_data[material_index] == nullptr ){
 			return;
 		}
 
@@ -24454,16 +24461,38 @@ void clif_parse_item_reform_start( int32 fd, map_session_data* sd ){
 		materials[material_index] = material.second;
 	}
 
-	// Remove the material
+	// Validate the delayed-consume trigger before removing any other material.
+	// A different item may have occupied its old cell while the UI was open.
+	const int16 trigger_index = sd->state.item_reform_index;
+	if( trigger_index >= 0 ){
+		if( trigger_index >= MAX_INVENTORY || trigger_index == index ||
+			sd->inventory_data[trigger_index] == nullptr ||
+			sd->inventory.u.items_inventory[trigger_index].nameid != sd->state.item_reform ){
+			return;
+		}
+		const uint32 required = static_cast<uint32>( materials[trigger_index] ) + 1;
+		if( required > UINT16_MAX || sd->inventory.u.items_inventory[trigger_index].amount < required ){
+			return;
+		}
+		materials[trigger_index] = static_cast<uint16>( required );
+	}
+
+	// Reform works in the existing cell even when inventory slots are full.
+	// Check the final weight, including all consumed materials, before charging.
+	const int64 weight_change = static_cast<int64>( result_data->weight ) - sd->inventory_data[index]->weight;
+	int64 final_weight = static_cast<int64>( sd->weight ) + weight_change;
+	for( const auto& material : materials ){
+		final_weight -= static_cast<int64>( sd->inventory_data[material.first]->weight ) * material.second;
+	}
+	if( final_weight < 0 || final_weight > sd->max_weight ){
+		return;
+	}
+
+	// All checks are complete; no yielding occurs through mutation and billing.
 	for( const auto& material : materials ){
 		if( pc_delitem( sd, material.first, material.second, 0, 0, LOG_TYPE_REFORM ) != 0 ){
 			return;
 		}
-	}
-
-	// If triggered from item
-	if( sd->itemid == sd->state.item_reform && pc_delitem( sd, sd->itemindex, 1, 0, 0, LOG_TYPE_REFORM ) != 0 ){
-		return;
 	}
 
 	// Log removal of item
@@ -24497,7 +24526,9 @@ void clif_parse_item_reform_start( int32 fd, map_session_data* sd ){
 	// Finally change the item id
 	selected_item.nameid = base->resultItemId;
 	// Link inventory data cache to the new item
-	sd->inventory_data[index] = itemdb_search( base->resultItemId );
+	sd->inventory_data[index] = result_data.get();
+	sd->weight = static_cast<decltype(sd->weight)>( final_weight );
+	clif_updatestatus( *sd, SP_WEIGHT );
 
 	// Log retrieving the item again -> with the new options
 	log_pick_pc( sd, LOG_TYPE_REFORM, 1, &selected_item );

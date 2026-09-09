@@ -527,7 +527,15 @@ def run(build, reuse, pre_fix=False, prepare_only=False, completion_marker='EP21
             compiled.append(target)
         command = ['g++'] + sanitizer + ['-o', str(executable)] + [str(p) for p in compiled + objects + libraries]
         command += ['-Wl,--wrap=' + name for name in WRAPPERS]
-        command += ['-lz', '-ldl', '-lmysqlclient', '-lzstd', '-lssl', '-lcrypto', '-lresolv', '-lm']
+        command += ['-lz', '-ldl', '-lmysqlclient', '-lssl', '-lcrypto', '-lresolv', '-lm']
+        # Match optional libraries linked by the configured map objects.
+        for library in ('zstd', 'pcre'):
+            for suffix in ('so', 'a'):
+                filename = f'lib{library}.{suffix}'
+                resolved = subprocess.check_output(['g++', f'-print-file-name={filename}'], text=True).strip()
+                if resolved != filename and Path(resolved).is_file():
+                    command.append(f'-l{library}')
+                    break
         subprocess.run(command, cwd=ROOT, check=True)
         stamp.write_text(json.dumps(fingerprint, indent=2))
     completed = subprocess.run([str(executable), str(build)], cwd=ROOT, capture_output=True, text=True, timeout=60)

@@ -245,6 +245,42 @@ QuestInfoList[1003].NpcPosY = 218
 QuestInfoList[10068].NpcPosX = 19
 QuestInfoList[10068].NpcPosY = 98
 
+-- Reviewed legacy guide destinations against the actual NPC dialogue.
+-- The Tower assigns Sacred Roots workers. The presidential Guard, rather
+-- than the entrance Secretary, handles waiting guests and admission.
+local reviewedDestinations = {
+  [8846] = {"jor_sanct,95,152,0,101,0", "jor_sanct,92,139,0,101,0"},
+  [17279] = {"yuno_pre,69,17,0,101,0", "yuno_pre,95,71,0,101,0"},
+  [17280] = {"yuno_pre,69,17,0,101,0", "yuno_pre,95,71,0,101,0"},
+}
+for id, replacement in pairs(reviewedDestinations) do
+  local quest = QuestInfoList[id]
+  if quest and quest.Description then
+    for i, text in ipairs(quest.Description) do
+      quest.Description[i] = text:gsub("(<INFO>)(.-)(</INFO>)", function(prefix, info, suffix)
+        return prefix .. (info == replacement[1] and replacement[2] or info) .. suffix
+      end)
+    end
+  end
+end
+
+-- These legacy quest stages are not implemented by the loaded server scripts.
+-- Keep their journal text, but do not route players to unrelated NPCs with
+-- the same name. This does not remove or alter character quest progress.
+local unavailableGuides = {14995, 16147, 8886, 8916, 21946}
+local unavailableNote = "This quest is not available on this server."
+for _, id in ipairs(unavailableGuides) do
+  local quest = QuestInfoList[id]
+  if quest and quest.Description then
+    local hasNote = false
+    for i, text in ipairs(quest.Description) do
+      if text == unavailableNote then hasNote = true end
+      quest.Description[i] = text:gsub("<NAVI>(.-)<INFO>.-</INFO></NAVI>", "%1")
+    end
+    if not hasNote then table.insert(quest.Description, unavailableNote) end
+  end
+end
+
 -- Preserve the five custom records shipped only in the previous fallback table.
 QuestInfoList[2300] = QuestInfoList[2300] or {["IconName"]="ico_nq.bmp",["Summary"]="",["Title"]="Quest 2300",["Description"]={[1]=""}}
 QuestInfoList[2301] = QuestInfoList[2301] or {["IconName"]="ico_nq.bmp",["Summary"]="",["Title"]="Quest 2301",["Description"]={[1]=""}}

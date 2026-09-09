@@ -79,13 +79,17 @@ glast_01,241,290,5	script	Oscar#fogh_gate	4_ED_OSCAR,{
 	.@mode = .@party ? IM_PARTY : IM_CHAR;
 	.@owner = .@party ? .@party : getcharid(0);
 	.@iid = instance_id(.@mode);
+	.@returning = 0;
 	if (.@iid) {
 		.@name$ = instance_live_info(ILI_NAME,.@iid);
 		if (.@name$ != "Fall of Glast Heim (Normal)" && .@name$ != "Fall of Glast Heim (Advanced)") {
 			mes "Your " + (.@party ? "party" : "character") + " already owns another active instance.";
 			close;
 		}
-		if (FOGH_RunIID != .@iid && FOGH_DailyNext > gettimetick(2)) {
+		// Instance IDs are reused after a server restart; admission belongs
+		// to this live instance's character roster, not a persistent number.
+		.@returning = getinstancevar('fogh_entered[getcharid(0)],.@iid);
+		if (!.@returning && FOGH_DailyNext > gettimetick(2)) {
 			mes "You already entered another Fall of Glast Heim record today.";
 			close;
 		}
@@ -93,7 +97,7 @@ glast_01,241,290,5	script	Oscar#fogh_gate	4_ED_OSCAR,{
 			mes "The active Advanced record requires Base Level 170.";
 			close;
 		}
-		if (FOGH_RunIID != .@iid && .@name$ == "Fall of Glast Heim (Advanced)" && FOGH_AdvancedNext > gettimetick(2)) {
+		if (!.@returning && .@name$ == "Fall of Glast Heim (Advanced)" && FOGH_AdvancedNext > gettimetick(2)) {
 			mes "Your Advanced record cooldown has not ended.";
 			close;
 		}
@@ -137,7 +141,7 @@ glast_01,241,290,5	script	Oscar#fogh_gate	4_ED_OSCAR,{
 		mes "You do not belong to this record, or its map is not ready.";
 		close;
 	}
-	if (FOGH_RunIID != .@iid) {
+	if (!.@returning) {
 		.@hunt = .@name$ == "Fall of Glast Heim (Advanced)" ? 12462 : 12459;
 		.@wait = .@name$ == "Fall of Glast Heim (Advanced)" ? 12461 : 12460;
 		if (isbegin_quest(.@hunt))
@@ -146,7 +150,7 @@ glast_01,241,290,5	script	Oscar#fogh_gate	4_ED_OSCAR,{
 			erasequest .@wait;
 		setquest .@hunt;
 		setquest .@wait;
-		FOGH_RunIID = .@iid;
+		setinstancevar 'fogh_entered[getcharid(0)],1,.@iid;
 		FOGH_DailyNext = gettimetick(2) + 86400;
 		if (.@name$ == "Fall of Glast Heim (Advanced)")
 			FOGH_AdvancedNext = gettimetick(2) + 259200;
@@ -1197,7 +1201,7 @@ OnTimer300000:
 1@gl_prq,52,270,4	script	Oscar#fogh_reward	4_ED_OSCAR,{
 	mes "[Oscar]";
 	.@iid = instance_id();
-	if (FOGH_RewardIID == .@iid) {
+	if ('fogh_rewarded[getcharid(0)]) {
 		mes "You already recovered this record's reward. I will return you outside.";
 		close2;
 		warp "glast_01",244,290;
@@ -1228,7 +1232,7 @@ OnTimer300000:
 		getitem 102550,1;
 		mes "Reward: ^3366FF3 "+getitemname(25739)+"^000000 and ^3366FF1 "+getitemname(102550)+"^000000.";
 	}
-	FOGH_RewardIID = .@iid;
+	'fogh_rewarded[getcharid(0)] = 1;
 	erasequest 'fogh_hunt;
 	next;
 	mes "The dimensional record is collapsing. I will return you to Glast Heim.";

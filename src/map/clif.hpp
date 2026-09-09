@@ -1464,7 +1464,7 @@ void clif_reputation_list( map_session_data& sd );
 void clif_reputation_open( map_session_data& sd, uint64 tabID, uint64 repID );
 
 // Item Reform UI
-void clif_item_reform_open( map_session_data& sd, t_itemid item );
+void clif_item_reform_open( map_session_data& sd, t_itemid item, int16 consume_index = -1 );
 
 // Item Enchant UI
 void clif_enchantwindow_open( map_session_data& sd, uint64 clientLuaIndex );

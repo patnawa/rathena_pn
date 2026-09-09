@@ -1,0 +1,18 @@
+Header:
+  Type: ITEM_GROUP_DB
+  Version: 5
+Body:
+- Group: AEGIS_105161
+  SubGroups:
+  - SubGroup: 6
+    List:
+    - Index: 64
+      Item: Fron_Fix_AT_Axe
+      Rate: 130
+- Group: AEGIS_105162
+  SubGroups:
+  - SubGroup: 6
+    List:
+    - Index: 72
+      Item: Fron_Fix_AT_Axe
+      Rate: 130

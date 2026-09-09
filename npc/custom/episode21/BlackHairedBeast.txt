@@ -49,6 +49,42 @@ function	script	EP21_EnterInstance	{
 		mes "The instance map is not ready.";
 		close;
 	}
+	// BEGIN EP21 FINALE ENTRANT CHECKPOINT
+	// Entry has validated the character and instance. Restore only this
+	// entrant past doors the party already closed, using existing group
+	// destinations. Never advance encounter state or grant story credit.
+	.@checkpoint$ = "";
+	if (.@name$ == "Secret Altar") {
+		.@stage = getinstancevar('sa_stage,.@iid);
+		if ((.@stage >= 3 && .@stage <= 5) || (.@stage == 6 && !getinstancevar('sa_inner_open,.@iid))) {
+			.@checkpoint$ = instance_mapname("1@ep21a",.@iid);
+			.@x = 184; .@y = 34;
+		} else if (.@stage == 6 || .@stage == 7) {
+			.@checkpoint$ = instance_mapname("1@ep21a",.@iid);
+			.@x = 182; .@y = 97;
+		} else if (.@stage == 8) {
+			.@checkpoint$ = instance_mapname("1@ep21a",.@iid);
+			.@x = 126; .@y = 155;
+		}
+	} else if (.@name$ == "Final Battle" || .@name$ == "Final Battle(Normal)" || .@name$ == "Final Battle(Hard)") {
+		.@stage = getinstancevar('fb_stage,.@iid);
+		if (.@stage == 1 || .@stage == 3 || .@stage == 4) {
+			.@checkpoint$ = instance_mapname("1@ep21b",.@iid);
+			.@x = 168; .@y = 30;
+		} else if (.@stage == 10 || .@stage == 20) {
+			.@checkpoint$ = instance_mapname("1@ep21b",.@iid);
+			.@x = 168; .@y = 170;
+		}
+	} else if (.@name$ == "Silent Sanctuary") {
+		.@stage = getinstancevar('ss_stage,.@iid);
+		if (.@stage >= 1 && .@stage <= 3) {
+			.@checkpoint$ = instance_mapname("1@twbs2",.@iid);
+			.@x = 96; .@y = 70;
+		}
+	}
+	if (.@checkpoint$ != "")
+		warp .@checkpoint$,.@x,.@y;
+	// END EP21 FINALE ENTRANT CHECKPOINT
 	end;
 }
 

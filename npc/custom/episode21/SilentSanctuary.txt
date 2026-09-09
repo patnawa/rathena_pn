@@ -114,6 +114,8 @@ OnBossDead:
 	mes "[Aurelie]";
 	mes "The old curse is gone, yet the mana is wildly rebuilding Lasgand. We must verify whether the Heart Piece is responsible.";
 	close2;
+	// A late party dialogue must not restart an earlier combat phase.
+	if ('ss_stage != 0) end;
 	'ss_stage = 1;
 	disablenpc();
 	enablenpc instance_npcname("Lasgand#ep21_ss");
@@ -125,6 +127,8 @@ OnBossDead:
 	mes "[Lasgand]";
 	mes "The figure repeats the same broken motions, as if this is the first moment of his resurrection every time.";
 	close2;
+	// A late party dialogue must not restart an earlier combat phase.
+	if ('ss_stage != 1) end;
 	'ss_stage = 2;
 	disablenpc();
 	monster instance_mapname("1@twbs2"),96,84,"Lasgand",21981,1,instance_npcname("#EP21_SilentSanctuary_Control") + "::OnBossDead";

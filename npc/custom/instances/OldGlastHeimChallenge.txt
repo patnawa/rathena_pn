@@ -61,7 +61,12 @@ glast_01,143,288,4	script	Oscar#oghcm_gate	4_ED_OSCAR,{
 	}
 	.@max = callfunc("OGHCM_MaxLevel",#OGHCM_Points);
 	mes "Account progression: ^3366FF"+#OGHCM_Points+" points^000000 (level "+.@max+" unlocked).";
-	if (!.@iid && OGHCM_Next > gettimetick(2)) {
+	// Only a character already admitted to this exact live instance may
+	// re-enter during cooldown. Party ownership alone is not proof of entry.
+	.@returning = 0;
+	if (.@iid)
+		.@returning = getinstancevar('ogh_entered[getcharid(0)],.@iid);
+	if (!.@returning && OGHCM_Next > gettimetick(2)) {
 		mes "The distortion is still cooling down for "+((OGHCM_Next-gettimetick(2)+59)/60)+" minute(s).";
 		close;
 	}
@@ -83,7 +88,10 @@ glast_01,143,288,4	script	Oscar#oghcm_gate	4_ED_OSCAR,{
 		mes "The instance map is not ready.";
 		close;
 	}
-	OGHCM_Next = gettimetick(2) + 86400;
+	if (!.@returning) {
+		setinstancevar 'ogh_entered[getcharid(0)],1,.@iid;
+		OGHCM_Next = gettimetick(2) + 86400;
+	}
 	end;
 
 OnInit:

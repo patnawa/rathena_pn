@@ -332,6 +332,27 @@ dali02,137,86,4	script	Dr. Strong#acr	4_M_FAIRYANG,{
 		if (.@choice == 3)
 			close;
 	}
+	// The party can start while this entry menu is open. Recheck the actual
+	// starting roster after the dialog, including previous entrants who were
+	// absent when the roster was snapshotted.
+	if (instance_live_info(ILI_NAME,.@iid) != "Airship Crash") {
+		mes "This expedition is no longer available.";
+		close;
+	}
+	if (getinstancevar('started,.@iid)) {
+		.@registered = 0;
+		.@members = getinstancevar('member_count,.@iid);
+		for (.@i = 0; .@i < .@members; ++.@i) {
+			if (getinstancevar('member_cid[.@i],.@iid) == getcharid(0)) {
+				.@registered = 1;
+				break;
+			}
+		}
+		if (!.@registered) {
+			mes "Only the members registered when this expedition began may enter.";
+			close;
+		}
+	}
 	.@result = instance_enter("Airship Crash",-1,-1,getcharid(0),.@iid);
 	if (.@result != IE_OK) {
 		mes "The instance map is not ready (error "+.@result+").";

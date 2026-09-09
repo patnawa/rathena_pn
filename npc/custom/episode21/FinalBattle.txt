@@ -196,6 +196,7 @@ OnRepeatBossDead:
 		next;
 		if (select("Use the tablet.:Leave.") == 2)
 			close;
+		if ('fb_stage != 0) end;
 		'fb_kind = 0;
 		'fb_stage = 1;
 		disablenpc();
@@ -229,6 +230,7 @@ OnRepeatBossDead:
 	next;
 	if (select("Begin the battle.:Leave.") == 2)
 		close;
+	if ('fb_stage != 0) end;
 	'fb_stage = 10;
 	disablenpc();
 	instance_warpall "1@ep21b",168,170,instance_id();
@@ -239,6 +241,7 @@ OnRepeatBossDead:
 1@ep21b,160,25,4	script(DISABLED)	Tris#ep21_fb_channel	22301,{
 	if ('fb_stage != 1 || ('fb_channels & 1)) end;
 	mes "[Tris]"; mes "The resistance channels its resolve into Heine's spell."; close2;
+	if ('fb_stage != 1 || ('fb_channels & 1)) end;
 	'fb_channels = 'fb_channels | 1;
 	disablenpc();
 	if ('fb_channels == 15) enablenpc instance_npcname("Giant Egg#ep21_fb_story");
@@ -247,6 +250,7 @@ OnRepeatBossDead:
 1@ep21b,176,25,4	script(DISABLED)	Tan#ep21_fb_channel	22302,{
 	if ('fb_stage != 1 || ('fb_channels & 2)) end;
 	mes "[Tan]"; mes "Tan offers every fragment of mana needed to reach the serpent."; close2;
+	if ('fb_stage != 1 || ('fb_channels & 2)) end;
 	'fb_channels = 'fb_channels | 2;
 	disablenpc();
 	if ('fb_channels == 15) enablenpc instance_npcname("Giant Egg#ep21_fb_story");
@@ -255,6 +259,7 @@ OnRepeatBossDead:
 1@ep21b,160,36,4	script(DISABLED)	Nadoyo#ep21_fb_channel	22303,{
 	if ('fb_stage != 1 || ('fb_channels & 4)) end;
 	mes "[Nadoyo]"; mes "Nadoyo anchors the route so no one is lost between memories."; close2;
+	if ('fb_stage != 1 || ('fb_channels & 4)) end;
 	'fb_channels = 'fb_channels | 4;
 	disablenpc();
 	if ('fb_channels == 15) enablenpc instance_npcname("Giant Egg#ep21_fb_story");
@@ -263,6 +268,7 @@ OnRepeatBossDead:
 1@ep21b,176,36,4	script(DISABLED)	Heine#ep21_fb_channel	4_M_SAGE_C,{
 	if ('fb_stage != 1 || ('fb_channels & 8)) end;
 	mes "[Heine]"; mes "The final channel locks into place. The giant egg is exposed."; close2;
+	if ('fb_stage != 1 || ('fb_channels & 8)) end;
 	'fb_channels = 'fb_channels | 8;
 	disablenpc();
 	if ('fb_channels == 15) {
@@ -277,6 +283,7 @@ OnRepeatBossDead:
 	mes "[Giant Egg]";
 	mes "The shell splits. Corrupted Tan emerges as the serpent's last vessel.";
 	close2;
+	if ('fb_stage != 1 || 'fb_channels != 15) end;
 	'fb_stage = 3;
 	disablenpc();
 	monster instance_mapname("1@ep21b"),168,30,"Corrupted Tan",22371,1,instance_npcname("#EP21_FinalBattle_Control") + "::OnStoryBossDead";

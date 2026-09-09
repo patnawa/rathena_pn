@@ -21,3 +21,129 @@ Body:
 - Id: 164
   TargetItems:
     Frontier_R_Crown_AT: true
+- Id: 142
+  Reset:
+    Chance: 100000
+  Slots:
+  - Slot: 3
+    PerfectEnchants:
+    - Item: Token_Of_Life
+      Materials:
+      - Material: Grace_Of_Spirit
+        Amount: 10
+  - Slot: 2
+    PerfectEnchants:
+    - Item: Signet_Of_Pow1
+      Price: 40000000
+      Materials:
+      - Material: Energy_Of_Spring
+        Amount: 200
+      - Material: Energy_Of_Summer
+        Amount: 200
+      - Material: Energy_Of_Autumn
+        Amount: 200
+      - Material: Energy_Of_Winter
+        Amount: 200
+      - Material: Circul_Of_Life
+        Amount: 900
+      - Material: Fruit_Of_Birth
+        Amount: 100
+      - Material: Fruit_Of_Extinction
+        Amount: 100
+      - Material: Grace_Of_Spirit
+        Amount: 200
+    - Item: Signet_Of_Con1
+      Price: 40000000
+      Materials:
+      - Material: Energy_Of_Spring
+        Amount: 200
+      - Material: Energy_Of_Summer
+        Amount: 200
+      - Material: Energy_Of_Autumn
+        Amount: 200
+      - Material: Energy_Of_Winter
+        Amount: 200
+      - Material: Circul_Of_Life
+        Amount: 900
+      - Material: Fruit_Of_Birth
+        Amount: 100
+      - Material: Fruit_Of_Extinction
+        Amount: 100
+      - Material: Grace_Of_Spirit
+        Amount: 200
+    - Item: Signet_Of_Spl1
+      Price: 40000000
+      Materials:
+      - Material: Energy_Of_Spring
+        Amount: 200
+      - Material: Energy_Of_Summer
+        Amount: 200
+      - Material: Energy_Of_Autumn
+        Amount: 200
+      - Material: Energy_Of_Winter
+        Amount: 200
+      - Material: Circul_Of_Life
+        Amount: 900
+      - Material: Fruit_Of_Birth
+        Amount: 100
+      - Material: Fruit_Of_Extinction
+        Amount: 100
+      - Material: Grace_Of_Spirit
+        Amount: 200
+    - Item: Signet_Of_Sta1
+      Price: 40000000
+      Materials:
+      - Material: Energy_Of_Spring
+        Amount: 200
+      - Material: Energy_Of_Summer
+        Amount: 200
+      - Material: Energy_Of_Autumn
+        Amount: 200
+      - Material: Energy_Of_Winter
+        Amount: 200
+      - Material: Circul_Of_Life
+        Amount: 900
+      - Material: Fruit_Of_Birth
+        Amount: 100
+      - Material: Fruit_Of_Extinction
+        Amount: 100
+      - Material: Grace_Of_Spirit
+        Amount: 200
+    - Item: Signet_Of_Crt1
+      Price: 40000000
+      Materials:
+      - Material: Energy_Of_Spring
+        Amount: 200
+      - Material: Energy_Of_Summer
+        Amount: 200
+      - Material: Energy_Of_Autumn
+        Amount: 200
+      - Material: Energy_Of_Winter
+        Amount: 200
+      - Material: Circul_Of_Life
+        Amount: 900
+      - Material: Fruit_Of_Birth
+        Amount: 100
+      - Material: Fruit_Of_Extinction
+        Amount: 100
+      - Material: Grace_Of_Spirit
+        Amount: 200
+    - Item: Signet_Of_Wis1
+      Price: 40000000
+      Materials:
+      - Material: Energy_Of_Spring
+        Amount: 200
+      - Material: Energy_Of_Summer
+        Amount: 200
+      - Material: Energy_Of_Autumn
+        Amount: 200
+      - Material: Energy_Of_Winter
+        Amount: 200
+      - Material: Circul_Of_Life
+        Amount: 900
+      - Material: Fruit_Of_Birth
+        Amount: 100
+      - Material: Fruit_Of_Extinction
+        Amount: 100
+      - Material: Grace_Of_Spirit
+        Amount: 200

@@ -1,0 +1,38 @@
+name: PN release validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['src/**', 'db/**', 'npc/**', 'conf/**', 'sql-files/**', 'tools/**', 'client-patch/**', '.github/workflows/**']
+  pull_request:
+    paths: ['src/**', 'db/**', 'npc/**', 'conf/**', 'sql-files/**', 'tools/**', 'client-patch/**', '.github/workflows/**']
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build and regression dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libmysqlclient-dev zlib1g-dev libpcre3-dev libssl-dev python3-yaml
+          sudo systemctl start mysql.service
+      - name: Build the configured Renewal candidate
+        run: |
+          ./configure --enable-prere=no --enable-packetver=20260219 --enable-buildbot=yes
+          make import
+          make -j2 tools map
+          ./yaml2sql
+          ./tools/ci/sql.sh
+      - name: Run release gates
+        run: python3 tools/ci/release_checks.py --startup-log release-results/startup.log --report release-results/report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-validation
+          path: release-results/

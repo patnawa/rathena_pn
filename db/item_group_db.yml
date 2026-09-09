@@ -58,3 +58,5 @@ Footer:
       Mode: Renewal
     - Path: db/import/item_group_db.yml
     - Path: db/import/zero_cell_item_group_db.yml
+    - Path: db/import/equipment_progression_groups.yml
+      Mode: Renewal

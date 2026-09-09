@@ -48,3 +48,5 @@ Footer:
   - Path: db/re/item_reform.yml
     Mode: Renewal
   - Path: db/import/item_reform.yml
+  - Path: db/import/equipment_progression_reform.yml
+    Mode: Renewal

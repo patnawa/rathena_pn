@@ -83,6 +83,9 @@ Thumbs.db
 !/db/import/enchant_repair.yml
 !/db/import/enchant_repair_combos.yml
 !/db/import/enchant_repair_items.yml
+!/db/import/equipment_progression_items.yml
+!/db/import/equipment_progression_groups.yml
+!/db/import/equipment_progression_reform.yml
 !/db/import/shadow_repair_items.yml
 !/db/import/shadow_repair_laphine.yml
 !/db/import/shadow_repair_options.yml

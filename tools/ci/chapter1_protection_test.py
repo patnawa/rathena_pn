@@ -31,10 +31,15 @@ def run(build):
   subprocess.run(flags+["-c",str(p),"-o",str(target)],cwd=ROOT,check=True);fresh.append(target)
  exe=build/"guard-test"
  linklibs=["-lz","-ldl","-lmysqlclient","-lssl","-lcrypto","-lresolv","-lm"]
- # MySQL client builds vary: some use zstd, while Alpine MariaDB does not.
- # Include it only when the selected compiler can resolve its linker library.
- zstd=subprocess.check_output(["g++","-print-file-name=libzstd.so"],text=True).strip()
- if zstd!="libzstd.so" and Path(zstd).is_file():linklibs.append("-lzstd")
+ # Optional configured dependencies vary: MySQL may require zstd and
+ # npc_chat.o requires PCRE when configure detected it. Preserve builds
+ # without either library (including Alpine MariaDB configurations).
+ for library in ("zstd", "pcre"):
+  for suffix in ("so", "a"):
+   filename=f"lib{library}.{suffix}"
+   resolved=subprocess.check_output(["g++",f"-print-file-name={filename}"],text=True).strip()
+   if resolved!=filename and Path(resolved).is_file():
+    linklibs.append(f"-l{library}");break
  cmd=["g++","-fsanitize=undefined","-o",str(exe)]+list(map(str,fresh+objects+libs))+["-Wl,--wrap="+x for x in WRAPPERS+EXTRA]+linklibs
  subprocess.run(cmd,cwd=ROOT,check=True)
  result=subprocess.run([str(exe),str(fixture)],cwd=ROOT,text=True,capture_output=True,timeout=60)

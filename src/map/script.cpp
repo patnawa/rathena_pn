@@ -28123,6 +28123,14 @@ BUILDIN_FUNC(item_reform){
 			return SCRIPT_CMD_FAILURE;
 		}
 
+		if( sd->itemindex < 0 || sd->itemindex >= MAX_INVENTORY ||
+			sd->inventory_data[sd->itemindex] == nullptr ||
+			sd->inventory.u.items_inventory[sd->itemindex].nameid != sd->itemid ||
+			sd->inventory.u.items_inventory[sd->itemindex].amount <= 0 ){
+			ShowError( "buildin_item_reform: The triggering item is no longer available.\n" );
+			return SCRIPT_CMD_FAILURE;
+		}
+
 		if( sd->inventory_data[sd->itemindex]->flag.delay_consume == 0 ){
 			ShowError( "buildin_item_reform: Called from item %u, which is not a DelayConsume type.\n", sd->itemid );
 			return SCRIPT_CMD_FAILURE;
@@ -28136,7 +28144,8 @@ BUILDIN_FUNC(item_reform){
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	clif_item_reform_open( *sd, item_id );
+	// Explicit reform IDs are NPC recipes; only an item-script invocation consumes a tuning.
+	clif_item_reform_open( *sd, item_id, script_hasdata( st, 2 ) ? -1 : sd->itemindex );
 
 	return SCRIPT_CMD_SUCCESS;
 #endif

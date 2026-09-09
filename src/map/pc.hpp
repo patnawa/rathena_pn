@@ -458,6 +458,7 @@ public:
 		t_itemid laphine_upgrade;
 		bool roulette_open;
 		t_itemid item_reform;
+		int16 item_reform_index; // Delayed-consume cell, or -1 for NPC reform.
 		uint64 item_enchant_index;
 	} state;
 	struct {

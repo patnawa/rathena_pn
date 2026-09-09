@@ -1,0 +1,10 @@
+[Unit]
+Description=Create and verify a consistent game database backup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+UMask=0077
+ExecStart=/usr/bin/python3 /app/rathena/tools/admin/database_backup.py --check-restore
+TimeoutStartSec=15min

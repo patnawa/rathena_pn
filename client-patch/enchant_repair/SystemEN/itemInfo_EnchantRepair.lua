@@ -256,3 +256,12 @@ tbl_enchantrepair[101260].identifiedDisplayName = "Advanced Shadow Spellbook (Su
 tbl_enchantrepair[101260].identifiedDescriptionName = {"Advanced Shadow Spellbook (Support)","Produces 2 random option line(s).","Use on unequipped eligible Shadow gear, refine 0 through 10.","Rerolls random options; preserves refine, grade and card enchants.","Equal chance for each option within a line.","Line 1:","Max HP: 100-500","Max SP: 20-100","Max HP %: 1-2","Max SP %: 1-2","Variable cast time reduction %: 1-3","Healing effectiveness %: 3-5","Incoming healing %: 3-5","DEF: 10-25","MDEF: 1-3","Line 2:","H.Plus: 3-10","WIS: 1-5","CRT: 1-5","STA: 1-5","RES: 5-15","MRES: 5-15"}
 tbl_enchantrepair[50033] = {identifiedDisplayName="Shadow",unidentifiedDisplayName="Shadow",identifiedResourceName=tbl[969].identifiedResourceName,unidentifiedResourceName=tbl[969].identifiedResourceName,slotCount=0,ClassNum=0,identifiedDescriptionName={"Exchange with Rayja for Shadow enchant materials."},unidentifiedDescriptionName={"Exchange with Rayja for Shadow enchant materials."}}
 tbl_enchantrepair[50034] = {identifiedDisplayName="Shadow Crate",unidentifiedDisplayName="Shadow Crate",identifiedResourceName=tbl[603].identifiedResourceName,unidentifiedResourceName=tbl[603].identifiedResourceName,slotCount=0,ClassNum=0,identifiedDescriptionName={"Contains exactly 20 Shadow. Make inventory space before opening."},unidentifiedDescriptionName={"Contains exactly 20 Shadow. Make inventory space before opening."}}
+
+-- Tuning uses the existing Frontier tuning artwork and native reform interface.
+assert(tbl[105163], "Missing existing Frontier tuning artwork")
+tbl_enchantrepair[106250] = {}
+for k,v in pairs(tbl[105163]) do tbl_enchantrepair[106250][k]=v end
+tbl_enchantrepair[106250].identifiedDisplayName = "Frontier Tuning (Claw Axe)"
+tbl_enchantrepair[106250].unidentifiedDisplayName = "Frontier Tuning (Claw Axe)"
+tbl_enchantrepair[106250].identifiedDescriptionName = {"Reforms a +10 to +20 Encroached Axe into a Frontier Claw Axe.", "Requires 200 Mana Rings, 15 Azure Frontier Stones, 10 Sunset Frontier Stones,", "5 Teal Frontier Stones and 5 Physical Tuning Formulas.", "Consumes this tuning and the materials on success.", "Preserves refine, grade, cards and random options.", "Required Level: 265", "Weight: 5"}
+tbl_enchantrepair[106250].unidentifiedDescriptionName = tbl_enchantrepair[106250].identifiedDescriptionName

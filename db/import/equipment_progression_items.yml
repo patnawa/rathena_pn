@@ -1,0 +1,13 @@
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+- Id: 106250
+  AegisName: Fron_Fix_AT_Axe
+  Name: Frontier Tuning (Claw Axe)
+  Type: DelayConsume
+  Weight: 50
+  EquipLevelMin: 265
+  Script: 'item_reform();
+
+    '
