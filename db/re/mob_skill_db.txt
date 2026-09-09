@@ -15115,3 +15115,16 @@
 20543,MD_ED_M_SCIENCE@WZ_HEAVENDRIVE,chase,91,5,300,0,10000,yes,target,always,0,,,,,,,
 20543,MD_ED_M_SCIENCE@WZ_HEAVENDRIVE,attack,91,5,50,0,10000,yes,target,always,0,,,,,,,
 // END BIORESEARCH LABORATORY VERIFIED SKILLS
+
+// BEGIN ALICE ENCOUNTER SKILLS
+// Original tuning, not a recovered official skill table.
+30245,Alice encounter,attack,86,10,1000,1800,12000,yes,target,always,0,,,,,,,
+30239,Alice encounter,attack,5,10,1500,700,6000,yes,target,always,0,,,,,,,
+30239,Alice encounter,attack,7,10,1000,800,12000,yes,self,always,0,,,,,,,
+30246,Alice encounter,attack,185,5,1000,800,8000,yes,target,always,0,,,,,,,
+30247,Alice encounter,attack,188,5,1000,800,8000,yes,target,always,0,,,,,,,
+30248,Alice encounter,attack,185,3,1000,800,10000,yes,target,always,0,,,,,,,
+30249,Alice encounter,attack,136,5,500,800,10000,yes,target,always,0,,,,,,,
+30250,Alice encounter,attack,190,5,1000,1000,8000,yes,target,always,0,,,,,,,
+30250,Alice encounter,attack,83,5,500,2000,15000,yes,target,always,0,,,,,,,
+// END ALICE ENCOUNTER SKILLS

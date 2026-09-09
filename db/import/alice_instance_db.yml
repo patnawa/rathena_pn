@@ -1,0 +1,15 @@
+Header:
+  Type: INSTANCE_DB
+  Version: 2
+
+Body:
+  - Id: 81
+    Name: Alice Twisted Madness
+    TimeLimit: 1800
+    IdleTimeOut: 300
+    Enter:
+      Map: 1@alice_mad
+      X: 110
+      Y: 110
+    AdditionalMaps:
+      2@alice_mad: true

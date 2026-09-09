@@ -5527,6 +5527,7 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
 				map_setmapflag(m, MF_RESTRICTED, false);
 			break;
 
+		case MF_RESISTANCECAP:
 		case MF_JEXP:
 		case MF_BEXP: {
 				union u_mapflag_args args = {};

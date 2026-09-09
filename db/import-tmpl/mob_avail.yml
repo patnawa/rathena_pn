@@ -130,3 +130,5 @@ Footer:
       Mode: Renewal
     - Path: db/episode20_mob_avail.yml
       Mode: Renewal
+    - Path: db/alice_mob_avail.yml
+      Mode: Renewal

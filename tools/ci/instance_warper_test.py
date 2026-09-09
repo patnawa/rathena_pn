@@ -53,6 +53,7 @@ ROUTES = {
     67: ('Wave Mode (Forest / Sky)','prontera',146,75),
     68: ('Chapter 2 - Phantom of Nyrholt','ch2safe4',86,146),
     69: ('Bioresearch Laboratory','yuno',216,343),
+    70: ('Alice Twisted Madness','dali',66,100),
 }
 
 
@@ -113,6 +114,8 @@ def scenarios():
     add(68,'Phantom completed campaign',True)
     add(69,'Bioresearch level169',False,level=169)
     add(69,'Bioresearch level170',True,level=170)
+    add(70,'Alice level174',False,level=174)
+    add(70,'Alice level175',True,level=175)
     return cases
 
 

@@ -102,3 +102,5 @@ Footer:
   - Path: db/import/rune_tablet_mob_groups.yml
   - Path: db/bioresearch_mob_db.yml
     Mode: Renewal
+  - Path: db/alice_mob_db.yml
+    Mode: Renewal

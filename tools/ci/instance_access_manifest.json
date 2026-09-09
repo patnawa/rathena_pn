@@ -1,9 +1,9 @@
 {
   "review_date": "2026-09-09",
   "scope": "Unique instance guide categories, enabled Renewal import graph, effective instance DB, Warper menu and installed client map presence. Entry candidates require gate review; presence is not a completed gameplay test.",
-  "enabled_npc_file_count": 916,
-  "local_instance_count": 101,
-  "unique_client_map_count": 122,
+  "enabled_npc_file_count": 917,
+  "local_instance_count": 102,
+  "unique_client_map_count": 124,
   "unavailable_client_maps": [],
   "reference_catalog": [
     {
@@ -92,14 +92,31 @@
     },
     {
       "name": "Alice Twisted Madness",
-      "local_instance_ids": [],
-      "database_names": [],
-      "status": "unimplemented",
-      "warper_labels": [],
-      "warper_status": "not_applicable",
-      "enabled_scripts": [],
-      "entry_npc_candidates": [],
-      "client_map_status": "not_applicable"
+      "local_instance_ids": [
+        81
+      ],
+      "database_names": [
+        "Alice Twisted Madness"
+      ],
+      "status": "implemented",
+      "warper_labels": [
+        "Alice Twisted Madness"
+      ],
+      "warper_status": "listed",
+      "enabled_scripts": [
+        "npc/custom/instances/AliceTwistedMadness.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/AliceTwistedMadness.txt",
+          "map": "dali",
+          "x": 66,
+          "y": 98,
+          "name": "Alice#mad_entry",
+          "line": 65
+        }
+      ],
+      "client_map_status": "all_available"
     },
     {
       "name": "Bakonawa Lake",
@@ -6727,6 +6744,74 @@
       "warper_status": "listed"
     },
     {
+      "id": 81,
+      "name": "Alice Twisted Madness",
+      "maps": [
+        "1@alice_mad",
+        "2@alice_mad"
+      ],
+      "name_references": [
+        "npc/custom/instances/AliceTwistedMadness.txt",
+        "npc/custom/warper.txt"
+      ],
+      "entry_npc_candidates": [
+        {
+          "script": "npc/custom/instances/AliceTwistedMadness.txt",
+          "map": "dali",
+          "x": 66,
+          "y": 98,
+          "name": "Alice#mad_entry",
+          "line": 65
+        }
+      ],
+      "warper_labels": [
+        "Alice Twisted Madness"
+      ],
+      "client_maps": {
+        "1@alice_mad": {
+          "gat": {
+            "direct": true,
+            "resolved": "1@alice_mad.gat",
+            "origin": "client-patch/alice_maze/data",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "1@alice_mad.gnd",
+            "origin": "client-patch/alice_maze/data",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "1@alice_mad.rsw",
+            "origin": "client-patch/alice_maze/data",
+            "available": true
+          }
+        },
+        "2@alice_mad": {
+          "gat": {
+            "direct": true,
+            "resolved": "2@alice_mad.gat",
+            "origin": "client-patch/alice_maze/data",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "2@alice_mad.gnd",
+            "origin": "client-patch/alice_maze/data",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "2@alice_mad.rsw",
+            "origin": "client-patch/alice_maze/data",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "listed"
+    },
+    {
       "id": 120,
       "name": "Ominous Dark Whisper",
       "maps": [
@@ -7802,6 +7887,7 @@
   "required_warper_labels": [
     "Airship Crash",
     "Airship Raid",
+    "Alice Twisted Madness",
     "Bakonawa Lake",
     "Bangungot Hospital 2F",
     "Bioresearch Laboratory",

@@ -4916,6 +4916,17 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 			} else
 				mapdata->setMapFlag(mapflag, false);
 			break;
+		case MF_RESISTANCECAP:
+			if (status) {
+				nullpo_retr(false, args);
+				if (args->flag_val < 1 || args->flag_val > 100) {
+					ShowWarning("map_setmapflag: resistancecap must be between 1 and 100 on map %s.\n", mapdata->name);
+					return false;
+				}
+				mapdata->setMapFlag(mapflag, args->flag_val);
+			} else
+				mapdata->setMapFlag(mapflag, false);
+			break;
 		case MF_SPECIALPOPUP:
 		case MF_INVINCIBLE_TIME:
 			if (status) {

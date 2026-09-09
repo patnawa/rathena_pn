@@ -1,0 +1,8 @@
+Header:
+  Type: QUEST_DB
+  Version: 3
+
+Body:
+  - Id: 62090
+    Title: Alice's Memory - Daily Standby
+    TimeLimit: 4h

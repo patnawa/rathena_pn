@@ -299,3 +299,14 @@ if QuestInfoList[16400] then
         {ItemID = 102571, ItemNum = 1}
     }
 end
+
+-- Both Alice maze modes share the server's 04:00 admission reset.
+QuestInfoList[62090] = {
+    Title = "[Standby] Alice's Twisted Madness",
+    IconName = "ico_nq.bmp",
+    Description = {
+        "Your daily admission to Alice's Twisted Madness has been used. Easy and Hard modes share this cooldown. Speak with Alice in Dali after the reset to enter again."
+    },
+    Summary = "Resets at 04:00 server time",
+    CoolTimeQuest = 1
+}

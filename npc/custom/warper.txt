@@ -1075,6 +1075,13 @@ I69: Restrict("RE");
 	}
 	Go("yuno",216,343);
 
+I70: Restrict("RE");
+	if (BaseLevel < 175) {
+		message strcharinfo(0),"Reach Base Level 175 first.";
+		end;
+	}
+	Go("dali",66,100);
+
 I_Episodes:
 menu	"Episode 17.1 - OS Occupation",I40,
 		"Episode 17.1 - Cor Memorial",I41,
@@ -1110,6 +1117,7 @@ menu	"Airship Raid",I52,
 		"Poring Village",I66,
 		"Wave Mode (Forest / Sky)",I67,
 		"Bioresearch Laboratory",I69,
+		"Alice Twisted Madness",I70,
 		"Back to Instances",Instances;
 
 // --------------------------------------------------
@@ -1217,6 +1225,7 @@ OnNaviGenerate:
 	naviregisterwarp("Warper > Wave Mode (Forest / Sky)", "prontera", 146, 75);
 	naviregisterwarp("Warper > Chapter 2 - Phantom of Nyrholt", "ch2safe4", 86, 146);
 	naviregisterwarp("Warper > Bioresearch Laboratory", "yuno", 216, 343);
+	naviregisterwarp("Warper > Alice Twisted Madness", "dali", 66, 100);
 	naviregisterwarp("Warper > Episode 17.1 - OS Occupation", "sp_cor", 162, 56);
 	naviregisterwarp("Warper > Episode 17.1 - Cor Memorial", "sp_cor", 113, 130);
 	naviregisterwarp("Warper > Episode 17.2 - Farm Lost in Time", "ba_maison", 311, 206);

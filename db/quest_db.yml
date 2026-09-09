@@ -68,3 +68,4 @@ Footer:
   - Path: db/import/constellation_tower_quest_db.yml
   - Path: db/import/airship_crash_quest_db.yml
   - Path: db/import/bioresearch_quest_db.yml
+  - Path: db/import/alice_quest_db.yml

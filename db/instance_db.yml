@@ -52,3 +52,4 @@ Footer:
   - Path: db/import/chapter2_instance_db.yml
   - Path: db/import/quality_lab_instance_db.yml
   - Path: db/import/bioresearch_instance_db.yml
+  - Path: db/import/alice_instance_db.yml

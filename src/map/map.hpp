@@ -706,6 +706,8 @@ enum e_mapflag : int16 {
 	MF_NOMACROCHECKER,
 	MF_INVINCIBLE_TIME,
 	MF_MD_SELFDESTRUCTION,
+	MF_RESISTANCECAP, ///< Per-category defensive card/gear percentage cap; zero disables.
+	MF_STRICTDAMAGE, ///< Monster Ignore* modes block damage instead of plant-style one damage.
 	MF_MAX
 };
 

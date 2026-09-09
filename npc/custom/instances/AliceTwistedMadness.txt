@@ -1,0 +1,769 @@
+// Alice's Twisted Madness: original maze encounter on purpose-built terrain.
+// Daily admission is shared by Normal and Hard. Timed bonus is measured from reservation.
+function	script	F_AliceTravel	{
+	.@cid = getcharid(0);
+	'alice_phase[.@cid] = getarg(0);
+	'alice_map[.@cid] = getarg(1);
+	'alice_x[.@cid] = getarg(2); 'alice_y[.@cid] = getarg(3);
+	warp instance_mapname(getarg(1) == 2 ? "2@alice_mad":"1@alice_mad"),getarg(2),getarg(3);
+	return;
+}
+
+function	script	F_AliceMember	{
+	if (getcharid(1) != 'alice_party) return 0;
+	if (!'alice_started_member[getcharid(0)]) return 0;
+	if ('alice_boss_started) return 0;
+	return 1;
+}
+
+function	script	F_AliceCorridor	{
+	if (!callfunc("F_AliceMember")) return;
+	.@cid = getcharid(0); .@corridor = getarg(0);
+	if (.@corridor != 'alice_corridor[.@cid]) return;
+	if ('alice_phase[.@cid] != 1 && 'alice_phase[.@cid] != 3) return;
+	if (rand(100) < 10) {
+		'alice_return_phase[.@cid] = 'alice_phase[.@cid];
+		callfunc "F_AliceTravel",2,1,14,114;
+		return;
+	}
+	if (.@corridor == 6) {
+		callfunc "F_AliceTravel",4,1,360,160;
+	} else if ('alice_door[.@cid] == 'alice_solution[.@cid]) {
+		'alice_corridor[.@cid] = 6;
+		callfunc "F_AliceTravel",3,1,72,20;
+	} else callfunc "F_AliceTravel",0,1,110,110;
+	return;
+}
+
+function	script	F_AliceLeadership	{
+	if (!'alice_started || 'alice_boss_started || getcharid(1) != 'alice_party || !is_party_leader()) return;
+	.@party = getcharid(1);
+	.@n = getpartymember(.@party,1,.@cid);
+	getpartymember .@party,2,.@aid;
+	.@count = 0;
+	for (.@i = 0; .@i < .@n; ++.@i) {
+		if (.@cid[.@i] == getcharid(0)) continue;
+		if (!isloggedin(.@aid[.@i],.@cid[.@i])) continue;
+		if (!'alice_started_member[.@cid[.@i]]) continue;
+		.@target[.@count] = .@cid[.@i]; .@account[.@count] = .@aid[.@i];
+		.@menu$ += "Traveler "+.@cid[.@i]+":";
+		mes .@cid[.@i]+" - "+rid2name(.@aid[.@i]);
+		++.@count;
+	}
+	if (!.@count) { dispbottom "No connected expedition member is available to lead."; return; }
+	mes "Choose a connected expedition member to lead and recall the group.";
+	.@choice = select(.@menu$+"Cancel")-1;
+	if (.@choice >= .@count) return;
+	if (getcharid(1) != .@party || !is_party_leader() || 'alice_boss_started) return;
+	.@cid = .@target[.@choice]; .@aid = .@account[.@choice];
+	if (!isloggedin(.@aid,.@cid)) return;
+	if (getcharid(1,rid2name(.@aid)) != .@party || !'alice_started_member[.@cid]) return;
+	if (party_changeleader(.@party,.@cid) == 1) dispbottom "Expedition leadership has changed.";
+	return;
+}
+
+dali,66,98,4	script	Alice#mad_entry	4_ALICE,{
+	mes "[Alice]";
+	if (BaseLevel < 175) { mes "You need Base Level 175 to enter this memory."; close; }
+	.@party = getcharid(1);
+	if (!.@party) { mes "Form a party, even if you travel alone."; close; }
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid) {
+		if (instance_live_info(ILI_NAME,.@iid) != "Alice Twisted Madness") { mes "Your party already has another active instance."; close; }
+		if (getinstancevar('alice_party,.@iid) != .@party) close;
+	}
+	.@returning = 0;
+	if (.@iid) .@returning = getinstancevar('alice_admitted[getcharid(0)],.@iid);
+	if (!.@returning) {
+		if (checkquest(62090,PLAYTIME) == 2) erasequest 62090;
+		if (isbegin_quest(62090)) { mes "Both modes share a daily admission, resetting at 04:00."; close; }
+	}
+	if (!.@iid) {
+		if (!is_party_leader()) { mes "Your party leader must choose the record."; close; }
+		mes "Normal follows the maze and one boss. Hard adds a group maze and three specialized bosses. Both records last thirty minutes.";
+		.@mode = select("Normal:Hard:Leave");
+		if (.@mode == 3) close;
+		if (getcharid(1) != .@party || !is_party_leader() || instance_id(IM_PARTY)) close;
+		.@iid = instance_create("Alice Twisted Madness",IM_PARTY,.@party);
+		if (.@iid < 1) { mes "The memory is not ready. Try again shortly."; close; }
+		setinstancevar 'alice_party,.@party,.@iid;
+		setinstancevar 'alice_mode,.@mode,.@iid;
+		setinstancevar 'alice_created,gettimetick(2),.@iid;
+	} else if (select("Enter the memory.:Leave.") == 2) close;
+	if (getcharid(1) != .@party || instance_id(IM_PARTY) != .@iid) close;
+	if (instance_live_info(ILI_NAME,.@iid) != "Alice Twisted Madness") close;
+	if (getinstancevar('alice_party,.@iid) != .@party) close;
+	.@returning = getinstancevar('alice_admitted[getcharid(0)],.@iid);
+	if (!.@returning) {
+		if (getinstancevar('alice_started,.@iid)) { mes "This party has already begun its journey."; close; }
+		if (checkquest(62090,PLAYTIME) == 2) erasequest 62090;
+		if (isbegin_quest(62090)) close;
+	} else {
+		if (getinstancevar('alice_started,.@iid)) {
+			if (!getinstancevar('alice_started_member[getcharid(0)],.@iid)) close;
+		}
+		if (getinstancevar('alice_boss_started,.@iid)) {
+			if (!getinstancevar('alice_eligible[getcharid(0)],.@iid)) { mes "You were not inside the final encounter when it began."; close; }
+		}
+	}
+	if (instance_enter("Alice Twisted Madness",-1,-1,getcharid(0),.@iid) != IE_OK) { mes "The map is not ready. Your admission has not been used."; close; }
+	if (!.@returning) {
+		setinstancevar 'alice_admitted[getcharid(0)],1,.@iid;
+		setquest 62090;
+	} else if (getinstancevar('alice_started,.@iid)) {
+		.@map = getinstancevar('alice_map[getcharid(0)],.@iid);
+		warp instance_mapname(.@map == 2 ? "2@alice_mad":"1@alice_mad",.@iid),getinstancevar('alice_x[getcharid(0)],.@iid),getinstancevar('alice_y[getcharid(0)],.@iid);
+	}
+	end;
+OnInit:
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"BaseLevel >= 175";
+	end;
+}
+
+1@alice_mad,110,108,4	script	Alice#mad_start	4_ALICE,{
+	if ('alice_started) { mes "[Alice]"; callfunc "F_AliceLeadership"; close; }
+	if (getcharid(1) != 'alice_party || !is_party_leader()) end;
+	mes "[Alice]";
+	mes "Every traveler has a different correct door. Remember which doors you tried; the solution will stay fixed for this journey.";
+	mes "In the clock room, visit both upper portals to open the central path. Reconnecting returns you to your saved checkpoint.";
+	close2;
+	if ('alice_started || getcharid(1) != 'alice_party || !is_party_leader()) end;
+	.@count = getpartymember('alice_party,1,.@cid);
+	getpartymember 'alice_party,2,.@aid;
+	if (!.@count) end;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		if (!isloggedin(.@aid[.@i],.@cid[.@i])) { dispbottom "Every party member must be online for the first briefing."; end; }
+		if (!'alice_admitted[.@cid[.@i]]) { dispbottom "Wait for every party member to enter."; end; }
+		getmapxy .@map$,.@x,.@y,BL_PC,rid2name(.@aid[.@i]);
+		if (.@map$ != instance_mapname("1@alice_mad")) { dispbottom "Everyone must be inside this record."; end; }
+	}
+	'alice_started = 1;
+	'alice_count = .@count;
+	copyarray 'alice_roster[0],.@cid[0],.@count;
+	copyarray 'alice_accounts[0],.@aid[0],.@count;
+	'alice_hard_exit = rand(14);
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		.@c = .@cid[.@i];
+		'alice_started_member[.@c] = 1;
+		'alice_solution[.@c] = rand(1,5);
+		'alice_map[.@c] = 1; 'alice_x[.@c] = 110; 'alice_y[.@c] = 110;
+	}
+	mapannounce instance_mapname("1@alice_mad"),"The rabbit's watch begins at reservation time. Hard's bonus expires after twenty minutes.",bc_map;
+	donpcevent instance_npcname("#AliceControl")+"::OnPopulate";
+	end;
+}
+
+1@alice_mad,86,186,0	script	Detour Exit#mad	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 2) end;
+	callfunc "F_AliceTravel",'alice_return_phase[.@cid],1,12*'alice_corridor[.@cid],20;
+	end;
+}
+
+1@alice_mad,113,151,0	script	Maze Door#mad1	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 0) end;
+	'alice_door[.@cid] = 1;
+	'alice_corridor[.@cid] = rand(1,5);
+	callfunc "F_AliceTravel",1,1,12*'alice_corridor[.@cid],20;
+	end;
+}
+
+1@alice_mad,208,114,0	script	Maze Door#mad2	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 0) end;
+	'alice_door[.@cid] = 2;
+	'alice_corridor[.@cid] = rand(1,5);
+	callfunc "F_AliceTravel",1,1,12*'alice_corridor[.@cid],20;
+	end;
+}
+
+1@alice_mad,220,114,0	script	Maze Door#mad3	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 0) end;
+	'alice_door[.@cid] = 3;
+	'alice_corridor[.@cid] = rand(1,5);
+	callfunc "F_AliceTravel",1,1,12*'alice_corridor[.@cid],20;
+	end;
+}
+
+1@alice_mad,289,246,0	script	Maze Door#mad4	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 0) end;
+	'alice_door[.@cid] = 4;
+	'alice_corridor[.@cid] = rand(1,5);
+	callfunc "F_AliceTravel",1,1,12*'alice_corridor[.@cid],20;
+	end;
+}
+
+1@alice_mad,289,256,0	script	Maze Door#mad5	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 0) end;
+	'alice_door[.@cid] = 5;
+	'alice_corridor[.@cid] = rand(1,5);
+	callfunc "F_AliceTravel",1,1,12*'alice_corridor[.@cid],20;
+	end;
+}
+
+1@alice_mad,12,80,0	script	Corridor Exit#mad1	45,1,1,{
+	end;
+OnTouch:
+	callfunc "F_AliceCorridor",1;
+	end;
+}
+
+1@alice_mad,24,80,0	script	Corridor Exit#mad2	45,1,1,{
+	end;
+OnTouch:
+	callfunc "F_AliceCorridor",2;
+	end;
+}
+
+1@alice_mad,36,80,0	script	Corridor Exit#mad3	45,1,1,{
+	end;
+OnTouch:
+	callfunc "F_AliceCorridor",3;
+	end;
+}
+
+1@alice_mad,48,80,0	script	Corridor Exit#mad4	45,1,1,{
+	end;
+OnTouch:
+	callfunc "F_AliceCorridor",4;
+	end;
+}
+
+1@alice_mad,60,80,0	script	Corridor Exit#mad5	45,1,1,{
+	end;
+OnTouch:
+	callfunc "F_AliceCorridor",5;
+	end;
+}
+
+1@alice_mad,72,80,0	script	Corridor Exit#mad6	45,1,1,{
+	end;
+OnTouch:
+	callfunc "F_AliceCorridor",6;
+	end;
+}
+
+1@alice_mad,340,240,0	script	Clock Switch#mad1	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 4) end;
+	'alice_clock[.@cid] |= 1;
+	if (rand(100) < 10) {
+		'alice_corridor[.@cid] = 6;
+		callfunc "F_AliceTravel",3,1,72,20;
+	} else callfunc "F_AliceTravel",4,1,360,160;
+	end;
+}
+
+1@alice_mad,380,240,0	script	Clock Switch#mad2	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 4) end;
+	'alice_clock[.@cid] |= 2;
+	if (rand(100) < 10) {
+		'alice_corridor[.@cid] = 6;
+		callfunc "F_AliceTravel",3,1,72,20;
+	} else callfunc "F_AliceTravel",4,1,360,160;
+	end;
+}
+
+1@alice_mad,360,200,0	script	Clock Gate#mad	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	if ('alice_phase[getcharid(0)] != 4) end;
+	if ('alice_clock[getcharid(0)] != 3) { dispbottom "Activate both clock switches first."; end; }
+	callfunc "F_AliceTravel",5,1,310,20;
+	end;
+}
+
+1@alice_mad,325,76,0	script	Second Maze Exit#mad	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	if ('alice_phase[getcharid(0)] != 5) end;
+	callfunc "F_AliceTravel",6,1,50,310;
+	end;
+}
+
+1@alice_mad,58,392,0	script	Chess Exit#mad	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	if ('alice_phase[getcharid(0)] != 6) end;
+	callfunc "F_AliceTravel",7,1,141,218;
+	end;
+}
+
+1@alice_mad,141,222,0	script	Final Passage#mad	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	if ('alice_phase[getcharid(0)] != 7) end;
+	if ('alice_mode == 1) callfunc "F_AliceTravel",9,1,350,310;
+	else callfunc "F_AliceTravel",8,2,150,300;
+	end;
+}
+
+2@alice_mad,154,543,0	script	Hidden Passage#mad0	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 0) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,55,550,0	script	Hidden Passage#mad1	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 1) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,61,438,0	script	Hidden Passage#mad2	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 2) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,13,329,0	script	Hidden Passage#mad3	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 3) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,11,201,0	script	Hidden Passage#mad4	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 4) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,11,89,0	script	Hidden Passage#mad5	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 5) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,100,57,0	script	Hidden Passage#mad6	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 6) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,127,81,0	script	Hidden Passage#mad7	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 7) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,39,115,0	script	Hidden Passage#mad8	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 8) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,284,14,0	script	Hidden Passage#mad9	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 9) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,287,198,0	script	Hidden Passage#mad10	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 10) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,231,209,0	script	Hidden Passage#mad11	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 11) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,277,579,0	script	Hidden Passage#mad12	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 12) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+2@alice_mad,285,333,0	script	Hidden Passage#mad13	45,1,1,{
+	end;
+OnTouch:
+	if (!callfunc("F_AliceMember")) end;
+	.@cid = getcharid(0);
+	if ('alice_phase[.@cid] != 8) end;
+	if ('alice_hard_exit != 13) { dispbottom "This passage leads nowhere. Search another corner of the maze."; end; }
+	'alice_reached[.@cid] = 1;
+	callfunc "F_AliceTravel",9,1,350,310;
+	end;
+}
+
+1@alice_mad,350,320,4	script	Alice#mad_boss	4_ALICE,{
+	if ('alice_boss_started || !callfunc("F_AliceMember") || !is_party_leader()) end;
+	if ('alice_phase[getcharid(0)] != 9) end;
+	mes "[Alice]";
+	if ('alice_mode == 2) {
+		mes "More than half of the original party must find the hidden passage. Dead travelers still count. Once enough arrive, I can recall the connected party.";
+		mes "The bosses require melee, then magic, then ranged attacks. A fallen or disconnected challenger shields the active boss until everyone is connected and alive.";
+	}
+	mes "Starting locks the connected encounter roster. Disconnected travelers cannot join the fight later.";
+	if (select("Begin the encounter.:Wait.") == 2) close;
+	close2;
+	if ('alice_boss_started || !callfunc("F_AliceMember") || !is_party_leader()) end;
+	.@arrived = 0;
+	for (.@i = 0; .@i < 'alice_count; ++.@i) {
+		.@cid = 'alice_roster[.@i];
+		.@aid = 'alice_accounts[.@i];
+		if (!isloggedin(.@aid,.@cid)) continue;
+		if (getcharid(1,rid2name(.@aid)) != 'alice_party) continue;
+		if (!'alice_reached[.@cid] || 'alice_phase[.@cid] != 9) continue;
+		getmapxy .@map$,.@x,.@y,BL_PC,rid2name(.@aid);
+		if (.@map$ != instance_mapname("1@alice_mad")) continue;
+		if (.@x < 320 || .@x > 390 || .@y < 300 || .@y > 390) continue;
+		++.@arrived;
+	}
+	if ('alice_mode == 2) {
+		if (.@arrived < ('alice_count/2)+1) { dispbottom "More than half of the starting party must first find the passage."; end; }
+	}
+	for (.@i = 0; .@i < 'alice_count; ++.@i) {
+		.@cid = 'alice_roster[.@i]; .@aid = 'alice_accounts[.@i];
+		if (!isloggedin(.@aid,.@cid)) continue;
+		if (getcharid(1,rid2name(.@aid)) != 'alice_party) continue;
+		getmapxy .@map$,.@x,.@y,BL_PC,rid2name(.@aid);
+		if (.@map$ != instance_mapname("1@alice_mad") && .@map$ != instance_mapname("2@alice_mad")) continue;
+		if ('alice_mode == 1 && 'alice_phase[.@cid] != 9) { dispbottom "Every connected traveler inside must finish the maze first."; end; }
+	}
+	'alice_boss_started = 1;
+	for (.@i = 0; .@i < 'alice_count; ++.@i) {
+		.@cid = 'alice_roster[.@i]; .@aid = 'alice_accounts[.@i];
+		if (!isloggedin(.@aid,.@cid)) continue;
+		if (getcharid(1,rid2name(.@aid)) != 'alice_party) continue;
+		getmapxy .@map$,.@x,.@y,BL_PC,rid2name(.@aid);
+		if (.@map$ != instance_mapname("1@alice_mad") && .@map$ != instance_mapname("2@alice_mad")) continue;
+		'alice_eligible[.@cid] = 1;
+		'alice_dead[.@cid] = readparam(Hp,.@cid) <= 0;
+		'alice_phase[.@cid] = 9; 'alice_map[.@cid] = 1; 'alice_x[.@cid] = 350; 'alice_y[.@cid] = 310;
+		warp instance_mapname("1@alice_mad"),350,310,.@cid;
+	}
+	'alice_boss_phase = 1;
+	donpcevent instance_npcname("#AliceControl")+"::OnBoss";
+	end;
+}
+
+1@alice_mad,354,320,4	script	Alice#mad_reward	4_ALICE,{
+	if (!'alice_complete || !'alice_eligible[getcharid(0)] || getcharid(1) != 'alice_party) end;
+	mes "[Alice]";
+	if ('alice_claimed[getcharid(0)]) { mes "You already received this memory's clear reward."; close; }
+	setarray .@items[0],1001074;
+	setarray .@amounts[0],1;
+	if ('alice_mode == 2) {
+		.@items[1] = 1001082;
+		.@amounts[1] = 1 + 'alice_fast_clear;
+	}
+	if (!checkweight2(.@items,.@amounts)) { mes "Make room for the complete clear reward, then return."; close; }
+	'alice_claimed[getcharid(0)] = 1;
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) getitem .@items[.@i],.@amounts[.@i];
+	mes "Here is your Heavy Chain. Hard also grants one Monster's Stone, plus another for clearing within twenty minutes of reservation.";
+	close;
+}
+
+1@alice_mad,346,320,4	script	Return to Reality#mad	4_ENERGY_WHITE,{
+	if (select("Return to Dali.:Stay.") == 1) warp "dali",66,100;
+	end;
+}
+
+dali,70,100,4	script	Confused Boy#alice_exchange	4_M_KID1,{
+	mes "[Confused Boy]";
+	mes "I can sew the things you found in Alice's memory into something useful.";
+	.@choice = select("Mad Bunny:Gambler's Seal:Ace of Hearts:Ace of Spades:Ace of Diamonds:Ace of Clovers:Rabbit Cloak:Magic Wonderland:Giant Mad Bunny:Leave");
+	if (.@choice == 10) close;
+	switch (.@choice) {
+	case 1:
+		.@item = 28902; .@price = 5000000;
+		setarray .@materials[0],1001074,1001076,1001083;
+		setarray .@amounts[0],1,50,50;
+		break;
+	case 2:
+		.@item = 410233; .@price = 5000000;
+		setarray .@materials[0],1001074,1001076,1001083;
+		setarray .@amounts[0],5,150,150;
+		break;
+	case 3:
+		.@item = 420210; .@price = 30000000;
+		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
+		setarray .@amounts[0],5,15,300,300,300;
+		break;
+	case 4:
+		.@item = 420213; .@price = 30000000;
+		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
+		setarray .@amounts[0],5,15,300,300,300;
+		break;
+	case 5:
+		.@item = 420220; .@price = 30000000;
+		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
+		setarray .@amounts[0],5,15,300,300,300;
+		break;
+	case 6:
+		.@item = 420269; .@price = 30000000;
+		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
+		setarray .@amounts[0],5,15,300,300,300;
+		break;
+	case 7:
+		.@item = 480297; .@price = 10000000;
+		setarray .@materials[0],1001074,1001076;
+		setarray .@amounts[0],3,300;
+		break;
+	case 8:
+		.@item = 480298; .@price = 10000000;
+		setarray .@materials[0],1001074,1001082,1001079;
+		setarray .@amounts[0],3,2,300;
+		break;
+	case 9:
+		.@item = 480310; .@price = 10000000;
+		setarray .@materials[0],1001074,1001083;
+		setarray .@amounts[0],3,300;
+		break;
+	}
+	mes getitemname(.@item)+": "+.@price+" zeny";
+	for (.@i = 0; .@i < getarraysize(.@materials); ++.@i) mes .@amounts[.@i]+" x "+getitemname(.@materials[.@i]);
+	if (select("Exchange.:Cancel.") == 2) close;
+	// No suspension after checking final costs: failed exchanges consume nothing.
+	if (Zeny < .@price) { mes "You do not have enough zeny."; close; }
+	for (.@i = 0; .@i < getarraysize(.@materials); ++.@i) {
+		if (countitem(.@materials[.@i]) < .@amounts[.@i]) { mes "You do not have all the required materials."; close; }
+	}
+	if (!checkweight(.@item,1)) { mes "Make room for the finished item before exchanging."; close; }
+	Zeny -= .@price;
+	for (.@i = 0; .@i < getarraysize(.@materials); ++.@i) delitem .@materials[.@i],.@amounts[.@i];
+	getitem .@item,1;
+	mes "Here you are. Look after it carefully.";
+	close;
+}
+
+1@alice_mad,1,1,0	script	#AliceControl	-1,{
+	end;
+OnPopulate:
+	if (!'alice_started || 'alice_populated) end;
+	'alice_populated = 1;
+	.@map$ = instance_mapname("1@alice_mad");
+	.@event$ = instance_npcname("#AliceControl")+"::OnTrashDead";
+	if ('alice_mode == 1) {
+		areamonster .@map$,102,102,298,278,"Duckworth",30245,25,.@event$;
+		areamonster .@map$,102,102,298,278,"Heart",30248,50,.@event$;
+		areamonster .@map$,302,12,388,118,"Duckworth",30245,10,.@event$;
+		areamonster .@map$,12,302,88,396,"Duckworth",30245,15,.@event$;
+	} else {
+		areamonster .@map$,102,102,298,278,"Spades",30246,30,.@event$;
+		areamonster .@map$,102,102,298,278,"Absolem",30247,30,.@event$;
+		areamonster instance_mapname("2@alice_mad"),8,8,292,590,"Spades",30246,30,.@event$;
+		areamonster instance_mapname("2@alice_mad"),8,8,292,590,"Absolem",30247,30,.@event$;
+	}
+	setnpctimer 0;
+	initnpctimer;
+	end;
+OnTrashDead:
+	end;
+OnBoss:
+	if (!'alice_boss_started || 'alice_complete || 'alice_boss_alive) end;
+	'alice_boss_alive = 1;
+	.@phase = 'alice_boss_phase;
+	.@mob = (.@phase == 1 ? 30239:30250);
+	.@name$ = ('alice_mode == 1 ? "Nightmare Keyholder":(.@phase == 1 ? "Nightmare Keyholder - Melee":(.@phase == 2 ? "Jabberwocky - Magic":"Jabberwocky - Ranged")));
+	'alice_boss_gid = monster(instance_mapname("1@alice_mad"),350,360,.@name$,.@mob,1,instance_npcname("#AliceControl")+"::OnBossDead"+.@phase);
+	getunitdata 'alice_boss_gid,.@unit;
+	.@mode = .@unit[UMOB_MODE] & ~(MD_IGNOREMELEE|MD_IGNOREMAGIC|MD_IGNORERANGED|MD_IGNOREMISC);
+	if ('alice_mode == 2) {
+		if (.@phase == 1) .@mode |= MD_IGNOREMAGIC|MD_IGNORERANGED|MD_IGNOREMISC;
+		if (.@phase == 2) .@mode |= MD_IGNOREMELEE|MD_IGNORERANGED|MD_IGNOREMISC;
+		if (.@phase == 3) .@mode |= MD_IGNOREMELEE|MD_IGNOREMAGIC|MD_IGNOREMISC;
+	}
+	setunitdata 'alice_boss_gid,UMOB_MODE,.@mode;
+	if ('alice_mode == 2) {
+		.@dead = 0;
+		for (.@i = 0; .@i < 'alice_count; ++.@i) {
+			.@cid = 'alice_roster[.@i];
+			if ('alice_eligible[.@cid] && 'alice_dead[.@cid]) .@dead = 1;
+		}
+		setunitdata 'alice_boss_gid,UMOB_DMGIMMUNE,.@dead;
+	}
+	end;
+OnBossDead1:
+	if ('alice_boss_phase != 1) end;
+	callsub OnBossCleared;
+	end;
+OnBossDead2:
+	if ('alice_boss_phase != 2) end;
+	callsub OnBossCleared;
+	end;
+OnBossDead3:
+	if ('alice_boss_phase != 3) end;
+	callsub OnBossCleared;
+	end;
+OnBossCleared:
+	if ('alice_complete || !'alice_boss_alive) return;
+	if (mobcount(instance_mapname("1@alice_mad"),instance_npcname("#AliceControl")+"::OnBossDead"+'alice_boss_phase)) return;
+	'alice_boss_alive = 0;
+	if ('alice_mode == 2 && 'alice_boss_phase < 3) {
+		++'alice_boss_phase;
+		donpcevent instance_npcname("#AliceControl")+"::OnBoss";
+		return;
+	}
+	'alice_complete = 1;
+	'alice_fast_clear = gettimetick(2) <= 'alice_created + 1200;
+	stopnpctimer;
+	killmonster instance_mapname("1@alice_mad"),instance_npcname("#AliceControl")+"::OnCatDead";
+	mapannounce instance_mapname("1@alice_mad"),"The nightmare is over. Alice has a clear reward for each challenger.",bc_map;
+	return;
+OnTimer1000:
+	if ('alice_complete) { stopnpctimer; end; }
+	if (!'alice_bonus_expired && gettimetick(2) > 'alice_created+1200) {
+		'alice_bonus_expired = 1;
+		mapannounce instance_mapname("1@alice_mad"),"The rabbit's watch strikes twenty minutes. The extra timed stone is no longer available.",bc_map;
+		mapannounce instance_mapname("2@alice_mad"),"The rabbit's watch strikes twenty minutes. The extra timed stone is no longer available.",bc_map;
+	}
+	if ('alice_mode == 2 && 'alice_boss_alive) {
+		.@dead = 0;
+		for (.@i = 0; .@i < 'alice_count; ++.@i) {
+			.@cid = 'alice_roster[.@i]; .@aid = 'alice_accounts[.@i];
+			if (!'alice_eligible[.@cid]) continue;
+			// Disconnection itself shields the boss, including deaths between timer ticks.
+			if (!isloggedin(.@aid,.@cid)) { .@dead = 1; continue; }
+			'alice_dead[.@cid] = readparam(Hp,.@cid) <= 0;
+			if ('alice_dead[.@cid]) .@dead = 1;
+		}
+		if (unitexists('alice_boss_gid)) setunitdata 'alice_boss_gid,UMOB_DMGIMMUNE,.@dead;
+		++'alice_cat_tick;
+		if ('alice_cat_tick >= 15) {
+			'alice_cat_tick = 0;
+			.@event$ = instance_npcname("#AliceControl")+"::OnCatDead";
+			if (mobcount(instance_mapname("1@alice_mad"),.@event$) < 12)
+				monster instance_mapname("1@alice_mad"),350,340,"Cheshire",30249,min(2,12-mobcount(instance_mapname("1@alice_mad"),.@event$)),.@event$;
+		}
+	}
+	setnpctimer 0;
+	end;
+OnCatDead:
+	end;
+}
+
+1@alice_mad	mapflag	nomemo
+1@alice_mad	mapflag	nosave	SavePoint
+1@alice_mad	mapflag	noteleport
+1@alice_mad	mapflag	nobranch
+1@alice_mad	mapflag	resistancecap	50
+1@alice_mad	mapflag	strictdamage
+2@alice_mad	mapflag	nomemo
+2@alice_mad	mapflag	nosave	SavePoint
+2@alice_mad	mapflag	noteleport
+2@alice_mad	mapflag	nobranch
+2@alice_mad	mapflag	resistancecap	50
+2@alice_mad	mapflag	strictdamage
+
+2@alice_mad,150,302,4	script	Alice#mad_leadership	4_ALICE,{
+	mes "[Alice]";
+	callfunc "F_AliceLeadership";
+	close;
+}
+1@alice_mad	mapflag	norenewaldroppenalty
+2@alice_mad	mapflag	norenewaldroppenalty

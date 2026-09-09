@@ -1,0 +1,19 @@
+# Native sprite adaptations; see doc/alice_encounter_data.md.
+Header:
+  Type: MOB_AVAIL_DB
+  Version: 1
+Body:
+  - Mob: ALICE_NIGHTMARE_KEY
+    Sprite: BLOODY_KNIGHT
+  - Mob: ALICE_DUCKWORTH
+    Sprite: PHEN
+  - Mob: ALICE_SPADES
+    Sprite: DROSERA
+  - Mob: ALICE_ABSOLEM
+    Sprite: CATERPILLAR
+  - Mob: ALICE_HEART
+    Sprite: MANDRAGORA
+  - Mob: ALICE_CHESHIRE
+    Sprite: LEAF_CAT
+  - Mob: ALICE_JABBERWOCKY
+    Sprite: DETALE
