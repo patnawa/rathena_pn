@@ -5132,7 +5132,7 @@ uint64 MobDatabase::parseBodyNode(const ryml::NodeRef& node) {
 			return 0;
 
 		if (atk > USHRT_MAX) {
-			this->invalidWarning(node["Attack2"], "Attack2 exceeds the engine limit of %u, capping...\n", static_cast<uint32>(USHRT_MAX));
+			ShowWarning("Monster %u Attack2 %" PRIu64 " exceeds the engine limit of %u, capping (file %s, line %d).\n", mob_id, atk, static_cast<uint32>(USHRT_MAX), this->getCurrentFile().c_str(), this->getLineNumber(node["Attack2"]));
 			atk = USHRT_MAX;
 		}
 

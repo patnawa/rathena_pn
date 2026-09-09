@@ -55,6 +55,7 @@ def fixture(pre_fix):
 #include <algorithm>
 #include <climits>
 #include <cstdint>
+#include <cinttypes>
 #include <cstdio>
 #include <memory>
 #include <string>
@@ -63,7 +64,8 @@ def fixture(pre_fix):
 #include <ryml.hpp>
 using uint16=uint16_t; using uint32=uint32_t; using uint64=uint64_t; using int16=int16_t; using int32=int32_t; using int64=int64_t;
 template<class T,class A,class B> T cap_value(T v,A low,B high) { return std::max<T>(low,std::min<T>(high,v)); }
-unsigned checks=0,failures=0;
+unsigned checks=0,failures=0,warnings=0;
+void ShowWarning(const char*,...) {++warnings;}
 void check(bool good,const char* text) { ++checks; if(!good) { if(failures<20) std::fprintf(stderr,"MATK FAIL: %s\n",text); ++failures; } }
 '''
     middle = r'''
@@ -75,19 +77,21 @@ int status_get_homdex(const block_list*) {return 120;}
 int status_get_homluk(const block_list*) {return 80;}
 struct Mob {status_data status;};
 struct Database {
- unsigned warnings=0;
+ std::string getCurrentFile() {return "fixture.yml";}
+ int getLineNumber(const ryml::NodeRef&) {return 1;}
  bool nodeExists(const ryml::NodeRef& node,const char* name) {return node.has_child(c4::to_csubstr(name));}
  bool asUInt16(const ryml::NodeRef& node,const char* name,uint16& value) {node[c4::to_csubstr(name)] >> value;return true;}
  bool asUInt64(const ryml::NodeRef& node,const char* name,uint64& value) {node[c4::to_csubstr(name)] >> value;return true;}
- void invalidWarning(const ryml::NodeRef&,const char*,...) {++warnings;}
+
  int parse(const ryml::NodeRef& node,std::shared_ptr<Mob> mob) {
+ uint32 mob_id=22177;
 '''
     main = r'''
 int main() {
  for(uint64 input : {uint64(0),uint64(1),uint64(50000),uint64(65534),uint64(65535),uint64(65536),uint64(67733),uint64(68299),uint64(131072),uint64(UINT32_MAX),uint64(UINT32_MAX)+1,UINT64_MAX}) {
   std::string yaml="Attack2: "+std::to_string(input);
   auto tree=ryml::parse_in_arena(c4::to_csubstr(yaml));
-  Database db; auto mob=std::make_shared<Mob>();
+  warnings=0; Database db; auto mob=std::make_shared<Mob>();
   check(db.parse(tree.rootref(),mob)==1,"actual Attack2 block succeeds");
 #ifdef RENEWAL
   auto value=mob->status.rhw.matk;
@@ -95,8 +99,8 @@ int main() {
   auto value=mob->status.rhw.atk2;
 #endif
   check(value==std::min<uint64>(input,USHRT_MAX),"input is bounded before narrowing, never modulo-wrapped");
-  check(db.warnings==(input>USHRT_MAX),"out-of-range input is explicitly diagnosed once");
-  if(input==67733 || input==68299) std::printf("INPUT %llu RUNTIME %u WARNINGS %u\n",(unsigned long long)input,value,db.warnings);
+  check(warnings==(input>USHRT_MAX),"out-of-range input is explicitly diagnosed once");
+  if(input==67733 || input==68299) std::printf("INPUT %llu RUNTIME %u WARNINGS %u\n",(unsigned long long)input,value,warnings);
  }
 #ifdef RENEWAL
  for(int type : {BL_PET,BL_MOB,BL_MER,BL_ELEM}) {
