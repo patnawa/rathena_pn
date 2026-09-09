@@ -77,11 +77,15 @@ def main():
                 list(yaml.load_all(stream, Loader=yaml.CSafeLoader if hasattr(yaml, 'CSafeLoader') else yaml.SafeLoader))
             count += 1
         checks.append({'name': 'database_yaml_syntax', 'passed': True, 'files': count})
-        for name in TESTS + (('chapter1_protection_test.py', 'instance_entry_native_test.py',
-                             'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
-                             'mob_matk_range_test.py') if args.phase == 'full' else ()):
+        tests = TESTS + (('chapter1_protection_test.py', 'instance_entry_native_test.py',
+                         'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
+                         'mob_matk_range_test.py') if args.phase == 'full' else ())
+        commands = [(name, [sys.executable, str(ROOT / 'tools/ci' / name)]) for name in tests]
+        commands.append(('client_compat_assets', [sys.executable,
+                         str(ROOT / 'client-patch/client_compat/validate.py'), '--assets-only']))
+        for name, command in commands:
             started = time.monotonic()
-            result = subprocess.run([sys.executable, str(ROOT / 'tools/ci' / name)], cwd=ROOT, timeout=900)
+            result = subprocess.run(command, cwd=ROOT, timeout=900)
             checks.append({'name': name, 'passed': result.returncode == 0, 'seconds': round(time.monotonic() - started, 2)})
             result.check_returncode()
         if args.phase == 'full':

@@ -31,6 +31,12 @@ registrations, and preservation of every non-resource item field. Before install
 104 resource records change; repeating validation after install normally reports
 zero changes. Preserve the preinstallation report separately.
 
+Clean-checkout CI runs `python client-patch/client_compat/validate.py --assets-only`.
+It builds the archive in memory and validates the tracked artwork and binary
+formats without installed client files, Lua, or generated artifacts. Both release
+gate phases run this check; full client resolution and Lua registration still
+require the explicit client and runtime arguments above.
+
 Install the generated `client_compat.grf`, both `SystemEN` files, and the reviewed
 `DATA.INI` together with backups. The archive adds only missing resources and the
 INI preserves the relative precedence of all existing archives. The full loader

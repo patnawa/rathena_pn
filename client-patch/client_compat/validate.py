@@ -3,6 +3,7 @@ import argparse
 import configparser
 from collections import defaultdict
 import hashlib
+import io
 import json
 from pathlib import Path
 import struct
@@ -10,9 +11,11 @@ import subprocess
 import tempfile
 import zlib
 
+from build_grf import build
+
 
 def archive_index(path):
-    with path.open('rb') as f:
+    with (io.BytesIO(path) if isinstance(path, bytes) else path.open('rb')) as f:
         header = f.read(46)
         if header.startswith(b'Master of Magic'):
             offset, seed, count, version = struct.unpack_from('<IIII', header, 30)
@@ -84,11 +87,15 @@ def ground_pair(spr, act):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--client', required=True, type=Path)
-    parser.add_argument('--lua', required=True, type=Path)
+    parser.add_argument('--assets-only', action='store_true',
+                        help='Validate tracked asset sources and an in-memory GRF without a client or Lua')
+    parser.add_argument('--client', type=Path)
+    parser.add_argument('--lua', type=Path)
     args = parser.parse_args()
+    if not args.assets_only and (args.client is None or args.lua is None):
+        parser.error('--client and --lua are required unless --assets-only is specified')
     root = Path(__file__).resolve().parent
-    archive = root / 'client_compat.grf'
+    archive = build(root)
     index = archive_index(archive)
     rows = json.loads((root / 'assets.json').read_text())
     assert len(index) == len(rows) == 116
@@ -98,7 +105,7 @@ def main():
         assert hashlib.sha256(raw).hexdigest() == row['sha256']
         key = bytes.fromhex(row['archive_path_hex']).decode('latin1').replace('\\', '/').lower()
         packed, size, flag, offset = index[key]
-        with archive.open('rb') as f:
+        with io.BytesIO(archive) as f:
             f.seek(46 + offset)
             assert zlib.decompress(f.read(packed)) == raw
         if row['source'].endswith('.bmp'):
@@ -109,6 +116,14 @@ def main():
             dimensions[str(expected)] = dimensions.get(str(expected), 0) + 1
         elif row['source'].endswith('.spr'):
             ground_pair(raw, (root / row['source']).with_suffix('.act').read_bytes())
+    asset_report = {'archive_entries': len(rows), 'bitmap_dimensions': dimensions,
+                    'ground_pairs': 29, 'fallback_assets': 0}
+    if args.assets_only:
+        print(json.dumps({'mode': 'assets-only', **asset_report}))
+        return
+    deployed_archive = root / 'client_compat.grf'
+    if deployed_archive.exists():
+        assert deployed_archive.read_bytes() == archive, 'Built archive does not match source assets'
     ini = configparser.ConfigParser()
     ini.read(args.client / 'DATA.INI')
     effective = dict(index)
@@ -172,8 +187,7 @@ print('native_items='..count..' changed_resource_records='..changed..' registere
         script.write_text('PATCH=' + json.dumps(patch_path) + '\nLOADER=' + json.dumps(loader_path) + '\n' + lua)
         result = subprocess.run([str(args.lua.resolve()), str(script)], cwd=args.client, capture_output=True, check=True)
         print(result.stdout.decode().strip())
-    print(json.dumps({'archive_entries': len(rows), 'covered_episode_items': len(resources),
-                      'bitmap_dimensions': dimensions, 'ground_pairs': 29, 'fallback_assets': 0}))
+    print(json.dumps({'covered_episode_items': len(resources), **asset_report}))
 
 
 if __name__ == '__main__':
