@@ -1354,3 +1354,92 @@ Body:
       - Item: Copo_Card
         Rate: 1
         StealProtected: true
+
+  - Id: 31900
+    AegisName: EP20_IMMORTAL_LASGAND
+    Name: The Immortal Lasgand
+    Level: 215
+    Hp: 1000000000
+    BaseExp: 657312
+    JobExp: 460119
+    Attack: 20380
+    Attack2: 7313
+    Defense: 527
+    MagicDefense: 286
+    Resistance: 424
+    MagicResistance: 321
+    Str: 112
+    Agi: 92
+    Vit: 107
+    Int: 112
+    Dex: 112
+    Luk: 107
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Undead
+    Element: Poison
+    ElementLevel: 4
+    WalkSpeed: 170
+    AttackDelay: 850
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Modes:
+      Mvp: true
+    Drops:
+      - Item: Demigod_Lasgand_Card
+        Rate: 20
+        StealProtected: true
+
+  - Id: 31901
+    AegisName: EP20_IMMORTAL_VISION
+    Name: Vision of Lasgand
+    Level: 215
+    Hp: 100000000
+    BaseExp: 0
+    JobExp: 0
+    Attack: 20380
+    Attack2: 7313
+    Defense: 527
+    MagicDefense: 286
+    Resistance: 424
+    MagicResistance: 321
+    Str: 112
+    Agi: 92
+    Vit: 107
+    Int: 112
+    Dex: 112
+    Luk: 107
+    AttackRange: 3
+    SkillRange: 10
+    ChaseRange: 12
+    Size: Large
+    Race: Undead
+    Element: Poison
+    ElementLevel: 4
+    WalkSpeed: 170
+    AttackDelay: 850
+    AttackMotion: 720
+    DamageMotion: 420
+    DamageTaken: 10
+    Ai: '21'
+    Class: Boss
+    Modes:
+      Mvp: false
+
+  # Client sprite 22004 also needs a server record for NPC view data.
+  - Id: 22004
+    AegisName: EP20_IMMORTAL_STORAGE
+    Name: Suspicious Storage
+    Hp: 1
+    BaseExp: 0
+    JobExp: 0
+    Size: Small
+    Race: Formless
+    Element: Neutral
+    ElementLevel: 1
+    Ai: '06'

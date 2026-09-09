@@ -794,7 +794,7 @@ menu	"Bakonawa Lake",I1, "Bangungot Hospital 2F",I2, "Buwaya Cave",I3,
 		"Sunken Tower",I31, "Geffen Night Arena",I32,
 		"Lake of Fire",I33, "Hall of Life",I34,
 		"Tomb of Remorse",I35, "Constellation Tower",I36,
-		"Airship Crash",I37, "Memories of Thanatos",I38;
+		"Airship Crash",I37, "Memories of Thanatos",I38, "The Immortal",I39;
 
 I1: Restrict("RE");
 	Go("ma_scene01",172,175);
@@ -873,6 +873,12 @@ I37: Restrict("RE");
 	Go("dali02",137,86);
 I38: Restrict("RE");
 	Go("thana_step",154,367);
+I39: Restrict("RE");
+	if (!callfunc("EP20_MainComplete")) {
+		message strcharinfo(0),"Complete Episode 20 before entering The Immortal.";
+		end;
+	}
+	Go("jor_twig",117,145);
 
 // --------------------------------------------------
 	Special:
@@ -960,6 +966,7 @@ OnNaviGenerate:
 	naviregisterwarp("Warper > e_tower", "e_tower", 83, 105);
 	naviregisterwarp("Warper > dali02", "dali02", 137, 86);
 	naviregisterwarp("Warper > thana_step", "thana_step", 154, 367);
+	naviregisterwarp("Warper > The Immortal", "jor_twig", 117, 145);
 	naviregisterwarp("Warper > Prontera", "prontera", 155, 183);
 	naviregisterwarp("Warper > Alberta", "alberta", 28, 234);
 	naviregisterwarp("Warper > Al De Baran", "aldebaran", 140, 131);

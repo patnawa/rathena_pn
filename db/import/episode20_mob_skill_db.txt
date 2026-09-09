@@ -258,3 +258,8 @@
 //   monster IDs; their dependent NPC_CALLSLAVE rows are therefore also omitted.
 // - 21984's NPC_METAMORPHOSIS row omits the required transformation monster ID.
 // - The secondary source records no skills for 21997.
+
+// Repeatable encounter skills; story Lasgand remains unchanged.
+31900,EP20_IMMORTAL_LASGAND@NPC_POISON,attack,176,1,2000,0,10000,no,target,always,0,,,,,,,
+31900,EP20_IMMORTAL_LASGAND@NPC_GRADUAL_GRAVITY,chase,752,2,2000,0,10000,no,target,always,0,,,,,,,
+31900,EP20_IMMORTAL_LASGAND@NPC_DEADLYCURSE2,attack,779,5,10000,0,30000,no,self,always,0,,,,,,,

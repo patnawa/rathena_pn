@@ -128,3 +128,5 @@ Footer:
   Imports:
     - Path: db/chapter2_mob_avail.yml
       Mode: Renewal
+    - Path: db/episode20_mob_avail.yml
+      Mode: Renewal

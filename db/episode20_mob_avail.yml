@@ -1,0 +1,9 @@
+# Repeatable Episode 20 actors use the existing story Lasgand appearance.
+Header:
+  Type: MOB_AVAIL_DB
+  Version: 1
+Body:
+  - Mob: EP20_IMMORTAL_LASGAND
+    Sprite: MD_EP20_BOSS_LASGAND
+  - Mob: EP20_IMMORTAL_VISION
+    Sprite: MD_EP20_BOSS_LASGAND

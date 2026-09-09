@@ -327,7 +327,7 @@ OnStickyDead:
 	end;
 }
 
-// The Undying: post-story repeat, 30 minutes, Normal and High independently
+// The Undying: post-story repeat, 30 minutes, Normal and Hard independently
 // rewardable once per 04:00 reset. The instance remains rewardable per player.
 jor_twice,50,325,4	script	White Cat#ep20_undying_route	22006,{
 	mes "[White Cat]";
@@ -349,9 +349,9 @@ jor_twig,117,145,4	script	World Tree Branch#ep20_undying	4_ENERGY_RED,{
 		mes "Neutralize Lasgand in the Episode 20 main story first.";
 		close;
 	}
-	mes "The branch reaches the seal around the Undying One. Normal and High mode each have a separate daily reward.";
+	mes "The branch reaches the seal around the Undying One. Normal and Hard mode each have a separate daily reward.";
 	next;
-	if (select("Enter The Undying.:Wait.") == 2) close;
+	if (select("Enter The Immortal.:Wait.") == 2) close;
 	callfunc "EP20_EnterInstance","The Undying";
 }
 
@@ -362,20 +362,63 @@ OnInstanceInit:
 	'ep20_undying_stage = 0;
 	'ep20_undying_mode = 0;
 	enablenpc instance_npcname("Lasgand#ep20_undying_start");
-	mapannounce instance_mapname("1@twbs"),"The Undying: choose a mode at Lasgand.",bc_map,0x77AAFF;
+	mapannounce instance_mapname("1@twbs"),"The Immortal: choose a mode at Lasgand.",bc_map,0x77AAFF;
 	end;
 OnTimer3000:
-	stopnpctimer;
-	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1) end;
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1) { stopnpctimer; end; }
 	if (unitexists('ep20_undying_gid)) {
+		sc_end SC_ARMOR,'ep20_undying_gid;
 		setunitdata 'ep20_undying_gid,UMOB_DAMAGETAKEN,('ep20_undying_mode == 2 ? 1 : 10);
 		setunitdata 'ep20_undying_gid,UMOB_MODE,'ep20_undying_boss_mode;
 	}
+	end;
+// One-second encounter clock; no player attachment is needed.
+OnTimer4000:
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1 || !unitexists('ep20_undying_gid)) { stopnpctimer; end; }
+	'ep20_undying_ticks++;
+	.@dead = 0;
+	for (.@i = 0; .@i < getarraysize('ep20_undying_roster); ++.@i)
+		if (isloggedin('ep20_undying_accounts[.@i],'ep20_undying_roster[.@i]) && readparam(Hp,'ep20_undying_roster[.@i]) <= 0) .@dead = 1;
+	setunitdata 'ep20_undying_gid,UMOB_DMGIMMUNE,.@dead;
+	if (.@dead != 'ep20_undying_dead) {
+		'ep20_undying_dead = .@dead;
+		mapannounce instance_mapname("1@twbs"),(.@dead ? "Lasgand feeds on a fallen challenger. Revive your companions!" : "Lasgand's protection fades."),bc_map,0xFF8888;
+	}
+	.@map$ = instance_mapname("1@twbs");
+	.@n = getmapunits(BL_PC,.@map$,.@players);
+	.@count = 0;
+	for (.@i = 0; .@i < .@n; ++.@i) {
+		.@cid = getcharid(0,rid2name(.@players[.@i]));
+		if (readparam(Hp,.@cid) > 0) .@targets[.@count++] = .@players[.@i];
+	}
+	if (.@count) {
+		getunitdata 'ep20_undying_gid,.@boss;
+		for (.@i = 0; .@i < 4; ++.@i) {
+			.@gid = 'ep20_undying_visions[.@i];
+			if (!unitexists(.@gid) || 'ep20_undying_ticks < 'ep20_undying_cast[.@i]) continue;
+			getunitdata .@gid,.@vision;
+			.@dx = .@vision[UMOB_X] - .@boss[UMOB_X];
+			.@dy = .@vision[UMOB_Y] - .@boss[UMOB_Y];
+			.@distance = max(.@dx,-.@dx,.@dy,-.@dy);
+			// The published encounter specifies distance scaling, not exact timings.
+			// Near/middle/far bands use 1/3/5 additional cast seconds.
+			.@delay = (.@distance <= 5 ? 1 : (.@distance <= 10 ? 3 : 5));
+			getmapxy .@targetmap$,.@x,.@y,BL_PC,rid2name(.@targets[rand(.@count)]);
+			setarray .@skills$[0],"NPC_RAINOFMETEOR","NPC_GROUNDDRIVE","WZ_STORMGUST";
+			unitskillusepos .@gid,.@skills$[('ep20_undying_ticks + .@i) % 3],5,.@x,.@y,.@delay,false,0,true;
+			'ep20_undying_cast[.@i] = 'ep20_undying_ticks + .@delay + 5;
+		}
+	}
+	setnpctimer 3000;
+	end;
+OnVisionDead:
 	end;
 OnBossDead:
 	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 1) end;
 	if (mobcount(instance_mapname("1@twbs"),instance_npcname(strnpcinfo(0))+"::OnBossDead") > 0) end;
 	'ep20_undying_stage = 2;
+	stopnpctimer;
+	killmonster instance_mapname("1@twbs"),instance_npcname(strnpcinfo(0))+"::OnVisionDead";
 	enablenpc instance_npcname("Mysterious Storage#ep20");
 	enablenpc instance_npcname("White Cat#ep20_undying_exit");
 	mapannounce instance_mapname("1@twbs"),"Lasgand is suppressed. The Mysterious Storage has appeared.",bc_map,0x55FFAA;
@@ -385,29 +428,53 @@ OnBossDead:
 1@twbs,80,79,4	script(DISABLED)	Lasgand#ep20_undying_start	21981,{
 	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 0) end;
 	mes "[Lasgand]";
-	.@choice = select("Normal Mode.:High Mode.:Leave him sealed.");
+	.@choice = select("Normal Mode.:Hard Mode.:Leave him sealed.");
 	if (.@choice == 3) close;
 	.@now = gettimetick(2);
 	if (.@choice == 1 && EP20_UndyingNormalNext > .@now) { mes "Normal Mode's reward is on cooldown until the next 04:00 reset."; close; }
-	if (.@choice == 2 && EP20_UndyingHighNext > .@now) { mes "High Mode's reward is on cooldown until the next 04:00 reset."; close; }
+	if (.@choice == 2 && EP20_UndyingHighNext > .@now) { mes "Hard Mode's reward is on cooldown until the next 04:00 reset."; close; }
 	close2;
+	// Dialog replies can arrive after another member has broken the seal.
+	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 0) end;
+	if (!callfunc("EP20_MainComplete")) end;
+	.@now = gettimetick(2);
+	if ((.@choice == 1 && EP20_UndyingNormalNext > .@now) || (.@choice == 2 && EP20_UndyingHighNext > .@now)) end;
+	.@party = getcharid(1);
+	.@n = getmapunits(BL_PC,instance_mapname("1@twbs"),.@players);
+	.@count = 0;
+	for (.@i = 0; .@i < .@n; ++.@i) {
+		.@name$ = rid2name(.@players[.@i]);
+		.@cid = getcharid(0,.@name$);
+		if (getcharid(1,.@name$) != .@party) continue;
+		if (!getvar(EP20_Main_Complete,.@cid) && isbegin_quest(18233,.@cid) != 2) continue;
+		if ((.@choice == 1 && getvar(EP20_UndyingNormalNext,.@cid) > .@now) || (.@choice == 2 && getvar(EP20_UndyingHighNext,.@cid) > .@now)) continue;
+		'ep20_undying_roster[.@count] = .@cid;
+		'ep20_undying_accounts[.@count++] = .@players[.@i];
+	}
+	if (!.@count) end;
 	'ep20_undying_mode = .@choice;
 	'ep20_undying_stage = 1;
 	disablenpc;
-	.@gid = monster(instance_mapname("1@twbs"),80,93,"The Undying Lasgand",21981,1,instance_npcname("#EP20_Undying_Control")+"::OnBossDead");
+	.@gid = monster(instance_mapname("1@twbs"),80,93,"Demigod Lasgand",31900,1,instance_npcname("#EP20_Undying_Control")+"::OnBossDead");
 	'ep20_undying_gid = .@gid;
 	if ('ep20_undying_mode == 2) {
 		setunitdata .@gid,UMOB_MAXHP,2000000000;
 		setunitdata .@gid,UMOB_HP,2000000000;
 	}
-	// Both modes share the documented three-second positioning window.
-	// rAthena's integer DamageTaken field represents the 99.9% opening
-	// reduction as its closest safe value, 1%.
+	// Loaded SC_ARMOR preserves the divisor and covers every attack type/range.
+	// This supplies 0.1% opening damage without rounding it up to 1%.
 	getunitdata .@gid,.@unit;
 	'ep20_undying_boss_mode = .@unit[UMOB_MODE];
-	setunitdata .@gid,UMOB_DAMAGETAKEN,1;
+	setunitdata .@gid,UMOB_DAMAGETAKEN,100;
+	sc_start4 SC_ARMOR,INFINITE_TICK,1,1000,BF_SHORT|BF_LONG,BF_WEAPON|BF_MAGIC|BF_MISC,10000,SCSTART_LOADED|SCSTART_NOAVOID,.@gid;
 	setunitdata .@gid,UMOB_MODE,('ep20_undying_boss_mode | MD_NOCAST) & ~(MD_CANMOVE | MD_CANATTACK | MD_AGGRESSIVE);
-	mapannounce instance_mapname("1@twbs"),('ep20_undying_mode == 2 ? "High Mode Lasgand breaks the seal!" : "Lasgand breaks the seal!"),bc_map,0xFF5555;
+	mapannounce instance_mapname("1@twbs"),('ep20_undying_mode == 2 ? "Hard Mode Lasgand breaks the seal!" : "Lasgand breaks the seal!"),bc_map,0xFF5555;
+	setarray .@vx[0],80,80,94,66;
+	setarray .@vy[0],107,79,93,93;
+	for (.@i = 0; .@i < 4; ++.@i) {
+		'ep20_undying_visions[.@i] = monster(instance_mapname("1@twbs"),.@vx[.@i],.@vy[.@i],"Vision of Lasgand",31901,1,instance_npcname("#EP20_Undying_Control")+"::OnVisionDead");
+		'ep20_undying_cast[.@i] = 5 + .@i;
+	}
 	// Use the instance controller's NPC timer so Lasgand always activates even
 	// if the player who selected the mode disconnects during the opening.
 	.@control$ = instance_npcname("#EP20_Undying_Control");
@@ -416,16 +483,19 @@ OnBossDead:
 	end;
 }
 
-1@twbs,82,81,4	script(DISABLED)	Mysterious Storage#ep20	4_ENERGY_BLUE,{
+1@twbs,82,81,4	script(DISABLED)	Mysterious Storage#ep20	22004,{
 	if (instance_live_info(ILI_NAME) != "The Undying" || 'ep20_undying_stage != 2) end;
-	mes "[Mysterious Storage]";
+	mes "[Suspicious Storage]";
+	.@member = inarray('ep20_undying_roster,getcharid(0));
+	if (.@member < 0) { mes "Only eligible challengers present when the seal broke can claim this storage."; close; }
+	if ('ep20_undying_claimed[.@member]) { mes "You already claimed this instance's storage."; close; }
 	.@now = gettimetick(2);
 	if ('ep20_undying_mode == 1) {
 		if (EP20_UndyingNormalNext > .@now) { mes "You already claimed today's Normal Mode storage."; close; }
 		.@token = 102567;
 		setarray .@rates[0],4000,4000,4990,3387,3387,4000,0,0,1000,1000,1000,1000,1000,1000;
 	} else if ('ep20_undying_mode == 2) {
-		if (EP20_UndyingHighNext > .@now) { mes "You already claimed today's High Mode storage."; close; }
+		if (EP20_UndyingHighNext > .@now) { mes "You already claimed today's Hard Mode storage."; close; }
 		.@token = 102568;
 		setarray .@rates[0],5773,5773,6957,4990,4990,5773,4990,900,2000,2000,2000,2000,2000,2000;
 	} else {
@@ -441,9 +511,15 @@ OnBossDead:
 		mes "The storage seal is unstable. Please report this to a Game Master.";
 		close;
 	}
+	// Persist the rolls before checking capacity so retries cannot reroll loot.
+	if (!'ep20_undying_rolled[.@member]) {
+		for (.@i = 0; .@i < getarraysize(.@pool); ++.@i)
+			if (rand(10000) < .@rates[.@i]) 'ep20_undying_loot[.@member] |= (1 << .@i);
+		'ep20_undying_rolled[.@member] = 1;
+	}
 	.@count = 0;
 	for (.@i = 0; .@i < getarraysize(.@pool); ++.@i) {
-		if (rand(10000) < .@rates[.@i]) {
+		if ('ep20_undying_loot[.@member] & (1 << .@i)) {
 			.@items[.@count] = .@pool[.@i];
 			.@amounts[.@count] = 1;
 			++.@count;
@@ -456,6 +532,7 @@ OnBossDead:
 		mes "Make enough inventory room for every storage reward.";
 		close;
 	}
+	'ep20_undying_claimed[.@member] = 1;
 	for (.@i = 0; .@i < .@count; ++.@i)
 		getitem .@items[.@i],.@amounts[.@i];
 	callfunc "EP20_Reward",0,20,42000000,29500000;
