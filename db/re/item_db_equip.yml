@@ -123949,8 +123949,10 @@ Body:
       bonus2 bMagicAddClass,Class_Boss,2;
       if (.@r>=7) {
          bonus2 bAddClass,Class_Boss,1;
+         bonus2 bMagicAddClass,Class_Boss,1;
          if (.@r>=9) {
             bonus2 bAddClass,Class_Boss,2;
+            bonus2 bMagicAddClass,Class_Boss,2;
          }
       }
   - Id: 24064

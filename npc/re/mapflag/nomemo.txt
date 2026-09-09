@@ -508,3 +508,6 @@ ant_d02_i	mapflag	nomemo
 // Cash Mall
 //============================================================
 itemmall	mapflag	nomemo
+
+// Amicitia Intensive Culture Room: prevent bypassing its level-gated entrance.
+amicitia2	mapflag	nomemo

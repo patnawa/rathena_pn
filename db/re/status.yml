@@ -6001,7 +6001,7 @@ Body:
       NoClearance: true
       NoForcedEnd: true
     Script: |
-      bonus bAspd, getstatus(SC_MTF_ASPD, 1);
+      bonus bAspd, getstatus(SC_MTF_ASPD, 1)/10;
       bonus bHit, getstatus(SC_MTF_ASPD, 2);
   - Status: Mtf_Rangeatk
     Icon: EFST_MTF_RANGEATK

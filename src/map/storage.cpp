@@ -134,7 +134,7 @@ int32 storage_storageopen(map_session_data *sd)
 {
 	nullpo_ret(sd);
 
-	if(sd->state.storage_flag)
+	if(sd->state.storage_flag || sd->state.mail_writing)
 		return 1; //Already open?
 
 	if( !pc_can_give_items(sd) ) { // check is this GM level is allowed to put items to storage
@@ -573,7 +573,7 @@ char storage_guild_storageopen(map_session_data* sd)
 
 	if (sd->state.storage_flag == 2)
 		return GSTORAGE_ALREADY_OPEN; // Guild storage already open.
-	else if (sd->state.storage_flag)
+	else if (sd->state.storage_flag || sd->state.mail_writing)
 		return GSTORAGE_STORAGE_ALREADY_OPEN; // Can't open both storages at a time.
 
 #if PACKETVER >= 20140205
@@ -1118,6 +1118,10 @@ void storage_guild_storage_quit(map_session_data* sd, int32 flag)
 void storage_premiumStorage_open(map_session_data *sd) {
 	nullpo_retv(sd);
 
+	// The storage request may have returned after RODEX writing began.
+	if (sd->state.mail_writing)
+		return;
+
 	sd->state.storage_flag = 3;
 	storage_sortitem(sd->premiumStorage.u.items_storage, ARRAYLENGTH(sd->premiumStorage.u.items_storage));
 	clif_storagelist(sd, sd->premiumStorage.u.items_storage, ARRAYLENGTH(sd->premiumStorage.u.items_storage), storage_getName(sd->premiumStorage.stor_id));
@@ -1135,7 +1139,7 @@ void storage_premiumStorage_open(map_session_data *sd) {
 bool storage_premiumStorage_load(map_session_data *sd, uint8 num, uint8 mode) {
 	nullpo_ret(sd);
 
-	if (sd->state.storage_flag)
+	if (sd->state.storage_flag || sd->state.mail_writing)
 		return 0;
 
 	if (sd->state.vending || sd->state.buyingstore || sd->state.prevend || sd->state.autotrade)

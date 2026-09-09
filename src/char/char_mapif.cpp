@@ -3,6 +3,7 @@
 
 #include "char_mapif.hpp"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring> //memcpy
 #include <memory>
@@ -299,11 +300,14 @@ int32 chmapif_parse_askscdata(int32 fd){
 			int32 count;
 			char* data;
 
-			WFIFOHEAD(fd,14+50*sizeof(struct status_change_data));
+			// The packet length is uint16; do not impose a lower gameplay limit.
+			constexpr size_t max_count = (UINT16_MAX - 14) / sizeof(struct status_change_data);
+			const size_t capacity = std::min<size_t>(Sql_NumRows(sql_handle), max_count);
+			WFIFOHEAD(fd,14+capacity*sizeof(struct status_change_data));
 			WFIFOW(fd,0) = 0x2b1d;
 			WFIFOL(fd,4) = aid;
 			WFIFOL(fd,8) = cid;
-			for( count = 0; count < 50 && SQL_SUCCESS == Sql_NextRow(sql_handle); ++count )
+			for( count = 0; count < capacity && SQL_SUCCESS == Sql_NextRow(sql_handle); ++count )
 			{
 				Sql_GetData(sql_handle, 0, &data, nullptr); scdata.type = atoi(data);
 				Sql_GetData(sql_handle, 1, &data, nullptr); scdata.tick = strtoll( data, nullptr, 10 );
@@ -313,11 +317,11 @@ int32 chmapif_parse_askscdata(int32 fd){
 				Sql_GetData(sql_handle, 5, &data, nullptr); scdata.val4 = atoi(data);
 				memcpy(WFIFOP(fd, 14+count*sizeof(struct status_change_data)), &scdata, sizeof(struct status_change_data));
 			}
-			if (count >= 50)
+			if (Sql_NumRows(sql_handle) > max_count)
 				ShowWarning("Too many status changes for %d:%d, some of them were not loaded.\n", aid, cid);
 			if (count > 0)
 			{
-				WFIFOW( fd, 2 ) = static_cast<int16>( 14 + count * sizeof( struct status_change_data ) );
+				WFIFOW( fd, 2 ) = static_cast<uint16>( 14 + count * sizeof( struct status_change_data ) );
 				WFIFOW(fd,12) = count;
 				WFIFOSET(fd,WFIFOW(fd,2));
 			}

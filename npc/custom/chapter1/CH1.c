@@ -18165,3 +18165,31 @@ ch1_gfn03,0,0	monster	--en--	22482,40,5000
 ch1_gfn03,0,0	monster	--en--	22484,40,5000
 ch1_gfn03,0,0	monster	--en--	22486,40,5000
 ch1_gfn03,0,0	monster	--en--	22488,40,5000
+
+// Protection is required for the whole visit, including relogging inside.
+-	script	CH1_DimensionalGuard	-1,{
+OnPCLoadMapEvent:
+	deltimer "CH1_DimensionalGuard::OnProtectionCheck";
+OnProtectionCheck:
+	.@map$ = strcharinfo(3);
+	if (.@map$ == "hem_dun02") {
+		if (!getstatus(SC_CONTENTS_37)) {
+			message strcharinfo(0), "Your dimensional magic resistance expired.";
+			warp "hem_fild",329,188;
+			end;
+		}
+	} else if (.@map$ == "ch1_gfn01" || .@map$ == "ch1_gfn03") {
+		if (!getstatus(SC_CONTENTS_38)) {
+			message strcharinfo(0), "Your dimensional magic resistance expired.";
+			warp "hem_fild",231,296;
+			end;
+		}
+	} else
+		end;
+	addtimer 1000,"CH1_DimensionalGuard::OnProtectionCheck";
+	end;
+}
+
+hem_dun02	mapflag	loadevent
+ch1_gfn01	mapflag	loadevent
+ch1_gfn03	mapflag	loadevent

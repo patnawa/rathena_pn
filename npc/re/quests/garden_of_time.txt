@@ -1715,7 +1715,7 @@ t_garden,156,222,2	script	Functional Vending Machine#1	4_VENDING_MACHINE2,{
 			savepoint "t_garden",90,115;
 		else if (.@num == 4)
 			savepoint "t_garden",137,106;
-		break;
+		end;
 	}
 	if (Zeny < 100) {
 		npctalk "To use the Storage, please insert 100 zeny.", "", bc_self;

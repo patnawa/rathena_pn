@@ -92344,7 +92344,7 @@ Body:
         List:
           - Index: 0
             Item: C_Wing_Of_Fly
-            Duration: 10080
+            Duration: 4320
   - Group: REBEGINER_BOX
     SubGroups:
       - SubGroup: 0

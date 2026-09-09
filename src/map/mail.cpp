@@ -442,6 +442,13 @@ bool mail_invalid_operation( const map_session_data* sd )
 		return true;
 	}
 #else
+	// RODEX transfers must not overlap NPC shops, storage, or trading.
+	// mail_writing is intentionally allowed: attaching and sending use this check.
+	if( sd->npc_id || sd->npc_shopid || sd->state.storage_flag || sd->state.trading
+		|| sd->state.vending || sd->state.buyingstore ){
+		return true;
+	}
+
 	if( map_getmapflag( sd->m, MF_NORODEX ) ){
 		clif_displaymessage( sd->fd, msg_txt( sd, 796 ) ); // You cannot use RODEX on this map.
 		return true;
