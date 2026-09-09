@@ -20,6 +20,7 @@ TESTS = (
     'refine_transaction_test.py',
     'episode_party_progression_test.py',
     'database_backup_test.py',
+    'mob_sql_schema_test.py',
 )
 
 
@@ -77,7 +78,8 @@ def main():
             count += 1
         checks.append({'name': 'database_yaml_syntax', 'passed': True, 'files': count})
         for name in TESTS + (('chapter1_protection_test.py', 'instance_entry_native_test.py',
-                             'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py') if args.phase == 'full' else ()):
+                             'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
+                             'mob_matk_range_test.py') if args.phase == 'full' else ()):
             started = time.monotonic()
             result = subprocess.run([sys.executable, str(ROOT / 'tools/ci' / name)], cwd=ROOT, timeout=900)
             checks.append({'name': name, 'passed': result.returncode == 0, 'seconds': round(time.monotonic() - started, 2)})

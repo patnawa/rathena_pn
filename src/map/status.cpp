@@ -2563,7 +2563,8 @@ uint16 status_base_matk_min( const block_list* bl, const status_data* status, in
 		case BL_MOB:
 		case BL_MER:
 		case BL_ELEM:
-			return status->int_ + level + status->rhw.matk * 70 / 100;
+			// Preserve the uint16 combat limit without modulo wrap at high MATK.
+			return cap_value(static_cast<int64>(status->int_) + level + status->rhw.matk * 70 / 100, 0, USHRT_MAX);
 		case BL_HOM:
 			return status_get_homint(bl) + level + (status_get_homint(bl) + status_get_homdex(bl)) / 5;
 		case BL_PC:
@@ -2582,7 +2583,7 @@ uint16 status_base_matk_max( const block_list* bl, const status_data* status, in
 		case BL_MOB:
 		case BL_MER:
 		case BL_ELEM:
-			return status->int_ + level + status->rhw.matk * 130 / 100;
+			return cap_value(static_cast<int64>(status->int_) + level + status->rhw.matk * 130 / 100, 0, USHRT_MAX);
 		case BL_HOM:
 			return status_get_homint(bl) + level + (status_get_homluk(bl) + status_get_homint(bl) + status_get_homdex(bl)) / 3;
 		case BL_PC:

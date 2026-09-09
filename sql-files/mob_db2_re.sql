@@ -15,7 +15,7 @@ CREATE TABLE `mob_db2_re` (
   `job_exp` int(11) unsigned DEFAULT NULL,
   `mvp_exp` int(11) unsigned DEFAULT NULL,
   `attack` smallint(6) unsigned DEFAULT NULL,
-  `attack2` smallint(6) unsigned DEFAULT NULL,
+  `attack2` int(11) unsigned DEFAULT NULL,
   `defense` smallint(6) unsigned DEFAULT NULL,
   `magic_defense` smallint(6) unsigned DEFAULT NULL,
   `resistance` smallint(6) unsigned DEFAULT NULL,

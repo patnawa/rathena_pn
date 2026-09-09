@@ -5124,15 +5124,22 @@ uint64 MobDatabase::parseBodyNode(const ryml::NodeRef& node) {
 	}
 	
 	if (this->nodeExists(node, "Attack2")) {
-		uint16 atk;
+		// Decode before narrowing: the YAML integer reader wraps uint16 values
+		// above 65535, turning strong monsters into low-MATK monsters silently.
+		uint64 atk;
 
-		if (!this->asUInt16(node, "Attack2", atk))
+		if (!this->asUInt64(node, "Attack2", atk))
 			return 0;
 
+		if (atk > USHRT_MAX) {
+			this->invalidWarning(node["Attack2"], "Attack2 exceeds the engine limit of %u, capping...\n", static_cast<uint32>(USHRT_MAX));
+			atk = USHRT_MAX;
+		}
+
 #ifdef RENEWAL
-		mob->status.rhw.matk = atk;
+		mob->status.rhw.matk = static_cast<uint16>(atk);
 #else
-		mob->status.rhw.atk2 = atk;
+		mob->status.rhw.atk2 = static_cast<uint16>(atk);
 #endif
 	}
 
