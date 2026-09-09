@@ -898,6 +898,7 @@ S10: Go("turbo_room",99,114);
 S11: Go("grademk",34,184);
 
 OnNaviGenerate:
+	naviregisterwarp("Warper > Grade Workshop", "grademk", 34, 184);
 
 	// for non-prontera warpers, just give it warp to prontera
 	// this cuts down the number of links considerably
@@ -906,6 +907,59 @@ OnNaviGenerate:
 		end;
 	}
 
+	// Register literal destinations added to the current travel menus.
+	naviregisterwarp("Warper > comodo", "comodo", 209, 143);
+	naviregisterwarp("Warper > icecastle", "icecastle", 185, 212);
+	naviregisterwarp("Warper > nameless_i", "nameless_i", 256, 215);
+	naviregisterwarp("Warper > harboro1", "harboro1", 298, 206);
+	naviregisterwarp("Warper > sp_cor", "sp_cor", 160, 166);
+	naviregisterwarp("Warper > ba_maison", "ba_maison", 72, 146);
+	naviregisterwarp("Warper > verus04", "verus04", 123, 250);
+	naviregisterwarp("Warper > wolfvill", "wolfvill", 144, 144);
+	naviregisterwarp("Warper > ygg_edge", "ygg_edge", 255, 240);
+	naviregisterwarp("Warper > jor_albe", "jor_albe", 191, 182);
+	naviregisterwarp("Warper > jor_base", "jor_base", 240, 46);
+	naviregisterwarp("Warper > jor_mbase", "jor_mbase", 313, 106);
+	naviregisterwarp("Warper > jor_crk", "jor_crk", 137, 137);
+	naviregisterwarp("Warper > moro_vol", "moro_vol", 97, 107);
+	naviregisterwarp("Warper > ice_d03_i", "ice_d03_i", 149, 22);
+	naviregisterwarp("Warper > prt_mz03_i", "prt_mz03_i", 100, 100);
+	naviregisterwarp("Warper > com_d02_i", "com_d02_i", 250, 245);
+	naviregisterwarp("Warper > pay_d03_i", "pay_d03_i", 140, 44);
+	naviregisterwarp("Warper > ein_d02_i", "ein_d02_i", 164, 184);
+	naviregisterwarp("Warper > ant_d02_i", "ant_d02_i", 168, 170);
+	naviregisterwarp("Warper > gef_d01_i", "gef_d01_i", 114, 216);
+	naviregisterwarp("Warper > ygg_edge", "ygg_edge", 173, 185);
+	naviregisterwarp("Warper > ch1fild1", "ch1fild1", 106, 84);
+	naviregisterwarp("Warper > ch1zero1", "ch1zero1", 99, 100);
+	naviregisterwarp("Warper > ch1zero2", "ch1zero2", 99, 100);
+	naviregisterwarp("Warper > ch1zero3", "ch1zero3", 99, 100);
+	naviregisterwarp("Warper > ch1zero4", "ch1zero4", 99, 100);
+	naviregisterwarp("Warper > veledor", "veledor", 136, 62);
+	naviregisterwarp("Warper > kindlbrk", "kindlbrk", 115, 215);
+	naviregisterwarp("Warper > mu_fild02", "mu_fild02", 136, 65);
+	naviregisterwarp("Warper > mu_fild03", "mu_fild03", 136, 65);
+	naviregisterwarp("Warper > mu_dun01", "mu_dun01", 95, 131);
+	naviregisterwarp("Warper > mu_dun02", "mu_dun02", 95, 131);
+	naviregisterwarp("Warper > deadroot", "deadroot", 136, 62);
+	naviregisterwarp("Warper > ragsruth", "ragsruth", 88, 58);
+	naviregisterwarp("Warper > rgs_dun1", "rgs_dun1", 95, 131);
+	naviregisterwarp("Warper > kin_in01", "kin_in01", 115, 215);
+	naviregisterwarp("Warper > luna_sf2", "luna_sf2", 187, 254);
+	naviregisterwarp("Warper > jor_albe", "jor_albe", 190, 186);
+	naviregisterwarp("Warper > jor_raise1", "jor_raise1", 132, 323);
+	naviregisterwarp("Warper > jor_crk_p", "jor_crk_p", 83, 95);
+	naviregisterwarp("Warper > jor_crk", "jor_crk", 137, 138);
+	naviregisterwarp("Warper > ba_in01", "ba_in01", 51, 157);
+	naviregisterwarp("Warper > ba_in01", "ba_in01", 32, 250);
+	naviregisterwarp("Warper > alberta", "alberta", 214, 74);
+	naviregisterwarp("Warper > dali02", "dali02", 79, 60);
+	naviregisterwarp("Warper > t_garden", "t_garden", 159, 235);
+	naviregisterwarp("Warper > t_garden", "t_garden", 172, 235);
+	naviregisterwarp("Warper > dali", "dali", 124, 88);
+	naviregisterwarp("Warper > e_tower", "e_tower", 83, 105);
+	naviregisterwarp("Warper > dali02", "dali02", 137, 86);
+	naviregisterwarp("Warper > thana_step", "thana_step", 154, 367);
 	naviregisterwarp("Warper > Prontera", "prontera", 155, 183);
 	naviregisterwarp("Warper > Alberta", "alberta", 28, 234);
 	naviregisterwarp("Warper > Al De Baran", "aldebaran", 140, 131);

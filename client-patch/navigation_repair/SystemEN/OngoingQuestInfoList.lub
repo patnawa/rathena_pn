@@ -1,0 +1,2 @@
+-- Shared quest guide data; preserves the canonical compatibility patches.
+dofile("SystemEN/OngoingQuests.lub")

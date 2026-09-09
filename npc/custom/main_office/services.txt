@@ -32,6 +32,12 @@
 	close2;
 	warp @PNDeskMaps$[.@i],@PNDeskX[.@i],@PNDeskY[.@i];
 	end;
+OnNaviGenerate:
+	naviregisterwarp("Directory > Lobby", "pn_office", 100, 40);
+	naviregisterwarp("Directory > Training and equipment", "pn_train", 50, 35);
+	naviregisterwarp("Directory > Fashion and lounge", "pn_style", 140, 140);
+	naviregisterwarp("Directory > Prontera", "prontera", 150, 185);
+	end;
 }
 
 -	script	PN Office Access	-1,{
@@ -40,6 +46,9 @@
 	if(select("Enter Main Office:Leave") == 2) close;
 	close2;
 	warp "pn_office",100,40;
+	end;
+OnNaviGenerate:
+	naviregisterwarp("Enter Main Office", "pn_office", 100, 40);
 	end;
 OnOffice:
 	.@map$=strcharinfo(3);

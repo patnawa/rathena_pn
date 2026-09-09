@@ -183,3 +183,4 @@ __pycache__/
 .ruff_cache/
 /.codex-tmp*/
 /client-patch/enchant_repair/enchant_repair.grf
+/client-patch/navigation_repair/navigation_repair.grf
