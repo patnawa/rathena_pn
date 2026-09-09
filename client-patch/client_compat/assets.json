@@ -1,0 +1,1162 @@
+[
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f61726d6f722e626d70",
+    "source": "assets/collection/b_flamef_armor.bmp",
+    "sha256": "213f5aba93ae7c98d766cd64694bae748f6cb2e39b696e846c97c2998e87c156",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f626f6f74732e626d70",
+    "source": "assets/collection/b_flamef_boots.bmp",
+    "sha256": "75d0eb4b95534301ddf12e13fe29b9899909fb63754772878e647f0cdeebc323",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f62726f6f63682e626d70",
+    "source": "assets/collection/b_flamef_brooch.bmp",
+    "sha256": "6f34ee19ae9bddd36bfd02537101731bb7de33a25e07ec5576c4af1c2baa1564",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f65617272696e672e626d70",
+    "source": "assets/collection/b_flamef_earring.bmp",
+    "sha256": "0eacb2de26ba53f0debab5b4afec64704f3f8ea3da5155dacac0de8fa4fb887d",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f6d616e746561752e626d70",
+    "source": "assets/collection/b_flamef_manteau.bmp",
+    "sha256": "a40ab0e66e8a33470e7f308714f41f12c840e1aca9bf46647caff315a969bdad",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f6d7566666c65722e626d70",
+    "source": "assets/collection/b_flamef_muffler.bmp",
+    "sha256": "e2fd506e65999a848b2ba751a2e6dc887e37e1a5c9d4ad72107910be66e4b989",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f6e65636b6c6163652e626d70",
+    "source": "assets/collection/b_flamef_necklace.bmp",
+    "sha256": "54735d9777ff9e9cf137d3822b02e55a11230fdcce768f9088ad489a1c6d5026",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f72696e672e626d70",
+    "source": "assets/collection/b_flamef_ring.bmp",
+    "sha256": "a75aa75adc6fb4e6941113f33442c0591e2071f19a11926be699a834262a4fd4",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f726f62652e626d70",
+    "source": "assets/collection/b_flamef_robe.bmp",
+    "sha256": "ec73c34bd56a5ca8a3553b8acec31a9cdfbca31ae894e4cf8b66c63d75c8c1e4",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f736869656c642e626d70",
+    "source": "assets/collection/b_flamef_shield.bmp",
+    "sha256": "720d5b128ba69eeb1e76ed3372f56256c100d6f0a22df0329976821e8034328c",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c625f666c616d65665f73686f65732e626d70",
+    "source": "assets/collection/b_flamef_shoes.bmp",
+    "sha256": "4432144af6c3c048fdefe4447a2f2723cf6c5aca81c580ca0cd22a7e834601d2",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c636830325f312e626d70",
+    "source": "assets/collection/ch02_1.bmp",
+    "sha256": "f7fbdb2cf421de0c10bed5ceb66a62b77d432561d7a51e29183c225d7beebc33",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c636830325f322e626d70",
+    "source": "assets/collection/ch02_2.bmp",
+    "sha256": "f8348a87a463e14b5ec6820eb150ce8b75f250218fc8d76fd56e5b5ead417c3f",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c636830325f332e626d70",
+    "source": "assets/collection/ch02_3.bmp",
+    "sha256": "59597ea5a4cb5f2d8264a60cb12e5af9479fdfbb350e1d30290896bcedfff69f",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c6368325f6d616e676d6f5f68616c5f622e626d70",
+    "source": "assets/collection/ch2_mangmo_hal_b.bmp",
+    "sha256": "e94b7c103e031aa336ebaca4ccf93ea04d5abf052ecf1c0d8aae019883a19476",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c6368325f6d616e676d6f5f68616c5f722e626d70",
+    "source": "assets/collection/ch2_mangmo_hal_r.bmp",
+    "sha256": "1ebd28a5638c832616593cbee1de2fd66f7c5a8d46094ecbcb534820534b57d8",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c6368325f6d616e676d6f5f68616c5f792e626d70",
+    "source": "assets/collection/ch2_mangmo_hal_y.bmp",
+    "sha256": "c43b03a33832e4a2f3311a43516dbcb257e84b741726557a671d8771a303c4aa",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c6368325f776172705f6c6561662e626d70",
+    "source": "assets/collection/ch2_warp_leaf.bmp",
+    "sha256": "b612f37007aecffec522ac4398ad23479ddd9eca7ea8409c4f53884ef9efbb4d",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f61726d6f722e626d70",
+    "source": "assets/collection/flamef_armor.bmp",
+    "sha256": "c964e25b3a9ed0ff9612587854f4f80cac92f8602d753ead8284c785224c1fbd",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f626f6f74732e626d70",
+    "source": "assets/collection/flamef_boots.bmp",
+    "sha256": "ab0dfc800745611a4f8f10e13c1000be0f37e4759c14bd8080f40cca20d3a1ed",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f62726f6f63682e626d70",
+    "source": "assets/collection/flamef_brooch.bmp",
+    "sha256": "c02aee87e14781ad2bdc761e8d98eecccdccf66badd0f4abaae5c8c921f8f31b",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f65617272696e672e626d70",
+    "source": "assets/collection/flamef_earring.bmp",
+    "sha256": "2ddb40669bded3724808ce6d61c698519452891f06c77f622f6491753441ca58",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f6d616e746561752e626d70",
+    "source": "assets/collection/flamef_manteau.bmp",
+    "sha256": "b525855171cb697656c06db5f2d5a00e8c8537bc4a3760b38ee3fdb2ff47209e",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f6d7566666c65722e626d70",
+    "source": "assets/collection/flamef_muffler.bmp",
+    "sha256": "45870840a2f2c1d019997f47a9da7104936c9a702dc6fd713d840770c636be6b",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f6e65636b6c6163652e626d70",
+    "source": "assets/collection/flamef_necklace.bmp",
+    "sha256": "e7050b889b9d0f2955b4e946d8d75c0d8d1caaa0e48076e994c03b4c26a29da3",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f72696e672e626d70",
+    "source": "assets/collection/flamef_ring.bmp",
+    "sha256": "d3a0ad85c79896d289ba9921accf77a36a12a00d3e800e581af67562f9932a94",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f726f62652e626d70",
+    "source": "assets/collection/flamef_robe.bmp",
+    "sha256": "d4c437cf2118f69c1ba3dedbedfc57346344a58cc1b73afd696f7051dd4d7e81",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f736869656c642e626d70",
+    "source": "assets/collection/flamef_shield.bmp",
+    "sha256": "5b1d34a5ed8e1438725f5611ec7903c9855f129952cdecbfd45a4756d8a644c5",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c636f6c6c656374696f6e5c666c616d65665f73686f65732e626d70",
+    "source": "assets/collection/flamef_shoes.bmp",
+    "sha256": "40833bfa9abcdcda1a265bbdf13e02e77b4259664eeee6175b0704c7cf63fbc9",
+    "size": 22856,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      75,
+      100,
+      24
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f61726d6f722e616374",
+    "source": "assets/ground/b_flamef_armor.act",
+    "sha256": "6ed214ebcb832b3a4941e7a1d9d02eda0c801f44624f43273999f9119855a2aa",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f61726d6f722e737072",
+    "source": "assets/ground/b_flamef_armor.spr",
+    "sha256": "bba6c20bb0893d8bfec69a226fe989c8bb75d1b49ce89385256254500745d791",
+    "size": 1387,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f626f6f74732e616374",
+    "source": "assets/ground/b_flamef_boots.act",
+    "sha256": "6e11158835719a052b89a415ac7f0d6619a5b1e6ba914ae4e90e5e22dbd79967",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f626f6f74732e737072",
+    "source": "assets/ground/b_flamef_boots.spr",
+    "sha256": "e2412668832d2bc0918ab6c035dfd9e17011f4653d54642371d871b44e9f3d26",
+    "size": 1318,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f62726f6f63682e616374",
+    "source": "assets/ground/b_flamef_brooch.act",
+    "sha256": "87ba6fbb7cf41c06b07d3ade664a23525ceb3c6933889a1ee0e4aeb6c686ebd3",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f62726f6f63682e737072",
+    "source": "assets/ground/b_flamef_brooch.spr",
+    "sha256": "7380b4a2e80c292d8ce2092f3cafd68670206852c9c2f82a622481ec71a26bbc",
+    "size": 1581,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f65617272696e672e616374",
+    "source": "assets/ground/b_flamef_earring.act",
+    "sha256": "c23d133d7649f90b644f6c88b56d44ef30625f092b1417d48de2391eda9bc630",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f65617272696e672e737072",
+    "source": "assets/ground/b_flamef_earring.spr",
+    "sha256": "3c13e914c3770fea0ce960737bbf4f1eb235fd75f41d6994bf76ce2ff46afc3a",
+    "size": 1386,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f6d616e746561752e616374",
+    "source": "assets/ground/b_flamef_manteau.act",
+    "sha256": "3c577936ba9d91abcbbe0e7b7a8d5bd9b728793a575c9300b4e9c5a64cd78a4a",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f6d616e746561752e737072",
+    "source": "assets/ground/b_flamef_manteau.spr",
+    "sha256": "be508d73cefacef17bbb51589427c7046dc3b9959221df476d4861323e47b2c3",
+    "size": 1306,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f6d7566666c65722e616374",
+    "source": "assets/ground/b_flamef_muffler.act",
+    "sha256": "00643cbf175f192526a2770347b51d1fddde5ba100d28d4dc24e95bd3895ed82",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f6d7566666c65722e737072",
+    "source": "assets/ground/b_flamef_muffler.spr",
+    "sha256": "f68a62234d3f8383b1493f906e61bee35eb23db11a5a7fe70aba631876858e2d",
+    "size": 1397,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f6e65636b6c6163652e616374",
+    "source": "assets/ground/b_flamef_necklace.act",
+    "sha256": "4054c8caef86640a6e25a5e9b4770caac9d0e89667844bed009ec03a44f623a7",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f6e65636b6c6163652e737072",
+    "source": "assets/ground/b_flamef_necklace.spr",
+    "sha256": "161a92f37d166d26d2760e7f9ac80636ca064cc020b953f49136f1e300c84d97",
+    "size": 1325,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f72696e672e616374",
+    "source": "assets/ground/b_flamef_ring.act",
+    "sha256": "2c1065748a09b5d75bda552bd12e3a538409c36dd61cf3d575702eaebe4332c7",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f72696e672e737072",
+    "source": "assets/ground/b_flamef_ring.spr",
+    "sha256": "ce7425ac31f01b9be11010801df72a8428e7caabfc3f60beb3260d2e7c2f9686",
+    "size": 1442,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f726f62652e616374",
+    "source": "assets/ground/b_flamef_robe.act",
+    "sha256": "03b43a08957fc24e72f6349cbe7151cb7dfcb0041a001f65686c488f42eac185",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f726f62652e737072",
+    "source": "assets/ground/b_flamef_robe.spr",
+    "sha256": "59ee04bd7a0de3816841cb5edf61df52e00ff655e4fc817049fa4c2434800d44",
+    "size": 1384,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f736869656c642e616374",
+    "source": "assets/ground/b_flamef_shield.act",
+    "sha256": "ba5781a83c58caaed56009a892bbcabea3c1689cc16386daab44484d4fe6e927",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f736869656c642e737072",
+    "source": "assets/ground/b_flamef_shield.spr",
+    "sha256": "1cd27c492b809b62c534d548d3025238aaa79aa3f2f5843f3ec227f3d99d0a83",
+    "size": 1445,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f73686f65732e616374",
+    "source": "assets/ground/b_flamef_shoes.act",
+    "sha256": "2c1065748a09b5d75bda552bd12e3a538409c36dd61cf3d575702eaebe4332c7",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c625f666c616d65665f73686f65732e737072",
+    "source": "assets/ground/b_flamef_shoes.spr",
+    "sha256": "c6d5d7f00de0aee3cd16d719d115e4175e4f92519c15676853536c4b47b93819",
+    "size": 1472,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c636830325f312e616374",
+    "source": "assets/ground/ch02_1.act",
+    "sha256": "cbc9fd498ccfd859221b2ae7a6fe27eaec8b7a4ae86d6f9edebc341d910e2d1e",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c636830325f312e737072",
+    "source": "assets/ground/ch02_1.spr",
+    "sha256": "e9df9a095e9f30491d7672c4d86ecb64e5bb7d58cf6d23ac8ee9e007aa8f60b4",
+    "size": 1533,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c636830325f322e616374",
+    "source": "assets/ground/ch02_2.act",
+    "sha256": "cbc9fd498ccfd859221b2ae7a6fe27eaec8b7a4ae86d6f9edebc341d910e2d1e",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c636830325f322e737072",
+    "source": "assets/ground/ch02_2.spr",
+    "sha256": "1f427684c8e279d13946a0c76188d69460146dd9e64500a54a01fcb946e5fed3",
+    "size": 1533,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c636830325f332e616374",
+    "source": "assets/ground/ch02_3.act",
+    "sha256": "cbc9fd498ccfd859221b2ae7a6fe27eaec8b7a4ae86d6f9edebc341d910e2d1e",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c636830325f332e737072",
+    "source": "assets/ground/ch02_3.spr",
+    "sha256": "0157605877374b1b0d32b9357f6bdf3b2d055fac4c41e79fdc80620a3acea31a",
+    "size": 1533,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f6d616e676d6f5f68616c5f622e616374",
+    "source": "assets/ground/ch2_mangmo_hal_b.act",
+    "sha256": "7abb7a5a8d9c9b6a7d6dad38e8af41583983250a9f398b262d0adb1af046347c",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f6d616e676d6f5f68616c5f622e737072",
+    "source": "assets/ground/ch2_mangmo_hal_b.spr",
+    "sha256": "5c6cda2d6f20a884c7cb07c111c3fecbb2a502e1c1fb2c30062a8d0f67ce9457",
+    "size": 1510,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f6d616e676d6f5f68616c5f722e616374",
+    "source": "assets/ground/ch2_mangmo_hal_r.act",
+    "sha256": "7abb7a5a8d9c9b6a7d6dad38e8af41583983250a9f398b262d0adb1af046347c",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f6d616e676d6f5f68616c5f722e737072",
+    "source": "assets/ground/ch2_mangmo_hal_r.spr",
+    "sha256": "fc4e7275bc87ed9f0e4aa7ef75eff8cdbf514cb398032ea93dd5eba99d22e257",
+    "size": 1510,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f6d616e676d6f5f68616c5f792e616374",
+    "source": "assets/ground/ch2_mangmo_hal_y.act",
+    "sha256": "7abb7a5a8d9c9b6a7d6dad38e8af41583983250a9f398b262d0adb1af046347c",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f6d616e676d6f5f68616c5f792e737072",
+    "source": "assets/ground/ch2_mangmo_hal_y.spr",
+    "sha256": "3de35694e8d011f4e3bee0e932d25d1207558dca0e264b415e2d1edf6b78e7b9",
+    "size": 1510,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f776172705f6c6561662e616374",
+    "source": "assets/ground/ch2_warp_leaf.act",
+    "sha256": "fcfca249d81541500c70568f4f9436576fb5c115f7ae5c89d327cc11941e0447",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c6368325f776172705f6c6561662e737072",
+    "source": "assets/ground/ch2_warp_leaf.spr",
+    "sha256": "75eb1d3be7866695c858fbdd8bf0e8e96296b735ae2002a9d824183ca1e4faf7",
+    "size": 1326,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f61726d6f722e616374",
+    "source": "assets/ground/flamef_armor.act",
+    "sha256": "13b7735aec6ce4ab6e9c0fe663a5dbff82e5fce152bb039cd41a8e9cef21040a",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f61726d6f722e737072",
+    "source": "assets/ground/flamef_armor.spr",
+    "sha256": "a2e8ed45c8c195d45e66b12f18e17c502ccd0b933462f01044f101b248d2f9d3",
+    "size": 1411,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f626f6f74732e616374",
+    "source": "assets/ground/flamef_boots.act",
+    "sha256": "6e11158835719a052b89a415ac7f0d6619a5b1e6ba914ae4e90e5e22dbd79967",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f626f6f74732e737072",
+    "source": "assets/ground/flamef_boots.spr",
+    "sha256": "a08daab484f3291ab93ab90d38b8cc981be1f47544601e20398baa946a9ee7cc",
+    "size": 1318,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f62726f6f63682e616374",
+    "source": "assets/ground/flamef_brooch.act",
+    "sha256": "87ba6fbb7cf41c06b07d3ade664a23525ceb3c6933889a1ee0e4aeb6c686ebd3",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f62726f6f63682e737072",
+    "source": "assets/ground/flamef_brooch.spr",
+    "sha256": "c3eeac7417f463a73e6ea0f6a8a76e05233f082a81db67b28acc8bd6d6b28b57",
+    "size": 1580,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f65617272696e672e616374",
+    "source": "assets/ground/flamef_earring.act",
+    "sha256": "c23d133d7649f90b644f6c88b56d44ef30625f092b1417d48de2391eda9bc630",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f65617272696e672e737072",
+    "source": "assets/ground/flamef_earring.spr",
+    "sha256": "c11f0fe025131463b1497b53459b4f515d43cfaf9b1ef723071afb2c0fe9900e",
+    "size": 1386,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f6d616e746561752e616374",
+    "source": "assets/ground/flamef_manteau.act",
+    "sha256": "3c577936ba9d91abcbbe0e7b7a8d5bd9b728793a575c9300b4e9c5a64cd78a4a",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f6d616e746561752e737072",
+    "source": "assets/ground/flamef_manteau.spr",
+    "sha256": "4c2e20356bf1caa3f7eabac387c0674262164545ebe12ee320b7ac091fb8f4b0",
+    "size": 1306,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f6d7566666c65722e616374",
+    "source": "assets/ground/flamef_muffler.act",
+    "sha256": "00643cbf175f192526a2770347b51d1fddde5ba100d28d4dc24e95bd3895ed82",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f6d7566666c65722e737072",
+    "source": "assets/ground/flamef_muffler.spr",
+    "sha256": "8605a0d8b3f456930dbf25f057468d91fad9fb3b003774418efb763112d775e2",
+    "size": 1398,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f6e65636b6c6163652e616374",
+    "source": "assets/ground/flamef_necklace.act",
+    "sha256": "4054c8caef86640a6e25a5e9b4770caac9d0e89667844bed009ec03a44f623a7",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f6e65636b6c6163652e737072",
+    "source": "assets/ground/flamef_necklace.spr",
+    "sha256": "2c0b76759c41f35cd0d9ba514fbcd161f9fbda2bb04ea492549aa29a5aa680e1",
+    "size": 1324,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f72696e672e616374",
+    "source": "assets/ground/flamef_ring.act",
+    "sha256": "2c1065748a09b5d75bda552bd12e3a538409c36dd61cf3d575702eaebe4332c7",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f72696e672e737072",
+    "source": "assets/ground/flamef_ring.spr",
+    "sha256": "ed080f0a82ee464c87385fd2ea1a46c514052c78dbe20c7721cd3beb24d0c193",
+    "size": 1442,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f726f62652e616374",
+    "source": "assets/ground/flamef_robe.act",
+    "sha256": "03b43a08957fc24e72f6349cbe7151cb7dfcb0041a001f65686c488f42eac185",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f726f62652e737072",
+    "source": "assets/ground/flamef_robe.spr",
+    "sha256": "31839246316ff51e6c7389acd205b1e47336a70c9e0ae07b01d57b6947b91e09",
+    "size": 1384,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f736869656c642e616374",
+    "source": "assets/ground/flamef_shield.act",
+    "sha256": "ba5781a83c58caaed56009a892bbcabea3c1689cc16386daab44484d4fe6e927",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f736869656c642e737072",
+    "source": "assets/ground/flamef_shield.spr",
+    "sha256": "a48ef3f6286e1cadb42c9013097c7eb72c7e1bc84965402bf62395656cebbe20",
+    "size": 1445,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f73686f65732e616374",
+    "source": "assets/ground/flamef_shoes.act",
+    "sha256": "2c1065748a09b5d75bda552bd12e3a538409c36dd61cf3d575702eaebe4332c7",
+    "size": 116,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c7370726974655cbec6c0ccc5db5c666c616d65665f73686f65732e737072",
+    "source": "assets/ground/flamef_shoes.spr",
+    "sha256": "1b86bc1f61e5eccc2b5ff501ae0e2f1a274ca234258cd1858edaffe6fb24dfb9",
+    "size": 1472,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f61726d6f722e626d70",
+    "source": "assets/item/b_flamef_armor.bmp",
+    "sha256": "39be449a0e0c05761c5a362c6fb249f0de06a1febe2366498fae865921f8df1d",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f626f6f74732e626d70",
+    "source": "assets/item/b_flamef_boots.bmp",
+    "sha256": "18033842734c245b8c4b944f785a7e109c2b4b5e6297eebf6e3565a157434dc7",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f62726f6f63682e626d70",
+    "source": "assets/item/b_flamef_brooch.bmp",
+    "sha256": "424577bbaeda6ee03f7b4bbebcafa815795442a4eec6472bef8e5835d20ac42c",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f65617272696e672e626d70",
+    "source": "assets/item/b_flamef_earring.bmp",
+    "sha256": "938d482535a5547e18f7d21716617b66b6d9ffc7e06fdf9692a16b1d3cde774b",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f6d616e746561752e626d70",
+    "source": "assets/item/b_flamef_manteau.bmp",
+    "sha256": "2fb1947a4125b7beb888fa665991053855782b391d60599ee19ef775471c9770",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f6d7566666c65722e626d70",
+    "source": "assets/item/b_flamef_muffler.bmp",
+    "sha256": "68c958896052e50e5adbed063a206d854ce17994808c8da6a9d7c768f3db0a5c",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f6e65636b6c6163652e626d70",
+    "source": "assets/item/b_flamef_necklace.bmp",
+    "sha256": "18c4d972fb52e1059d09384a1134c1446dc81651ad64ca680df11abd6119a08b",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f72696e672e626d70",
+    "source": "assets/item/b_flamef_ring.bmp",
+    "sha256": "3f3e3e945dec301815d819638885d0a3fae1483a8947fed9ae488f99452c2686",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f726f62652e626d70",
+    "source": "assets/item/b_flamef_robe.bmp",
+    "sha256": "e0e76754df08a21d1a49e76c0a5f7202bca831afa28da22ffbb43d0490ae1592",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f736869656c642e626d70",
+    "source": "assets/item/b_flamef_shield.bmp",
+    "sha256": "9aa4f755d084118aafb87fffbc8ec94181ffbf469f207ad1f42ef8249df96638",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c625f666c616d65665f73686f65732e626d70",
+    "source": "assets/item/b_flamef_shoes.bmp",
+    "sha256": "09c2a53b235c99389177e2590e6276b600279c9357dd3fc1e4ce4480cc859c4e",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c636830325f312e626d70",
+    "source": "assets/item/ch02_1.bmp",
+    "sha256": "d1b5bab67858377fec1415958f94fa8b4c2ed2c52866e9e5d297689e4ae758c1",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c636830325f322e626d70",
+    "source": "assets/item/ch02_2.bmp",
+    "sha256": "57dadc4bcffe14e1208964cd27678ac92c62c07bd86ddb576ea61cb60133b965",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c636830325f332e626d70",
+    "source": "assets/item/ch02_3.bmp",
+    "sha256": "fc1fbd8ba499b0303ed22eb0752272adcbe6e586bd6862652c4189c4cf4b1e37",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c6368325f6d616e676d6f5f68616c5f622e626d70",
+    "source": "assets/item/ch2_mangmo_hal_b.bmp",
+    "sha256": "d7fefd62b784e03236ae397dd33121a13f2263a48e78cb4c91a2a939ede8f6ab",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c6368325f6d616e676d6f5f68616c5f722e626d70",
+    "source": "assets/item/ch2_mangmo_hal_r.bmp",
+    "sha256": "7003818b5aaba69f9b57f6cc3c8bd9278c6d16bf12ee5bf80c3e515912e71954",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c6368325f6d616e676d6f5f68616c5f792e626d70",
+    "source": "assets/item/ch2_mangmo_hal_y.bmp",
+    "sha256": "68bc7723c37e2bf7930cb75a9de276f36fb3423c84b449dfc017f0439163ff67",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c6368325f776172705f6c6561662e626d70",
+    "source": "assets/item/ch2_warp_leaf.bmp",
+    "sha256": "95fb31c6096369235d4be3f4803407dcd3ad9332b31aad220a5e5a683fa09823",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f61726d6f722e626d70",
+    "source": "assets/item/flamef_armor.bmp",
+    "sha256": "f697d763042ad3b209d5f20d29d43677e1710a19dc66ddb392dbc72bfba936a7",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f626f6f74732e626d70",
+    "source": "assets/item/flamef_boots.bmp",
+    "sha256": "b6f2ba9cc59f16204844f4242e4bc8f8ee09155ed02b831e358d271e4a571612",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f62726f6f63682e626d70",
+    "source": "assets/item/flamef_brooch.bmp",
+    "sha256": "5d0fcbc8912210474f9efbfd61c80e4b2eb7dc4e6779be49698010ba85fdf8c4",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f65617272696e672e626d70",
+    "source": "assets/item/flamef_earring.bmp",
+    "sha256": "a3b12c8c8aae1f2abdc42eec96385250fdc5c40fccb0c5266a499d23fdc497d9",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f6d616e746561752e626d70",
+    "source": "assets/item/flamef_manteau.bmp",
+    "sha256": "a97130bdcdb2eba306e02ffc8f7d38fa5d83d23d2e79254c70aeafae9c3787ee",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f6d7566666c65722e626d70",
+    "source": "assets/item/flamef_muffler.bmp",
+    "sha256": "a14927fd9f900296c78d52497076b8d16ec6f3450c1726777130dcc66744ddad",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f6e65636b6c6163652e626d70",
+    "source": "assets/item/flamef_necklace.bmp",
+    "sha256": "58388b35a703836af9c602c16c15416c80a4b5b7ac3732af7b18108ac69de478",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f72696e672e626d70",
+    "source": "assets/item/flamef_ring.bmp",
+    "sha256": "12a3a15e88511ba91b475007c06d04b1d7d6ee455ed34fbbd69464ef007ca5f2",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f726f62652e626d70",
+    "source": "assets/item/flamef_robe.bmp",
+    "sha256": "7275759393bebb80a035af5692b0cdce58daf2cd6bb0f945fa7cb19ac9040e93",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f736869656c642e626d70",
+    "source": "assets/item/flamef_shield.bmp",
+    "sha256": "7243109ab9f07e660c42435c6deb091c151b4b408b99cde4941fa0123b07e272",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  },
+  {
+    "archive_path_hex": "646174615c746578747572655cc0afc0fac0cec5cdc6e4c0ccbdba5c6974656d5c666c616d65665f73686f65732e626d70",
+    "source": "assets/item/flamef_shoes.bmp",
+    "sha256": "4ca1cae5e1d93735580e64e8f97a62f6491486389f71e5b52f131a364b47a3ca",
+    "size": 1654,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": [
+      24,
+      24,
+      8
+    ]
+  }
+]

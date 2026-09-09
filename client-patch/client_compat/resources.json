@@ -1,0 +1,650 @@
+[
+  {
+    "id": 106440,
+    "identifiedResourceName": "Ch2_Warp_Leaf",
+    "unidentifiedResourceName": "Ch2_Warp_Leaf",
+    "previous": "ch2_warp_leaf"
+  },
+  {
+    "id": 106441,
+    "identifiedResourceName": "Wolf_Orb_Agi_1",
+    "unidentifiedResourceName": "Wolf_Orb_Agi_1",
+    "previous": "ch2_phantom_crystal"
+  },
+  {
+    "id": 106471,
+    "identifiedResourceName": "Ch2_Mangmo_Hal_B",
+    "unidentifiedResourceName": "Ch2_Mangmo_Hal_B",
+    "previous": "ch2_mangmo_hal_b"
+  },
+  {
+    "id": 106472,
+    "identifiedResourceName": "Ch2_Mangmo_Hal_R",
+    "unidentifiedResourceName": "Ch2_Mangmo_Hal_R",
+    "previous": "ch2_mangmo_hal_r"
+  },
+  {
+    "id": 106473,
+    "identifiedResourceName": "Ch2_Mangmo_Hal_Y",
+    "unidentifiedResourceName": "Ch2_Mangmo_Hal_Y",
+    "previous": "ch2_mangmo_hal_y"
+  },
+  {
+    "id": 300761,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_dragon_clam_card"
+  },
+  {
+    "id": 300762,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_flame_bull_card"
+  },
+  {
+    "id": 300763,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_urochs_card"
+  },
+  {
+    "id": 300764,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_logidogi_card"
+  },
+  {
+    "id": 300765,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_fire_cotton_card"
+  },
+  {
+    "id": 300766,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_namunse_card"
+  },
+  {
+    "id": 300767,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_namuni_card"
+  },
+  {
+    "id": 300768,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_dudulson_card"
+  },
+  {
+    "id": 300769,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_garakson_card"
+  },
+  {
+    "id": 300770,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_tuktakson_card"
+  },
+  {
+    "id": 300771,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_paruson_card"
+  },
+  {
+    "id": 300772,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_morbang_card"
+  },
+  {
+    "id": 300773,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_fire_claw_card"
+  },
+  {
+    "id": 300774,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_flame_anima_card"
+  },
+  {
+    "id": 300775,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_frost_morbang_card"
+  },
+  {
+    "id": 300776,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_alpuring_card"
+  },
+  {
+    "id": 300777,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_icy_blast_card"
+  },
+  {
+    "id": 300778,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_ice_needle_card"
+  },
+  {
+    "id": 300779,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_folnir_nilf_card"
+  },
+  {
+    "id": 300780,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_folnir_myrk_card"
+  },
+  {
+    "id": 300781,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_folnir_hre_card"
+  },
+  {
+    "id": 300782,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_feeos_card"
+  },
+  {
+    "id": 300783,
+    "identifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00b8\u00a7\u00be\u00f8\u00b4\u00c2\u00c4\u00ab\u00b5\u00e5",
+    "previous": "ch2_phantom_snapdragon_card"
+  },
+  {
+    "id": 314927,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_war"
+  },
+  {
+    "id": 314928,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_ran"
+  },
+  {
+    "id": 314929,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_sage"
+  },
+  {
+    "id": 314930,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_mag"
+  },
+  {
+    "id": 314931,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_assassin"
+  },
+  {
+    "id": 314932,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_fighter"
+  },
+  {
+    "id": 314933,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_war2"
+  },
+  {
+    "id": 314934,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_ran2"
+  },
+  {
+    "id": 314935,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_sage2"
+  },
+  {
+    "id": 314936,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_mag2"
+  },
+  {
+    "id": 314937,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_assassin2"
+  },
+  {
+    "id": 314938,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_fighter2"
+  },
+  {
+    "id": 314939,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_s_delay"
+  },
+  {
+    "id": 314940,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_force"
+  },
+  {
+    "id": 314941,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_m_force"
+  },
+  {
+    "id": 314942,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_def"
+  },
+  {
+    "id": 314943,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_mdef"
+  },
+  {
+    "id": 314944,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_hpsp"
+  },
+  {
+    "id": 314945,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_speed"
+  },
+  {
+    "id": 314946,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_caster"
+  },
+  {
+    "id": 314947,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_melee"
+  },
+  {
+    "id": 314948,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_range"
+  },
+  {
+    "id": 314949,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_spell"
+  },
+  {
+    "id": 314950,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_magic_p"
+  },
+  {
+    "id": 314951,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_critical"
+  },
+  {
+    "id": 314952,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_hit_attack"
+  },
+  {
+    "id": 314953,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_size_atk"
+  },
+  {
+    "id": 314954,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_size_matk"
+  },
+  {
+    "id": 314955,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_p_f"
+  },
+  {
+    "id": 314956,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_m_f"
+  },
+  {
+    "id": 314957,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_mhp"
+  },
+  {
+    "id": 314958,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_msp"
+  },
+  {
+    "id": 314959,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_over_power"
+  },
+  {
+    "id": 314960,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_fire_shot"
+  },
+  {
+    "id": 314961,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_spl_buster"
+  },
+  {
+    "id": 314962,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_mag_storm"
+  },
+  {
+    "id": 314963,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_lukcy_strike"
+  },
+  {
+    "id": 314964,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_special_agent"
+  },
+  {
+    "id": 314965,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_fight_s"
+  },
+  {
+    "id": 314966,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_archer"
+  },
+  {
+    "id": 314967,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_sprit_p"
+  },
+  {
+    "id": 314968,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_magic"
+  },
+  {
+    "id": 314969,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_fatal"
+  },
+  {
+    "id": 314970,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_hit_a"
+  },
+  {
+    "id": 314971,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_tenacity"
+  },
+  {
+    "id": 314972,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_m_archer"
+  },
+  {
+    "id": 314973,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_spell_p"
+  },
+  {
+    "id": 314974,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_acute"
+  },
+  {
+    "id": 314975,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_great_a"
+  },
+  {
+    "id": 314976,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_phy_p"
+  },
+  {
+    "id": 314977,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_mag_p"
+  },
+  {
+    "id": 314978,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_m_eessence"
+  },
+  {
+    "id": 314979,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_d"
+  },
+  {
+    "id": 314980,
+    "identifiedResourceName": "Ch02_1",
+    "unidentifiedResourceName": "Ch02_1",
+    "previous": "ch02_1_a"
+  },
+  {
+    "id": 314981,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_res"
+  },
+  {
+    "id": 314982,
+    "identifiedResourceName": "Ch02_2",
+    "unidentifiedResourceName": "Ch02_2",
+    "previous": "ch02_2_mres"
+  },
+  {
+    "id": 314983,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_guard"
+  },
+  {
+    "id": 314984,
+    "identifiedResourceName": "Ch02_3",
+    "unidentifiedResourceName": "Ch02_3",
+    "previous": "ch02_3_intel"
+  },
+  {
+    "id": 450531,
+    "identifiedResourceName": "B_FlameF_Armor",
+    "unidentifiedResourceName": "\u00b8\u00de\u00c0\u00cf",
+    "previous": "b_flamef_armor"
+  },
+  {
+    "id": 450532,
+    "identifiedResourceName": "B_FlameF_Robe",
+    "unidentifiedResourceName": "\u00c4\u00da\u00c6\u00b0\u00bc\u00c5\u00c3\u00f7",
+    "previous": "b_flamef_robe"
+  },
+  {
+    "id": 450533,
+    "identifiedResourceName": "FlameF_Armor",
+    "unidentifiedResourceName": "\u00b8\u00de\u00c0\u00cf",
+    "previous": "flamef_armor"
+  },
+  {
+    "id": 450534,
+    "identifiedResourceName": "FlameF_Robe",
+    "unidentifiedResourceName": "\u00c4\u00da\u00c6\u00b0\u00bc\u00c5\u00c3\u00f7",
+    "previous": "flamef_robe"
+  },
+  {
+    "id": 460147,
+    "identifiedResourceName": "B_FlameF_Shield",
+    "unidentifiedResourceName": "\u00b0\u00a1\u00b5\u00e5",
+    "previous": "b_flamef_shield"
+  },
+  {
+    "id": 460148,
+    "identifiedResourceName": "FlameF_Shield",
+    "unidentifiedResourceName": "\u00b0\u00a1\u00b5\u00e5",
+    "previous": "flamef_shield"
+  },
+  {
+    "id": 470420,
+    "identifiedResourceName": "B_FlameF_Boots",
+    "unidentifiedResourceName": "\u00bd\u00b4\u00c1\u00ee",
+    "previous": "b_flamef_boots"
+  },
+  {
+    "id": 470421,
+    "identifiedResourceName": "B_FlameF_Shoes",
+    "unidentifiedResourceName": "\u00bd\u00b4\u00c1\u00ee",
+    "previous": "b_flamef_shoes"
+  },
+  {
+    "id": 470422,
+    "identifiedResourceName": "FlameF_Boots",
+    "unidentifiedResourceName": "\u00bd\u00b4\u00c1\u00ee",
+    "previous": "flamef_boots"
+  },
+  {
+    "id": 470423,
+    "identifiedResourceName": "FlameF_Shoes",
+    "unidentifiedResourceName": "\u00bd\u00b4\u00c1\u00ee",
+    "previous": "flamef_shoes"
+  },
+  {
+    "id": 480751,
+    "identifiedResourceName": "B_FlameF_Manteau",
+    "unidentifiedResourceName": "\u00c8\u00c4\u00b5\u00e5",
+    "previous": "b_flamef_manteau"
+  },
+  {
+    "id": 480752,
+    "identifiedResourceName": "B_FlameF_Muffler",
+    "unidentifiedResourceName": "\u00c8\u00c4\u00b5\u00e5",
+    "previous": "b_flamef_muffler"
+  },
+  {
+    "id": 480753,
+    "identifiedResourceName": "FlameF_Manteau",
+    "unidentifiedResourceName": "\u00c8\u00c4\u00b5\u00e5",
+    "previous": "flamef_manteau"
+  },
+  {
+    "id": 480754,
+    "identifiedResourceName": "FlameF_Muffler",
+    "unidentifiedResourceName": "\u00c8\u00c4\u00b5\u00e5",
+    "previous": "flamef_muffler"
+  },
+  {
+    "id": 490930,
+    "identifiedResourceName": "B_FlameF_Ring",
+    "unidentifiedResourceName": "\u00b8\u00b5",
+    "previous": "b_flamef_ring"
+  },
+  {
+    "id": 490931,
+    "identifiedResourceName": "B_FlameF_Brooch",
+    "unidentifiedResourceName": "\u00ba\u00ea\u00b7\u00ce\u00c4\u00a1",
+    "previous": "b_flamef_brooch"
+  },
+  {
+    "id": 490932,
+    "identifiedResourceName": "B_FlameF_Earring",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00be\u00ee\u00b8\u00b5",
+    "previous": "b_flamef_earring"
+  },
+  {
+    "id": 490933,
+    "identifiedResourceName": "B_FlameF_Necklace",
+    "unidentifiedResourceName": "\u00b3\u00d7\u00c5\u00ac\u00b8\u00ae\u00bd\u00ba",
+    "previous": "b_flamef_necklace"
+  },
+  {
+    "id": 490934,
+    "identifiedResourceName": "FlameF_Ring",
+    "unidentifiedResourceName": "\u00b8\u00b5",
+    "previous": "flamef_ring"
+  },
+  {
+    "id": 490935,
+    "identifiedResourceName": "FlameF_Brooch",
+    "unidentifiedResourceName": "\u00ba\u00ea\u00b7\u00ce\u00c4\u00a1",
+    "previous": "flamef_brooch"
+  },
+  {
+    "id": 490936,
+    "identifiedResourceName": "FlameF_Earring",
+    "unidentifiedResourceName": "\u00c0\u00cc\u00be\u00ee\u00b8\u00b5",
+    "previous": "flamef_earring"
+  },
+  {
+    "id": 490937,
+    "identifiedResourceName": "FlameF_Necklace",
+    "unidentifiedResourceName": "\u00b3\u00d7\u00c5\u00ac\u00b8\u00ae\u00bd\u00ba",
+    "previous": "flamef_necklace"
+  }
+]

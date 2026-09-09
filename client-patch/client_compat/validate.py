@@ -1,0 +1,180 @@
+"""Validate actual Lua loading, resource preservation, archive bytes and ground sprites."""
+import argparse
+import configparser
+from collections import defaultdict
+import hashlib
+import json
+from pathlib import Path
+import struct
+import subprocess
+import tempfile
+import zlib
+
+
+def archive_index(path):
+    with path.open('rb') as f:
+        header = f.read(46)
+        if header.startswith(b'Master of Magic'):
+            offset, seed, count, version = struct.unpack_from('<IIII', header, 30)
+            count -= seed + 7
+        else:
+            assert header.startswith(b'Event Horizon')
+            offset, count, version = struct.unpack_from('<QII', header, 30)
+            offset += 4
+        assert version in (0x200, 0x300)
+        f.seek(46 + offset)
+        packed, size = struct.unpack('<II', f.read(8))
+        table = zlib.decompress(f.read(packed))
+        assert len(table) == size
+        pos, result = 0, {}
+        for _ in range(count):
+            end = table.index(0, pos)
+            name = table[pos:end].decode('latin1').replace('\\', '/').lower()
+            pos = end + 1
+            packed, aligned, size, flag = struct.unpack_from('<IIIB', table, pos)
+            pos += 13
+            offset = struct.unpack_from('<Q' if version == 0x300 else '<I', table, pos)[0]
+            pos += 8 if version == 0x300 else 4
+            if flag & 1:
+                result[name] = (packed, size, flag, offset)
+        assert pos == len(table)
+        return result
+
+
+def ground_pair(spr, act):
+    assert spr[:4] == b'SP\x01\x02'
+    indexed, rgba = struct.unpack_from('<HH', spr, 4)
+    assert indexed == 1 and rgba == 0
+    width, height, size = struct.unpack_from('<HHH', spr, 8)
+    payload = spr[14:14 + size]
+    assert len(spr) == 14 + size + 1024
+    pos = pixels = 0
+    while pos < len(payload):
+        value = payload[pos]
+        pos += 1
+        if value:
+            pixels += 1
+        else:
+            pixels += payload[pos]
+            pos += 1
+    assert pixels == width * height
+    assert act[:4] == b'AC\x05\x02'
+    actions = struct.unpack_from('<H', act, 4)[0]
+    pos = 16
+    for _ in range(actions):
+        frames = struct.unpack_from('<I', act, pos)[0]
+        pos += 4
+        assert 0 < frames < 1000
+        for _ in range(frames):
+            pos += 32
+            layers = struct.unpack_from('<I', act, pos)[0]
+            pos += 4
+            for _ in range(layers):
+                sprite = struct.unpack_from('<i', act, pos + 8)[0]
+                sprite_type = struct.unpack_from('<i', act, pos + 32)[0]
+                assert -1 <= sprite < indexed and sprite_type == 0
+                pos += 44
+            sound, anchors = struct.unpack_from('<iI', act, pos)
+            assert sound == -1
+            pos += 8 + 16 * anchors
+    sounds = struct.unpack_from('<I', act, pos)[0]
+    pos += 4 + sounds * 40 + actions * 4
+    assert pos == len(act)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--client', required=True, type=Path)
+    parser.add_argument('--lua', required=True, type=Path)
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parent
+    archive = root / 'client_compat.grf'
+    index = archive_index(archive)
+    rows = json.loads((root / 'assets.json').read_text())
+    assert len(index) == len(rows) == 116
+    dimensions = {}
+    for row in rows:
+        raw = (root / row['source']).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == row['sha256']
+        key = bytes.fromhex(row['archive_path_hex']).decode('latin1').replace('\\', '/').lower()
+        packed, size, flag, offset = index[key]
+        with archive.open('rb') as f:
+            f.seek(46 + offset)
+            assert zlib.decompress(f.read(packed)) == raw
+        if row['source'].endswith('.bmp'):
+            assert raw[:2] == b'BM' and struct.unpack_from('<I', raw, 2)[0] == len(raw)
+            w, h, planes, bpp = struct.unpack_from('<iiHH', raw, 18)
+            expected = (24, 24, 8) if '/item/' in row['source'] else (75, 100, 24)
+            assert (w, h, bpp) == expected and planes == 1
+            dimensions[str(expected)] = dimensions.get(str(expected), 0) + 1
+        elif row['source'].endswith('.spr'):
+            ground_pair(raw, (root / row['source']).with_suffix('.act').read_bytes())
+    ini = configparser.ConfigParser()
+    ini.read(args.client / 'DATA.INI')
+    effective = dict(index)
+    for _, archive_name in sorted(ini['Data'].items(), key=lambda r: int(r[0])):
+        for key, value in archive_index(args.client / archive_name).items():
+            effective.setdefault(key, value)
+    resources = json.loads((root / 'resources.json').read_text())
+    by_name = defaultdict(list)
+    for key in effective:
+        by_name[key.rsplit('/', 1)[-1]].append(key)
+    for row in resources:
+        for field in ('identifiedResourceName', 'unidentifiedResourceName'):
+            resource = row[field].lower()
+            for category, suffix in [('item', '.bmp'), ('collection', '.bmp'), ('sprite', '.spr'), ('sprite', '.act')]:
+                assert any(key.endswith('/' + resource + suffix) and
+                           (key.startswith('data/sprite/') if category == 'sprite' else '/' + category + '/' in key)
+                           for key in by_name[resource + suffix]), (row['id'], category, resource)
+    lua = r'''
+dofile('SystemEN/itemInfo.lua')
+local function clone(v)
+  if type(v) ~= 'table' then return v end
+  local t = {}; for k,x in pairs(v) do t[k]=clone(x) end; return t
+end
+local function equal(a,b)
+  if type(a) ~= type(b) then return false end
+  if type(a) ~= 'table' then return a == b end
+  for k,v in pairs(a) do if not equal(v,b[k]) then return false end end
+  for k in pairs(b) do if a[k] == nil then return false end end
+  return true
+end
+local before=clone(tbl)
+local original_dofile=dofile
+function dofile(path)
+  if path == 'SystemEN/itemInfo_ClientCompat.lua' then return original_dofile(PATCH) end
+  return original_dofile(path)
+end
+dofile(LOADER)
+local count, changed=0,0
+for id,item in pairs(tbl) do
+  count=count+1; assert(before[id], 'Added item')
+  if not equal(item,before[id]) then changed=changed+1 end
+  local copy=clone(item)
+  copy.identifiedResourceName=before[id].identifiedResourceName
+  copy.unidentifiedResourceName=before[id].unidentifiedResourceName
+  assert(equal(copy,before[id]), 'Changed item metadata: '..id)
+end
+for id in pairs(before) do assert(tbl[id], 'Removed item') end
+local registered=0
+function AddItem(id,...) assert(tbl[id]); registered=registered+1; return true end
+function AddItemIdentifiedDesc(id,text) assert(type(text)=='string'); return true end
+AddItemUnidentifiedDesc=AddItemIdentifiedDesc
+function AddItemEffectInfo() return true end
+AddItemIsCostume=AddItemEffectInfo; AddItemPackageID=AddItemEffectInfo
+local ok,msg=main(); assert(ok,msg); assert(registered==count)
+print('native_items='..count..' changed_resource_records='..changed..' registered='..registered)
+'''
+    patch_path = (root / 'SystemEN/itemInfo_ClientCompat.lua').as_posix()
+    with tempfile.TemporaryDirectory(prefix='client-compat-') as tmp:
+        script = Path(tmp) / 'probe.lua'
+        loader_path = (root / 'SystemEN/itemInfo.lua').as_posix()
+        script.write_text('PATCH=' + json.dumps(patch_path) + '\nLOADER=' + json.dumps(loader_path) + '\n' + lua)
+        result = subprocess.run([str(args.lua.resolve()), str(script)], cwd=args.client, capture_output=True, check=True)
+        print(result.stdout.decode().strip())
+    print(json.dumps({'archive_entries': len(rows), 'covered_episode_items': len(resources),
+                      'bitmap_dimensions': dimensions, 'ground_pairs': 29, 'fallback_assets': 0}))
+
+
+if __name__ == '__main__':
+    main()

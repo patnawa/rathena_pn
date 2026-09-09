@@ -42,7 +42,7 @@ def native_argument(executable, path):
     return argument
 
 
-def independent_grf_reader(data):
+def independent_grf_reader(data, name_encoding='ascii'):
     """Read GRF v2 independently of the builder, checking sizes and bounds."""
     source = io.BytesIO(data)
     if source.read(16) != b'Master of Magic\0':
@@ -69,7 +69,7 @@ def independent_grf_reader(data):
             if char == b'\0':
                 break
             chars.extend(char)
-        name = chars.decode('ascii')
+        name = chars.decode(name_encoding)
         size, aligned, expanded, kind, offset = struct.unpack('<IIIBI', table.read(17))
         if kind != 1 or aligned != size or offset + aligned > table_offset or name in result:
             raise ValueError('GRF entry schema/bounds')
