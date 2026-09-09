@@ -106,7 +106,16 @@ function	script	F_AirshipCrashBriefed	{
 	.@ready = 1;
 	for (.@i = 0; .@i < .@count; ++.@i) {
 		detachrid;
-		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i]) || checkquest(5911) != 2) {
+		// Script boolean operands are eager. Do not query quests without a RID.
+		if (!isloggedin(.@aid[.@i],.@cid[.@i])) {
+			.@ready = 0;
+			break;
+		}
+		if (!attachrid(.@aid[.@i])) {
+			.@ready = 0;
+			break;
+		}
+		if (checkquest(5911) != 2) {
 			.@ready = 0;
 			break;
 		}

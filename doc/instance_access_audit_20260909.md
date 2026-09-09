@@ -19,6 +19,9 @@ checks remain in place.
 The same evaluation rule affected the Immortal controller's offline-member
 guard. It now skips disconnected participants before reading their HP, allowing
 the encounter clock to continue without querying an absent character.
+Airship Crash's party briefing validator also separates its online, attachment
+and quest checks. An offline member now returns not-ready and restores the
+requesting character instead of aborting the script with no player attached.
 
 ## Content that is not implemented
 
