@@ -1158,5 +1158,13 @@
       24,
       8
     ]
+  },
+  {
+    "archive_path_hex": "646174615c6e756d3263617264696c6c7573746e616d657461626c652e747874",
+    "source": "assets/tables/num2cardillustnametable.txt",
+    "sha256": "7c94c71588a90dcbce665d3006f543cdda9b151f0308db965f902927b041c5c8",
+    "size": 33858,
+    "official_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+    "dimensions": null
   }
 ]

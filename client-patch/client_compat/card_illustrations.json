@@ -1,0 +1,31 @@
+{
+  "baseline_sha256": "470a329bd099e46c74a5000b9567efaf008bcd924b8824a2c596034bca4f2140",
+  "baseline_bytes": 33511,
+  "additions": {
+    "300761": "sorry",
+    "300762": "sorry",
+    "300763": "sorry",
+    "300764": "sorry",
+    "300765": "sorry",
+    "300766": "sorry",
+    "300767": "sorry",
+    "300768": "sorry",
+    "300769": "sorry",
+    "300770": "sorry",
+    "300771": "sorry",
+    "300772": "sorry",
+    "300773": "sorry",
+    "300774": "sorry",
+    "300775": "sorry",
+    "300776": "sorry",
+    "300777": "sorry",
+    "300778": "sorry",
+    "300779": "sorry",
+    "300780": "sorry",
+    "300781": "sorry",
+    "300782": "sorry",
+    "300783": "sorry"
+  },
+  "official_mapping_patch": "2026-03-18_live_data_3063_3067_1773276480.gsf",
+  "illustration_status": "Official placeholder mappings; distinct Chapter 2 illustration artwork is not present."
+}

@@ -23,6 +23,14 @@ Validation passed before and after installation:
 - Every existing active archive retains its hash and relative priority; the new
   archive takes first priority and contains only previously absent artwork.
 
+A final visual-reference audit also verified all 421 direct model references and
+65 ground textures used by the 17 maps. A subsequent archive update preserves
+1,390 existing card-illustration mappings and adds 23 official March 18 fallback
+mappings for the Chapter 2 cards. These use the existing `sorry` image; no distinct
+card illustrations were invented or supplied. The latest indexed table revision
+is August 5, but its encrypted values could not be verified. The updated archive
+contains 116 artwork files and one card mapping table.
+
 The current-client audit now accepts legacy Korean resource-path bytes and checks
 the winning enchantment overlay instead of requiring the historical archive owner.
 Its original strict reader behavior remains the default for the older ASCII fixture.

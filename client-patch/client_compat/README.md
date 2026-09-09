@@ -13,6 +13,16 @@ lengths were checked against the official patch index, including subsequent
 patches through September 7. This verifies correspondence, not cryptographic
 authentication of the mirror against the encrypted original.
 
+A separate card illustration table adds mappings for cards 300761–300783 while
+preserving all 1,390 existing mappings byte for byte. These 23 cards previously
+had no illustration mapping. The verified March 18 official table maps each to
+the existing `sorry.bmp` illustration placeholder; no new placeholder artwork is
+added. These card illustration fallbacks are separate from the 116 native item
+assets above. The latest indexed official illustration table is August 5, 2026,
+but its encrypted payload could not be read, so the March mapping is not claimed
+to be verified against that later revision. Distinct Chapter 2 card illustrations
+remain unavailable in the inspected plaintext resources.
+
 The English translation base was compared with upstream commit
 `66cdfec631603fda6a90ba4bbe26ab07b5204c84` (August 5, 2026). Its 613 archive
 paths already existed; 603 matched. The remaining paths contain local connection,
@@ -36,6 +46,8 @@ It builds the archive in memory and validates the tracked artwork and binary
 formats without installed client files, Lua, or generated artifacts. Both release
 gate phases run this check; full client resolution and Lua registration still
 require the explicit client and runtime arguments above.
+The archive now has 117 entries, including the card illustration table; Python
+and native Lua independently check preservation of the existing card mappings.
 
 Install the generated `client_compat.grf`, both `SystemEN` files, and the reviewed
 `DATA.INI` together with backups. The archive adds only missing resources and the

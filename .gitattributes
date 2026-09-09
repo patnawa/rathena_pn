@@ -18,3 +18,5 @@ client-patch/chapter2_native/SystemEN/itemInfo_Chapter2Materials.lua text eol=lf
 client-patch/druid_gear/SystemEN/itemInfo_DruidGear.lua text eol=lf
 client-patch/enchant_target_metadata/SystemEN/itemInfo_EnchantTargets.lua text eol=lf
 client-patch/druid_shadow166/SystemEN/itemInfo_DruidShadow166.lua text eol=lf
+# Preserve the original client table's encoding and byte-pinned line endings.
+client-patch/client_compat/assets/tables/*.txt binary
