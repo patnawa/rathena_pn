@@ -27,10 +27,16 @@ jobs:
           # Match the deployed build. BUILDBOT treats even documented, bounded
           # value warnings as process failures; release_checks retains strict
           # exit/error/SQL/readiness checks and publishes the complete startup log.
-          ./configure --enable-prere=no --enable-packetver=20260219 --enable-buildbot=no
+          # Keep SQL conversion noninteractive independently of runtime diagnostics.
+          CPPFLAGS=-DCONVERT_ALL ./configure --enable-prere=no --enable-packetver=20260219 --enable-buildbot=no
           make import
           make -j2 tools map
           ./yaml2sql
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in ('mob_db_re.sql', 'mob_db2_re.sql'):
+              assert 'REPLACE INTO ' in Path('sql-files', name).read_text(), f'SQL export was skipped: {name}'
+          PY
           ./tools/ci/sql.sh
       - name: Run release gates
         run: python3 tools/ci/release_checks.py --startup-log release-results/startup.log --report release-results/report.json
