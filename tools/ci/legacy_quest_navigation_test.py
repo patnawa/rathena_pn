@@ -14,6 +14,8 @@ def main():
     root = Path(__file__).resolve().parents[2]
     patch = root / "client-patch/navigation_repair/SystemEN/QuestNavigationRepair.lua"
     lua = r'''
+-- The game can expose a restricted table library in its quest Lua state.
+table.insert = nil
 dofile("SystemEN/OngoingQuests.lub")
 local function clone(v)
   if type(v) ~= "table" then return v end

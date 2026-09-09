@@ -277,7 +277,7 @@ for _, id in ipairs(unavailableGuides) do
       if text == unavailableNote then hasNote = true end
       quest.Description[i] = text:gsub("<NAVI>(.-)<INFO>.-</INFO></NAVI>", "%1")
     end
-    if not hasNote then table.insert(quest.Description, unavailableNote) end
+    if not hasNote then quest.Description[#quest.Description + 1] = unavailableNote end
   end
 end
 

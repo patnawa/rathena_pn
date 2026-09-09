@@ -148,6 +148,7 @@ def main():
         assert deployed_archive.read_bytes() == archive, 'Built archive does not match source assets'
     ini = configparser.ConfigParser()
     ini.read(args.client / 'DATA.INI')
+    assert len(ini['Data']) <= 10 and all(0 <= int(key) <= 9 for key in ini['Data']), 'Client archive slots must fit 0 through 9'
     effective = dict(index)
     for _, archive_name in sorted(ini['Data'].items(), key=lambda r: int(r[0])):
         for key, value in archive_index(args.client / archive_name).items():

@@ -10,7 +10,9 @@ This patch supplies server-specific map, NPC, monster, travel and distance table
 dofile("SystemEN/QuestNavigationRepair.lua")
 ```
 
-The three small OngoingQuestInfoList loader files route older client entry points to that canonical file. Five custom records from the old fallback table are preserved. Do not install these loaders without the canonical quest file and its repair overlay.
+The three small OngoingQuestInfoList loader files route older client entry points to that canonical file. Five custom records from the old fallback table are preserved. Do not install these loaders without the canonical quest file and its repair overlay. The repair appends notes with direct table assignment because the game quest environment does not reliably expose `table.insert`; native regression loading disables that function.
+
+DATA.INI supports only ten archives (slots 0–9). The current client combines this archive with the episode compatibility overlay as `client_repairs.grf`; do not add an eleventh archive and displace the base data archive.
 
 The native generator now compares iterators from the correct warp vector when classifying segmented maps. Main Office travel and 52 missing literal Warper menu destinations have explicit navigation registrations. Additional existing literal script travel is registered only in an isolated generation workspace using `tools/navigation/register_script_travel.py`; those generated NPC copies are not live-server replacements. Conditions, rewards, player variables and quest access checks remain in the original scripts.
 

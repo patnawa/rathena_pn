@@ -21,6 +21,7 @@ TESTS = (
     'episode_party_progression_test.py',
     'database_backup_test.py',
     'mob_sql_schema_test.py',
+    'client_archive_stack_test.py',
 )
 
 

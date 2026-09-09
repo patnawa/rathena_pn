@@ -17,6 +17,8 @@ def inspect(root, expected_packetver, hash_archives=False):
         issues.append('DATA.INI missing [Data] section')
     else:
         entries = sorted(ini.items('Data'), key=lambda row: int(row[0]))
+        if len(entries) > 10 or any(int(key) > 9 for key, _ in entries):
+            issues.append('Client archive limit exceeded: DATA.INI supports only slots 0 through 9')
         if [int(k) for k, _ in entries] != list(range(len(entries))):
             issues.append('GRF priorities must be contiguous from zero')
         seen = set()

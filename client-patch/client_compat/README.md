@@ -49,9 +49,18 @@ require the explicit client and runtime arguments above.
 The archive now has 117 entries, including the card illustration table; Python
 and native Lua independently check preservation of the existing card mappings.
 
-Install the generated `client_compat.grf`, both `SystemEN` files, and the reviewed
-`DATA.INI` together with backups. The archive adds only missing resources and the
-INI preserves the relative precedence of all existing archives. The full loader
+The client supports only ten archives, in slots 0 through 9. Combine this overlay
+with the existing validated navigation archive before installing the supplied INI:
+
+```text
+python client-patch/client_compat/merge_grfs.py client_compat.grf navigation_repair.grf --output client_repairs.grf
+```
+
+Inputs are listed highest priority first. Install `client_repairs.grf`, both
+`SystemEN` files, and the reviewed `DATA.INI` together with backups. The combined
+archive preserves all 135 resource payloads from the two repair archives. Do not
+also list their separate archives in DATA.INI: `data.grf` must remain in slot 9.
+The full loader
 is a deployment snapshot: rebase its single final import if the active loader
 changes before installation. Never replace an independently modified loader.
 
