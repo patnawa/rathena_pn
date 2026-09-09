@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  client_preflight.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/client_preflight.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only active-client inventory. Not a packet or rendered-asset test."""
 import argparse
 import configparser

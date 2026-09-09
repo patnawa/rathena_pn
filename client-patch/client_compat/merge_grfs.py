@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  merge_grfs.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/client_compat/merge_grfs.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Merge standard GRF v2 repair overlays in highest-priority-first order."""
 import argparse
 from pathlib import Path

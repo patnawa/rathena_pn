@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  release_checks_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/release_checks_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Regression coverage for startup failures that can accompany exit code zero."""
 import unittest
 from pathlib import Path

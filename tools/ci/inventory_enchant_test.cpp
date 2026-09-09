@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  inventory_enchant_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/inventory_enchant_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Standalone behavioral tests for the helper used by modifyinventoryenchant.
 // g++ -std=c++17 -Isrc tools/ci/inventory_enchant_test.cpp -o /tmp/inventory_enchant_test
 #include <cstring>

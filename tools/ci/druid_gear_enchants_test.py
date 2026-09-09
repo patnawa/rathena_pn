@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_gear_enchants_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_gear_enchants_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Druid Gear identity, reference and actual native script-VM regressions.
 
 The optional --native-vm probe requires Linux/WSL and existing map-server support

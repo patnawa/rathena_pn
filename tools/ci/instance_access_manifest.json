@@ -25,7 +25,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/AirshipCrash.txt",
-          "line": 270,
+          "line": 280,
           "map": "dali02",
           "x": 137,
           "y": 86,
@@ -53,7 +53,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/AirshipDestruction.txt",
-          "line": 16,
+          "line": 26,
           "map": "jor_nest",
           "x": 22,
           "y": 255,
@@ -113,7 +113,7 @@
           "x": 66,
           "y": 98,
           "name": "Alice#mad_entry",
-          "line": 65
+          "line": 75
         }
       ],
       "client_map_status": "all_available"
@@ -197,7 +197,7 @@
           "x": 216,
           "y": 345,
           "name": "Sierra#bio_gate",
-          "line": 62
+          "line": 72
         }
       ],
       "client_map_status": "all_available"
@@ -388,7 +388,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/ConstellationTower.txt",
-          "line": 49,
+          "line": 59,
           "map": "e_tower",
           "x": 83,
           "y": 105,
@@ -557,7 +557,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/FallOfGlastHeim.txt",
-          "line": 18,
+          "line": 28,
           "map": "glast_01",
           "x": 241,
           "y": 290,
@@ -565,7 +565,7 @@
         },
         {
           "script": "npc/custom/instances/FallOfGlastHeim.txt",
-          "line": 18,
+          "line": 28,
           "map": "glast_01",
           "x": 241,
           "y": 290,
@@ -573,7 +573,7 @@
         },
         {
           "script": "npc/custom/instances/FallOfGlastHeim.txt",
-          "line": 18,
+          "line": 28,
           "map": "glast_01",
           "x": 241,
           "y": 290,
@@ -606,7 +606,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode21/BlackHairedBeast.txt",
-          "line": 366,
+          "line": 376,
           "map": "jor_tmple1",
           "x": 178,
           "y": 304,
@@ -614,7 +614,7 @@
         },
         {
           "script": "npc/custom/episode21/FinalBattle.txt",
-          "line": 76,
+          "line": 86,
           "map": "jor_raise1",
           "x": 132,
           "y": 323,
@@ -622,7 +622,7 @@
         },
         {
           "script": "npc/custom/episode21/FinalBattle.txt",
-          "line": 76,
+          "line": 86,
           "map": "jor_raise1",
           "x": 132,
           "y": 323,
@@ -630,7 +630,7 @@
         },
         {
           "script": "npc/custom/episode21/FinalBattle.txt",
-          "line": 76,
+          "line": 86,
           "map": "jor_raise1",
           "x": 132,
           "y": 323,
@@ -658,7 +658,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/FridayDungeon.txt",
-          "line": 11,
+          "line": 21,
           "map": "gef_tower",
           "x": 57,
           "y": 170,
@@ -686,7 +686,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/official/GeffenMagicTournament.txt",
-          "line": 614,
+          "line": 624,
           "map": "dali",
           "x": 100,
           "y": 147,
@@ -694,7 +694,7 @@
         },
         {
           "script": "npc/custom/official/GeffenMagicTournament.txt",
-          "line": 683,
+          "line": 693,
           "map": "dali",
           "x": 98,
           "y": 141,
@@ -722,7 +722,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/GeffenNightArena.txt",
-          "line": 88,
+          "line": 98,
           "map": "dali02",
           "x": 79,
           "y": 60,
@@ -787,7 +787,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/quests/garden_of_time.txt",
-          "line": 1039,
+          "line": 1049,
           "map": "t_garden",
           "x": 173,
           "y": 235,
@@ -795,7 +795,7 @@
         },
         {
           "script": "npc/custom/instances/HallOfLife.txt",
-          "line": 132,
+          "line": 142,
           "map": "t_garden",
           "x": 172,
           "y": 235,
@@ -1027,7 +1027,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/Instances.txt",
-          "line": 346,
+          "line": 356,
           "map": "jor_twig",
           "x": 117,
           "y": 145,
@@ -1102,7 +1102,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/IwinPatrol.txt",
-          "line": 11,
+          "line": 21,
           "map": "icecastle",
           "x": 23,
           "y": 115,
@@ -1131,7 +1131,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/quests/garden_of_time.txt",
-          "line": 983,
+          "line": 993,
           "map": "t_garden",
           "x": 158,
           "y": 235,
@@ -1252,7 +1252,7 @@
         },
         {
           "script": "npc/custom/instances/ThanatosTowerMemory.txt",
-          "line": 23,
+          "line": 33,
           "map": "thana_step",
           "x": 154,
           "y": 367,
@@ -1456,7 +1456,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/OldGlastHeimChallenge.txt",
-          "line": 44,
+          "line": 54,
           "map": "glast_01",
           "x": 143,
           "y": 288,
@@ -1540,7 +1540,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/PoringVillage.txt",
-          "line": 171,
+          "line": 181,
           "map": "prt_fild05",
           "x": 145,
           "y": 235,
@@ -1625,7 +1625,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/SarahAndFenrir.txt",
-          "line": 10,
+          "line": 20,
           "map": "dali02",
           "x": 97,
           "y": 142,
@@ -1633,7 +1633,7 @@
         },
         {
           "script": "npc/re/instances/SarahAndFenrir.txt",
-          "line": 141,
+          "line": 151,
           "map": "dali02",
           "x": 99,
           "y": 148,
@@ -1725,7 +1725,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/BagotLaboratory.txt",
-          "line": 317,
+          "line": 327,
           "map": "jor_nest",
           "x": 66,
           "y": 260,
@@ -1806,7 +1806,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/SidesAndDailies.txt",
-          "line": 343,
+          "line": 353,
           "map": "jor_back4",
           "x": 98,
           "y": 258,
@@ -1870,7 +1870,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/TombOfRemorse.txt",
-          "line": 194,
+          "line": 204,
           "map": "dali02",
           "x": 78,
           "y": 116,
@@ -1987,7 +1987,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/WaveMode.txt",
-          "line": 136,
+          "line": 146,
           "map": "prontera",
           "x": 146,
           "y": 75,
@@ -1995,7 +1995,7 @@
         },
         {
           "script": "npc/re/instances/WaveMode.txt",
-          "line": 136,
+          "line": 146,
           "map": "prontera",
           "x": 146,
           "y": 75,
@@ -3052,7 +3052,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/official/GeffenMagicTournament.txt",
-          "line": 614,
+          "line": 624,
           "map": "dali",
           "x": 100,
           "y": 147,
@@ -3060,7 +3060,7 @@
         },
         {
           "script": "npc/custom/official/GeffenMagicTournament.txt",
-          "line": 683,
+          "line": 693,
           "map": "dali",
           "x": 98,
           "y": 141,
@@ -3473,7 +3473,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/SarahAndFenrir.txt",
-          "line": 10,
+          "line": 20,
           "map": "dali02",
           "x": 97,
           "y": 142,
@@ -3481,7 +3481,7 @@
         },
         {
           "script": "npc/re/instances/SarahAndFenrir.txt",
-          "line": 141,
+          "line": 151,
           "map": "dali02",
           "x": 99,
           "y": 148,
@@ -3527,7 +3527,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/WaveMode.txt",
-          "line": 136,
+          "line": 146,
           "map": "prontera",
           "x": 146,
           "y": 75,
@@ -3573,7 +3573,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/WaveMode.txt",
-          "line": 136,
+          "line": 146,
           "map": "prontera",
           "x": 146,
           "y": 75,
@@ -4007,7 +4007,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/quests/quests_16_1.txt",
-          "line": 1634,
+          "line": 1644,
           "map": "prt_lib",
           "x": 91,
           "y": 85,
@@ -4015,7 +4015,7 @@
         },
         {
           "script": "npc/re/quests/quests_16_1.txt",
-          "line": 1829,
+          "line": 1839,
           "map": "prt_lib",
           "x": 88,
           "y": 90,
@@ -4059,7 +4059,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/quests/quests_16_1.txt",
-          "line": 2368,
+          "line": 2378,
           "map": "prt_lib_q",
           "x": 91,
           "y": 85,
@@ -4067,7 +4067,7 @@
         },
         {
           "script": "npc/re/quests/quests_16_1.txt",
-          "line": 2661,
+          "line": 2671,
           "map": "prt_lib_q",
           "x": 88,
           "y": 90,
@@ -4865,7 +4865,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/FridayDungeon.txt",
-          "line": 11,
+          "line": 21,
           "map": "gef_tower",
           "x": 57,
           "y": 170,
@@ -4911,7 +4911,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/instances/PoringVillage.txt",
-          "line": 171,
+          "line": 181,
           "map": "prt_fild05",
           "x": 145,
           "y": 235,
@@ -4957,7 +4957,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/OldGlastHeimChallenge.txt",
-          "line": 44,
+          "line": 54,
           "map": "glast_01",
           "x": 143,
           "y": 288,
@@ -5004,7 +5004,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/OldGlastHeimBeginner.txt",
-          "line": 25,
+          "line": 35,
           "map": "glast_01",
           "x": 196,
           "y": 235,
@@ -5051,7 +5051,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/FallOfGlastHeim.txt",
-          "line": 18,
+          "line": 28,
           "map": "glast_01",
           "x": 241,
           "y": 290,
@@ -5097,7 +5097,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/FallOfGlastHeim.txt",
-          "line": 18,
+          "line": 28,
           "map": "glast_01",
           "x": 241,
           "y": 290,
@@ -5552,7 +5552,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/SunkenTower.txt",
-          "line": 29,
+          "line": 39,
           "map": "alberta",
           "x": 214,
           "y": 74,
@@ -5601,7 +5601,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/ConstellationTower.txt",
-          "line": 49,
+          "line": 59,
           "map": "e_tower",
           "x": 83,
           "y": 105,
@@ -5688,7 +5688,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/TombOfRemorse.txt",
-          "line": 194,
+          "line": 204,
           "map": "dali02",
           "x": 78,
           "y": 116,
@@ -5735,7 +5735,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/GeffenNightArena.txt",
-          "line": 88,
+          "line": 98,
           "map": "dali02",
           "x": 79,
           "y": 60,
@@ -5783,7 +5783,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/AirshipCrash.txt",
-          "line": 270,
+          "line": 280,
           "map": "dali02",
           "x": 137,
           "y": 86,
@@ -5866,7 +5866,7 @@
         },
         {
           "script": "npc/custom/instances/ThanatosTowerMemory.txt",
-          "line": 23,
+          "line": 33,
           "map": "thana_step",
           "x": 154,
           "y": 367,
@@ -6281,7 +6281,7 @@
         },
         {
           "script": "npc/re/quests/quests_18.txt",
-          "line": 5082,
+          "line": 5092,
           "map": "oz_dun01",
           "x": 223,
           "y": 116,
@@ -6417,7 +6417,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/BagotLaboratory.txt",
-          "line": 16,
+          "line": 26,
           "map": "jor_dun03",
           "x": 57,
           "y": 63,
@@ -6461,7 +6461,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/ConfusedSnakesNest.txt",
-          "line": 11,
+          "line": 21,
           "map": "jor_que",
           "x": 32,
           "y": 37,
@@ -6505,7 +6505,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/IwinPatrol.txt",
-          "line": 11,
+          "line": 21,
           "map": "icecastle",
           "x": 23,
           "y": 115,
@@ -6551,7 +6551,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/AirshipDestruction.txt",
-          "line": 16,
+          "line": 26,
           "map": "jor_nest",
           "x": 22,
           "y": 255,
@@ -6597,7 +6597,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode19/BagotLaboratory.txt",
-          "line": 317,
+          "line": 327,
           "map": "jor_nest",
           "x": 66,
           "y": 260,
@@ -6693,7 +6693,7 @@
           "x": 216,
           "y": 345,
           "name": "Sierra#bio_gate",
-          "line": 62
+          "line": 72
         }
       ],
       "warper_labels": [
@@ -6761,7 +6761,7 @@
           "x": 66,
           "y": 98,
           "name": "Alice#mad_entry",
-          "line": 65
+          "line": 75
         }
       ],
       "warper_labels": [
@@ -7009,7 +7009,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode21/BlackHairedBeast.txt",
-          "line": 366,
+          "line": 376,
           "map": "jor_tmple1",
           "x": 178,
           "y": 304,
@@ -7017,7 +7017,7 @@
         },
         {
           "script": "npc/custom/episode21/FinalBattle.txt",
-          "line": 76,
+          "line": 86,
           "map": "jor_raise1",
           "x": 132,
           "y": 323,
@@ -7064,7 +7064,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode21/SecretAltar.txt",
-          "line": 23,
+          "line": 33,
           "map": "jor_crk_p",
           "x": 90,
           "y": 95,
@@ -7111,7 +7111,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode21/SilentSanctuary.txt",
-          "line": 17,
+          "line": 27,
           "map": "jor_twig",
           "x": 187,
           "y": 198,
@@ -7158,7 +7158,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode21/FinalBattle.txt",
-          "line": 76,
+          "line": 86,
           "map": "jor_raise1",
           "x": 132,
           "y": 323,
@@ -7205,7 +7205,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode21/FinalBattle.txt",
-          "line": 76,
+          "line": 86,
           "map": "jor_raise1",
           "x": 132,
           "y": 323,
@@ -7251,7 +7251,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/instances/FallOfGlastHeim.txt",
-          "line": 18,
+          "line": 28,
           "map": "glast_01",
           "x": 241,
           "y": 290,
@@ -7299,7 +7299,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/quests/garden_of_time.txt",
-          "line": 983,
+          "line": 993,
           "map": "t_garden",
           "x": 158,
           "y": 235,
@@ -7347,7 +7347,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/re/quests/garden_of_time.txt",
-          "line": 1039,
+          "line": 1049,
           "map": "t_garden",
           "x": 173,
           "y": 235,
@@ -7355,7 +7355,7 @@
         },
         {
           "script": "npc/custom/instances/HallOfLife.txt",
-          "line": 132,
+          "line": 142,
           "map": "t_garden",
           "x": 172,
           "y": 235,
@@ -7401,7 +7401,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/chapter2/Chapter2.txt",
-          "line": 241,
+          "line": 251,
           "map": "veledor",
           "x": 140,
           "y": 65,
@@ -7446,7 +7446,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/chapter2/Chapter2.txt",
-          "line": 287,
+          "line": 297,
           "map": "ragsruth",
           "x": 88,
           "y": 58,
@@ -7491,7 +7491,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/chapter2/Chapter2.txt",
-          "line": 314,
+          "line": 324,
           "map": "ch2safe4",
           "x": 86,
           "y": 146,
@@ -7499,7 +7499,7 @@
         },
         {
           "script": "npc/custom/chapter2/Chapter2.txt",
-          "line": 432,
+          "line": 442,
           "map": "kindlbrk",
           "x": 121,
           "y": 219,
@@ -7546,7 +7546,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/Progression.txt",
-          "line": 660,
+          "line": 670,
           "map": "jor_maze",
           "x": 140,
           "y": 71,
@@ -7592,7 +7592,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/Progression.txt",
-          "line": 1092,
+          "line": 1102,
           "map": "jor_twig",
           "x": 138,
           "y": 152,
@@ -7658,7 +7658,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/Progression.txt",
-          "line": 378,
+          "line": 388,
           "map": "icecastle",
           "x": 201,
           "y": 171,
@@ -7723,7 +7723,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/Progression.txt",
-          "line": 748,
+          "line": 758,
           "map": "jor_twice",
           "x": 235,
           "y": 111,
@@ -7768,7 +7768,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/SidesAndDailies.txt",
-          "line": 343,
+          "line": 353,
           "map": "jor_back4",
           "x": 98,
           "y": 258,
@@ -7814,7 +7814,7 @@
       "entry_npc_candidates": [
         {
           "script": "npc/custom/episode20/Instances.txt",
-          "line": 346,
+          "line": 356,
           "map": "jor_twig",
           "x": 117,
           "y": 145,

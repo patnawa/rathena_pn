@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  audit_druid_client_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/audit_druid_client_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Reference-table reader regression tests; no client assets or Lua execution."""
 import unittest
 

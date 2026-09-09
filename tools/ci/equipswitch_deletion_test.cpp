@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  equipswitch_deletion_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/equipswitch_deletion_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // GPL-3.0-or-later. Appended to unchanged crown fixture boundary helpers.
 #include <array>
 

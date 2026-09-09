@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  generate_rune_tablet_data.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/generate_rune_tablet_data.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Build deterministic Rune Tablet NPC getters from a factual JSON catalog.
 
 Import mode reads published HTML and non-executing client data. Normal mode

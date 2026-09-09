@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  audit_enchant_upgrades_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/audit_enchant_upgrades_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Synthetic regression tests; no proprietary GRFs or Lua runtime required."""
 import copy
 import struct

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  chapter1_protection_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/chapter1_protection_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Run actual Chapter 1 protection script in an isolated native VM (Linux build required)."""
 from pathlib import Path
 import argparse,hashlib,re,subprocess,tempfile

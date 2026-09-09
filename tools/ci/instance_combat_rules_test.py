@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  instance_combat_rules_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/instance_combat_rules_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compile actual map-rule helpers and delivery guards; no full combat-engine simulation.
 
 Requires g++. Exercises both Renewal definitions, all damage channels, delayed

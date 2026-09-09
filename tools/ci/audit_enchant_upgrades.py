@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  audit_enchant_upgrades.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/audit_enchant_upgrades.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compare active client upgrade recipes with effective Renewal server imports.
 
 Requires PyYAML. --emit-perfect prints an import; it never modifies files.

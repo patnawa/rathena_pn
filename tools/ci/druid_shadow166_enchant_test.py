@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_shadow166_enchant_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_shadow166_enchant_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exact group166 data, original source/Lua and isolated native VM regressions.
 
 --native-vm freshly compiles itemdb/script/pc/skill/clif/malloc with ASan/UBSan.

@@ -241,3 +241,7 @@ Keep changes scoped and preserve unrelated customizations. Include affected serv
 Based on rAthena, with credit to the rAthena Development Team, the eAthena project, and their contributors. Original copyright and attribution notices are retained in the source.
 
 The server source is distributed under the [GNU General Public License v3.0](LICENSE). Third-party components retain their respective licenses. This server-source license does not grant rights to redistribute Ragnarok Online client assets or third-party GRF archives.
+
+## PN script signatures
+
+Project scripts include PN contribution, license and source notices. See [the source signature guide](doc/script_licensing.md) and [client companion notices](client-patch/SOURCE-NOTICES.md).

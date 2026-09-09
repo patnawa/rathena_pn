@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  Compatibility.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/chapter1/Compatibility.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Compatibility helpers for the Chapter 1 scripts.
 // The imported scripts use convenience functions from a different script
 // runtime. These wrappers preserve that behavior with native rAthena commands.

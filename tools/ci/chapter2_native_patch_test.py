@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  chapter2_native_patch_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/chapter2_native_patch_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Offline preservation, round-trip, recipe, and refusal tests for Chapter 2.
 
 Pass --luac to additionally validate both generated resources with an independent

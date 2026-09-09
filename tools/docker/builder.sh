@@ -1,4 +1,14 @@
 #!/bin/sh
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  builder.sh
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/docker/builder.sh
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 set -eu
 
 cd /rathena

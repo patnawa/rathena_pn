@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_monolith_runtime_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_monolith_runtime_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Emit a native behavioral test of the actual Monolith/Nova/Stomp source.
 
 The native test mocks map/status/packet seams, not the three production function

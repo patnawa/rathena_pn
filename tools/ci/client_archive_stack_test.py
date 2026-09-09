@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  client_archive_stack_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/client_archive_stack_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Regression checks for the ten-slot client archive limit and overlay merging."""
 from pathlib import Path
 import configparser

@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  enchant_upgrade_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/enchant_upgrade_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Behavioral tests for the exact selectors used by both client request handlers.
 #include <cstdlib>
 #include <iostream>

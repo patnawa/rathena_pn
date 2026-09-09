@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  effects.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/enchant_target_metadata/effects.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Fail-closed clean-room renderer for the twelve reviewed crown Scripts.
 
 This is a description renderer, not a replacement for rAthena's script VM.

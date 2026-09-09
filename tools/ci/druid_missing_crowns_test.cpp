@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  druid_missing_crowns_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_missing_crowns_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // GPL-3.0-or-later. The runner prefixes the existing isolated VM boundary
 // wrappers (not its main). Production Item/Combo/Skill DBs and Script/pc bonus
 // functions execute here. No simulated bonus application or network access.

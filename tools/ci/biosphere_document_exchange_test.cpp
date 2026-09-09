@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  biosphere_document_exchange_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/biosphere_document_exchange_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // GPL-3.0-or-later. Appended to the tracked crown fixture boundary helpers.
 // Native NPC/input/inventory/reputation/loaded registry/QuestInfo execution.
 #include "map/npc.hpp"

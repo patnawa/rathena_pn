@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  battlestats_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/battlestats_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compile the actual report function against explicit status/transport doubles.
 
 The production helper is extracted unchanged. This checks output arithmetic,

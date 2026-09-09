@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  inspect_mapcache.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/inspect_mapcache.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Print dimensions and walkability around coordinates in an rAthena map cache."""
 
 import argparse

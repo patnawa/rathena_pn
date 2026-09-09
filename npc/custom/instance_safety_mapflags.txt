@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  instance_safety_mapflags.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/instance_safety_mapflags.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Instance-map containment gaps not covered by rAthena's central mapflag lists.
 // Keep this as an overlay: source-map flags are copied into each instance map.
 

@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  shadow_repair.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/shadow_repair.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Shadow enchant supplies and recycling. Wiki prices; crates yield 20 Shadow.
 // Native Laphine performs the equipment mutation after a book is used.
 grademk,26,184,4	script	Rayja#EnchantRepair	4_F_01,{

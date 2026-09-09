@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  fly_wing_rental_regression.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/fly_wing_rental_regression.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Check named rental boxes grant one wing with the advertised lifetime. Requires PyYAML."""
 import argparse
 from pathlib import Path

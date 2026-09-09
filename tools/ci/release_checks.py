@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  release_checks.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/release_checks.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Fail closed on database syntax, focused regressions, and isolated startup errors."""
 import argparse
 import hashlib

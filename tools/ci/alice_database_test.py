@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  alice_database_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/alice_database_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Validate Alice actor name limits, references and phase-safe reward sources."""
 from pathlib import Path
 import re

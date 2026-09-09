@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  grademk_equipment_service_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/grademk_equipment_service_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Actual source-extracted NPC dialogue and real item_enchant builtin.
 // Lookup, transient @menu persistence, UI and payment/deletion boundaries only.
 #include <cerrno>

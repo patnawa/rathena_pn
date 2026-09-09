@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  native_shadow_service_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/native_shadow_service_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // Actual parse_script/run_script dialogue proof. Only player/world lookup,
 // transient @menu storage, persistence, and outbound UI/resource services are

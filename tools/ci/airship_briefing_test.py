@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  airship_briefing_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/airship_briefing_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Native Airship Crash briefing checks with real RID and quest operations."""
 import argparse
 import hashlib

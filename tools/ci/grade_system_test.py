@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  grade_system_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/grade_system_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Actual grading handlers, compiled with explicit packet/inventory/DB doubles.
 
 Also checks effective grading settings and reagent references. No production

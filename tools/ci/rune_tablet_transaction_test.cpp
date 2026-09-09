@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  rune_tablet_transaction_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/rune_tablet_transaction_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Appended to the crown fixture's explicit transport/world boundary prefix.
 // Production service/catalog bodies and native parser, registry and inventory
 // code execute unchanged. Bonus stat recalculation is a recorded boundary.

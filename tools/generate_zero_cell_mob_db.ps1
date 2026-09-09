@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  generate_zero_cell_mob_db.ps1
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/generate_zero_cell_mob_db.ps1
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 param(
     [string]$OutputPath = (Join-Path $PSScriptRoot "..\db\import\zero_cell_mob_db.yml")
 )

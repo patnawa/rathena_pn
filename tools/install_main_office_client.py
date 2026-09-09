@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  install_main_office_client.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/install_main_office_client.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Install a verified office GRF, preserving archive priority and a rollback copy."""
 import argparse
 import configparser

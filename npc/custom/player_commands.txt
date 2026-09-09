@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  player_commands.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/player_commands.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // PN player conveniences. Persistent values are owned by this RO account/character.
 // Encoded setting: 0 = inherit/unset, value + 1 = explicitly saved (including off).
 function	script	PN_ApplyPlayerSetting	{

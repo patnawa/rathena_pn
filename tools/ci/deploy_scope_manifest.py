@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  deploy_scope_manifest.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/deploy_scope_manifest.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Emit/verify a scoped textual-source deployment manifest, without writing files.
 
 Creation: deploy_scope_manifest.py create archive.tar.gz BASE_GIT_REF

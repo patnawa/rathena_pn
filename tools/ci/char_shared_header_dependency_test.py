@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  char_shared_header_dependency_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/char_shared_header_dependency_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exercise the real char Makefile's shared-header dependencies with GNU make."""
 import os
 from pathlib import Path

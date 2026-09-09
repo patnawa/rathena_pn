@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  run_native_bonus_vm_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/enchant_target_metadata/run_native_bonus_vm_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Fresh real-VM crown bonus proof; isolated generated artifacts only, no server startup."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor

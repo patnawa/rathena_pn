@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  episode20_21_questinfo_native_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode20_21_questinfo_native_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Actual current NPC parser/registration/click/unload implementation, not a model.
 // World/transport are explicit doubles. First-message termination bounds clicks.
 // Inclusion allows initializing only its private registries, without do_init_npc

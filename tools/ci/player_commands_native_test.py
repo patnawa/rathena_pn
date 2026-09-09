@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  player_commands_native_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/player_commands_native_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exercise actual native self-service command bodies with bounded engine doubles."""
 from pathlib import Path
 import subprocess

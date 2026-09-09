@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  guarded_source_deploy.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/guarded_source_deploy.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Scoped source deployment; plan by default. Does not restart services or edit SQL.
 
 Run only during a maintenance window with the map service stopped. Requires a

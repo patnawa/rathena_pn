@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  build_chapter2_map_patch.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/build_chapter2_map_patch.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Materialize Chapter 2 fallback map names in an offline GRF-v2 artifact.
 
 Uses locally supplied, unencrypted map resources; never downloads or installs

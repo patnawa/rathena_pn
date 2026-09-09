@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  chapter2_gear_client_install_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/chapter2_gear_client_install_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only installed Chapter 2 GRF and six-record itemInfo merge verification.
 
 Compares the exact pre-install loader with the installed loader using real Lua

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode21_finale_flow_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode21_finale_flow_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Extend the native encounter VM with finale dialogue races and party rewards.
 
 Uses production NPC bodies, native script suspension and quest state; map,

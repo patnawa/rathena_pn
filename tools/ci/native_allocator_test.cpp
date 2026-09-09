@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  native_allocator_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/native_allocator_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Standalone allocator regression: compile the ACTUAL current allocator source.
 // No map/common archives, player state, normal server startup, SQL or networking.
 // Only console/version services are replaced. Including the implementation lets

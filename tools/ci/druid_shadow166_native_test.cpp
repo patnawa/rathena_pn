@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  druid_shadow166_native_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_shadow166_native_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // GPL-3.0-or-later. Appended to the existing isolated VM fixture's boundary
 // doubles by druid_shadow166_enchant_test.py. No live player/server/network.
 #include "map/skill.hpp"

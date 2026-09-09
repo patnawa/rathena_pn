@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  RewardClaims.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/chapter1/RewardClaims.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Chapter 1 reward delivery safety.
 // Pending amounts are permanent character variables, so quest advancement or
 // material consumption can never discard these one-time rewards.

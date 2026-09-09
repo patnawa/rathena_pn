@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  legacy_quest_navigation_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/legacy_quest_navigation_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Run the real quest loader and verify the reviewed legacy navigation repairs."""
 import argparse
 import json

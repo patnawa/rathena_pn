@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  chapter2_client_helper_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/chapter2_client_helper_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Execute the real client enchant helper with original, draft and fixed lists.
 
 Requires the matching native Win32 Lua 5.1 runtime. No client files are written.

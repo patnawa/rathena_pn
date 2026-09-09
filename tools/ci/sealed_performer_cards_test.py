@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  sealed_performer_cards_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/sealed_performer_cards_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Execute narrowly translated card expressions, not a full script-VM/combat test."""
 from pathlib import Path
 import re

@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  bonuses.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/rune_tablet/bonuses.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // PN Rune Tablet effects. Reference: reference server Rune_Tablet_System, retrieved 2026-09-08.
 // Stable client set/piece IDs; original implementation of published numeric rules.
 // Hook is unique, survives death/dispel, and is removed on logout then restored.

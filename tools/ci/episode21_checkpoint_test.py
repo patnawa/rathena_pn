@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode21_checkpoint_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode21_checkpoint_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Native episode finale helper: restore only an admitted entrant to safe stages.
 
 Full production helper, control flow and instance-register reads are native.

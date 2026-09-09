@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  AliceTwistedMadness.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/instances/AliceTwistedMadness.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Alice's Twisted Madness: original maze encounter on purpose-built terrain.
 // Daily admission is shared by Normal and Hard. Timed bonus is measured from reservation.
 function	script	F_AliceTravel	{

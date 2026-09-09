@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  quality_services.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/quality_services.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Player diagnostics and private measured-damage lab. No quest bypasses.
 -	script	PN Services	-1,{
 	mes "[PN Services]";

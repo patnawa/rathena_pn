@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  gm_character_setup.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/gm_character_setup.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Opt-in, attached-character-only magic test preset. Never edits SQL or equipment.
 function	script	PN_GMSetup	{
 	mes "[GM Character Setup]";

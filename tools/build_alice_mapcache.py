@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  build_alice_mapcache.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/build_alice_mapcache.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Install the two original Alice GAT grids into a native cache, preserving other records."""
 import argparse
 from pathlib import Path

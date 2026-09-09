@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  ghost_ship_report_claim_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/ghost_ship_report_claim_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Real script-VM proof: a Ghost Ship run supplies one report per character.
 
 Reuses the explicit world/UI boundaries and sanitized build routine of the

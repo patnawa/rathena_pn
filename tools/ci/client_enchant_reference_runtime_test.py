@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  client_enchant_reference_runtime_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/client_enchant_reference_runtime_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Full Lua enchant registration with the supplied 2025 client's slot fallback.
 
 The actual Lua resources execute in Lua 5.1. C registration APIs remain recording

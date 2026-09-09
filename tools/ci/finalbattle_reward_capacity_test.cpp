@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  finalbattle_reward_capacity_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/finalbattle_reward_capacity_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // GPL-3.0-or-later. Appended to the existing crown test's boundary utilities.
 // The only removed prefix wrapper is map_id2nd, replaced by the instance-aware
 // world lookup below. Actual production VM/helper/grants/achievements stay native.

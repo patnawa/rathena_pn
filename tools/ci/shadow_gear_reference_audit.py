@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  shadow_gear_reference_audit.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/shadow_gear_reference_audit.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only Shadow Gear dependency/recipe coverage audit against saved HTML.
 
 This inventories declarations, not gameplay reachability or script equivalence.

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_mentor_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_mentor_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Focused source-driven mentor simulations and effective Fashion DB checks.
 
 Uses the restricted interpreter in episode_party_progression_test. Jobchange and

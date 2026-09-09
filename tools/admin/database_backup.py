@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  database_backup.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/admin/database_backup.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Create a locked, verified MariaDB backup without copying credentials into files.
 
 Run on the Docker host. Restores are restricted to a new networkless container;

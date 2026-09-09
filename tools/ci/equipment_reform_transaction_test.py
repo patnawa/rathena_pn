@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  equipment_reform_transaction_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/equipment_reform_transaction_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compile the production reform handler with deterministic inventory boundaries."""
 from pathlib import Path
 import argparse

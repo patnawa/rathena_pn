@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode20_21_questinfo_native_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode20_21_questinfo_native_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exact relocated declarations through native parser, OnInit, click and unload.
 
 Generated fixtures only. No server, runtime mutation, broad-gate repin, or full

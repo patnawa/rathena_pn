@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  BioresearchLaboratory.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/instances/BioresearchLaboratory.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // EDDA Bioresearch Laboratory. Original encounter dialogue and wave tuning.
 // Both modes share admission quest 16390; reconnects use this live instance's CID roster.
 function	script	F_BioReady	{

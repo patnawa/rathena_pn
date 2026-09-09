@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  skill_supplies_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/skill_supplies_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Generate/check the direct player-skill supply shop against Renewal imports.
 
 Prints source with --emit; does not write files. Crafting recipe ingredients and

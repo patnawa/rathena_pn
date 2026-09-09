@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  player_killcounter_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/player_killcounter_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compile the native persistent kill counter and verify its single death-hook placement."""
 from pathlib import Path
 import subprocess

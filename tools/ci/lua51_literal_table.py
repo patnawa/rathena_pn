@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  lua51_literal_table.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/lua51_literal_table.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read literal tables from a 32-bit Lua 5.1 chunk without executing Lua.
 
 Only straight-line literal construction is accepted. Uncalled, zero-upvalue

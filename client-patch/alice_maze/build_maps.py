@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  build_maps.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/alice_maze/build_maps.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Build original deterministic maze terrain; no installed client or downloads required.
 
 The GND grid uses one cube for each 2x2 GAT cells. Walls rise 18 game units

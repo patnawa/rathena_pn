@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  druid_identity_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_identity_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // Compile against the real shared job, skill, and status definitions.
 #include <cassert>

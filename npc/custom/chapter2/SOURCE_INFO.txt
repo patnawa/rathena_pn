@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  SOURCE_INFO.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/chapter2/SOURCE_INFO.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 Chapter 2 implementation references (checked 2026-09-05):
 
 - https://rockragnarok.com/rockwiki/Chapter_2_-_Song_of_the_World_Tree:_Fragments_of_the_End

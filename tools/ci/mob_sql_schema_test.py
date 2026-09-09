@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  mob_sql_schema_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/mob_sql_schema_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Ensure actual exported monster Attack2 values fit every matching SQL schema."""
 from pathlib import Path
 import re

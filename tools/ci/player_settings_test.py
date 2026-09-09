@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  player_settings_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/player_settings_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Run actual Settings/Killcounter scripts in production VM and real registries.
 
 Linux build objects required. UI and atcommand transport are recorded; this

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  biosphere_callback_closure_audit.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/biosphere_callback_closure_audit.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Fail-closed pin of the reviewed Biosphere crown callback closure.
 
 This is a change detector for a human-reviewed current-content proof, NOT a

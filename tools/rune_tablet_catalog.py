@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  rune_tablet_catalog.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/rune_tablet_catalog.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Non-executing readers for rune client tables and published reference tables."""
 from html.parser import HTMLParser
 import json

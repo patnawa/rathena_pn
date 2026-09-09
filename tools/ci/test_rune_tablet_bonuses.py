@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  test_rune_tablet_bonuses.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/test_rune_tablet_bonuses.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Focused regression checks for tablet threshold math and native proc lifecycle.
 
 Run: python3 tools/ci/test_rune_tablet_bonuses.py

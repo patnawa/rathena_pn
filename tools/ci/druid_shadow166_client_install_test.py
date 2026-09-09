@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_shadow166_client_install_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_shadow166_client_install_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only actual Lua verification of eleven installed Shadow 166 additions.
 
 Requires an explicit pre-install loader backup. This checks the real active

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  run_native_script_vm_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/run_native_script_vm_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Build/run an isolated Linux real-VM proof without launching map-server.
 
 Requires a previously built local Linux map-server object set. The exercised

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  repair_chapter2_walkability.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/repair_chapter2_walkability.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Align twelve reviewed Chapter 2 alias cells with the installed client GAT.
 
 Only the three compatibility aliases are changed; all other records and cells

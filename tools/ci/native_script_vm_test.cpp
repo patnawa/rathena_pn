@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  native_script_vm_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/native_script_vm_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // Isolated real-script-VM proof. Player lookup, network UI, logging, map registry
 // persistence, and event dequeue are explicit doubles. The parser, VM, builtin,

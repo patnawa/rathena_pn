@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  instance_access_manifest_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/instance_access_manifest_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Keep reviewed instance database, enabled scripts and Warper routes connected.
 
 Client asset receipts are installation evidence, not a claim that CI has a client.

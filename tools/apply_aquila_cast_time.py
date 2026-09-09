@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  apply_aquila_cast_time.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/apply_aquila_cast_time.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Patch the two private Aquila AI rows without versioning the private database."""
 import argparse
 from pathlib import Path

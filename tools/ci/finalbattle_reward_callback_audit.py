@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  finalbattle_reward_callback_audit.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/finalbattle_reward_callback_audit.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Fail-closed source/data evidence for the two Final Battle crystal grants.
 
 Requires the separately reviewed broad callback gate. Hashes retain an explicit

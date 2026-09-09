@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  druid_mentor.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/druid_mentor.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 //===== rAthena Script =======================================
 //= Druid Mentor - scoped compatibility job-change service
 //===== Provenance / policy ==================================

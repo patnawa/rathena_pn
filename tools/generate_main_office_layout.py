@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  generate_main_office_layout.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/generate_main_office_layout.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Generate spaced office desks and a directory from verified walkable cells."""
 from collections import deque
 import json

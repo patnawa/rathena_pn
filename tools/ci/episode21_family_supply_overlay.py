@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode21_family_supply_overlay.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode21_family_supply_overlay.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exact, self-contained Family transaction overlay for QuestInfo audits.
 
 The Episode 20/21 QuestInfo migration owns only registration relocation. This

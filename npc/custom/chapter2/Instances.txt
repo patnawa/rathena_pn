@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  Instances.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/chapter2/Instances.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Chapter 2 story and repeatable instances.
 //
 // Native Chapter 2 maps are not publicly extractable from the current Gravity

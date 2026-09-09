@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  aquila_cast_time_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/aquila_cast_time_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Validate the private DB patch and the separate instance warning sequence."""
 import importlib.util
 from pathlib import Path

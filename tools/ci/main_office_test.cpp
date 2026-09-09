@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  main_office_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/main_office_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Appended to the Rune harness helpers; production NPC bodies are unchanged.
 #include "map/skill.hpp"
 #include "map/status.hpp"

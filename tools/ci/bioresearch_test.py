@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  bioresearch_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/bioresearch_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Native EDDA admission, staged encounter, hazards, and atomic reward checks.
 
 Actual NPC/global-function bodies execute in the script VM. Party population,

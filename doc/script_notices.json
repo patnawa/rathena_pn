@@ -1,0 +1,1906 @@
+{
+  "team": "PN Development Team",
+  "source": "https://github.com/patnawa/rathena_pn",
+  "license_scope": "GPL-3.0-or-later for project-written contributions only; retain upstream credits and external rights.",
+  "scripts": [
+    {
+      "path": "client-patch/alice_maze/build_maps.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/biosphere/OngoingQuests_Biosphere.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/biosphere/install_client_patch.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/chapter2/SystemEN/itemInfo_Chapter2.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/chapter2/install_client_patch.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/chapter2/resnametable_chapter2.txt",
+      "notice": "companion",
+      "category": "client data; external rights retained"
+    },
+    {
+      "path": "client-patch/chapter2_native/SystemEN/itemInfo_Chapter2Materials.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/client_compat/SystemEN/itemInfo.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/client_compat/SystemEN/itemInfo_ClientCompat.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/client_compat/assets/tables/num2cardillustnametable.txt",
+      "notice": "companion",
+      "category": "client data; external rights retained"
+    },
+    {
+      "path": "client-patch/client_compat/build_grf.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/client_compat/merge_grfs.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/client_compat/validate.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/client_usability/SystemEN/itemInfo.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/client_usability/tools/client/start-client.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/druid_gear/SystemEN/itemInfo_DruidGear.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/druid_items/SystemEN/itemInfo_DruidItems.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/druid_missing_crowns/SystemEN/itemInfo_DruidMissingCrowns.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/druid_missing_crowns/build.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/druid_missing_crowns/facts.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/druid_missing_crowns/verify_client.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/druid_missing_weapons/SystemEN/itemInfo_DruidMissingWeapons.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/druid_shadow166/SystemEN/itemInfo_DruidShadow166.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_repair/SystemEN/itemInfo.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_repair/SystemEN/itemInfo_EnchantRepair.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_repair/build_grf.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/enchant_repair/source/EnchantList.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_repair/source/ItemDBNameTbl.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_repair/source/LapineUpgradeBox.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_target_metadata/SystemEN/itemInfo_EnchantTargets.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/enchant_target_metadata/effects.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/enchant_target_metadata/native_bonus_vm_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/enchant_target_metadata/run_native_bonus_vm_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/enchant_target_metadata/test_effects.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/enchant_target_metadata/verify.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/fashion_points/SystemEN/LuaFiles514/itemInfo_fashion_points.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/fashion_points/install_client_patch.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/navigation_repair/System/OngoingQuestInfoList.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/navigation_repair/System/OngoingQuestInfoList_True.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/navigation_repair/SystemEN/OngoingQuestInfoList.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/navigation_repair/SystemEN/QuestNavigationRepair.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/navigation_repair/build_grf.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/navigation_repair/navi_f.lub",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/quest_compat/OngoingQuests_Compatibility.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/quest_compat/install_client_patch.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "client-patch/zero_cell/SystemEN/itemInfo_ZeroCell.lua",
+      "notice": "companion",
+      "category": "client payload"
+    },
+    {
+      "path": "client-patch/zero_cell/install_client_patch.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "client tooling"
+    },
+    {
+      "path": "npc/custom/breeder.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/card_remover.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter1/Compatibility.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter1/RewardClaims.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter1/SOURCE_INFO.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter1/Zero_Cell.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter2/Chapter2.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter2/Instances.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter2/Mapflags.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/chapter2/SOURCE_INFO.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/druid_mentor.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/AirshipDestruction.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/BagotLaboratory.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/ConfusedSnakesNest.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/IwinPatrol.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/SOURCE_INFO.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/episode_19.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/mobs_jor_ab.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/mobs_jor_back.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/mobs_jor_dun.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/quests_19.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/warps_icecastle.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/warps_jor_dun.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode19/warps_jor_fild.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode20/Fields.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode20/Instances.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode20/Progression.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode20/SidesAndDailies.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/BlackHairedBeast.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/EquipmentServices.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/FamilyBlessings.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/FamilyReputation.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/FieldMonsters.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/FinalBattle.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/GimliInfiltration.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/MysteriousGhostShip.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/Progression.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/SecretAltar.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/SideDailies.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode21/SilentSanctuary.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/episode_skip_tina.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/fashion_points/FashionEnchant.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/fashion_points/FashionPoints.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/gm_character_setup.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/grademk_equipment_enchants.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/grademk_services.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/healer.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instance_safety_mapflags.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/AirshipCrash.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/AliceTwistedMadness.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/BioresearchLaboratory.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/ConstellationTower.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/FallOfGlastHeim.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/GeffenNightArena.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/HallOfLife.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/LakeOfFire.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/OldGlastHeimBeginner.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/OldGlastHeimChallenge.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/SunkenTower.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/ThanatosTowerMemory.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/instances/TombOfRemorse.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/jobmaster.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/main_office/placements.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/main_office/services.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/moscovia_quest_compat.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/official/GeffenMagicTournament.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/player_commands.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/quality_services.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/rune_tablet/bonuses.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/rune_tablet/data.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/rune_tablet/services.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/shadow_repair.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/skill_supplies.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/stylist.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/varmundt_biosphere.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/varmundt_biosphere_depth.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/varmundt_biosphere_quests.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/custom/warper.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/events/RWC_2012.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/quests/quests_moscovia.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/instances/FridayDungeon.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/instances/PoringVillage.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/instances/SarahAndFenrir.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/instances/TwilightGarden.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/instances/WaveMode.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/mapflag/nobranch.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/mapflag/nomemo.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/mapflag/noteleport.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/mapflag/nowarpto.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/mapflag/partylock.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/mapflag/restricted.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/HorrorToyFactory_merchants.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/InfiniteSpace_merchants.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/bio4_reward.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_edda_half_moon.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_illusion_17_1.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_illusion_dungeons.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_ko.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_mal.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_mora.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_rockridge.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_upg.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/merchants/enchan_verus.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/other/Global_Functions.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/eden/eden_iro.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/garden_of_time.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/quests_15_1.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/quests_16_1.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/quests_16_2.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/quests_18.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/re/quests/quests_malangdo.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/test/native_equip_safety.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "npc/test/pn_lab_lifecycle.txt",
+      "notice": "inline",
+      "comment": "//",
+      "category": "server scripts"
+    },
+    {
+      "path": "tools/admin/database_backup.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/alias_mapcache.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/apply_aquila_cast_time.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/audit_episode_integrity.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/build_alice_mapcache.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/build_main_office.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/airship_briefing_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/alice_database_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/alice_geometry_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/alice_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/aloot_sets_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/aloot_sets_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/aquila_cast_time_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_combat_bindings_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_druid_client.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_druid_client_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_druid_integration.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_druid_integration_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_druid_item_names.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_enchant_upgrades.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_enchant_upgrades_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_initial_enchants.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/audit_initial_enchants_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/battlestats_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/battlestats_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/bioresearch_geometry_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/bioresearch_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_callback_closure_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_conversion_callback_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_conversion_transaction_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_conversion_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_crown_transaction_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_crown_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_document_callback_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_document_exchange_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_document_exchange_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_material_callback_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_material_transaction_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_material_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/biosphere_regression_scope.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/build_chapter2_map_patch.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/build_chapter2_native_patch.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter1_protection_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter1_protection_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter2_client_helper_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter2_current_client_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter2_gear_client_install_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter2_native_patch_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/chapter2_progression_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/char_shared_header_dependency_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/client_archive_stack_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/client_enchant_reference_runtime_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/client_preflight.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/database_backup_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/deploy_scope_manifest.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_gear_enchants_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_identity_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_item_db_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_item_enchant_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_mentor_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_missing_client_install_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_missing_crowns_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_missing_crowns_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_missing_targets_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_missing_weapons_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_missing_weapons_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_monolith_runtime_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_shadow166_client_install_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_shadow166_enchant_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/druid_shadow166_native_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/element_system_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/element_system_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/enchant_probability_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/enchant_upgrade_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode18_gudra_callback_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode18_gudra_transaction_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode18_gudra_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode20_21_questinfo_migration.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode20_21_questinfo_native_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode20_21_questinfo_native_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_checkpoint_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_daily_clock_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_daily_clock_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_encounter_flow_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_family_supply_overlay.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_family_supply_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_family_supply_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode21_finale_flow_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/episode_party_progression_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/equipment_progression_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/equipment_reform_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/equipswitch_deletion_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/equipswitch_deletion_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/finalbattle_reward_callback_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/finalbattle_reward_capacity_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/finalbattle_reward_capacity_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/fly_wing_rental_regression.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/garden_legacy_gate_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/garden_legacy_gate_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/ghost_ship_report_claim_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/gimli_checkpoint_reentry_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/go_routes_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/grade_system_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/grade_system_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/grademk_equipment_service_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/grademk_equipment_service_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/guarded_source_deploy.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/hotfix_bonus_regression.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/immortal_instance_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/instance_access_manifest_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/instance_combat_rules_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/instance_entry_native_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/instance_warper_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/inventory_enchant_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/legacy_quest_navigation_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/lua51_literal_table.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/main_office_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/main_office_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/map_cache_native_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/map_cache_native_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/mob_matk_range_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/mob_sql_schema_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/native_allocator_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/native_script_vm_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/native_shadow_service_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/player_command_permissions_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/player_commands_native_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/player_killcounter_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/player_settings_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/player_settings_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/quality_services_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/refine_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/release_checks.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/release_checks_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/rodex_operation_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/run_native_allocator_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/run_native_script_vm_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/run_native_shadow_service_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/rune_tablet_transaction_test.cpp",
+      "notice": "inline",
+      "comment": "//",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/rune_tablet_transaction_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/scdata_reload_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/sealed_performer_cards_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/shadow_gear_reference_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/shadow_group128_enchant_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/shadow_group128_service_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/skill_supplies_test.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/soul_combo_card_audit.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/status_persistence_integration.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/test_rune_tablet_bonuses.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/ci/test_rune_tablet_catalog.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/docker/builder.sh",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/extract_grf_v3.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/generate_main_office_layout.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/generate_rune_tablet_data.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/generate_zero_cell_mob_db.ps1",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/inspect_mapcache.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/install_main_office_client.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/navigation/register_script_travel.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/repair_chapter2_walkability.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/rune_tablet_catalog.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "development tools"
+    },
+    {
+      "path": "tools/script_notices.py",
+      "notice": "inline",
+      "comment": "#",
+      "category": "source signature"
+    }
+  ]
+}

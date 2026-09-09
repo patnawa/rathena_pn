@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  hotfix_bonus_regression.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/hotfix_bonus_regression.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compile source-extracted bonus expressions, not the server VM or combat engine."""
 import pathlib,re,subprocess,sys,argparse,tempfile
 parser=argparse.ArgumentParser(description=__doc__)

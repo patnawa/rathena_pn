@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  status_persistence_integration.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/status_persistence_integration.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exercise saved-status persistence through a real isolated character server.
 
 This protocol test is restricted to the named internal test service and synthetic

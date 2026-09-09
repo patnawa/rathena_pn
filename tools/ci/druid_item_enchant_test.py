@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_item_enchant_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_item_enchant_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Druid initial-enchant overlay regressions, with optional active-client comparison.
 
 Run with --client and --client-item-names to execute every test. Without those

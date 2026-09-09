@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  player_settings_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/player_settings_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Appended to crown/Rune fixture helpers. Registry/VM are production code;
 // atcommand execution and UI/message transport are recorded boundaries.
 #include "map/mob.hpp"

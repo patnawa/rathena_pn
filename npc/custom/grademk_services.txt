@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  grademk_services.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/grademk_services.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 //===== Custom Grade Workshop Services ========================
 //= Native enchant services, refinement UI, and material dealer.
 //=============================================================

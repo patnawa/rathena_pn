@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  shadow_group128_enchant_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/shadow_group128_enchant_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Standalone group-128 overlay tests; this script does not wire the import.
 
 Pass --client and --client-item-names for pinned client equality, and --native

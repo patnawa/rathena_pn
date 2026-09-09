@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  moscovia_quest_compat.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/moscovia_quest_compat.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Preserve legacy Moscovia quest progress after Episode 19 reused the
 // official 18119-18121 quest-state slots.
 -	script	MoscoviaQuestCompat	-1,{

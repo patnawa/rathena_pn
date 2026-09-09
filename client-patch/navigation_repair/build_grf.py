@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  build_grf.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/navigation_repair/build_grf.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Pack validated navigation tables; generated GRFs are distribution artifacts."""
 import argparse
 from pathlib import Path

@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  chapter2_current_client_audit.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/chapter2_current_client_audit.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only audit of the installed Chapter 2 maps and enchant registration.
 
 Unlike the dated installation receipts, this allows subsequent independent

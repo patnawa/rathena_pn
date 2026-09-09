@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  audit_druid_integration.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/audit_druid_integration.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Check Druid engine/database wiring; not an in-game combat certification.
 
 Requires PyYAML. Optional --compare-ref verifies only job-mask additions changed

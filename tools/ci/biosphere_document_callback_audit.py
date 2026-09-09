@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  biosphere_document_callback_audit.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/biosphere_document_callback_audit.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Reviewed dependency gate for Depth-1 documents -> RepPoints6.
 
 Requires the broad source gate AND the existing ba_in01 material/QuestInfo gate.

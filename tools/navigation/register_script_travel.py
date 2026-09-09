@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  register_script_travel.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/navigation/register_script_travel.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Stage generator-only annotations for literal NPC travel; never edits the input server tree."""
 import pathlib,re,json,argparse
 parser=argparse.ArgumentParser(description=__doc__)

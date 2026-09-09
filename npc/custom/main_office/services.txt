@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  services.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/main_office/services.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // PN Main Office: original service hub using existing server rules.
 // Map assets are aliases of the owner's standard client maps.
 -	script	PN Office Directory	-1,{

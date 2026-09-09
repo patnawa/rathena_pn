@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  episode_skip_tina.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/episode_skip_tina.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Episode clear ticket service based on the public Temporal Tina behavior.
 // Clears story gates only. It intentionally gives no historical EXP or rewards.
 

@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  install_client_patch.ps1
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/chapter2/install_client_patch.ps1
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 param(
     [Parameter(Mandatory = $true)][string]$ClientDataDirectory,
     [string]$BaseResnametable

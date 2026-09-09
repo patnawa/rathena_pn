@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_item_db_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_item_db_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Druid item identity/import and compiled effect-boundary regressions.
 
 Requires Python 3, PyYAML and g++. Item scripts use a deliberately restricted

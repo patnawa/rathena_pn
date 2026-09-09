@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  episode21_daily_clock_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode21_daily_clock_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Appended to the native crown fixture's explicit world/transport boundaries.
 // Real VM, gettimetick/gettime/gettimestr/atoi and native date conversion.
 #include <ctime>

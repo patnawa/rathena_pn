@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  main_office_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/main_office_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Verify Office asset aliases/layout and execute copy/travel rules in native VM."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor

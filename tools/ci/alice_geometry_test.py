@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  alice_geometry_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/alice_geometry_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Validate generated original mazes and exact render/collision agreement."""
 from pathlib import Path
 import importlib.util

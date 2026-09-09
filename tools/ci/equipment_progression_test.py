@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  equipment_progression_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/equipment_progression_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Check effective progression imports, acquisition and matching client recipes.
 
 Requires PyYAML. Runs offline without changing player records or client files.

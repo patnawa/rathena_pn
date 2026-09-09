@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode20_21_questinfo_migration.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode20_21_questinfo_migration.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only, exact Episode20/21 questinfo relocation proposal and verifier.
 
 No runtime application, automatic rebaseline, server action, or native gameplay

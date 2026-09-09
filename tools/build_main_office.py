@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  build_main_office.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/build_main_office.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Build PN office aliases from the owner's extracted, unmodified client maps."""
 import argparse
 import hashlib

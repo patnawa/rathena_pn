@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode_party_progression_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode_party_progression_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Source-driven simulations for three episode NPC party/re-entry regressions.
 
 This is a deliberately small, fail-closed interpreter for the selected NPC bodies,

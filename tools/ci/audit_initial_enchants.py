@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  audit_initial_enchants.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/audit_initial_enchants.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Compare initial enchants, eligibility and resets with explicitly supplied client data.
 
 Reads literal client declarations without executing Lua. This models successful

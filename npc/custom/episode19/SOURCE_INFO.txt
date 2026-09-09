@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  SOURCE_INFO.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/episode19/SOURCE_INFO.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 Episode 19 - Issgard, Land of Snow Flowers
 
 Primary implementation source:

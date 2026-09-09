@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  druid_missing_targets_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/druid_missing_targets_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Target-only overlay preservation and original-client evidence.
 
 This is an effective-data comparison, not native packet charging or gameplay.

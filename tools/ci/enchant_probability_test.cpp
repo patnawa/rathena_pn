@@ -1,3 +1,13 @@
+// ============================================================================
+//  PN  /  DEVELOPMENT TOOLS
+//  enchant_probability_test.cpp
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/enchant_probability_test.cpp
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
 // Exercise the exact normal-enchant/reset helpers used by clif.cpp.
 #include <cstdlib>
 #include <iostream>

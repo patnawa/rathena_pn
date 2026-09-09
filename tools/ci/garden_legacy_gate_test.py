@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  garden_legacy_gate_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/garden_legacy_gate_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Byte-preservation and actual native NPC gate lifecycle regression (Linux/WSL).
 
 Only generated build fixtures are written. This program never installs/rewrites

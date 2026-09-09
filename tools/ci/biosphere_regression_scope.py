@@ -1,3 +1,13 @@
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  biosphere_regression_scope.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/biosphere_regression_scope.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Exact reviewed service-region exceptions for independent regressions.
 
 Never ignore an arbitrary NPC region: excluded bytes must match one of the

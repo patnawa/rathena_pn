@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  biosphere_material_transaction_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/biosphere_material_transaction_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Isolated actual Omega/Ellie material VM proof; no server/network/SQL startup."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor

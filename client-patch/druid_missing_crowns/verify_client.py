@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  CLIENT TOOLING
+#  verify_client.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/client-patch/druid_missing_crowns/verify_client.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Read-only real Lua 5.1 candidate/installed metadata and active GRF asset proof."""
 import argparse
 import base64

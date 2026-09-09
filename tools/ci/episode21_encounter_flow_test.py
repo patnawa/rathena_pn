@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  episode21_encounter_flow_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/episode21_encounter_flow_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Actual isolated script-VM regressions for three enabled Episode 21 scripts.
 
 NPC bodies are extracted without rewriting. Fresh script.cpp, quest.cpp and

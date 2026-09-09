@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  rune_tablet_transaction_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/rune_tablet_transaction_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Run production Rune services in the real isolated Linux script VM.
 
 Requires a built map-server object set. Native pc/script/itemdb are freshly

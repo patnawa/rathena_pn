@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  audit_druid_item_names.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/audit_druid_item_names.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Verify the 31 sourced Druid aliases in the supplied active client and server.
 
 Read-only: defining a missing server item can resolve an old audit finding

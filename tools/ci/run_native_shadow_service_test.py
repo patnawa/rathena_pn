@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+# ============================================================================
+#  PN  /  DEVELOPMENT TOOLS
+#  run_native_shadow_service_test.py
+# ----------------------------------------------------------------------------
+#  Project contributions: (C) 2026 PN Development Team
+#  License for project contributions: GPL-3.0-or-later; see LICENSE.
+#  Source: https://github.com/patnawa/rathena_pn/blob/main/tools/ci/run_native_shadow_service_test.py
+#  Existing upstream authors, notices and other rights are retained.
+# ============================================================================
+
 """Run the production Shadow Gear Enchanter body in an isolated actual script VM.
 
 Fresh script.cpp, malloc.cpp and driver compilation; other existing Linux map
