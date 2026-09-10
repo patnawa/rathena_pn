@@ -196,9 +196,15 @@ function	script	PN_RT_Register	{
 		callfunc "PN_RT_LoadPiece",.@pieces[.@i];
 		.@menu$+=@RT_PieceName$+(#PNRTPiece[.@pieces[.@i]-1263000]?" [registered]":"")+":";
 	}
-	.@pick=select(.@menu$+"Back")-1;
-	if (.@pick>=.@n) return;
-	.@piece=.@pieces[.@pick]; .@p=.@piece-1263000;
+	.@piece=getarg(1,0);
+	if (.@piece) {
+		if (inarray(.@pieces,.@piece)<0) return;
+	} else {
+		.@pick=select(.@menu$+"Back")-1;
+		if (.@pick>=.@n) return;
+		.@piece=.@pieces[.@pick];
+	}
+	.@p=.@piece-1263000;
 	if (#PNRTPiece[.@p]) { mes "Already registered for your account."; next; return; }
 	callfunc "PN_RT_LoadPiece",.@piece;
 	mes "[Register "+@RT_PieceName$+"]";
@@ -390,8 +396,162 @@ function	script	PN_RT_Seal	{
 }
 
 -	script	PN Rune Stone	-1,{
-	callfunc "PN_RT_Service";
-	close;
+    mes "[Rune Tablet System]";
+    switch(select("Open Rune Tablet System:Workshop services:Cancel")) {
+    case 1: close2; runetabletui; end;
+    case 2: clear; callfunc "PN_RT_Service"; close;
+    default: close;
+    }
+
+OnNativeAction:
+    .@command=@PNRTNativeCommand;
+    .@id=@PNRTNativeID;
+    @PNRTNativeCommand=0; @PNRTNativeID=0;
+    if (.@command==3022) {
+        // The client selected a rune piece. Resolve an owning tablet from the catalog.
+        switch (.@id) {
+        case 1263000: callfunc "PN_RT_Register",1260000,.@id; break;
+        case 1263001: callfunc "PN_RT_Register",1260000,.@id; break;
+        case 1263002: callfunc "PN_RT_Register",1260000,.@id; break;
+        case 1263003: callfunc "PN_RT_Register",1260000,.@id; break;
+        case 1263004: callfunc "PN_RT_Register",1260001,.@id; break;
+        case 1263005: callfunc "PN_RT_Register",1260001,.@id; break;
+        case 1263006: callfunc "PN_RT_Register",1260011,.@id; break;
+        case 1263007: callfunc "PN_RT_Register",1260010,.@id; break;
+        case 1263008: callfunc "PN_RT_Register",1260011,.@id; break;
+        case 1263009: callfunc "PN_RT_Register",1260012,.@id; break;
+        case 1263010: callfunc "PN_RT_Register",1260003,.@id; break;
+        case 1263011: callfunc "PN_RT_Register",1260011,.@id; break;
+        case 1263012: callfunc "PN_RT_Register",1260012,.@id; break;
+        case 1263013: callfunc "PN_RT_Register",1260012,.@id; break;
+        case 1263014: callfunc "PN_RT_Register",1260011,.@id; break;
+        case 1263015: callfunc "PN_RT_Register",1260005,.@id; break;
+        case 1263016: callfunc "PN_RT_Register",1260011,.@id; break;
+        case 1263017: callfunc "PN_RT_Register",1260009,.@id; break;
+        case 1263018: callfunc "PN_RT_Register",1260010,.@id; break;
+        case 1263019: callfunc "PN_RT_Register",1260010,.@id; break;
+        case 1263020: callfunc "PN_RT_Register",1260009,.@id; break;
+        case 1263021: callfunc "PN_RT_Register",1260006,.@id; break;
+        case 1263022: callfunc "PN_RT_Register",1260008,.@id; break;
+        case 1263023: callfunc "PN_RT_Register",1260006,.@id; break;
+        case 1263024: callfunc "PN_RT_Register",1260008,.@id; break;
+        case 1263025: callfunc "PN_RT_Register",1260010,.@id; break;
+        case 1263026: callfunc "PN_RT_Register",1260008,.@id; break;
+        case 1263027: callfunc "PN_RT_Register",1260008,.@id; break;
+        case 1263028: callfunc "PN_RT_Register",1260009,.@id; break;
+        case 1263029: callfunc "PN_RT_Register",1260008,.@id; break;
+        case 1263030: callfunc "PN_RT_Register",1260012,.@id; break;
+        case 1263031: callfunc "PN_RT_Register",1260013,.@id; break;
+        case 1263032: callfunc "PN_RT_Register",1260013,.@id; break;
+        case 1263033: callfunc "PN_RT_Register",1260013,.@id; break;
+        case 1263034: callfunc "PN_RT_Register",1260013,.@id; break;
+        case 1263035: callfunc "PN_RT_Register",1260014,.@id; break;
+        case 1263036: callfunc "PN_RT_Register",1260014,.@id; break;
+        case 1263037: callfunc "PN_RT_Register",1260015,.@id; break;
+        case 1263038: callfunc "PN_RT_Register",1260015,.@id; break;
+        case 1263039: callfunc "PN_RT_Register",1260017,.@id; break;
+        case 1263040: callfunc "PN_RT_Register",1260016,.@id; break;
+        case 1263041: callfunc "PN_RT_Register",1260016,.@id; break;
+        case 1263042: callfunc "PN_RT_Register",1260017,.@id; break;
+        case 1263043: callfunc "PN_RT_Register",1260017,.@id; break;
+        case 1263044: callfunc "PN_RT_Register",1260015,.@id; break;
+        case 1263045: callfunc "PN_RT_Register",1260016,.@id; break;
+        case 1263046: callfunc "PN_RT_Register",1260018,.@id; break;
+        case 1263047: callfunc "PN_RT_Register",1260018,.@id; break;
+        case 1263048: callfunc "PN_RT_Register",1260018,.@id; break;
+        case 1263049: callfunc "PN_RT_Register",1260018,.@id; break;
+        case 1263050: callfunc "PN_RT_Register",1260019,.@id; break;
+        case 1263051: callfunc "PN_RT_Register",1260019,.@id; break;
+        case 1263052: callfunc "PN_RT_Register",1260021,.@id; break;
+        case 1263053: callfunc "PN_RT_Register",1260022,.@id; break;
+        case 1263054: callfunc "PN_RT_Register",1260023,.@id; break;
+        case 1263055: callfunc "PN_RT_Register",1260023,.@id; break;
+        case 1263056: callfunc "PN_RT_Register",1260024,.@id; break;
+        case 1263057: callfunc "PN_RT_Register",1260024,.@id; break;
+        case 1263058: callfunc "PN_RT_Register",1260024,.@id; break;
+        case 1263059: callfunc "PN_RT_Register",1260024,.@id; break;
+        case 1263060: callfunc "PN_RT_Register",1260024,.@id; break;
+        case 1263061: callfunc "PN_RT_Register",1260024,.@id; break;
+        case 1263062: callfunc "PN_RT_Register",1260025,.@id; break;
+        case 1263063: callfunc "PN_RT_Register",1260026,.@id; break;
+        case 1263064: callfunc "PN_RT_Register",1260027,.@id; break;
+        case 1263065: callfunc "PN_RT_Register",1260025,.@id; break;
+        case 1263066: callfunc "PN_RT_Register",1260027,.@id; break;
+        case 1263067: callfunc "PN_RT_Register",1260028,.@id; break;
+        case 1263068: callfunc "PN_RT_Register",1260028,.@id; break;
+        case 1263069: callfunc "PN_RT_Register",1260029,.@id; break;
+        case 1263070: callfunc "PN_RT_Register",1260026,.@id; break;
+        case 1263072: callfunc "PN_RT_Register",1260034,.@id; break;
+        case 1263073: callfunc "PN_RT_Register",1260034,.@id; break;
+        case 1263074: callfunc "PN_RT_Register",1260035,.@id; break;
+        case 1263075: callfunc "PN_RT_Register",1260035,.@id; break;
+        case 1263076: callfunc "PN_RT_Register",1260035,.@id; break;
+        case 1263077: callfunc "PN_RT_Register",1260035,.@id; break;
+        case 1263078: callfunc "PN_RT_Register",1260035,.@id; break;
+        case 1263079: callfunc "PN_RT_Register",1260035,.@id; break;
+        case 1263080: callfunc "PN_RT_Register",1260037,.@id; break;
+        case 1263081: callfunc "PN_RT_Register",1260037,.@id; break;
+        case 1263082: callfunc "PN_RT_Register",1260037,.@id; break;
+        case 1263083: callfunc "PN_RT_Register",1260042,.@id; break;
+        case 1263084: callfunc "PN_RT_Register",1260042,.@id; break;
+        case 1263085: callfunc "PN_RT_Register",1260041,.@id; break;
+        case 1263086: callfunc "PN_RT_Register",1260040,.@id; break;
+        case 1263087: callfunc "PN_RT_Register",1260039,.@id; break;
+        case 1263088: callfunc "PN_RT_Register",1260041,.@id; break;
+        case 1263089: callfunc "PN_RT_Register",1260040,.@id; break;
+        case 1263090: callfunc "PN_RT_Register",1260040,.@id; break;
+        case 1263091: callfunc "PN_RT_Register",1260038,.@id; break;
+        case 1263092: callfunc "PN_RT_Register",1260039,.@id; break;
+        case 1263093: callfunc "PN_RT_Register",1260045,.@id; break;
+        case 1263094: callfunc "PN_RT_Register",1260045,.@id; break;
+        case 1263095: callfunc "PN_RT_Register",1260046,.@id; break;
+        case 1263096: callfunc "PN_RT_Register",1260046,.@id; break;
+        case 1263097: callfunc "PN_RT_Register",1260046,.@id; break;
+        case 1263098: callfunc "PN_RT_Register",1260046,.@id; break;
+        case 1263099: callfunc "PN_RT_Register",1260046,.@id; break;
+        case 1263100: callfunc "PN_RT_Register",1260047,.@id; break;
+        case 1263101: callfunc "PN_RT_Register",1260047,.@id; break;
+        case 1263102: callfunc "PN_RT_Register",1260047,.@id; break;
+        case 1263103: callfunc "PN_RT_Register",1260047,.@id; break;
+        case 1263104: callfunc "PN_RT_Register",1260047,.@id; break;
+        case 1263105: callfunc "PN_RT_Register",1260047,.@id; break;
+        case 1263106: callfunc "PN_RT_Register",1260048,.@id; break;
+        case 1263107: callfunc "PN_RT_Register",1260048,.@id; break;
+        case 1263108: callfunc "PN_RT_Register",1260053,.@id; break;
+        case 1263109: callfunc "PN_RT_Register",1260053,.@id; break;
+        case 1263110: callfunc "PN_RT_Register",1260054,.@id; break;
+        case 1263111: callfunc "PN_RT_Register",1260054,.@id; break;
+        case 1263112: callfunc "PN_RT_Register",1260053,.@id; break;
+        case 1263113: callfunc "PN_RT_Register",1260053,.@id; break;
+        case 1263114: callfunc "PN_RT_Register",1260054,.@id; break;
+        case 1263115: callfunc "PN_RT_Register",1260055,.@id; break;
+        case 1263116: callfunc "PN_RT_Register",1260053,.@id; break;
+        case 1263117: callfunc "PN_RT_Register",1260056,.@id; break;
+        case 1263118: callfunc "PN_RT_Register",1260055,.@id; break;
+        case 1263119: callfunc "PN_RT_Register",1260057,.@id; break;
+        case 1263120: callfunc "PN_RT_Register",1260057,.@id; break;
+        default: end;
+        }
+    } else if (.@command==3026) {
+        callfunc "PN_RT_Upgrade",.@id;
+    } else if (.@command==3032) {
+        callfunc "PN_RT_Decompose";
+    } else if (.@command==3094) {
+        callfunc "PN_RT_Claim",.@id;
+    } else if (.@command==3028) {
+        if (PNRTActive) {
+            mes "[Rune Tablet System]";
+            if (select("Unequip active tablet:Cancel")==1) {
+                PNRTActive=0;
+                callfunc "PN_RT_Refresh";
+            }
+        }
+    } else if (.@command==3024 || .@command==3030) {
+        callfunc "PN_RT_SetMenu",.@id;
+    } else end;
+    close2;
+    runetabletui;
+    end;
 }
 
 grademk,46,178,4	duplicate(PN Rune Stone)	Rune Stone#PNWorkshop	4_M_SAGE_C

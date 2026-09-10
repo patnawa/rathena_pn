@@ -25931,3 +25931,5 @@ void do_init_clif(void) {
 void do_final_clif(void) {
 	ers_destroy(delay_clearunit_ers);
 }
+
+#include "pn_rune_ui.hpp"

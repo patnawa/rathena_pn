@@ -12,7 +12,8 @@
 //= Native enchant services, refinement UI, and material dealer.
 //=============================================================
 
-grademk,38,184,4	script	Mad Bunny-LT Enchanter#grademk	4_F_ZONDAGIRL,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Mad Bunny-LT Enchanter#grademk	-1,{
 	mes "[Mad Bunny-LT Enchanter]";
 	mes "I can enchant and improve a Mad Bunny-LT shield.";
 	mes "Bring the shield and the materials shown in the enchant window.";
@@ -46,7 +47,8 @@ OnInit:
 
 grademk,46,184,4	shop	Ore and Material Dealer#grademk	4_F_01,1010:200,1011:1000,984:5000,985:5000,7619:100000,7620:100000,6240:150000,6241:150000,6223:20000,6224:20000,6225:250000,6226:250000,1000331:50000,1000332:50000,1000333:250000,1000334:250000,1000335:350000,1000336:350000,1000368:100000,1000370:100000,1000369:500000,1000371:500000,6635:500000,1000322:5000,1000323:25000,1000325:100000,1000326:100000,1000327:100000,1000328:100000,1000337:250000,1000874:100000,25729:50000,25731:50000
 
-grademk,50,184,4	script	Gambler's Seal Expert#grademk	4_M_ROKI2,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Gambler's Seal Expert#grademk	-1,{
 	mes "[Gambler's Seal Expert]";
 	mes "Gambler's Seal enchants use the Laphine Upgrade window.";
 	mes "Double-click a Loki coin, then select the slotted Korean Gambler's Seal (item 410233).";
@@ -80,7 +82,8 @@ OnInit:
 	end;
 }
 
-grademk,44,184,4	script	Frontier Rune Crown Enchanter#grademk	4_M_REPAIR,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Frontier Rune Crown Enchanter#grademk	-1,{
 	mes "[Frontier Rune Crown Enchanter]";
 	mes "I can enchant Dimension footwear and Frontier / Time Dimension Rune Crowns.";
 	mes "The enchant order is slot 3, slot 2, then slot 1.";
@@ -109,7 +112,8 @@ OnInit:
 	end;
 }
 
-grademk,48,184,4	script	Varmundt Rune Enchanter#grademk	4_M_BARMUND,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Varmundt Rune Enchanter#grademk	-1,{
 	mes "[Varmundt Rune Enchanter]";
 	mes "Choose the Varmundt equipment family you want to enchant.";
 	mes "Original equipment and evolved Rune equipment use separate tables.";
@@ -133,7 +137,8 @@ OnInit:
 	end;
 }
 
-grademk,36,184,4	script	Constellation Enchanter#grademk	4_M_ALCHE_A,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Constellation Enchanter#grademk	-1,{
 	mes "[Constellation Enchanter]";
 	mes "I handle Constellation Tower armor and Star Signet enchants.";
 	mes "Armor must satisfy the refine requirement shown by the client.";
@@ -240,7 +245,8 @@ OnInit:
 }
 
 // Clear floor below the service counters; (40,184) is a blocked wall tile.
-grademk,40,180,4	script	Shadow Gear Enchanter#grademk	4_M_REPAIR,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Shadow Gear Enchanter#grademk	-1,{
 	mes "[Shadow Gear Enchanter]";
 	mes "I enchant Full Power, Full Rate and Full Spell Shadow armor and shoes.";
 	mes "I also handle Focusing, Stout, Centering and Witty Shadow pendants and earrings.";
@@ -276,7 +282,8 @@ OnInit:
 	end;
 }
 
-grademk,32,184,4	script	Lake of Fire Enchanter#grademk	4_F_01,{
+// Grade MK entry moved to Equipment Enchanter; retain duplicate template.
+-	script	Lake of Fire Enchanter#grademk	-1,{
 	mes "[Lake of Fire Enchanter]";
 	mes "I handle all four seasonal Divine Beast Cloaks, Circles of Life, and seasonal Signets.";
 	next;

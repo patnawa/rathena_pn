@@ -10,7 +10,7 @@
 
 // Shadow enchant supplies and recycling. Wiki prices; crates yield 20 Shadow.
 // Native Laphine performs the equipment mutation after a book is used.
-grademk,26,184,4	script	Rayja#EnchantRepair	4_F_01,{
+grademk,26,180,4	script	Rayja#EnchantRepair	4_F_01,{
 	mes "[Rayja]";
 	mes "I sell Shadow enchant books and exchange Shadow materials.";
 	switch(select("Enchant books:Shadow materials:Recycle equipped Shadow gear:Leave")) {

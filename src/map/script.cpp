@@ -27831,6 +27831,13 @@ BUILDIN_FUNC( open_quest_ui ){
 #endif
 }
 
+BUILDIN_FUNC(runetabletui) {
+    map_session_data* sd;
+    if (!script_rid2sd(sd)) return SCRIPT_CMD_FAILURE;
+    clif_rune_ui_open(*sd);
+    return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(openbank){
 #if PACKETVER < 20151202
 	ShowError( "buildin_openbank: This command requires PACKETVER 20151202 or newer.\n" );
@@ -29412,6 +29419,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(laphine_upgrade, ""),
 	BUILDIN_DEF(randomoptgroup,"i"),
 	BUILDIN_DEF(open_quest_ui, "??"),
+	BUILDIN_DEF(runetabletui,""),
 	BUILDIN_DEF(openbank,"?"),
 	BUILDIN_DEF(getbaseexp_ratio, "i??"),
 	BUILDIN_DEF(getjobexp_ratio, "i??"),

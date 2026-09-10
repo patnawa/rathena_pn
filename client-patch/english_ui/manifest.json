@@ -1,0 +1,194 @@
+[
+  {
+    "path": "System/LuaFiles514/MsgString.lub",
+    "sha256": "5b8c4aa8b6effb57a3156b36ee600b142a20eadd5bf63d2565fbae8f1fc49eea"
+  },
+  {
+    "path": "System/MsgString.lub",
+    "sha256": "30a6d693f167e48f9ceee20e7ec95c1cc7fd71461c0d480c50e83a716ba4720f"
+  },
+  {
+    "path": "System/QuestClassificationInfo.lub",
+    "sha256": "6ae42763d2d7713ea3a1fafaa6fa88d13d7be09799f9cc7186f051f220ccc54e"
+  },
+  {
+    "path": "System/RecommendedQuestInfoList.lub",
+    "sha256": "8f823a0914b543c61481dcfdbf2819ad5270d9c33610433c44ca55bb51f9f8c6"
+  },
+  {
+    "path": "System/RecommendedQuestInfoList_True.lub",
+    "sha256": "3cce3ac8b726cb0ebf765d65a9ee34bbfa6d62c6d9a5688255a7943ab064102c"
+  },
+  {
+    "path": "System/Rune/rune_desc.lub",
+    "sha256": "7b75d275524ebc9b601a27b7aeb63798589b7d9d308183caec2c46603d4723ad"
+  },
+  {
+    "path": "System/Rune/runeset_desc.lub",
+    "sha256": "fdbf2bf152d84ebe5985e5aeee44a2f155777092beae0345aa33f6f3e4fa5a92"
+  },
+  {
+    "path": "System/Rune/runesystemInfo.lub",
+    "sha256": "89493c1c7bb68777c0ebcf4fa26fc02fbfd2324929e5a3378aa2359fe3b5e5f3"
+  },
+  {
+    "path": "System/Towninfo.lub",
+    "sha256": "79879fe85f914c2b24517416e22b951fda78ebf5be7441679d62d4e43925db24"
+  },
+  {
+    "path": "System/achievement_list.lub",
+    "sha256": "adb74c974fdee2857dee1740f64cd79304d6e45578763ba7427e1ad4d74da527"
+  },
+  {
+    "path": "System/mapInfo_true.lub",
+    "sha256": "b3f24eb887677a2ba5efcabb24d86ac932bc1eb9e56ee38d818ce1f273eac10f"
+  },
+  {
+    "path": "System/spopup.lub",
+    "sha256": "2c4029507d1867c29d39243cdb3240f73b1df2276021e6374cac687041b3a1f4"
+  },
+  {
+    "path": "System/tipbox.lub",
+    "sha256": "ed49bc46c89256bdbed6125abd702dd271282ed6714309c046dac75238b48861"
+  },
+  {
+    "path": "SystemEN/LuaFiles514/MsgString.lub",
+    "sha256": "5b8c4aa8b6effb57a3156b36ee600b142a20eadd5bf63d2565fbae8f1fc49eea"
+  },
+  {
+    "path": "SystemEN/MsgString.lub",
+    "sha256": "30a6d693f167e48f9ceee20e7ec95c1cc7fd71461c0d480c50e83a716ba4720f"
+  },
+  {
+    "path": "SystemEN/RecommendedQuestInfoList.lub",
+    "sha256": "8f823a0914b543c61481dcfdbf2819ad5270d9c33610433c44ca55bb51f9f8c6"
+  },
+  {
+    "path": "SystemEN/Rune/rune_desc.lub",
+    "sha256": "7b75d275524ebc9b601a27b7aeb63798589b7d9d308183caec2c46603d4723ad"
+  },
+  {
+    "path": "SystemEN/Rune/runeset_desc.lub",
+    "sha256": "fdbf2bf152d84ebe5985e5aeee44a2f155777092beae0345aa33f6f3e4fa5a92"
+  },
+  {
+    "path": "SystemEN/Rune/runesystemInfo.lub",
+    "sha256": "89493c1c7bb68777c0ebcf4fa26fc02fbfd2324929e5a3378aa2359fe3b5e5f3"
+  },
+  {
+    "path": "data/System/LuaFiles514/MsgString.lub",
+    "sha256": "5b8c4aa8b6effb57a3156b36ee600b142a20eadd5bf63d2565fbae8f1fc49eea"
+  },
+  {
+    "path": "data/System/MsgString.lub",
+    "sha256": "30a6d693f167e48f9ceee20e7ec95c1cc7fd71461c0d480c50e83a716ba4720f"
+  },
+  {
+    "path": "data/System/QuestClassificationInfo.lub",
+    "sha256": "6ae42763d2d7713ea3a1fafaa6fa88d13d7be09799f9cc7186f051f220ccc54e"
+  },
+  {
+    "path": "data/System/RecommendedQuestInfoList.lub",
+    "sha256": "8f823a0914b543c61481dcfdbf2819ad5270d9c33610433c44ca55bb51f9f8c6"
+  },
+  {
+    "path": "data/System/RecommendedQuestInfoList_True.lub",
+    "sha256": "3cce3ac8b726cb0ebf765d65a9ee34bbfa6d62c6d9a5688255a7943ab064102c"
+  },
+  {
+    "path": "data/System/Rune/rune_desc.lub",
+    "sha256": "7b75d275524ebc9b601a27b7aeb63798589b7d9d308183caec2c46603d4723ad"
+  },
+  {
+    "path": "data/System/Rune/runeset_desc.lub",
+    "sha256": "fdbf2bf152d84ebe5985e5aeee44a2f155777092beae0345aa33f6f3e4fa5a92"
+  },
+  {
+    "path": "data/System/Rune/runesystemInfo.lub",
+    "sha256": "89493c1c7bb68777c0ebcf4fa26fc02fbfd2324929e5a3378aa2359fe3b5e5f3"
+  },
+  {
+    "path": "data/System/Towninfo.lub",
+    "sha256": "79879fe85f914c2b24517416e22b951fda78ebf5be7441679d62d4e43925db24"
+  },
+  {
+    "path": "data/System/achievement_list.lub",
+    "sha256": "adb74c974fdee2857dee1740f64cd79304d6e45578763ba7427e1ad4d74da527"
+  },
+  {
+    "path": "data/System/mapInfo_true.lub",
+    "sha256": "b3f24eb887677a2ba5efcabb24d86ac932bc1eb9e56ee38d818ce1f273eac10f"
+  },
+  {
+    "path": "data/System/spopup.lub",
+    "sha256": "2c4029507d1867c29d39243cdb3240f73b1df2276021e6374cac687041b3a1f4"
+  },
+  {
+    "path": "data/System/tipbox.lub",
+    "sha256": "ed49bc46c89256bdbed6125abd702dd271282ed6714309c046dac75238b48861"
+  },
+  {
+    "path": "data/SystemEN/LuaFiles514/MsgString.lub",
+    "sha256": "5b8c4aa8b6effb57a3156b36ee600b142a20eadd5bf63d2565fbae8f1fc49eea"
+  },
+  {
+    "path": "data/SystemEN/MsgString.lub",
+    "sha256": "30a6d693f167e48f9ceee20e7ec95c1cc7fd71461c0d480c50e83a716ba4720f"
+  },
+  {
+    "path": "data/SystemEN/RecommendedQuestInfoList.lub",
+    "sha256": "8f823a0914b543c61481dcfdbf2819ad5270d9c33610433c44ca55bb51f9f8c6"
+  },
+  {
+    "path": "data/SystemEN/Rune/rune_desc.lub",
+    "sha256": "7b75d275524ebc9b601a27b7aeb63798589b7d9d308183caec2c46603d4723ad"
+  },
+  {
+    "path": "data/SystemEN/Rune/runeset_desc.lub",
+    "sha256": "fdbf2bf152d84ebe5985e5aeee44a2f155777092beae0345aa33f6f3e4fa5a92"
+  },
+  {
+    "path": "data/SystemEN/Rune/runesystemInfo.lub",
+    "sha256": "89493c1c7bb68777c0ebcf4fa26fc02fbfd2324929e5a3378aa2359fe3b5e5f3"
+  },
+  {
+    "path": "data/luafiles514/lua files/msgstring_kr.lub",
+    "sha256": "21edad936d4aea4680987540df5202743ed07580f5a6bf8e40da5ae80edf2ca9"
+  },
+  {
+    "path": "data/luafiles514/lua files/msgstring_kr_s.lub",
+    "sha256": "21edad936d4aea4680987540df5202743ed07580f5a6bf8e40da5ae80edf2ca9"
+  },
+  {
+    "path": "data/msgstringtable.csv",
+    "sha256": "4c89f3d52725932f55742fdc415025e751d3cd998bf1d8c844816e5e6896bc58"
+  },
+  {
+    "path": "data/msgstringtable.txt",
+    "sha256": "29a644ed4b73732fe2a21ff90b418643194723287fb077b805860f3db9f5e85a"
+  },
+  {
+    "path": "data/texture/유저인터페이스/login_interface/warning.bmp",
+    "sha256": "83923b2453e7485f7db478828df295de19fe24a860307e464fcc2cf54366f954"
+  },
+  {
+    "path": "data/texture/유저인터페이스/login_interface/warning2.bmp",
+    "sha256": "83923b2453e7485f7db478828df295de19fe24a860307e464fcc2cf54366f954"
+  },
+  {
+    "path": "data/texture/유저인터페이스/login_interface/warning3.bmp",
+    "sha256": "0ccda5c4803f2ab133956ef1cf9b9684388cd7f6bbbee5e4363d3459f7362638"
+  },
+  {
+    "path": "data/texture/유저인터페이스/runesystem/runesystam_tab_0.bmp",
+    "sha256": "e3bcc3b88bb378df0a52a3062bb86bf7aff6cad5deba8c8de70a6e3bd0b12d5a"
+  },
+  {
+    "path": "data/texture/유저인터페이스/runesystem/runesystam_tab_1.bmp",
+    "sha256": "aa659c80b63d9ebe389f17de182a0b72aa61d004a2dd9e164fcf4267d6871f3e"
+  },
+  {
+    "path": "data/texture/유저인터페이스/runesystem/runesystam_tab_2.bmp",
+    "sha256": "2ff4269445795a7f3b1880697798e26960cd0440ee1f3f665e609db11cc0ae48"
+  }
+]

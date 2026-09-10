@@ -2056,4 +2056,19 @@
 	parseable_packet( HEADER_CZ_MOVE_ITEM_TO_PERSONAL, sizeof( PACKET_CZ_MOVE_ITEM_TO_PERSONAL ), clif_parse_MoveFromKafraFav, 0 );
 #endif
 
+#if PACKETVER_MAIN_NUM >= 20230802
+    packet(0x0bdf,3);
+    packet(0x0be1,3);
+    parseable_packet(0x0be0,3,clif_parse_rune_ui,0);
+    parseable_packet(0x0bcb,4,clif_parse_rune_list,0);
+    parseable_packet(0x0bce,8,clif_parse_rune_action,0);
+    parseable_packet(0x0bd0,8,clif_parse_rune_action,0);
+    parseable_packet(0x0bd2,8,clif_parse_rune_action,0);
+    parseable_packet(0x0bd4,2,clif_parse_rune_action,0);
+    parseable_packet(0x0bd6,8,clif_parse_rune_action,0);
+    parseable_packet(0x0bd8,14,clif_parse_rune_action,0);
+#endif
+#if PACKETVER_MAIN_NUM >= 20241016
+    parseable_packet(0x0c16,9,clif_parse_rune_action,0);
+#endif
 #endif /* CLIF_PACKETDB_HPP */

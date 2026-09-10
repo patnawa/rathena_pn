@@ -13,7 +13,126 @@
 //= No equipment/material grants or script-side charges.
 //=============================================================
 
+// All Grade MK gear enchant services share this counter.
 grademk,28,184,4	script	Equipment Enchanter#grademk	4_M_REPAIR,{
+L_Main:
+	mes "[Equipment Enchanter]";
+	mes "Choose the equipment you want to enchant.";
+	mes "The enchant window shows eligible equipment, materials and costs.";
+	next;
+	switch (select("Episode 19 Equipment:Flush Weapons:Furious Equipment:Good and Evil Equipment:Grey Wolf Equipment:Helm of Faith:Hero's Boots-LT:Heroic Badge:Mad Bunny:Master Shadow Gear:Muqaddas:Nebula Armors:Officer's Hat-LT:OSAD Weapons:Poring Family Balloons:Sky/Stardust Rune Crowns:Stellar Seals:Thanatos Equipment:Time Gap Weapons:Trait-Enhanced Shadow Gear:Varmund Base Equipment:Varmund Upped Equipment:Young Leaf of World Tree:More enchant services:Cancel")) {
+	case 1: goto L_Family1;
+	case 2: .@enchant_id = 63; goto L_OpenEnchant;
+	case 3: goto L_Family3;
+	case 4: goto L_Family4;
+	case 5: goto L_Family5;
+	case 6: .@enchant_id = 25; goto L_OpenEnchant;
+	case 7: .@enchant_id = 21; goto L_OpenEnchant;
+	case 8: .@enchant_id = 20; goto L_OpenEnchant;
+	case 9: .@enchant_id = 15; goto L_OpenEnchant;
+	case 10: goto L_Family10;
+	case 11: .@enchant_id = 64; goto L_OpenEnchant;
+	case 12: goto L_Family12;
+	case 13: .@enchant_id = 103; goto L_OpenEnchant;
+	case 14: .@enchant_id = 33; goto L_OpenEnchant;
+	case 15: .@enchant_id = 22; goto L_OpenEnchant;
+	case 16: .@enchant_id = 165; goto L_OpenEnchant;
+	case 17: goto L_Stellar;
+	case 18: .@enchant_id = 32; goto L_OpenEnchant;
+	case 19: .@enchant_id = 150; goto L_OpenEnchant;
+	case 20: .@enchant_id = 128; goto L_OpenEnchant;
+	case 21: goto L_Family21;
+	case 22: goto L_Family22;
+	case 23: .@enchant_id = 23; goto L_OpenEnchant;
+	case 24: goto L_More;
+	default: close;
+	}
+
+L_Family1:
+	.@choice = select("Snow Flower armor:Snow Flower garments:Snow Flower footwear:Snow Flower pendant / necklace:Snow Flower ring / earring:Glacier weapons:Back");
+	if (.@choice < 1 || .@choice > 6) goto L_Main;
+	setarray .@groups[1],26,27,28,29,30,31;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family3:
+	.@choice = select("Weapons:Crowns:Boots:Back");
+	if (.@choice < 1 || .@choice > 3) goto L_Main;
+	setarray .@groups[1],147,148,149;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family4:
+	.@choice = select("Good weapons:Evil weapons:Circlets:Cardinal boots:Inquisitor boots:Soul Ascetic boots:Biolo boots:Dragon Knight boots:Spirit Handler boots:Elemental Master boots:Windhawk boots:Sky Emperor boots:Meister boots:Shadow Cross boots:Shinkiro / Shiranui boots:Abyss Chaser boots:Troubadour / Trouvere boots:Hyper Novice boots:Imperial Guard boots:Arch Mage boots:Night Watch boots:Back");
+	if (.@choice < 1 || .@choice > 21) goto L_Main;
+	setarray .@groups[1],65,66,67,106,107,108,109,110,111,114,115,116,125,126,127,129,130,131,134,135,136;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family5:
+	.@choice = select("Armor - random enchants:Garments - random enchants:Footwear - random enchants:Pendant / earring - random enchants:Ring / necklace - random enchants:Armor - guaranteed enchants:Garments - guaranteed enchants:Footwear - guaranteed enchants:Pendant / earring - guaranteed enchants:Ring / necklace - guaranteed enchants:Back");
+	if (.@choice < 1 || .@choice > 10) goto L_Main;
+	setarray .@groups[1],1,2,3,4,5,137,138,139,140,141;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family10:
+	.@choice = select("Weapon / Shield:Dragon Knight:Imperial Guard:Shadow Cross:Abyss Chaser:Cardinal:Inquisitor:Meister:Biolo:Windhawk:Troubadour / Trouvere:Arch Mage:Elemental Master:Night Watch:Spirit Handler:Shinkiro / Shiranui:Sky Emperor:Soul Ascetic:Hyper Novice:Back");
+	if (.@choice < 1 || .@choice > 19) goto L_Main;
+	setarray .@groups[1],70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family12:
+	.@choice = select("Power Armor:Stamina Armor:Concentration Suit:Creative Suit:Spell Robe:Wisdom Robe:Back");
+	if (.@choice < 1 || .@choice > 6) goto L_Main;
+	setarray .@groups[1],7,8,9,10,11,12;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family21:
+	.@choice = select("Glade / Plain:Flame:Ice:Death:Soul Ring:Venom Ring:Temple Ring:Back");
+	if (.@choice < 1 || .@choice > 7) goto L_Main;
+	setarray .@groups[1],16,17,18,19,57,58,59;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_Family22:
+	.@choice = select("Glade / Plain Rune:Flame Rune:Ice Rune:Death Rune:Soul Rune Rings:Venom Rune Rings:Temple Rune Rings:Flame Earth Rune armor:Ice Storm Rune suits:Soul Purification Rune robes:Corrupt Poison Rune clothes:Back");
+	if (.@choice < 1 || .@choice > 11) goto L_Main;
+	setarray .@groups[1],52,53,54,55,60,61,62,99,100,101,102;
+	.@enchant_id = .@groups[.@choice];
+	goto L_OpenEnchant;
+
+L_OpenEnchant:
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
+L_Stellar:
+	.@choice = select("Enchant Stellar Seals:Upgrade Star of Spell Lv3-5:Back");
+	if (.@choice == 3) goto L_Main;
+	if (.@choice == 2) goto L_UpgradeStarSpell;
+	.@enchant_id = 13;
+	goto L_OpenEnchant;
+
+L_More:
+	mes "[Equipment Enchanter]";
+	mes "Choose your equipment enchant service.";
+	next;
+	switch (select("Equipment families:Mad Bunny-LT:Gambler's Seal help:Frontier Rune Crown:Varmundt Rune:Constellation:Shadow Gear:Lake of Fire:Cancel")) {
+	case 1: goto L_Equipment;
+	case 2: goto L_Service1;
+	case 3: goto L_Service2;
+	case 4: goto L_Service3;
+	case 5: goto L_Service4;
+	case 6: goto L_Service5;
+	case 7: goto L_Service6;
+	case 8: goto L_Service7;
+	default: close;
+	}
+
+L_Equipment:
 	mes "[Equipment Enchanter]";
 	mes "This custom workshop menu opens existing equipment enchant services.";
 	mes "Choose an equipment family, then review its requirements and costs in the enchant window before confirming.";
@@ -26,7 +145,245 @@ grademk,28,184,4	script	Equipment Enchanter#grademk	4_M_REPAIR,{
 	item_enchant(.@group[.@choice]);
 	end;
 
+L_Service1:
+	mes "[Mad Bunny-LT Enchanter]";
+	mes "I can enchant and improve a Mad Bunny-LT shield.";
+	mes "Bring the shield and the materials shown in the enchant window.";
+	next;
+	if (select("Open Mad Bunny-LT Enchant:Cancel") == 2)
+		close;
+	close2;
+	item_enchant(15);
+	end;
+
+L_Service2:
+	mes "[Gambler's Seal Expert]";
+	mes "Gambler's Seal enchants use the Laphine Upgrade window.";
+	mes "Double-click a Loki coin, then select the slotted Korean Gambler's Seal (item 410233).";
+	next;
+	mes "[Gambler's Seal Expert]";
+	mes "Supported coins:";
+	mes "^4D4DFF102278^000000 - Melee";
+	mes "^4D4DFF100487^000000 - Magic";
+	mes "^4D4DFF102343^000000 - Ranged";
+	mes "^4D4DFF102676^000000 - Defensive";
+	next;
+	mes "[Gambler's Seal Expert]";
+	if (countitem(410233))
+		mes "You have ^008800" + countitem(410233) + " compatible seal(s)^000000 in your inventory.";
+	else {
+		mes "You do not have item ^FF0000410233^000000 in your inventory.";
+		if (countitem(5918) || countitem(410004) || countitem(410232))
+			mes "Your other Gambler's Seal version is not a valid target for these Loki coins.";
+	}
+	next;
+	mes "[Gambler's Seal Expert]";
+	mes "Ace cards in Mouth use Loki's Advice:";
+	mes "^4D4DFF420210 + 102277^000000 - Hearts / Melee";
+	mes "^4D4DFF420213 + 100488^000000 - Spades / Magic";
+	mes "^4D4DFF420220 + 102342^000000 - Diamonds / Ranged";
+	mes "^4D4DFF420269 + 102677^000000 - Clovers / Defense";
+	close;
+
+L_Service3:
+	mes "[Frontier Rune Crown Enchanter]";
+	mes "I can enchant Dimension footwear and Frontier / Time Dimension Rune Crowns.";
+	mes "The enchant order is slot 3, slot 2, then slot 1.";
+	next;
+	mes "[Frontier Rune Crown Enchanter]";
+	mes "Random enchants use Frontier runes and stones.";
+	mes "The enchant window offers the configured crown jewel upgrades and material costs.";
+	next;
+	.@choice = select("Dimension Footwear:Frontier / Time Rune Crown:Cancel");
+	if (.@choice == 3)
+		close;
+	if (.@choice == 2 && get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2) < 1500) {
+		mes "Crown enchanting requires 1,500 Varmundt Depth 2 reputation.";
+		close;
+	}
+	close2;
+	if (.@choice == 2 && get_reputation_points(REPUTATION_BIOSPHERE_DEPTH2) < 1500) {
+		dispbottom "Crown enchanting requires 1,500 Varmundt Depth 2 reputation.";
+		end;
+	}
+	item_enchant((.@choice == 1) ? 163 : 164);
+	end;
+
+L_Service4:
+	mes "[Varmundt Rune Enchanter]";
+	mes "Choose the Varmundt equipment family you want to enchant.";
+	mes "Original equipment and evolved Rune equipment use separate tables.";
+	next;
+	.@tier = select("Original Varmundt Equipment:Evolved Rune Equipment:Cancel");
+	if (.@tier == 3)
+		close;
+	.@element = select("Glade / Plain:Flame:Ice:Death:Cancel");
+	if (.@element == 5)
+		close;
+	if (.@tier == 1)
+		.@enchant_id = 15 + .@element;
+	else
+		.@enchant_id = 51 + .@element;
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
+L_Service5:
+	mes "[Constellation Enchanter]";
+	mes "I handle Constellation Tower armor and Star Signet enchants.";
+	mes "Armor must satisfy the refine requirement shown by the client.";
+	next;
+	.@choice = select("Power Armor:Stamina Armor:Concentration Suit:Creative Suit:Spell Robe:Wisdom Robe:Star Signets:Upgrade Star of Spell Lv3-5:Cancel");
+	if (.@choice == 9)
+		close;
+	if (.@choice == 8)
+		goto L_UpgradeStarSpell;
+	.@enchant_id = 6 + .@choice;
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
+L_UpgradeStarSpell:
+	getinventorylist;
+	.@menu$ = "";
+	.@count = 0;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_id[.@i] != 490136 || @inventorylist_equip[.@i] != 0 || @inventorylist_expire[.@i] != 0)
+			continue;
+		for (.@slot = 2; .@slot <= 3; ++.@slot) {
+			.@enchant = (.@slot == 2) ? @inventorylist_card3[.@i] : @inventorylist_card4[.@i];
+			if (.@enchant != 310709 && .@enchant != 310710)
+				continue;
+			// Keep a private snapshot across both menu/confirmation yields.
+			.@invpos[.@count] = @inventorylist_idx[.@i];
+			.@unique_id$[.@count] = @inventorylist_uniqueid$[.@i];
+			.@card0[.@count] = @inventorylist_card1[.@i];
+			.@card1[.@count] = @inventorylist_card2[.@i];
+			.@card2[.@count] = @inventorylist_card3[.@i];
+			.@card3[.@count] = @inventorylist_card4[.@i];
+			.@slots[.@count] = .@slot;
+			.@levels[.@count] = .@enchant - 310706;
+			.@menu$ += sprintf("Star of Spell Lv%d -> Lv%d (enchant slot %d):", .@levels[.@count], .@levels[.@count] + 1, .@slot);
+			++.@count;
+		}
+	}
+	if (.@count == 0) {
+		mes "[Constellation Enchanter]";
+		mes "I could not find an unequipped Star Signet containing Star of Spell Lv3 or Lv4.";
+		close;
+	}
+	.@pick = select(.@menu$ + "Cancel") - 1;
+	if (.@pick == .@count)
+		close;
+	.@index = .@invpos[.@pick];
+	.@slot = .@slots[.@pick];
+	.@level = .@levels[.@pick];
+	if (.@slot == 3 && .@level == 3) {
+		.@price = 15000000;
+		setarray .@need[0],10,7,7,7,7,7;
+	} else if (.@slot == 3 && .@level == 4) {
+		.@price = 20000000;
+		setarray .@need[0],15,10,10,10,10,10;
+	} else if (.@slot == 2 && .@level == 3) {
+		.@price = 17500000;
+		setarray .@need[0],12,9,9,9,9,9;
+	} else {
+		.@price = 25000000;
+		setarray .@need[0],18,12,12,12,12,12;
+	}
+	setarray .@material[0],1002139,1002137,1002143,1002144,1002145,1002146;
+	mes "[Constellation Enchanter]";
+	mes sprintf("Star of Spell Lv%d -> Lv%d", .@level, .@level + 1);
+	mes sprintf("Cost: %s Zeny", callfunc("F_InsertComma", .@price));
+	for (.@j = 0; .@j < 6; ++.@j)
+		mes sprintf("%s: %d/%d", getitemname(.@material[.@j]), countitem(.@material[.@j]), .@need[.@j]);
+	next;
+	if (select("Upgrade:Cancel") == 2)
+		close;
+	if (Zeny < .@price) {
+		mes "[Constellation Enchanter]";
+		mes "You do not have enough Zeny.";
+		close;
+	}
+	for (.@j = 0; .@j < 6; ++.@j) {
+		if (countitem(.@material[.@j]) < .@need[.@j]) {
+			mes "[Constellation Enchanter]";
+			mes sprintf("You need %d %s.", .@need[.@j], getitemname(.@material[.@j]));
+			close;
+		}
+	}
+	// Validate and mutate before charging; there must be no yield from the
+	// material checks above through the deductions below.
+	if (!modifyinventoryenchant(.@index,490136,.@unique_id$[.@pick],
+		.@card0[.@pick],.@card1[.@pick],.@card2[.@pick],.@card3[.@pick],
+		.@slot,310707 + .@level)) {
+		mes "[Constellation Enchanter]";
+		mes "The selected item changed or is no longer available. Nothing was charged. Please select it again.";
+		close;
+	}
+	Zeny -= .@price;
+	for (.@j = 0; .@j < 6; ++.@j)
+		delitem .@material[.@j],.@need[.@j];
+	specialeffect2 EF_SUCCESSPOISON;
+	mes "[Constellation Enchanter]";
+	mes sprintf("Upgrade complete: Star of Spell Lv%d.", .@level + 1);
+	close;
+
+L_Service6:
+	mes "[Shadow Gear Enchanter]";
+	mes "I enchant Full Power, Full Rate and Full Spell Shadow armor and shoes.";
+	mes "I also handle Focusing, Stout, Centering and Witty Shadow pendants and earrings.";
+	mes "M. Alitea and Master Shadow equipment have separate enchant menus.";
+	next;
+	mes "[Shadow Gear Enchanter]";
+	mes "Bring your equipment and Shadow Enchant Essence. The window shows the exact costs.";
+	mes "Regular Shadow upgrades may retain or lower the enchant level. These services have no reset.";
+	mes "Alitea equipment receives two ordered, selectable enchants; each requires Essence.";
+	next;
+	.@service = select("Open Shadow Enchant:Cancel:M. Alitea Shadow Enchant:Master class enchants");
+	if (.@service == 2)
+		close;
+	if (.@service == 4) {
+		// Ordered whitelist maps exactly to existing native groups 70 through 88.
+		.@master = select("Master Weapon / Shield:Dragon Knight:Imperial Guard:Shadow Cross:Abyss Chaser:Cardinal:Inquisitor:Meister:Biolo:Windhawk:Troubadour / Trouvere:Arch Mage:Elemental Master:Night Watch:Spirit Handler:Shinkiro / Shiranui:Sky Emperor:Soul Ascetic:Hyper Novice:Cancel");
+		if (.@master < 1 || .@master > 19)
+			close;
+		close2;
+		item_enchant(69 + .@master);
+		end;
+	}
+	close2;
+	if (.@service == 3) {
+		item_enchant(166);
+		end;
+	}
+	item_enchant(128);
+	end;
+
+L_Service7:
+	mes "[Lake of Fire Enchanter]";
+	mes "I handle all four seasonal Divine Beast Cloaks, Circles of Life, and seasonal Signets.";
+	next;
+	.@category = select("Divine Beast Cloak:Circle of Life:Seasonal Signets:Cancel");
+	if (.@category == 4)
+		close;
+	if (.@category == 3) {
+		close2;
+		item_enchant(142);
+		end;
+	}
+	.@season = select("Spring:Summer:Autumn:Winter:Cancel");
+	if (.@season == 5)
+		close;
+	if (.@category == 1)
+		.@enchant_id = 115 + (.@season * 2);
+	else
+		.@enchant_id = 116 + (.@season * 2);
+	close2;
+	item_enchant(.@enchant_id);
+	end;
+
 OnInit:
-	setunittitle(getnpcid(0), "<Custom Equipment Enchant>");
+	setunittitle(getnpcid(0), "<All Gear Enchants>");
 	end;
 }

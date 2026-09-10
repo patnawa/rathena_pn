@@ -1,4 +1,6 @@
 *        text=auto
+client-patch/english_ui/files/** binary
+client-patch/english_ui/source/*.lua binary
 *.cpp diff=cpp
 *.yml diff text eol=lf
 *.sln    merge=union
