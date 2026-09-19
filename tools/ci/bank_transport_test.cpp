@@ -78,6 +78,7 @@ int main() {
     assert(last.connected && last.state.result==pn_bank::Saving && !last.state.flags && bank_current_generation(last.generation));
     assert(last.state.bank==INT64_MAX && last.state.wallet==INT32_MAX);pump_until(opened,1);
     assert(bank_connection_ready());
+    assert(PNGameInputReady()); // Successful character/companion handshake gates turbo.
     pn_bank::Reply push;push.char_id=id;push.result=pn_bank::Ok;push.flags=pn_bank::open_panel;
     assert(game_send(bank_peer,reinterpret_cast<char*>(&push),7,0)==7);
     assert(game_send(bank_peer,reinterpret_cast<char*>(&push)+7,sizeof(push)-7,0)==sizeof(push)-7);
@@ -86,6 +87,7 @@ int main() {
     assert(bank_submit(window,snapshot,pn_bank::BuyDiamond,3,1)); pump_until(replies,2); broken.join();
     assert(!last.connected && bank_authenticated());
     assert(!bank_connection_ready());
+    assert(!PNGameInputReady());
     closesocket(mc); assert(!bank_authenticated() && !bank_current_generation(last.generation));
     assert(!notify_open(window,push,last.generation));
     assert(!bank_submit(window,snapshot,pn_bank::Deposit,1,2));

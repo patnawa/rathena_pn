@@ -16,6 +16,8 @@ CRITICAL_SECTION exchange_lock;
 SOCKET bank_socket=INVALID_SOCKET;
 LONG bank_generation=0;
 HWND panel_window = nullptr;
+volatile LONG transport_initialized=0;
+volatile LONG accepted_generation=0;
 uint16_t char_port = 6121, map_port = 5121;
 struct Auth { uint32_t account=0, character=0, one=0, two=0; sockaddr_in peer{}; SOCKET socket=INVALID_SOCKET; LONG generation=0; bool ready=false; } auth;
 struct Capture { SOCKET socket=INVALID_SOCKET; std::vector<char> start; bool initial=false; };
@@ -72,7 +74,7 @@ int WSAAPI observed_close(SOCKET socket) {
     // closes a stale companion itself; an idle companion can close immediately.
     if(TryEnterCriticalSection(&exchange_lock)) {
         if(bank_socket!=INVALID_SOCKET && !bank_current_generation(bank_generation)) {
-            game_close(bank_socket); bank_socket=INVALID_SOCKET;
+            game_close(bank_socket); bank_socket=INVALID_SOCKET;InterlockedExchange(&accepted_generation,0);
         }
         LeaveCriticalSection(&exchange_lock);
     }
@@ -115,7 +117,7 @@ DWORD WINAPI watch_companion(void*) {
                     LeaveCriticalSection(&lock);
                     ok=ok && notify_open(panel_window,reply,bank_generation);
                 } else if(ready<0) ok=false;
-                if(!ok) { game_close(bank_socket); bank_socket=INVALID_SOCKET; }
+                if(!ok) { game_close(bank_socket); bank_socket=INVALID_SOCKET;InterlockedExchange(&accepted_generation,0); }
             }
             LeaveCriticalSection(&exchange_lock);
         }
@@ -131,7 +133,7 @@ bool exchange(const Work& work,pn_bank::Reply& reply) {
     do {
         if(!bank_current_generation(work.auth.generation)) break;
         if(bank_socket!=INVALID_SOCKET && bank_generation!=work.auth.generation) {
-            game_close(bank_socket); bank_socket=INVALID_SOCKET;
+            game_close(bank_socket); bank_socket=INVALID_SOCKET;InterlockedExchange(&accepted_generation,0);
         }
         bool fresh=bank_socket==INVALID_SOCKET;
         if(fresh) bank_socket=::socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
@@ -165,11 +167,12 @@ bool exchange(const Work& work,pn_bank::Reply& reply) {
                 if(!notify_open(work.panel,reply,work.auth.generation)) break;
                 continue;
             }
+            InterlockedExchange(&accepted_generation,reply.result==pn_bank::Unauthorized?0:work.auth.generation);
             ok=true; break;
         }
     } while(false);
     if(bank_socket!=INVALID_SOCKET && (!ok || !bank_current_generation(work.auth.generation))) {
-        game_close(bank_socket); bank_socket=INVALID_SOCKET;
+        game_close(bank_socket); bank_socket=INVALID_SOCKET;InterlockedExchange(&accepted_generation,0);
     }
     LeaveCriticalSection(&exchange_lock);
     return ok;
@@ -208,7 +211,7 @@ void bank_install_transport(HWND panel) {
         MH_CreateHookApi(L"ws2_32.dll","closesocket",reinterpret_cast<void*>(observed_close),reinterpret_cast<void**>(&game_close))!=MH_OK) return;
     if(MH_EnableHook(MH_ALL_HOOKS)!=MH_OK) return;
     HANDLE thread=CreateThread(nullptr,0,watch_companion,nullptr,0,nullptr);
-    if(thread) CloseHandle(thread);
+    if(thread) {CloseHandle(thread);InterlockedExchange(&transport_initialized,1);}
 }
 bool bank_authenticated() { EnterCriticalSection(&lock); bool ready=auth.ready; LeaveCriticalSection(&lock); return ready; }
 bool bank_current_generation(LONG generation,bool active) { EnterCriticalSection(&lock); bool same=(!active || auth.ready) && generation==auth.generation; LeaveCriticalSection(&lock); return same; }
@@ -231,3 +234,10 @@ bool bank_submit(HWND panel,const pn_bank::Reply& state,uint32_t action,int64_t 
     CloseHandle(thread); return true;
 }
 HWND bank_find_game_window() { HWND result=nullptr; EnumWindows(find_game,reinterpret_cast<LPARAM>(&result)); return result; }
+// Input extensions receive no identities, tokens, balances or socket handles.
+extern "C" __declspec(dllexport) BOOL WINAPI PNGameInputReady() {
+    if(!InterlockedCompareExchange(&transport_initialized,0,0))return FALSE;
+    LONG generation=InterlockedCompareExchange(&accepted_generation,0,0);
+    return generation && bank_current_generation(generation) && !IsWindowVisible(panel_window);
+}
+extern "C" __declspec(dllexport) HWND WINAPI PNGameWindow() {return bank_find_game_window();}

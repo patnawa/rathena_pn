@@ -171,6 +171,8 @@ class MainForm:Form {
         Button[] buttons={play,update,repair,rollback,web};string[] titles={"Play","Update","Repair","Rollback","Status page"};
         for(int i=0;i<buttons.Length;i++){var b=buttons[i];b.Text=titles[i];b.Location=new Point(30+i*121,220);b.Size=new Size(114,42);b.FlatStyle=FlatStyle.Flat;b.FlatAppearance.BorderColor=Color.FromArgb(74,95,119);b.BackColor=i==0?Color.FromArgb(179,216,255):Color.FromArgb(30,43,60);b.ForeColor=i==0?Color.FromArgb(20,39,63):ForeColor;Controls.Add(b);}
         Controls.AddRange(new Control[]{eyebrow,title,release,status,message,bar});
+        var turbo=new Button{Text="Turbo Setup",Location=new Point(30,390),Size=new Size(150,28),FlatStyle=FlatStyle.Flat,BackColor=Color.FromArgb(30,43,60)};
+        turbo.Click+=(s,e)=>{try{string path=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"PNTurboConfig.exe");Engine.NoLinks(path);if(!File.Exists(path))throw new IOException("Update the client first to install Turbo Setup.");Process.Start(new ProcessStartInfo(path){WorkingDirectory=AppDomain.CurrentDomain.BaseDirectory});}catch(Exception ex){MessageBox.Show(this,ex.Message,"Turbo Setup");}};Controls.Add(turbo);
         engine=new Engine(AppDomain.CurrentDomain.BaseDirectory,Report);release.Text=engine.Installed();
         play.Click+=(s,e)=>Run(()=>engine.Update(),true);update.Click+=(s,e)=>Run(()=>engine.Update(),false);repair.Click+=(s,e)=>Run(()=>engine.Update(),false);
         rollback.Click+=(s,e)=>Run(()=>engine.Rollback(),false);web.Click+=(s,e)=>Process.Start(Engine.Feed);

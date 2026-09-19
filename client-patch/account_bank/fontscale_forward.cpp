@@ -18,6 +18,7 @@ BOOL CALLBACK initialize(PINIT_ONCE,void*,void**) {
         static_assert(sizeof(draw)==sizeof(symbol)); memcpy(&draw,&symbol,sizeof(draw));
     }
     wcscpy(slash+1,L"BankUI.dll"); LoadLibraryW(path);
+    wcscpy(slash+1,L"PNTurbo.dll"); LoadLibraryW(path);
     return TRUE;
 }
 DWORD WINAPI start(void*) { InitOnceExecuteOnce(&once,initialize,nullptr,nullptr); return 0; }
