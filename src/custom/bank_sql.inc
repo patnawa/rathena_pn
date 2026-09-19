@@ -1,5 +1,6 @@
 // Included by char/int_storage.cpp. No client-supplied SQL or table names.
 #include <custom/bank_commit.hpp>
+#include <custom/reserve_sql.inc>
 
 static bool bank_tables_transactional() {
     const char* tables[] = {schema_config.char_db, schema_config.inventory_db,
@@ -19,6 +20,7 @@ static bool bank_tables_transactional() {
 // Acknowledging a repeated commit must never overwrite a newer inventory.
 // 1 = committed (including identical retry), 0 = no committed change.
 bool bank_tosql(const pn_bank_commit& request, s_storage& inventory) {
+    if (request.action == 7) return reserve_tosql(request, inventory);
     if (request.account_id == 0 || request.char_id == 0 || request.request_id == 0 ||
         (request.nonce_hi == 0 && request.nonce_lo == 0) ||
         request.action < pn_bank::Deposit || request.action > pn_bank::SellNote || request.amount <= 0 ||

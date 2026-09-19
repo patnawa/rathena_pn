@@ -10,6 +10,8 @@ struct pn_bank_commit {
     uint32_t action = 0;
     int64_t amount = 0, bank_before = 0, wallet_before = 0;
     int64_t bank_after = 0, wallet_after = 0;
+    int64_t reserve_before = 0, reserve_after = 0;
+    uint32_t reserve_item[2] = {}, reserve_quantity[2] = {};
 };
 struct pn_bank_ack {
     uint16_t packet = 0x388e;
@@ -18,6 +20,6 @@ struct pn_bank_ack {
     uint8_t committed = 0;
 };
 #pragma pack(pop)
-static_assert(sizeof(pn_bank_commit) == 80, "Bank commit ABI");
+static_assert(sizeof(pn_bank_commit) == 112, "Bank/reserve commit ABI; upgrade map and char together");
 static_assert(sizeof(pn_bank_ack) == 35, "Bank ack ABI");
 #endif

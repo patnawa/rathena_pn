@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only service, recent-error, backup-restore and disk checks for the Docker host."""
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import hashlib
 import json
 import os
@@ -11,7 +11,7 @@ import shutil
 import subprocess
 import tempfile
 
-SERVICES = ('rathena-login', 'rathena-char', 'rathena-map', 'rathena-web', 'rathena-db')
+SERVICES = ('rathena-login', 'rathena-char', 'rathena-map', 'rathena-web', 'rathena-db', 'rathena-fluxcp', 'npm')
 ERROR = re.compile(r'\[(?:Error|Fatal[^\]]*)\]|AddressSanitizer|runtime error:|\[SQL\]:\s*DB error', re.I)
 RECONNECT = re.compile(r'Connection to (?:Char|Login)[ -]Server lost|Unable to resolve (?:char|login)-server', re.I)
 
@@ -56,7 +56,13 @@ def inspect_service(name, log_minutes):
         ready = state.get('Running') is True and not state.get('Paused') and not state.get('Restarting')
         health = state.get('Health', {}).get('Status', 'not-configured')
         ready = ready and health not in ('unhealthy', 'starting') and not state.get('OOMKilled')
-        logs = command(['docker', 'logs', '--since', str(log_minutes)+'m', '--tail', '2000', name])
+        # Docker keeps the previous process's logs across a container restart.
+        # A planned shutdown disconnect must not fail a healthy new process.
+        # Retain every error within both the lookback and current process lifetime.
+        since = datetime.now(timezone.utc) - timedelta(minutes=log_minutes)
+        started = datetime.fromisoformat(state['StartedAt'].replace('Z', '+00:00'))
+        since = max(since, started)
+        logs = command(['docker', 'logs', '--since', since.isoformat(), '--tail', '2000', name])
         failures = sum(bool(ERROR.search(line) or RECONNECT.search(line)) for line in re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '', logs).splitlines())
         # Only counts are reported; SQL and client log lines may contain private data.
         return {'passed': ready and failures == 0, 'running': ready,

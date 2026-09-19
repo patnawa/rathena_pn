@@ -1,0 +1,85 @@
+// PN solo-development practice board. Cosmetic recognition only; no currencies.
+// Weeks begin Monday 00:00 UTC. Existing quest access and rewards are unchanged.
+function	script	PN_WeeklyReset	{
+	.@week = (gettimetick(2)-345600)/604800;
+	if (PNWeeklyWeek != .@week) {
+		PNWeeklyWeek = .@week;
+		PNWeeklyKills = 0;
+		PNWeeklyLab = 0;
+		PNWeeklyBuild = 0;
+		PNWeeklyClaimed = 0;
+	}
+	return;
+}
+function	script	PN_WeeklyLabComplete	{
+	if (!PNWeeklyActive) return;
+	callfunc "PN_WeeklyReset";
+	PNWeeklyLab = 1;
+	return;
+}
+function	script	PN_GuideMilestones	{
+	mes "[Milestones and build priorities]";
+	if (BaseLevel < 100) {
+		mes "Before 100: choose an eligible job, learn its core skills, and replace missing equipment slots.";
+		mes "Use the Job Master for your class requirements. Begin with content you can clear without constant recovery.";
+	} else if (BaseLevel < 200) {
+		mes "100-199: complete your next eligible job change and establish one reliable damage or support rotation.";
+		mes "Prioritize a suitable weapon, survivability and needed skill consumables before expensive refines.";
+	} else if (BaseLevel < 240) {
+		mes "200+: Chapter 1. 225+: Chapter 2 after finishing Chapter 1. Episode 21 needs level 230 and Episode 20 completion.";
+		mes "Use What should I do next? for your exact story step, then build toward equipment required by your skills.";
+	} else {
+		mes "240+: Biosphere habitat hunts for runes and essences. 260+: Zero Cell Lux/Nox after its investigation.";
+		mes "270+: Vita/Ark permits. Fourth and expanded fourth classes can progress to 285/65 on this server.";
+		mes "Upgrade one weak slot at a time. Compare the change in the private damage lab before spending more.";
+	}
+	next;
+	switch(select("Melee build:Ranged build:Magic build:Support or summons:Back")) {
+	case 1: mes "Melee: check weapon type, hit rate, attack speed and your main skill's damage modifier. Add sustain and resistance for the next map."; break;
+	case 2: mes "Ranged: verify weapon and ammunition compatibility, hit rate, cast/delay requirements and your main skill's ranged modifiers."; break;
+	case 3: mes "Magic: separate variable cast, fixed cast and after-cast delay. Check element, MATK and the target's MDEF/MRES in the lab."; break;
+	case 4: mes "Support and summons: verify the skill's actual scaling, required catalysts, duration and survival. Personal DPS alone does not measure party value."; break;
+	default: return;
+	}
+	mes "Use identical lab targets and buffs for comparisons. A suggested stat is useful only when your chosen skill benefits from it.";
+	if (PNWeeklyActive) { callfunc "PN_WeeklyReset"; PNWeeklyBuild = 1; }
+	return;
+}
+function	script	PN_WeeklyBoard	{
+	callfunc "PN_WeeklyReset";
+	mes "[Weekly practice]";
+	mes "An optional practice loop for this development server. You can do it alone; playing with a party is welcome.";
+	mes "Resets Monday 00:00 UTC (07:00 Bangkok). Stamps are cosmetic records, not spendable currency.";
+	if (!PNWeeklyActive) {
+		if (select("Start tracking practice:Back") == 2) return;
+		PNWeeklyActive = 1;
+	}
+	mes "Field or dungeon kills: "+min(50,PNWeeklyKills)+" / 50.";
+	mes "One completed damage-lab measurement: "+PNWeeklyLab+" / 1.";
+	mes "Review a build priority with the guide: "+PNWeeklyBuild+" / 1.";
+	mes "Lifetime practice stamps: "+PNWeeklyStamps+".";
+	if (PNWeeklyClaimed) { mes "This week's stamp is already recorded."; return; }
+	if (PNWeeklyKills < 50 || !PNWeeklyLab || !PNWeeklyBuild) {
+		mes "Training dummies do not count as hunt kills. Return when all three objectives are complete.";
+		return;
+	}
+	if (select("Record this week's stamp:Back") == 2) return;
+	// No dialog yield between duplicate guard and the two registry writes.
+	callfunc "PN_WeeklyReset";
+	if (PNWeeklyClaimed || PNWeeklyKills < 50 || !PNWeeklyLab || !PNWeeklyBuild) return;
+	PNWeeklyClaimed = 1;
+	PNWeeklyStamps = min(1000000,PNWeeklyStamps+1);
+	mes "Practice complete. Your stamp has been recorded. Try a different build or target next week.";
+	specialeffect2 EF_ANGEL2;
+	return;
+}
+-	script	PN Weekly Practice	-1,{
+	end;
+OnNPCKillEvent:
+	if (!PNWeeklyActive) end;
+	callfunc "PN_WeeklyReset";
+	if (PNWeeklyKills >= 50 || compare(strcharinfo(3),"guild_vs1") || compare(strcharinfo(3),"pn_")) end;
+	PNWeeklyKills++;
+	if (PNWeeklyKills == 50) dispbottom "Weekly practice: hunt complete. Check the Progression Guide at @office.";
+	end;
+}

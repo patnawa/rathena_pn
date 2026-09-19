@@ -132,7 +132,9 @@ OnInit:
 	mes "[Progression Guide]";
 	mes "Your base/job level: "+BaseLevel+" / "+JobLevel+".";
 	mes "Choose your next objective, check repeatable work, or find an equipment service.";
-	switch(select("What should I do next?:Daily and repeatable quests:Equipment goals and materials:Zero Cell access:Episode 21:Leave")) {
+	switch(select("What should I do next?:Daily and repeatable quests:Equipment goals and materials:Zero Cell access:Episode 21:Milestones and build priorities:Weekly practice:Leave")) {
+	case 6: callfunc "PN_GuideMilestones"; break;
+	case 7: callfunc "PN_WeeklyBoard"; break;
 	case 1:
 		callfunc "PN_GuideNext";
 		break;

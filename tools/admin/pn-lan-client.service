@@ -1,0 +1,22 @@
+[Unit]
+Description=PN LAN client downloads and local status
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+ExecStart=/usr/bin/python3 /opt/pn-operations/lan_client_service.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_INET AF_UNIX
+MemoryMax=192M
+TasksMax=32
+
+[Install]
+WantedBy=multi-user.target

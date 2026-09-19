@@ -1,0 +1,4 @@
+LIBRARY FontScaleOriginal
+EXPORTS
+    "_DirectDrawEnumerateExA@12"=DirectDrawEnumerateExA@12
+    PNFontStatus=PNFontStatus@0

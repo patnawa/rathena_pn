@@ -7,6 +7,8 @@ struct pn_bank_state {
     uint32_t action = 0;
     uint8_t native_action = 0; // Original client UI also waits for the SQL commit.
     int64_t amount = 0, bank_before = 0, wallet_before = 0;
+    int64_t reserve_before = 0, reserve_after = 0;
+    uint32_t reserve_item[2] = {}, reserve_quantity[2] = {};
     int64_t last_action_tick = 0;
     bool pending = false, applying = false;
     int32_t companion_fd = 0;

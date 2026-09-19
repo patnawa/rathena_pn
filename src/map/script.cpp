@@ -27860,6 +27860,22 @@ BUILDIN_FUNC(runetabletui) {
     return SCRIPT_CMD_SUCCESS;
 }
 
+#include <custom/reserve_map.inc>
+BUILDIN_FUNC(reservepurchase) {
+    map_session_data* sd;
+    if(!script_rid2sd(sd))return SCRIPT_CMD_FAILURE;
+    int64 cost=script_getnum64(st,2), id0=script_getnum64(st,3), qty0=script_getnum64(st,4);
+    int64 id1=script_hasdata(st,5)?script_getnum64(st,5):0, qty1=script_hasdata(st,6)?script_getnum64(st,6):0;
+    if(cost<1||cost>30000||id0<1||id0>UINT32_MAX||qty0<1||qty0>30000||id1<0||id1>UINT32_MAX||qty1<0||qty1>30000){script_pushint(st,0);return SCRIPT_CMD_SUCCESS;}
+    script_pushint(st,pn_reserve_purchase(*sd,cost,static_cast<uint32>(id0),static_cast<int32>(qty0),static_cast<uint32>(id1),static_cast<int32>(qty1)));
+    return SCRIPT_CMD_SUCCESS;
+}
+BUILDIN_FUNC(reservepurchasestatus) {
+    map_session_data* sd;
+    if(!script_rid2sd(sd))return SCRIPT_CMD_FAILURE;
+    script_pushint(st,sd->bank_ui.action!=7?-1:(sd->bank_ui.pending?0:(sd->bank_ui.result==pn_bank::Ok?1:-1)));
+    return SCRIPT_CMD_SUCCESS;
+}
 BUILDIN_FUNC(openbank){
 #if PACKETVER < 20151202
 	ShowError( "buildin_openbank: This command requires PACKETVER 20151202 or newer.\n" );
@@ -29449,6 +29465,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(open_quest_ui, "??"),
 	BUILDIN_DEF(runetabletui,""),
 	BUILDIN_DEF(openbank,"?"),
+	BUILDIN_DEF(reservepurchase,"iii??"),
+	BUILDIN_DEF(reservepurchasestatus,""),
 	BUILDIN_DEF(getbaseexp_ratio, "i??"),
 	BUILDIN_DEF(getjobexp_ratio, "i??"),
 	BUILDIN_DEF(enchantgradeui, "?" ),

@@ -11,6 +11,13 @@ static void intif_bank_save_request(const map_session_data& sd) {
     request.amount = sd.bank_ui.amount;
     request.bank_before = sd.bank_ui.bank_before; request.wallet_before = sd.bank_ui.wallet_before;
     request.bank_after = sd.bank_vault; request.wallet_after = sd.status.zeny;
+    if (request.action == 7) {
+        request.reserve_before = sd.bank_ui.reserve_before; request.reserve_after = sd.bank_ui.reserve_after;
+        for (int i = 0; i < 2; ++i) {
+            request.reserve_item[i] = sd.bank_ui.reserve_item[i];
+            request.reserve_quantity[i] = sd.bank_ui.reserve_quantity[i];
+        }
+    }
     WFIFOHEAD(inter_fd, request.length);
     memcpy(WFIFOP(inter_fd, 0), &request, sizeof(request));
     memcpy(WFIFOP(inter_fd, sizeof(request)), &sd.inventory, sizeof(s_storage));

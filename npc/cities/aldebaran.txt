@@ -1141,8 +1141,10 @@ aldeba_in,79,161,7	script	Kafra Employee#reserve1	4_F_KAFRA3,{
 				}
 			}
 			if (.@s < 10) {
-				RESRVPTS -= .@select_price[.@index_points];
-				getitem .@select_price[0], .@select_price[.@index_quantity];
+				if (!callfunc("F_ReserveLotteryGrant",.@select_price[.@index_points],.@select_price[0],.@select_price[.@index_quantity])) {
+					mes "The purchase could not be saved. Your points were not spent. Please try again after checking your inventory.";
+					close;
+				}
 			}
 			else {
 				mes "[Kafra Employee]";
@@ -1533,8 +1535,8 @@ aldeba_in,88,161,3	script	Kafra Employee#reserve2	4_F_KAFRA3,{
 	close;
 }
 
-// No dialog/input may occur between this exact capacity check, prize grant,
-// and point deduction. A failed getitem stops the script before points change.
+// Preflight the complete reward, then wait for the durable inventory/point commit.
+// No confirmation or success message is shown until the character server ACKs.
 function	script	F_ReserveLotteryGrant	{
 	.@price = getarg(0);
 	.@id1 = getarg(1);
@@ -1588,11 +1590,11 @@ function	script	F_ReserveLotteryGrant	{
 	}
 	if (Weight + .@total_weight > MaxWeight || .@occupied + .@needed > .@slots)
 		return false;
-	getitem .@id1,.@amount1;
-	if (.@id2 != 0)
-		getitem .@id2,.@amount2;
-	RESRVPTS -= .@price;
-	return true;
+	if (!reservepurchase(.@price,.@id1,.@amount1,.@id2,.@amount2)) return false;
+	// The character server commits points, both rewards and the receipt together.
+	// The existing save lock also survives disconnects and retries the same ID.
+	while (reservepurchasestatus() == 0) sleep2 100;
+	return reservepurchasestatus() == 1;
 }
 
 // Inside Clock Tower
