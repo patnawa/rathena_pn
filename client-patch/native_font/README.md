@@ -17,9 +17,16 @@ become negative character heights of the same number, with two measured exceptio
 the 14-cell Basic Information font becomes character height 11. Runtime probes
 identified that slot in HP, SP, Base Lv. and Job Lv. labels. Their reference rasters
 match Arial 11 exactly, including `Base Lv. 68` at 57 x 8 ink pixels. The separate
-13-cell HP/SP/AP value fonts become character height 10; the reference sample
+regular 13-cell HP/SP/AP value fonts become character height 10; the reference sample
 `5031  /  5031` matches exactly at 61 x 7 ink pixels. The user's
 `Screenshot 2026-09-19 213444.png` shows clipping with the former 14-character size.
+Bold 13-cell requests retain character height 13. Runtime diagnostics identified
+Kafra Employee and Healer labels using this bold font (weight 700), while
+HP/SP values use the regular font (weight 400). Applying the resource-value
+exception to both weights previously shrank NPC names to 10 pixels. The
+separate 11-cell inventory fonts retain their original size. Other labels
+sharing the bold 13-cell font also receive its full height.
+
 Explicit negative heights and other font sizes are preserved. Bold, italic and underline remain
 available. Large text, symbol fonts, rotated text and calls originating in other
 DLLs are untouched. No scaling, drawing or text-measurement hooks are installed.
@@ -33,7 +40,7 @@ the executable is kept byte-identical.
 Build with `build.ps1 -Output ABSOLUTE_DIRECTORY` using the MSYS2 i686 GCC
 toolchain. Copy the shipping `FontScale.dll` and `BankUI.dll` into that test
 directory and run `NativeFontTest.exe`. Tests cover the four GDI font-creation
-entry points, text metrics, original structure preservation, external DLL and
+entry points, NPC-name versus resource/inventory sizing, text metrics, original structure preservation, external DLL and
 symbol/rotation/large-font exclusions, DirectDraw forwarding and bank loading.
 `native-font-render.bmp` and `basic-font-render.bmp` are synthetic renderings
 for pixel comparison, along with `resource-font-render.bmp`. The user confirmed

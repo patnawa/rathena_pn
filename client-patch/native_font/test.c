@@ -27,6 +27,17 @@ int main(void) {
     check(CreateFontIndirectA(&a),-12,"Arial",0,3);assert(a.lfHeight==12 && !strcmp(a.lfFaceName,"Gulim"));
     LOGFONTW w={0};w.lfHeight=12;wcscpy(w.lfFaceName,L"Tahoma");
     check(CreateFontIndirectW(&w),-12,"Arial",0,3);assert(w.lfHeight==12);
+    /* Runtime probes distinguish bold 13-cell NPC names from regular 13-cell
+     * resource values and both 11-cell inventory fonts. */
+    check(CreateFontA(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,"Gulim"),-13,"Arial",0,3);
+    check(CreateFontW(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,L"Gulim"),-13,"Arial",0,3);
+    a.lfHeight=13;a.lfWeight=FW_BOLD;
+    check(CreateFontIndirectA(&a),-13,"Arial",0,3);assert(a.lfHeight==13 && a.lfWeight==FW_BOLD);
+    w.lfHeight=13;w.lfWeight=FW_BOLD;
+    check(CreateFontIndirectW(&w),-13,"Arial",0,3);assert(w.lfHeight==13 && w.lfWeight==FW_BOLD);
+    check(CreateFontA(13,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,0,0,0,0,"Arial"),-10,"Arial",0,3);
+    for(int weight=FW_NORMAL;weight<=FW_BOLD;weight+=FW_BOLD-FW_NORMAL)
+        check(CreateFontA(11,0,0,0,weight,0,0,0,HANGUL_CHARSET,0,0,0,0,"Gulim"),-11,"Arial",0,3);
     check(CreateFontA(24,0,0,0,400,0,0,0,0,0,0,0,0,"Tahoma"),24,"Tahoma",0,0);
     check(CreateFontA(12,0,0,0,400,0,0,0,SYMBOL_CHARSET,0,0,0,0,"Symbol"),12,"Symbol",0,0);
     check(CreateFontA(12,0,900,0,400,0,0,0,0,0,0,0,0,"Tahoma"),12,"Tahoma",0,0);
@@ -61,7 +72,16 @@ int main(void) {
     old_font=SelectObject(dc,values);label="5031  /  5031";
     memset(bits,255,500*40*4);TextOutA(dc,0,0,label,(int)strlen(label));GdiFlush();
     out=fopen("resource-font-render.bmp","wb");assert(out);fwrite(&header,sizeof(header),1,out);fwrite(&bi.bmiHeader,sizeof(BITMAPINFOHEADER),1,out);fwrite(bits,500*40*4,1,out);fclose(out);
-    SelectObject(dc,old_font);DeleteObject(values);SelectObject(dc,old_bm);DeleteObject(bm);DeleteDC(dc);
+    SelectObject(dc,old_font);DeleteObject(values);
+    HFONT names=CreateFontA(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,"Gulim");
+    old_font=SelectObject(dc,names);label="Kafra Employee";
+    LOGFONTA name_font;assert(GetObjectA(names,sizeof(name_font),&name_font));assert(name_font.lfWeight==FW_BOLD);
+    assert(GetTextExtentPoint32A(dc,label,(int)strlen(label),&extent));
+    printf("NPC name extent: %ld x %ld (previous runtime font: 77 x 12)\n",extent.cx,extent.cy);
+    assert(extent.cx>77 && extent.cy>12);
+    memset(bits,255,500*40*4);TextOutA(dc,0,0,label,(int)strlen(label));GdiFlush();
+    out=fopen("npc-name-render.bmp","wb");assert(out);fwrite(&header,sizeof(header),1,out);fwrite(&bi.bmiHeader,sizeof(BITMAPINFOHEADER),1,out);fwrite(bits,500*40*4,1,out);fclose(out);
+    SelectObject(dc,old_font);DeleteObject(names);SelectObject(dc,old_bm);DeleteObject(bm);DeleteDC(dc);
     puts("PASS: native font creation, GDI text metrics, size hierarchy, system/bank exclusions, DirectDraw forwarding and bank loading");
     return 0;
 }

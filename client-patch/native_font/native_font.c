@@ -47,21 +47,25 @@ static void trace(const char *api,int before,int after) {
 /* The supplied 2026 client requests a 14-pixel cell for Basic Information.
  * Runtime label probes confirmed HP/SP/Base Lv./Job Lv. use this font, while
  * pixel comparison proves their reference glyphs are Arial character height 11.
- * Keep this cell-font slot at 11. The separate 13-cell resource-number slots
- * keep Arial character height 10. Explicit -13/-14 requests remain distinct.
+ * Keep this cell-font slot at 11. Regular 13-cell resource numbers keep Arial
+ * character height 10. Runtime draws of Kafra Employee and Healer identify
+ * the bold 13-cell font as NPC names: retain its full 13-character height.
+ * The 11-cell inventory fonts and explicit -13/-14 requests remain distinct.
  * Positive GDI heights include internal leading. RO's standard 12 request
  * should mean a 12-pixel character, not a smaller character in a 12-pixel cell.
  * Preserve the other 9..16 sizes, bold/underline/italic, and all
  * larger display fonts. The API's own text metrics then match its raster. */
-static int character_height(int h) {return h==14 ? -11 : (h==13 ? -10 : (h>0 ? -h : h));}
+static int character_height(int h,int weight) {
+    return h==14 ? -11 : (h==13 && weight!=FW_BOLD ? -10 : (h>0 ? -h : h));
+}
 static void fix_a(LOGFONTA *f) {
-    f->lfHeight=character_height(f->lfHeight);
+    f->lfHeight=character_height(f->lfHeight,f->lfWeight);
     f->lfWidth=0; f->lfCharSet=ANSI_CHARSET; f->lfQuality=NONANTIALIASED_QUALITY;
     f->lfPitchAndFamily=DEFAULT_PITCH|FF_SWISS;
     strcpy(f->lfFaceName,"Arial");
 }
 static void fix_w(LOGFONTW *f) {
-    f->lfHeight=character_height(f->lfHeight);
+    f->lfHeight=character_height(f->lfHeight,f->lfWeight);
     f->lfWidth=0; f->lfCharSet=ANSI_CHARSET; f->lfQuality=NONANTIALIASED_QUALITY;
     f->lfPitchAndFamily=DEFAULT_PITCH|FF_SWISS;
     wcscpy(f->lfFaceName,L"Arial");
@@ -70,7 +74,7 @@ static void fix_w(LOGFONTW *f) {
 static HFONT WINAPI hooked_a(int h,int w,int e,int o,int weight,DWORD italic,DWORD underline,DWORD strike,
     DWORD cs,DWORD out,DWORD clip,DWORD quality,DWORD pitch,LPCSTR name) {
     if(eligible(__builtin_return_address(0),h,cs,e,o)) {
-        int before=h; h=character_height(h); w=0; cs=ANSI_CHARSET; quality=NONANTIALIASED_QUALITY;
+        int before=h; h=character_height(h,weight); w=0; cs=ANSI_CHARSET; quality=NONANTIALIASED_QUALITY;
         pitch=DEFAULT_PITCH|FF_SWISS; name="Arial"; trace("CreateFontA",before,h);
     }
     return original_a(h,w,e,o,weight,italic,underline,strike,cs,out,clip,quality,pitch,name);
@@ -78,7 +82,7 @@ static HFONT WINAPI hooked_a(int h,int w,int e,int o,int weight,DWORD italic,DWO
 static HFONT WINAPI hooked_w(int h,int w,int e,int o,int weight,DWORD italic,DWORD underline,DWORD strike,
     DWORD cs,DWORD out,DWORD clip,DWORD quality,DWORD pitch,LPCWSTR name) {
     if(eligible(__builtin_return_address(0),h,cs,e,o)) {
-        int before=h; h=character_height(h); w=0; cs=ANSI_CHARSET; quality=NONANTIALIASED_QUALITY;
+        int before=h; h=character_height(h,weight); w=0; cs=ANSI_CHARSET; quality=NONANTIALIASED_QUALITY;
         pitch=DEFAULT_PITCH|FF_SWISS; name=L"Arial"; trace("CreateFontW",before,h);
     }
     return original_w(h,w,e,o,weight,italic,underline,strike,cs,out,clip,quality,pitch,name);
@@ -106,7 +110,7 @@ static BOOL CALLBACK initialize(PINIT_ONCE unused,void *arg,void **context) {
     wchar_t path[MAX_PATH]; GetSystemDirectoryW(path,MAX_PATH); wcscat(path,L"\\ddraw.dll");
     HMODULE dd=LoadLibraryW(path);
     if(dd) original_draw=(Draw)(void*)GetProcAddress(dd,"DirectDrawEnumerateExA");
-    log_line("PN font profile 3: Arial; panel labels 11px; resource values 10px; body 12px; no multiplier.\r\n",TRUE);
+    log_line("PN font profile 4: Arial; bold NPC names 13px; inventory 11px; panel labels 11px; regular resource values 10px; body 12px.\r\n",TRUE);
     if(MH_Initialize()!=MH_OK) {log_line("ERROR: hook initialization failed.\r\n",FALSE);return TRUE;}
     if(MH_CreateHookApi(L"gdi32.dll","CreateFontA",hooked_a,(void**)&original_a)!=MH_OK ||
        MH_CreateHookApi(L"gdi32.dll","CreateFontW",hooked_w,(void**)&original_w)!=MH_OK ||
