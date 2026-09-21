@@ -67,6 +67,7 @@ obj:
 	@-mkdir obj
 	
 obj/int_storage.o: ../custom/bank_sql.inc ../custom/bank_commit.hpp ../custom/bank_protocol.hpp \
+	../custom/reserve_sql.inc \
 	../custom/multi_storage_sql.inc ../custom/multi_storage.hpp ../custom/multi_storage_protocol.hpp
 obj/char.o: ../custom/multi_storage.hpp
 

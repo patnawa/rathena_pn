@@ -30,22 +30,38 @@ bool bank_tosql(const pn_bank_commit& request, s_storage& inventory) {
         return false;
     bool success = false, wrote = false;
     do {
-        if (Sql_Query(sql_handle, "SELECT `char_id`,`action`,`amount` FROM `pn_bank_commits` WHERE `account_id`=%u AND `nonce_hi`=%" PRIu64 " AND `nonce_lo`=%" PRIu64 " AND `request_id`=%" PRIu64 " FOR UPDATE",
+        if (Sql_Query(sql_handle, "SELECT `char_id`,`action`,`amount`,`bank_before`,`wallet_before` FROM `pn_bank_commits` WHERE `account_id`=%u AND `nonce_hi`=%" PRIu64 " AND `nonce_lo`=%" PRIu64 " AND `request_id`=%" PRIu64 " FOR UPDATE",
             request.account_id, request.nonce_hi, request.nonce_lo, request.request_id) != SQL_SUCCESS) break;
         int row = Sql_NextRow(sql_handle);
         if (row == SQL_SUCCESS) {
-            char *cid = nullptr, *action = nullptr, *amount = nullptr;
+            char *cid = nullptr, *action = nullptr, *amount = nullptr, *bank_before = nullptr, *wallet_before = nullptr;
             success = Sql_GetData(sql_handle, 0, &cid, nullptr) == SQL_SUCCESS && cid &&
                 Sql_GetData(sql_handle, 1, &action, nullptr) == SQL_SUCCESS && action &&
                 Sql_GetData(sql_handle, 2, &amount, nullptr) == SQL_SUCCESS && amount &&
+                Sql_GetData(sql_handle, 3, &bank_before, nullptr) == SQL_SUCCESS && bank_before &&
+                Sql_GetData(sql_handle, 4, &wallet_before, nullptr) == SQL_SUCCESS && wallet_before &&
                 strtoul(cid, nullptr, 10) == request.char_id && strtoul(action, nullptr, 10) == request.action &&
-                strtoll(amount, nullptr, 10) == request.amount;
+                strtoll(amount, nullptr, 10) == request.amount &&
+                strtoll(bank_before, nullptr, 10) == request.bank_before &&
+                strtoll(wallet_before, nullptr, 10) == request.wallet_before;
             Sql_FreeResult(sql_handle);
             // A successful old request contains an old snapshot; do not apply it again.
             break;
         }
         Sql_FreeResult(sql_handle);
         if (row != SQL_NO_DATA) break;
+        // Verify NEW financial writes independently of the map handler. A
+        // bounded but inconsistent snapshot must not mint or destroy currency.
+        // Inventory capacity/eligibility are checked on the authoritative map;
+        // SQL can still enforce the exact bank delta, price and wallet debit.
+        pn_bank::Reply before;
+        before.bank = request.bank_before; before.wallet = request.wallet_before;
+        for (int i = 0; i < 2; ++i) before.max_buy[i] = before.counts[i] = INT32_MAX;
+        const auto planned = pn_bank::plan(before, request.action, request.amount);
+        if (planned.result != pn_bank::Ok || request.bank_after != planned.bank ||
+            request.wallet_after < planned.wallet) break;
+        // Positive rewards may arrive while awaiting SQL. Their current wallet
+        // is retained, while a receipt retry above never reapplies its snapshot.
         if (Sql_Query(sql_handle, "SELECT `account_id` FROM `%s` WHERE `char_id`=%u AND `account_id`=%u FOR UPDATE",
             schema_config.char_db, request.char_id, request.account_id) != SQL_SUCCESS) break;
         bool owner = Sql_NextRow(sql_handle) == SQL_SUCCESS;

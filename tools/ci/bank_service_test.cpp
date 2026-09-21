@@ -109,6 +109,20 @@ int main(){
     invalid=request;invalid.login_id2++;assert(rpc(invalid).result==Unauthorized);
     invalid=request;invalid.char_id++;assert(rpc(invalid).result==Unauthorized);
     session[3]->client_addr++;assert(rpc(request).result==Unauthorized);session[3]->client_addr--;
+    // Malformed companion frames are closed before mutation or SQL dispatch.
+    for(int bad=0;bad<8;++bad) {
+        invalid=request;
+        if(bad==0) invalid.magic_value^=0x10000;
+        if(bad==1) invalid.protocol=1;
+        if(bad==2) invalid.length=0;
+        if(bad==3) invalid.length=63;
+        if(bad==4) invalid.length=65;
+        if(bad==5) invalid.length=UINT16_MAX;
+        if(bad==6) invalid.reserved=1;
+        if(bad==7) invalid.action=UINT32_MAX;
+        rpc(invalid);assert(session[3]->flag.eof && !out_size[3] && !player.bank_ui.pending && !timers);
+        session[3]->flag.eof=false;
+    }
     request.nonce_hi=snapshot.nonce_hi;request.nonce_lo=snapshot.nonce_lo;request.request_id=1;request.action=Deposit;request.amount=100;
     invalid=request;invalid.nonce_hi++;assert(rpc(invalid).result==Stale && !player.bank_ui.pending);
     world_busy=true;assert(rpc(request).result==Busy);world_busy=false;
@@ -141,6 +155,19 @@ int main(){
     gem.expire_time=99;assert(pn_bank_count(player,6024)==0);gem.expire_time=0;
     gem.card[0]=1;assert(pn_bank_count(player,6024)==0);gem.card[0]=0;
     gem.option[0].id=1;assert(pn_bank_count(player,6024)==0);gem.option[0].id=0;
+    for(int bad=0;bad<9;++bad) {
+        auto modified=gem;
+        if(bad==0) modified.identify=0;
+        if(bad==1) modified.equip=1;
+        if(bad==2) modified.equipSwitch=1;
+        if(bad==3) modified.refine=1;
+        if(bad==4) modified.attribute=1;
+        if(bad==5) modified.enchantgrade=1;
+        if(bad==6) modified.option[4].value=1;
+        if(bad==7) modified.option[4].param=1;
+        if(bad==8) modified.amount=0;
+        assert(!pn_bank_plain_item(modified,6024));
+    }
     // Multi-stack deletion failure restores the entire batch and local locks.
     player.inventory.u.items_inventory[1]=gem;player.inventory_data[1]=item_db.data.get();player.weight+=10;
     auto before=player.inventory;auto weight=player.weight;delete_failure=1;

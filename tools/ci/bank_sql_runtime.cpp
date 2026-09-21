@@ -88,6 +88,22 @@ extern "C" int __wrap_main(int argc,char** argv) {
         if(bad==6) invalid.nonce_hi=invalid.nonce_lo=0;
         assert(!bank_tosql(invalid,inventory)); ++checks; unchanged(original);
     }
+    // The SQL boundary must reject inconsistent NEW financial plans, even
+    // when every individual balance is within its permitted numeric range.
+    for(int bad=0;bad<10;++bad) {
+        auto invalid=request;
+        if(bad==0) invalid.bank_after++;
+        if(bad==1) invalid.bank_after--;
+        if(bad==2) invalid.wallet_after--;
+        if(bad==3) invalid.bank_before=-1;
+        if(bad==4) invalid.wallet_before=-1;
+        if(bad==5) invalid.wallet_before=int64_t(MAX_ZENY)+1;
+        if(bad==6) invalid.amount=4; // Claimed purchase exceeds pre-transaction bank funds.
+        if(bad==7) { invalid.action=pn_bank::Deposit;invalid.amount=500000001; }
+        if(bad==8) { invalid.action=pn_bank::Withdraw;invalid.amount=1500000001; }
+        if(bad==9) { invalid.action=pn_bank::SellDiamond;invalid.bank_before=INT64_MAX; }
+        assert(!bank_tosql(invalid,inventory)); ++checks; unchanged(original);
+    }
     assert(bank_tosql(request,inventory)); ++checks;
     assert(result("SELECT value FROM acc_reg_num WHERE account_id=990013 AND `key`='#BANKVAULT'")=="999000000|\n"); ++checks;
     assert(result("SELECT value FROM acc_reg_num WHERE account_id=990014 AND `key`='#BANKVAULT'")=="77|\n"); ++checks;
@@ -99,6 +115,12 @@ extern "C" int __wrap_main(int argc,char** argv) {
     assert(bank_tosql(request,inventory)); ++checks; unchanged(committed); assert(cached->zeny==333); ++checks;
     Sql_Free(sql_handle); connect_db();
     assert(bank_tosql(request,inventory)); ++checks; unchanged(committed);
+    for(int bad=0;bad<2;++bad) {
+        auto invalid=request;
+        if(bad==0) invalid.bank_before++;
+        else invalid.wallet_before++;
+        assert(!bank_tosql(invalid,inventory)); ++checks; unchanged(committed);
+    }
     request.amount=2; assert(!bank_tosql(request,inventory)); ++checks; unchanged(committed);
     // A new operation is committed and the char-cache baseline advances with it.
     request.request_id=2; request.action=pn_bank::Deposit; request.amount=100;
@@ -115,6 +137,15 @@ extern "C" int __wrap_main(int argc,char** argv) {
     assert(result("SELECT bank_before,bank_after FROM pn_bank_commits WHERE request_id=3")=="9223372036854775806|9223372036854775807|\n");++checks;
     committed=snapshot();Sql_Free(sql_handle);connect_db();
     request.bank_after=1;assert(bank_tosql(request,inventory));++checks;unchanged(committed);
+    // Retry snapshots may include legitimate positive wallet rewards received
+    // after the map's preflight. Validate the transfer without deleting those.
+    request.request_id=4;request.action=pn_bank::Withdraw;request.amount=100;
+    request.bank_before=INT64_MAX;request.bank_after=INT64_MAX-100;
+    request.wallet_before=499999899;request.wallet_after=500000076; // +100 and +77 reward
+    assert(bank_tosql(request,inventory) && cached->zeny==500000076);++checks;
+    assert(result("SELECT zeny FROM `char` WHERE char_id=99001313")=="500000076|\n");++checks;
+    committed=snapshot();request.wallet_after+=88;
+    assert(bank_tosql(request,inventory));++checks;unchanged(committed);
     std::cout<<"BANK_SQL_PASS "<<checks<<" checks: actual InnoDB atomicity, failures at all four writes, journal retry, reconnect, ownership, caps, cache synchronization and unrelated item preservation\n";
     Sql_Free(sql_handle); sql_handle=nullptr; return 0;
 }
