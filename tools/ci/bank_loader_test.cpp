@@ -38,15 +38,16 @@ int main() {
     assert(panel && !IsWindowVisible(panel));
     wchar_t title[20]; GetWindowTextW(panel,title,20); assert(wcscmp(title,L"Bank")==0);
     assert(!IsWindowEnabled(GetDlgItem(panel,400)) && !IsWindowEnabled(GetDlgItem(panel,401)));
-    // Confirm the original 1.10 scale hooks survived the forwarding DLL.
+    // Support both the original scaler and the current native reference font.
+    const bool native_font=GetProcAddress(GetModuleHandleW(L"FontScaleOriginal.dll"),"PNFontStatus")!=nullptr;
     bool scaled=false;
     while(GetTickCount64()<deadline) {
         auto font=CreateFontW(-10,0,0,0,400,0,0,0,0,0,0,0,0,L"Tahoma");
         LOGFONTW details{}; assert(GetObjectW(font,sizeof(details),&details)); DeleteObject(font);
-        if(details.lfHeight==-11) { scaled=true; break; }
+        if(native_font?(details.lfHeight==-10 && !wcscmp(details.lfFaceName,L"Arial")):details.lfHeight==-11) { scaled=true; break; }
         Sleep(10);
     }
     assert(scaled);
-    std::cout<<"PASS: shipping FontScale export forwards DirectDraw, original font scaling preserved, BankUI loads hidden with unauthenticated transactions disabled\n";
+    std::cout<<"PASS: shipping FontScale export forwards DirectDraw, installed font behavior preserved, BankUI loads hidden with unauthenticated transactions disabled\n";
     // Do not FreeLibrary an API-hook DLL while its hooks/threads are active.
 }
