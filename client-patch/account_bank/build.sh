@@ -13,4 +13,5 @@ done
 "$compiler" -std=c++17 -O2 -Wall -Wextra ../../tools/ci/bank_transport_test.cpp "$out/buffer.o" "$out/hook.o" "$out/trampoline.o" "$out/hde32.o" -o "$out/BankTransportTest.exe" -lws2_32 -lgdi32 -luser32 -static -lwinpthread
 "$compiler" -std=c++17 -O2 -Wall -Wextra ../../tools/ci/bank_loader_test.cpp -o "$out/BankLoaderTest.exe" -lgdi32 -luser32 -static -lwinpthread
 "$compiler" -std=c++17 -O2 -Wall -Wextra ../../tools/ci/bank_ui_test.cpp -o "$out/BankUITest.exe" -lgdi32 -luser32 -static -lwinpthread
+"$compiler" -std=c++17 -O2 -Wall -Wextra ../../tools/ci/bank_reentry_test.cpp -o "$out/BankReentryTest.exe" -lgdi32 -luser32 -static -lwinpthread
 "$compiler" -std=c++17 -O2 -Wall -Wextra ../../tools/ci/bank_refresh_test.cpp "$out/buffer.o" "$out/hook.o" "$out/trampoline.o" "$out/hde32.o" -o "$out/BankRefreshTest.exe" -lws2_32 -lgdi32 -luser32 -static -lwinpthread

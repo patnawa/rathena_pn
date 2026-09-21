@@ -17,7 +17,7 @@ $libs=@('-lws2_32','-lgdi32','-luser32','-lwinpthread')
 if($LASTEXITCODE){throw 'Bank DLL build failed'}
 & $cxx @flags -DPN_BANK_PREVIEW $ui $transport @objects -o (Join-Path $out 'BankPreview.exe') @libs
 if($LASTEXITCODE){throw 'Preview build failed'}
-foreach($name in @('bank_ui_test','bank_transport_test','bank_refresh_test')) {
+foreach($name in @('bank_ui_test','bank_transport_test','bank_refresh_test','bank_reentry_test')) {
     & $cxx @flags (Join-Path $PSScriptRoot "../../tools/ci/$name.cpp") @objects -o (Join-Path $out "$name.exe") @libs
     if($LASTEXITCODE){throw "Test build failed: $name"}
 }

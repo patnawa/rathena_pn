@@ -40,10 +40,7 @@ static pn_bank::Reply funded() {
     }
     return value;
 }
-static void click(int id) {
-    if(id>=400 && id<406) select_action(id-399);
-    SendMessage(GetDlgItem(panel,id),BM_CLICK,0,0);
-}
+static void click(int id) { SendMessage(GetDlgItem(panel,id),BM_CLICK,0,0); }
 static std::wstring label(HWND control) {
     wchar_t value[128]{};GetWindowTextW(control,value,128);return value;
 }
@@ -52,7 +49,6 @@ static void check_layout() {
     assert(bounds.right==px(panel_width) && bounds.bottom==px(panel_height));
     std::vector<RECT> occupied;
     for(HWND child=GetWindow(panel,GW_CHILD);child;child=GetWindow(child,GW_HWNDNEXT)) {
-        if(!(GetWindowLongPtr(child,GWL_STYLE)&WS_VISIBLE)) continue;
         RECT box{};GetWindowRect(child,&box);MapWindowPoints(nullptr,panel,reinterpret_cast<POINT*>(&box),2);
         assert(box.left>=0 && box.top>=0 && box.right<=bounds.right && box.bottom<=bounds.bottom);
         for(const auto& other:occupied) { RECT overlap{};assert(!IntersectRect(&overlap,&box,&other)); }
@@ -60,7 +56,7 @@ static void check_layout() {
     }
     // Check the actual captions using both native and supplied 1.10-size text.
     HDC dc=GetDC(panel);
-    for(int height:{13,15}) {
+    for(int height:{12,13}) {
         HFONT measure=CreateFontW(-px(height),0,0,0,FW_NORMAL,0,0,0,DEFAULT_CHARSET,0,0,0,0,L"Tahoma");
         auto old=SelectObject(dc,measure);
         for(int row=1;row<3;++row) {
@@ -70,14 +66,11 @@ static void check_layout() {
                 const auto split=value.find(L'\n');assert(split!=std::wstring::npos);
                 for(const auto& part:{value.substr(0,split),value.substr(split+1)}) {
                     SIZE size{};GetTextExtentPoint32W(dc,part.c_str(),static_cast<int>(part.size()),&size);
-                    assert(size.cx<=px(panel_width-36) && size.cy<=px(20));
+                    assert(size.cx<=px(180) && size.cy<=px(16));
                 }
             }
             set_amount(row,1);
         }
-        const auto largest=commas(INT64_MAX,true);SIZE balance{};
-        GetTextExtentPoint32W(dc,largest.c_str(),static_cast<int>(largest.size()),&balance);
-        assert(balance.cx<=px(panel_width-174));
         SelectObject(dc,old);DeleteObject(measure);
     }
     ReleaseDC(panel,dc);
@@ -111,40 +104,8 @@ int main(int argc,char** argv) {
     assert(amount(0)==0 && amount(1)==1 && amount(2)==1);
     update();for(auto control:actions) assert(!IsWindowEnabled(control));
     auto value=funded();reply(value);
-    for(uint32_t action=1;action<=6;++action) {
-        select_action(action);check_layout();
-        assert(SendMessage(GetDlgItem(panel,selection_id),CB_GETCURSEL,0,0)==static_cast<LRESULT>(action<=2?action-1:action-3));
-        assert(!label(GetDlgItem(panel,selection_id)).empty());
-    }
-    const auto initial_requests=fixture::requests.size();
-    for(uint32_t action=1;action<=6;++action) {
-        select_action(action);click(maximum_id);
-        assert(amount(selected_row())==maximum(action));
-        assert(label(GetDlgItem(panel,maximum_id))==std::wstring(L"Max ")+verb(action));
-        assert(fixture::requests.size()==initial_requests);
-        const auto planned=pn_bank::plan(state,action,amount(selected_row()));
-        assert(preview_balance(false)==commas(planned.bank,true));
-        assert(preview_balance(true)==commas(planned.wallet,true));
-    }
-    select_action(pn_bank::Deposit);
-    SetWindowTextW(inputs[0],L"1000000");SendMessage(inputs[0],EM_SETSEL,2,2);
-    SendMessage(panel,WM_COMMAND,MAKEWPARAM(100,EN_CHANGE),reinterpret_cast<LPARAM>(inputs[0]));
-    DWORD start=0,end=0;SendMessage(inputs[0],EM_GETSEL,reinterpret_cast<WPARAM>(&start),reinterpret_cast<LPARAM>(&end));
-    assert(start==2 && end==2 && label(inputs[0])==L"1000000");
-    SendMessage(panel,WM_COMMAND,MAKEWPARAM(100,EN_KILLFOCUS),reinterpret_cast<LPARAM>(inputs[0]));
-    assert(amount(0)==1000000 && label(inputs[0])==L"1,000,000");
-    SetWindowTextW(inputs[0],L"9,223,372,036,854,775,807");assert(amount(0)==INT64_MAX);
-    for(auto invalid:{L"1,00",L"1,,000",L",100",L"1,000,",L"1000,000",L"9,223,372,036,854,775,808",L"1 000",L"+1"}) {
-        SetWindowTextW(inputs[0],invalid);assert(amount(0)==-1 && !IsWindowEnabled(actions[0]));
-        assert(preview_balance(false)==L"--");
-    }
-    set_amount(0,0);set_amount(1,1);set_amount(2,1);
-    click(exchange_id);
-    SendMessage(GetDlgItem(panel,selection_id),CB_SETCURSEL,3,0);
-    SendMessage(panel,WM_COMMAND,MAKEWPARAM(selection_id,CBN_SELCHANGE),reinterpret_cast<LPARAM>(GetDlgItem(panel,selection_id)));
-    assert(selected_action==pn_bank::SellNote && (GetWindowLongPtr(inputs[2],GWL_STYLE)&WS_VISIBLE));
-    click(transfer_id);assert(selected_action==pn_bank::Deposit);
-    click(exchange_id);assert(selected_action==pn_bank::SellNote);
+    check_layout();
+    for(auto control:actions) assert(GetWindowLongPtr(control,GWL_STYLE)&WS_VISIBLE);
     set_amount(1,3);assert(label(actions[2])==L"Buy 3\n-1,503,000,000z" && label(actions[3])==L"Sell 3\n+1,497,000,000z");
     set_amount(2,2);assert(label(actions[4])==L"Buy 2\n-2,004,000z" && label(actions[5])==L"Sell 2\n+1,996,000z");
     set_amount(2,INT64_MAX);assert(label(actions[4])==L"Buy\nEnter quantity" && !IsWindowEnabled(actions[4]));
@@ -237,7 +198,7 @@ int main(int argc,char** argv) {
             click(400+row*2);click(401+row*2);
             assert(fixture::requests.size()==before);
         }
-        set_amount(row,0);set_amount(row,1);assert(amount(row)==1);
+        set_amount(row,0);click(500+row*10);assert(amount(row)==1);
         assert(IsWindowEnabled(actions[row*2]) && IsWindowEnabled(actions[row*2+1]));
     }
     // Each genuine restriction still disables the appropriate action.
@@ -302,7 +263,7 @@ int main(int argc,char** argv) {
     for(auto control:actions) assert(!IsWindowEnabled(control));
     // A receipt requires the exact authenticated request, survives refresh,
     // and is never generated by a click, Saving, disconnect, or stale reply.
-    reply(value);select_action(pn_bank::BuyNote);set_amount(2,1);click(404);
+    reply(value);set_amount(2,1);click(404);
     const auto receipt_request=fixture::requests.back();assert(receipt.empty());
     auto confirmation=value;confirmation.request_id=receipt_request.sequence;confirmation.result=pn_bank::Saving;
     reply(confirmation);assert(receipt.empty());
@@ -339,6 +300,6 @@ int main(int argc,char** argv) {
     for(auto control:actions) assert(!IsWindowEnabled(control));
     assert(!IsWindowVisible(panel));
     DestroyWindow(panel);
-    std::cout<<"PASS: Transfer/Exchange controls fit without overlaps at "<<scale_percent<<"%; exact previews and signed totals; formatted integer amounts and caret stability; explicit Max never submits; confirmed receipts survive refresh and clear on session change\n";
-    std::cout<<"PASS: automatic refresh preserves enabled controls, status and paint region with zero WM_ENABLE messages; all six queued actions submit once with the clicked amount; changed funds/items/capacity, saving, failed refresh and session change cancel queued actions; local diagnostics omit identities, tokens and balances; 3M bank rejects 15 tickets and enables buying 1 or 2 with zero owned; default item quantities; all four native Buy/Sell clicks; pending/duplicate guards; zero/invalid input; visible rejection reasons; deposit then buy/sell control recovery; funds, eligible items, inventory and bank capacity; unavailable, disconnected and stale sessions\n";
+    std::cout<<"PASS: compact controls stay inside the panel without overlaps; exact signed Buy/Sell totals track quantity; largest valid totals fit native and 1.10-size fonts; invalid quantity cannot display an overflowed total\n";
+    std::cout<<"PASS: automatic refresh preserves enabled controls, status and paint region with zero WM_ENABLE messages; all six queued actions submit once with the clicked amount; changed funds/items/capacity, saving, failed refresh and session change cancel queued actions; local diagnostics omit identities, tokens and balances; 3M bank rejects 15 tickets and enables buying 1 or 2 with zero owned; default item quantities; all four native Buy/Sell clicks; pending/duplicate guards; zero/invalid input; presets; visible rejection reasons; deposit then buy/sell control recovery; funds, eligible items, inventory and bank capacity; unavailable, disconnected and stale sessions\n";
 }

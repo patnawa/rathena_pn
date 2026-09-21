@@ -76,7 +76,6 @@ int main() {
     std::thread initial(backend,pn_bank::Refresh,snapshot,false);
     pump_until([] { return verified && !busy; });initial.join();
     for(int i=2;i<6;++i) assert(IsWindowEnabled(actions[i]));
-    select_action(pn_bank::BuyNote);
     // Timer request is genuinely in flight when the native Buy click arrives.
     received=false;std::thread refresh(backend,pn_bank::Refresh,snapshot,true);
     last_refresh=0;SendMessage(panel,WM_TIMER,1,0);pump_until([&] { return received.load(); });
@@ -97,7 +96,6 @@ int main() {
     submit(pn_bank::Refresh);pump_until([&] { return !busy && state.result==pn_bank::Ok && state.bank==snapshot.bank; });committed.join();
     assert(financial==1 && state.counts[1]==11 && IsWindowEnabled(actions[4]) && IsWindowEnabled(actions[5]));
     assert(receipt.find(L"Saved: Bought 1 Ticket.")==0);
-    select_action(pn_bank::SellNote);
     // A logout between an explicit click and its balance reply cancels it.
     received=false;ResetEvent(gate);std::thread logout_refresh(backend,pn_bank::Refresh,snapshot,true);
     submit(pn_bank::Refresh);pump_until([&] { return received.load(); });
