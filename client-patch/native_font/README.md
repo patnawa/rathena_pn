@@ -20,12 +20,14 @@ match Arial 11 exactly, including `Base Lv. 68` at 57 x 8 ink pixels. The separa
 regular 13-cell HP/SP/AP value fonts become character height 10; the reference sample
 `5031  /  5031` matches exactly at 61 x 7 ink pixels. The user's
 `Screenshot 2026-09-19 213444.png` shows clipping with the former 14-character size.
-Bold 13-cell requests retain character height 13. Runtime diagnostics identified
+Bold 13-cell requests use character height 12. Runtime diagnostics identified
 Kafra Employee and Healer labels using this bold font (weight 700), while
 HP/SP values use the regular font (weight 400). Applying the resource-value
-exception to both weights previously shrank NPC names to 10 pixels. The
+exception to both weights previously shrank NPC names to 10 pixels. The user
+confirmed that both NPC and character names grew, but found 13 pixels too large;
+profile 5 uses the intermediate 12-pixel size. The
 separate 11-cell inventory fonts retain their original size. Other labels
-sharing the bold 13-cell font also receive its full height.
+sharing the bold 13-cell font also use 12 pixels.
 
 Explicit negative heights and other font sizes are preserved. Bold, italic and underline remain
 available. Large text, symbol fonts, rotated text and calls originating in other

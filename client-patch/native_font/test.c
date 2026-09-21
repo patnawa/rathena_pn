@@ -29,12 +29,12 @@ int main(void) {
     check(CreateFontIndirectW(&w),-12,"Arial",0,3);assert(w.lfHeight==12);
     /* Runtime probes distinguish bold 13-cell NPC names from regular 13-cell
      * resource values and both 11-cell inventory fonts. */
-    check(CreateFontA(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,"Gulim"),-13,"Arial",0,3);
-    check(CreateFontW(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,L"Gulim"),-13,"Arial",0,3);
+    check(CreateFontA(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,"Gulim"),-12,"Arial",0,3);
+    check(CreateFontW(13,0,0,0,FW_BOLD,0,0,0,HANGUL_CHARSET,0,0,0,0,L"Gulim"),-12,"Arial",0,3);
     a.lfHeight=13;a.lfWeight=FW_BOLD;
-    check(CreateFontIndirectA(&a),-13,"Arial",0,3);assert(a.lfHeight==13 && a.lfWeight==FW_BOLD);
+    check(CreateFontIndirectA(&a),-12,"Arial",0,3);assert(a.lfHeight==13 && a.lfWeight==FW_BOLD);
     w.lfHeight=13;w.lfWeight=FW_BOLD;
-    check(CreateFontIndirectW(&w),-13,"Arial",0,3);assert(w.lfHeight==13 && w.lfWeight==FW_BOLD);
+    check(CreateFontIndirectW(&w),-12,"Arial",0,3);assert(w.lfHeight==13 && w.lfWeight==FW_BOLD);
     check(CreateFontA(13,0,0,0,FW_NORMAL,0,0,0,ANSI_CHARSET,0,0,0,0,"Arial"),-10,"Arial",0,3);
     for(int weight=FW_NORMAL;weight<=FW_BOLD;weight+=FW_BOLD-FW_NORMAL)
         check(CreateFontA(11,0,0,0,weight,0,0,0,HANGUL_CHARSET,0,0,0,0,"Gulim"),-11,"Arial",0,3);
