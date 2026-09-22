@@ -31,6 +31,7 @@ TESTS = (
     'scdata_reload_test.py', 'rodex_operation_test.py',
     'hotfix_bonus_regression.py', 'fly_wing_rental_regression.py',
     'aquila_cast_time_test.py',
+    'dimension_autocast_runtime_test.py',
     'equipment_progression_test.py',
       'equipment_reform_transaction_test.py',
       'reform_commit_test.py',

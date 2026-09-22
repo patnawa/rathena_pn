@@ -1,0 +1,419 @@
+[
+  {
+    "id": 510139,
+    "name": "Unidentified Sword",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=510139&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Deft Stab^000000 has a chance to auto cast Level 1 ^009900Abyss Dagger^000000.",
+        "after": "Using ^009900Deft Stab^000000 autocasts ^009900Abyss Dagger^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 530054,
+    "name": "Unidentified Spear",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=530054&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Overslash^000000 has a chance to auto cast Level 1 ^009900Overbrand^000000.",
+        "after": "Using ^009900Overslash^000000 autocasts ^009900Overbrand^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 540079,
+    "name": "Unidentified Book",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=540079&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Diamond Storm^000000 has a chance to auto cast Level 1 ^009900Elemental Buster^000000.",
+        "after": "Using ^009900Diamond Storm^000000 autocasts ^009900Elemental Buster^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(Requires Elemental Buster Level 1 or higher and a summoned high elemental.)"
+      }
+    ]
+  },
+  {
+    "id": 540080,
+    "name": "Unidentified Book",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=540080&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Terra Drive^000000 has a chance to auto cast Level 1 ^009900Elemental Buster^000000.",
+        "after": "Using ^009900Terra Drive^000000 autocasts ^009900Elemental Buster^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(Requires Elemental Buster Level 1 or higher and a summoned high elemental.)"
+      }
+    ]
+  },
+  {
+    "id": 540082,
+    "name": "Unidentified Book",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=540082&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Dawn Break^000000 has a chance to auto cast Level 1 ^009900Midnight Kick^000000.",
+        "after": "Using ^009900Dawn Break^000000 autocasts ^009900Midnight Kick^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 540083,
+    "name": "Unidentified Book",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=540083&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Sunset Blast^000000 has a chance to auto cast Level 1 ^009900Noon Blast^000000.",
+        "after": "Using ^009900Sunset Blast^000000 autocasts ^009900Noon Blast^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 550130,
+    "name": "Unidentified Staff",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=550130&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Arbitrium^000000 has a chance to auto cast Level 1 ^009900Adoramus^000000.",
+        "after": "Using ^009900Arbitrium^000000 autocasts ^009900Adoramus^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 550131,
+    "name": "Unidentified Staff",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=550131&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Talisman of Blue Dragon^000000 has a chance to auto cast Level 1 ^009900Talisman of Red Phoenix^000000.",
+        "after": "Using ^009900Talisman of Blue Dragon^000000 autocasts ^009900Talisman of Red Phoenix^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 550132,
+    "name": "Unidentified Staff",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=550132&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Talisman of Blue Dragon^000000 has a chance to auto cast Level 1 ^009900Talisman of Black Tortoise^000000.",
+        "after": "Using ^009900Talisman of White Tiger^000000 autocasts ^009900Talisman of Black Tortoise^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 550133,
+    "name": "Unidentified Staff",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=550133&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Napalm Vulcan Strike^000000 has a 50% chance to auto cast Level 5 ^009900Soul Vulcan Strike^000000.",
+        "after": "Using ^009900Napalm Vulcan Strike^000000 has a 50% chance to autocast ^009900Soul Vulcan Strike^000000 at Level 5."
+      }
+    ]
+  },
+  {
+    "id": 560060,
+    "name": "Unidentified Knuckle",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=560060&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900First Brand^000000 has a chance to auto cast Level 1 ^009900Second Flame^000000.",
+        "after": "Using ^009900First Brand^000000 autocasts ^009900Second Flame^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      },
+      {
+        "before": "Casting ^009900Second Flame^000000 has a chance to auto cast Level 1 ^009900Third Flame Bomb^000000.",
+        "after": "Using ^009900Second Flame^000000 autocasts ^009900Third Flame Bomb^000000 at the highest learned level."
+      }
+    ]
+  },
+  {
+    "id": 570062,
+    "name": "Unidentified Instrument",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=570062&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Metallic Fury^000000 has a chance to auto cast Level 1 ^009900Reverberation^000000.",
+        "after": "Using ^009900Metallic Fury^000000 autocasts ^009900Reverberation^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 570063,
+    "name": "Unidentified Instrument",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=570063&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Rhythm Shooting^000000 has a chance to auto cast Level 1 ^009900Sound Blend^000000.",
+        "after": "Using ^009900Rhythm Shooting^000000 autocasts ^009900Sound Blend^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 580061,
+    "name": "Unidentified Whip",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=580061&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Metallic Fury^000000 has a chance to auto cast Level 1 ^009900Reverberation^000000.",
+        "after": "Using ^009900Metallic Fury^000000 autocasts ^009900Reverberation^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 580062,
+    "name": "Unidentified Whip",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=580062&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Rhythm Shooting^000000 has a chance to auto cast Level 1 ^009900Sound Blend^000000.",
+        "after": "Using ^009900Rhythm Shooting^000000 autocasts ^009900Sound Blend^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 590080,
+    "name": "Unidentified Mace",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=590080&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Explosive Powder^000000 has a chance to auto cast Level 1 ^009900Cart Tornado^000000.",
+        "after": "Using ^009900Explosive Powder^000000 autocasts ^009900Cart Tornado^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 600054,
+    "name": "Unidentified Sword",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=600054&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Hack and Slasher^000000 has a chance to auto cast Level 1 ^009900Ignition Break^000000.",
+        "after": "Using ^009900Hack and Slasher^000000 autocasts ^009900Ignition Break^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 610065,
+    "name": "Unidentified Katar",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=610065&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Phantom Menace^000000 has a chance to auto cast the higher Level learned ^009900Rolling Cutter^000000.",
+        "after": "Using ^009900Phantom Menace^000000 autocasts ^009900Rolling Cutter^000000 at the highest learned level."
+      },
+      {
+        "before": "Casting ^009900Rolling Cutter^000000 has a chance to auto cast Level 1 ^009900Impact Crater^000000.",
+        "after": "Using ^009900Rolling Cutter^000000 autocasts ^009900Impact Crater^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(Each autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 620037,
+    "name": "Unidentified Axe",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=620037&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Mighty Smash^000000 has a chance to auto cast Level 1 ^009900Axe Tornado^000000.",
+        "after": "Using ^009900Mighty Smash^000000 autocasts ^009900Axe Tornado^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      },
+      {
+        "before": "Increases damage of ^009900Axe Tornado^000000 by 45%.",
+        "after": "Increases damage of ^009900Axe Stomp^000000 by 45%."
+      }
+    ]
+  },
+  {
+    "id": 640049,
+    "name": "Unidentified Staff",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=640049&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Crimson Arrow^000000 has a chance to auto cast Level 1 ^009900Storm Cannon^000000.",
+        "after": "Using ^009900Crimson Arrow^000000 autocasts ^009900Storm Cannon^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 640050,
+    "name": "Unidentified Staff",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=640050&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Rock Down^000000 has a chance to auto cast Level 1 ^009900Frozen Slash^000000.",
+        "after": "Using ^009900Rock Down^000000 autocasts ^009900Frozen Slash^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 650046,
+    "name": "Unidentified Huuma Shuriken",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=650046&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Cross Slash^000000 has a chance to auto cast Level 1 ^009900Shadow Slash^000000.",
+        "after": "Using ^009900Cross Slash^000000 autocasts ^009900Shadow Slash^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 650047,
+    "name": "Unidentified Huuma Shuriken",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=650047&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Red Flame Cannon^000000 has a chance to auto cast Level 1 ^009900Thundering Cannon^000000.",
+        "after": "Using ^009900Red Flame Cannon^000000 autocasts ^009900Thundering Cannon^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 700093,
+    "name": "Unidentified Bow",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=700093&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Crescive Bolt^000000 has a chance to auto cast Level 1 ^009900Sharp Shooting^000000.",
+        "after": "Using ^009900Crescive Bolt^000000 autocasts ^009900Sharp Shooting^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 700094,
+    "name": "Unidentified Bow",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=700094&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Hawk Rush^000000 has a 50% chance to auto cast Level 1 ^009900Hawk Boomerang^000000.",
+        "after": "Using ^009900Hawk Rush^000000 has a 50% chance to autocast ^009900Hawk Boomerang^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 810040,
+    "name": "Unidentified Rifle",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=810040&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Only One Bullet^000000 has a chance to auto cast Level 1 ^009900Spiral Shooting^000000.",
+        "after": "Using ^009900Only One Bullet^000000 autocasts ^009900Spiral Shooting^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      }
+    ]
+  },
+  {
+    "id": 840032,
+    "name": "Unidentified Grenade Launcher",
+    "source": "https://ro.gnjoy.com/guide/runemidgarts/itemview.asp?ID=840032&itemSeq=1",
+    "edits": [
+      {
+        "before": "Casting ^009900Wild Fire^000000 has a chance to auto cast Level 1 ^009900Spiral Shooting^000000.",
+        "after": "Using ^009900Spiral Shooting^000000 autocasts ^009900Wild Fire^000000 at the highest learned level."
+      },
+      {
+        "before": "(If you learned a higher Level, it will auto cast that Level instead.)",
+        "after": "(The autocast skill must be learned at Level 1 or higher.)"
+      },
+      {
+        "before": "^0000CCType:^000000 Rifle",
+        "after": "^0000CCType:^000000 Grenade Launcher"
+      }
+    ]
+  }
+]

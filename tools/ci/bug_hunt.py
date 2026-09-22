@@ -29,6 +29,7 @@ SUITES = {
                  'storage_native_audit_test.py'],
     'combat': ['element_system_test.py', 'hotfix_bonus_regression.py',
                'instance_combat_rules_test.py', 'aquila_cast_time_test.py',
+               'dimension_autocast_runtime_test.py',
                'sealed_performer_cards_test.py', 'soul_combo_card_audit.py'],
     'release': ['bug_hunt_test.py', 'release_checks_test.py', 'mob_sql_schema_test.py',
                 'char_shared_header_dependency_test.py'],
@@ -37,6 +38,7 @@ NATIVE = {
     'party': ['episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
               'instance_entry_native_test.py'],
     'transactions': ['rune_tablet_transaction_test.py', 'npc_audit_fashion_test.py'],
+    'combat': ['dimension_equipment_test.py'],
 }
 ACCEPTANCE = {
     'transactions': 'Rendered menus; exact inventory and zeny after disconnect, repeated confirmation, and full inventory.',
@@ -167,6 +169,8 @@ def main():
                 row['environment'] = {'LUA51': str(args.lua.resolve())}
             if name == 'rune_tablet_transaction_test.py':
                 row['command'] += ['--build-dir', str(output / 'native-rune')]
+            if name == 'dimension_equipment_test.py':
+                row['command'] += ['--build-dir', str(output / 'native-dimension-equipment')]
             if name in ('legacy_quest_navigation_test.py', 'client_resource_repair_test.py',
                         'bank_item_metadata_test.py'):
                 if not args.lua or not args.client_root:

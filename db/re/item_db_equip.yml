@@ -242050,8 +242050,8 @@ Body:
                   bonus2 bSkillAtk,"EM_ELEMENTAL_BUSTER_POISON",25;
                   bonus2 bSkillAtk,"EM_ELEMENTAL_BUSTER_GROUND",25;
                   if (.@r>=12) {
-                     .@class_ = geteleminfo(ELEMINFO_CLASS);
-                     if (getskilllv("EM_ELEMENTAL_BUSTER") >= 10 && .@class_ >= 20816 && .@class_ <= 20820) {
+                     // The current advanced summon is checked when the autocast executes.
+                     if (getskilllv("EM_ELEMENTAL_BUSTER") >= 10) {
                         bonus4 bAutoSpellOnSkill,"EM_TERRA_DRIVE","EM_ELEMENTAL_BUSTER",10,1000;
                         bonus4 bAutoSpellOnSkill,"EM_DIAMOND_STORM","EM_ELEMENTAL_BUSTER",10,1000;
                      }

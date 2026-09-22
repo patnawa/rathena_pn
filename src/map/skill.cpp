@@ -1654,6 +1654,12 @@ int32 skill_onskillusage(map_session_data *sd, block_list *bl, uint16 skill_id, 
 
 		uint16 skill = it.id;
 
+		// Elementals can be summoned or dismissed after equipment bonuses are
+		// registered. Check the current summon before consuming autocast costs.
+		if (skill == EM_ELEMENTAL_BUSTER &&
+			(sd->ed == nullptr || sd->ed->elemental.class_ < ELEMENTALID_DILUVIO || sd->ed->elemental.class_ > ELEMENTALID_SERPENS))
+			continue;
+
 		sd->state.autocast = 1; //set this to bypass sd->canskill_tick check
 
 		if( skill_isNotOk(skill, *sd) ) {
@@ -1680,11 +1686,11 @@ int32 skill_onskillusage(map_session_data *sd, block_list *bl, uint16 skill_id, 
 
 		e_cast_type type = skill_get_casttype(skill);
 
-		if (type == CAST_GROUND && !skill_pos_maxcount_check(sd, tbl->x, tbl->y, skill_id, skill_lv, BL_PC, false))
+		if (type == CAST_GROUND && !skill_pos_maxcount_check(sd, tbl->x, tbl->y, skill, skill_lv, BL_PC, false))
 			continue;
 
 		if (battle_config.autospell_check_range &&
-			!battle_check_range(bl, tbl, skill_get_range2(sd, skill, skill_lv, true)))
+			!battle_check_range(sd, tbl, skill_get_range2(sd, skill, skill_lv, true)))
 			continue;
 
 		sd->state.autocast = 1;
