@@ -312,6 +312,12 @@ pn_style	mapflag	nomemo
 pn_style	mapflag	loadevent
 pn_style	mapflag	town
 
+// Walk-through entrance to the Main Office in Prontera.
+prontera,160,189,0	warp	PNOfficeEntrance	1,1,pn_office,100,40
+
+// Return route from the office lobby; destinations do not overlap a warp cell.
+pn_office,100,36,0	warp	PNOfficeExit	1,1,prontera,163,184
+
 -	script	PN Office Welcome	-1,{
 OnPCLoadMapEvent:
 	if (strcharinfo(3) == "pn_office") dispbottom "PN Main Office | Directory: search a service or change floors. @office returns to the lobby.";

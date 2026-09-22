@@ -125,7 +125,6 @@ def generate():
     for var,values in arrays:
         lines.append('\tsetarray '+var+','+','.join(json.dumps(v) for v in values)+';')
     lines+=['\treturn;','}','',
-      'prontera,156,185,4\tduplicate(PN Office Access)\tMain Office#prt\t4_M_01',
       'izlude,146,146,4\tduplicate(PN Office Access)\tMain Office#iz\t4_M_01',
       'izlude_a,146,146,4\tduplicate(PN Office Access)\tMain Office#iza\t4_M_01',
       'izlude_b,146,146,4\tduplicate(PN Office Access)\tMain Office#izb\t4_M_01',

@@ -70,7 +70,6 @@ function	script	PN_OfficeIndex	{
 	return;
 }
 
-prontera,156,185,4	duplicate(PN Office Access)	Main Office#prt	4_M_01
 izlude,146,146,4	duplicate(PN Office Access)	Main Office#iz	4_M_01
 izlude_a,146,146,4	duplicate(PN Office Access)	Main Office#iza	4_M_01
 izlude_b,146,146,4	duplicate(PN Office Access)	Main Office#izb	4_M_01
