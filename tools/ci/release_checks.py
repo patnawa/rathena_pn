@@ -13,8 +13,10 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -38,6 +40,7 @@ TESTS = (
     'health_check_test.py',
     'main_office_test.py',
     'storage_sql_failure_test.py',
+    'storage_native_audit_test.py',
     'mob_sql_schema_test.py',
     'client_archive_stack_test.py',
     'client_release_audit_test.py',
@@ -51,6 +54,13 @@ TESTS = (
     'alice_database_test.py',
     'kro_285_progression_test.py',
     'instance_combat_rules_test.py',
+)
+FULL_TESTS = (
+    'npc_audit_fashion_test.py', 'chapter1_protection_test.py', 'instance_entry_native_test.py',
+    'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
+    'mob_matk_range_test.py', 'immortal_instance_test.py',
+    'instance_warper_test.py', 'airship_briefing_test.py',
+    'bioresearch_test.py', 'alice_test.py',
 )
 
 
@@ -87,6 +97,64 @@ def startup_errors(text):
     return errors
 
 
+def save_report(report, path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    temporary.replace(path)
+
+
+def run_process(command, stream, timeout):
+    environment = os.environ.copy()
+    # Python fixtures use assertions; an inherited optimization setting must
+    # never turn a failing regression into a successful release check.
+    environment.pop('PYTHONOPTIMIZE', None)
+    with subprocess.Popen(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT,
+                          env=environment, start_new_session=os.name == 'posix') as process:
+        try:
+            return process.wait(timeout=timeout)
+        except BaseException:
+            # Native fixtures spawn compiler/test children. Stop those as well
+            # before returning control or recording a timeout/interruption.
+            if os.name == 'posix':
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            else:
+                process.kill()
+            process.wait()
+            raise
+
+
+def run_logged_check(name, command, report, report_path, log_path, timeout=900, check=True):
+    row = {'name': name, 'passed': False, 'status': 'running',
+           'command': command, 'log': str(log_path)}
+    report['checks'].append(row)
+    save_report(report, report_path)
+    started = time.monotonic()
+    print(f'RUN: {name} (log: {log_path})', flush=True)
+    try:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        with log_path.open('wb') as stream:
+            try:
+                returncode = run_process(command, stream, timeout)
+            except BaseException as exc:
+                stream.write(('\nRunner error: ' + (str(exc) or type(exc).__name__) + '\n').encode('utf-8'))
+                raise
+        row.update(passed=returncode == 0, status='passed' if returncode == 0 else 'failed',
+                   exit_code=returncode)
+        if check and returncode:
+            raise subprocess.CalledProcessError(returncode, command)
+    except BaseException as exc:
+        row.update(passed=False, status='failed', error=str(exc) or type(exc).__name__)
+        raise
+    finally:
+        row['seconds'] = round(time.monotonic() - started, 2)
+        save_report(report, report_path)
+    return row
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--phase', choices=['source', 'full'], default='full')
@@ -97,52 +165,61 @@ def main():
         parser.error('--startup-log is required for the full release gate')
     if sys.platform != 'linux':
         parser.error('Run on Linux: the native regression tests require GCC and sanitizers')
-    import yaml
+    args.report = args.report.resolve()
+    if args.startup_log:
+        args.startup_log = args.startup_log.resolve()
+        if args.startup_log == args.report:
+            parser.error('--startup-log and --report must be different files')
     checks = []
     report = {'phase': args.phase, 'passed': False, 'checks': checks}
+    save_report(report, args.report)
     try:
         if args.phase == 'full':
             report['candidate_sha256'] = candidate_digest(ROOT)
+        yaml_check = {'name': 'database_yaml_syntax', 'passed': False, 'status': 'running', 'files': 0}
+        checks.append(yaml_check)
+        save_report(report, args.report)
+        import yaml
         count = 0
         for path in sorted((ROOT / 'db').rglob('*.yml')):
+            yaml_check['file'] = path.relative_to(ROOT).as_posix()
             with path.open(encoding='utf-8-sig') as stream:
                 list(yaml.load_all(stream, Loader=yaml.CSafeLoader if hasattr(yaml, 'CSafeLoader') else yaml.SafeLoader))
             count += 1
-        checks.append({'name': 'database_yaml_syntax', 'passed': True, 'files': count})
-        tests = TESTS + (('chapter1_protection_test.py', 'instance_entry_native_test.py',
-                         'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
-                         'mob_matk_range_test.py', 'immortal_instance_test.py',
-                         'instance_warper_test.py', 'airship_briefing_test.py',
-                         'bioresearch_test.py', 'alice_test.py') if args.phase == 'full' else ())
+            yaml_check['files'] = count
+        yaml_check.pop('file', None)
+        yaml_check.update(passed=True, status='passed')
+        tests = TESTS + (FULL_TESTS if args.phase == 'full' else ())
         commands = [(name, [sys.executable, str(ROOT / 'tools/ci' / name)]) for name in tests]
         commands.append(('client_compat_assets', [sys.executable,
                          str(ROOT / 'client-patch/client_compat/validate.py'), '--assets-only']))
-        for name, command in commands:
-            started = time.monotonic()
-            result = subprocess.run(command, cwd=ROOT, timeout=900)
-            checks.append({'name': name, 'passed': result.returncode == 0, 'seconds': round(time.monotonic() - started, 2)})
-            result.check_returncode()
+        log_directory = args.report.parent / (args.report.stem + '-logs')
+        for index, (name, command) in enumerate(commands, 1):
+            run_logged_check(name, command, report, args.report,
+                             log_directory / f'{index:02d}-{Path(name).stem}.log')
         if args.phase == 'full':
-            args.startup_log.parent.mkdir(parents=True, exist_ok=True)
-            with args.startup_log.open('wb') as stream:
-                result = subprocess.run([str(ROOT / 'map-server'), '--run-once'], cwd=ROOT,
-                                        stdout=stream, stderr=subprocess.STDOUT, timeout=300)
+            startup = run_logged_check('isolated_startup', [str(ROOT / 'map-server'), '--run-once'],
+                                       report, args.report, args.startup_log, timeout=300, check=False)
+            startup.update(passed=False, status='running')
             content = args.startup_log.read_bytes()
             errors = startup_errors(content.decode('utf-8', errors='replace'))
-            if result.returncode:
-                errors.append(f'map-server exited with status {result.returncode}')
+            if startup['exit_code']:
+                errors.append(f"map-server exited with status {startup['exit_code']}")
             if candidate_digest(ROOT) != report['candidate_sha256']:
                 errors.append('Candidate files changed during validation; rerun on a stable build')
-            checks.append({'name': 'isolated_startup', 'passed': not errors, 'sha256': hashlib.sha256(content).hexdigest(), 'errors': errors})
+            startup.update(passed=not errors, status='failed' if errors else 'passed',
+                           sha256=hashlib.sha256(content).hexdigest(), errors=errors)
             if errors:
                 raise ValueError('\n'.join(errors))
         report['passed'] = True
-    except Exception as exc:
-        report['error'] = str(exc)
+    except BaseException as exc:
+        report['error'] = str(exc) or type(exc).__name__
+        for row in checks:
+            if row.get('status') == 'running':
+                row.update(passed=False, status='failed', error=report['error'])
         raise
     finally:
-        args.report.parent.mkdir(parents=True, exist_ok=True)
-        args.report.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+        save_report(report, args.report)
     print(f"PASS: {args.phase} release checks ({len(checks)} checks). Report: {args.report}")
 
 

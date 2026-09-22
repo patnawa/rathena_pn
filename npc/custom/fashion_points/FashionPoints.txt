@@ -193,7 +193,7 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 	mes "Gold Points: ^ff8800" + #FP_Gold + "/50^000000";
 	mes "Fashion Points: ^cc33cc" + #FP_Fashion + "^000000";
 	next;
-	.@choice=select("Exchange Gold Points 1:1:About account scope:Leave");
+	.@choice=select("Exchange Gold Points (1 for 1):About account scope:Leave");
 	if (.@choice == 3) close;
 	if (.@choice == 2) {
 		mes "[Gold Point Manager]";
@@ -243,7 +243,10 @@ mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
 			switch (select("Trade it:Skip it:Stop")) {
 			case 1:
 				if (@inventorylist_id[.@i] != .@id) close;
-				delitemidx @inventorylist_idx[.@i],1;
+				if (!delitemidx(@inventorylist_idx[.@i],1)) {
+					mes "The costume could not be removed. No Fashion Points were awarded.";
+					close;
+				}
 				#FP_Fashion += .@points;
 				mes "[Designer Heidam]";
 				mes "Trade complete. Balance: ^cc33cc" + #FP_Fashion + "^000000.";
@@ -342,7 +345,7 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 		.@slots[.@count]=.@slot;
 		.@stones[.@count]=.@stone;
 		.@enchants[.@count]=.@enchant;
-		.@menu$ += "Slot " + (.@slot+1) + ": " + getitemname(.@enchant) + ":";
+		.@menu$ += "Slot " + (.@slot+1) + " - " + getitemname(.@enchant) + ":";
 		++.@count;
 	}
 	if (!.@count) {

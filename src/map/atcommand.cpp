@@ -6459,7 +6459,6 @@ ACMD_FUNC(storeall)
 
 ACMD_FUNC(clearstorage)
 {
-	int32 i, j;
 	nullpo_retr(-1, sd);
 
 	if (sd->state.storage_flag == 1) {
@@ -6471,9 +6470,10 @@ ACMD_FUNC(clearstorage)
 		return -1;
 	}
 
-	j = sd->storage.amount;
-	for (i = 0; i < j; ++i) {
-		storage_delitem(sd, &sd->storage, i, sd->storage.u.items_storage[i].amount);
+	// Withdrawals leave holes; amount counts occupied slots, not the last index.
+	for (int32 i = 0; i < ARRAYLENGTH(sd->storage.u.items_storage); ++i) {
+		if (sd->storage.u.items_storage[i].nameid != 0)
+			storage_delitem(sd, &sd->storage, i, sd->storage.u.items_storage[i].amount);
 	}
 	sd->state.storage_flag = 1;
 	storage_storageclose(sd);
@@ -6484,7 +6484,6 @@ ACMD_FUNC(clearstorage)
 
 ACMD_FUNC(cleargstorage)
 {
-	int32 i, j;
 	struct s_storage *gstorage;
 	nullpo_retr(-1, sd);
 
@@ -6513,10 +6512,11 @@ ACMD_FUNC(cleargstorage)
 		return -1;
 	}
 
-	j = gstorage->amount;
 	gstorage->lock = true; // Lock @gstorage: do not allow any item to be retrieved or stored from any guild member
-	for (i = 0; i < j; ++i) {
-		storage_guild_delitem(sd, gstorage, i, gstorage->u.items_guild[i].amount);
+	// Include retained items beyond a reduced storage capacity as well as holes.
+	for (int32 i = 0; i < ARRAYLENGTH(gstorage->u.items_guild); ++i) {
+		if (gstorage->u.items_guild[i].nameid != 0)
+			storage_guild_delitem(sd, gstorage, i, gstorage->u.items_guild[i].amount);
 	}
 	storage_guild_storageclose(sd);
 	gstorage->lock = false; // Cleaning done, release lock

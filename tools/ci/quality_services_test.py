@@ -13,6 +13,7 @@
 import io
 import json
 from pathlib import Path
+import struct
 import sys
 import tarfile
 import tempfile
@@ -68,8 +69,8 @@ def main():
         client = base / 'client'
         client.mkdir()
         (client / 'DATA.INI').write_text('[Data]\n0=patch.grf\n1=data.grf\n')
-        (client / 'patch.grf').write_bytes(b'Master of Magic\0')
-        (client / 'data.grf').write_bytes(b'Event Horizon\0RL')
+        (client / 'patch.grf').write_bytes(b'Master of Magic\0' + bytes(26) + struct.pack('<I', 0x200))
+        (client / 'data.grf').write_bytes(b'Event Horizon\0RL' + bytes(26) + struct.pack('<I', 0x300))
         (client / 'Ragexe.exe').write_bytes(b'test')
         assert not inspect(client, '20260219')['issues']
         (client / 'data.grf').unlink()

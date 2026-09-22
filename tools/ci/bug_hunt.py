@@ -7,7 +7,9 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import time
@@ -19,20 +21,22 @@ SUITES = {
     'party': ['episode_party_progression_test.py', 'instance_access_manifest_test.py'],
     'client': ['client_archive_stack_test.py', 'client_preflight_test.py',
                'audit_druid_client_test.py', 'audit_druid_integration_test.py',
+               'client_release_audit_test.py',
                'legacy_quest_navigation_test.py', 'client_resource_repair_test.py',
                'bank_item_metadata_test.py'],
     'recovery': ['database_backup_test.py', 'storage_sql_failure_test.py',
-                 'scdata_reload_test.py', 'rodex_operation_test.py'],
+                 'scdata_reload_test.py', 'rodex_operation_test.py', 'health_check_test.py',
+                 'storage_native_audit_test.py'],
     'combat': ['element_system_test.py', 'hotfix_bonus_regression.py',
                'instance_combat_rules_test.py', 'aquila_cast_time_test.py',
                'sealed_performer_cards_test.py', 'soul_combo_card_audit.py'],
-    'release': ['release_checks_test.py', 'mob_sql_schema_test.py',
+    'release': ['bug_hunt_test.py', 'release_checks_test.py', 'mob_sql_schema_test.py',
                 'char_shared_header_dependency_test.py'],
 }
 NATIVE = {
     'party': ['episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
               'instance_entry_native_test.py'],
-    'transactions': ['rune_tablet_transaction_test.py'],
+    'transactions': ['rune_tablet_transaction_test.py', 'npc_audit_fashion_test.py'],
 }
 ACCEPTANCE = {
     'transactions': 'Rendered menus; exact inventory and zeny after disconnect, repeated confirmation, and full inventory.',
@@ -77,13 +81,54 @@ def identity(client_root=None):
 def save(report, output):
     (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     lines = ['# Bug hunt results', '', f"Started: {report['started_utc']}", '',
+             f"Offline checks passed: {report['offline_checks_passed']}", '',
              '| Area | Check | Result | Evidence |', '|---|---|---|---|']
     for row in report['checks']:
         lines.append(f"| {row['area']} | {row['name']} | {row['status']} | [{row['log']}]({row['log']}) |")
+    if report.get('identity_errors'):
+        lines += ['', '## Identity capture failures', '']
+        lines += [f"- {error['stage']}: {error['error']}" for error in report['identity_errors']]
+    if report.get('finished_utc') and not report['stable_inputs']:
+        lines += ['', 'Input stability was not established; this run cannot pass.']
     lines += ['', '## Acceptance still required', '']
     lines += [f'- **{area}:** {task}' for area, task in ACCEPTANCE.items()]
     lines += ['', 'Passing fixtures do not close the acceptance items above. See identity.json for exact local inputs.', '']
     (output / 'dashboard.md').write_text('\n'.join(lines), encoding='utf-8')
+
+
+def capture_identity(report, output, client_root, stage):
+    try:
+        snapshot = identity(client_root)
+        filename = 'identity.json' if stage == 'initial' else 'identity-final.json'
+        (output / filename).write_text(json.dumps(snapshot, indent=2) + '\n', encoding='utf-8')
+        return snapshot
+    except (OSError, subprocess.SubprocessError, UnicodeError) as exc:
+        report['identity_errors'].append({'stage': stage, 'error': str(exc)})
+        return None
+
+
+def run_check(command, stream, timeout=900, environment=None):
+    # A fixture may launch a compiler or native executable. Stop its whole
+    # process group on timeout/interruption before running any later checks.
+    check_environment = os.environ.copy()
+    check_environment.update(environment or {})
+    # Several fixtures use Python assertions as their regression checks.
+    check_environment.pop('PYTHONOPTIMIZE', None)
+    with subprocess.Popen(command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT,
+                          env=check_environment,
+                          start_new_session=os.name == 'posix') as process:
+        try:
+            return process.wait(timeout=timeout)
+        except BaseException:
+            if os.name == 'posix':
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            else:
+                process.kill()
+            process.wait()
+            raise
 
 
 def main():
@@ -102,16 +147,24 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     (output / 'logs').mkdir()
     report = {'started_utc': datetime.now(timezone.utc).isoformat(), 'checks': [],
-              'offline_checks_passed': False, 'acceptance_complete': False}
-    baseline = identity(args.client_root.resolve() if args.client_root else None)
-    (output / 'identity.json').write_text(json.dumps(baseline, indent=2) + '\n', encoding='utf-8')
-    for area in args.area or SUITES:
+              'offline_checks_passed': False, 'acceptance_complete': False,
+              'stable_inputs': False, 'identity_errors': []}
+    save(report, output)
+    client_root = args.client_root.resolve() if args.client_root else None
+    baseline = capture_identity(report, output, client_root, 'initial')
+    if baseline is None:
+        report['finished_utc'] = datetime.now(timezone.utc).isoformat()
+        save(report, output)
+        return 1
+    for area in dict.fromkeys(args.area or SUITES):
         for name in SUITES[area] + (NATIVE.get(area, []) if args.native else []):
             log = 'logs/' + Path(name).stem + '.log'
             row = {'area': area, 'name': name, 'log': log, 'status': 'running',
                    'command': [sys.executable, str(ROOT / 'tools/ci' / name)],
                    'evidence_level': 'native VM fixture' if name in NATIVE.get(area, []) else 'source or isolated handler fixture'}
             report['checks'].append(row)
+            if args.lua:
+                row['environment'] = {'LUA51': str(args.lua.resolve())}
             if name == 'rune_tablet_transaction_test.py':
                 row['command'] += ['--build-dir', str(output / 'native-rune')]
             if name in ('legacy_quest_navigation_test.py', 'client_resource_repair_test.py',
@@ -128,15 +181,19 @@ def main():
             start = time.monotonic()
             with (output / log).open('wb') as stream:
                 try:
-                    result = subprocess.run(row['command'], cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT, timeout=900)
-                    row.update(status='passed' if result.returncode == 0 else 'failed', exit_code=result.returncode)
+                    returncode = run_check(row['command'], stream, environment=row.get('environment'))
+                    row.update(status='passed' if returncode == 0 else 'failed', exit_code=returncode)
                 except (OSError, subprocess.TimeoutExpired) as exc:
                     row.update(status='failed', error=str(exc))
+                    stream.write(('\nRunner error: ' + str(exc) + '\n').encode('utf-8'))
             row['seconds'] = round(time.monotonic() - start, 2)
             print(area, name, row['status'], flush=True)
             save(report, output)
-    final = identity()
-    report['stable_inputs'] = all(final[key] == baseline[key] for key in ('git_commit', 'input_sha256', 'server_binary_sha256'))
+    final = capture_identity(report, output, client_root, 'final')
+    keys = ['git_commit', 'input_sha256', 'server_binary_sha256']
+    if client_root:
+        keys.append('client')
+    report['stable_inputs'] = final is not None and all(final[key] == baseline[key] for key in keys)
     report['offline_checks_passed'] = report['stable_inputs'] and all(r['status'] == 'passed' for r in report['checks']) and not baseline.get('client', {}).get('issues')
     report['finished_utc'] = datetime.now(timezone.utc).isoformat()
     save(report, output)

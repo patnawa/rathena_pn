@@ -20,7 +20,7 @@ jobs:
       - name: Install build and regression dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libmysqlclient-dev zlib1g-dev libpcre3-dev libssl-dev python3-yaml
+          sudo apt-get install -y build-essential libmysqlclient-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev python3-yaml lua5.1
           sudo systemctl start mysql.service
       - name: Build the configured Renewal candidate
         run: |
@@ -39,6 +39,8 @@ jobs:
           PY
           ./tools/ci/sql.sh
       - name: Run release gates
+        env:
+          LUA51: /usr/bin/lua5.1
         run: python3 tools/ci/release_checks.py --startup-log release-results/startup.log --report release-results/report.json
       - uses: actions/upload-artifact@v4
         if: always()

@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime, timezone, timedelta
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -26,7 +27,7 @@ def backup_status(directory, now, max_age_hours):
         stamp = datetime.strptime(data['created_utc'], '%Y%m%dT%H%M%S%fZ').replace(tzinfo=timezone.utc)
         age = (now - stamp).total_seconds() / 3600
         archive = report_path.with_suffix('.gz')
-        if not data.get('passed') or not data.get('restore', {}).get('passed'):
+        if data.get('passed') is not True or data.get('restore', {}).get('passed') is not True:
             raise ValueError('Latest backup or its restore verification failed')
         if age < -.1 or age > max_age_hours:
             raise ValueError('Latest restored backup is stale or dated in the future')
@@ -67,7 +68,7 @@ def inspect_service(name, log_minutes):
         # Only counts are reported; SQL and client log lines may contain private data.
         return {'passed': ready and failures == 0, 'running': ready,
                 'docker_health': health, 'recent_error_lines': failures}
-    except (OSError, ValueError, TypeError, AttributeError, subprocess.SubprocessError, RuntimeError) as error:
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, subprocess.SubprocessError, RuntimeError) as error:
         return {'passed': False, 'reason': str(error)}
 
 
@@ -80,7 +81,9 @@ def main():
     parser.add_argument('--max-disk-percent', type=float, default=90)
     parser.add_argument('--log-minutes', type=int, default=15)
     args = parser.parse_args()
-    if args.max_backup_hours <= 0 or args.min_free_gib < 0 or not 0 < args.max_disk_percent <= 100 or args.log_minutes <= 0:
+    if (not all(math.isfinite(value) for value in (args.max_backup_hours, args.min_free_gib, args.max_disk_percent))
+            or args.max_backup_hours <= 0 or args.min_free_gib < 0
+            or not 0 < args.max_disk_percent <= 100 or args.log_minutes <= 0):
         parser.error('Invalid health-check thresholds')
     now = datetime.now(timezone.utc)
     report = {'checked_utc': now.isoformat(), 'checks': {}}
