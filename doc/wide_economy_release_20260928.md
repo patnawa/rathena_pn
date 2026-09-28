@@ -2,7 +2,10 @@
 
 Deployed to the Docker server at `192.168.10.18`; all seven production services
 passed health checks and all four game servers completed startup without errors.
-The signed client feed is `client-20260928-wide-zeny`, sequence `2026092802`.
+The initial signed client release was `client-20260928-wide-zeny`, sequence `2026092802`.
+The live follow-up is **`client-20260928-native-zeny`, sequence `2026092803`**,
+with full native wallet rendering, separate Weight/Zeny rows and PN project branding.
+See the [native HUD follow-up](native_zeny_hud_followup_20260928.md).
 The local PN-Client installation was updated and its 5,639 manifest files verified.
 
 ## Player behavior
@@ -13,11 +16,13 @@ Deposits, withdrawals, offline-character collection, bilateral trades, vending,
 buying stores and Zeny-only mail use exact integer companion controls. Pending
 saves wait for a durable server receipt. Vending proceeds enter the account bank.
 
-The protected Ragexe executable is unchanged. Its native wallet display remains
-capped at 2,147,483,647; Wallet & Bank displays the actual balance. Native item
-selection and received/item-bearing RODEX mail remain in the game. Unsafe narrow
-transaction paths are rejected. This independent PN implementation does not
-claim full MuhRO native-client parity.
+The protected Ragexe executable is unchanged on disk. The initial release's
+native wallet display cap was corrected by the subsequent HUD update: both the
+native Zeny row and Wallet & Bank show the full confirmed balance. Weight and
+Zeny occupy separate right-aligned rows. Other legacy numeric inputs retain
+their original limits. Native item selection and received/item-bearing RODEX
+mail remain in the game. Unsafe narrow transaction paths are rejected. This
+independent PN implementation does not claim full MuhRO native-client parity.
 
 The existing one diamond (6024) and 127 tickets (12781) were removed atomically
 and credited at 499,000,000 and 998,000 each. The account bank increased from

@@ -4,73 +4,52 @@
 
 A customized [rAthena](https://github.com/rathena/rathena) server with fourth-job and Druid integration, expanded equipment services, and coordinated Windows client updates. This repository contains server source, custom content, client companion sources, and validation tools.
 
-**[Download the published client](https://github.com/patnawa/rathena_pn/releases/latest)** · [Bank v2.3](doc/bank_compact_20260914.md) · [Release notes](doc/releases/client-2026-09-13.md) · [Player services](#player-services) · [Server setup](#server-setup) · [Documentation](#documentation)
+**[Client releases](https://github.com/patnawa/rathena_pn/releases)** · [Wide Zeny release](doc/wide_economy_release_20260928.md) · [Native HUD fix](doc/native_zeny_hud_followup_20260928.md) · [Player services](#player-services) · [Server setup](#server-setup) · [Documentation](#documentation)
 
 | Client and server | Current state |
 | --- | --- |
-| Published full client | **13 September 2026 — Master Account & Quest Navigation** |
-| Current bank UI | **v2.3 — compact 414 × 484 panel; 40% less screen area** |
+| Live client update | **28 September 2026 — full native Zeny display and PN branding** |
+| Signed updater release | `client-20260928-native-zeny`, sequence `2026092803` |
 | Game rules | Customized Renewal with fourth jobs and Druid → Karnos → Alitea |
 | Client/server packets | `20260219` |
-| Account bank | Companion protocol v2; signed 64-bit bank balance |
+| Wallet and account bank | Each supports **9,223,372,036,854,775,807 Zeny** |
 | Connection | PN LAN server at `192.168.10.18` |
 | Server stack | Login, character, map and web processes; Docker build tooling |
 
 ## Play
 
-1. Open the [latest release](https://github.com/patnawa/rathena_pn/releases/latest) and download **all client `.part*.rar` files** from that release.
-2. Keep every part in one folder. Extract **part 1 once** with a RAR5-compatible extractor; it reads the remaining parts automatically.
-3. Download **`PN-Bank-v2.2-ItemFix-20260913.zip`** from the same release. With the game closed, copy its `BankUI.dll` and merge its `SystemEN` folder into the extracted `PN-Client` folder, replacing the two matching files. This includes the previous v2.2 fixes and the ticket item definition.
-4. Run **`Check Client.cmd`**, adjust display settings with **`Setup.exe`**, then run **`Start Game.cmd`**. The published ItemFix package displays **v2.2** in the bank title bar.
+For the installed PN client, close the game and run **`Launch PN.cmd`**. The launcher receives the signed update from the PN LAN feed. Restart the game after updating. This client update is published to the LAN updater; it is not a newly uploaded full GitHub client archive.
 
-**Compact bank v2.3:** the current source and validated cumulative update are described in the [v2.3 installation notes](doc/bank_compact_20260914.md#installation-and-package). `PN-Client-Update-20260914-Bank-v2.3.zip` includes the earlier bank, audit and item fixes and replaces the bank title version with **v2.3**. That ZIP has not yet been attached to the public release above.
+Full client archives are distributed through [GitHub Releases](https://github.com/patnawa/rathena_pn/releases), separately from source and updater deltas. When using an older archive, follow its installation notes and obtain the matching current PN launcher and update before connecting. Historical Bank v2.2/v2.3 packages do not provide the current wide-wallet system.
 
-The client uses the LAN address above. You need access to that network to log in. When upgrading, close the game, extract into a fresh folder, and update desktop shortcuts to that folder. Keep the supplied `DATA.INI` order and bank/font DLLs together.
+You need access to the PN LAN to log in and use its update feed. Keep the supplied `DATA.INI` order and companion/font DLLs together. The updater verifies signed file hashes and retains replaced files for rollback. Do not restore old financial binaries against a database that has received wide-wallet activity.
 
-Releases include `INSTALL.txt`, `SHA256SUMS.txt`, and a `client-manifest.json` containing the size and SHA-256 of every extracted file. Full executables and GRFs are delivered through Releases; their companion sources and patch tools are in Git.
+## Wallet & Bank
 
-## Master Account bank
-
-One bank balance is shared by **all characters on the same game login**. Open it through the game bank button, an NPC offering banking, **`@bank`**, **Alt+B**, or **Ctrl+B** after entering the game.
-
-**Bank v2.3 uses 40% less screen area**, shrinking from 522 × 642 to **414 × 484 pixels** while keeping all six transaction actions visible. Larger balance text, compact presets and exact Buy/Sell totals make the panel easier to read during play.
-
-<p align="center">
-  <img src="doc/images/bank-v2.3.png" width="412" height="482" alt="Compact Account Bank v2.3 with larger balances, deposit and withdrawal, quantity presets, and exact signed Buy/Sell totals">
-</p>
-
-*Native v2.3 preview with the supplied 1.10 font extension and sample balances and inventory; not a captured gameplay session.*
+Each character has a separate wallet. One bank balance is shared by **all characters on the same game login**. Open Wallet & Bank through the bank button, **`@bank`**, **Alt+B**, or **Ctrl+B** after entering the game.
 
 | Balance | Capacity |
 | --- | ---: |
-| Shared account bank | **9,223,372,036,854,775,807 zeny** |
-| Character wallet | **2,147,483,647 zeny** |
+| Shared account bank | **9,223,372,036,854,775,807 Zeny** |
+| Character wallet | **9,223,372,036,854,775,807 Zeny** |
 
-Deposit wallet zeny to fund purchases. Both exchange rows start at **one item** and show the current maximum buy/sell quantities. Each button displays its selected quantity and exact bank total, including fees: buying two tickets shows **−2,004,000z**, while selling two shows **+1,996,000z**. **Bank info** explains account sharing, balance limits and sale eligibility.
+Use direct deposits and withdrawals, or collect eligible offline-character Zeny. Ticket and diamond exchange controls and new currency-token issuance are disabled. The companion Trade, Market and Mail controls handle large values with server-checked integer arithmetic and durable transaction receipts.
 
-The compact panel retains the v2.2 refresh protections: valid buttons stay enabled during balance checks, clicks are submitted once after fresh validation, and unchanged replies do not repaint the panel. Disabled exchanges keep their specific requirement messages. The cumulative update also includes the **1M Zeny Ticket** metadata repair. See the [v2.3 layout and verification](doc/bank_compact_20260914.md), [refresh checks](doc/bank_refresh_20260913.md), and [ticket repair](doc/bank_ticket_20260913.md).
+The normal game HUD shows the full confirmed wallet on its own solid-background row below Weight, with both values right-aligned. The supported Ragexe executable remains unchanged on disk. Other legacy numeric inputs retain their original limits; use the matching companion controls for larger transactions. A dash indicates that the native HUD is waiting for a confirmed balance.
 
-The server queues the custom bank during connection and reconnection, suppressing the stock bank's open/balance replies. Both v2.2 and v2.3 use the same companion protocol v2. [Opening repair and validation](doc/bank_native_only_20260913.md).
+See the [wide economy release](doc/wide_economy_release_20260928.md) for migration, transaction verification and remaining scope, and the [native HUD follow-up](doc/native_zeny_hud_followup_20260928.md) for client guards and live verification. This is independent PN code and does not establish complete MuhRO patch parity.
 
-| Item | Buy one | Sell one |
-| --- | ---: | ---: |
-| 17Carat Diamond — item `6024` | 501,000,000z | 499,000,000z |
-| 1M Zeny Ticket — item `12781` | 1,002,000z | 998,000z |
+## Gold Points and fashion
 
-The ticket quantity counts **inventory items**. Buy requires bank funds and inventory capacity; Sell requires eligible items on hand and room in the bank balance. Favorite, bound, rental, equipped and modified items are excluded from sale. Zero or invalid quantities disable the controls.
+Earn **1 Gold Point every 3 minutes online**, up to **50**. Exchange Gold Points **1:1 for Fashion Points** to resume earning after reaching the cap. Both balances belong to the game login account. Fashion Points are used for costume enchantment services and stone boxes; ordinary boxes cost 50 points and the garment second-slot box costs 300.
 
-Transactions use server-checked integer arithmetic and a coordinated SQL commit for wallet, inventory, bank registry and journal. The 64-bit update preserves balances through character changes and normal saves. See the [bank guide](client-patch/account_bank/README.md), [transaction verification](doc/account_bank_64bit_20260913.md), and [Buy/Sell repair](doc/bank_controls_20260913.md).
+| Command | Action |
+| --- | --- |
+| `@goldpoints` | Travel beside the Gold Point Manager, then click the NPC to exchange points |
+| `@fashion` | Travel to the fashion area for costume services, stone boxes and enchantments |
+| `@activity` | Show both balances, earning rules and access instructions |
 
-<details>
-<summary>Preview at maximum bank and wallet balances</summary>
-
-<p align="center">
-  <img src="doc/images/bank-v2.3-max.png" width="412" height="482" alt="Compact Bank v2.3 displaying the full 64-bit bank maximum and character wallet maximum without clipping">
-</p>
-
-Sample values rendered by the same native panel. Deposits, withdrawals and item sales are unavailable when their destination balance is full; valid purchases remain available.
-
-</details>
+Cap reminders explain both travel commands. Travel shortcuts respect the same restrictions as `@office`, including death, instances, PvP and maps that prevent escape. See the [Main Office guide](doc/main_office.md#gold-points-and-fashion-shortcuts).
 
 ## Multi-storage
 
@@ -107,7 +86,7 @@ The [navigation audit](doc/quest_navigation_audit_20260913.md) documents route a
 | --- | --- | --- |
 | Main Office | `@office` · `pn_office,100,40` | Searchable directory across 52 lobby, training and fashion desks |
 | Progression Guide | Main Office · `pn_office,108,80` | Next story objective, Chapter 2 stages, daily availability, equipment services and material sources |
-| Account bank | `@bank` · Alt+B · Ctrl+B | Shared savings, wallet transfers, diamond and ticket exchanges |
+| Account bank | `@bank` · Alt+B · Ctrl+B | Shared savings, direct wallet transfers and offline-character collection |
 | Multi-storage | `@storage` · `@mstorage` · Prontera Mystic Box · Office Kafra | Account pages, card storage, private bound items and 50M expansions |
 | Saved settings | `@settings` | Character overrides and game-account login preferences |
 | Loot presets | `@alc save 1 Farming` · `@als 1` | Ten named game-account autoloot sets |
@@ -179,8 +158,8 @@ Native tests need the documented compiler/runtime dependencies. Dated reports re
 | Topic | Guides and evidence |
 | --- | --- |
 | Latest audit | [Six-area audit and deployed fixes](doc/audit_all_20260914.md) · [Rendered checklist](doc/rendered_acceptance_20260914.md) |
-| Current client | [Release notes](doc/releases/client-2026-09-13.md) · [Bank controls](doc/bank_controls_20260913.md) |
-| Banking | [Compact v2.3 panel](doc/bank_compact_20260914.md) · [Build/install](client-patch/account_bank/README.md) · [64-bit persistence](doc/account_bank_64bit_20260913.md) |
+| Current client | [Wide economy release](doc/wide_economy_release_20260928.md) · [Native HUD fix](doc/native_zeny_hud_followup_20260928.md) |
+| Banking | [Current wide economy](doc/wide_economy_release_20260928.md) · [Historical v2.3 panel](doc/bank_compact_20260914.md) · [Earlier 64-bit bank persistence](doc/account_bank_64bit_20260913.md) |
 | Storage | [Pages, expansion, migration and validation](doc/multi_storage_20260913.md) |
 | Navigation | [Episode route audit](doc/quest_navigation_audit_20260913.md) · [Episode status](doc/episode_audit_status.md) |
 | Login | [Docker reconnect fix](doc/login_outage_20260913.md) · [Binary compatibility](doc/login_character_abi_repair_20260907.md) |

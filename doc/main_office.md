@@ -26,7 +26,7 @@ failure; moving the NPC does not change that system. Job Master, Stylist and
 Rental Service use hidden templates with visible office duplicates. Their
 former disabled town placements are not introduced on top of existing NPCs.
 
-`@office` refuses dead characters, instances and maps restricting escape or
+`@office`, `@fashion` and `@goldpoints` refuse dead characters, instances and maps restricting escape or
 participating in PvP, guild war or battlegrounds. The office Kafra can save the
 character's respawn point after confirmation. Build Notes stores three short
 notes and base-stat snapshots; it is a notebook, not a loadout switcher. Skill
@@ -37,6 +37,24 @@ real instance entrances for their individual requirements and cooldowns.
 The damage lab retains its private instance and measurements. Leaving a lab
 created from the office returns to the originating lobby or training floor.
 See [PN Services](quality_services.md) for the Poring target and measurement limits.
+
+## Gold Points and fashion shortcuts
+
+Type these commands in game chat:
+
+| Command | Destination or result |
+| --- | --- |
+| `@goldpoints` | `pn_style,136,129`, directly beside the Gold Point Manager |
+| `@fashion` | `pn_style,140,140`, the fashion and lounge entrance |
+| `@activity` | Gold/Fashion Point balances, earning rules and both access commands |
+
+Click the service NPC after arriving. Gold Points accrue at one per three minutes online and stop at 50. The manager exchanges them one-for-one for Fashion Points; exchanging below the cap resumes the earning timer. These are login-account balances, shared by that login's characters, not by separate login accounts.
+
+Fashion services include costume/stone trades, stone recovery, enchantment and stone boxes. Boxes 1–20 cost 50 Fashion Points; the garment second-slot box costs 300. The costume catalogue is view-only. Existing costs and eligibility rules are unchanged by these shortcuts.
+
+Both cap messages tell players how to reach the Gold Point Manager and the fashion services. The travel commands are available to ordinary players and use the existing Office escape restrictions.
+
+The shortcuts and messages were deployed on 28 September 2026 through a graceful, idle map-only restart. NPC startup completed without errors, all seven production containers were healthy, and Zeny, Gold Point and Fashion Point balances were unchanged. The other six containers were unchanged. Existing PN office client assets are sufficient; this script update needs no additional client download. Layout validation passed for all 52 reachable desks. A live player interaction with the new shortcuts has not yet been recorded.
 
 ## Client installation
 

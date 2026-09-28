@@ -29,3 +29,20 @@ Bank tracing recorded four successful physical close commands with immediate hid
 Regression checks cover server snapshot/authentication boundaries, stale sessions, logout, concurrent x86 cache reads, decoded guards, both native heights, saved heights, collapse/re-expand, resize rollback, the 149-pixel surface collision, clip holes, unrelated render paths, and natural-size right alignment from zero through 9,223,372,036,854,775,807. Wallet UI checks pass at 100%, 125% and 150%; bank, market and mail transport/UI suites pass.
 
 Evidence is retained under Server-Development/native-zeny-20260928 and Server-Development/pn-welcome-20260928. The corrected final DLL b77fdbec764ea328e45b88c2badfd35a2c6611cb96b54c2973a58f65e32a65cb was visually verified in-game: native Zeny and Wallet & Bank both showed 10,000,000,000, with separate right-aligned rows, a solid white Zeny background and the button strip below the expanded panel. Its bounded trace confirms successful rendering; its final logged zero predates the current visual balance because the user transacted during the test. Client installation and signed-feed publication are tracked separately in the release receipts for client-20260928-native-zeny. Non-AP layout has decoded-code and automated coverage; live non-AP acceptance has not been recorded. This follow-up does not establish complete MuhRO parity or widen other legacy numeric widgets.
+
+## Completed deployment
+
+The matching server update is active on the PN Docker server. The installed and
+published client release is `client-20260928-native-zeny`, sequence `2026092803`.
+Installation passed quick and full manifest checks, and the launcher validated
+the signed feed. Published changed objects were read back and checked by hash.
+The live server binary, welcome configuration, published DLL and local client
+were rechecked after deployment; all seven production containers were healthy.
+
+Players receive the client fix by closing the game and running `Launch PN.cmd`.
+The updater retains previous files for rollback. This was a LAN updater release,
+not a new full GitHub client archive. Temporary fixture containers were removed
+and diagnostic logging is disabled in the installed client.
+
+The later [fashion shortcuts](main_office.md#gold-points-and-fashion-shortcuts)
+are a separate server-script update and need no further client patch.
