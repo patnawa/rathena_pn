@@ -162,7 +162,8 @@ OnInit:
 OnPCLoginEvent:
 	if (#FP_Gold >= 50) {
 		#FP_Gold = 50;
-		dispbottom "Gold Points are capped at 50. Visit the Fashion Point Manager to exchange them.";
+		dispbottom "Gold Points are capped at 50. Use @goldpoints to visit the exchange desk (1 Gold = 1 Fashion Point).";
+		dispbottom "@goldpoints takes you to the Gold Point Manager. @fashion takes you to the fashion services. Click an NPC to use its service.";
 		@FP_TimerRunning = 0;
 		end;
 	}
@@ -175,7 +176,8 @@ OnGoldTick:
 	if (#FP_Gold < 50) ++#FP_Gold;
 	if (#FP_Gold >= 50) {
 		#FP_Gold = 50;
-		dispbottom "Gold Points reached the cap of 50. Exchange them for Fashion Points.";
+		dispbottom "Gold Points reached 50. Use @goldpoints to exchange them for Fashion Points and resume earning.";
+		dispbottom "@goldpoints takes you to the Gold Point Manager. @fashion takes you to the fashion services. Click an NPC to use its service.";
 		end;
 	}
 	@FP_TimerRunning = 1;
@@ -184,6 +186,8 @@ OnGoldTick:
 
 OnAtActivity:
 	dispbottom "Gold Points: " + #FP_Gold + "/50 | Fashion Points: " + #FP_Fashion;
+	dispbottom "Earn 1 Gold Point every 3 minutes online. @goldpoints takes you to the Gold Point Manager (exchange 1 for 1).";
+	dispbottom "@fashion takes you to costume services and stone boxes. Click the service NPC when you arrive.";
 	end;
 }
 

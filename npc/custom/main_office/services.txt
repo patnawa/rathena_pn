@@ -68,12 +68,25 @@ OnOffice:
 	 || getmapflag(.@map$,mf_nogo) || getmapflag(.@map$,mf_pvp) || getmapflag(.@map$,mf_gvg)
 	 || getmapflag(.@map$,mf_gvg_dungeon) || getmapflag(.@map$,mf_gvg_castle) || getmapflag(.@map$,mf_gvg_te) || getmapflag(.@map$,mf_gvg_te_castle)
 	 || getmapflag(.@map$,mf_battleground)) {
-		dispbottom "Return to an unrestricted town before using @office."; end;
+		dispbottom "Return to an unrestricted town before using @office, @fashion or @goldpoints."; end;
+	}
+	.@command$=strtolower(.@atcmd_command$);
+	if (.@command$ == "@goldpoints" || .@command$ == "#goldpoints") {
+		warp "pn_style",136,129;
+		dispbottom "Gold Point Manager: click the NPC beside you to exchange Gold Points for Fashion Points (1 for 1).";
+		end;
+	}
+	if (.@command$ == "@fashion" || .@command$ == "#fashion") {
+		warp "pn_style",140,140;
+		dispbottom "Fashion & Lounge: Gold Points, Designer, Recycler, Boxes and Enchants. @goldpoints goes straight to the exchange desk.";
+		end;
 	}
 	warp "pn_office",100,40;
 	end;
 OnInit:
 	bindatcmd "office",strnpcinfo(3)+"::OnOffice",0,99;
+	bindatcmd "fashion",strnpcinfo(3)+"::OnOffice",0,99;
+	bindatcmd "goldpoints",strnpcinfo(3)+"::OnOffice",0,99;
 	end;
 }
 
@@ -312,7 +325,7 @@ pn_style	mapflag	nomemo
 pn_style	mapflag	loadevent
 pn_style	mapflag	town
 
-// Walk-through entrance to the Main Office in Prontera.
+// Walk-through entrance beside the Main Office NPC in Prontera.
 prontera,160,189,0	warp	PNOfficeEntrance	1,1,pn_office,100,40
 
 // Return route from the office lobby; destinations do not overlap a warp cell.
