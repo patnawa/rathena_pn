@@ -5,6 +5,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <cerrno>
 #include <set>
 #include <sstream>
 #include <unordered_map>
@@ -3011,10 +3012,13 @@ ACMD_FUNC(skillpoint)
  *------------------------------------------*/
 ACMD_FUNC(zeny)
 {
-	int32 zeny=0, ret=-1;
+	int64 zeny=0;
+	int32 ret=-1;
+	char* end=nullptr;
+	errno=0;
 	nullpo_retr(-1, sd);
 
-	if (!message || !*message || (zeny = atoi(message)) == 0) {
+	if (!message || !*message || (zeny = strtoll(message, &end, 10)) == 0 || errno == ERANGE || *end != 0) {
 		clif_displaymessage(fd, msg_txt(sd,1012)); // Please enter an amount (usage: @zeny <amount>).
 		return -1;
 	}
@@ -3024,7 +3028,7 @@ ACMD_FUNC(zeny)
 		clif_displaymessage(fd, msg_txt(sd,149)); // Unable to increase the number/value.
 	}
 	else {
-	    if( sd->status.zeny < -zeny ) zeny = -sd->status.zeny;
+	    if( zeny < -sd->status.zeny ) zeny = -sd->status.zeny;
 	    if((ret=pc_payzeny(sd,-zeny,LOG_TYPE_COMMAND)) == 1)
 		clif_displaymessage(fd, msg_txt(sd,41)); // Unable to decrease the number/value.
 	}
@@ -6930,6 +6934,10 @@ ACMD_FUNC(autotrade) {
 		return -1;
 	}
 
+	if (!sd->market.published) {
+		clif_displaymessage(fd, "Publish your Market draft before autotrade.");
+		return -1;
+	}
 	sd->state.autotrade = 1;
 	if (battle_config.autotrade_monsterignore)
 		sd->state.block_action |= PCBLOCK_IMMUNE;

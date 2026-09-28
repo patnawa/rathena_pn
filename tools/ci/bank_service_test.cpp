@@ -14,8 +14,9 @@
 struct ItemData { struct {bool inventory=false;int amount=30000;} stack; struct {bool guid=false,autoequip=false;} flag; int weight=10; };
 struct ItemDb { std::shared_ptr<ItemData> data=std::make_shared<ItemData>(); std::shared_ptr<ItemData> find(uint32){return data;} } item_db;
 struct map_session_data {
-    struct {uint32 account_id=2000001,char_id=150001; int32 zeny=1000000000;uint16 inventory_slots=MAX_INVENTORY;} status;
+    struct {uint32 account_id=2000001,char_id=150001; int64 zeny=1000000000;uint16 inventory_slots=MAX_INVENTORY;} status;
     struct {bool active=true,autotrade=false,warping=false,changemap=false,mail_writing=false;} state;
+    struct {int64 pending_zeny=0;} mail;
     pn_bank_state bank_ui;
     int64 bank_vault=1000000000;
     int32 weight=0,max_weight=1000000,fd=2,m=0;
@@ -71,8 +72,8 @@ int pc_delitem(map_session_data* sd,int i,int count,int,int,int){
     if(!sd->inventory.u.items_inventory[i].amount){sd->inventory.u.items_inventory[i]={};sd->inventory_data[i]=nullptr;}
     return 0;
 }
-int pc_payzeny(map_session_data* sd,int count,int){assert(sd->bank_ui.applying && sd->status.zeny>=count);sd->status.zeny-=count;return 0;}
-int pc_getzeny(map_session_data* sd,int count,int){assert(sd->bank_ui.applying);sd->status.zeny+=count;return 0;}
+int pc_payzeny(map_session_data* sd,int64 count,int){assert(sd->bank_ui.applying && sd->status.zeny>=count);sd->status.zeny-=count;return 0;}
+int pc_getzeny(map_session_data* sd,int64 count,int){assert(sd->bank_ui.applying);sd->status.zeny+=count;return 0;}
 bool pc_setparam(map_session_data* sd,int,int64 value){assert(sd->bank_ui.applying);sd->bank_vault=value;return true;}
 int32 add_timer(t_tick,TimerFunc,int32,intptr_t){return ++timers;}
 void chrif_save(map_session_data* sd,int){assert(!sd->bank_ui.pending);++save_count;}
@@ -144,53 +145,34 @@ int main(){
     ack(true,1);assert(!player.bank_ui.pending && save_count==1);ack(true,1);assert(save_count==1);
     assert(rpc(request).result==Ok && player.bank_vault==1000000100);
     invalid=request;invalid.amount=200;assert(rpc(invalid).result==Stale);
-    clock_tick+=1000;request.request_id=2;request.action=BuyDiamond;request.amount=1;add_fails=true;
-    assert(rpc(request).result==Capacity && !player.bank_ui.pending && player.bank_vault==1000000100);add_fails=false;
-    assert(rpc(request).result==Saving && pn_bank_count(player,6024)==1 && player.bank_vault==499000100);ack(true,2);
-    // Older completed actions cannot be replayed after a newer action.
-    invalid=request;invalid.request_id=1;invalid.action=Deposit;invalid.amount=100;assert(rpc(invalid).result==Stale);
-    auto& gem=player.inventory.u.items_inventory[0];assert(gem.nameid==6024);
-    gem.favorite=1;assert(pn_bank_count(player,6024)==0);gem.favorite=0;
-    gem.bound=1;assert(pn_bank_count(player,6024)==0);gem.bound=0;
-    gem.expire_time=99;assert(pn_bank_count(player,6024)==0);gem.expire_time=0;
-    gem.card[0]=1;assert(pn_bank_count(player,6024)==0);gem.card[0]=0;
-    gem.option[0].id=1;assert(pn_bank_count(player,6024)==0);gem.option[0].id=0;
-    for(int bad=0;bad<9;++bad) {
-        auto modified=gem;
-        if(bad==0) modified.identify=0;
-        if(bad==1) modified.equip=1;
-        if(bad==2) modified.equipSwitch=1;
-        if(bad==3) modified.refine=1;
-        if(bad==4) modified.attribute=1;
-        if(bad==5) modified.enchantgrade=1;
-        if(bad==6) modified.option[4].value=1;
-        if(bad==7) modified.option[4].param=1;
-        if(bad==8) modified.amount=0;
-        assert(!pn_bank_plain_item(modified,6024));
+    // An authenticated old client cannot exchange items after UI controls disappear.
+    auto inventory_before=player.inventory;
+    auto bank_before=player.bank_vault; auto wallet_before=player.status.zeny;
+    auto timers_before=timers;
+    clock_tick+=1000;request.request_id=2;request.amount=1;
+    for(uint32_t action=BuyDiamond;action<=SellNote;++action) {
+        request.action=action;
+        assert(rpc(request).result==Invalid && !player.bank_ui.pending);
+        assert(player.bank_vault==bank_before && player.status.zeny==wallet_before && timers==timers_before);
+        assert(memcmp(&inventory_before,&player.inventory,sizeof(inventory_before))==0);
     }
-    // Multi-stack deletion failure restores the entire batch and local locks.
-    player.inventory.u.items_inventory[1]=gem;player.inventory_data[1]=item_db.data.get();player.weight+=10;
-    auto before=player.inventory;auto weight=player.weight;delete_failure=1;
-    clock_tick+=1000;request.request_id=3;request.action=SellDiamond;request.amount=2;
-    assert(rpc(request).result==SaveFailed && !player.bank_ui.pending && !player.bank_ui.applying);
-    assert(memcmp(&before,&player.inventory,sizeof(before))==0 && player.weight==weight && refreshes==1);
-    delete_failure=-1;assert(rpc(request).result==Saving && pn_bank_count(player,6024)==0);ack(true,3);
-    assert(player.bank_vault==1497000100);
+    auto direct_snapshot=pn_bank_snapshot(player);
+    for(int i=0;i<2;++i) assert(direct_snapshot.counts[i]==0 && direct_snapshot.max_buy[i]==0 && direct_snapshot.max_sell[i]==0);
     clock_tick+=1000;assert(clif_bank_native_transfer(player,100,true)==Saving && native_replies==0);
-    ack(false,4);assert(native_replies==0);ack(true,4);assert(native_replies==1 && player.bank_vault==1497000200);
+    ack(false,2);assert(native_replies==0);ack(true,2);assert(native_replies==1 && player.bank_vault==1000000200);
     clock_tick+=1000;assert(clif_bank_native_transfer(player,100,false)==Saving && native_replies==1);
-    ack(true,5);assert(native_replies==2 && player.bank_vault==1497000100);
+    ack(true,3);assert(native_replies==2 && player.bank_vault==1000000100);
     player.bank_vault=INT64_MAX-1;player.status.zeny=1;
     request.request_id=6;request.action=Deposit;request.amount=1;clock_tick+=1000;
     assert(rpc(request).result==Saving && player.bank_vault==INT64_MAX && player.status.zeny==0);
     memcpy(&sent,outgoing[1],sizeof(sent));assert(sent.bank_after==INT64_MAX);ack(true,6);
-    request.request_id=7;request.action=Withdraw;request.amount=MAX_ZENY;clock_tick+=1000;
-    assert(rpc(request).result==Saving && player.status.zeny==MAX_ZENY && player.bank_vault==INT64_MAX-MAX_ZENY);ack(true,7);
-    request.request_id=8;request.amount=1;clock_tick+=1000;
-    assert(rpc(request).result==Limit && player.status.zeny==MAX_ZENY);
+    request.request_id=7;request.action=Withdraw;request.amount=MAX_WALLET_ZENY;clock_tick+=1000;
+    assert(rpc(request).result==Saving && player.status.zeny==MAX_WALLET_ZENY && player.bank_vault==INT64_MAX-MAX_WALLET_ZENY);ack(true,7);
+    player.bank_vault=1;request.request_id=8;request.amount=1;clock_tick+=1000;
+    assert(rpc(request).result==Limit && player.status.zeny==MAX_WALLET_ZENY);
     session[2]->flag.eof=true;assert(rpc(Request{}).result==Unauthorized);
     assert(!clif_bank_open_custom(player));
     session[3]->flag.eof=true;clif_parse_bank_companion_session(3);
     assert(player.bank_ui.companion_fd==0 && !session[3]->session_data);
-    std::cout<<"PASS: production bank service authentication, packet fragmentation, funds/capacity, locked saves, duplicate and stale requests/replies, current-state retries, item eligibility, rollback and cache release\n";
+    std::cout<<"PASS: production bank service authentication, packet fragmentation, funds/capacity, locked saves, duplicate and stale requests/replies, current-state retries, legacy exchange rejection and cache release\n";
 }

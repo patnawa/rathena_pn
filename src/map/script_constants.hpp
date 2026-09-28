@@ -23,6 +23,7 @@
 	export_constant(MAX_INVENTORY);
 	export_constant(MAX_CART);
 	export_constant(MAX_ZENY);
+	export_constant(MAX_WALLET_ZENY);
 	export_constant(MAX_PARTY);
 	export_constant(MAX_GUILD);
 	export_constant(MAX_GUILDLEVEL);
@@ -548,6 +549,7 @@
 	export_constant(MF_NOMACROCHECKER);
 	export_constant(MF_INVINCIBLE_TIME);
 	export_constant(MF_RESISTANCECAP);
+	export_constant(MF_UNLIMITEDWEIGHT);
 	export_constant(MF_STRICTDAMAGE);
 
 	/* setcell types */

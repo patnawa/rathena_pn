@@ -1,6 +1,7 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <custom/retired_tokens.hpp>
 #include "itemdb.hpp"
 
 #include <algorithm>
@@ -3162,6 +3163,38 @@ std::shared_ptr<s_item_group_entry> ItemGroupDatabase::get_random_entry(uint16 g
 	return this->get_random_itemsubgroup(group->random[sub_group], algorithm);
 }
 
+// Conservatively reserve every possible converted token reward before a box
+// is consumed. This uses current group data, so reward-amount changes are safe.
+static int64 itemdb_token_group_bound(uint16 group_id) {
+	auto group = itemdb_group.find(group_id);
+	if (!group) return 0;
+	int64 total = 0;
+	for (const auto& subgroup : group->random) {
+		int64 bound = 0;
+		for (const auto& entry : subgroup.second->data) {
+			const int64 value = pn_tokens::value(entry.second->nameid) * entry.second->amount;
+			if (subgroup.second->algorithm == GROUP_ALGORITHM_ALL) {
+				if (value > MAX_WALLET_ZENY - bound) return MAX_WALLET_ZENY;
+				bound += value;
+			} else bound = std::max(bound, value);
+		}
+		if (bound > MAX_WALLET_ZENY - total) return MAX_WALLET_ZENY;
+		total += bound;
+	}
+	return total;
+}
+
+int64 itemdb_token_box_bound(t_itemid nameid) {
+	switch (nameid) {
+	case 16673: return itemdb_token_group_bound(IG_LIBRA_SCROLL);
+	case 17141: return itemdb_token_group_bound(IG_MS_VIRGO_SCROLL);
+	case 17233: return itemdb_token_group_bound(IG_SCROLL_OF_DEATH);
+	case 17234: return itemdb_token_group_bound(IG_SCROLL_OF_LIFE);
+	case 17240: return itemdb_token_group_bound(IG_MERCURY_SCROLL);
+	default: return 0;
+	}
+}
+
 /** [Cydh]
 * Gives item(s) to the player based on item group
 * @param sd: Player that obtains item from item group
@@ -3171,6 +3204,16 @@ std::shared_ptr<s_item_group_entry> ItemGroupDatabase::get_random_entry(uint16 g
 void ItemGroupDatabase::pc_get_itemgroup_sub( map_session_data& sd, bool identify, std::shared_ptr<s_item_group_entry> data ){
 	if (data == nullptr)
 		return;
+	if (pn_tokens::retired(data->nameid)) {
+		const int64 credit = pn_tokens::value(data->nameid) * data->amount;
+		// pc_get_itemgroup preflight reserves the worst outcome synchronously.
+		if (credit > MAX_WALLET_ZENY - sd.status.zeny - sd.mail.pending_zeny) {
+			ShowError("Retired token reward exceeded preflight for character %u\n", sd.status.char_id);
+			return;
+		}
+		pc_getzeny(&sd, credit, LOG_TYPE_SCRIPT);
+		return;
+	}
 
 	item tmp = {};
 
@@ -3253,6 +3296,10 @@ uint8 ItemGroupDatabase::pc_get_itemgroup( uint16 group_id, bool identify, map_s
 	}
 	if (group->random.empty())
 		return 0;
+	if (itemdb_token_group_bound(group_id) > MAX_WALLET_ZENY - sd.status.zeny - sd.mail.pending_zeny) {
+		clif_displaymessage(sd.fd, "Deposit Zeny before claiming this reward.");
+		return 3;
+	}
 
 	for (const auto &random : group->random) {
 		switch( random.second->algorithm ) {

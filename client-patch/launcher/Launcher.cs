@@ -20,14 +20,19 @@ class Envelope { public string payload; public string signature; }
 class Change { public string path; public bool existed; public string sha256; }
 class Transaction { public string phase; public Change[] changes; public bool previousManifest; public string backupFolder="recovery"; public bool keepRollback; }
 
-class Engine {
+class Engine : IDisposable {
     public const string Feed="http://192.168.10.18:8082/";
     internal readonly string Root,Work;
     internal readonly JavaScriptSerializer Json=new JavaScriptSerializer { MaxJsonLength=8000000 };
     readonly Action<string,int> progress;
+    readonly string currentExecutable;
+    internal readonly VerifiedFileCache verifiedFiles=new VerifiedFileCache();
+    public void Dispose(){verifiedFiles.Dispose();}
     static string PublicKey { get { using(var s=typeof(Engine).Assembly.GetManifestResourceStream("trusted-public-key.xml"))using(var r=new StreamReader(s))return r.ReadToEnd(); } }
-    public Engine(string root,Action<string,int> report) {
+    public Engine(string root,Action<string,int> report) : this(root,report,typeof(Engine).Assembly.Location) {}
+    internal Engine(string root,Action<string,int> report,string executablePath) {
         Root=Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar);Work=Path.Combine(Root,".pn-updater");progress=report;
+        currentExecutable=Path.GetFullPath(executablePath);
         NoLinks(Root);Directory.CreateDirectory(Work);NoLinks(Work);
     }
     internal static string Hash(string path) { using(var s=File.OpenRead(path))using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(s)).Replace("-","").ToLowerInvariant(); }
@@ -77,9 +82,9 @@ class Engine {
         foreach(string child in Directory.GetFileSystemEntries(p)){NoLinks(child);if(Directory.Exists(child))ClearDirectory(child);else File.Delete(child);}Directory.Delete(p);
     }
     internal void Recover() {
-        string journal=Path.Combine(Work,"transaction.json");if(!File.Exists(journal))return;CheckStopped();NoLinks(journal);
+        string journal=Path.Combine(Work,"transaction.json");if(!File.Exists(journal))return;verifiedFiles.Clear();CheckStopped();NoLinks(journal);
         var t=Json.Deserialize<Transaction>(File.ReadAllText(journal));
-        if(t==null||t.changes==null||!(t.phase=="applying"||t.phase=="complete")||!(t.backupFolder=="recovery"||t.backupFolder=="previous"))throw new IOException("Invalid update recovery journal.");
+        PreflightRecovery(t);
         if(t.phase=="complete"){Finish(t);return;}
         foreach(var c in t.changes.Reverse()) {
             string target=SafePath(Root,c.path),previous=SafePath(Path.Combine(Work,t.backupFolder),c.path);
@@ -94,6 +99,19 @@ class Engine {
         else if(File.Exists(current))File.Delete(current);
         File.Delete(journal);ClearDirectory(Path.Combine(Work,"stage"));ClearDirectory(Path.Combine(Work,t.backupFolder));
         if(t.backupFolder=="previous"){string rollback=Path.Combine(Work,"rollback.json");NoLinks(rollback);if(File.Exists(rollback))File.Delete(rollback);}
+    }
+    internal void PreflightRecovery(Transaction t) {
+        if(t==null||t.changes==null||!(t.phase=="applying"||t.phase=="complete")||!(t.backupFolder=="recovery"||t.backupFolder=="previous"))throw new IOException("Invalid update recovery journal.");
+        if(t.phase=="complete")return;
+        // Check every target before restoring even the first file. Versioned
+        // launchers may themselves be newly added files in the rollback set.
+        foreach(var c in t.changes) {
+            if(c==null)throw new IOException("Invalid update recovery change.");
+            string target=SafePath(Root,c.path),previous=SafePath(Path.Combine(Work,t.backupFolder),c.path);
+            if(String.Equals(target,currentExecutable,StringComparison.OrdinalIgnoreCase) &&
+                (File.Exists(previous)||(!c.existed&&File.Exists(target))))
+                throw new IOException("This rollback would change the running launcher. Close this versioned launcher and run the preserved PNLauncher.exe to roll back.");
+        }
     }
     internal void Finish(Transaction t) {
         string recovery=Path.Combine(Work,"recovery"),previous=Path.Combine(Work,"previous");
@@ -116,14 +134,15 @@ class Engine {
         }
         if(Hash(path)!=f.sha256)throw new IOException("Downloaded file failed verification: "+f.path);
     }
-    public string Update() {
+    public string Update(bool fullVerification=false) {
+        if(fullVerification)verifiedFiles.Clear();
         CheckStopped();Recover();progress("Checking signed release...",0);
         string wrapper=Text(Feed+"release.json");Manifest manifest=Verify(wrapper);
         string highPath=Path.Combine(Work,"highest-sequence.txt");NoLinks(highPath);long highest=File.Exists(highPath)?Int64.Parse(File.ReadAllText(highPath)):0;
         if(manifest.sequence<highest)throw new IOException("An older release was rejected. Use Rollback for the saved local version.");
         var changes=new List<Entry>();int checkedCount=0;
         foreach(var f in manifest.files){string path=SafePath(Root,f.path);bool exists=File.Exists(path);
-            if(!(f.preserve&&exists) && !(exists&&new FileInfo(path).Length==f.bytes&&Hash(path)==f.sha256))changes.Add(f);
+            if(!(f.preserve&&exists) && !(exists&&new FileInfo(path).Length==f.bytes&&verifiedFiles.Hash(path)==f.sha256))changes.Add(f);
             checkedCount++;if(checkedCount%20==0)progress("Checking client files: "+checkedCount+" / "+manifest.files.Length,checkedCount*45/manifest.files.Length);
         }
         if(changes.Count==0){Write(Path.Combine(Work,"installed.json"),wrapper);Write(highPath,Math.Max(highest,manifest.sequence).ToString());return manifest.release+" is verified and up to date.";}
@@ -132,7 +151,7 @@ class Engine {
         string stage=Path.Combine(Work,"stage"),previous=Path.Combine(Work,"recovery"),journal=Path.Combine(Work,"transaction.json");
         ClearDirectory(stage);Directory.CreateDirectory(stage);int count=0;
         foreach(var f in changes){progress("Downloading "+f.path,45+count*45/changes.Count);Download(f,stage);count++;}
-        CheckStopped();NoLinks(journal);if(File.Exists(journal))File.Delete(journal);
+        CheckStopped();verifiedFiles.Clear();NoLinks(journal);if(File.Exists(journal))File.Delete(journal);
         ClearDirectory(previous);Directory.CreateDirectory(previous);
         string installed=Path.Combine(Work,"installed.json");NoLinks(installed);
         bool previousManifest=File.Exists(installed);bool newVersion=previousManifest && Verify(File.ReadAllText(installed)).sequence!=manifest.sequence;
@@ -148,9 +167,10 @@ class Engine {
         progress("Update verified and installed.",100);return manifest.release+": "+changes.Count+" files updated ("+(bytes/1048576.0).ToString("0.0")+" MB downloaded).";
     }
     public string Rollback() {
-        CheckStopped();Recover();string rollback=Path.Combine(Work,"rollback.json");NoLinks(rollback);if(!File.Exists(rollback))return "No previous version is stored. Repair does not replace a saved rollback.";
+        verifiedFiles.Clear();CheckStopped();Recover();string rollback=Path.Combine(Work,"rollback.json");NoLinks(rollback);if(!File.Exists(rollback))return "No previous version is stored. Repair does not replace a saved rollback.";
         var t=Json.Deserialize<Transaction>(File.ReadAllText(rollback));
-        t.phase="applying";Write(Path.Combine(Work,"transaction.json"),Json.Serialize(t));Recover();return "The previous client files have been restored.";
+        if(t==null)throw new IOException("Invalid update rollback journal.");
+        t.phase="applying";PreflightRecovery(t);Write(Path.Combine(Work,"transaction.json"),Json.Serialize(t));Recover();return "The previous client files have been restored.";
     }
     public string Installed() {
         try {string p=Path.Combine(Root,"RELEASE.json");NoLinks(p);var x=Json.Deserialize<Dictionary<string,object>>(File.ReadAllText(p));return Convert.ToString(x["release_id"]);}catch{return "Client installation needed";}
@@ -174,10 +194,11 @@ class MainForm:Form {
         var turbo=new Button{Text="Turbo Setup",Location=new Point(30,390),Size=new Size(150,28),FlatStyle=FlatStyle.Flat,BackColor=Color.FromArgb(30,43,60)};
         turbo.Click+=(s,e)=>{try{string path=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"PNTurboConfig.exe");Engine.NoLinks(path);if(!File.Exists(path))throw new IOException("Update the client first to install Turbo Setup.");Process.Start(new ProcessStartInfo(path){WorkingDirectory=AppDomain.CurrentDomain.BaseDirectory});}catch(Exception ex){MessageBox.Show(this,ex.Message,"Turbo Setup");}};Controls.Add(turbo);
         engine=new Engine(AppDomain.CurrentDomain.BaseDirectory,Report);release.Text=engine.Installed();
-        play.Click+=(s,e)=>Run(()=>engine.Update(),true);update.Click+=(s,e)=>Run(()=>engine.Update(),false);repair.Click+=(s,e)=>Run(()=>engine.Update(),false);
+        play.Click+=(s,e)=>Run(()=>engine.Update(),true);update.Click+=(s,e)=>Run(()=>engine.Update(),false);repair.Click+=(s,e)=>Run(()=>engine.Update(true),false);
         rollback.Click+=(s,e)=>Run(()=>engine.Rollback(),false);web.Click+=(s,e)=>Process.Start(Engine.Feed);
         Shown+=(s,e)=>{Run(()=>{engine.Recover();return "Ready.";},false);RefreshStatus();};
         var timer=new System.Windows.Forms.Timer{Interval=30000};timer.Tick+=(s,e)=>RefreshStatus();timer.Start();
+        FormClosed+=(s,e)=>engine.Dispose();
         FormClosing+=(s,e)=>{if(busy){e.Cancel=true;message.Text="Please wait for the current update to finish.";}};
     }
     void RefreshStatus(){ThreadPool.QueueUserWorkItem(_=>{string text;bool online=false;try{var s=engine.Json.Deserialize<Dictionary<string,object>>(Engine.Text(Engine.Feed+"status.json"));online=s.ContainsKey("game_online")&&(bool)s["game_online"];text=online?"Server online  ·  192.168.10.18":"Server offline or starting  ·  192.168.10.18";}catch{text="Cannot reach LAN status  ·  192.168.10.18";}if(!IsDisposed&&IsHandleCreated)BeginInvoke((Action)(()=>{status.Text=text;status.ForeColor=online?Color.FromArgb(132,224,176):Color.FromArgb(255,192,140);}));});}

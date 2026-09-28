@@ -35,7 +35,7 @@ static std::string snapshot() {
 static void unchanged(const std::string& before) { assert(snapshot()==before); ++checks; }
 static void connect_db() {
     sql_handle=Sql_Malloc();
-    assert(Sql_Connect(sql_handle,"root","bank-validation-only","bank-20260913-db",3306,"bank_probe")==SQL_SUCCESS);
+    assert(Sql_Connect(sql_handle,"root","disposable-fixture-only","pn-zeny-migration-db",3306,"bank_probe")==SQL_SUCCESS);
     assert(result("SELECT DATABASE()") == "bank_probe|\n");
     strcpy(schema_config.inventory_db,"inventory"); strcpy(schema_config.char_db,"char"); strcpy(schema_config.acc_reg_num_table,"acc_reg_num");
 }
@@ -44,7 +44,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
     bool crash=argc>1 && std::string(argv[1])=="crash";
     sql("DELETE FROM pn_bank_commits"); sql("DELETE FROM inventory");
     sql("DELETE FROM acc_reg_num"); sql("DELETE FROM `char`");
-    sql("INSERT INTO `char` (char_id,account_id,zeny,name) VALUES (99001313,990013,500000000,'Bank fixture'),(99001314,990013,0,'Sibling fixture'),(99001315,990014,0,'Other account')");
+    sql("INSERT INTO `char` (char_id,account_id,zeny,name) VALUES (99001313,990013,5000000000,'Bank fixture'),(99001314,990013,0,'Sibling fixture'),(99001315,990014,0,'Other account')");
     sql("INSERT INTO acc_reg_num(account_id,`key`,`index`,`value`) VALUES (990013,'#BANKVAULT',0,1500000000),(990014,'#BANKVAULT',0,77)");
     sql("INSERT INTO inventory(id,char_id,nameid,amount,identify,refine,bound,unique_id,card0) VALUES (1,99001313,501,2,1,0,0,123456789,0),(2,99001313,1201,1,1,10,2,987654321,4001)");
     s_storage inventory{}; assert(inventory_fromsql(99001313,&inventory));
@@ -53,9 +53,9 @@ extern "C" int __wrap_main(int argc,char** argv) {
     inventory.amount=3;
     pn_bank_commit request;
     request.account_id=990013; request.char_id=99001313; request.nonce_hi=111; request.nonce_lo=222; request.request_id=1;
-    request.action=pn_bank::BuyDiamond; request.amount=1;
-    request.bank_before=1500000000; request.bank_after=999000000; request.wallet_before=request.wallet_after=500000000;
-    auto cached=std::make_shared<mmo_charstatus>(); cached->zeny=500000000; char_get_chardb()[request.char_id]=cached;
+    request.action=pn_bank::Deposit; request.amount=3000000000LL;
+    request.bank_before=1500000000; request.bank_after=4500000000LL; request.wallet_before=5000000000LL; request.wallet_after=2000000000;
+    auto cached=std::make_shared<mmo_charstatus>(); cached->zeny=5000000000; char_get_chardb()[request.char_id]=cached;
     auto original=snapshot();
     if(crash) {
         sql("CREATE TRIGGER bank_crash BEFORE INSERT ON pn_bank_commits FOR EACH ROW DO SLEEP(20)");
@@ -70,7 +70,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
         "CREATE TRIGGER bank_fault BEFORE INSERT ON acc_reg_num FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='registry fault'",
         "CREATE TRIGGER bank_fault BEFORE INSERT ON pn_bank_commits FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='journal fault'"}) {
         sql(failure); assert(!bank_tosql(request,inventory)); ++checks;
-        unchanged(original); assert(cached->zeny==500000000); ++checks;
+        unchanged(original); assert(cached->zeny==5000000000); ++checks;
         sql("DROP TRIGGER bank_fault");
     }
     sql("ALTER TABLE `char` ENGINE=MyISAM"); assert(!bank_tosql(request,inventory)); ++checks; unchanged(original);
@@ -82,7 +82,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
         if(bad==0) invalid.account_id=990014;
         if(bad==1) invalid.char_id=123;
         if(bad==2) invalid.bank_after=-1;
-        if(bad==3) invalid.wallet_after=int64_t(MAX_ZENY)+1;
+        if(bad==3) invalid.wallet_after=INT64_MIN;
         if(bad==4) invalid.wallet_after=-1;
         if(bad==5) invalid.request_id=0;
         if(bad==6) invalid.nonce_hi=invalid.nonce_lo=0;
@@ -97,7 +97,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
         if(bad==2) invalid.wallet_after--;
         if(bad==3) invalid.bank_before=-1;
         if(bad==4) invalid.wallet_before=-1;
-        if(bad==5) invalid.wallet_before=int64_t(MAX_ZENY)+1;
+        if(bad==5) invalid.wallet_before=INT64_MIN;
         if(bad==6) invalid.amount=4; // Claimed purchase exceeds pre-transaction bank funds.
         if(bad==7) { invalid.action=pn_bank::Deposit;invalid.amount=500000001; }
         if(bad==8) { invalid.action=pn_bank::Withdraw;invalid.amount=1500000001; }
@@ -105,7 +105,7 @@ extern "C" int __wrap_main(int argc,char** argv) {
         assert(!bank_tosql(invalid,inventory)); ++checks; unchanged(original);
     }
     assert(bank_tosql(request,inventory)); ++checks;
-    assert(result("SELECT value FROM acc_reg_num WHERE account_id=990013 AND `key`='#BANKVAULT'")=="999000000|\n"); ++checks;
+    assert(result("SELECT value FROM acc_reg_num WHERE account_id=990013 AND `key`='#BANKVAULT'")=="4500000000|\n"); ++checks;
     assert(result("SELECT value FROM acc_reg_num WHERE account_id=990014 AND `key`='#BANKVAULT'")=="77|\n"); ++checks;
     assert(result("SELECT amount FROM inventory WHERE nameid=6024")=="1|\n"); ++checks;
     assert(result("SELECT refine,bound,unique_id,card0 FROM inventory WHERE id=2")=="10|2|987654321|4001|\n"); ++checks;
@@ -124,15 +124,15 @@ extern "C" int __wrap_main(int argc,char** argv) {
     request.amount=2; assert(!bank_tosql(request,inventory)); ++checks; unchanged(committed);
     // A new operation is committed and the char-cache baseline advances with it.
     request.request_id=2; request.action=pn_bank::Deposit; request.amount=100;
-    request.bank_before=999000000; request.bank_after=999000100; request.wallet_before=500000000; request.wallet_after=499999900;
+    request.bank_before=4500000000LL; request.bank_after=4500000100LL; request.wallet_before=2000000000; request.wallet_after=1999999900;
     inventory.u.items_inventory[2].amount=1;
-    assert(bank_tosql(request,inventory) && cached->zeny==499999900); ++checks;
+    assert(bank_tosql(request,inventory) && cached->zeny==1999999900); ++checks;
     assert(result("SELECT COUNT(*) FROM pn_bank_commits")=="2|\n"); ++checks;
     // SQL and the journal retain all 63 value bits across commit and reconnect.
     request.request_id=3;request.bank_before=INT64_MAX-1;request.bank_after=INT64_MAX;
-    request.amount=1;request.wallet_before=499999900;request.wallet_after=499999899;
+    request.amount=1;request.wallet_before=1999999900;request.wallet_after=1999999899;
     sql("UPDATE acc_reg_num SET value=9223372036854775806 WHERE account_id=990013 AND `key`='#BANKVAULT'");
-    assert(bank_tosql(request,inventory) && cached->zeny==499999899);++checks;
+    assert(bank_tosql(request,inventory) && cached->zeny==1999999899);++checks;
     assert(result("SELECT value FROM acc_reg_num WHERE account_id=990013 AND `key`='#BANKVAULT'")=="9223372036854775807|\n");++checks;
     assert(result("SELECT bank_before,bank_after FROM pn_bank_commits WHERE request_id=3")=="9223372036854775806|9223372036854775807|\n");++checks;
     committed=snapshot();Sql_Free(sql_handle);connect_db();
@@ -141,11 +141,23 @@ extern "C" int __wrap_main(int argc,char** argv) {
     // after the map's preflight. Validate the transfer without deleting those.
     request.request_id=4;request.action=pn_bank::Withdraw;request.amount=100;
     request.bank_before=INT64_MAX;request.bank_after=INT64_MAX-100;
-    request.wallet_before=499999899;request.wallet_after=500000076; // +100 and +77 reward
-    assert(bank_tosql(request,inventory) && cached->zeny==500000076);++checks;
-    assert(result("SELECT zeny FROM `char` WHERE char_id=99001313")=="500000076|\n");++checks;
+    request.wallet_before=1999999899;request.wallet_after=2000000076; // +100 and +77 reward
+    assert(bank_tosql(request,inventory) && cached->zeny==2000000076);++checks;
+    assert(result("SELECT zeny FROM `char` WHERE char_id=99001313")=="2000000076|\n");++checks;
     committed=snapshot();request.wallet_after+=88;
     assert(bank_tosql(request,inventory));++checks;unchanged(committed);
+    // The ordinary character saver/loader must preserve wallet bits too; this
+    // checks the real formatted UPDATE and MYSQL BIGINT binding, not just bank SQL.
+    mmo_charstatus loaded{};
+    assert(char_mmo_char_fromsql(request.char_id,&loaded,false)); ++checks;
+    for(int64 balance : {int64(9007199254740993LL), int64(INT64_MAX)}) {
+        *char_get_chardb()[request.char_id] = loaded;
+        loaded.zeny=balance;
+        assert(char_mmo_char_tosql(request.char_id,&loaded)==0); ++checks;
+        mmo_charstatus restored{};
+        assert(char_mmo_char_fromsql(request.char_id,&restored,false) && restored.zeny==balance); ++checks;
+        assert(result("SELECT zeny FROM `char` WHERE char_id=99001313")==std::to_string(balance)+"|\n"); ++checks;
+    }
     std::cout<<"BANK_SQL_PASS "<<checks<<" checks: actual InnoDB atomicity, failures at all four writes, journal retry, reconnect, ownership, caps, cache synchronization and unrelated item preservation\n";
     Sql_Free(sql_handle); sql_handle=nullptr; return 0;
 }

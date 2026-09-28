@@ -69,6 +69,8 @@ obj:
 obj/int_storage.o: ../custom/bank_sql.inc ../custom/bank_commit.hpp ../custom/bank_protocol.hpp \
 	../custom/reserve_sql.inc \
 	../custom/multi_storage_sql.inc ../custom/multi_storage.hpp ../custom/multi_storage_protocol.hpp
+obj/int_storage.o: ../custom/mail_sql.inc ../custom/mail_commit.hpp ../custom/mail_protocol.hpp ../custom/zeny_arithmetic.hpp
+obj/int_storage.o: ../custom/bank_sweep_sql.inc ../custom/bank_sweep.hpp ../custom/pair_sql.inc ../custom/pair_commit.hpp
 obj/char.o: ../custom/multi_storage.hpp
 
 obj/%.o: %.cpp $(CHAR_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H)

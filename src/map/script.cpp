@@ -13881,7 +13881,7 @@ BUILDIN_FUNC(warpwaitingpc)
 
 		if( cd->zeny )
 		{// fee set
-			if( (uint32)sd->status.zeny < cd->zeny )
+			if( sd->status.zeny < cd->zeny )
 			{// no zeny to cover set fee
 				break;
 			}
@@ -27009,14 +27009,11 @@ BUILDIN_FUNC(mail){
 	safestrncpy(msg.body, body, MAIL_BODY_LENGTH);
 
 	if( script_hasdata(st,6) ){
-		int32 zeny = script_getnum(st, 6);
+		int64 zeny = script_getnum64(st, 6);
 
 		if( zeny < 0 ){
 			ShowError( "buildin_mail: a negative amount of zeny can not be sent.\n" );
 			return SCRIPT_CMD_FAILURE;
-		}else if( zeny > MAX_ZENY ){
-			ShowError( "buildin_mail: amount of zeny %u is exceeding maximum of %u. Capping...\n", zeny, MAX_ZENY );
-			zeny = MAX_ZENY;
 		}
 
 		msg.zeny = zeny;

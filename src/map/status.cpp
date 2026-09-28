@@ -3690,6 +3690,11 @@ bool status_calc_weight(map_session_data *sd, enum e_status_calc_weight_opt flag
 			sd->max_weight += 15000;
 	}
 
+	// Service areas grant temporary capacity, recalculated normally on exit.
+	// Keep the client status value within its signed 32-bit representation.
+	if (map_getmapflag(sd->m, MF_UNLIMITEDWEIGHT))
+		sd->max_weight = INT32_MAX;
+
 	// Update the client if the new weight calculations don't match
 	if (b_weight != sd->weight)
 		clif_updatestatus(*sd, SP_WEIGHT);

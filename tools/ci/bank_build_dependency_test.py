@@ -21,7 +21,12 @@ def check(role, obj, includes, missing=None):
                'src/custom/reserve_sql.inc','src/custom/bank_commit.hpp',
                'src/custom/bank_protocol.hpp','src/custom/multi_storage_sql.inc',
                'src/custom/multi_storage.hpp','src/custom/multi_storage_protocol.hpp',
-               'src/custom/reserve_map.inc']
+               'src/custom/reserve_map.inc','src/custom/bank_ui.inc','src/custom/bank_inter.inc',
+               'src/custom/multi_storage_inter.inc','src/custom/market_ui.inc','src/custom/mail_ui.inc',
+               'src/custom/mail_inter.inc','src/custom/mail_sql.inc','src/custom/mail_commit.hpp',
+               'src/custom/mail_protocol.hpp','src/custom/zeny_arithmetic.hpp',
+               'src/custom/pair_inter.inc','src/custom/pair_sql.inc','src/custom/pair_commit.hpp',
+               'src/custom/bank_sweep_inter.inc','src/custom/bank_sweep_sql.inc','src/custom/bank_sweep.hpp']
         for name in names:
             path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.touch()
             os.utime(path,(1000,1000))
@@ -41,6 +46,9 @@ def check(role, obj, includes, missing=None):
 if __name__=='__main__':
     check('char','int_storage',['../custom/bank_sql.inc','../custom/reserve_sql.inc'])
     check('map','script',['../custom/reserve_map.inc'])
+    check('map','clif',['../custom/market_ui.inc','../custom/mail_ui.inc'])
+    check('map','intif',['../custom/mail_inter.inc','../custom/pair_inter.inc','../custom/bank_sweep_inter.inc'])
+    check('char','int_storage',['../custom/mail_sql.inc','../custom/mail_protocol.hpp','../custom/pair_sql.inc','../custom/bank_sweep_sql.inc'])
     check('char','int_storage',['../custom/reserve_sql.inc'],missing='../custom/reserve_sql.inc')
     check('map','script',['../custom/reserve_map.inc'],missing='../custom/reserve_map.inc')
     print('PASS: bank/reserve include edits rebuild the affected char/map object; both old omissions reproduced')

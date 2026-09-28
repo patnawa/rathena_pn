@@ -32,7 +32,7 @@
 //= quest EXP, rescue coordinates, paid-form selection, or boss
 //= reward drop chances.  This release therefore uses fixed
 //= conservative mobs, mission EXP of 10m/20m/30m Base and
-//= 7.5m/15m/22.5m Job, a 5m/3.75m rescue reward, a random paid
+//= 7.5m/15m/22.5m Job, a 5m/3.75m rescue reward, a rescue-selected paid
 //= boss form, and one deterministic existing Airboat Antiquity
 //= container to the killing character.  Direct mob drops/EXP
 //= and unpublished card/stone/diamond rates remain disabled.
@@ -484,13 +484,13 @@ OnTimer2400000:
 1@mjo1,222,376,4	script	Captain Ferlock#acr	4_M_REINDEER,{
 	mes "[Captain Ferlock]";
 	if ('started) {
-		if ('rescue_mask != 7)
-			mes "Please locate all three wounded survivors around the wreckage.";
+		if ('rescue_mask != 31)
+			mes "Look for five wounded survivors around the wreckage. Rescuing everyone weakens the charged specimen.";
 		else if (!'crash_done)
 			mes "Everyone is accounted for. The party leader may move us into the cavity.";
 		else
 			mes "The research team is waiting inside the Forgotten Cavity.";
-		if ('rescue_mask == 7 && !'crash_done && is_party_leader()) {
+		if (!'crash_done && is_party_leader()) {
 			next;
 			if (select("Enter the Forgotten Cavity together.:Wait.") == 1) {
 				.@error$ = callfunc("F_AirshipCrashPresence",'crash_map$);
@@ -499,7 +499,8 @@ OnTimer2400000:
 					mes .@error$;
 					close;
 				}
-				callfunc "F_AirshipCrashRescueCredit";
+				if ('rescue_mask == 31)
+					callfunc "F_AirshipCrashRescueCredit";
 				'crash_done = 1;
 				instance_warpall 'cave_map$,358,374,instance_id(),IWA_NOTDEAD;
 				end;
@@ -551,7 +552,7 @@ OnTimer2400000:
 		setquest 5915;
 	}
 	attachrid .@caller;
-	instance_announce 0,"Captain Ferlock: find the three wounded survivors before entering the cavity.",bc_map,0x88CCFF;
+	instance_announce 0,"Captain Ferlock: rescue the five wounded survivors to weaken the charged specimen. You may enter the cavity early.",bc_map,0x88CCFF;
 	close;
 }
 
@@ -560,7 +561,10 @@ OnTimer2400000:
 	if ('rescue_mask & 1) { mes "This survivor has already been stabilized."; close; }
 	'rescue_mask |= 1;
 	mes "You stabilize the first wounded survivor and mark the location for Ferlock.";
-	if ('rescue_mask == 7) instance_announce 0,"All wounded survivors have been found. Return to Captain Ferlock.",bc_map,0x66FF99;
+	if ('rescue_mask == 31) {
+		callfunc "F_AirshipCrashRescueCredit";
+		instance_announce 0,"All five wounded survivors are safe. The charged specimen has been weakened.",bc_map,0x66FF99;
+	}
 	close;
 }
 
@@ -569,7 +573,10 @@ OnTimer2400000:
 	if ('rescue_mask & 2) { mes "This survivor has already been stabilized."; close; }
 	'rescue_mask |= 2;
 	mes "You stabilize the second wounded survivor and mark the location for Ferlock.";
-	if ('rescue_mask == 7) instance_announce 0,"All wounded survivors have been found. Return to Captain Ferlock.",bc_map,0x66FF99;
+	if ('rescue_mask == 31) {
+		callfunc "F_AirshipCrashRescueCredit";
+		instance_announce 0,"All five wounded survivors are safe. The charged specimen has been weakened.",bc_map,0x66FF99;
+	}
 	close;
 }
 
@@ -578,7 +585,35 @@ OnTimer2400000:
 	if ('rescue_mask & 4) { mes "This survivor has already been stabilized."; close; }
 	'rescue_mask |= 4;
 	mes "You stabilize the third wounded survivor and mark the location for Ferlock.";
-	if ('rescue_mask == 7) instance_announce 0,"All wounded survivors have been found. Return to Captain Ferlock.",bc_map,0x66FF99;
+	if ('rescue_mask == 31) {
+		callfunc "F_AirshipCrashRescueCredit";
+		instance_announce 0,"All five wounded survivors are safe. The charged specimen has been weakened.",bc_map,0x66FF99;
+	}
+	close;
+}
+
+// Two additional independently placed survivors; walkable cells verified against map_cache.dat.
+1@mjo1,270,303,4	script	Wounded#acr4	4_M_REINDEER,{
+	if (!'started) { mes "The survivor needs Captain Ferlock to organize a rescue first."; close; }
+	if ('rescue_mask & 8) { mes "This survivor has already been stabilized."; close; }
+	'rescue_mask |= 8;
+	mes "You stabilize the fourth wounded survivor and mark the location for Ferlock.";
+	if ('rescue_mask == 31) {
+		callfunc "F_AirshipCrashRescueCredit";
+		instance_announce 0,"All five wounded survivors are safe. The charged specimen has been weakened.",bc_map,0x66FF99;
+	}
+	close;
+}
+
+1@mjo1,150,250,4	script	Wounded#acr5	4_M_REINDEER,{
+	if (!'started) { mes "The survivor needs Captain Ferlock to organize a rescue first."; close; }
+	if ('rescue_mask & 16) { mes "This survivor has already been stabilized."; close; }
+	'rescue_mask |= 16;
+	mes "You stabilize the fifth wounded survivor and mark the location for Ferlock.";
+	if ('rescue_mask == 31) {
+		callfunc "F_AirshipCrashRescueCredit";
+		instance_announce 0,"All five wounded survivors are safe. The charged specimen has been weakened.",bc_map,0x66FF99;
+	}
 	close;
 }
 
@@ -740,8 +775,8 @@ OnTouch:
 			close;
 		}
 		delitem 1000363,7;
-		setarray .@boss[0],20891,21061,21062,21063;
-		.@mob = .@boss[rand(4)];
+		// MuhRO Airship Crash: all five rescues select the weaker creature.
+		.@mob = ('rescue_mask == 31) ? 20891 : 21062;
 		'boss_active = 1;
 		areamonster 'cave_map$,20,20,80,80,"Unidentified Creature",.@mob,1,instance_npcname("#AirshipCrashControl")+"::OnPaidBossDead";
 		instance_announce 0,"A charged unidentified creature has emerged in the lower cavity.",bc_map,0xFF3333;

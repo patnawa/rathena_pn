@@ -3732,7 +3732,7 @@ void clif_updatestatus( map_session_data& sd, enum _sp type ){
 			break;
 
 		case SP_ZENY:
-			clif_longpar_change(sd, type, sd.status.zeny);
+			clif_longpar_change(sd, type, std::min<int64>(sd.status.zeny, MAX_ZENY));
 			break;
 #if PACKETVER >= 20170830
 		case SP_BASEEXP:
@@ -6275,7 +6275,7 @@ void clif_skill_warppoint( map_session_data& sd, uint16 skill_id, uint16 skill_l
 
 		mapindex_getmapname_ext( map.c_str(), warp.map );
 
-		if( memoCount++ == max ){
+		if( ++memoCount == max ){
 			break;
 		}
 	}
@@ -7516,7 +7516,7 @@ void clif_bank_deposit( map_session_data& sd, enum e_BANKING_DEPOSIT_ACK reason 
 
 	p.packetType = HEADER_ZC_ACK_BANKING_DEPOSIT;
 	p.money = sd.bank_vault;
-	p.zeny = sd.status.zeny;
+	p.zeny = static_cast<int32>(std::min<int64>(sd.status.zeny, MAX_ZENY));
 	p.reason = reason;
 
 	clif_send( &p, sizeof( p ), &sd, SELF );
@@ -7561,7 +7561,7 @@ void clif_bank_withdraw( map_session_data& sd, enum e_BANKING_WITHDRAW_ACK reaso
 	p.packetType = HEADER_ZC_ACK_BANKING_WITHDRAW;
 	p.reason = reason;
 	p.money = sd.bank_vault;
-	p.zeny = sd.status.zeny;
+	p.zeny = static_cast<int32>(std::min<int64>(sd.status.zeny, MAX_ZENY));
 
 	clif_send( &p, sizeof( p ), &sd, SELF );
 #endif
@@ -7677,7 +7677,7 @@ void clif_vendinglist( map_session_data& sd, map_session_data& vsd ){
 			continue;
 		}
 
-		entry.price = vsd.vending[i].value;
+		entry.price = static_cast<int32>(std::min<int64>(vsd.vending[i].value, MAX_ZENY));
 		entry.amount = vsd.vending[i].amount;
 		entry.index = client_index( index );
 		entry.itemType = itemtype( vsd.cart.u.items_cart[index].nameid );
@@ -7753,7 +7753,7 @@ void clif_openvending( const map_session_data& sd ){
 		PACKET_ZC_PC_PURCHASE_MYITEMLIST_sub& entry = p->items[i];
 		int16 index = sd.vending[i].index;
 
-		entry.price = sd.vending[i].value;
+		entry.price = static_cast<int32>(std::min<int64>(sd.vending[i].value, MAX_ZENY));
 		entry.index = client_index( index );
 		entry.amount = sd.vending[i].amount;
 		entry.itemType = itemtype( sd.cart.u.items_cart[index].nameid );
@@ -12368,6 +12368,15 @@ void clif_parse_NpcSellListSend(int32 fd,map_session_data *sd)
 	int32 fail=0;
 	const PACKET_CZ_PC_SELL_ITEMLIST* p = reinterpret_cast<PACKET_CZ_PC_SELL_ITEMLIST*>( RFIFOP( fd, 0 ) );
 
+	// Accept every inventory slot in a single sale, without an arbitrary 190
+	// entry limit. Reject incomplete/oversized lists before reading entries.
+	if (p->packetLength < sizeof(*p) ||
+		(p->packetLength - sizeof(*p)) % sizeof(p->sellList[0]) != 0 ||
+		(p->packetLength - sizeof(*p)) / sizeof(p->sellList[0]) > MAX_INVENTORY) {
+		sd->npc_shopid = 0;
+		clif_npc_sell_result(sd, 1);
+		return;
+	}
 	int32 n = ( p->packetLength - sizeof( *p ) ) / sizeof( p->sellList[0] );
 	
 	if (sd->state.trading || !sd->npc_shopid)
@@ -12564,6 +12573,7 @@ void clif_parse_TradeAddItem(int32 fd,map_session_data *sd)
 	const PACKET_CZ_ADD_EXCHANGE_ITEM* p = reinterpret_cast<PACKET_CZ_ADD_EXCHANGE_ITEM*>( RFIFOP( fd, 0 ) );
 
 	if( p->index == 0 ){
+		if (p->amount > MAX_ZENY) { clif_displaymessage(sd->fd,"Set large Zeny offers in Wallet & Bank."); return; }
 		trade_tradeaddzeny( sd, p->amount );
 	}else{
 		trade_tradeadditem( sd, server_index( p->index ), static_cast<int16>( p->amount ) );
@@ -16380,7 +16390,7 @@ void clif_Mail_read( map_session_data *sd, int32 mail_id ){
 		safestrncpy(WFIFOCP(fd,8), msg->title, MAIL_TITLE_LENGTH + 1);
 		safestrncpy(WFIFOCP(fd,48), msg->send_name, NAME_LENGTH + 1);
 		WFIFOL(fd,72) = 0;
-		WFIFOL(fd,76) = msg->zeny;
+		WFIFOL(fd,76) = static_cast<uint32>(std::min<int64>(msg->zeny, MAX_ZENY));
 
 		std::shared_ptr<item_data> data = item_db.find(item->nameid);
 
@@ -16606,7 +16616,9 @@ void clif_parse_Mail_getattach( int32 fd, map_session_data *sd ){
 	}
 
 	if( attachment&MAIL_ATT_ZENY ){
-		if( ( msg->zeny + sd->status.zeny + sd->mail.pending_zeny ) > MAX_ZENY ){
+		if( sd->status.zeny < 0 || sd->mail.pending_zeny < 0 ||
+			sd->mail.pending_zeny > MAX_WALLET_ZENY - sd->status.zeny ||
+			msg->zeny > MAX_WALLET_ZENY - sd->status.zeny - sd->mail.pending_zeny ){
 			clif_mail_getattachment(sd, msg, 1, MAIL_ATT_ZENY); //too many zeny
 			return;
 		}else{
@@ -16899,7 +16911,7 @@ void clif_parse_Mail_send(int32 fd, map_session_data *sd){
 	safestrncpy(text, RFIFOCP(fd, headerLength + titleLength), realTextLength);
 
 	if( zeny > 0 ){
-		if( mail_setitem(sd,0,(uint32)zeny) != MAIL_ATTACH_SUCCESS ){
+		if( zeny > static_cast<uint64>(MAX_WALLET_ZENY) || mail_setitem(sd,0,static_cast<int64>(zeny)) != MAIL_ATTACH_SUCCESS ){
 			clif_Mail_send(sd,WRITE_MAIL_FAILED);
 			return;
 		}
@@ -19244,12 +19256,12 @@ void clif_buyingstore_myitemlist( const map_session_data& sd ){
 	p->packetType = HEADER_ZC_MYITEMLIST_BUYING_STORE;
 	p->packetLength = sizeof( *p );
 	p->AID = sd.id;
-	p->zenyLimit = sd.buyingstore.zenylimit;
+	p->zenyLimit = static_cast<int32>(std::min<int64>(sd.buyingstore.zenylimit, MAX_ZENY));
 
 	for( int32 i = 0; i < sd.buyingstore.slots; i++ ){
 		PACKET_ZC_MYITEMLIST_BUYING_STORE_sub& entry = p->items[i];
 
-		entry.price = sd.buyingstore.items[i].price;
+		entry.price = static_cast<int32>(std::min<int64>(sd.buyingstore.items[i].price, MAX_ZENY));
 		entry.amount = sd.buyingstore.items[i].amount;
 		entry.itemType = itemtype( sd.buyingstore.items[i].nameid );
 		entry.itemId = client_nameid( sd.buyingstore.items[i].nameid );
@@ -19338,12 +19350,12 @@ void clif_buyingstore_itemlist( const map_session_data& sd, const map_session_da
 	p->packetLength = sizeof( *p );
 	p->AID = pl_sd.id;
 	p->storeId = pl_sd.buyer_id;
-	p->zenyLimit = pl_sd.buyingstore.zenylimit;
+	p->zenyLimit = static_cast<int32>(std::min<int64>(pl_sd.buyingstore.zenylimit, MAX_ZENY));
 
 	for( int32 i = 0; i < pl_sd.buyingstore.slots; i++ ){
 		PACKET_ZC_ACK_ITEMLIST_BUYING_STORE_sub& entry = p->items[i];
 
-		entry.price = pl_sd.buyingstore.items[i].price;
+		entry.price = static_cast<int32>(std::min<int64>(pl_sd.buyingstore.items[i].price, MAX_ZENY));
 		entry.amount = pl_sd.buyingstore.items[i].amount;  // TODO: Figure out, if no longer needed items (amount == 0) are listed on official.
 		entry.itemType = itemtype(pl_sd.buyingstore.items[i].nameid);
 		entry.itemId = client_nameid( pl_sd.buyingstore.items[i].nameid );
@@ -19405,7 +19417,7 @@ void clif_buyingstore_update_item( const map_session_data* sd, t_itemid nameid, 
 	p.packetType = buyingStoreUpdateItemType;
 	p.itemId = client_nameid( nameid );
 	p.amount = amount;
-	p.zenyLimit = sd->buyingstore.zenylimit;
+	p.zenyLimit = static_cast<int32>(std::min<int64>(sd->buyingstore.zenylimit, MAX_ZENY));
 #if PACKETVER >= 20141016
 	p.zeny = zeny;
 	p.charId = char_id;  // GID
@@ -25708,6 +25720,8 @@ void clif_parse_MoveFromKafraFav( int32 fd, map_session_data* sd ){
  * Main client packet processing function
  *------------------------------------------*/
 #include <custom/bank_ui.inc>
+#include <custom/market_ui.inc>
+#include <custom/mail_ui.inc>
 
 static int32 clif_parse(int32 fd)
 {
@@ -25757,7 +25771,7 @@ static int32 clif_parse(int32 fd)
 		return 0;
 
 	cmd = RFIFOW(fd, 0);
-	if (!sd && clif_parse_bank_companion(fd)) return 0;
+	if (!sd && (clif_parse_bank_companion(fd) || clif_parse_market_companion(fd) || clif_parse_mail_companion(fd))) return 0;
 
 #ifdef PACKET_OBFUSCATION
 	// Check if it is a player that tries to connect to the map server.

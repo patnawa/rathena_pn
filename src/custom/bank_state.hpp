@@ -5,6 +5,8 @@
 struct pn_bank_state {
     uint64_t nonce_hi = 0, nonce_lo = 0, request_id = 0;
     uint32_t action = 0;
+    uint64_t trade_id = 0, trade_revision = 0;
+    uint64_t request_trade_id = 0, request_trade_revision = 0;
     uint8_t native_action = 0; // Original client UI also waits for the SQL commit.
     int64_t amount = 0, bank_before = 0, wallet_before = 0;
     int64_t reserve_before = 0, reserve_after = 0;
@@ -14,5 +16,6 @@ struct pn_bank_state {
     int32_t companion_fd = 0;
     bool open_requested = false;
     uint32_t result = pn_bank::Ok;
+    uint32_t collected_characters = 0, skipped_characters = 0;
 };
 #endif

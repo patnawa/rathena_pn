@@ -79,8 +79,9 @@ typedef uint32 t_itemid;
 * Note: The client seems unable to receive data for more than 4 slots due to all related packets having a fixed size. */
 #define MAX_SLOTS 4
 #define MAX_AMOUNT 30000 ////Max amount of a single stacked item
-#define MAX_ZENY INT_MAX ///Max zeny
-#define MAX_BANK_ZENY SINT64_MAX /// Account bank; character wallet still uses MAX_ZENY.
+#define MAX_ZENY INT_MAX /// Legacy native packet/shop price limit.
+#define MAX_WALLET_ZENY SINT64_MAX /// Durable character wallet limit.
+#define MAX_BANK_ZENY SINT64_MAX /// Account bank limit.
 #ifndef MAX_CASHPOINT
 	#define MAX_CASHPOINT INT_MAX
 #endif
@@ -166,7 +167,7 @@ const t_itemid WEDDING_RING_F = 2635;
 #define PINCODE_LENGTH 4
 
 #define MAX_FRIENDS 40
-#define MAX_MEMOPOINTS 3
+#define MAX_MEMOPOINTS 6
 #define MAX_SKILLCOOLDOWN 20
 
 //Size of the fame list arrays.
@@ -568,7 +569,7 @@ struct mmo_charstatus {
 	uint32 child;
 
 	t_exp base_exp,job_exp;
-	int32 zeny;
+	int64 zeny;
 
 	int16 class_; ///< Player's JobID
 	uint32 status_point,skill_point,trait_point;
@@ -666,7 +667,7 @@ struct mail_message {
 	mail_status status;
 	time_t timestamp; // marks when the message was sent
 
-	uint32 zeny;
+	int64 zeny;
 	struct item item[MAIL_MAX_ITEM];
 };
 

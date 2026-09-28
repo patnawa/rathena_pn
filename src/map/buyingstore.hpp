@@ -15,7 +15,7 @@ class map_session_data;
 
 struct s_buyingstore_item
 {
-	int32 price;
+	int64 price;
 	uint16 amount;
 	t_itemid nameid;
 };
@@ -23,7 +23,7 @@ struct s_buyingstore_item
 struct s_buyingstore
 {
 	struct s_buyingstore_item items[MAX_BUYINGSTORE_SLOTS];
-	int32 zenylimit;
+	int64 zenylimit;
 	unsigned char slots;
 };
 
@@ -31,7 +31,7 @@ struct s_buyingstore
 struct s_autotrade_entry {
 	uint32 cartinventory_id; ///< Item entry id/cartinventory_id in cart_inventory table (for vending)
 	uint16 amount; ///< Amount
-	uint32 price; ///< Price
+	uint64 price; ///< Price
 	uint16 index; ///< Item index in cart
 	t_itemid item_id; ///< Item ID (for buyingstore)
 };
@@ -49,17 +49,18 @@ struct s_autotrader {
 		head_dir, ///< Head direction
 		sit; ///< Is sitting?
 	char title[MESSAGE_SIZE]; ///< Store name
-	uint32 limit; ///< Maximum zeny to be spent (for buyingstore)
+	int64 limit; ///< Maximum zeny to be spent (for buyingstore)
 	uint16 count; ///< Number of item in store
 	struct s_autotrade_entry **entries; ///< Store details
 	map_session_data *sd;
 };
 
 int8 buyingstore_setup(map_session_data* sd, unsigned char slots);
-int8 buyingstore_create(map_session_data* sd, int32 zenylimit, unsigned char result, const char* storename, const struct PACKET_CZ_REQ_OPEN_BUYING_STORE_sub* itemlist, uint32 count, struct s_autotrader *at);
+int8 buyingstore_create(map_session_data* sd, int64 zenylimit, unsigned char result, const char* storename, const struct PACKET_CZ_REQ_OPEN_BUYING_STORE_sub* itemlist, uint32 count, struct s_autotrader *at);
 void buyingstore_close(map_session_data* sd);
 void buyingstore_open(map_session_data* sd, uint32 account_id);
-void buyingstore_trade(map_session_data* sd, uint32 account_id, uint32 buyer_id, const struct PACKET_CZ_REQ_TRADE_BUYING_STORE_sub* itemlist, uint32 count);
+void buyingstore_trade(map_session_data* sd, uint32 account_id, uint32 buyer_id, const struct PACKET_CZ_REQ_TRADE_BUYING_STORE_sub* itemlist, uint32 count, bool market_request = false);
+void buyingstore_pair_completed(map_session_data& seller, map_session_data& buyer);
 bool buyingstore_search( const map_session_data* sd, t_itemid nameid );
 bool buyingstore_searchall( const map_session_data* sd, const struct s_search_store_search* s );
 DBMap *buyingstore_getdb(void);

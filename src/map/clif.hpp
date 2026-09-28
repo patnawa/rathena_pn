@@ -1520,4 +1520,8 @@ int32 clif_bank_native_transfer(map_session_data& sd, int32 amount, bool deposit
 void clif_bank_open(map_session_data& sd);
 void clif_bank_deposit(map_session_data& sd, e_BANKING_DEPOSIT_ACK reason);
 void clif_bank_withdraw(map_session_data& sd, e_BANKING_WITHDRAW_ACK reason);
+
+// Open the authenticated full-width wallet/trade companion.
+void clif_bank_trade_open(map_session_data& sd);
+
 #endif /* CLIF_HPP */

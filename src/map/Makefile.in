@@ -122,8 +122,9 @@ obj/npc.o: npc.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H)
 	@@CXX@ @CXXFLAG_CLEARS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
 # these have extra dependencies
-obj/clif.o obj-gen/clif.o: ../custom/bank_ui.inc
-obj/intif.o obj-gen/intif.o: ../custom/bank_inter.inc ../custom/multi_storage_inter.inc
+obj/clif.o obj-gen/clif.o: ../custom/bank_ui.inc ../custom/market_ui.inc ../custom/mail_ui.inc
+obj/intif.o obj-gen/intif.o: ../custom/bank_inter.inc ../custom/multi_storage_inter.inc ../custom/mail_inter.inc
+obj/intif.o obj-gen/intif.o: ../custom/bank_sweep_inter.inc ../custom/pair_inter.inc
 obj/storage.o obj-gen/storage.o: ../custom/multi_storage_map.inc
 
 obj/atcommand.o: atcommand.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) ../custom/atcommand_def.inc ../custom/atcommand.inc

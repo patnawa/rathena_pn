@@ -19,6 +19,7 @@
 #include "chrif.hpp"
 #include "clan.hpp"
 #include "clif.hpp"
+#include "date.hpp"
 #include "elemental.hpp"
 #include "guild.hpp"
 #include "homunculus.hpp"
@@ -45,7 +46,7 @@ static const int32 packet_len_table[] = {
 	-1, 7,-1, 7, 14, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x3860  Quests [Kevin] [Inkfish] / Achievements [Aleos]
 	-1, 3, 3, 0,  0, 0, 0, 0,  0, 0, 0, 0, -1, 3,  3, 0, //0x3870  Mercenaries [Zephyrus] / Elemental [pakpil]
 	12,-1, 7, 3,  0, 0, 0, 0,  0, 0,-1, 9, -1,19, 35,-1, //0x3880  Pet System,  Storages
-	-1,-1, 7, 3, 38, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x3890  Homunculus [albator]
+	-1,-1, 7, 3, 38,38,38,54,  0, 0, 0, 0,  0, 0,  0, 0, //0x3890  Homunculus [albator]
 	-1,-1, 8, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x38A0  Clans
 };
 
@@ -2421,11 +2422,12 @@ int32 intif_parse_Mail_getattach(int32 fd)
 {
 	map_session_data *sd;
 	struct item item[MAIL_MAX_ITEM];
-	int32 i, mail_id, zeny;
+	int32 i, mail_id;
+	int64 zeny;
 
-	if (RFIFOW(fd, 2) - 16 != sizeof(struct item)*MAIL_MAX_ITEM)
+	if (RFIFOW(fd, 2) - 20 != sizeof(struct item)*MAIL_MAX_ITEM)
 	{
-		ShowError("intif_parse_Mail_getattach: data size error %d %" PRIuPTR "\n", RFIFOW(fd, 2) - 16, sizeof(struct item));
+		ShowError("intif_parse_Mail_getattach: data size error %d %" PRIuPTR "\n", RFIFOW(fd, 2) - 20, sizeof(struct item));
 		return 0;
 	}
 
@@ -2443,9 +2445,9 @@ int32 intif_parse_Mail_getattach(int32 fd)
 	if (i == MAIL_MAX_INBOX)
 		return 0;
 
-	zeny = RFIFOL(fd, 12);
+	zeny = RFIFOQ(fd, 12);
 
-	memcpy(item, RFIFOP(fd,16), sizeof(struct item)*MAIL_MAX_ITEM);
+	memcpy(item, RFIFOP(fd,20), sizeof(struct item)*MAIL_MAX_ITEM);
 
 	mail_getattachment(sd, &sd->mail.inbox.msg[i], zeny, item);
 	return 1;
@@ -3728,6 +3730,9 @@ int32 intif_clan_requestclans(){
 }
 
 #include <custom/bank_inter.inc>
+#include <custom/mail_inter.inc>
+#include <custom/bank_sweep_inter.inc>
+#include <custom/pair_inter.inc>
 #include <custom/multi_storage_inter.inc>
 
 void intif_parse_clans( int32 fd ){
@@ -3930,6 +3935,9 @@ int32 intif_parse(int32 fd)
 	case 0x388e:	intif_parse_BankCommitted(fd); break;
 	case 0x388f: intif_parse_StoragePage(fd); break;
 	case 0x3894: intif_parse_StorageCommitted(fd); break;
+	case 0x3895: intif_parse_MailCompanionCommitted(fd); break;
+	case 0x3897: intif_parse_BankSweepCommitted(fd); break;
+	case 0x3896: intif_parse_PairCommitted(fd); break;
 	case 0x388c:	intif_parse_StorageInfo_recv(fd); break;
 
 	// Homunculus System

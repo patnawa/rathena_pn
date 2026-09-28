@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "mail.hpp"
+#include <custom/zeny_arithmetic.hpp>
 
 #include <common/nullpo.hpp>
 #include <common/showmsg.hpp>
@@ -109,36 +110,11 @@ bool mail_removezeny( map_session_data *sd, bool flag ){
 	if( sd->mail.zeny > 0 ){
 		//Zeny send
 		if( flag ){
-			int64 zeny = sd->mail.zeny;
-
-			if( battle_config.mail_zeny_fee > 0 ){
-				int64 fee;
-
-				if( util::safe_multiplication( zeny, static_cast<decltype(fee)>( battle_config.mail_zeny_fee ), fee ) ){
-					return false;
-				}
-
-				if( fee < 0 ){
-					return false;
-				}
-
-				fee /= 100;
-
-				if( fee > MAX_ZENY ){
-					return false;
-				}
-
-				if( util::safe_addition( zeny, fee, zeny ) ){
-					return false;
-				}
-
-				if( zeny > MAX_ZENY ){
-					return false;
-				}
-			}
+			std::int64_t zeny;
+			if (!pn_zeny::fee_total(sd->mail.zeny, battle_config.mail_zeny_fee, 0, zeny)) return false;
 
 			// It's possible that we don't know what the dest_id is, so it will be 0
-			if( pc_payzeny( sd, static_cast<int32>( zeny ), LOG_TYPE_MAIL, sd->mail.dest_id ) ){
+			if( pc_payzeny( sd, zeny, LOG_TYPE_MAIL, sd->mail.dest_id ) ){
 				return false;
 			}
 		}else{
@@ -159,8 +135,8 @@ bool mail_removezeny( map_session_data *sd, bool flag ){
 * @param amount : amout of zeny or number of item
 * @return see enum mail_attach_result in mail.hpp
 */
-enum mail_attach_result mail_setitem(map_session_data *sd, int16 idx, uint32 amount) {
-	if( pc_istrading(sd) )
+enum mail_attach_result mail_setitem(map_session_data *sd, int16 idx, int64 amount) {
+	if( amount < 0 || pc_istrading(sd) )
 		return MAIL_ATTACH_ERROR;
 
 	if( idx == 0 ) { // Zeny Transfer
@@ -171,7 +147,8 @@ enum mail_attach_result mail_setitem(map_session_data *sd, int16 idx, uint32 amo
 		if( amount > sd->status.zeny )
 			amount = sd->status.zeny; // TODO: confirm this behavior for old mail system
 #else
-		if( ( amount + battle_config.mail_zeny_fee / 100 * amount ) > sd->status.zeny )
+		std::int64_t total;
+		if( !pn_zeny::fee_total(amount, battle_config.mail_zeny_fee, 0, total) || total > sd->status.zeny )
 			return MAIL_ATTACH_ERROR;
 #endif
 
@@ -179,6 +156,7 @@ enum mail_attach_result mail_setitem(map_session_data *sd, int16 idx, uint32 amo
 		// clif_updatestatus(*sd, SP_ZENY);
 		return MAIL_ATTACH_SUCCESS;
 	} else { // Item Transfer
+		if (amount <= 0 || amount > MAX_AMOUNT) return MAIL_ATTACH_ERROR;
 		int32 i;
 #if PACKETVER >= 20150513
 		int32 j, total = 0;
@@ -310,7 +288,8 @@ bool mail_setattachment(map_session_data *sd, struct mail_message *msg)
 		msg->item[i].amount = sd->mail.item[i].amount;
 	}
 
-	if( sd->mail.zeny < 0 || ( sd->mail.zeny + sd->mail.zeny * battle_config.mail_zeny_fee / 100 + amount * battle_config.mail_attachment_price ) > sd->status.zeny )
+	std::int64_t total;
+	if( !pn_zeny::fee_total(sd->mail.zeny, battle_config.mail_zeny_fee, static_cast<int64>(amount) * battle_config.mail_attachment_price, total) || total > sd->status.zeny )
 		return false;
 
 	msg->zeny = sd->mail.zeny;
@@ -329,7 +308,7 @@ bool mail_setattachment(map_session_data *sd, struct mail_message *msg)
 	return true;
 }
 
-void mail_getattachment(map_session_data* sd, struct mail_message* msg, int32 zeny, struct item* item){
+void mail_getattachment(map_session_data* sd, struct mail_message* msg, int64 zeny, struct item* item){
 	int32 i;
 	bool item_received = false;
 
@@ -412,7 +391,8 @@ int32 mail_openmail( const map_session_data* sd )
 }
 
 void mail_deliveryfail(map_session_data *sd, struct mail_message *msg){
-	int32 i, zeny = 0;
+	int32 i;
+	int64 zeny = 0;
 
 	nullpo_retv(sd);
 	nullpo_retv(msg);
@@ -426,7 +406,10 @@ void mail_deliveryfail(map_session_data *sd, struct mail_message *msg){
 	}
 
 	if( msg->zeny > 0 ){
-		pc_getzeny(sd,msg->zeny + msg->zeny*battle_config.mail_zeny_fee/100 + zeny,LOG_TYPE_MAIL); //Zeny receive (due to failure)
+		std::int64_t refund;
+		if (pn_zeny::fee_total(msg->zeny, battle_config.mail_zeny_fee, zeny, refund))
+			pc_getzeny(sd,refund,LOG_TYPE_MAIL); // Return the exact checked debit.
+		else ShowError("Invalid mail refund for character %u.\n",sd->status.char_id);
 	}
 
 	clif_Mail_send(sd, WRITE_MAIL_FAILED);

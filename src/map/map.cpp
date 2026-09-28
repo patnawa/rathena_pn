@@ -1,6 +1,7 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <custom/retired_tokens.hpp>
 #include "map.hpp"
 
 #include <cstdlib>
@@ -52,6 +53,7 @@
 #include "pet.hpp"
 #include "quest.hpp"
 #include "storage.hpp"
+#include "status.hpp"
 #include "trade.hpp"
 
 using namespace rathena;
@@ -2010,6 +2012,7 @@ int32 map_addflooritem(struct item *item, int32 amount, int16 m, int16 x, int16 
 	flooritem_data *fitem = nullptr;
 
 	nullpo_ret(item);
+	if (pn_tokens::retired(item->nameid)) return 0;
 
 	if (!(flags&4) && battle_config.item_onfloor && (itemdb_traderight(item->nameid).trade))
 		return 0; //can't be dropped
@@ -4930,6 +4933,14 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 				mapdata->setMapFlag(mapflag, args->flag_val);
 			} else
 				mapdata->setMapFlag(mapflag, false);
+			break;
+		case MF_UNLIMITEDWEIGHT:
+			mapdata->setMapFlag(mapflag, status);
+			// Script reloads and dynamic set/remove-mapflag must also update users.
+			map_foreachinmap([](block_list* bl, va_list) -> int32 {
+				status_calc_weight(BL_CAST(BL_PC, bl), CALCWT_MAXBONUS);
+				return 0;
+			}, m, BL_PC);
 			break;
 		case MF_SPECIALPOPUP:
 		case MF_INVINCIBLE_TIME:

@@ -577,6 +577,9 @@ static void mapif_parse_InventoryCommit( int32 fd ){
 }
 
 #include <custom/bank_sql.inc>
+#include <custom/mail_sql.inc>
+#include <custom/bank_sweep_sql.inc>
+#include <custom/pair_sql.inc>
 #include <custom/multi_storage_sql.inc>
 
 bool inter_storage_parse_frommap(int32 fd)
@@ -593,6 +596,9 @@ bool inter_storage_parse_frommap(int32 fd)
 		case 0x308e: mapif_parse_BankCommit(fd); break;
 		case 0x308f: mapif_parse_StoragePageLoad(fd); break;
 		case 0x3094: mapif_parse_StorageCommit(fd); break;
+		case 0x3095: mapif_parse_MailCompanionCommit(fd); break;
+		case 0x3097: mapif_parse_BankSweep(fd); break;
+		case 0x3096: mapif_parse_PairCommit(fd); break;
 		default:
 			return false;
 	}

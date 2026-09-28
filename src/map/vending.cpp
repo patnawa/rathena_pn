@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "vending.hpp"
+#include <custom/retired_tokens.hpp>
 
 #include <cstdlib> // atoi
 
@@ -14,7 +15,6 @@
 #include "achievement.hpp"
 #include "atcommand.hpp"
 #include "battle.hpp"
-#include "buyingstore.hpp"
 #include "buyingstore.hpp" // struct s_autotrade_entry, struct s_autotrader
 #include "chrif.hpp"
 #include "clif.hpp"
@@ -92,6 +92,11 @@ void vending_vendinglistreq(map_session_data* sd, int32 id)
 		return;
 	}
 
+	sd->market.last_target = vsd->status.account_id;
+	if (!vsd->market.published || std::any_of(vsd->vending, vsd->vending + vsd->vend_num, [](const s_vending& item) {return item.value > MAX_ZENY;})) {
+		clif_displaymessage(sd->fd, "Open Market in the Wallet64 panel to view this shop.");
+		return;
+	}
 	sd->vended_id = vsd->vender_id;  // register vending uid
 
 	clif_vendinglist( *sd, *vsd );
@@ -103,10 +108,13 @@ void vending_vendinglistreq(map_session_data* sd, int32 id)
  * @param zeny: Total amount to tax
  * @return Total amount after taxes
  */
-static double vending_calc_tax(map_session_data *sd, double zeny)
+int64 vending_calc_tax(map_session_data *sd, int64 zeny)
 {
 	if (battle_config.vending_tax && zeny >= battle_config.vending_tax_min)
-		zeny -= zeny * (battle_config.vending_tax / 10000.);
+		{
+		const int64 rate = 10000 - std::clamp(battle_config.vending_tax, 0, 10000);
+		zeny = (zeny / 10000) * rate + ((zeny % 10000) * rate) / 10000;
+	}
 
 	return zeny;
 }
@@ -120,15 +128,15 @@ static double vending_calc_tax(map_session_data *sd, double zeny)
  *	data := {<index>.w <amount>.w }[count]
  * @param count : number of different items he's trying to buy
  */
-void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8* data, int32 count)
+void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8* data, int32 count, bool market_request)
 {
-	int32 i, j, cursor, w, new_ = 0, blank, vend_list[MAX_VENDING];
-	double z;
+	int32 i, j, cursor, new_ = 0, blank, vend_list[MAX_VENDING];
+	int64 z, w;
 	struct s_vending vending[MAX_VENDING]; // against duplicate packets
 	map_session_data* vsd = map_id2sd(aid);
 
 	nullpo_retv(sd);
-	if( vsd == nullptr || !vsd->state.vending || vsd->id == sd->id )
+	if( vsd == nullptr || !vsd->state.vending || vsd->id == sd->id || pc_transaction_locked(sd) || pc_transaction_locked(vsd) || !vsd->market.published )
 		return; // invalid shop
 
 	if( vsd->vender_id != uid ) { // shop has changed
@@ -150,7 +158,7 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 	memcpy(&vending, &vsd->vending, sizeof(vsd->vending)); // copy vending list
 
 	// some checks
-	z = 0.; // zeny counter
+	z = 0; // zeny counter
 	w = 0;  // weight counter
 	for( i = 0; i < count; i++ ) {
 		int16 amount = *(uint16*)(data + 4*i + 0);
@@ -170,17 +178,19 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 		else
 			vend_list[i] = j;
 
-		z += ((double)vsd->vending[j].value * (double)amount);
-		if( z > (double)sd->status.zeny || z < 0. || z > (double)MAX_ZENY ) {
+		const int64 unit_price = vsd->vending[j].value;
+		if (unit_price < 0 || (!market_request && unit_price > MAX_ZENY) || (unit_price && amount > (MAX_WALLET_ZENY-z) / unit_price)) return;
+		z += unit_price * amount;
+		if( z > sd->status.zeny || z < 0 ) {
 			clif_buyvending( *sd, idx, amount, PURCHASEMC_NO_ZENY ); // you don't have enough zeny
 			return;
 		}
-		if( z + (double)vsd->status.zeny > (double)MAX_ZENY ) {
+		if( vending_calc_tax(sd, z) > MAX_BANK_ZENY - vsd->bank_vault ) {
 			clif_buyvending( *sd, idx, vsd->vending[j].amount, PURCHASEMC_OUT_OF_STOCK ); // too much zeny = overflow
 			return;
 
 		}
-		w += itemdb_weight(vsd->cart.u.items_cart[idx].nameid) * amount;
+		w += static_cast<int64>(itemdb_weight(vsd->cart.u.items_cart[idx].nameid)) * amount;
 		if( w + sd->weight > sd->max_weight ) {
 			clif_buyvending( *sd, idx, amount, PURCHASEMC_OVERWEIGHT );
 			return;
@@ -213,42 +223,66 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 		}
 	}
 
-	pc_payzeny(sd, (int32)z, LOG_TYPE_VENDING, vsd->status.char_id);
-	achievement_update_objective(sd, AG_SPEND_ZENY, 1, (int32)z);
-	z = vending_calc_tax(sd, z);
-	pc_getzeny(vsd, (int32)z, LOG_TYPE_VENDING, sd->status.char_id);
+	// Validate cumulative stack additions against the same identity used by
+	// pc_additem. Checking each line against the original inventory can accept
+	// two individually valid lines whose combined amount would overflow.
+	item projected[MAX_INVENTORY];
+	memcpy(projected, sd->inventory.u.items_inventory, sizeof(projected));
+	for (i = 0; i < count; ++i) {
+		const uint16 amount = *(uint16*)(data + 4*i);
+		const int16 index = *(uint16*)(data + 4*i + 2) - 2;
+		const auto& source = vsd->cart.u.items_cart[index];
+		auto* info = itemdb_search(source.nameid);
+		if (pn_tokens::retired(source.nameid)) return;
+		int slot = MAX_INVENTORY;
+		if (itemdb_isstackable2(info) && !source.expire_time && !(info->flag.guid && !source.unique_id)) {
+			for (int k = 0; k < MAX_INVENTORY; ++k) {
+				const auto& current = projected[k];
+				if (current.nameid == source.nameid && current.bound == source.bound && !current.expire_time &&
+					current.unique_id == source.unique_id && !memcmp(current.card, source.card, sizeof(source.card))) {
+					slot = k; break;
+				}
+			}
+		}
+		if (slot == MAX_INVENTORY) {
+			for (int k = 0; k < MAX_INVENTORY; ++k) if (!projected[k].nameid) { slot = k; break; }
+			if (slot >= sd->status.inventory_slots) return;
+			projected[slot] = source; projected[slot].amount = 0;
+		}
+		if (slot >= sd->status.inventory_slots || amount > MAX_AMOUNT - projected[slot].amount ||
+			(info->stack.inventory && amount > info->stack.amount - projected[slot].amount)) return;
+		projected[slot].amount += amount;
+	}
+
+	const int64 net = vending_calc_tax(sd, z);
+	if (!pn_pair_begin(*sd, *vsd, pn_pair::Vending, z - net)) return;
+	// Preflight above is authoritative and runs in this same map-thread turn.
+	if (pc_payzeny(sd, z, LOG_TYPE_VENDING, vsd->status.char_id)) {
+		pn_pair_abort(*sd, *vsd); return;
+	}
+	vsd->market.revision = pn_market_revision();
+	vsd->market.sold_count = 0;
+	achievement_update_objective(sd, AG_SPEND_ZENY, 1, static_cast<int32>(std::min<int64>(z, MAX_ZENY)));
+	pc_setparam(vsd, SP_BANK_VAULT, vsd->bank_vault + net);
 
 	for( i = 0; i < count; i++ ) {
 		int16 amount = *(uint16*)(data + 4*i + 0);
 		int16 idx    = *(uint16*)(data + 4*i + 2);
 		idx -= 2;
-		z = 0.; // zeny counter
+		z = 0; // zeny counter
 
 		// vending item
-		pc_additem(sd, &vsd->cart.u.items_cart[idx], amount, LOG_TYPE_VENDING);
-		vsd->vending[vend_list[i]].amount -= amount;
-		z += ((double)vsd->vending[vend_list[i]].value * (double)amount);
-
-		if( vsd->vending[vend_list[i]].amount ) {
-			if( Sql_Query( mmysql_handle, "UPDATE `%s` SET `amount` = %d WHERE `vending_id` = %d and `cartinventory_id` = %d", vending_items_table, vsd->vending[vend_list[i]].amount, vsd->vender_id, vsd->cart.u.items_cart[idx].id ) != SQL_SUCCESS ) {
-				Sql_ShowDebug( mmysql_handle );
-			}
-		} else {
-			if( Sql_Query( mmysql_handle, "DELETE FROM `%s` WHERE `vending_id` = %d and `cartinventory_id` = %d", vending_items_table, vsd->vender_id, vsd->cart.u.items_cart[idx].id ) != SQL_SUCCESS ) {
-				Sql_ShowDebug( mmysql_handle );
-			}
+		if (pc_additem(sd, &vsd->cart.u.items_cart[idx], amount, LOG_TYPE_VENDING) != ADDITEM_SUCCESS) {
+			pn_pair_abort(*sd, *vsd); return;
 		}
+		vsd->vending[vend_list[i]].amount -= amount;
+		z += (static_cast<int64>(vsd->vending[vend_list[i]].value) * amount);
 
 		pc_cart_delitem(vsd, idx, amount, 0, LOG_TYPE_VENDING);
 		z = vending_calc_tax(sd, z);
-		clif_vendingreport( *vsd, idx, amount, sd->status.char_id, (int32)z );
-
-		//print buyer's name
-		if( battle_config.buyer_name ) {
-			char temp[256];
-			sprintf(temp, msg_txt(sd,265), sd->status.name);
-			clif_messagecolor(vsd, color_table[COLOR_LIGHT_GREEN], temp, false, SELF);
-		}
+		static_assert(MAX_VENDING <= 20, "Increase deferred vending report capacity");
+		auto& report = vsd->market.sold[vsd->market.sold_count++];
+		report.cart_index = idx; report.amount = amount; report.net = z;
 	}
 
 	// compact the vending list
@@ -267,21 +301,26 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 
 	vsd->vend_num = cursor;
 
-	//Always save BOTH: customer (buyer) and vender
-	if( save_settings&CHARSAVE_VENDING ) {
-		chrif_save(sd, CSAVE_INVENTORY|CSAVE_CART);
-		chrif_save(vsd, CSAVE_INVENTORY|CSAVE_CART);
-	}
+	pn_pair_submit(*sd, *vsd);
+}
 
-	//check for @AUTOTRADE users [durf]
-	if( vsd->state.autotrade ) {
-		//see if there is anything left in the shop
-		ARR_FIND( 0, vsd->vend_num, i, vsd->vending[i].amount > 0 );
-		if( i == vsd->vend_num ) {
-			//Close Vending (this was automatically done by the client, we have to do it manually for autovenders) [Skotlex]
-			vending_closevending(vsd);
-			map_quit(vsd);	//They have no reason to stay around anymore, do they?
-		}
+// The SQL receipt has persisted both inventories, buyer wallet, seller bank,
+// and remaining listings. Only now acknowledge and retire an empty autoshop.
+void vending_pair_completed(map_session_data& buyer, map_session_data& seller) {
+	for (uint32 i = 0; i < seller.market.sold_count; ++i) {
+		const auto& report = seller.market.sold[i];
+		clif_vendingreport(seller, report.cart_index, report.amount, buyer.status.char_id,
+			static_cast<int32>(std::min<int64>(report.net, MAX_ZENY)));
+	}
+	seller.market.sold_count = 0;
+	if (battle_config.buyer_name) {
+		char text[256];
+		snprintf(text, sizeof(text), msg_txt(&buyer,265), buyer.status.name);
+		clif_messagecolor(&seller, color_table[COLOR_LIGHT_GREEN], text, false, SELF);
+	}
+	if (seller.state.autotrade && seller.vend_num == 0) {
+		vending_closevending(&seller);
+		map_quit(&seller);
 	}
 }
 
@@ -341,6 +380,7 @@ int8 vending_openvending( map_session_data& sd, const char* message, const uint8
 		if( index < 0 || index >= MAX_CART // invalid position
 		||  pc_cartitem_amount(&sd, index, amount) < 0 // invalid item or insufficient quantity
 		//NOTE: official server does not do any of the following checks!
+		||  pn_tokens::retired(sd.cart.u.items_cart[index].nameid)
 		||  !sd.cart.u.items_cart[index].identify // unidentified item
 		||  sd.cart.u.items_cart[index].attribute == 1 // broken item
 		||  sd.cart.u.items_cart[index].expire_time // It should not be in the cart but just in case
@@ -350,13 +390,14 @@ int8 vending_openvending( map_session_data& sd, const char* message, const uint8
 
 		sd.vending[i].index = index;
 		sd.vending[i].amount = amount;
-		sd.vending[i].value = min(value, (uint32)battle_config.vending_max_value);
+		sd.vending[i].value = at ? at->entries[j]->price : min(value, (uint32)battle_config.vending_max_value);
+		if (sd.vending[i].value < 0 || (sd.vending[i].value && amount > (MAX_WALLET_ZENY-total) / sd.vending[i].value)) return 1;
 		total += static_cast<int64>(sd.vending[i].value) * amount;
 		i++; // item successfully added
 	}
 
 	// check if the total value of the items plus the current zeny is over the limit
-	if ( !battle_config.vending_over_max && (static_cast<int64>(sd.status.zeny) + total) > MAX_ZENY ) {
+	if ( !battle_config.vending_over_max && vending_calc_tax(&sd, total) > MAX_BANK_ZENY - sd.bank_vault ) {
 #if PACKETVER >= 20200819
 		clif_msg_color( sd, MSI_MERCHANTSHOP_TOTA_LOVER_ZENY_ERR, color_table[COLOR_RED] );
 #endif
@@ -402,15 +443,17 @@ int8 vending_openvending( map_session_data& sd, const char* message, const uint8
 	StringBuf_Init(&buf);
 	StringBuf_Printf(&buf, "INSERT INTO `%s`(`vending_id`,`index`,`cartinventory_id`,`amount`,`price`) VALUES", vending_items_table);
 	for (j = 0; j < i; j++) {
-		StringBuf_Printf(&buf, "(%d,%d,%d,%d,%d)", sd.vender_id, j, sd.cart.u.items_cart[sd.vending[j].index].id, sd.vending[j].amount, sd.vending[j].value);
+		StringBuf_Printf(&buf, "(%d,%d,%d,%d,%" PRId64 ")", sd.vender_id, j, sd.cart.u.items_cart[sd.vending[j].index].id, sd.vending[j].amount, sd.vending[j].value);
 		if (j < i-1)
 			StringBuf_AppendStr(&buf, ",");
 	}
 	if (SQL_ERROR == Sql_QueryStr(mmysql_handle, StringBuf_Value(&buf)))
 		Sql_ShowDebug(mmysql_handle);
 
+	sd.market.revision = pn_market_revision();
+	sd.market.published = at != nullptr;
 	clif_openvending( sd );
-	clif_showvendingboard( sd );
+	if (sd.market.published) clif_showvendingboard( sd );
 
 	idb_put(vending_db, sd.status.char_id, &sd);
 
@@ -427,7 +470,7 @@ bool vending_search( const map_session_data* sd, t_itemid nameid )
 {
 	int32 i;
 
-	if( !sd->state.vending ) { // not vending
+	if( !sd->state.vending || !sd->market.published ) { // not vending
 		return false;
 	}
 
@@ -451,7 +494,7 @@ bool vending_searchall( const map_session_data* sd, const struct s_search_store_
 	uint32 idx, cidx;
 	const item* it;
 
-	if( !sd->state.vending ) // not vending
+	if( !sd->state.vending || !sd->market.published ) // not vending
 		return true;
 
 	for( idx = 0; idx < s->item_count; idx++ ) {
@@ -461,6 +504,7 @@ bool vending_searchall( const map_session_data* sd, const struct s_search_store_
 		}
 		it = &sd->cart.u.items_cart[sd->vending[i].index];
 
+		if (sd->vending[i].value > MAX_ZENY) continue; // Native search cannot quote a wide price.
 		if( s->min_price && s->min_price > sd->vending[i].value ) { // too low price
 			continue;
 		}
@@ -681,7 +725,7 @@ void do_init_vending_autotrade(void)
 					CREATE(at->entries[j], struct s_autotrade_entry, 1);
 					Sql_GetData(mmysql_handle, 0, &data, nullptr); at->entries[j]->cartinventory_id = atoi(data);
 					Sql_GetData(mmysql_handle, 1, &data, nullptr); at->entries[j]->amount = atoi(data);
-					Sql_GetData(mmysql_handle, 2, &data, nullptr); at->entries[j]->price = atoi(data);
+					Sql_GetData(mmysql_handle, 2, &data, nullptr); at->entries[j]->price = strtoll(data, nullptr, 10);
 					j++;
 				}
 				items += j;

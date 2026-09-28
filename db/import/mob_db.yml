@@ -2362,6 +2362,9 @@ Body:
     Rate: 1000
   - Item: aegis_1001634
     Rate: 1000
+  - Item: Yordos_Inve_Card
+    Rate: 1
+    StealProtected: true
 - Id: 22415
   AegisName: EP21_YORDOS_B_H
   Name: Awakened Jordos Judge
@@ -2405,7 +2408,7 @@ Body:
     Rate: 1000
   - Item: aegis_1001637
     Rate: 500
-  - Item: Yortus_Bailiff_Card
+  - Item: Yordos_Judge_Card
     Rate: 1
     StealProtected: true
 - Id: 22416

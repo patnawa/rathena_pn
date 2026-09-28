@@ -23,9 +23,9 @@ bool bank_tosql(const pn_bank_commit& request, s_storage& inventory) {
     if (request.action == 7) return reserve_tosql(request, inventory);
     if (request.account_id == 0 || request.char_id == 0 || request.request_id == 0 ||
         (request.nonce_hi == 0 && request.nonce_lo == 0) ||
-        request.action < pn_bank::Deposit || request.action > pn_bank::SellNote || request.amount <= 0 ||
+        request.action < pn_bank::Deposit || request.action > pn_bank::Withdraw || request.amount <= 0 ||
         request.bank_after < 0 || request.bank_after > MAX_BANK_ZENY ||
-        request.wallet_after < 0 || request.wallet_after > MAX_ZENY || inventory.type != TABLE_INVENTORY ||
+        request.wallet_after < 0 || request.wallet_after > MAX_WALLET_ZENY || inventory.type != TABLE_INVENTORY ||
         !bank_tables_transactional() || Sql_BeginTransaction(sql_handle) != SQL_SUCCESS)
         return false;
     bool success = false, wrote = false;
@@ -56,7 +56,6 @@ bool bank_tosql(const pn_bank_commit& request, s_storage& inventory) {
         // SQL can still enforce the exact bank delta, price and wallet debit.
         pn_bank::Reply before;
         before.bank = request.bank_before; before.wallet = request.wallet_before;
-        for (int i = 0; i < 2; ++i) before.max_buy[i] = before.counts[i] = INT32_MAX;
         const auto planned = pn_bank::plan(before, request.action, request.amount);
         if (planned.result != pn_bank::Ok || request.bank_after != planned.bank ||
             request.wallet_after < planned.wallet) break;
@@ -85,7 +84,7 @@ bool bank_tosql(const pn_bank_commit& request, s_storage& inventory) {
     if (success && wrote) {
         auto found = char_get_chardb().find(request.char_id);
         if (found != char_get_chardb().end() && found->second)
-            found->second->zeny = static_cast<int32>(request.wallet_after);
+            found->second->zeny = request.wallet_after;
     }
     return success;
 }

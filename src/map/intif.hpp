@@ -133,6 +133,8 @@ bool intif_storage_page_load(map_session_data& sd);
 bool intif_storage_save( const map_session_data* sd, const s_storage* stor );
 void intif_reform_save( map_session_data& sd, uint16 index );
 void intif_bank_save( map_session_data& sd );
+void intif_mail_companion_save(map_session_data& sd);
+void intif_bank_sweep_save(map_session_data& sd);
 
 int32 CheckForCharServer(void);
 

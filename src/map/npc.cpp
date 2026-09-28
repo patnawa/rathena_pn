@@ -2796,7 +2796,7 @@ static int32 npc_buylist_sub(map_session_data* sd, std::vector<s_npc_buy_list>& 
 e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>& item_list ){
 	npc_data* nd;
 	struct npc_item_list *shop = nullptr;
-	double z;
+	int64 z;
 	int32 j,k,w,skill,new_;
 	uint8 market_index[MAX_INVENTORY];
 
@@ -2875,7 +2875,8 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 		if (npc_shop_discount(nd))
 			value = pc_modifybuyvalue(sd,value);
 
-		z += (double)value * amount;
+		if (value < 0 || (value && amount > (MAX_WALLET_ZENY-z)/value)) return e_purchase_result::PURCHASE_FAIL_MONEY;
+		z += static_cast<int64>(value) * amount;
 		w += itemdb_weight(nameid) * amount;
 	}
 
@@ -2884,7 +2885,7 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 		return e_purchase_result::PURCHASE_SUCCEED;
 	}
 
-	if (z > (double)sd->status.zeny)
+	if (z > sd->status.zeny)
 		return e_purchase_result::PURCHASE_FAIL_MONEY;	// Not enough Zeny
 
 	if( w + sd->weight > sd->max_weight )
@@ -2892,7 +2893,7 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 	if( pc_inventoryblank(sd) < new_ )
 		return e_purchase_result::PURCHASE_FAIL_COUNT;	// Not enough space to store items
 
-	pc_payzeny(sd, (int32)z, LOG_TYPE_NPC);
+	if (pc_payzeny(sd, z, LOG_TYPE_NPC)) return e_purchase_result::PURCHASE_FAIL_MONEY;
 
 	for( int32 i = 0; i < item_list.size(); ++i ) {
 		t_itemid nameid = item_list[i].nameid;
@@ -2937,7 +2938,7 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 			skill = sd->status.skill[sk_idx].flag - SKILL_FLAG_REPLACED_LV_0;
 
 		if( skill > 0 ) {
-			z = z * (double)skill * (double)battle_config.shop_exp/10000.;
+			z = static_cast<int64>(std::min<double>(MAX_ZENY, z * (double)skill * (double)battle_config.shop_exp/10000.));
 			if( z < 1 )
 				z = 1;
 			pc_gainexp(sd,nullptr,0,(int32)z, 0);
@@ -3030,12 +3031,14 @@ static int32 npc_selllist_sub(map_session_data* sd, int32 list_length, const PAC
 /// @return result code for clif_parse_NpcSellListSend
 uint8 npc_selllist(map_session_data* sd, int32 list_length, const PACKET_CZ_PC_SELL_ITEMLIST_sub* item_list)
 {
-	double z;
+	int64 z;
 	int32 i,skill;
 	npc_data *nd;
+	bool seen[MAX_INVENTORY] = {};
 
 	nullpo_retr(1, sd);
 	nullpo_retr(1, item_list);
+	if (list_length <= 0 || list_length > MAX_INVENTORY) return 1;
 
 	if( ( nd = npc_checknear(sd, map_id2bl(sd->npc_shopid)) ) == nullptr || nd->subtype != NPCTYPE_SHOP )
 	{
@@ -3053,10 +3056,14 @@ uint8 npc_selllist(map_session_data* sd, int32 list_length, const PACKET_CZ_PC_S
 		idx    = item_list[i].index - 2;
 		amount = item_list[i].amount;
 
-		if( idx >= MAX_INVENTORY || idx < 0 || amount < 0 )
+		if( idx >= MAX_INVENTORY || idx < 0 || amount <= 0 )
 		{
 			return 1;
 		}
+
+		// Preflight all unique slots before any item or pet mutation.
+		if (seen[idx]) return 1;
+		seen[idx] = true;
 
 		nameid = sd->inventory.u.items_inventory[idx].nameid;
 
@@ -3079,13 +3086,16 @@ uint8 npc_selllist(map_session_data* sd, int32 list_length, const PACKET_CZ_PC_S
 		else
 			value = pc_modifysellvalue(sd, sd->inventory_data[idx]->value_sell);
 
-		z+= (double)value*amount;
+		if (value < 0 || (value && amount > (MAX_WALLET_ZENY-z)/value)) return 1;
+		z += static_cast<int64>(value)*amount;
 	}
 
 	if( nd->master_nd )
 	{// Script-controlled shops
 		return npc_selllist_sub(sd, list_length, item_list, nd->master_nd);
 	}
+
+	if (z > MAX_WALLET_ZENY-sd->status.zeny-sd->mail.pending_zeny || pc_transaction_locked(sd)) return 1;
 
 	// delete items
 	for( i = 0; i < list_length; i++ )
@@ -3113,10 +3123,7 @@ uint8 npc_selllist(map_session_data* sd, int32 list_length, const PACKET_CZ_PC_S
 		}
 	}
 
-	if( z > MAX_ZENY )
-		z = MAX_ZENY;
-
-	pc_getzeny(sd, (int32)z, LOG_TYPE_NPC);
+	pc_getzeny(sd, z, LOG_TYPE_NPC);
 
 	// custom merchant shop exp bonus
 	if( battle_config.shop_exp > 0 && z > 0 && ( skill = pc_checkskill(sd,MC_OVERCHARGE) ) > 0)
@@ -3127,7 +3134,7 @@ uint8 npc_selllist(map_session_data* sd, int32 list_length, const PACKET_CZ_PC_S
 
 		if( skill > 0 )
 		{
-			z = z * (double)skill * (double)battle_config.shop_exp/10000.;
+			z = static_cast<int64>(std::min<double>(MAX_ZENY, z * (double)skill * (double)battle_config.shop_exp/10000.));
 			if( z < 1 )
 				z = 1;
 			pc_gainexp(sd, nullptr, 0, (int32)z, 0);

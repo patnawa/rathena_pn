@@ -1,0 +1,162 @@
+{
+  "sha256": "73f72fea2458a4c2dfd1fcc5a2a8f7684485aecd52d612a3e68a27c828b4632d",
+  "file_size": 10629120,
+  "machine": "0x14c",
+  "format": "PE32",
+  "timestamp": 1770772907,
+  "entry_rva": "0x412a058",
+  "entry_section": ".boot",
+  "coff_symbol_pointer": 0,
+  "coff_symbol_count": 0,
+  "debug_directory_rva": 0,
+  "debug_directory_size": 84,
+  "protection_section_names": [
+    ".themida"
+  ],
+  "sections": [
+    {
+      "name": "        ",
+      "rva": 4096,
+      "virtual_size": 13393920,
+      "raw_size": 4487168,
+      "raw_offset": 1536,
+      "executable": true
+    },
+    {
+      "name": "        ",
+      "rva": 13398016,
+      "virtual_size": 2383872,
+      "raw_size": 655872,
+      "raw_offset": 4488704,
+      "executable": false
+    },
+    {
+      "name": "        ",
+      "rva": 15781888,
+      "virtual_size": 4399104,
+      "raw_size": 76288,
+      "raw_offset": 5144576,
+      "executable": false
+    },
+    {
+      "name": "        ",
+      "rva": 20180992,
+      "virtual_size": 1134592,
+      "raw_size": 69632,
+      "raw_offset": 5220864,
+      "executable": false
+    },
+    {
+      "name": "        ",
+      "rva": 21315584,
+      "virtual_size": 4096,
+      "raw_size": 512,
+      "raw_offset": 5290496,
+      "executable": false
+    },
+    {
+      "name": "        ",
+      "rva": 21319680,
+      "virtual_size": 4096,
+      "raw_size": 1536,
+      "raw_offset": 5291008,
+      "executable": false
+    },
+    {
+      "name": "        ",
+      "rva": 21323776,
+      "virtual_size": 39366656,
+      "raw_size": 512,
+      "raw_offset": 5292544,
+      "executable": false
+    },
+    {
+      "name": "        ",
+      "rva": 60690432,
+      "virtual_size": 28672,
+      "raw_size": 2048,
+      "raw_offset": 5293056,
+      "executable": true
+    },
+    {
+      "name": "        ",
+      "rva": 60719104,
+      "virtual_size": 12288,
+      "raw_size": 3584,
+      "raw_offset": 5295104,
+      "executable": true
+    },
+    {
+      "name": ".edata",
+      "rva": 60731392,
+      "virtual_size": 4096,
+      "raw_size": 512,
+      "raw_offset": 5298688,
+      "executable": false
+    },
+    {
+      "name": ".idata",
+      "rva": 60735488,
+      "virtual_size": 4096,
+      "raw_size": 2048,
+      "raw_offset": 5299200,
+      "executable": false
+    },
+    {
+      "name": ".tls",
+      "rva": 60739584,
+      "virtual_size": 73728,
+      "raw_size": 71680,
+      "raw_offset": 5301248,
+      "executable": false
+    },
+    {
+      "name": ".rsrc",
+      "rva": 60813312,
+      "virtual_size": 141824,
+      "raw_size": 141824,
+      "raw_offset": 5372928,
+      "executable": false
+    },
+    {
+      "name": ".themida",
+      "rva": 60956672,
+      "virtual_size": 7372800,
+      "raw_size": 0,
+      "raw_offset": 5514752,
+      "executable": true
+    },
+    {
+      "name": ".boot",
+      "rva": 68329472,
+      "virtual_size": 5113344,
+      "raw_size": 5113344,
+      "raw_offset": 5514752,
+      "executable": true
+    },
+    {
+      "name": ".xdiff",
+      "rva": 73445376,
+      "virtual_size": 4096,
+      "raw_size": 1024,
+      "raw_offset": 10628096,
+      "executable": true
+    }
+  ],
+  "economic_ascii_strings": [],
+  "pdb_ascii_strings": [],
+  "wide_zeny": {
+    "enabled": false,
+    "reason": "Static inventory cannot prove native UI, arithmetic, or packet support. Runtime acceptance is required.",
+    "verified_capabilities": [],
+    "required_capabilities": [
+      "wallet",
+      "trade",
+      "mail",
+      "vending",
+      "buying_store",
+      "shop_search"
+    ]
+  },
+  "input_name": "Ragexe.exe"
+}

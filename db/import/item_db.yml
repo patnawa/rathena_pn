@@ -91,6 +91,7 @@ Header:
 Footer:
   Imports:
     - Path: db/import/account_bank_items.yml
+    - Path: db/import/infinite_catalysts.yml
 
 #Body:
 # THQ Quest Items

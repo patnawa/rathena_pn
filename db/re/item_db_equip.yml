@@ -25418,6 +25418,7 @@ Body:
     Locations:
       Head_Top: true
     ArmorLevel: 1
+    Refineable: true
     View: 4
     Script: |
       bonus2 bSubRace,RC_Plant,10;
@@ -26163,6 +26164,7 @@ Body:
     Locations:
       Head_Top: true
     ArmorLevel: 1
+    Refineable: true
     View: 37
     Script: |
       bonus2 bSubRace,RC_Insect,10;

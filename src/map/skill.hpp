@@ -230,6 +230,7 @@ struct s_skill_condition {
 	int32 spiritball;						/// Spiritball cost
 	t_itemid itemid[MAX_SKILL_ITEM_REQUIRE];	/// Required item
 	int32 amount[MAX_SKILL_ITEM_REQUIRE];	/// Amount of item
+	bool rental_trap;					/// No purchased trap material was consumed.
 	std::vector<t_itemid> eqItem;				/// List of equipped item
 	std::vector<sc_type> status;			/// List of Status required (SC)
 };
@@ -413,6 +414,7 @@ struct s_skill_unit_group {
 		unsigned ammo_consume : 1; // Need to consume ammo
 		unsigned song_dance : 2; //0x1 Song/Dance, 0x2 Ensemble
 		unsigned guildaura : 1; // Guild Aura
+		unsigned rental_trap : 1; // Never refund materials for an infinite rental trap.
 	} state;
 
 	~s_skill_unit_group() {
