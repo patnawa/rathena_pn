@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Execute actual certificate commit guard with mutation/cancellation doubles."""
 from pathlib import Path
+import os
 import re
 import subprocess
 import tempfile
@@ -52,7 +53,7 @@ int main() {
 '''
 with tempfile.TemporaryDirectory(prefix='pn-refine15-') as temp:
     path,exe=Path(temp)/'test.cpp',Path(temp)/'test';path.write_text(cpp)
-    subprocess.run(['g++','-std=c++17','-fsanitize=address,undefined','-fno-sanitize-recover=all',str(path),'-o',str(exe)],check=True)
+    subprocess.run(['g++','-std=c++17','-fsanitize='+os.environ.get('REFINE_SANITIZERS','address,undefined'),'-fno-sanitize-recover=all',str(path),'-o',str(exe)],check=True)
     subprocess.run([str(exe)],check=True)
 assert '(.@type == IT_WEAPON) ? 6872 : 6878' in source
 assert 'callfunc "F_PNRefine15Ticket"' in (ROOT/'npc/custom/grademk_services.txt').read_text()

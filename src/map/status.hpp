@@ -86,7 +86,8 @@ enum e_refine_cost_type : uint16{
 /// Refine script parameters
 enum e_refine_parameter{
 	REFINE_MATERIAL_ID = 0,
-	REFINE_ZENY_COST
+	REFINE_ZENY_COST,
+	REFINE_SUCCESS_RATE
 };
 
 struct s_refine_cost{

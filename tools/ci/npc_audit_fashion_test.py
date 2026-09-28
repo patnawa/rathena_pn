@@ -34,7 +34,11 @@ def run(build, source):
     # world/NPC lookup boundary cannot render a production source-location report.
     error_tail='std::vfprintf(stderr,f,a);va_end(a);}'
     assert prefix.count(error_tail)==1
-    prefix=prefix.replace(error_tail,'std::vfprintf(stderr,f,a);va_end(a);if(std::strstr(f,"infinity loop"))std::exit(1);}')
+    prefix=prefix.replace(error_tail,'std::vfprintf(stderr,f,a);va_end(a);if(std::strstr(f,"infinity loop")){std::fprintf(stderr,"fashion case=%u stone25058=%d stone25206=%d coins=%d card4=%u points=%lld\\n",cases,count(25058),count(25206),count(50000),attached->inventory.u.items_inventory[0].card[3],(long long)nums[add_str("#FP_Fashion")]);std::exit(1);}}')
+    # Fashion costumes span several equipment positions. Keep the common VM
+    # boundaries but replace the crown-only equip doubles with costume-aware
+    # versions in this fixture, without changing the shared crown tests.
+    prefix=prefix[:prefix.index('extern "C" bool unequip(')]
     driver = build / 'npc_audit_fashion_driver.cpp'
     driver.write_text(prefix.replace(original, replacement) +
                       (ROOT / 'tools/ci/npc_audit_fashion_test.cpp').read_text())
@@ -98,6 +102,11 @@ def run(build, source):
          'for (.@box=0; .@box<21; ++.@box) { .@n=callfunc("FP_LoadBox",.@box); '
          'for (.@i=0; .@i<.@n; ++.@i) if (@FP_BoxStone[.@i]==getarg(0)) return 1; } return 0;',
          'infinity loop'),
+        ('recovery-extra-scan', '\tgetitem .@stone,1;\n',
+         '\tfor (.@i=0; .@i<@inventorylist_count; ++.@i)\n'
+         '\t\tif (@inventorylist_id[.@i]==.@stone)\n'
+         '\t\t\t.@amount_before_at[@inventorylist_idx[.@i]]=@inventorylist_amount[.@i];\n'
+         '\tgetitem .@stone,1;\n', 'infinity loop'),
     ]
     for name, needle, replacement, expected in mutations:
         if current.count(needle) != 1:

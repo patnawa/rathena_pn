@@ -1,0 +1,196 @@
+{
+  "source_url": "http://twcdn.gnjoy.com.tw/ragnarok/patchfile/2026-09-22_live_client_4412_4412_1789972792.rgz",
+  "items": [
+    {
+      "id": 1001736,
+      "name_en": "Melody Note Effect Stone (Upper)",
+      "description_en": [
+        "Enchants upper costume slot 4.",
+        "Adds the Melody Note Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": true,
+      "pair_id": 300548
+    },
+    {
+      "id": 300548,
+      "name_en": "Melody Note Effect",
+      "description_en": [
+        "Adds the Melody Note Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": false,
+      "pair_id": 1001736
+    },
+    {
+      "id": 1001752,
+      "name_en": "Released Power Effect Stone (Lower)",
+      "description_en": [
+        "Enchants lower costume slot 4.",
+        "Adds the Released Power Effect visual effect."
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 313331
+    },
+    {
+      "id": 313331,
+      "name_en": "Released Power Effect",
+      "description_en": [
+        "Adds the Released Power Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": false,
+      "pair_id": 1001752
+    },
+    {
+      "id": 1001868,
+      "name_en": "22nd Anniversary Stone (Dual)",
+      "description_en": [
+        "Enchants costume garment slot 2.",
+        "Adds a halo visual effect.",
+        "Melee and ranged physical damage +11%.",
+        "All-element magic damage +11%."
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 313524
+    },
+    {
+      "id": 313524,
+      "name_en": "22nd Anniversary (Dual)",
+      "description_en": [
+        "Adds a halo visual effect.",
+        "Melee and ranged physical damage +11%.",
+        "All-element magic damage +11%."
+      ],
+      "resource_cp949_base64": "MjJBbmlfUm9iZV9E",
+      "resource_unicode": "22Ani_Robe_D",
+      "is_material": false,
+      "pair_id": 1001868
+    },
+    {
+      "id": 1002293,
+      "name_en": "Golden Aura Effect Stone (Lower)",
+      "description_en": [
+        "Enchants lower costume slot 4.",
+        "Adds the Golden Aura Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": true,
+      "pair_id": 314198
+    },
+    {
+      "id": 314198,
+      "name_en": "Golden Aura Effect",
+      "description_en": [
+        "Adds the Golden Aura Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": false,
+      "pair_id": 1002293
+    },
+    {
+      "id": 1002420,
+      "name_en": "23rd Anniversary Stone (Garment)",
+      "description_en": [
+        "Enchants costume garment slot 1.",
+        "Fixed cast time -0.2 seconds.",
+        "After-cast delay -3%.",
+        "CRI +5.",
+        "Melee and ranged physical damage +3%.",
+        "All-element magic damage +3%.",
+        "Variable cast time -5%.",
+        "With 22nd Anniversary (Dual): Ignore 5% of all races physical and magical resistance.",
+        "With After Skill Delay1 Upper, Middle and Lower: After-cast delay -5%; melee/ranged physical and all-element magic damage +3%.",
+        "With Range Stone Upper, Middle and Lower: Ranged physical damage +5%.",
+        "With Melee Stone Upper, Middle and Lower: Melee physical damage +5%.",
+        "With Magic Power Stone Upper, Middle and Lower: All-element magic damage +5%.",
+        "With Fatal Upper, Middle and Lower: Critical damage +5%.",
+        "With Experience Stone Upper, Middle and Lower: Experience from defeating monsters +5%; melee/ranged physical and all-element magic damage +3%.",
+        "With Variable Cast Reduction Upper, Middle and Lower: Variable cast time -10%; melee/ranged physical and all-element magic damage +3%."
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 300713
+    },
+    {
+      "id": 300713,
+      "name_en": "23rd Anniversary",
+      "description_en": [
+        "Fixed cast time -0.2 seconds.",
+        "After-cast delay -3%.",
+        "CRI +5.",
+        "Melee and ranged physical damage +3%.",
+        "All-element magic damage +3%.",
+        "Variable cast time -5%.",
+        "With 22nd Anniversary (Dual): Ignore 5% of all races physical and magical resistance.",
+        "With After Skill Delay1 Upper, Middle and Lower: After-cast delay -5%; melee/ranged physical and all-element magic damage +3%.",
+        "With Range Stone Upper, Middle and Lower: Ranged physical damage +5%.",
+        "With Melee Stone Upper, Middle and Lower: Melee physical damage +5%.",
+        "With Magic Power Stone Upper, Middle and Lower: All-element magic damage +5%.",
+        "With Fatal Upper, Middle and Lower: Critical damage +5%.",
+        "With Experience Stone Upper, Middle and Lower: Experience from defeating monsters +5%; melee/ranged physical and all-element magic damage +3%.",
+        "With Variable Cast Reduction Upper, Middle and Lower: Variable cast time -10%; melee/ranged physical and all-element magic damage +3%."
+      ],
+      "resource_cp949_base64": "MjNfQW5uaV9Sb2Jl",
+      "resource_unicode": "23_Anni_Robe",
+      "is_material": false,
+      "pair_id": 1002420
+    },
+    {
+      "id": 1002464,
+      "name_en": "Dark Lord Circle Effect Stone (Lower)",
+      "description_en": [
+        "Enchants lower costume slot 4.",
+        "Adds the Dark Lord Circle Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": true,
+      "pair_id": 300714
+    },
+    {
+      "id": 300714,
+      "name_en": "Dark Lord Circle Effect",
+      "description_en": [
+        "Adds the Dark Lord Circle Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": false,
+      "pair_id": 1002464
+    },
+    {
+      "id": 1002585,
+      "name_en": "Digital Space Effect Stone (Lower)",
+      "description_en": [
+        "Enchants lower costume slot 4.",
+        "Adds the Digital Space Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": true,
+      "pair_id": 314802
+    },
+    {
+      "id": 314802,
+      "name_en": "Digital Space Effect",
+      "description_en": [
+        "Adds the Digital Space Effect visual effect."
+      ],
+      "resource_cp949_base64": "uu2358WpuK69usW7wbawog==",
+      "resource_unicode": "블루크리스탈조각",
+      "is_material": false,
+      "pair_id": 1002585
+    }
+  ]
+}

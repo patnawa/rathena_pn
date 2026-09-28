@@ -1,0 +1,51 @@
+{
+  "independent_cases": 45,
+  "unique_output_smoke_cases": 472,
+  "native_success": true,
+  "mutations": [
+    {
+      "name": "mutant-anniversary-damage",
+      "rejected": true,
+      "exit_code": 1
+    },
+    {
+      "name": "mutant-skill-threshold",
+      "rejected": true,
+      "exit_code": 1
+    },
+    {
+      "name": "mutant-purified-category",
+      "rejected": true,
+      "exit_code": 1
+    },
+    {
+      "name": "mutant-missing-range-combo",
+      "rejected": true,
+      "exit_code": 1
+    }
+  ],
+  "source_sha256": {
+    "src/map/pc.cpp": "848ff9e71514e21e2574c44bb9f8ab5043284c17b918b57097d7240b96aa848e",
+    "src/map/script.cpp": "1ef492763bfd31e04fcda68e09d0e2eb2479a74d3bea402604e47b214e8f3935",
+    "src/map/itemdb.cpp": "5198b13540969b2e262217eb2b88a49ba9358b45dd7406ae7b1c8816933b5de8",
+    "src/map/status.cpp": "e44b6f47dd456415c32428f60519b1966facd31291bf4a9618abf468d8f1da17",
+    "src/map/battle.cpp": "37dfd476b0fcdf308f1fdd0a1fedc95c406158b8a5eab1fbc80844da8ff15993",
+    "src/common/malloc.cpp": "064496e9722eeb1486178a6663aaa375ed7f312717986b9f41df3b69fd3a4a70"
+  },
+  "database_sha256": {
+    "db/import/fashion_stone_expansion_items.yml": "73e9dc56da54f38326daffec03abdfeac8657f3f2c15980a81dddb743a36341c",
+    "db/import/fashion_stone_expansion_combos.yml": "c7c628ae965deeeae0a76aa6e835148874fd1c6d725327ee6725c83cef03b5ec"
+  },
+  "oracle": "hand-authored official descriptions; not script-derived fixture JSON",
+  "boundaries": "synthetic inventory/player and lookup, transport/registry/persistence wrappers; no server startup; magic cardfix stage and native cast/delay, not full skill attack simulation",
+  "native_assertions": 11939,
+  "catalogue_material_pairs": 497,
+  "fixture_sha256": {
+    "tools\\ci\\costume_combat_native_test.py": "a04927b9313325fb738383c7f6ca1c926e5fb790e3a98a879414e8562b22d29c",
+    "tools\\ci\\costume_combat_native_test.cpp": "fe385acb18f39f2f8a5b05459029e74f25d979674f3060b863427e250089f8a8",
+    "tools\\ci\\biosphere_crown_transaction_test.py": "00546198345c5d93d5e954e90318b4afe3e4259006835bac4b04ea58baf1c3fa",
+    "tools\\ci\\biosphere_crown_transaction_test.cpp": "fe7f83d06cfbf48cd19ad86f7c58277d4babbb73ea30425544573bef2223eb19",
+    "npc\\custom\\fashion_points\\stone_catalogue.json": "047fcc75d484732807a32b237deff231a03bfe1a645bcd1f11b1ac501db52063"
+  },
+  "native_log_sha256": "0478df268530b53e5a4b5b2cb1399f5ebc620facf393ac68ff80caf989797ac7"
+}

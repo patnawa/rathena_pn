@@ -13,9 +13,10 @@
 -	script	::ShadowBlacksmith	-1,{
 	if( getbattleflag( "feature.refineui" ) ){
 		mes "[Shadow Blacksmith]";
-		mes "Now Basta is in charge of refinement for shadow items.";
-		mes "If you'd like to refine a shadow item, please visit him.";
-		close;
+		mes "Use the refinement window to choose your shadow equipment and ore.";
+		close2;
+		refineui();
+		end;
 	}
 
 	.@zeny_cost = 200000; // Zeny cost is 200,000 according to official script [Secret]
@@ -38,7 +39,7 @@
 		mes "Etc: HP + 10 increase for each +1 refine success.";
 		next;
 		mes "[Shadow Blacksmith]";
-		mes "All types of Oridecon and Elunium can be used to refine shadow items. Each attempt will also cost 20,000 zeny.";
+		mes "All types of Oridecon and Elunium can be used to refine shadow items. Each attempt will also cost " + callfunc("F_InsertComma",.@zeny_cost) + " zeny.";
 		next;
 		mes "[Shadow Blacksmith]";
 		mes "HD ores can be used for gear that is at least refine level +7 and will prevent breaking as long as you stay talking to me.";

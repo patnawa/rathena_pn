@@ -2988,6 +2988,7 @@ This function will return required cost for refining based on <information> argu
 Valid information types are:
 
 REFINE_ZENY_COST       - Zeny
+REFINE_SUCCESS_RATE    - Success chance out of 10000 (e.g. 800 means 8%).
 REFINE_MATERIAL_ID     - Material Item ID
 
 This function will return -1 on failure. The function fails if the cost type

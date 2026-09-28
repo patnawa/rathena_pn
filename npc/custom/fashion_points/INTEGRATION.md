@@ -1,10 +1,12 @@
 # Fashion Points integration
 
-This implementation follows revision 61305 (2026-07-29) of the published
-reference server Fashion Points page.
-Its 21 box tables contain all 366 published physical-stone/enchant pairs in the
-published order. Of those, 358 have functional enchant records in this server
-build; the eight Druid/Karnos/Alitea outcomes are deliberately withheld.
+The original 366 MuhRO revision 61305 materials are retained, including the eight
+Druid/Karnos/Alitea pairs enabled by the integrated class implementation.
+`stone_catalogue.json` is the reviewed mapping source. Run
+`python tools/ci/fashion_stone_catalogue.py --write` after changing it, and
+`--check` in validation. The September 2026 expansion adds official Korean and
+Thai regional stones and cosmetic fourth-slot support. Its scope and evidence
+are documented in `doc/costume_stone_expansion_20260928.md`.
 
 ## Server prerequisites
 
@@ -24,12 +26,11 @@ npc: npc/custom/fashion_points/FashionEnchant.txt
 
 The repository already contains those ordered loader entries. It also loads:
 
-- `db/import/fashion_points_box_item_db.yml` from `db/item_db.yml` (21
+- `db/import/fashion_points_box_item_db.yml` from `db/item_db.yml` (26
   `Delayconsume` boxes)
 - `db/import/fashion_points_missing_item_db.yml` from `db/item_db.yml` (8
-  future-class physical stones and 8 withheld enchant records)
-- `db/import/fashion_points_item_combos.yml` from `db/item_combos.yml` (withheld
-  future-class combos)
+  Druid-family physical stones and 8 functional enchant records)
+- `db/import/fashion_points_item_combos.yml` from `db/item_combos.yml` (Druid-family combos)
 
 Use a clean map-server startup to validate YAML and script parsing after
 installation. A production restart is preferred over piecemeal reloads because
@@ -37,10 +38,15 @@ the package spans item, combo, item-script, and NPC data.
 
 ## Runtime behavior
 
-- `Complete Fashion Enchanter#FP` at `mal_in01,25,113` applies all 358 supported
-  mappings. The page publishes no application probability, so application is
-  guaranteed by declared compatibility policy; no probability is invented.
-- `Gregio Grumani#FP` at `mal_in01,24,120` recovers a recognized stone for the
+- `Fashion Boxes` at `pn_style,160,130` sells Top, Middle, Lower Visual Effect
+  and Garment Footprint boxes for 50 Fashion Points each (menu entries 22–25).
+  Their pools contain 8, 14, 10 and 24 materials respectively. Double-click a
+  purchased box for one uniformly selected stone; opening does not charge more
+  points. The separate Festa Upper Slot 2 Box also costs 50 points.
+- `Fashion Enchants` at `pn_style,160,138` applies supported catalogue mappings.
+  Use `@fashion` to reach the Fashion area. Application is guaranteed by PN
+  policy, including regional materials whose official servers use a chance.
+- `Gregio Grumani#FP` at the Fashion area recovers a recognized stone for the
   published choice of 30 Fashion Points, 10 Server Coins, or 1,000,000 Zeny.
 - Both services validate the item type, costume location, requested card slot,
   intrinsic socket count, exact cost inventory index, and empty/expected
@@ -68,26 +74,31 @@ no database transaction spanning item award/debit and the C++ mutation, so an OS
 or host crash inside those few synchronous commands remains the sole atomicity
 limit. There is no player-input yield inside either commit window.
 
-## Withheld future-class outcomes
+## Regional slot and recovery rules
 
-`FP_EnchantSupported` requires `Type: Card`, `SubType: Enchant`, and denies
-314848-314855. Boxes therefore never issue these inert outcomes, and manually
-granted stones cannot be applied. Recovery remains available for an already
-inserted matching card and returns the exact published physical stone.
+Upper, middle and lower stat stones use slots 1, 2 and 3 respectively.
+Garment stats use slots 1 and 2. Cosmetic stones use slot 4 for their costume
+family. Thai Festa upper stones use slot 2. Purified and Loft use garment
+slot 1 as an explicit PN compatibility convention. Occupied slots are refused.
+Recovery lists each inventory costume once and searches all supported locations.
+Ambiguous shared effects use upper/middle/lower/garment priority. Thai normal and
+100% materials share an output; recovery returns the 100% material. Range Middle now applies 310330; legacy 29048 remains recoverable with guarded
+combo compatibility. Historical
+Loft IDs 25934-25940 retain their existing equipped bonuses and are recoverable.
 
-Do not remove this gate until a complete Druid/Karnos/Alitea server build and
-matching client resources are installed. The local server currently contains
-none of skill IDs 6526-6606. The still-open
-[rAthena PR #9765](https://github.com/rathena/rathena/pull/9765) supplies a
-server-side implementation, reports testing with a 2025-12-17 client, and
-explicitly does not supply client-side support. Cards 314848-314855 also need
-`SubType: Enchant` before activation. See the client README for the full
-activation checklist.
+The expansion also imports `fashion_stone_expansion_items.yml` and
+`fashion_stone_expansion_combos.yml`. Use a clean map-server restart so all
+item, combo and NPC data change together.
 
 ## Client prerequisite
 
-Install `client-patch/fashion_points` and ensure its returned table is actually
-merged into the main client item-info table. Exact sprites are unavailable in
-this repository, so the supplied metadata uses a disclosed fallback icon. The
-server scripts can run without that patch, but players would see missing or
-incorrect item names/icons for the 37 custom IDs.
+The existing item-info overlays remain enabled. The regional release adds
+`SystemEN/itemInfo_CostumeStones.lua` to the real item-info merge and adds
+missing icons/footprint artwork to `client_repairs.grf`, preserving prior
+resources. See the audit report for icon fallbacks, asset provenance and
+visual verification limits.
+
+The subsequent combat/recovery/refinement audit is documented in
+`doc/gameplay_refine_audit_20260928.md`. Its fixes are deployed. Actual native
+client screenshots confirmed 37 of 52 effect IDs; 15 remain unconfirmed. Red
+Flame and the 22nd Anniversary halo still lack verified effect mappings.

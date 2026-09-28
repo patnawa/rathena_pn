@@ -1,0 +1,76 @@
+// TEST ONLY. Never import in production. The packet client additionally guards
+// the disposable Docker label, network namespace, database and synthetic IDs.
+-	script	PNGameplayRefineFixture	-1,{
+OnInit:
+	bindatcmd "gameplayrefinefixture",strnpcinfo(3)+"::OnCommand",0,99;
+	end;
+OnCommand:
+	if (getcharid(0)!=99000032 || getcharid(3)!=99000031 || strcharinfo(0)!="gameplayfixture") end;
+	.@action$=.@atcmd_parameters$[0];
+	if (.@action$=="prepare-apply" || .@action$=="prepare-recover") {
+		if (countitem(19961)!=1) { dispbottom "GAMEPLAY_REFINE_FAIL costume count"; end; }
+		equip 19961;
+		if (getequipid(EQI_COSTUME_HEAD_TOP)!=19961) { dispbottom "GAMEPLAY_REFINE_FAIL costume equip"; end; }
+		.@name$=(.@action$=="prepare-apply")?"Complete Fashion Enchanter#FP":"Gregio Grumani#FP";
+		if (getmapxy(.@map$,.@x,.@y,BL_NPC,.@name$) || !getnpcid(0,.@name$)) {
+			dispbottom "GAMEPLAY_REFINE_FAIL production NPC unavailable";
+			end;
+		}
+		warp .@map$,.@x-1,.@y;
+		dispbottom "GAMEPLAY_REFINE_GID="+getnpcid(0,.@name$);
+		dispbottom "GAMEPLAY_REFINE_MAXHP="+readparam(bMaxHP);
+		end;
+	}
+	if (.@action$=="report") {
+		.@expected=atoi(.@atcmd_parameters$[1]);
+		if (.@expected!=0 && .@expected!=29041) end;
+		getinventorylist;
+		.@found=0;
+		for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+			if (@inventorylist_id[.@i]!=19961) continue;
+			++.@found;
+			if (@inventorylist_uniqueid$[.@i]!="9223372036854775701"
+				|| @inventorylist_amount[.@i]!=1 || @inventorylist_refine[.@i]!=7
+				|| @inventorylist_enchantgrade[.@i]!=3 || @inventorylist_bound[.@i]!=1
+				|| @inventorylist_favorite[.@i]!=1 || @inventorylist_card1[.@i]!=4700
+				|| @inventorylist_card2[.@i] || @inventorylist_card3[.@i]
+				|| @inventorylist_card4[.@i]!=.@expected
+				|| @inventorylist_option_id1[.@i]!=1 || @inventorylist_option_value1[.@i]!=23
+				|| @inventorylist_option_parameter1[.@i]!=0) {
+				dispbottom "GAMEPLAY_REFINE_FAIL costume metadata";
+				end;
+			}
+		}
+		if (.@found!=1 || getequipid(EQI_COSTUME_HEAD_TOP)!=19961) {
+			dispbottom "GAMEPLAY_REFINE_FAIL retained equipped costume";
+			end;
+		}
+		dispbottom "GAMEPLAY_REFINE_PASS retained costume metadata card="+.@expected;
+		dispbottom "GAMEPLAY_REFINE_MAXHP="+readparam(bMaxHP);
+		dispbottom "GAMEPLAY_REFINE_POINTS="+#FP_Fashion;
+		dispbottom "GAMEPLAY_REFINE_INVENTORY="+@inventorylist_count;
+		end;
+	}
+	if (.@action$=="refine-open" || .@action$=="refine-report") {
+		getinventorylist;
+		.@found=0;
+		for (.@i=0; .@i<@inventorylist_count; ++.@i) {
+			if (@inventorylist_id[.@i]!=1502) continue;
+			++.@found;
+			.@index=@inventorylist_idx[.@i];
+			.@refine=@inventorylist_refine[.@i];
+			if (@inventorylist_equip[.@i]) { dispbottom "GAMEPLAY_REFINE_FAIL refine target equipped"; end; }
+		}
+		if (.@found!=1 || .@refine!=(.@action$=="refine-open"?0:1)) {
+			dispbottom "GAMEPLAY_REFINE_FAIL native refine result";
+			end;
+		}
+		if (.@action$=="refine-open") {
+			refineui;
+			dispbottom "GAMEPLAY_REFINE_INDEX="+(.@index+2);
+		} else
+			dispbottom "GAMEPLAY_REFINE_PASS native refine plus one";
+		end;
+	}
+	end;
+}

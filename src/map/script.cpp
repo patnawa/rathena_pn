@@ -26862,6 +26862,10 @@ BUILDIN_FUNC(getequiprefinecost) {
 		case REFINE_ZENY_COST:
 			script_pushint( st, cost->zeny );
 			break;
+		case REFINE_SUCCESS_RATE:
+			// Preserve the selected recipe's full basis-point precision.
+			script_pushint( st, cost->chance );
+			break;
 		default:
 			script_pushint( st, -1 );
 			return SCRIPT_CMD_FAILURE;

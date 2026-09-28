@@ -1,0 +1,1272 @@
+{
+  "source_url": "http://ropatch.gnjoy.com/Patch/2026-09-07_live_client_3363_3364_1788764913.rgz",
+  "translation_note": "English terminology follows server skill_db. Every two skill levels uses integer floor. Hit physical is represented by local bNonCritAtkRate, translated non-critical physical damage. Card combo text follows exact Korean official source, with skill labels aligned to current server names.",
+  "items": [
+    {
+      "id": 315324,
+      "name_en": "Windhawk Stone II (Garment)",
+      "description_en": [
+        "Flame Trap and Swift Trap damage +10%.",
+        "With Ranger Stone II (Upper): Hawk Rush and Hawk Boomerang damage +15%.",
+        "With Ranger Stone II (Middle): Solid Trap and Deep Blind Trap damage +10%.",
+        "With Ranger Stone II (Lower): Physical damage against enemies of every element +3% per level of Nature Friendly."
+      ],
+      "resource_cp949_base64": "U25pcGVyX0ZpZ3VyZQ==",
+      "resource_unicode": "Sniper_Figure",
+      "is_material": false,
+      "pair_id": 1003053
+    },
+    {
+      "id": 1003053,
+      "name_en": "Windhawk Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Flame Trap and Swift Trap damage +10%.",
+        "With Ranger Stone II (Upper): Hawk Rush and Hawk Boomerang damage +15%.",
+        "With Ranger Stone II (Middle): Solid Trap and Deep Blind Trap damage +10%.",
+        "With Ranger Stone II (Lower): Physical damage against enemies of every element +3% per level of Nature Friendly.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315324
+    },
+    {
+      "id": 315325,
+      "name_en": "Ranger Stone II (Upper)",
+      "description_en": [
+        "After-cast delay -1% for every 2 levels of Arrow Storm.",
+        "With Ranger Stone (Garment): Arrow Storm damage +20%.",
+        "With Ranger Stone II (Garment): Focused Arrow Strike damage +15%."
+      ],
+      "resource_cp949_base64": "U25pcGVyX0ZpZ3VyZQ==",
+      "resource_unicode": "Sniper_Figure",
+      "is_material": false,
+      "pair_id": 1003054
+    },
+    {
+      "id": 1003054,
+      "name_en": "Ranger Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "After-cast delay -1% for every 2 levels of Arrow Storm.",
+        "With Ranger Stone (Garment): Arrow Storm damage +20%.",
+        "With Ranger Stone II (Garment): Focused Arrow Strike damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315325
+    },
+    {
+      "id": 315326,
+      "name_en": "Ranger Stone II (Middle)",
+      "description_en": [
+        "Aimed Bolt damage +5% per level of Research Trap.",
+        "With Ranger Stone (Garment): Arrow Storm damage +15%.",
+        "With Ranger Stone II (Garment): Focused Arrow Strike damage +15%."
+      ],
+      "resource_cp949_base64": "U25pcGVyX0ZpZ3VyZQ==",
+      "resource_unicode": "Sniper_Figure",
+      "is_material": false,
+      "pair_id": 1003055
+    },
+    {
+      "id": 1003055,
+      "name_en": "Ranger Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Aimed Bolt damage +5% per level of Research Trap.",
+        "With Ranger Stone (Garment): Arrow Storm damage +15%.",
+        "With Ranger Stone II (Garment): Focused Arrow Strike damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315326
+    },
+    {
+      "id": 315327,
+      "name_en": "Ranger Stone II (Lower)",
+      "description_en": [
+        "Physical damage against enemies of every size +3% for every 2 levels of Aimed Bolt.",
+        "With Ranger Stone (Garment): Arrow Storm damage +15%.",
+        "With Ranger Stone II (Garment): Aimed Bolt damage +15%."
+      ],
+      "resource_cp949_base64": "U25pcGVyX0ZpZ3VyZQ==",
+      "resource_unicode": "Sniper_Figure",
+      "is_material": false,
+      "pair_id": 1003056
+    },
+    {
+      "id": 1003056,
+      "name_en": "Ranger Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Physical damage against enemies of every size +3% for every 2 levels of Aimed Bolt.",
+        "With Ranger Stone (Garment): Arrow Storm damage +15%.",
+        "With Ranger Stone II (Garment): Aimed Bolt damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315327
+    },
+    {
+      "id": 315328,
+      "name_en": "Elemental Master Stone II (Garment)",
+      "description_en": [
+        "Diamond Storm damage +15%.",
+        "With Sorcerer Stone II (Upper): Terra Drive damage +15%.",
+        "With Sorcerer Stone II (Middle): Lightning Land damage +10%.",
+        "With Sorcerer Stone II (Lower): Earth, Water and Wind magic damage +10%."
+      ],
+      "resource_cp949_base64": "UHJvZmVzc29yX0ZpZ3VyZQ==",
+      "resource_unicode": "Professor_Figure",
+      "is_material": false,
+      "pair_id": 1003057
+    },
+    {
+      "id": 1003057,
+      "name_en": "Elemental Master Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Diamond Storm damage +15%.",
+        "With Sorcerer Stone II (Upper): Terra Drive damage +15%.",
+        "With Sorcerer Stone II (Middle): Lightning Land damage +10%.",
+        "With Sorcerer Stone II (Lower): Earth, Water and Wind magic damage +10%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315328
+    },
+    {
+      "id": 315329,
+      "name_en": "Sorcerer Stone II (Upper)",
+      "description_en": [
+        "Fixed casting time -0.1 seconds per level of Psychic Wave.",
+        "With Sorcerer Stone (Garment): Psychic Wave damage +15%.",
+        "With Sorcerer Stone II (Garment): Varetyr Spear damage +15%."
+      ],
+      "resource_cp949_base64": "UHJvZmVzc29yX0ZpZ3VyZQ==",
+      "resource_unicode": "Professor_Figure",
+      "is_material": false,
+      "pair_id": 1003058
+    },
+    {
+      "id": 1003058,
+      "name_en": "Sorcerer Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Fixed casting time -0.1 seconds per level of Psychic Wave.",
+        "With Sorcerer Stone (Garment): Psychic Wave damage +15%.",
+        "With Sorcerer Stone II (Garment): Varetyr Spear damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315329
+    },
+    {
+      "id": 315330,
+      "name_en": "Sorcerer Stone II (Middle)",
+      "description_en": [
+        "Variable casting time -2% per level of Poison Buster.",
+        "With Sorcerer Stone (Garment): Poison Buster damage +15%.",
+        "With Sorcerer Stone II (Garment): Diamond Dust damage +15%."
+      ],
+      "resource_cp949_base64": "UHJvZmVzc29yX0ZpZ3VyZQ==",
+      "resource_unicode": "Professor_Figure",
+      "is_material": false,
+      "pair_id": 1003059
+    },
+    {
+      "id": 1003059,
+      "name_en": "Sorcerer Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Variable casting time -2% per level of Poison Buster.",
+        "With Sorcerer Stone (Garment): Poison Buster damage +15%.",
+        "With Sorcerer Stone II (Garment): Diamond Dust damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315330
+    },
+    {
+      "id": 315331,
+      "name_en": "Sorcerer Stone II (Lower)",
+      "description_en": [
+        "Magic damage against enemies of every size +3% per level of Diamond Dust.",
+        "With Sorcerer Stone (Garment): Psychic Wave damage +15%.",
+        "With Sorcerer Stone II (Garment): Diamond Dust damage +15%."
+      ],
+      "resource_cp949_base64": "UHJvZmVzc29yX0ZpZ3VyZQ==",
+      "resource_unicode": "Professor_Figure",
+      "is_material": false,
+      "pair_id": 1003060
+    },
+    {
+      "id": 1003060,
+      "name_en": "Sorcerer Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Magic damage against enemies of every size +3% per level of Diamond Dust.",
+        "With Sorcerer Stone (Garment): Psychic Wave damage +15%.",
+        "With Sorcerer Stone II (Garment): Diamond Dust damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315331
+    },
+    {
+      "id": 315332,
+      "name_en": "Shinkiro Stone II (Garment)",
+      "description_en": [
+        "Shadow Dance damage +10%.",
+        "With Kagerou Stone II (Upper): Physical damage against enemies of every element +3% for every 2 levels of Shadow Hunting.",
+        "With Kagerou Stone II (Middle): C.RATE +3 and Shadow Flash damage +10%.",
+        "With Kagerou Stone II (Lower): CRI +1 and melee physical damage +3% for every 2 levels of Shadow Dance."
+      ],
+      "resource_cp949_base64": "S2FnZXJvdV9GaWd1cmU=",
+      "resource_unicode": "Kagerou_Figure",
+      "is_material": false,
+      "pair_id": 1003061
+    },
+    {
+      "id": 1003061,
+      "name_en": "Shinkiro Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Shadow Dance damage +10%.",
+        "With Kagerou Stone II (Upper): Physical damage against enemies of every element +3% for every 2 levels of Shadow Hunting.",
+        "With Kagerou Stone II (Middle): C.RATE +3 and Shadow Flash damage +10%.",
+        "With Kagerou Stone II (Lower): CRI +1 and melee physical damage +3% for every 2 levels of Shadow Dance.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315332
+    },
+    {
+      "id": 315333,
+      "name_en": "Kagerou Stone II (Upper)",
+      "description_en": [
+        "Cross Slash damage +5% per level of Kagerou/Oboro Right Hand Mastery.",
+        "With Kagerou Stone (Garment): Swirling Petal damage +25%."
+      ],
+      "resource_cp949_base64": "utLAx7rOwPs=",
+      "resource_unicode": "불의부적",
+      "is_material": false,
+      "pair_id": 1003062
+    },
+    {
+      "id": 1003062,
+      "name_en": "Kagerou Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Cross Slash damage +5% per level of Kagerou/Oboro Right Hand Mastery.",
+        "With Kagerou Stone (Garment): Swirling Petal damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315333
+    },
+    {
+      "id": 315334,
+      "name_en": "Kagerou Stone II (Middle)",
+      "description_en": [
+        "Kunai Splash damage +3% per level of Cross Slash.",
+        "With Kagerou Stone (Garment): Swirling Petal damage +25%."
+      ],
+      "resource_cp949_base64": "utLAx7rOwPs=",
+      "resource_unicode": "불의부적",
+      "is_material": false,
+      "pair_id": 1003063
+    },
+    {
+      "id": 1003063,
+      "name_en": "Kagerou Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Kunai Splash damage +3% per level of Cross Slash.",
+        "With Kagerou Stone (Garment): Swirling Petal damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315334
+    },
+    {
+      "id": 315335,
+      "name_en": "Kagerou Stone II (Lower)",
+      "description_en": [
+        "Swirling Petal damage +5% per level of Pure Soul.",
+        "With Kagerou Stone (Garment): Cross Slash damage +25%."
+      ],
+      "resource_cp949_base64": "utLAx7rOwPs=",
+      "resource_unicode": "불의부적",
+      "is_material": false,
+      "pair_id": 1003064
+    },
+    {
+      "id": 1003064,
+      "name_en": "Kagerou Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Swirling Petal damage +5% per level of Pure Soul.",
+        "With Kagerou Stone (Garment): Cross Slash damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315335
+    },
+    {
+      "id": 315336,
+      "name_en": "Shiranui Stone II (Garment)",
+      "description_en": [
+        "Darkening Cannon damage +10%.",
+        "With Oboro Stone II (Upper): Golden Dragon Cannon damage +15%.",
+        "With Oboro Stone II (Middle): Magic damage against enemies of every element +3% for every 2 levels of Red Flame Cannon.",
+        "With Oboro Stone II (Lower): Cold Blooded Cannon damage +10%."
+      ],
+      "resource_cp949_base64": "T2Jvcm9fRmlndXJl",
+      "resource_unicode": "Oboro_Figure",
+      "is_material": false,
+      "pair_id": 1003065
+    },
+    {
+      "id": 1003065,
+      "name_en": "Shiranui Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Darkening Cannon damage +10%.",
+        "With Oboro Stone II (Upper): Golden Dragon Cannon damage +15%.",
+        "With Oboro Stone II (Middle): Magic damage against enemies of every element +3% for every 2 levels of Red Flame Cannon.",
+        "With Oboro Stone II (Lower): Cold Blooded Cannon damage +10%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315336
+    },
+    {
+      "id": 315337,
+      "name_en": "Oboro Stone II (Upper)",
+      "description_en": [
+        "Raging Fire Dragon, Ice Meteor and Kamaitachi damage +7% per level of Kagerou/Oboro Right Hand Mastery.",
+        "With Oboro Stone (Garment): Crimson Fire Petal, Spear of Ice and Wind Blade damage +25%."
+      ],
+      "resource_cp949_base64": "utLAx7rOwPs=",
+      "resource_unicode": "불의부적",
+      "is_material": false,
+      "pair_id": 1003066
+    },
+    {
+      "id": 1003066,
+      "name_en": "Oboro Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Raging Fire Dragon, Ice Meteor and Kamaitachi damage +7% per level of Kagerou/Oboro Right Hand Mastery.",
+        "With Oboro Stone (Garment): Crimson Fire Petal, Spear of Ice and Wind Blade damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315337
+    },
+    {
+      "id": 315338,
+      "name_en": "Oboro Stone II (Middle)",
+      "description_en": [
+        "Fire, Water and Wind magic damage +3% per level of Pure Soul.",
+        "With Oboro Stone (Garment): Raging Fire Dragon, Ice Meteor and Kamaitachi damage +30%."
+      ],
+      "resource_cp949_base64": "utLAx7rOwPs=",
+      "resource_unicode": "불의부적",
+      "is_material": false,
+      "pair_id": 1003067
+    },
+    {
+      "id": 1003067,
+      "name_en": "Oboro Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Fire, Water and Wind magic damage +3% per level of Pure Soul.",
+        "With Oboro Stone (Garment): Raging Fire Dragon, Ice Meteor and Kamaitachi damage +30%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315338
+    },
+    {
+      "id": 315339,
+      "name_en": "Oboro Stone II (Lower)",
+      "description_en": [
+        "Crimson Fire Petal, Spear of Ice and Wind Blade damage +4% per level of 16th Night.",
+        "With Oboro Stone (Garment): Raging Fire Dragon, Ice Meteor and Kamaitachi damage +25%."
+      ],
+      "resource_cp949_base64": "utLAx7rOwPs=",
+      "resource_unicode": "불의부적",
+      "is_material": false,
+      "pair_id": 1003068
+    },
+    {
+      "id": 1003068,
+      "name_en": "Oboro Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Crimson Fire Petal, Spear of Ice and Wind Blade damage +4% per level of 16th Night.",
+        "With Oboro Stone (Garment): Raging Fire Dragon, Ice Meteor and Kamaitachi damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315339
+    },
+    {
+      "id": 314661,
+      "name_en": "Hit Physical Stone (Dual)",
+      "description_en": [
+        "Non-critical physical damage +10%, ATK +5%, Perfect Hit +5%."
+      ],
+      "resource_cp949_base64": "QmFybXVuZF9TdGE=",
+      "resource_unicode": "Barmund_Sta",
+      "is_material": false,
+      "pair_id": 1002395
+    },
+    {
+      "id": 1002395,
+      "name_en": "Hit Physical Stone (Dual)",
+      "description_en": [
+        "Enchants a costume in the Dual position.",
+        "Non-critical physical damage +10%, ATK +5%, Perfect Hit +5%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314661
+    },
+    {
+      "id": 314662,
+      "name_en": "Hit Physical Stone (Upper)",
+      "description_en": [
+        "Non-critical physical damage +3%.",
+        "With Hit Physical Stone (Middle) and Hit Physical Stone (Lower): Non-critical physical damage +6%."
+      ],
+      "resource_cp949_base64": "QmFybXVuZF9TdGE=",
+      "resource_unicode": "Barmund_Sta",
+      "is_material": false,
+      "pair_id": 1002396
+    },
+    {
+      "id": 1002396,
+      "name_en": "Hit Physical Stone (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Non-critical physical damage +3%.",
+        "With Hit Physical Stone (Middle) and Hit Physical Stone (Lower): Non-critical physical damage +6%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314662
+    },
+    {
+      "id": 314663,
+      "name_en": "Hit Physical Stone (Middle)",
+      "description_en": [
+        "Non-critical physical damage +3%."
+      ],
+      "resource_cp949_base64": "QmFybXVuZF9TdGE=",
+      "resource_unicode": "Barmund_Sta",
+      "is_material": false,
+      "pair_id": 1002397
+    },
+    {
+      "id": 1002397,
+      "name_en": "Hit Physical Stone (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Non-critical physical damage +3%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314663
+    },
+    {
+      "id": 314664,
+      "name_en": "Hit Physical Stone (Lower)",
+      "description_en": [
+        "Non-critical physical damage +3%."
+      ],
+      "resource_cp949_base64": "QmFybXVuZF9TdGE=",
+      "resource_unicode": "Barmund_Sta",
+      "is_material": false,
+      "pair_id": 1002398
+    },
+    {
+      "id": 1002398,
+      "name_en": "Hit Physical Stone (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Non-critical physical damage +3%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314664
+    },
+    {
+      "id": 314665,
+      "name_en": "Hit Physical Stone (Garment)",
+      "description_en": [
+        "Non-critical physical damage +20%.",
+        "With Hit Physical Stone (Upper), (Middle) and (Lower): ATK +5% and Perfect Hit +5%."
+      ],
+      "resource_cp949_base64": "QmFybXVuZF9TdGE=",
+      "resource_unicode": "Barmund_Sta",
+      "is_material": false,
+      "pair_id": 1002399
+    },
+    {
+      "id": 1002399,
+      "name_en": "Hit Physical Stone (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Non-critical physical damage +20%.",
+        "With Hit Physical Stone (Upper), (Middle) and (Lower): ATK +5% and Perfect Hit +5%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314665
+    },
+    {
+      "id": 314666,
+      "name_en": "Experience Stone (Garment)",
+      "description_en": [
+        "Experience gained from monsters +5%.",
+        "With Experience Stone (Upper), (Middle) and (Lower): Experience gained from monsters +5% additionally."
+      ],
+      "resource_cp949_base64": "uu2358GqvbrF5g==",
+      "resource_unicode": "블루젬스톤",
+      "is_material": false,
+      "pair_id": 1002404
+    },
+    {
+      "id": 1002404,
+      "name_en": "Experience Stone (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Experience gained from monsters +5%.",
+        "With Experience Stone (Upper), (Middle) and (Lower): Experience gained from monsters +5% additionally.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314666
+    },
+    {
+      "id": 314667,
+      "name_en": "Archmage Stone II (Garment)",
+      "description_en": [
+        "Rain of Crystal and Strantum Tremor damage +10%.",
+        "With Warlock Stone II (Upper): Crimson Arrow damage +15% and All Bloom damage +10%.",
+        "With Warlock Stone II (Middle): Rock Down damage +15% and Violent Quake damage +10%.",
+        "With Warlock Stone II (Lower): Magic damage against enemies of every size +3% for every 2 levels of Two Hand Staff Mastery."
+      ],
+      "resource_cp949_base64": "SGlnaF9XaXphcmRfRmlndXJl",
+      "resource_unicode": "High_Wizard_Figure",
+      "is_material": false,
+      "pair_id": 1002405
+    },
+    {
+      "id": 1002405,
+      "name_en": "Archmage Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Rain of Crystal and Strantum Tremor damage +10%.",
+        "With Warlock Stone II (Upper): Crimson Arrow damage +15% and All Bloom damage +10%.",
+        "With Warlock Stone II (Middle): Rock Down damage +15% and Violent Quake damage +10%.",
+        "With Warlock Stone II (Lower): Magic damage against enemies of every size +3% for every 2 levels of Two Hand Staff Mastery.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314667
+    },
+    {
+      "id": 314668,
+      "name_en": "Biolo Stone II (Garment)",
+      "description_en": [
+        "Explosive Powder damage +10%.",
+        "With Genetic Stone II (Upper): Physical damage against enemies of every element +3% per level of Bionic Pharmacy.",
+        "With Genetic Stone II (Middle): Dust Explosion damage +15%.",
+        "With Genetic Stone II (Lower): Mystery Powder damage +15%."
+      ],
+      "resource_cp949_base64": "Q3JlYXRvcl9GaWd1cmU=",
+      "resource_unicode": "Creator_Figure",
+      "is_material": false,
+      "pair_id": 1002406
+    },
+    {
+      "id": 1002406,
+      "name_en": "Biolo Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Explosive Powder damage +10%.",
+        "With Genetic Stone II (Upper): Physical damage against enemies of every element +3% per level of Bionic Pharmacy.",
+        "With Genetic Stone II (Middle): Dust Explosion damage +15%.",
+        "With Genetic Stone II (Lower): Mystery Powder damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314668
+    },
+    {
+      "id": 314669,
+      "name_en": "Sky Emperor Stone II (Garment)",
+      "description_en": [
+        "Star Light Kick damage +15%.",
+        "With Star Emperor Stone II (Upper): Midnight Kick damage +10% and physical damage against enemies of every element +3% for every 2 levels of Enchanting Sky.",
+        "With Star Emperor Stone II (Middle): Dawn Break damage +10%.",
+        "With Star Emperor Stone II (Lower): Sky Moon damage +15%."
+      ],
+      "resource_cp949_base64": "x6q4pb7fsaS8rg==",
+      "resource_unicode": "푸른야광석",
+      "is_material": false,
+      "pair_id": 1002407
+    },
+    {
+      "id": 1002407,
+      "name_en": "Sky Emperor Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Star Light Kick damage +15%.",
+        "With Star Emperor Stone II (Upper): Midnight Kick damage +10% and physical damage against enemies of every element +3% for every 2 levels of Enchanting Sky.",
+        "With Star Emperor Stone II (Middle): Dawn Break damage +10%.",
+        "With Star Emperor Stone II (Lower): Sky Moon damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314669
+    },
+    {
+      "id": 314670,
+      "name_en": "Warlock Stone II (Upper)",
+      "description_en": [
+        "Magic damage of every element +2% per level of Crimson Rock.",
+        "With Warlock Stone (Garment): Chain Lightning damage +15%.",
+        "With Warlock Stone II (Garment): Comet damage +15%."
+      ],
+      "resource_cp949_base64": "SGlnaF9XaXphcmRfRmlndXJl",
+      "resource_unicode": "High_Wizard_Figure",
+      "is_material": false,
+      "pair_id": 1002408
+    },
+    {
+      "id": 1002408,
+      "name_en": "Warlock Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Magic damage of every element +2% per level of Crimson Rock.",
+        "With Warlock Stone (Garment): Chain Lightning damage +15%.",
+        "With Warlock Stone II (Garment): Comet damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314670
+    },
+    {
+      "id": 314671,
+      "name_en": "Warlock Stone II (Middle)",
+      "description_en": [
+        "Fixed casting time -0.1 seconds per level of Comet.",
+        "With Warlock Stone (Garment): Chain Lightning damage +15%.",
+        "With Warlock Stone II (Garment): Comet damage +15%."
+      ],
+      "resource_cp949_base64": "SGlnaF9XaXphcmRfRmlndXJl",
+      "resource_unicode": "High_Wizard_Figure",
+      "is_material": false,
+      "pair_id": 1002409
+    },
+    {
+      "id": 1002409,
+      "name_en": "Warlock Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Fixed casting time -0.1 seconds per level of Comet.",
+        "With Warlock Stone (Garment): Chain Lightning damage +15%.",
+        "With Warlock Stone II (Garment): Comet damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314671
+    },
+    {
+      "id": 314672,
+      "name_en": "Warlock Stone II (Lower)",
+      "description_en": [
+        "After-cast delay -1% per level of Chain Lightning.",
+        "With Warlock Stone (Garment): Crimson Rock damage +15%.",
+        "With Warlock Stone II (Garment): Jack Frost damage +15%."
+      ],
+      "resource_cp949_base64": "SGlnaF9XaXphcmRfRmlndXJl",
+      "resource_unicode": "High_Wizard_Figure",
+      "is_material": false,
+      "pair_id": 1002410
+    },
+    {
+      "id": 1002410,
+      "name_en": "Warlock Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "After-cast delay -1% per level of Chain Lightning.",
+        "With Warlock Stone (Garment): Crimson Rock damage +15%.",
+        "With Warlock Stone II (Garment): Jack Frost damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314672
+    },
+    {
+      "id": 314673,
+      "name_en": "Genetic Stone II (Upper)",
+      "description_en": [
+        "After-cast delay -1% for every 2 levels of Cart Tornado.",
+        "With Genetic Stone (Garment): Acid Demonstration damage +15%.",
+        "With Genetic Stone II (Garment): Cart Tornado damage +15%."
+      ],
+      "resource_cp949_base64": "Q3JlYXRvcl9GaWd1cmU=",
+      "resource_unicode": "Creator_Figure",
+      "is_material": false,
+      "pair_id": 1002411
+    },
+    {
+      "id": 1002411,
+      "name_en": "Genetic Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "After-cast delay -1% for every 2 levels of Cart Tornado.",
+        "With Genetic Stone (Garment): Acid Demonstration damage +15%.",
+        "With Genetic Stone II (Garment): Cart Tornado damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314673
+    },
+    {
+      "id": 314674,
+      "name_en": "Genetic Stone II (Middle)",
+      "description_en": [
+        "Melee and ranged physical damage +2% per level of Cart Remodeling.",
+        "With Genetic Stone (Garment): Cart Cannon damage +15%.",
+        "With Genetic Stone II (Garment): Melee physical damage +10%."
+      ],
+      "resource_cp949_base64": "Q3JlYXRvcl9GaWd1cmU=",
+      "resource_unicode": "Creator_Figure",
+      "is_material": false,
+      "pair_id": 1002412
+    },
+    {
+      "id": 1002412,
+      "name_en": "Genetic Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Melee and ranged physical damage +2% per level of Cart Remodeling.",
+        "With Genetic Stone (Garment): Cart Cannon damage +15%.",
+        "With Genetic Stone II (Garment): Melee physical damage +10%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314674
+    },
+    {
+      "id": 314675,
+      "name_en": "Genetic Stone II (Lower)",
+      "description_en": [
+        "Fixed casting time -0.1 seconds per level of Sword Training.",
+        "With Genetic Stone (Garment): Cart Cannon damage +15%.",
+        "With Genetic Stone II (Garment): Cart Tornado damage +15%."
+      ],
+      "resource_cp949_base64": "Q3JlYXRvcl9GaWd1cmU=",
+      "resource_unicode": "Creator_Figure",
+      "is_material": false,
+      "pair_id": 1002413
+    },
+    {
+      "id": 1002413,
+      "name_en": "Genetic Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Fixed casting time -0.1 seconds per level of Sword Training.",
+        "With Genetic Stone (Garment): Cart Cannon damage +15%.",
+        "With Genetic Stone II (Garment): Cart Tornado damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314675
+    },
+    {
+      "id": 314676,
+      "name_en": "Star Emperor Stone II (Upper)",
+      "description_en": [
+        "Solar Burst damage +4% per level of Light of the Sun.",
+        "With Star Emperor Stone (Garment): Full Moon Kick damage +25%."
+      ],
+      "resource_cp949_base64": "x6q4pb7fsaS8rg==",
+      "resource_unicode": "푸른야광석",
+      "is_material": false,
+      "pair_id": 1002414
+    },
+    {
+      "id": 1002414,
+      "name_en": "Star Emperor Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Solar Burst damage +4% per level of Light of the Sun.",
+        "With Star Emperor Stone (Garment): Full Moon Kick damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314676
+    },
+    {
+      "id": 314677,
+      "name_en": "Star Emperor Stone II (Middle)",
+      "description_en": [
+        "Full Moon Kick damage +4% per level of Light of the Moon.",
+        "With Star Emperor Stone (Garment): Solar Burst damage +15%."
+      ],
+      "resource_cp949_base64": "x6q4pb7fsaS8rg==",
+      "resource_unicode": "푸른야광석",
+      "is_material": false,
+      "pair_id": 1002415
+    },
+    {
+      "id": 1002415,
+      "name_en": "Star Emperor Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Full Moon Kick damage +4% per level of Light of the Moon.",
+        "With Star Emperor Stone (Garment): Solar Burst damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314677
+    },
+    {
+      "id": 314678,
+      "name_en": "Star Emperor Stone II (Lower)",
+      "description_en": [
+        "Falling Star damage +4% per level of Light of the Star.",
+        "With Star Emperor Stone (Garment): Falling Star damage +15%."
+      ],
+      "resource_cp949_base64": "x6q4pb7fsaS8rg==",
+      "resource_unicode": "푸른야광석",
+      "is_material": false,
+      "pair_id": 1002416
+    },
+    {
+      "id": 1002416,
+      "name_en": "Star Emperor Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Falling Star damage +4% per level of Light of the Star.",
+        "With Star Emperor Stone (Garment): Falling Star damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 314678
+    },
+    {
+      "id": 315057,
+      "name_en": "Meister Stone II (Garment)",
+      "description_en": [
+        "Axe Stomp damage +10%.",
+        "With Mechanic Stone II (Upper): Mighty Smash damage +10%.",
+        "With Mechanic Stone II (Middle): Physical damage against enemies of every size +3% for every 2 levels of Two Hand Axe Def.",
+        "With Mechanic Stone II (Lower): Powerful Swing damage +15%."
+      ],
+      "resource_cp949_base64": "V2hpdGVfU21pdGhfRmlndXJl",
+      "resource_unicode": "White_Smith_Figure",
+      "is_material": false,
+      "pair_id": 1002831
+    },
+    {
+      "id": 1002831,
+      "name_en": "Meister Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Axe Stomp damage +10%.",
+        "With Mechanic Stone II (Upper): Mighty Smash damage +10%.",
+        "With Mechanic Stone II (Middle): Physical damage against enemies of every size +3% for every 2 levels of Two Hand Axe Def.",
+        "With Mechanic Stone II (Lower): Powerful Swing damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315057
+    },
+    {
+      "id": 315058,
+      "name_en": "Imperial Guard Stone II (Garment)",
+      "description_en": [
+        "Imperial Cross and Overslash damage +15%.",
+        "With Royal Guard Stone II (Upper): Fixed casting time -0.5 seconds and Shield Shooting damage +15%.",
+        "With Royal Guard Stone II (Middle): C.RATE +5 and Radiant Spear damage +10%.",
+        "With Royal Guard Stone II (Lower): Physical damage against enemies of every element +3% for every 2 levels of Spear and Sword Mastery."
+      ],
+      "resource_cp949_base64": "UGFsYWRpbl9GaWd1cmU=",
+      "resource_unicode": "Paladin_Figure",
+      "is_material": false,
+      "pair_id": 1002832
+    },
+    {
+      "id": 1002832,
+      "name_en": "Imperial Guard Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Imperial Cross and Overslash damage +15%.",
+        "With Royal Guard Stone II (Upper): Fixed casting time -0.5 seconds and Shield Shooting damage +15%.",
+        "With Royal Guard Stone II (Middle): C.RATE +5 and Radiant Spear damage +10%.",
+        "With Royal Guard Stone II (Lower): Physical damage against enemies of every element +3% for every 2 levels of Spear and Sword Mastery.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315058
+    },
+    {
+      "id": 315059,
+      "name_en": "Night Watch Stone II (Garment)",
+      "description_en": [
+        "Wild Fire and Midnight Fallen damage +15%.",
+        "With Rebellion Stone II (Upper): C.RATE +3 and Wild Shot damage +10%.",
+        "With Rebellion Stone II (Middle): Magazine for One damage +10%.",
+        "With Rebellion Stone II (Lower): Fixed casting time -0.1 seconds and physical damage against enemies of every size +3% for every 2 levels of P.F.I."
+      ],
+      "resource_cp949_base64": "waTIrcW6",
+      "resource_unicode": "정화탄",
+      "is_material": false,
+      "pair_id": 1002833
+    },
+    {
+      "id": 1002833,
+      "name_en": "Night Watch Stone II (Garment)",
+      "description_en": [
+        "Enchants a costume in the Garment position.",
+        "Wild Fire and Midnight Fallen damage +15%.",
+        "With Rebellion Stone II (Upper): C.RATE +3 and Wild Shot damage +10%.",
+        "With Rebellion Stone II (Middle): Magazine for One damage +10%.",
+        "With Rebellion Stone II (Lower): Fixed casting time -0.1 seconds and physical damage against enemies of every size +3% for every 2 levels of P.F.I.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315059
+    },
+    {
+      "id": 315060,
+      "name_en": "Mechanic Stone II (Upper)",
+      "description_en": [
+        "Melee and ranged physical damage +2% per level of Research Fire/Earth.",
+        "With Mechanic Stone (Garment): Power Swing damage +15%.",
+        "With Mechanic Stone II (Garment): Vulcan Arm damage +15%."
+      ],
+      "resource_cp949_base64": "V2hpdGVfU21pdGhfRmlndXJl",
+      "resource_unicode": "White_Smith_Figure",
+      "is_material": false,
+      "pair_id": 1002843
+    },
+    {
+      "id": 1002843,
+      "name_en": "Mechanic Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Melee and ranged physical damage +2% per level of Research Fire/Earth.",
+        "With Mechanic Stone (Garment): Power Swing damage +15%.",
+        "With Mechanic Stone II (Garment): Vulcan Arm damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315060
+    },
+    {
+      "id": 315061,
+      "name_en": "Mechanic Stone II (Middle)",
+      "description_en": [
+        "Power Swing damage +10% per level of Axe Tornado.",
+        "With Mechanic Stone (Garment): Axe Tornado cooldown -1 second.",
+        "With Mechanic Stone II (Garment): Boost Knuckle damage +15%."
+      ],
+      "resource_cp949_base64": "V2hpdGVfU21pdGhfRmlndXJl",
+      "resource_unicode": "White_Smith_Figure",
+      "is_material": false,
+      "pair_id": 1002844
+    },
+    {
+      "id": 1002844,
+      "name_en": "Mechanic Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Power Swing damage +10% per level of Axe Tornado.",
+        "With Mechanic Stone (Garment): Axe Tornado cooldown -1 second.",
+        "With Mechanic Stone II (Garment): Boost Knuckle damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315061
+    },
+    {
+      "id": 315062,
+      "name_en": "Mechanic Stone II (Lower)",
+      "description_en": [
+        "After-cast delay -1% for every 2 levels of Axe Training.",
+        "With Mechanic Stone (Garment): Axe Tornado and Power Swing damage +15%.",
+        "With Mechanic Stone II (Garment): Arm Cannon damage +15%."
+      ],
+      "resource_cp949_base64": "V2hpdGVfU21pdGhfRmlndXJl",
+      "resource_unicode": "White_Smith_Figure",
+      "is_material": false,
+      "pair_id": 1002845
+    },
+    {
+      "id": 1002845,
+      "name_en": "Mechanic Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "After-cast delay -1% for every 2 levels of Axe Training.",
+        "With Mechanic Stone (Garment): Axe Tornado and Power Swing damage +15%.",
+        "With Mechanic Stone II (Garment): Arm Cannon damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315062
+    },
+    {
+      "id": 315063,
+      "name_en": "Royal Guard Stone II (Upper)",
+      "description_en": [
+        "Melee and ranged physical damage +2% per level of Inspiration.",
+        "With Royal Guard Stone (Garment): Banishing Point damage +15%.",
+        "With Royal Guard Stone II (Garment): Ray of Genesis damage +15%."
+      ],
+      "resource_cp949_base64": "UGFsYWRpbl9GaWd1cmU=",
+      "resource_unicode": "Paladin_Figure",
+      "is_material": false,
+      "pair_id": 1002846
+    },
+    {
+      "id": 1002846,
+      "name_en": "Royal Guard Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Melee and ranged physical damage +2% per level of Inspiration.",
+        "With Royal Guard Stone (Garment): Banishing Point damage +15%.",
+        "With Royal Guard Stone II (Garment): Ray of Genesis damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315063
+    },
+    {
+      "id": 315064,
+      "name_en": "Royal Guard Stone II (Middle)",
+      "description_en": [
+        "Over Brand damage +10% per level of Pinpoint Attack.",
+        "With Royal Guard Stone (Garment): Cannon Spear cooldown -0.5 seconds.",
+        "With Royal Guard Stone II (Garment): Ray of Genesis damage +15%."
+      ],
+      "resource_cp949_base64": "UGFsYWRpbl9GaWd1cmU=",
+      "resource_unicode": "Paladin_Figure",
+      "is_material": false,
+      "pair_id": 1002847
+    },
+    {
+      "id": 1002847,
+      "name_en": "Royal Guard Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Over Brand damage +10% per level of Pinpoint Attack.",
+        "With Royal Guard Stone (Garment): Cannon Spear cooldown -0.5 seconds.",
+        "With Royal Guard Stone II (Garment): Ray of Genesis damage +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315064
+    },
+    {
+      "id": 315065,
+      "name_en": "Royal Guard Stone II (Lower)",
+      "description_en": [
+        "Variable casting time -2% per level of Prestige.",
+        "With Royal Guard Stone (Garment): Cannon Spear damage +15%.",
+        "With Royal Guard Stone II (Garment): Magic damage against enemies of every size +15%."
+      ],
+      "resource_cp949_base64": "UGFsYWRpbl9GaWd1cmU=",
+      "resource_unicode": "Paladin_Figure",
+      "is_material": false,
+      "pair_id": 1002848
+    },
+    {
+      "id": 1002848,
+      "name_en": "Royal Guard Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Variable casting time -2% per level of Prestige.",
+        "With Royal Guard Stone (Garment): Cannon Spear damage +15%.",
+        "With Royal Guard Stone II (Garment): Magic damage against enemies of every size +15%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315065
+    },
+    {
+      "id": 315066,
+      "name_en": "Rebellion Stone II (Upper)",
+      "description_en": [
+        "Fire Dance and Hammer of God damage +7% per level of Platinum Alter.",
+        "With Rebellion Stone (Garment): Hammer of God damage +25%."
+      ],
+      "resource_cp949_base64": "waTIrcW6",
+      "resource_unicode": "정화탄",
+      "is_material": false,
+      "pair_id": 1002849
+    },
+    {
+      "id": 1002849,
+      "name_en": "Rebellion Stone II (Upper)",
+      "description_en": [
+        "Enchants a costume in the Upper position.",
+        "Fire Dance and Hammer of God damage +7% per level of Platinum Alter.",
+        "With Rebellion Stone (Garment): Hammer of God damage +25%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315066
+    },
+    {
+      "id": 315067,
+      "name_en": "Rebellion Stone II (Middle)",
+      "description_en": [
+        "Banishing Buster damage +5% per level of Shatter Storm.",
+        "With Rebellion Stone (Garment): Banishing Buster damage +20%."
+      ],
+      "resource_cp949_base64": "waTIrcW6",
+      "resource_unicode": "정화탄",
+      "is_material": false,
+      "pair_id": 1002850
+    },
+    {
+      "id": 1002850,
+      "name_en": "Rebellion Stone II (Middle)",
+      "description_en": [
+        "Enchants a costume in the Middle position.",
+        "Banishing Buster damage +5% per level of Shatter Storm.",
+        "With Rebellion Stone (Garment): Banishing Buster damage +20%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315067
+    },
+    {
+      "id": 315068,
+      "name_en": "Rebellion Stone II (Lower)",
+      "description_en": [
+        "Dragon Tail damage +7% per level of Heat Barrel.",
+        "With Rebellion Stone (Garment): Round Trip damage +20%."
+      ],
+      "resource_cp949_base64": "waTIrcW6",
+      "resource_unicode": "정화탄",
+      "is_material": false,
+      "pair_id": 1002851
+    },
+    {
+      "id": 1002851,
+      "name_en": "Rebellion Stone II (Lower)",
+      "description_en": [
+        "Enchants a costume in the Lower position.",
+        "Dragon Tail damage +7% per level of Heat Barrel.",
+        "With Rebellion Stone (Garment): Round Trip damage +20%.",
+        "Weight: 10"
+      ],
+      "resource_cp949_base64": "v7XIpcDHwbawog==",
+      "resource_unicode": "영혼의조각",
+      "is_material": true,
+      "pair_id": 315068
+    }
+  ]
+}

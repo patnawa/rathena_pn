@@ -119,3 +119,5 @@ Footer:
     Mode: Renewal
   - Path: db/import/equipment_progression_items.yml
     Mode: Renewal
+  - Path: db/import/fashion_stone_expansion_items.yml
+    Mode: Renewal
