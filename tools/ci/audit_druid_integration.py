@@ -193,7 +193,8 @@ def audit(root, compare_ref=None):
                 for field in ('MaxBaseLevel', 'MaxJobLevel'):
                     if field in row:
                         caps[job][field] = row[field]
-    expected = ((99, 70), (99, 70), (200, 70), (200, 70), (275, 60))
+    # Match the fourth-job progression update in b4ffce685; lower stages retain their caps.
+    expected = ((99, 70), (99, 70), (200, 70), (200, 70), (285, 65))
     for job, pair in zip(JOBS, expected):
         actual = caps[job]
         if (actual.get('MaxBaseLevel'), actual.get('MaxJobLevel')) != pair:

@@ -335,7 +335,9 @@ class DruidFashionDataTest(unittest.TestCase):
             with self.subTest(job=job):
                 self.assertGreaterEqual(self.jobs[job]["MaxBaseLevel"], base)
                 self.assertGreaterEqual(self.jobs[job]["MaxJobLevel"], level)
-        self.assertEqual(self.jobs["Alitea"]["MaxBaseLevel"], 275)
+        # Fourth-job progression was raised to 285/65 in b4ffce685.
+        self.assertEqual(self.jobs["Alitea"]["MaxBaseLevel"], 285)
+        self.assertEqual(self.jobs["Alitea"]["MaxJobLevel"], 65)
 
 
 if __name__ == "__main__":

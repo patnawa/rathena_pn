@@ -114,5 +114,8 @@ services are healthy. No repeat restart or data migration was needed.
 Pre-publication catalogue generation, all five fashion data tests and the
 497-pair type-guard test pass. The broader Druid mentor suite passes 17 of 18
 tests: its Alitea level-cap assertion expects 275 while the effective database
-contains 285. Running that assertion from the prior Git HEAD reproduces the
-same failure; this unrelated existing mismatch is not changed by this release.
+contains 285. Running that assertion from the prior Git HEAD reproduced the
+same failure. A follow-up corrects both stale Druid audit expectations to the
+285/65 progression introduced in `b4ffce685`; no gameplay data changes are
+required. All 18 mentor tests, the Druid integration audit and the dedicated
+285/65 progression check pass after the correction.
