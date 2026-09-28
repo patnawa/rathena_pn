@@ -85,7 +85,7 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 		if (.@last>.@owned) .@last=.@owned;
 		.@menu$="";
 		for (.@i=.@from; .@i<.@last; ++.@i)
-			.@menu$+=getitemname(.@stone_id[.@i])+" ["+countitem(.@stone_id[.@i])+"]:";
+			.@menu$+=replacestr(getitemname(.@stone_id[.@i]),":"," -")+" ["+countitem(.@stone_id[.@i])+"]:";
 		.@shown=.@last-.@from;
 		if (.@last<.@owned) .@menu$+="Next page:";
 		if (.@page>0) .@menu$+="Previous page:";

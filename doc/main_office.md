@@ -50,7 +50,7 @@ Type these commands in game chat:
 
 Click the service NPC after arriving. Gold Points accrue at one per three minutes online and stop at 50. The manager exchanges them one-for-one for Fashion Points; exchanging below the cap resumes the earning timer. These are login-account balances, shared by that login's characters, not by separate login accounts.
 
-Fashion services include costume/stone trades, stone recovery, enchantment and stone boxes. Boxes 1–20 cost 50 Fashion Points; the garment second-slot box costs 300. The costume catalogue is view-only. Existing costs and eligibility rules are unchanged by these shortcuts.
+Fashion services include costume/stone trades, stone recovery, enchantment and stone boxes. Boxes 1–20 cost 50 Fashion Points; the garment second-slot box costs 300. The Fashion Catalogue now sells 41 supported costumes at the PN price of 150 Fashion Points each. Ordinary costume trade-ins award 15 points, Bio5/Tomb costumes award 1, and listed stones award 10 each. Favorite, bound and modified items cannot be traded in. See the [exchange audit and service guide](fashion_exchange_20260928.md) for the dialogue-loop repairs and verification.
 
 Both cap messages tell players how to reach the Gold Point Manager and the fashion services. The travel commands are available to ordinary players and use the existing Office escape restrictions.
 

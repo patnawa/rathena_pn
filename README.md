@@ -43,6 +43,8 @@ See the [wide economy release](doc/wide_economy_release_20260928.md) for migrati
 
 Earn **1 Gold Point every 3 minutes online**, up to **50**. Exchange Gold Points **1:1 for Fashion Points** to resume earning after reaching the cap. Both balances belong to the game login account. Fashion Points are used for costume enchantment services and stone boxes; ordinary boxes cost 50 points and the garment second-slot box costs 300.
 
+The Fashion Catalogue sells **41 supported costumes for 150 Fashion Points each**. Fashion Designer exchanges plain costumes for 15 points (Bio5/Tomb costumes: 1 point), or listed enchant stones for 10 points each. Favorite, bound and modified items are protected from trade-in. See the [fashion exchange audit and service guide](doc/fashion_exchange_20260928.md).
+
 | Command | Action |
 | --- | --- |
 | `@goldpoints` | Travel beside the Gold Point Manager, then click the NPC to exchange points |

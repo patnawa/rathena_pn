@@ -34,8 +34,8 @@
 //= * The wiki publishes box contents but not per-item probabilities. Per the
 //=   requested clean-room compatibility policy, each box selects uniformly
 //=   from its published outcomes. This is NOT claimed to be reference server's rate table.
-//= * The wiki does not publish Fashion Point prices for the costume catalogue;
-//=   the catalogue is view-only here rather than assigning invented prices.
+//= * PN costume catalogue price: 150 Fashion Points per installed costume.
+//=   This is PN project policy, not a reference-server price.
 //= * The local GPL Malangdo enchanters map only 196 of the 366 published pairs.
 //=   Complete Fashion Enchanter supports all 366 pairs, including the eight
 //=   Druid/Karnos/Alitea pairs enabled with the integrated PR #9765 skills.
@@ -77,14 +77,10 @@ function	script	FP_LoadBox	{
 	return getarraysize(@FP_BoxStone);
 }
 
+// Exact delimited membership avoids rebuilding all 21 boxes per inventory row.
+// The regression data audit checks this index against every FP_LoadBox outcome.
 function	script	FP_StoneKnown	{
-	.@needle = getarg(0);
-	for (.@box = 0; .@box < 21; ++.@box) {
-		.@n = callfunc("FP_LoadBox",.@box);
-		for (.@i = 0; .@i < .@n; ++.@i)
-			if (@FP_BoxStone[.@i] == .@needle) return 1;
-	}
-	return 0;
+	return compare(",6636,6637,6638,6639,6640,6641,6642,6643,6644,6645,6740,6741,6742,6743,6744,6745,6790,6791,6792,6908,6943,6944,6945,6946,6947,6948,6949,6950,6951,6963,6964,6999,25000,25001,25002,25003,25004,25005,25006,25007,25008,25009,25010,25011,25012,25013,25014,25015,25016,25017,25060,25061,25062,25063,25064,25065,25066,25067,25068,25069,25070,25071,25072,25139,25141,25170,25171,25172,25173,25174,25175,25227,25228,25229,25302,25303,25304,25305,25306,25409,25410,25411,25412,25413,25414,25415,25416,25417,25418,25419,25420,25445,25446,25447,25448,25449,25450,25451,25452,25453,25454,25455,25456,25490,25491,25492,25493,25494,25495,25496,25497,25498,25499,25500,25501,25706,25707,25708,25709,25710,25711,25712,25713,25714,25715,25716,25717,25797,25798,25799,25800,25801,25802,25803,25804,25805,25806,25807,25808,25842,25843,25844,25845,25846,25847,25848,25849,25850,25851,25852,25853,25854,25855,25856,25857,25858,25859,25860,25861,25862,1000008,1000009,1000010,1000011,1000012,1000013,1000014,1000015,1000016,1000017,1000018,1000019,1000213,1000214,1000215,1000216,1000217,1000218,1000219,1000220,1000221,1000222,1000223,1000224,1000296,1000297,1000298,1000299,1000300,1000301,1000302,1000303,1000304,1000305,1000306,1000307,1000375,1000376,1000377,1000378,1000379,1000520,1000521,1000522,1000523,1000524,1000525,1000526,1000527,1000528,1000529,1000530,1000610,1000611,1000612,1000613,1000614,1000615,1000616,1000617,1000618,1000666,1000667,1000668,1000669,1000670,1000671,1000672,1000673,1000674,1000675,1000676,1000855,1000856,1000857,1000858,1000859,1000860,1000861,1000862,1000863,1000864,1000865,1000921,1000922,1000968,1000969,1000970,1000971,1000972,1000973,1000974,1000975,1000976,1001044,1001045,1001046,1001047,1001048,1001049,1001050,1001051,1001052,1001053,1001054,1001055,1001159,1001160,1001161,1001162,1001163,1001164,1001165,1001166,1001167,1001168,1001169,1001170,1001171,1001172,1001322,1001323,1001324,1001325,1001326,1001327,1001328,1001329,1001419,1001420,1001421,1001487,1001488,1001489,1001603,1001604,1001605,1001737,1001738,1001739,1001787,1001788,1001789,1001938,1001939,1001940,1001941,1001942,1001943,1001944,1001945,1001946,1001947,1001948,1001949,1001950,1002096,1002097,1002098,1002099,1002100,1002101,1002102,1002103,1002104,1002105,1002106,1002107,1002273,1002274,1002275,1002276,1002277,1002278,1002279,1002280,1002281,1002282,1002283,1002284,1002395,1002396,1002397,1002398,1002399,1002404,1002405,1002406,1002407,1002408,1002409,1002410,1002411,1002412,1002413,1002414,1002415,1002416,1002625,1002626,1002627,1002628,1002629,1002630,1002631,1002632,","," + getarg(0) + ",");
 }
 
 // Return whether an enchant has a functional effect on this server build.
@@ -99,22 +95,21 @@ function	script	FP_EnchantSupported	{
 }
 
 function	script	FP_StoneFromEnchant	{
-	.@needle = getarg(0);
-	.@category = getarg(1,-1);
-	switch (.@category) {
-	case 0: .@first = 0;  .@last = 4;  break; // upper slot
-	case 1: .@first = 5;  .@last = 9;  break; // middle slot
-	case 2: .@first = 10; .@last = 14; break; // lower slot
-	case 3: .@first = 15; .@last = 19; break; // garment first slot
-	case 4: .@first = 20; .@last = 20; break; // garment second slot
-	default: return 0;
+	.@needle=getarg(0);
+	if (.@needle<1) return 0;
+	// First published match per slot family; data tests enforce mapping parity.
+	switch (getarg(1,-1)) {
+	case 0: .@lookup$=",4700=6636,4930=6740,29030=6944,29156=25172,4710=6637,4805=6741,29013=6999,29359=25304,4730=6638,4936=6790,29032=25000,310325=1000375,4720=6639,4937=6791,4807=25068,310327=1000377,4740=6640,4938=6792,29053=25069,310664=1000528,4750=6641,29028=6943,29159=25171,311921=1001168,314662=1002396,29428=25413,29468=25453,29513=25706,29655=25846,29651=25843,29432=25417,29477=25490,29517=25710,29659=25850,29668=25859,29460=25445,29481=25494,29521=25714,29664=25855,29423=25409,29464=25450,29485=25498,312403=1001327,314850=1002627,310000=1000008,310181=1000214,310258=1000297,29613=25800,310004=1000012,310187=1000218,310262=1000301,29617=25804,310008=1000016,310191=1000222,310266=1000305,29621=25808,310881=1000610,311356=1000857,311460=1001044,310884=1000613,311359=1000860,311463=1001047,310887=1000616,311362=1000863,311466=1001050,311005=1000666,311427=1000968,311912=1001159,311008=1000669,311430=1000971,311915=1001162,311011=1000672,311433=1000974,311918=1001165,314853=1002630,314021=1002096,314025=1002100,314029=1002104,314181=1002273,314185=1002277,314189=1002281,314670=1002408,314673=1002411,314676=1002414,313726=1001939,313729=1001942,313732=1001945,"; break;
+	case 1: .@lookup$=",4882=6642,4730=6947,29022=25004,29145=25141,4883=6643,4720=6948,29016=25005,29157=25173,4931=6742,4740=6949,29020=25006,29155=25175,4861=6743,4750=6950,29018=25007,310328=1000378,4929=6744,29026=25001,29047=25060,310665=1000529,4700=6945,29024=25002,29048=25061,311922=1001169,4710=6946,29014=25003,29054=25070,314663=1002397,29424=25410,29465=25451,29486=25499,29669=25860,29652=25844,29429=25414,29469=25454,29514=25707,29665=25856,29656=25847,29433=25418,29478=25491,29518=25711,29482=25495,29660=25851,29461=25446,29522=25715,312404=1001328,314851=1002628,29612=25799,310001=1000009,310186=1000219,29616=25803,310005=1000013,310190=1000223,29620=25807,310267=1000306,310259=1000298,310009=1000017,310182=1000215,310263=1000302,310882=1000611,311357=1000858,311461=1001045,310885=1000614,311360=1000861,311464=1001048,310888=1000617,311363=1000864,311467=1001051,311006=1000667,311428=1000969,311913=1001160,311009=1000670,311431=1000972,311916=1001163,311012=1000673,311434=1000975,311919=1001166,314854=1002631,314022=1002097,314026=1002101,314030=1002105,314182=1002274,314186=1002278,314190=1002282,314671=1002409,314674=1002412,314677=1002415,313727=1001940,313730=1001943,313733=1001946,"; break;
+	case 2: .@lookup$=",4884=6644,29015=25012,29050=25064,29229=25228,4859=6645,29017=25013,29051=25065,29228=25229,4932=6745,29033=25014,29052=25066,29360=25305,4861=6951,29027=25015,29055=25071,310326=1000376,29021=25008,29029=25016,29057=25072,310329=1000379,29023=25009,29031=25017,29146=25139,310666=1000530,29019=25010,29046=25062,29158=25174,311923=1001170,29025=25011,29049=25063,29227=25227,314664=1002398,29425=25411,29462=25447,29479=25492,29515=25708,29666=25857,29430=25415,29466=25452,29483=25496,29519=25712,29670=25861,29434=25419,29470=25455,29487=25500,29523=25716,29657=25848,29661=25852,29653=25845,312405=1001329,314852=1002629,29611=25798,310268=1000307,310006=1000014,310189=1000224,29615=25802,310002=1000010,310010=1000018,310260=1000299,29619=25806,310185=1000220,310183=1000216,310264=1000303,310883=1000612,311358=1000859,311462=1001046,310886=1000615,311361=1000862,311465=1001049,310889=1000618,311364=1000865,311468=1001052,311007=1000668,311429=1000970,311914=1001161,311010=1000671,311432=1000973,311917=1001164,311013=1000674,311435=1000976,311920=1001167,314855=1002632,314023=1002098,314027=1002102,314031=1002106,314183=1002275,314187=1002279,314191=1002283,314672=1002410,314675=1002413,314678=1002416,313728=1001941,313734=1001947,313731=1001944,"; break;
+	case 3: .@lookup$=",4807=6908,29056=25067,29361=25303,311469=1001053,4992=6963,29154=25170,29358=25306,4993=6964,29362=25302,311426=1000922,311470=1001054,311924=1001171,313725=1001938,314665=1002399,314666=1002404,29426=25412,29463=25448,29480=25493,29516=25709,29431=25416,29467=25449,29484=25497,29520=25713,29435=25420,29471=25456,29488=25501,29524=25717,29663=25854,29667=25858,29671=25862,29654=25842,29658=25849,29662=25853,312402=1001326,314848=1002625,29427=25797,310003=1000011,310180=1000213,310257=1000296,29614=25801,310007=1000015,310184=1000217,310261=1000300,29618=25805,310011=1000019,310188=1000221,310265=1000304,312476=1001419,312477=1001420,312478=1001421,312398=1001322,312399=1001323,312400=1001324,312401=1001325,312692=1001487,312693=1001488,313060=1001603,313059=1001604,313061=1001605,313324=1001737,313325=1001738,313326=1001739,313359=1001787,313360=1001788,313361=1001789,312694=1001489,314849=1002626,314024=1002099,314028=1002103,314032=1002107,314184=1002276,314188=1002280,314192=1002284,314667=1002405,314668=1002406,314669=1002407,313735=1001948,313736=1001949,313737=1001950,"; break;
+	case 4: .@lookup$=",310654=1000520,311014=1000675,311354=1000855,311015=1000676,310667=1000527,311355=1000856,310662=1000526,310658=1000521,311425=1000921,310663=1000525,310661=1000524,311471=1001055,310660=1000523,310659=1000522,311925=1001172,314661=1002395,"; break;
+	default: .@lookup$=",4700=6636,4930=6740,29030=6944,29156=25172,4710=6637,4805=6741,29013=6999,29359=25304,4730=6638,4936=6790,29032=25000,310325=1000375,4720=6639,4937=6791,4807=25068,310327=1000377,4740=6640,4938=6792,29053=25069,310664=1000528,4750=6641,29028=6943,29159=25171,311921=1001168,314662=1002396,29428=25413,29468=25453,29513=25706,29655=25846,29651=25843,29432=25417,29477=25490,29517=25710,29659=25850,29668=25859,29460=25445,29481=25494,29521=25714,29664=25855,29423=25409,29464=25450,29485=25498,312403=1001327,314850=1002627,310000=1000008,310181=1000214,310258=1000297,29613=25800,310004=1000012,310187=1000218,310262=1000301,29617=25804,310008=1000016,310191=1000222,310266=1000305,29621=25808,310881=1000610,311356=1000857,311460=1001044,310884=1000613,311359=1000860,311463=1001047,310887=1000616,311362=1000863,311466=1001050,311005=1000666,311427=1000968,311912=1001159,311008=1000669,311430=1000971,311915=1001162,311011=1000672,311433=1000974,311918=1001165,314853=1002630,314021=1002096,314025=1002100,314029=1002104,314181=1002273,314185=1002277,314189=1002281,314670=1002408,314673=1002411,314676=1002414,313726=1001939,313729=1001942,313732=1001945,4882=6642,29022=25004,29145=25141,4883=6643,29016=25005,29157=25173,4931=6742,29020=25006,29155=25175,4861=6743,29018=25007,310328=1000378,4929=6744,29026=25001,29047=25060,310665=1000529,29024=25002,29048=25061,311922=1001169,29014=25003,29054=25070,314663=1002397,29424=25410,29465=25451,29486=25499,29669=25860,29652=25844,29429=25414,29469=25454,29514=25707,29665=25856,29656=25847,29433=25418,29478=25491,29518=25711,29482=25495,29660=25851,29461=25446,29522=25715,312404=1001328,314851=1002628,29612=25799,310001=1000009,310186=1000219,29616=25803,310005=1000013,310190=1000223,29620=25807,310267=1000306,310259=1000298,310009=1000017,310182=1000215,310263=1000302,310882=1000611,311357=1000858,311461=1001045,310885=1000614,311360=1000861,311464=1001048,310888=1000617,311363=1000864,311467=1001051,311006=1000667,311428=1000969,311913=1001160,311009=1000670,311431=1000972,311916=1001163,311012=1000673,311434=1000975,311919=1001166,314854=1002631,314022=1002097,314026=1002101,314030=1002105,314182=1002274,314186=1002278,314190=1002282,314671=1002409,314674=1002412,314677=1002415,313727=1001940,313730=1001943,313733=1001946,4884=6644,29015=25012,29050=25064,29229=25228,4859=6645,29017=25013,29051=25065,29228=25229,4932=6745,29033=25014,29052=25066,29360=25305,29027=25015,29055=25071,310326=1000376,29021=25008,29029=25016,29057=25072,310329=1000379,29023=25009,29031=25017,29146=25139,310666=1000530,29019=25010,29046=25062,29158=25174,311923=1001170,29025=25011,29049=25063,29227=25227,314664=1002398,29425=25411,29462=25447,29479=25492,29515=25708,29666=25857,29430=25415,29466=25452,29483=25496,29519=25712,29670=25861,29434=25419,29470=25455,29487=25500,29523=25716,29657=25848,29661=25852,29653=25845,312405=1001329,314852=1002629,29611=25798,310268=1000307,310006=1000014,310189=1000224,29615=25802,310002=1000010,310010=1000018,310260=1000299,29619=25806,310185=1000220,310183=1000216,310264=1000303,310883=1000612,311358=1000859,311462=1001046,310886=1000615,311361=1000862,311465=1001049,310889=1000618,311364=1000865,311468=1001052,311007=1000668,311429=1000970,311914=1001161,311010=1000671,311432=1000973,311917=1001164,311013=1000674,311435=1000976,311920=1001167,314855=1002632,314023=1002098,314027=1002102,314031=1002106,314183=1002275,314187=1002279,314191=1002283,314672=1002410,314675=1002413,314678=1002416,313728=1001941,313734=1001947,313731=1001944,29056=25067,29361=25303,311469=1001053,4992=6963,29154=25170,29358=25306,4993=6964,29362=25302,311426=1000922,311470=1001054,311924=1001171,313725=1001938,314665=1002399,314666=1002404,29426=25412,29463=25448,29480=25493,29516=25709,29431=25416,29467=25449,29484=25497,29520=25713,29435=25420,29471=25456,29488=25501,29524=25717,29663=25854,29667=25858,29671=25862,29654=25842,29658=25849,29662=25853,312402=1001326,314848=1002625,29427=25797,310003=1000011,310180=1000213,310257=1000296,29614=25801,310007=1000015,310184=1000217,310261=1000300,29618=25805,310011=1000019,310188=1000221,310265=1000304,312476=1001419,312477=1001420,312478=1001421,312398=1001322,312399=1001323,312400=1001324,312401=1001325,312692=1001487,312693=1001488,313060=1001603,313059=1001604,313061=1001605,313324=1001737,313325=1001738,313326=1001739,313359=1001787,313360=1001788,313361=1001789,312694=1001489,314849=1002626,314024=1002099,314028=1002103,314032=1002107,314184=1002276,314188=1002280,314192=1002284,314667=1002405,314668=1002406,314669=1002407,313735=1001948,313736=1001949,313737=1001950,310654=1000520,311014=1000675,311354=1000855,311015=1000676,310667=1000527,311355=1000856,310662=1000526,310658=1000521,311425=1000921,310663=1000525,310661=1000524,311471=1001055,310660=1000523,310659=1000522,311925=1001172,314661=1002395,"; break;
 	}
-	for (.@box = .@first; .@box <= .@last; ++.@box) {
-		.@n = callfunc("FP_LoadBox",.@box);
-		for (.@i = 0; .@i < .@n; ++.@i)
-			if (@FP_BoxEnchant[.@i] == .@needle) return @FP_BoxStone[.@i];
-	}
-	return 0;
+	.@key$="," + .@needle + "=";
+	.@pos=strpos(.@lookup$,.@key$);
+	if (.@pos<0) return 0;
+	return atoi(substr(.@lookup$,.@pos+getstrlen(.@key$),getstrlen(.@lookup$)-1));
 }
 
 function	script	FP_IsTombCostume	{
@@ -143,12 +138,51 @@ function	script	FP_OpenBox	{
 		dispbottom "The Fashion box was not consumed. Make room in your inventory and try again.";
 		return 0;
 	}
-	// DelayConsume: consume only after every validation and immediately before
-	// the successful award.
-	delitem .@box_item,1;
+	// DelayConsume: verify delivery before consuming the box. No input yields.
+	.@before=countitem(.@reward);
 	getitem .@reward,1;
+	if (countitem(.@reward)!=.@before+1) return 0;
+	delitem .@box_item,1;
 	dispbottom "The Fashion box awarded " + getitemname(.@reward) + ". (Uniform compatibility selection.)";
 	return 1;
+}
+
+// Deliver before charging, with no dialogue yield between the two operations.
+// getitem has no script return value; verify the inventory delta explicitly.
+function	script	FP_BuyItem	{
+	.@item=getarg(0); .@cost=getarg(1);
+	if (.@cost<1 || #FP_Fashion<.@cost || getiteminfo(.@item,ITEMINFO_TYPE)<0) return 0;
+	if (!checkweight(.@item,1)) return 0;
+	.@before=countitem(.@item);
+	getitem .@item,1;
+	if (countitem(.@item)!=.@before+1) return 0;
+	#FP_Fashion-=.@cost;
+	return 1;
+}
+
+// Accept only plain, permanent records. Re-read the exact row after all input.
+function	script	FP_TradeItem	{
+	.@idx=getarg(0); .@id=getarg(1); .@amount=getarg(2); .@points=getarg(3);
+	if (.@amount<1 || .@points<1 || #FP_Fashion<0
+		|| #FP_Fashion>9223372036854775807-.@points) return 0;
+	getinventorylist;
+	for (.@row=0; .@row<@inventorylist_count; ++.@row) {
+		if (@inventorylist_idx[.@row]!=.@idx) continue;
+		if (@inventorylist_id[.@row]!=.@id || @inventorylist_amount[.@row]<.@amount
+			|| @inventorylist_equip[.@row] || @inventorylist_expire[.@row]
+			|| @inventorylist_favorite[.@row] || @inventorylist_bound[.@row]
+			|| !@inventorylist_identify[.@row] || @inventorylist_attribute[.@row]
+			|| @inventorylist_refine[.@row] || @inventorylist_enchantgrade[.@row]
+			|| @inventorylist_card1[.@row] || @inventorylist_card2[.@row]
+			|| @inventorylist_card3[.@row] || @inventorylist_card4[.@row]
+			|| @inventorylist_option_id1[.@row] || @inventorylist_option_id2[.@row]
+			|| @inventorylist_option_id3[.@row] || @inventorylist_option_id4[.@row]
+			|| @inventorylist_option_id5[.@row]) return 0;
+		if (!delitemidx(.@idx,.@amount)) return 0;
+		#FP_Fashion+=.@points;
+		return 1;
+	}
+	return 0;
 }
 
 // Account login + online-only Gold Point clock.
@@ -187,7 +221,7 @@ OnGoldTick:
 OnAtActivity:
 	dispbottom "Gold Points: " + #FP_Gold + "/50 | Fashion Points: " + #FP_Fashion;
 	dispbottom "Earn 1 Gold Point every 3 minutes online. @goldpoints takes you to the Gold Point Manager (exchange 1 for 1).";
-	dispbottom "@fashion takes you to costume services and stone boxes. Click the service NPC when you arrive.";
+	dispbottom "@fashion opens access to the Designer (trade-ins), Catalogue (150 FP costumes), Boxes, Enchanter and Recycler. Click the NPC when you arrive.";
 	end;
 }
 
@@ -211,7 +245,15 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 	}
 	mes "[Gold Point Manager]";
 	mes "How many? (1-" + #FP_Gold + ")";
-	input .@amount,1,#FP_Gold;
+	input .@amount,0,50;
+	if (.@amount<1) close;
+	mes "Exchange " + .@amount + " Gold Points for the same number of Fashion Points?";
+	next;
+	if (select("Exchange:Cancel")==2) close;
+	if (.@amount>#FP_Gold || #FP_Fashion<0 || #FP_Fashion>9223372036854775807-.@amount) {
+		mes "Your balance cannot accept this exchange. Nothing was changed.";
+		close;
+	}
 	#FP_Gold -= .@amount;
 	#FP_Fashion += .@amount;
 	if (!@FP_TimerRunning) {
@@ -238,6 +280,8 @@ mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
 			.@loc = getiteminfo(.@id,ITEMINFO_LOCATIONS);
 			if (getiteminfo(.@id,ITEMINFO_TYPE) != IT_ARMOR || !(.@loc & (EQP_COSTUME_HEAD_TOP|EQP_COSTUME_HEAD_MID|EQP_COSTUME_HEAD_LOW|EQP_COSTUME_GARMENT))) continue;
 			if (@inventorylist_equip[.@i] || @inventorylist_expire[.@i]) continue;
+			if (@inventorylist_favorite[.@i] || @inventorylist_bound[.@i] || !@inventorylist_identify[.@i] || @inventorylist_attribute[.@i]) continue;
+			if (@inventorylist_option_id1[.@i] || @inventorylist_option_id2[.@i] || @inventorylist_option_id3[.@i] || @inventorylist_option_id4[.@i] || @inventorylist_option_id5[.@i]) continue;
 			if (@inventorylist_refine[.@i] || @inventorylist_enchantgrade[.@i] || @inventorylist_card1[.@i] || @inventorylist_card2[.@i] || @inventorylist_card3[.@i] || @inventorylist_card4[.@i]) continue;
 			.@found = 1;
 			.@points = callfunc("FP_IsTombCostume",.@id) ? 1 : 15;
@@ -247,11 +291,10 @@ mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
 			switch (select("Trade it:Skip it:Stop")) {
 			case 1:
 				if (@inventorylist_id[.@i] != .@id) close;
-				if (!delitemidx(@inventorylist_idx[.@i],1)) {
+				if (!callfunc("FP_TradeItem",@inventorylist_idx[.@i],.@id,1,.@points)) {
 					mes "The costume could not be removed. No Fashion Points were awarded.";
 					close;
 				}
-				#FP_Fashion += .@points;
 				mes "[Designer Heidam]";
 				mes "Trade complete. Balance: ^cc33cc" + #FP_Fashion + "^000000.";
 				close;
@@ -269,6 +312,7 @@ mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
 		for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
 			.@id = @inventorylist_id[.@i];
 			if (!callfunc("FP_StoneKnown",.@id)) continue;
+			if (@inventorylist_expire[.@i] || @inventorylist_favorite[.@i] || @inventorylist_bound[.@i]) continue;
 			.@found = 1;
 			mes "[Designer Heidam]";
 			mes "Trade ^0000ff" + getitemname(.@id) + "^000000? You have " + @inventorylist_amount[.@i] + ". Each is worth ^cc33cc10 Fashion Points^000000.";
@@ -279,11 +323,16 @@ mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
 				if (@inventorylist_amount[.@i] > 1) {
 					mes "[Designer Heidam]";
 					mes "How many?";
-					input .@amount,1,@inventorylist_amount[.@i];
+					input .@amount,0,@inventorylist_amount[.@i];
 				}
-				if (countitem(.@id) < .@amount) close;
-				delitem .@id,.@amount;
-				#FP_Fashion += 10 * .@amount;
+				if (.@amount<1) close;
+				mes "Trade " + .@amount + " stone(s) for " + (10*.@amount) + " Fashion Points?";
+				next;
+				if (select("Confirm trade:Cancel")==2) close;
+				if (!callfunc("FP_TradeItem",@inventorylist_idx[.@i],.@id,.@amount,10*.@amount)) {
+					mes "The selected stack changed or is protected. Nothing was exchanged.";
+					close;
+				}
 				mes "[Designer Heidam]";
 				mes "Trade complete. Balance: ^cc33cc" + #FP_Fashion + "^000000.";
 				close;
@@ -299,8 +348,8 @@ mal_in01,21,123,5	script	Fashion Designer#FP	4_CAT_SAILOR5,{
 		mes "Ordinary costume: ^cc33cc15 points^000000.";
 		mes "Bio5/Tomb costume IDs 19961-19974: ^cc33cc1 point^000000.";
 		mes "Published enchant stone: ^cc33cc10 points^000000.";
-		mes "Equipped, rental, refined, graded, or enchanted costumes are refused to prevent accidental loss.";
-		mes "Apply every published stone through the Complete Fashion Enchanter at mal_in01 (25,113).";
+		mes "Favorite, bound, equipped, rental, unidentified, damaged, refined, graded, enchanted or random-option items are protected.";
+		mes "Use @fashion for the Enchanter, Recycler, Boxes and Costume Catalogue. Costumes cost 150 Fashion Points each.";
 		close;
 	default:
 		close;
@@ -321,7 +370,7 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 		.@parts[.@count]=.@part[.@i];
 		.@masks[.@count]=.@mask[.@i];
 		.@names$[.@count]=.@part_name$[.@i];
-		.@menu$ += getitemname(.@id) + ":";
+		.@menu$ += replacestr(getitemname(.@id),":"," -") + ":";
 		++.@count;
 	}
 	mes "[Gregio Grumani]";
@@ -349,7 +398,7 @@ mal_in01,24,120,4	script	Gregio Grumani#FP	4_M_RUSMAN1,{
 		.@slots[.@count]=.@slot;
 		.@stones[.@count]=.@stone;
 		.@enchants[.@count]=.@enchant;
-		.@menu$ += "Slot " + (.@slot+1) + " - " + getitemname(.@enchant) + ":";
+		.@menu$ += "Slot " + (.@slot+1) + " - " + replacestr(getitemname(.@enchant),":"," -") + ":";
 		++.@count;
 	}
 	if (!.@count) {
@@ -553,30 +602,54 @@ mal_in01,27,120,4	script	Fashion Box Shop#FP	4_F_KAFRA1,{
 	// Confirmation yields: validate the current balance and selected output again.
 	if (#FP_Fashion < .@cost) { mes "You no longer have enough Fashion Points."; close; }
 	if (!checkweight(.@box[.@i],1)) { mes "Make room in your inventory before purchasing."; close; }
-	#FP_Fashion -= .@cost;
-	getitem .@box[.@i],1;
+	if (!callfunc("FP_BuyItem",.@box[.@i],.@cost)) {
+		mes "The box could not be delivered. No Fashion Points were charged.";
+		close;
+	}
 	mes "[Fashion Box Shop]";
 	mes "Purchase complete. Double-click the box to receive one uniformly selected published stone.";
 	close;
 }
 
 mal_in01,27,123,4	script	Fashion Catalogue#FP	4_BOARD3,{
+	// IDs 20596, 420132, 420091 and 410171 lack installed English-client
+	// metadata. Do not sell them until their client resources are integrated.
 	setarray .@cat$[0],
-		"20596,480177,61487,61534,61490,420271,61496,61537,420132,480235",
+		"480177,61487,61534,61490,420271,61496,61537,480235",
 		"60942,20454,40236,410286,40277,20532,40256,60951,480117,60958",
 		"400343,40339,31899,31495,19740,420034,19855,31531,40100,31040",
-		"61026,40206,40371,400057,31375,40036,21206,420091,410277,19293,400073,31383",
-		"19670,61024,31315,5909,420165,400056,400055,400149,480362,480207,410171",
+		"61026,40206,40371,400057,31375,40036,21206,410277,19293,400073,31383",
+		"19670,61024,31315,5909,420165,400056,400055,400149,480362,480207",
 		"410081,410132,420107,420047,400214,400272,19605,436008,436006,440010";
 	mes "[Fashion Catalogue]";
-	mes "The current published catalogue has six categories, but publishes no per-costume Fashion Point prices. Purchase is view-only until those values are known.";
+	disable_items;
+	mes "PN costume price: ^cc33cc150 Fashion Points^000000 each.";
+	mes "Your Fashion Points: " + #FP_Fashion + ". Only installed costumes are offered.";
 	next;
-	.@cat=select("Category 1:Category 2:Category 3:Category 4:Category 5:Category 6")-1;
+	.@cat=select("Collection 1:Collection 2:Collection 3:Collection 4:Collection 5:Collection 6:Leave")-1;
+	if (.@cat==6) close;
 	explode .@id$,.@cat$[.@cat],",";
-	mes "[Fashion Catalogue - Category " + (.@cat+1) + "]";
+	.@menu$="";
 	for (.@i=0; .@i<getarraysize(.@id$); ++.@i) {
 		.@item=atoi(.@id$[.@i]);
-		mes ((getiteminfo(.@item,ITEMINFO_TYPE) < 0) ? ("Unavailable item ID " + .@item) : getitemname(.@item));
+		if (getiteminfo(.@item,ITEMINFO_TYPE)!=IT_ARMOR
+			|| !(getiteminfo(.@item,ITEMINFO_LOCATIONS)&(EQP_COSTUME_HEAD_TOP|EQP_COSTUME_HEAD_MID|EQP_COSTUME_HEAD_LOW|EQP_COSTUME_GARMENT))) continue;
+		.@items[.@count++]=.@item;
+		// Colons in real item names are menu separators; normalize labels only.
+		.@menu$+=replacestr(getitemname(.@item),":"," -")+" [150 FP]:";
 	}
+	if (!.@count) { mes "No costumes from this collection are available yet."; close; }
+	.@pick=select(.@menu$+"Cancel")-1;
+	if (.@pick>=.@count) close;
+	.@item=.@items[.@pick];
+	mes "Buy " + getitemname(.@item) + " for 150 Fashion Points?";
+	mes "Costume trade-in returns 15 points; purchases are not refundable at their purchase price.";
+	next;
+	if (select("Buy costume:Cancel")==2) close;
+	if (!callfunc("FP_BuyItem",.@item,150)) {
+		mes "You need 150 Fashion Points and enough inventory space and weight. Nothing was charged.";
+		close;
+	}
+	mes "Purchase complete. Fashion Points remaining: " + #FP_Fashion + ".";
 	close;
 }
