@@ -12,8 +12,12 @@ static pn_bank::Reply pn_bank_snapshot(map_session_data& sd) {
     result.nonce_hi = sd.bank_ui.nonce_hi; result.nonce_lo = sd.bank_ui.nonce_lo;
     result.char_id = sd.status.char_id; result.request_id = sd.bank_ui.request_id;
     result.bank = sd.bank_vault; result.wallet = sd.status.zeny;
-    result.result = (sd.bank_ui.pending || sd.pair_commit.pending) ? pn_bank::Saving : sd.bank_ui.result;
-    if (!battle_config.feature_banking || map_getmapflag(sd.m, MF_NOBANK) || !chrif_isconnected())
+    // Read-only refreshes also feed the wallet HUD. Pending balances may be
+    // staged by bank, paired trade/market, mail, or storage transactions; that
+    // status must win over a map's banking restriction or a char disconnect.
+    const bool saving = pc_transaction_pending(&sd);
+    result.result = saving ? pn_bank::Saving : sd.bank_ui.result;
+    if (!saving && (!battle_config.feature_banking || map_getmapflag(sd.m, MF_NOBANK) || !chrif_isconnected()))
         result.result = pn_bank::Unavailable;
     if (result.bank < 0 || result.wallet < 0 || result.wallet > pn_bank::wallet_limit) {
         result.result = pn_bank::Unavailable; return result;
@@ -36,6 +40,18 @@ static pn_bank::Reply pn_bank_snapshot(map_session_data& sd) {
     result.counts[0]=sd.bank_ui.collected_characters;
     result.counts[1]=sd.bank_ui.skipped_characters;
     return result;
+}
+// Reuse the native status handler to request a HUD redraw. This emits only
+// the ordinary clamped wire value; full precision stays in the companion
+// snapshot. Never nudge the native HUD with an in-flight financial snapshot.
+static void pn_bank_refresh_native_wallet(map_session_data* sd, const pn_bank::Request& request,
+    const pn_bank::Reply& reply, bool authenticated) {
+    if (!authenticated || !sd || request.action != pn_bank::Refresh ||
+        reply.result == pn_bank::Saving || reply.result == pn_bank::Unauthorized ||
+        pc_transaction_pending(sd) || !pn_bank::valid_reply(reply) ||
+        reply.char_id != sd->status.char_id || reply.wallet != sd->status.zeny ||
+        reply.nonce_hi != sd->bank_ui.nonce_hi || reply.nonce_lo != sd->bank_ui.nonce_lo) return;
+    clif_updatestatus(*sd, SP_ZENY);
 }
 static pn_bank::Result pn_bank_action(map_session_data& sd, const pn_bank::Request& request) {
     if (!request.request_id || request.nonce_hi != sd.bank_ui.nonce_hi || request.nonce_lo != sd.bank_ui.nonce_lo)
@@ -181,6 +197,7 @@ static bool clif_parse_bank_companion(int32 fd) {
     WFIFOHEAD(fd, sizeof(reply));
     memcpy(WFIFOP(fd, 0), &reply, sizeof(reply));
     WFIFOSET(fd, sizeof(reply));
+    pn_bank_refresh_native_wallet(sd, request, reply, authenticated);
     // Keep the ordinary request/reply stream separate from open notifications.
     if (authenticated && sd->bank_ui.open_requested) clif_bank_open_custom(*sd);
     return true;

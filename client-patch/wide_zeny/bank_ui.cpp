@@ -1,6 +1,7 @@
 // Native owned Windows panel, styled after the owner's supplied reference.
 // GPL-3.0-or-later. No embedded browser, account password, or client-side balance authority.
 #include "bank_client.hpp"
+#include "native_zeny.hpp"
 #include "../wide_market/market_client.hpp"
 #include "../wide_mail/mail_client.hpp"
 #include <algorithm>
@@ -509,6 +510,7 @@ LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM w,LPARAM l) {
         return 0;
     case BANK_SESSION:
         if(!bank_current_generation(static_cast<LONG>(w),false)) return 0;
+        native_zeny_reset();
         ShowWindow(window,SW_HIDE);
         busy=refreshing=verified=last_reply_connected=false;
         queued_action=pn_bank::Refresh; queued_amount=0; state=pn_bank::Reply{}; sequence=0;
@@ -521,6 +523,7 @@ LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM w,LPARAM l) {
     case BANK_RESULT: {
         auto result=reinterpret_cast<BankResult*>(l);
         if(bank_current_generation(result->generation)) {
+            const bool was_refresh=refreshing;
             const bool unchanged=refreshing && verified && result->connected &&
                 queued_action==pn_bank::Refresh && !std::memcmp(&state,&result->state,sizeof(state));
             const auto next_action=queued_action; const auto next_amount=queued_amount;
@@ -530,6 +533,15 @@ LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM w,LPARAM l) {
                 const auto previous_trade=state.trade_id;
                 state=result->state; sequence=std::max(sequence,state.request_id);
                 verified=state.result!=pn_bank::Unauthorized;
+                // Refresh snapshots report Saving for every pending wallet
+                // mutation, even on maps where banking is unavailable. A
+                // terminal banking error does not invalidate their balances.
+                // Action errors can override Saving, so never promote those.
+                if(state.result==pn_bank::Ok ||
+                    (was_refresh && verified && state.result!=pn_bank::Saving))
+                    native_zeny_update(result->generation,state.wallet,true);
+                else if(!verified)
+                    native_zeny_update(result->generation,0,false);
                 accept_receipt();
                 if(!unchanged) status=wide(pn_bank::message(state.result));
                 if(previous_trade!=state.trade_id) {
@@ -542,6 +554,7 @@ LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM w,LPARAM l) {
                     status=state.result==pn_bank::Ok?L"Trade updated. Review both offers before confirming.":wide(pn_bank::message(state.result));
                 }
             } else {
+                native_zeny_update(result->generation,0,false);
                 pending_trade_action=0;pending_trade_request=0;
                 verified=false; status=L"Connection lost. Refresh to verify the transaction result.";
             }
@@ -569,11 +582,12 @@ LRESULT CALLBACK window_proc(HWND window,UINT message,WPARAM w,LPARAM l) {
             game=bank_find_game_window();
             if(game) previous_game_proc=reinterpret_cast<WNDPROC>(SetWindowLongPtr(game,GWLP_WNDPROC,reinterpret_cast<LONG_PTR>(game_proc)));
         }
-        // Authenticate while hidden so the game's bank button/NPC/@bank can
-        // open this panel through a server notification. Hidden keepalives are
-        // infrequent; failed early logins and disconnected sockets retry.
+        // The native HUD also consumes confirmed snapshots while this panel
+        // is hidden. Refresh on the existing companion connection; do not
+        // create duplicate workers or accelerate disconnected login retries.
         if(!preview && bank_authenticated() && !busy && GetTickCount64()-last_refresh>
-            (state.result==pn_bank::Saving || active_trade()?500:(!verified || IsWindowVisible(window) || !bank_connection_ready()?3000:15000))) submit(pn_bank::Refresh);
+            (!verified || !bank_connection_ready()?3000:
+                (state.result==pn_bank::Saving || active_trade() || GetForegroundWindow()==game || IsWindowVisible(window)?500:3000))) submit(pn_bank::Refresh);
         return 0;
     case WM_CLOSE: ShowWindow(window,SW_HIDE); return 0;
     case WM_DESTROY: release_panel_cursor(); KillTimer(window,1); DeleteObject(font);DeleteObject(balance_font);DeleteObject(white);font=balance_font=nullptr;white=nullptr;PostQuitMessage(0);return 0;
@@ -617,6 +631,7 @@ int bank_window_main(HINSTANCE module,bool render) {
         100,100,px(panel_width)+2,px(panel_height)+2,nullptr,nullptr,instance,nullptr);
     if(!panel) return 1;
     bank_install_transport(panel);
+    if(!preview) native_zeny_install();
     if(!preview) configure_diagnostics();
     if(preview) {
         state.result=pn_bank::Ok; state.bank=1834023229; state.wallet=0;

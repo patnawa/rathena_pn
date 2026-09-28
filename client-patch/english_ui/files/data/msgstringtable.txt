@@ -455,7 +455,7 @@ You are prohibited to log in until %s.#
 's Earth #
 127.0.0.1#
 6900#
-https://github.com/llchrisll/ROenglishRE#
+https://github.com/patnawa/rathena_pn#
 Kick %s#
 Very Strong #
 Very Very Strong #
@@ -3297,9 +3297,9 @@ Scrolls#
 Consumables#
 Other#
 Special#
-Charging#
+Project Info#
 Purchase#
-https://rathena.org/board/clients/donations/#
+https://github.com/patnawa/rathena_pn#
 Item Search#
 Free points#
 Use Free points#
@@ -3311,7 +3311,7 @@ Star Emperor(Boy)#
 Soul Reaper(Boy)#
 Your weight limit is over %d, HP and SP will not recover naturally.#
 The number of items that can be purchased in 8.#
-https://rathena.org/board/crowdfunding/#
+https://github.com/patnawa/rathena_pn#
 UNKNOWN ERROR:%d#
 NOT USER#
 THIS ACCOUNT ID IS BLOCKED#
@@ -3443,7 +3443,7 @@ Name with bad words can not be searched.#
 The party master cannot accept the request.#
 No party can be found.#
 Dealer#
-http://rathena.org#
+https://github.com/patnawa/rathena_pn#
 UP#
 DOWN#
 You're already friends#
@@ -3580,7 +3580,7 @@ System Message: The current shop display function is in %s state. (/showshop)#
 Vertical Sync#
 Material#
 http://rodata.zhaouc.com/renwu.html#
-Title#
+Project Info#
 Frame Limit#
 If it exceeds %d it can no longer be installed.#
 Destination#

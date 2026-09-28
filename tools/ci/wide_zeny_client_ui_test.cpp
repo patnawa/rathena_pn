@@ -6,6 +6,14 @@
 namespace fixture {
 struct Request { uint32_t action; int64_t amount; uint64_t id,trade,revision; };
 std::vector<Request> sent;
+int64_t hud_wallet=-1;
+int hud_updates=0;
+}
+void native_zeny_install() {}
+void native_zeny_reset() {fixture::hud_wallet=-1;}
+void native_zeny_update(LONG generation,int64_t wallet,bool valid) {
+    assert(generation==7);++fixture::hud_updates;
+    fixture::hud_wallet=valid?wallet:-1;
 }
 void bank_install_transport(HWND) {}
 void market_open(HWND,const pn_bank::Reply&) {}
@@ -34,6 +42,7 @@ int main(int argc,char** argv) {
     assert(panel);
     pn_bank::Reply value;value.result=pn_bank::Ok;value.bank=0;value.wallet=INT64_MAX;value.nonce_hi=123;value.nonce_lo=456;
     reply(value);
+    assert(fixture::hud_wallet==INT64_MAX);
     for(int64_t n:{2147483648LL,4294967296LL,9007199254740993LL,INT64_MAX}) {
         set_amount(0,n);assert(amount(0)==n);
         assert(IsWindowEnabled(actions[0]) && !IsWindowEnabled(actions[1]));
@@ -52,7 +61,11 @@ int main(int argc,char** argv) {
     assert(fixture::sent.size()==1 && fixture::sent.back().amount==9007199254740993LL);
     submit(pn_bank::Deposit,1);assert(fixture::sent.size()==1);
     value.request_id=fixture::sent.back().id;value.result=pn_bank::Saving;reply(value);assert(receipt.empty());
+    const auto hud_updates=fixture::hud_updates;
+    auto staged=value;staged.wallet=16709925001LL;reply(staged);
+    assert(fixture::hud_wallet==INT64_MAX && fixture::hud_updates==hud_updates);
     value.result=pn_bank::Ok;value.bank=9007199254740993LL;value.wallet=INT64_MAX-value.bank;reply(value);
+    assert(fixture::hud_wallet==value.wallet);
     assert(receipt.find(L"9,007,199,254,740,993z")!=std::wstring::npos);
     const auto count=fixture::sent.size();for(uint32_t action=3;action<=6;++action)submit(action,1);
     assert(fixture::sent.size()==count);
@@ -110,6 +123,27 @@ int main(int argc,char** argv) {
         assert(box.left>=0 && box.top>=0 && box.right<=bounds.right && box.bottom<=bounds.bottom);
         for(auto other:occupied){RECT overlap{};assert(!IntersectRect(&overlap,&box,&other));}occupied.push_back(box);
     }
-    save_preview("wide-zeny-ui-test.bmp");DestroyWindow(panel);
+    save_preview("wide-zeny-ui-test.bmp");
+    SendMessage(panel,BANK_RESULT,0,reinterpret_cast<LPARAM>(new BankResult{value,6,true}));
+    assert(fixture::hud_wallet==INT64_MAX); // Old session reply cannot replace this session.
+    SendMessage(panel,BANK_RESULT,0,reinterpret_cast<LPARAM>(new BankResult{value,7,false}));
+    assert(fixture::hud_wallet==-1);
+    value.result=pn_bank::Ok;value.wallet=16709925001LL;reply(value);
+    assert(fixture::hud_wallet==16709925001LL);
+    value.result=pn_bank::Unauthorized;reply(value);assert(fixture::hud_wallet==-1);
+    value.result=pn_bank::Ok;reply(value);assert(fixture::hud_wallet==16709925001LL);
+    // A rejected action is not a completed read-only balance check.
+    value.result=pn_bank::Busy;value.wallet=123;reply(value);
+    assert(fixture::hud_wallet==16709925001LL);
+    for(auto result:{pn_bank::Unavailable,pn_bank::SaveFailed,pn_bank::Busy}) {
+        value.result=result;value.wallet=16709925002LL;
+        submit(pn_bank::Refresh);assert(refreshing);reply(value);
+        assert(fixture::hud_wallet==16709925002LL);
+    }
+    value.result=pn_bank::Saving;value.wallet=123;
+    submit(pn_bank::Refresh);assert(refreshing);reply(value);
+    assert(fixture::hud_wallet==16709925002LL);
+    SendMessage(panel,BANK_SESSION,7,0);assert(fixture::hud_wallet==-1);
+    DestroyWindow(panel);
     std::cout<<"PASS: v3 exact wide wallet and trade UI, revision-bound offers, explicit two-stage confirmation, no auto-confirm, duplicate suppression, legacy rejection and layout\n";
 }
