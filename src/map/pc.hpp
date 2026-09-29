@@ -17,6 +17,7 @@
 #include <custom/market_state.hpp>
 #include <custom/mail_state.hpp>
 #include <custom/pair_state.hpp>
+#include <custom/shop_state.hpp>
 #include <custom/multi_storage.hpp>
 
 #include "battleground.hpp"
@@ -917,6 +918,7 @@ public:
 	pn_market_state market;
 	pn_mail_state mail_companion;
 	pn_pair_state pair_commit;
+	pn_shop_state shop_commit;
 	pn_bank_state bank_ui; ///< One account bank operation, locked until SQL commit.
 	pn_storage::State multi_storage; ///< Tagged personal storage loads and atomic transfers.
 
@@ -1170,12 +1172,13 @@ extern JobDatabase job_db;
 #define pc_isidle_mer(sd)     ( (sd)->md && ( (sd)->chatID || (sd)->state.vending || (sd)->state.buyingstore || DIFF_TICK(last_tick, (sd)->idletime_mer) >= battle_config.mer_idle_no_share ) )
 #define pc_istrading(sd)      ( (sd)->npc_id || (sd)->state.vending || (sd)->state.buyingstore || (sd)->state.trading )
 static inline bool pc_transaction_pending(const map_session_data* sd) {
-	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending || sd->pair_commit.pending;
+	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending || sd->pair_commit.pending || sd->shop_commit.pending;
 }
 static inline bool pc_transaction_locked(const map_session_data* sd) {
 	return (sd->bank_ui.pending && !sd->bank_ui.applying) ||
 		(sd->mail_companion.pending && !sd->mail_companion.applying) ||
 		(sd->pair_commit.pending && !sd->pair_commit.applying) ||
+		(sd->shop_commit.pending && !sd->shop_commit.applying) ||
 		(sd->multi_storage.pending && !sd->multi_storage.applying);
 }
 static bool pc_cant_act2( map_session_data* sd ){
@@ -1468,6 +1471,26 @@ bool pc_memo(map_session_data* sd, int32 pos);
 int32 pc_memo_slots(map_session_data* sd, uint16 skill_lv);
 
 char pc_checkadditem( const map_session_data* sd, t_itemid nameid, int32 amount );
+// Shop outputs are plain items; match the same stack metadata as pc_additem.
+char pc_checkadditem_plain( const map_session_data* sd, t_itemid nameid, int32 amount );
+
+// Defers script-capable item side effects until a synchronous delivery batch
+// ends. This is not inventory/payment rollback or an asynchronous transaction.
+// Nested scopes share the outer queue. Ordinary item operations are unchanged.
+class PcItemDeliveryScope {
+public:
+	explicit PcItemDeliveryScope(map_session_data& sd);
+	~PcItemDeliveryScope();
+	PcItemDeliveryScope(const PcItemDeliveryScope&) = delete;
+	PcItemDeliveryScope& operator=(const PcItemDeliveryScope&) = delete;
+	void added(int16 index, const item_data& data);
+	void refresh_questinfo();
+private:
+	struct Addition { int16 index; t_itemid nameid; uint64 unique_id; uint32 equip; uint32 value_sell; };
+	map_session_data& sd_;
+	bool owner_ = false, refresh_ = false;
+	std::vector<Addition> additions_;
+};
 uint8 pc_inventoryblank( const map_session_data* sd );
 int16 pc_search_inventory( const map_session_data* sd, t_itemid nameid);
 char pc_payzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uint32 log_charid = 0);

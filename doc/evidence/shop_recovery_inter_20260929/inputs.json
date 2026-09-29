@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "exit_code": 0,
+  "input_hashes": {
+    "tools/ci/shop_recovery_inter_test.py": "33e9f625801ded4a0c1be72211f2b43a1c86025858915a7f3eb40ff0a133b57e",
+    "tools/ci/shop_recovery_inter_test.cpp": "d35e79770a33ec01edf55ae608318773b87d3e0176540a6a3a7c13b32942d501",
+    "src/custom/shop_inter.inc": "2a0d988fdb51ab5db96695af728a3c24c547bc69fe7e291ef9d28e13f409f3ae",
+    "src/custom/shop_state.hpp": "9929bb3bbafeed81873f5117e76fa509a570befc4af24a5e249cd8f11833a1a1",
+    "src/custom/shop_commit.hpp": "8ebe314ae18edf471dc3b41f1f8e684045d7ec9e6debfebb044a9727e03d5f0a"
+  },
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "4g",
+    "--mount",
+    "type=bind,src=/app/pn-transaction-audit-20260929/candidate,dst=/rathena",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-w",
+    "/rathena",
+    "--entrypoint",
+    "python3",
+    "pn-bank-validation:20260929",
+    "tools/ci/shop_recovery_inter_test.py"
+  ]
+}

@@ -1,0 +1,39 @@
+[Status]: Memory manager initialised: log/shop-delivery-audit.leaks
+[Status]: Loading 'db/const.yml'...[Status]: Loading '6' entries in 'db/const.yml'
+[Status]: Done reading '6' entries in 'db/const.yml'
+[Status]: Loading 'db/import/const.yml'...[Status]: Loading '3' entries in 'db/import/const.yml'
+[Status]: Done reading '3' entries in 'db/import/const.yml'
+[Status]: Loading 'db/import/zero_cell_const.yml'...[Status]: Loading '2' entries in 'db/import/zero_cell_const.yml'
+[Status]: Done reading '2' entries in 'db/import/zero_cell_const.yml'
+DELIVERY mode=0 success=1 balance=9800 first=1 second=1 filled=0 PASS
+DELIVERY mode=1 success=1 balance=9800 first=1 second=1 filled=0 PASS
+DELIVERY mode=2 success=1 balance=9800 first=1 second=1 filled=0 PASS
+DELIVERY mode=3 success=1 balance=9800 first=1 second=1 filled=0 PASS
+DELIVERY mode=4 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=5 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=6 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=7 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=8 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=9 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=10 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=11 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=12 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=13 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=14 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=15 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=16 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=17 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=18 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=19 success=0 balance=10000 first=1 second=0 filled=0 PASS
+DELIVERY mode=20 success=1 balance=9900 first=2 second=0 filled=0 PASS
+DELIVERY mode=21 success=1 balance=9900 first=2 second=0 filled=0 PASS
+DELIVERY mode=22 success=1 balance=9900 first=2 second=0 filled=0 PASS
+DELIVERY mode=23 success=1 balance=9900 first=2 second=0 filled=0 PASS
+SCOPE mode=0 PASS
+SCOPE mode=1 PASS
+SCOPE mode=2 PASS
+SCOPE mode=3 PASS
+AUTOEQUIP batched=0 PASS
+AUTOEQUIP batched=1 PASS
+SHOP_DELIVERY cases=30 failures=0
+[Info]: Memory manager: No memory leaks found.

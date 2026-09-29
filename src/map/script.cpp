@@ -79,6 +79,16 @@ static map_session_data* dummy_sd;
 
 static bool script_rid2sd_( struct script_state *st, map_session_data** sd, const char *func );
 
+// Explicit cross-player script targets must not mutate a pending immutable
+// purchase snapshot. Scripts attached to the buyer are deferred below.
+static bool script_shop_target(map_session_data** sd) {
+	if (*sd && (*sd)->shop_commit.pending && !(*sd)->shop_commit.applying) {
+		*sd = nullptr;
+		return false;
+	}
+	return true;
+}
+
 /**
  * Get `sd` from a account id in `loc` param instead of attached rid
  * @param st Script
@@ -93,7 +103,7 @@ static bool script_accid2sd_(struct script_state *st, uint8 loc, map_session_dat
 			ShowError("%s: Player with account id '%d' is not found.\n", func, id_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -114,7 +124,7 @@ static bool script_charid2sd_(struct script_state *st, uint8 loc, map_session_da
 			ShowError("%s: Player with char id '%d' is not found.\n", func, id_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -135,7 +145,7 @@ static bool script_nick2sd_(struct script_state *st, uint8 loc, map_session_data
 			ShowError("%s: Player with nick '%s' is not found.\n", func, name_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -156,7 +166,7 @@ static bool script_mapid2sd_(struct script_state *st, uint8 loc, map_session_dat
 			ShowError("%s: Player with map id '%d' is not found.\n", func, id_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -2667,7 +2677,7 @@ static bool script_rid2sd_( struct script_state *st, map_session_data** sd, cons
 	*sd = map_id2sd( st->rid );
 
 	if( *sd ){
-		return true;
+		return script_shop_target(sd);
 	}else{
 		ShowError("%s: fatal error ! player not attached!\n",func);
 		script_reportfunc(st);
@@ -4382,6 +4392,13 @@ void run_script_main(struct script_state *st)
 	struct script_stack *stack = st->stack;
 
 	script_attach_state(st);
+	// Keep the script's stack/position and resume once the receipt resolves.
+	// This also handles timer scripts that directly change item metadata.
+	sd = map_id2sd(st->rid);
+	if (sd && sd->shop_commit.pending && st->state != END) {
+		st->sleep.tick = 100;
+		goto shop_script_deferred;
+	}
 
 	if(st->state == RERUNLINE) {
 		run_func(st);
@@ -4391,6 +4408,12 @@ void run_script_main(struct script_state *st)
 		st->state = RUN;
 
 	while(st->state == RUN) {
+		// attachrid/addrid may change the target during this execution.
+		sd = map_id2sd(st->rid);
+		if (sd && sd->shop_commit.pending) {
+			st->sleep.tick = 100;
+			break;
+		}
 		enum c_op c = get_com(st->script->script_buf,&st->pos);
 		switch(c){
 		case C_EOL:
@@ -4477,6 +4500,7 @@ void run_script_main(struct script_state *st)
 		}
 	}
 
+shop_script_deferred:
 	if(st->sleep.tick > 0) {
 		//Restore previous script
 		script_detach_state(st, false);

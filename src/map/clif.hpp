@@ -197,8 +197,14 @@ enum class e_purchase_result : uint8{
 	PURCHASE_FAIL_STOCK_EMPTY,
 	PURCHASE_FAIL_GOODS,
 	// End unknown names
+	PURCHASE_PENDING = 0xfe, // Internal only: the durable purchase ACK responds later.
 	PURCHASE_FAIL_ADD = 0xff,
 };
+namespace pn_shop { struct Commit; struct Event; }
+void clif_shop_commit_result(map_session_data& sd,const pn_shop::Commit& request,const std::vector<pn_shop::Event>& events,bool committed);
+struct s_npc_buy_list;
+void clif_npc_market_purchase_ack(map_session_data& sd,e_purchase_result res,std::vector<s_npc_buy_list>& list);
+void clif_npc_buy_result(map_session_data* sd,e_purchase_result result);
 
 #define packet_len(cmd) packet_db[cmd].len
 extern struct s_packet_db packet_db[MAX_PACKET_DB+1];

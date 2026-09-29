@@ -23,6 +23,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 TESTS = (
+    'shop_planner_test.py', 'shop_recovery_inter_test.py',
     'interserver_reconnect_test.py',
     'bank_core_test.py',
     'bank_service_test.py',
@@ -57,6 +58,7 @@ TESTS = (
     'instance_combat_rules_test.py',
 )
 FULL_TESTS = (
+    'shop_transaction_native_test.py', 'shop_delivery_native_test.py',
     'npc_audit_fashion_test.py', 'chapter1_protection_test.py', 'instance_entry_native_test.py',
     'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
     'mob_matk_range_test.py', 'immortal_instance_test.py',

@@ -46,7 +46,7 @@ static const int32 packet_len_table[] = {
 	-1, 7,-1, 7, 14, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x3860  Quests [Kevin] [Inkfish] / Achievements [Aleos]
 	-1, 3, 3, 0,  0, 0, 0, 0,  0, 0, 0, 0, -1, 3,  3, 0, //0x3870  Mercenaries [Zephyrus] / Elemental [pakpil]
 	12,-1, 7, 3,  0, 0, 0, 0,  0, 0,-1, 9, -1,19, 35,-1, //0x3880  Pet System,  Storages
-	-1,-1, 7, 3, 38,38,38,54,  0, 0, 0, 0,  0, 0,  0, 0, //0x3890  Homunculus [albator]
+	-1,-1, 7, 3, 38,38,38,54, 38, 0, 0, 0,  0, 0,  0, 0, //0x3890  Homunculus [albator]
 	-1,-1, 8, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x38A0  Clans
 };
 
@@ -3733,6 +3733,7 @@ int32 intif_clan_requestclans(){
 #include <custom/mail_inter.inc>
 #include <custom/bank_sweep_inter.inc>
 #include <custom/pair_inter.inc>
+#include <custom/shop_inter.inc>
 #include <custom/multi_storage_inter.inc>
 
 void intif_parse_clans( int32 fd ){
@@ -3938,6 +3939,7 @@ int32 intif_parse(int32 fd)
 	case 0x3895: intif_parse_MailCompanionCommitted(fd); break;
 	case 0x3897: intif_parse_BankSweepCommitted(fd); break;
 	case 0x3896: intif_parse_PairCommitted(fd); break;
+	case 0x3898: intif_parse_ShopCommitted(fd); break;
 	case 0x388c:	intif_parse_StorageInfo_recv(fd); break;
 
 	// Homunculus System

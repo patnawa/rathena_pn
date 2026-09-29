@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "cashshop.hpp"
+#include <custom/shop_state.hpp>
 
 #include <cstdlib> // atoi
 #include <cstring> // memset
@@ -255,6 +256,7 @@ static TIMER_FUNC(sale_start_timer){
 }
 
 enum e_sale_add_result sale_add_item( t_itemid nameid, int32 count, time_t from, time_t to ){
+	if(pn_shop_stock_busy())return SALE_ADD_FAILED;
 	// Check if the item exists in the sales tab
 	if( cash_shop_db.findItemInTab( CASHSHOP_TAB_SALE, nameid ) == nullptr ){
 		return SALE_ADD_FAILED;
@@ -300,6 +302,7 @@ enum e_sale_add_result sale_add_item( t_itemid nameid, int32 count, time_t from,
 }
 
 bool sale_remove_item( t_itemid nameid ){
+	if(pn_shop_stock_busy())return false;
 	struct sale_item_data* sale_item;
 	int32 i;
 
@@ -439,14 +442,14 @@ static void cashshop_read_db( void ){
  * @return true: success, false: fail
  */
 bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const PACKET_CZ_SE_PC_BUY_CASHITEM_LIST_sub* item_list ){
-	uint32 totalcash = 0;
-	uint32 totalweight = 0;
+	uint64 totalcash = 0;
+	uint64 totalweight = 0;
 	int32 i,new_;
 
-	if( sd == nullptr || item_list == nullptr ){
+	if( sd == nullptr || item_list == nullptr || n <= 0 || n > MAX_INVENTORY ){
 		clif_cashshop_result( sd, 0, CASHSHOP_RESULT_ERROR_UNKNOWN );
 		return false;
-	}else if( sd->state.trading ){
+	}else if( sd->state.trading || pc_transaction_locked( sd ) ){
 		clif_cashshop_result( sd, 0, CASHSHOP_RESULT_ERROR_PC_STATE );
 		return false;
 	}
@@ -457,6 +460,13 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 		t_itemid nameid = item_list[i].itemId;
 		uint32 quantity = item_list[i].amount;
 		uint16 tab = item_list[i].tab;
+		// Reserve each output stack once, including the same item in two tabs.
+		for( int32 previous = 0; previous < i; ++previous ){
+			if( item_list[previous].itemId == nameid ){
+				clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_OVER_PRODUCT_TOTAL_CNT );
+				return false;
+			}
+		}
 
 		if( tab >= CASHSHOP_TAB_MAX ){
 			clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_UNKNOWN );
@@ -478,7 +488,7 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 			return false;
 		}
 
-		if( quantity > 99 ){
+		if( quantity == 0 || quantity > 99 ){
 			// Client blocks buying more than 99 items of the same type at the same time, this means someone forged a packet with a higher quantity
 			clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_UNKNOWN );
 			return false;
@@ -507,7 +517,7 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 #endif
 		}
 
-		switch( pc_checkadditem( sd, nameid, quantity ) ){
+		switch( pc_checkadditem_plain( sd, nameid, quantity ) ){
 			case CHKADDITEM_EXIST:
 				break;
 
@@ -520,8 +530,14 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 				return false;
 		}
 
-		totalcash += cash_item->price * quantity;
-		totalweight += itemdb_weight( nameid ) * quantity;
+		totalcash += static_cast<uint64>( cash_item->price ) * quantity;
+		totalweight += static_cast<uint64>( itemdb_weight( nameid ) ) * quantity;
+	}
+
+	// pc_paycash accepts signed 32-bit values; reject before narrowing.
+	if( totalcash > INT32_MAX || kafrapoints > INT32_MAX ){
+		clif_cashshop_result( sd, 0, CASHSHOP_RESULT_ERROR_SHORTTAGE_CASH );
+		return false;
 	}
 
 	if( ( totalweight + sd->weight ) > sd->max_weight ){
@@ -532,7 +548,31 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 		return false;
 	}
 
-	if(pc_paycash( sd, totalcash, kafrapoints, LOG_TYPE_CASH ) <= 0){
+#if PACKETVER_SUPPORTS_SALES
+	bool has_sale=false;
+	for(int j=0;j<n;++j)has_sale|=item_list[j].tab==CASHSHOP_TAB_SALE;
+	if(has_sale) {
+		if(strcmp(sales_table,"sales"))return false;
+		auto request=pn_shop_request(*sd,pn_shop::Sale);
+		const int64 preferred=std::min<int64>(kafrapoints,std::min<int64>(totalcash,MAX_KAFRAPOINT));
+		request->kafra_after-=preferred;request->cash_after-=static_cast<int64>(totalcash)-preferred;
+		std::vector<pn_shop::Grant> grants;
+		for(int j=0;j<n;++j) {
+			const auto& entry=item_list[j];grants.push_back({entry.itemId,entry.amount,0});
+			if(entry.tab==CASHSHOP_TAB_SALE) {
+				auto* sale=sale_find_item(entry.itemId,true);
+				if(!sale || sale->amount<entry.amount)return false;
+				auto& stock=request->stocks[request->stock_count++];stock.key=entry.itemId;
+				stock.before=sale->amount;stock.after=sale->amount-entry.amount;
+				stock.sale_start=sale->start;stock.sale_end=sale->end;
+			}
+		}
+		if(pn_shop_begin(*sd,request,grants))return true; // The durable ACK sends results.
+		clif_cashshop_result(sd,0,CASHSHOP_RESULT_ERROR_UNKNOWN);return false;
+	}
+#endif
+	PcItemDeliveryScope delivery(*sd);
+	if(pc_paycash( sd, static_cast<int32>( totalcash ), static_cast<int32>( kafrapoints ), LOG_TYPE_CASH ) <= 0){
 		clif_cashshop_result( sd, 0, CASHSHOP_RESULT_ERROR_SHORTTAGE_CASH );
 		return false;
 	}
@@ -669,4 +709,36 @@ void do_final_cashshop( void ){
  */
 void do_init_cashshop( void ){
 	cashshop_read_db();
+}
+
+// Read durable stock after either terminal receipt; never repeat its SQL write.
+bool pn_shop_sale_refresh(const pn_shop::Commit& request) {
+#if PACKETVER_SUPPORTS_SALES
+	for(uint32_t i=0;i<request.stock_count;++i) {
+		const auto& stock=request.stocks[i];
+		if(Sql_Query(mmysql_handle,"SELECT `amount`, UNIX_TIMESTAMP(`start`), UNIX_TIMESTAMP(`end`) FROM `sales` WHERE `nameid`=%u",stock.key)!=SQL_SUCCESS)return false;
+		const int row=Sql_NextRow(mmysql_handle);
+		int64 amount=0,start=0,end=0;
+		if(row==SQL_SUCCESS) {
+			char* value=nullptr;
+			if(Sql_GetData(mmysql_handle,0,&value,nullptr)!=SQL_SUCCESS || !value){Sql_FreeResult(mmysql_handle);return false;}
+			amount=strtoll(value,nullptr,10);
+			if(Sql_GetData(mmysql_handle,1,&value,nullptr)!=SQL_SUCCESS || !value){Sql_FreeResult(mmysql_handle);return false;}
+			start=strtoll(value,nullptr,10);
+			if(Sql_GetData(mmysql_handle,2,&value,nullptr)!=SQL_SUCCESS || !value){Sql_FreeResult(mmysql_handle);return false;}
+			end=strtoll(value,nullptr,10);
+		}else if(row!=SQL_NO_DATA){Sql_FreeResult(mmysql_handle);return false;}
+		Sql_FreeResult(mmysql_handle);
+		if(amount<0 || amount>UINT32_MAX)return false;
+		auto* sale=sale_find_item(stock.key,false);
+		if(!sale)continue;
+		// A reload may have replaced the listing; don't alter another sale period.
+		if(row==SQL_SUCCESS && (sale->start!=start || sale->end!=end))continue;
+		if(row==SQL_NO_DATA && (sale->start!=stock.sale_start || sale->end!=stock.sale_end))continue;
+		sale->amount=static_cast<uint32>(amount);
+		clif_sale_amount(sale,nullptr,ALL_CLIENT);
+		if(!amount)clif_sale_end(sale,nullptr,ALL_CLIENT);
+	}
+#endif
+	return true;
 }

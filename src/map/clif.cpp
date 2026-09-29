@@ -1,3 +1,4 @@
+#include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // Copyright (c) Hercules Dev Team - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
@@ -2424,6 +2425,44 @@ void clif_npc_market_purchase_ack( map_session_data& sd, e_purchase_result res, 
 }
 
 
+// Durable results use the immutable plan, never a reloaded/closed NPC pointer.
+void clif_shop_commit_result(map_session_data& sd,const pn_shop::Commit& request,
+	const std::vector<pn_shop::Event>& events,bool committed) {
+	if(request.kind==pn_shop::Barter) {
+		clif_npc_buy_result(&sd,committed?e_purchase_result::PURCHASE_SUCCEED:e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED);
+		return;
+	}
+	if(request.kind==pn_shop::Sale) {
+		if(!committed){clif_cashshop_result(&sd,0,CASHSHOP_RESULT_ERROR_UNKNOWN);return;}
+		std::vector<uint32> sent;
+		for(const auto& event:events)if(std::find(sent.begin(),sent.end(),event.nameid)==sent.end()) {
+			sent.push_back(event.nameid);clif_cashshop_result(&sd,event.nameid,CASHSHOP_RESULT_SUCCESS);
+		}
+		return;
+	}
+#if PACKETVER >= 20131223
+	auto* p=reinterpret_cast<PACKET_ZC_NPC_MARKET_PURCHASE_RESULT*>(packet_buffer);
+	p->PacketType=HEADER_ZC_NPC_MARKET_PURCHASE_RESULT;p->PacketLength=sizeof(*p);
+#if PACKETVER_MAIN_NUM >= 20190807 || PACKETVER_RE_NUM >= 20190807 || PACKETVER_ZERO_NUM >= 20190814
+	p->result=committed?0:-1;
+#else
+	p->result=committed?1:0;
+#endif
+	if(committed) {
+		std::vector<pn_shop::Event> rows;
+		for(const auto& event:events) {
+			auto found=std::find_if(rows.begin(),rows.end(),[&](const pn_shop::Event& e){return e.nameid==event.nameid;});
+			if(found==rows.end())rows.push_back(event);else found->amount+=event.amount;
+		}
+		for(size_t i=0;i<rows.size();++i) {
+			p->list[i].ITID=client_nameid(rows[i].nameid);p->list[i].qty=rows[i].amount;p->list[i].price=rows[i].price;
+			p->PacketLength+=static_cast<decltype(p->PacketLength)>(sizeof(p->list[0]));
+		}
+	}
+	clif_send(p,p->PacketLength,&sd,SELF);
+#endif
+}
+
 /// Purchase item from Market shop.
 /// 0x9d6 <len>.W { <name id>.W <qty>.L } (CZ_NPC_MARKET_PURCHASE)
 void clif_parse_NPCMarketPurchase(int32 fd, map_session_data *sd) {
@@ -2454,7 +2493,7 @@ void clif_parse_NPCMarketPurchase(int32 fd, map_session_data *sd) {
 	}
 
 	e_purchase_result res = npc_buylist( sd, items );
-	clif_npc_market_purchase_ack( *sd, res, items );
+	if(res!=e_purchase_result::PURCHASE_PENDING)clif_npc_market_purchase_ack( *sd, res, items );
 #endif
 }
 
@@ -12344,7 +12383,7 @@ void clif_parse_NpcBuyListSend( int32 fd, map_session_data* sd ){
 	}
 
 	sd->npc_shopid = 0; //Clear shop data.
-	clif_npc_buy_result(sd, result);
+	if(result!=e_purchase_result::PURCHASE_PENDING)clif_npc_buy_result(sd, result);
 }
 
 
@@ -23404,7 +23443,8 @@ void clif_parse_barter_buy( int32 fd, map_session_data* sd ){
 		purchases.push_back( purchase );
 	}
 
-	clif_npc_buy_result( sd, npc_barter_purchase( *sd, barter, purchases )  );
+	const auto result=npc_barter_purchase(*sd,barter,purchases);
+	if(result!=e_purchase_result::PURCHASE_PENDING)clif_npc_buy_result(sd,result);
 #endif
 }
 
@@ -23574,7 +23614,8 @@ void clif_parse_barter_extended_buy( int32 fd, map_session_data* sd ){
 		purchases.push_back( purchase );
 	}
 
-	clif_npc_buy_result( sd, npc_barter_purchase( *sd, barter, purchases )  );
+	const auto result=npc_barter_purchase(*sd,barter,purchases);
+	if(result!=e_purchase_result::PURCHASE_PENDING)clif_npc_buy_result(sd,result);
 #endif
 }
 

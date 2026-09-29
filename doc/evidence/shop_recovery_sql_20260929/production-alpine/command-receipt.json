@@ -1,0 +1,16 @@
+{
+  "rc": 0,
+  "evidence": "/app/pn-shop-recovery-20260929/sql-proof-alpine-1790683964078727600",
+  "command": [
+    "python3",
+    "/app/pn-shop-recovery-20260929/candidate/tools/ci/shop_recovery_sql_test.py",
+    "--candidate",
+    "/app/pn-shop-recovery-20260929/candidate",
+    "--evidence",
+    "/app/pn-shop-recovery-20260929/sql-proof-alpine-1790683964078727600",
+    "--image",
+    "improvement-validation:20260914",
+    "--database-image",
+    "mariadb@sha256:dd9b303aed4f4890ed09f766d8ca9ddfd176c0c6f6267feff53b3192ec65a979"
+  ]
+}

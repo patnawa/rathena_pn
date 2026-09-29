@@ -1,0 +1,3 @@
+[Status]: Memory manager initialised: log/(null).leaks
+[SQL]: DB error - Deadlock found when trying to get lock; try restarting transaction
+SHOP_RACE_OUTCOME account=990014 outcome=2 retries=1

@@ -2024,6 +2024,7 @@ int32 skill_counter_additional_effect (block_list* src, block_list *bl, uint16 s
 --------------------------------------------------------------------------*/
 int32 skill_break_equip(block_list *src, block_list *bl, uint16 where, int32 rate, int32 flag)
 {
+	if (auto* pending = BL_CAST(BL_PC, bl); pending && pending->shop_commit.pending) return 0;
 	status_change *src_sc = status_get_sc(src);
 
 	// Grant player skills/items the ability to "break" non-player equipment.
