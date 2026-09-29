@@ -1,5 +1,8 @@
 # Durable stock purchases — 29 September 2026
 
+**Live:** deployed at 19:23 Bangkok with seven healthy services and unchanged
+existing financial data. See the [deployment receipt](shop_purchase_recovery_deployment_20260929.md).
+
 Market, limited-stock barter and cash-sale carts now commit their complete
 inventory, payment, stock and receipt in one character-server transaction.
 Previously a failed stock write could leave a paid barter with missing outputs,

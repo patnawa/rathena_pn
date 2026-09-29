@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "case": "success",
+      "passed": true
+    },
+    {
+      "case": "map_stop_running",
+      "passed": true
+    },
+    {
+      "case": "char_stop_running",
+      "passed": true
+    },
+    {
+      "case": "char_stop_stopped",
+      "passed": true
+    },
+    {
+      "case": "migration_failure",
+      "passed": true
+    },
+    {
+      "case": "partial_install",
+      "passed": true
+    },
+    {
+      "case": "char_start_failure",
+      "passed": true
+    },
+    {
+      "case": "map_start_failure",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "name": "shop_transaction_native_test",
+      "passed": true,
+      "sanitizer": "UBSan"
+    },
+    {
+      "name": "shop_delivery_native_test",
+      "passed": true,
+      "sanitizer": "UBSan"
+    },
+    {
+      "name": "shop_planner_test",
+      "passed": true,
+      "sanitizer": "UBSan"
+    },
+    {
+      "name": "shop_recovery_inter_test",
+      "passed": true,
+      "sanitizer": "UBSan"
+    }
+  ],
+  "production_database_accessed": false,
+  "binaries": {
+    "map-server": "d640fecb9be3bf3ad6268953c747487fa7c065b14b936394bdb562b010b36b5d",
+    "char-server": "fdffdc0bab08c9bd6f27545216374ba8d4dcb66f8b50c0574faebeaf9e320a7b"
+  },
+  "directory": "/app/pn-shop-recovery-20260929/validation-dd5b6b24",
+  "startup": [
+    {
+      "binary": "char-server",
+      "exit": 0,
+      "errors": [],
+      "ready": true
+    },
+    {
+      "binary": "map-server",
+      "exit": 0,
+      "errors": [],
+      "ready": true
+    }
+  ]
+}

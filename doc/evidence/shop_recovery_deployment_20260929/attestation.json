@@ -1,0 +1,102 @@
+{
+  "passed": true,
+  "native_inputs_checked": 3357,
+  "changed": [
+    "src/custom/shop_commit.hpp",
+    "src/custom/shop_inter.inc",
+    "src/custom/shop_sql.inc",
+    "src/custom/shop_state.hpp",
+    "src/custom/shop_map.inc",
+    "src/map/cashshop.cpp",
+    "src/map/clif.hpp",
+    "src/map/skill.cpp",
+    "src/map/script.cpp",
+    "src/map/clif.cpp",
+    "src/map/pc.cpp",
+    "src/map/pc.hpp",
+    "src/map/intif.cpp",
+    "src/map/npc.cpp",
+    "src/char/inter.cpp",
+    "src/char/int_storage.cpp"
+  ],
+  "npc_db_preserved": true,
+  "sql_proof": "/app/pn-shop-recovery-20260929/sql-proof-alpine-1790683964078727600/report.json",
+  "files": {
+    "src/map/pc.cpp": {
+      "before": "4888228f9791b69ac333b118436e2dc843c7de622fe17cd736040986e347e167",
+      "after": "d78e1da68d9929055a8481d4b5e2dc8e3eb677f1729c82325691ef8264263398"
+    },
+    "src/map/pc.hpp": {
+      "before": "5dc0c403611907a33bffdaeba9b87a4f3468861a1d13af8cc9caa3d312651e10",
+      "after": "15f0fe3c3be95bdee24cb47da1803dfb4f7a00bad4b41948adb71a5632827c80"
+    },
+    "src/map/npc.cpp": {
+      "before": "236772467af7e7e044ebd9789d790e7c2ae75e78e9a6c40615abd06400043566",
+      "after": "b3876a062c6f03ffb30320ab6b4393eec7cb3b7980588c789372dce1ab848f8b"
+    },
+    "src/map/cashshop.cpp": {
+      "before": "70ac44339c2ec17d3c7f2208dd09aedc3556af7ad43e94293b7902c17dac9625",
+      "after": "c18d535077e533bb9a7876d45d26b26e560afef2827011ce61bf02a650f37ee1"
+    },
+    "src/map/clif.cpp": {
+      "before": "00fe49e8a95cea8e3c5f97f7bc8eeb89e2801e6075c811f27a7e05daa644cb66",
+      "after": "e0bc20b093554d61b43d8069e3e1e4e334d1fa5045d85b77465b35374521a90d"
+    },
+    "src/map/clif.hpp": {
+      "before": "99c60193261842b8b747a1c17e28a1cc744889eb3d3b42879a92136890737ca0",
+      "after": "6a32d1b9de6694fc1669d7a3e1bfe9b3c49ed2d3b7b6cf2ac77299ef5a2eeed1"
+    },
+    "src/map/intif.cpp": {
+      "before": "668233facd043230ab12c8d24ad3271177ffc4f0fbdd7a5724d1d4644abb830d",
+      "after": "fc4d2645d0cff6c17a99b7b3b71a56a20c33b2cedac0baa0d8862763f66e464e"
+    },
+    "src/map/skill.cpp": {
+      "before": "94cd954cf449b059361a91a923c4320b7a10b24032db77b1a40c3558bb073d21",
+      "after": "83f05505bed695362157c26be8a149130a260b9ce684aa2719a6a7e6bc50aabc"
+    },
+    "src/char/int_storage.cpp": {
+      "before": "c323d66376aeb337dc9c7435b3223bf4dfc35aac9e8f432cc8675b5fd7427469",
+      "after": "3d91a5c162d7ad46afbad63e8fb5b391c98332b9524c7ec67d4c8974cb389779"
+    },
+    "src/char/inter.cpp": {
+      "before": "81cd9e6885310bdeb13cbf5c88b2f1a106ea143699ceec5c1862020c38979be5",
+      "after": "8c83d7956a14060148eaca363d7b7dfb1c7947a60f126f3b07c83d21534a7a2c"
+    },
+    "src/custom/shop_commit.hpp": {
+      "before": null,
+      "after": "8ebe314ae18edf471dc3b41f1f8e684045d7ec9e6debfebb044a9727e03d5f0a"
+    },
+    "src/custom/shop_state.hpp": {
+      "before": null,
+      "after": "9929bb3bbafeed81873f5117e76fa509a570befc4af24a5e249cd8f11833a1a1"
+    },
+    "src/custom/shop_map.inc": {
+      "before": null,
+      "after": "f67d21859ad91c505cb0d9bbd1cc4c94ae8e07b20f018b411b0391f41d9f3033"
+    },
+    "src/custom/shop_sql.inc": {
+      "before": null,
+      "after": "d59ec0457322d63c7cb6644ea959f30d838ffbf5979e7ddbd7f74afe1963acf7"
+    },
+    "src/custom/shop_inter.inc": {
+      "before": null,
+      "after": "2a0d988fdb51ab5db96695af728a3c24c547bc69fe7e291ef9d28e13f409f3ae"
+    },
+    "sql-files/upgrades/upgrade_20260929_shop_purchase.sql": {
+      "before": null,
+      "after": "cd666c02945486cb66c6bbb73589515639de6d101e928a67ed43a9e4e5f2f6fc"
+    },
+    "src/map/script.cpp": {
+      "before": "bbd662dceb0fa95f27dc612c2a080846de905c3b34b7324bee3f79539b0fc635",
+      "after": "55785ecb4edaf0beace6b5dd26e77ca32b6833afa09c6530703ab7c9fc1788d0"
+    },
+    "map-server": {
+      "before": "d20f8e4a713d017d4b64267593cad4fd2b55c943955e87b49b0f14406437cbda",
+      "after": "d640fecb9be3bf3ad6268953c747487fa7c065b14b936394bdb562b010b36b5d"
+    },
+    "char-server": {
+      "before": "d547eba66db7f2b8156f24284a4fe407833164c6ffe267a41002333d25a5f75b",
+      "after": "fdffdc0bab08c9bd6f27545216374ba8d4dcb66f8b50c0574faebeaf9e320a7b"
+    }
+  }
+}
