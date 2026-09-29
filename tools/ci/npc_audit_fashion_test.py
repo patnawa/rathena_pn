@@ -67,7 +67,7 @@ def run(build, source):
                                   '3rdparty/rapidyaml/obj/ryml.a')]
     if not support or any(not path.is_file() for path in libraries):
         raise SystemExit('Build local Linux map-server objects first')
-    wrappers = (*WRAPPERS, '_Z14pc_setregistryP16map_session_datall',
+    wrappers = (*WRAPPERS, '_Z16clif_goldpc_infoR16map_session_data', '_Z14pc_setregistryP16map_session_datall',
                 '_Z10pc_delitemP16map_session_dataiiis15e_log_pick_type',
                 '_Z16clif_scriptinputR16map_session_dataj',
                 '_Z10pc_additemP16map_session_dataP4itemi15e_log_pick_typeb')
@@ -91,8 +91,8 @@ def run(build, source):
     # proof again, so coverage must reject all three broken production variants.
     current = source.read_text()
     mutations = [
-        ('gold-menu', 'Exchange Gold Points (1 for 1)', 'Exchange Gold Points 1:1',
-         'Gold menu exposes exactly the three routed actions'),
+        ('gold-menu', 'Convert Gold Points to Fashion Points', 'Convert Gold Points 1:1',
+         'Gold menu exposes exactly the four routed actions'),
         ('recovery-menu', '"Slot " + (.@slot+1) + " - "', '"Slot " + (.@slot+1) + ": "',
          'exactly one enchant option per recoverable slot'),
         ('costume-debit', 'if (!delitemidx(.@idx,.@amount))',

@@ -550,3 +550,44 @@ Footer:
 #    Gender: Female
 #  - Id: 5735
 #    Gender: Female
+
+Body:
+
+# Cash consumable repair: official 30-minute boosters, removed on death.
+# 1025 = remove on death + refresh existing effect; duplicates do not stack.
+  - Id: 102803
+    Script: |
+      bonus_script "{ bonus bPow,5; bonus bSta,5; bonus bWis,5; bonus bSpl,5; bonus bCon,5; bonus bCrt,5; bonus bPatk,10; bonus bSmatk,10; }",1800,1025;
+  - Id: 103273
+    Script: |
+      bonus_script "{ bonus bPow,5; bonus bSta,5; bonus bWis,5; bonus bSpl,5; bonus bCon,5; bonus bCrt,5; bonus bPatk,10; bonus bSmatk,10; }",1800,1025;
+  - Id: 102985
+    Script: |
+      bonus_script "{ bonus bFlee,50; bonus bAspd,1; bonus bSpeedRate,25; }",1800,1025;
+  - Id: 103272
+    Script: |
+      bonus_script "{ bonus bFlee,50; bonus bAspd,1; bonus bSpeedRate,25; }",1800,1025;
+
+# Keep unopened Kachua boxes when any possible reward cannot fit.
+  - Id: 23914
+    Type: Delayconsume
+    Script: |
+      if (!checkweightgroup(IG_MAIN_LUCKY_BOX)) {
+        dispbottom "Free inventory slots, weight capacity, and reward stack space first.";
+        end;
+      }
+      if (countitem(23914) < 1) end;
+      delitem 23914,1;
+      getgroupitem(IG_MAIN_LUCKY_BOX,true);
+
+# Keep unopened Kachua boxes when any possible reward cannot fit.
+  - Id: 102701
+    Type: Delayconsume
+    Script: |
+      if (!checkweightgroup(IG_MAIN_LUCKY_BOX_)) {
+        dispbottom "Free inventory slots, weight capacity, and reward stack space first.";
+        end;
+      }
+      if (countitem(102701) < 1) end;
+      delitem 102701,1;
+      getgroupitem(IG_MAIN_LUCKY_BOX_,true);

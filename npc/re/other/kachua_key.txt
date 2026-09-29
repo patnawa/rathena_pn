@@ -30,12 +30,12 @@ sec_in02,126,178,3	script	Kachua's Secret Box#bm	4_TREASURE_BOX,{
 				mes "Not enough " + mesitemlink( .@key$ ) + ".";
 				close;
 			} else {
-				if (checkweight(1201,1) == 0 || ((MaxWeight - Weight) * 100 / MaxWeight) < 10) {
-					mes "^4d4dffPlease make sure you have enough space in your inventory.^000000";
+				if (!checkweightgroup(IG_MAIN_LUCKY_BOX) || ((MaxWeight - Weight) * 100 / MaxWeight) < 10) {
+					mes "^4d4dffPlease free inventory slots, weight capacity, and room in reward stacks before opening.^000000";
 					close;
 				}
 				delitem(.@key$, 1);
-				consumeitem(.@box$);
+				getgroupitem(IG_MAIN_LUCKY_BOX,true);
 				mes .@boxname$ + " was opened!";
 				mes "Were you lucky?";
 				specialeffect2 EF_VALLENTINE;
@@ -55,16 +55,16 @@ sec_in02,126,178,3	script	Kachua's Secret Box#bm	4_TREASURE_BOX,{
 			} else {
 				for (.@i = 1; .@i <= 10; ++.@i) {
 					progressbar "4d4dff",2;
-					if (checkweight(1201,1) == 0 || ((MaxWeight - Weight) * 100 / MaxWeight) < 10) {
-						mes "^4d4dffPlease make sure you have enough space in your inventory.^000000";
+					if (!checkweightgroup(IG_MAIN_LUCKY_BOX) || ((MaxWeight - Weight) * 100 / MaxWeight) < 10) {
+						mes "^4d4dffPlease free inventory slots, weight capacity, and room in reward stacks before opening.^000000";
 						close;
 					}
 					if (countitem(.@key$) < 1) { // Custom check, just in case
 						close;
 					}
 					delitem(.@key$, 1);
-					consumeitem(.@box$);
-					dispbottom .@boxname$ + " was opened " + .@i + " times. Another one is being opened.",0xFFFFFF;
+					getgroupitem(IG_MAIN_LUCKY_BOX,true);
+					dispbottom .@boxname$ + " was opened " + .@i + " times. ",0xFFFFFF;
 					specialeffect2 EF_VALLENTINE;
 				}
 				mes .@boxname$ + " was opened 10 times!";

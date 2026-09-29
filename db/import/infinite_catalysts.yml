@@ -1,4 +1,4 @@
-# Independent implementation of MuhRO #243. Local IDs; no automatic economy grant.
+# PN infinite catalyst rentals. Local IDs; no automatic economy grant.
 Header:
   Type: ITEM_DB
   Version: 3

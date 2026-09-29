@@ -1,4 +1,4 @@
-// PN equivalent of MuhRO's market conveniences. PN @go 50 is Rudus;
+// PN market convenience services. PN @go 50 is Rudus;
 // the existing safe service-mall destination is @go 60 / @go mall.
 itemmall	mapflag	town
 itemmall	mapflag	nobranch

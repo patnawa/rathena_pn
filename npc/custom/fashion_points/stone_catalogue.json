@@ -1,7 +1,7 @@
 {
   "version": 1,
   "sources": {
-    "legacy": "MuhRO Fashion Points revision61305; retained366 mappings. See existing integration evidence.",
+    "legacy": "Fashion Points baseline revision61305; retained366 mappings. See existing integration evidence.",
     "functional-omissions": "doc/costume_stone_reference_20260928.md; official descriptions and effective server scripts.",
     "official-cosmetic": "Official September7 client item metadata; fourth-slot descriptions and rAthena enchant effects. See cosmetic reference.",
     "kro44": "doc/costume_box44_official_20260928.json; official September7 itemInfo; kRO Box44.",

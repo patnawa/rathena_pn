@@ -1,6 +1,6 @@
 # Fashion Points integration
 
-The original 366 MuhRO revision 61305 materials are retained, including the eight
+The original 366 revision 61305 materials are retained, including the eight
 Druid/Karnos/Alitea pairs enabled by the integrated class implementation.
 `stone_catalogue.json` is the reviewed mapping source. Run
 `python tools/ci/fashion_stone_catalogue.py --write` after changing it, and

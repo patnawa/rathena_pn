@@ -10999,10 +10999,13 @@ void clif_parse_LoadEndAck(int32 fd,map_session_data *sd)
 			npc_script_event( *sd, NPCE_LOGIN );
 		}
 
+		clif_goldpc_info(*sd);
+
 		// Set facing direction before check below to update client
 		if (battle_config.spawn_direction)
 			unit_setdir(sd, sd->status.body_direction, false);
 	} else {
+		clif_goldpc_info(*sd);
 		//For some reason the client "loses" these on warp/map-change.
 		clif_updatestatus(*sd,SP_STR);
 		clif_updatestatus(*sd,SP_AGI);
@@ -25116,6 +25119,25 @@ void clif_parse_itempackage_select( int32 fd, map_session_data* sd ){
 		return;
 	}
 
+	// Validate the complete selection before consuming its box. Reserve fresh
+	// slots conservatively because refinement, rental and random-option metadata
+	// can prevent an otherwise stackable reward from merging into existing items.
+	uint64 reward_weight = 0, reward_slots = 0;
+	bool fits = !group->items.empty();
+	for (const auto& entry : group->items) {
+		auto reward = item_db.find(entry.second->item_id);
+		if (!reward || entry.second->amount == 0 || entry.second->amount > MAX_AMOUNT) { fits = false; break; }
+		reward_weight += static_cast<uint64>(reward->weight) * entry.second->amount;
+		reward_slots += itemdb_isstackable(reward->nameid) && !entry.second->rentalhours ? 1 : entry.second->amount;
+		if (pc_checkadditem(sd, reward->nameid, entry.second->amount) == CHKADDITEM_OVERAMOUNT) fits = false;
+	}
+	const uint64 freed_slots = sd->inventory.u.items_inventory[index].amount == 1 ? 1 : 0;
+	const uint64 remaining_weight = sd->weight >= sd->inventory_data[index]->weight ? sd->weight - sd->inventory_data[index]->weight : 0;
+	if (!fits || reward_weight + remaining_weight > sd->max_weight || reward_slots > pc_inventoryblank(sd) + freed_slots) {
+		clif_displaymessage(sd->fd, "Free inventory slots, weight capacity, and reward stack space before opening this box.");
+		return;
+	}
+
 	if( pc_delitem( sd, index, 1, 0, 0, LOG_TYPE_PACKAGE ) != 0 ){
 		return;
 	}
@@ -25442,6 +25464,40 @@ void clif_macro_reporter_status(const map_session_data &sd, e_macro_report_statu
 	p.status = stype;
 
 	clif_send(&p, sizeof(p), &sd, SELF);
+#endif
+}
+
+// PN uses the existing account Gold balance and script clock; no second wallet.
+void clif_goldpc_info(map_session_data& sd) {
+#if PACKETVER >= 20140611
+	PACKET_ZC_GOLDPCCAFE_POINT p = {};
+	p.PacketType = HEADER_ZC_GOLDPCCAFE_POINT;
+	p.isActive = 1;
+	p.mode = 1;
+	p.point = static_cast<int32>(cap_value(pc_readaccountreg(&sd, add_str("#FP_Gold")), 0, 50));
+	const int64 deadline = pc_readreg(&sd, add_str("@FP_GoldNextAt"));
+	const int64 remaining = cap_value(deadline - static_cast<int64>(time(nullptr)), 0, 180);
+	// Native countdown is a 3600-second elapsed clock, even for shorter rewards.
+	p.playedTime = p.point >= 50 ? 3600 : static_cast<int32>(3600 - remaining);
+	clif_send(&p, sizeof(p), &sd, SELF);
+#endif
+}
+
+void clif_parse_goldpc_npc(int32 fd, map_session_data* sd) {
+#if PACKETVER >= 20140430
+	const auto* p = reinterpret_cast<const PACKET_CZ_DYNAMICNPC_CREATE_REQUEST*>(RFIFOP(fd, 0));
+	// Never allow the client to summon arbitrary service NPCs.
+	if (strncmp(p->name, "GOLDPCCAFE", sizeof(p->name)) != 0)
+		return;
+	if (pc_isdead(sd) || pc_cant_act(sd) || sd->npc_id || sd->state.autotrade)
+		return;
+	auto* nd = npc_name2id("Gold Point Manager#FP");
+	if (nd == nullptr) {
+		clif_dynamicnpc_result(*sd, DYNAMICNPC_RESULT_UNKNOWNNPC);
+		return;
+	}
+	if (npc_duplicate_npc_for_player(*nd, *sd) != nullptr)
+		clif_dynamicnpc_result(*sd, DYNAMICNPC_RESULT_SUCCESS);
 #endif
 }
 

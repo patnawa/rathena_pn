@@ -1,6 +1,7 @@
 // GPL-3.0-or-later. Appended to the existing isolated crown VM fixture helpers.
 // Production NPC bodies and their fashion mapping functions are parsed unchanged.
 // Persistence, inventory debit and outbound UI are explicit fixture boundaries.
+#include "map/npc.hpp"
 namespace {
 bool reject_debit=false;
 unsigned debit_calls=0;
@@ -72,10 +73,14 @@ extern "C" char fashion_debit(map_session_data* sd,int32 index,int32 amount,int3
 }
 extern "C" void fashion_input(map_session_data&,uint32) asm("__wrap__Z16clif_scriptinputR16map_session_dataj");
 extern "C" void fashion_input(map_session_data&,uint32){awaiting_amount=true;}
+extern "C" void fashion_gold_info(map_session_data&) asm("__wrap__Z16clif_goldpc_infoR16map_session_data");
+extern "C" void fashion_gold_info(map_session_data& sd){check(&sd==attached,"Gold icon refresh targets attached player");}
 extern "C" e_additem_result fashion_add(map_session_data*,item*,int32,e_log_pick_type,bool) asm("__wrap__Z10pc_additemP16map_session_dataP4itemi15e_log_pick_typeb");
 extern "C" e_additem_result fashion_add(map_session_data* sd,item* it,int32 amount,e_log_pick_type,bool){
     check(sd==attached&&amount>0,"delivery targets attached inventory with a positive amount");
-    if(reject_add)return ADDITEM_OVERAMOUNT;
+    // Simulate an acknowledged delivery with no inventory delta. Native hard
+    // failures end the script before its charge; this exercises its own guard.
+    if(reject_add)return ADDITEM_SUCCESS;
     // Match the stack identity fields used by pc_additem. Full inventory can
     // still accept a returned stone when a compatible permanent stack exists.
     for(int i=0;i<sd->status.inventory_slots;++i){
@@ -151,16 +156,40 @@ extern "C" int __wrap_main(int argc,char** argv) {
     auto* boxes=compile(body(source,"\tFashion Box Shop#FP\t"),"actual Fashion Box Shop");
     auto* enchanter=compile(body(read("npc/custom/fashion_points/FashionEnchant.txt"),"\tComplete Fashion Enchanter#FP\t"),"actual Fashion Enchanter");
 
-    for(int choice:{1,2,3,255}) {
+    for(int choice:{1,3,4,255}) {
         auto sd=fashion_player();Snapshot before;
         walk(gold,{choice});before.unchanged();
         check(menu_text.size()==1,"one Gold manager menu");
-        check(menu_text[0]=="Exchange Gold Points (1 for 1):About account scope:Leave","Gold menu exposes exactly the three routed actions");
-        check(says("login account")==(choice==2),"About reaches the account explanation only");
+        check(menu_text[0]=="Convert Gold Points to Fashion Points:Exchange style consumables (1 point each):View balances:Cancel","Gold menu exposes exactly the four routed actions");
+        check(says("login account")==(choice==3),"View balances reaches the account explanation only");
         check(says("You do not have any Gold Points")==(choice==1),"only Exchange enters the exchange flow");
         check(nums[add_str("#FP_Fashion")]==100&&!debit_calls,"informational/cancel paths never charge");
         finish_player();
     }
+
+    {
+        auto owner=fashion_player();map_session_data other;other.status.char_id=owner->status.char_id+1;
+        npc_data private_npc{};private_npc.dynamicnpc.owner_char_id=owner->status.char_id;
+        check(!npc_is_hidden_dynamicnpc(private_npc,*owner),"summoned manager is visible to its owner");
+        check(npc_is_hidden_dynamicnpc(private_npc,other),"summoned manager is hidden from another character");
+        finish_player();
+    }
+    for(int dye:{975,976,978,979,980,981,982,983}) {
+        item_fixture(dye,IT_ETC,0,("Dye "+std::to_string(dye)).c_str());
+        item_db.find(dye)->weight=10;
+    }
+    for(int kind=0;kind<5;++kind) {
+        auto sd=fashion_player();setnum("#FP_Gold",5);
+        reject_add=kind==1;
+        if(kind==2)setnum("#FP_Gold",0);
+        if(kind==4)sd->max_weight=0;
+        fashion_walk(gold,{2,1,kind==3?2:1});
+        check(count(975)==(kind==0?1:0),"style item delivered only when affordable and capacity allows");
+        check(nums[add_str("#FP_Gold")]==(kind==0?4:kind==2?0:5),"style delivery failure or cancellation never spends Gold");
+        check(nums[add_str("#FP_Fashion")]==100,"style exchange leaves Fashion balance unchanged");
+        finish_player();
+    }
+    {auto sd=fashion_player();Snapshot before;walk(gold,{2,9});before.unchanged();finish_player();}
 
     // Real forward/reverse mappings resolve all five costume slot families.
     // Choose each displayed enchant, then cancel payment before mutation.

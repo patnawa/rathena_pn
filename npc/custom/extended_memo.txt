@@ -1,5 +1,5 @@
 // Independent implementation of the published Missionary Work quest.
-// https://wiki.muhro.eu/Extended_Memo_Slots
+// PN extended Warp Portal memo slots.
 function	script	F_PNMemoEligible	{
 	return (Class == Job_Cardinal || Class == Job_Inquisitor) && getskilllv("AL_WARP") >= 4;
 }

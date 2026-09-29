@@ -1501,6 +1501,8 @@ enum e_macro_checker_result : int16{
 
 void clif_macro_checker( const map_session_data& sd, e_macro_checker_result result );
 
+void clif_goldpc_info(map_session_data& sd);
+void clif_parse_goldpc_npc(int32 fd, map_session_data* sd);
 void clif_dynamicnpc_result( const map_session_data& sd, e_dynamicnpc_result result );
 
 void clif_set_dialog_align( const map_session_data& sd, int32 npcid, e_say_dialog_align align );

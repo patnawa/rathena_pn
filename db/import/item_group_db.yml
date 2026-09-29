@@ -217,3 +217,23 @@ Body:
             Item: Snow_F_Stone3
             Amount: 4
             Rate: 1
+
+# Cash shop box corrections, verified against the official product descriptions.
+  - Group: C_S_ARMORBOX10
+    SubGroups:
+      - Clear: 0
+      - SubGroup: 0
+        Algorithm: All
+        List:
+          - Index: 0
+            Item: Shadow_Armor_S
+            Amount: 30
+  - Group: C_SIEGE_SCROLL_BOX2_30
+    SubGroups:
+      - Clear: 0
+      - SubGroup: 0
+        Algorithm: All
+        List:
+          - Index: 0
+            Item: Siege_Teleport_Scroll2
+            Amount: 30

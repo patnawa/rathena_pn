@@ -775,7 +775,7 @@ OnTouch:
 			close;
 		}
 		delitem 1000363,7;
-		// MuhRO Airship Crash: all five rescues select the weaker creature.
+		// PN Airship Crash: all five rescues select the weaker creature.
 		.@mob = ('rescue_mask == 31) ? 20891 : 21062;
 		'boss_active = 1;
 		areamonster 'cave_map$,20,20,80,80,"Unidentified Creature",.@mob,1,instance_npcname("#AirshipCrashControl")+"::OnPaidBossDead";

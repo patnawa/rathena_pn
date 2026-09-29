@@ -1,6 +1,6 @@
 """Native VM/packet acceptance, restricted to disposable labelled Docker fixtures.
 Seed 99000031/99000032 gameplayfixture; memo rows contain six distinct towns.
-Load npc/test/muhro_gameplay_fixture.txt only in the isolated fixture.
+Load npc/test/pn_gameplay_fixture.txt only in the isolated fixture.
 """
 import argparse,json,os,socket,struct,subprocess,time,sys
 from bank_live_client import Client,drain
@@ -19,10 +19,10 @@ def main():
  evidence=[]
  def send(payload,delay=.6):
   c.world.sendall(payload);raw=drain(c.world,delay)
-  assert b'MUHRO_NATIVE_FAIL' not in raw,raw
+  assert b'PN_GAMEPLAY_NATIVE_FAIL' not in raw,raw
   return raw
  def command(action,delay=.8):
-  time.sleep(.3);msg=('gameplayfixture : @muhrofixture '+action+'\0').encode()
+  time.sleep(.3);msg=('gameplayfixture : @pngameplayfixture '+action+'\0').encode()
   packet=struct.pack('<HH',0xf3,len(msg)+4)+msg
   raw=send(packet,delay)
   if len(raw)==6 and raw[:2]==struct.pack('<H',0xb6):
@@ -52,19 +52,19 @@ def main():
    pos=response.find(struct.pack('<H',0xb6));assert pos>=0,response.hex()
    rescue_gid=struct.unpack_from('<I',response,pos+2)[0]
    send(struct.pack('<HI',0x146,rescue_gid))
-  assert b'MUHRO_NATIVE_PASS mission rescue bits and quest records' in command('mission-report')
+  assert b'PN_GAMEPLAY_NATIVE_PASS mission rescue bits and quest records' in command('mission-report')
   evidence.append('real missionary rescue function completes all three quest records out of order and tolerates duplicate rescue')
   reset=warps(command('memo-reset',1.2));assert len(reset)==4,reset
   send(struct.pack('<HH16s',0x11b,27,b'cancel'))
   evidence.append('native skill reset clears extra reward/mission state and restricts selection to three memo slots')
   rental=command('rental',6)
-  assert b'MUHRO_NATIVE_PASS paid recovery and expired-rental no-refund' in rental,rental.hex()
+  assert b'PN_GAMEPLAY_NATIVE_PASS paid recovery and expired-rental no-refund' in rental,rental.hex()
   evidence.append('native paid trap consumes/refunds once; rental expires and its trap recovery refunds no material')
   first=command('refiner');gid=menu(first)
   selection=send(struct.pack('<HIB',0xb8,gid,1));assert struct.pack('<H',0xb5) in selection,selection.hex()
   confirm=send(struct.pack('<HI',0xb9,gid));assert menu(confirm)==gid
   send(struct.pack('<HIB',0xb8,gid,1));send(struct.pack('<HI',0x146,gid))
-  result=command('refiner-report');assert b'MUHRO_NATIVE_PASS refiner +15 single certificate' in result,result.hex()
+  result=command('refiner-report');assert b'PN_GAMEPLAY_NATIVE_PASS refiner +15 single certificate' in result,result.hex()
   evidence.append('real Master Refiner function dialog consumes exactly one certificate and refines equipped club to +15')
  finally:
   c.world.setsockopt(socket.SOL_SOCKET,socket.SO_LINGER,struct.pack('ii',1,0));c.world.close();c.char.close()

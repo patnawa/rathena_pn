@@ -83,9 +83,9 @@ try:
     for town,x,y in [('prontera',150,180),('izlude',128,114),('payon',180,100),('geffen',119,59),('morocc',156,93),('alberta',116,57)]:
         sql(f"INSERT INTO memo(char_id,map,x,y) VALUES(99000032,'{town}',{x},{y});".encode())
     source = Path(os.environ['GAMEPLAY_FIXTURE_FILES'])
-    for name in ('muhro_gameplay_fixture.txt','muhro_gameplay_live_client.py','bank_live_client.py'):
+    for name in ('pn_gameplay_fixture.txt','muhro_gameplay_live_client.py','bank_live_client.py'):
         shutil.copyfile(source/name,OUT/name)
-    (OUT/'scripts_custom.conf').write_bytes((ROOT/'npc/scripts_custom.conf').read_bytes() + b'\nnpc: /evidence/muhro_gameplay_fixture.txt\n')
+    (OUT/'scripts_custom.conf').write_bytes((ROOT/'npc/scripts_custom.conf').read_bytes() + b'\nnpc: /evidence/pn_gameplay_fixture.txt\n')
     with (imports/'battle_conf.txt').open('a') as f:f.write('\nskill_log: 1\n')
     report['schema_files'] = len(names)
     boot = '''#!/bin/sh

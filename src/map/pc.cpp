@@ -15171,6 +15171,7 @@ struct s_bonus_script_entry *pc_bonus_script_add(map_session_data *sd, const cha
 				t_tick newdur = gettick() + dur;
 				if (flag&BSF_FORCE_REPLACE && entry->tick < newdur) { // Change duration
 					settick_timer(entry->tid, newdur);
+					entry->tick = newdur; // Later refreshes must compare against the current expiry.
 					script_free_code(script);
 					return nullptr;
 				}

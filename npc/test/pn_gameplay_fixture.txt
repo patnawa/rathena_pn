@@ -1,9 +1,9 @@
 // TEST ONLY. Do not import in production. Root's disposable Docker fixture
 // BL_SKILL is not a script-exported constant; 0x40 matches map.hpp.
 // must provision the unique synthetic account/character below before loading.
--	script	PNMuhroNativeFixture	-1,{
+-	script	PNGameplayNativeFixture	-1,{
 OnInit:
-	bindatcmd "muhrofixture",strnpcinfo(3)+"::OnCommand",0,99;
+	bindatcmd "pngameplayfixture",strnpcinfo(3)+"::OnCommand",0,99;
 	end;
 OnCommand:
 	if (getcharid(0) != 99000032 || getcharid(3) != 99000031 || strcharinfo(0) != "gameplayfixture")
@@ -15,7 +15,7 @@ OnCommand:
 		if (.@action$ == "memo-reset") {
 			resetskill;
 			if (PN_MemoExtra || PN_MissionStage || PN_MissionDone) {
-				dispbottom "MUHRO_NATIVE_FAIL reset did not clear progress";
+				dispbottom "PN_GAMEPLAY_NATIVE_FAIL reset did not clear progress";
 				end;
 			}
 		} else {
@@ -27,12 +27,12 @@ OnCommand:
 		getitem 717,2;
 		percentheal 100,100;
 		unitskillusepos getcharid(3),"AL_WARP",4,.@x+2,.@y,-1000;
-		dispbottom "MUHRO_NATIVE memo request submitted";
+		dispbottom "PN_GAMEPLAY_NATIVE memo request submitted";
 		end;
 	}
 	if (.@action$ == "memo-enter") {
 		unitwalk getcharid(3),.@x+2,.@y;
-		dispbottom "MUHRO_NATIVE portal walk submitted";
+		dispbottom "PN_GAMEPLAY_NATIVE portal walk submitted";
 		end;
 	}
 	if (.@action$ == "mission-setup") {
@@ -46,7 +46,7 @@ OnCommand:
 		setquest 16589;
 		setquest 16590;
 		setquest 16591;
-		dispbottom "MUHRO_NATIVE mission rescue setup";
+		dispbottom "PN_GAMEPLAY_NATIVE mission rescue setup";
 		end;
 	}
 	if (.@action$ == "mission-rescue") {
@@ -57,9 +57,9 @@ OnCommand:
 	}
 	if (.@action$ == "mission-report") {
 		if (PN_MissionRescue == 7 && checkquest(16589,HAVEQUEST) == 2 && checkquest(16590,HAVEQUEST) == 2 && checkquest(16591,HAVEQUEST) == 2)
-			dispbottom "MUHRO_NATIVE_PASS mission rescue bits and quest records";
+			dispbottom "PN_GAMEPLAY_NATIVE_PASS mission rescue bits and quest records";
 		else
-			dispbottom "MUHRO_NATIVE_FAIL mission rescue or quest records";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL mission rescue or quest records";
 		end;
 	}
 	if (.@action$ == "rental") {
@@ -74,13 +74,13 @@ OnCommand:
 		sleep2 700;
 		.@count = getareaunits(0x40,.@map$,.@x+2,.@y,.@x+2,.@y,.@units);
 		if (.@count != 1 || countitem(1065) != 0) {
-			dispbottom "MUHRO_NATIVE_FAIL paid trap not deployed/consumed";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL paid trap not deployed/consumed";
 			end;
 		}
 		unitskilluseid getcharid(3),"HT_REMOVETRAP",1,.@units[0],-1000;
 		sleep2 700;
 		if (countitem(1065) != 1) {
-			dispbottom "MUHRO_NATIVE_FAIL paid trap recovery";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL paid trap recovery";
 			end;
 		}
 		delitem 1065,1;
@@ -89,21 +89,21 @@ OnCommand:
 		sleep2 700;
 		.@count = getareaunits(0x40,.@map$,.@x+2,.@y,.@x+2,.@y,.@units);
 		if (.@count != 1 || countitem(1065) != 0) {
-			dispbottom "MUHRO_NATIVE_FAIL rental trap not deployed";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL rental trap not deployed";
 			end;
 		}
 		sleep2 2500;
 		if (rentalcountitem(50152)) {
-			dispbottom "MUHRO_NATIVE_FAIL native rental expiry";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL native rental expiry";
 			end;
 		}
 		unitskilluseid getcharid(3),"HT_REMOVETRAP",1,.@units[0],-1000;
 		sleep2 700;
 		if (countitem(1065) || getareaunits(0x40,.@map$,.@x+2,.@y,.@x+2,.@y)) {
-			dispbottom "MUHRO_NATIVE_FAIL expired rental trap created a refund";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL expired rental trap created a refund";
 			end;
 		}
-		dispbottom "MUHRO_NATIVE_PASS paid recovery and expired-rental no-refund";
+		dispbottom "PN_GAMEPLAY_NATIVE_PASS paid recovery and expired-rental no-refund";
 		end;
 	}
 	if (.@action$ == "refiner") {
@@ -116,9 +116,9 @@ OnCommand:
 	}
 	if (.@action$ == "refiner-report") {
 		if (getequiprefinerycnt(EQI_HAND_R) == 15 && countitem(6872) == 0)
-			dispbottom "MUHRO_NATIVE_PASS refiner +15 single certificate";
+			dispbottom "PN_GAMEPLAY_NATIVE_PASS refiner +15 single certificate";
 		else
-			dispbottom "MUHRO_NATIVE_FAIL refiner did not commit exactly once";
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL refiner did not commit exactly once";
 		end;
 	}
 	end;

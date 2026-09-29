@@ -4015,6 +4015,17 @@ aren't. You can also pass the char id to check for both account and char id.
 
 *checkweight(<item id>,<amount>{,<item id>,<amount>,<item id>,<amount>,...});
 *checkweight("<item name>",<amount>{,"<item name>",<amount>,"<item name>",<amount>,...});
+*checkweightgroup(<group_id>);
+
+Returns 1 if inventory capacity is sufficient for every possible outcome of the
+loaded item group, otherwise 0. No rewards are rolled or granted. This reserves
+new slots conservatively, even where an existing stack might accept a reward,
+and checks worst-case weight and stack limits across all subgroups. It does not
+check currencies or arbitrary scripts inside awarded items. Check immediately
+before charging; do not suspend between checking and granting the group.
+
+---------------------------------------
+
 *checkweight2(<id_array>,<amount_array>);
 
 These functions will compute and return 1 if the total weight of the specified
@@ -7367,6 +7378,15 @@ NOTE:
 
 ---------------------------------------
  
+*goldpointinfo;
+
+Refreshes the attached player's native Gold Point icon using #FP_Gold and the
+@FP_GoldNextAt Unix-time deadline. This PN command only sends UI information;
+it does not award points or start a timer. The FashionPointClock script owns
+the three-minute earning clock and 50-point cap. Requires an attached player.
+
+---------------------------------------
+
 *duplicate_dynamic("<NPC name>"{,<character ID>});
 
 This command will duplicate the NPC with the given <NPC name> near the attached player or the player with the given <character ID>.

@@ -7557,6 +7557,49 @@ BUILDIN_FUNC(checkweight)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+// Conservative inventory preflight: reserve space for every possible group outcome
+// without drawing RNG or changing shared-pool state. Extra slots avoid relying on
+// stacking when entries carry bound, named, rental or unique-ID metadata.
+BUILDIN_FUNC(checkweightgroup) {
+	map_session_data* sd;
+	if (!script_rid2sd(sd)) return SCRIPT_CMD_FAILURE;
+	const int64 group_id = script_getnum(st, 2);
+	auto group = group_id > 0 && group_id <= UINT16_MAX ? itemdb_group.find(static_cast<uint16>(group_id)) : nullptr;
+	if (!group || group->random.empty()) { script_pushint(st, 0); return SCRIPT_CMD_SUCCESS; }
+	uint64 weight = 0, slots = 0;
+	std::unordered_map<t_itemid, uint64> amounts;
+	for (const auto& pair : group->random) {
+		const auto& sub = pair.second;
+		if (!sub || sub->data.empty()) { script_pushint(st, 0); return SCRIPT_CMD_SUCCESS; }
+		const bool all = sub->algorithm == GROUP_ALGORITHM_ALL;
+		uint64 sub_weight = 0, sub_slots = 0;
+		std::unordered_map<t_itemid, uint64> sub_amounts;
+		for (const auto& row : sub->data) {
+			const auto& entry = row.second;
+			auto item = entry ? item_db.find(entry->nameid) : nullptr;
+			if (!item || entry->amount == 0) { script_pushint(st, 0); return SCRIPT_CMD_SUCCESS; }
+			const uint64 entry_weight = static_cast<uint64>(item->weight) * entry->amount;
+			const uint64 entry_slots = itemdb_isstackable(entry->nameid) && entry->isStacked ? 1 : entry->amount;
+			if (all) {
+				sub_weight += entry_weight; sub_slots += entry_slots;
+				sub_amounts[entry->nameid] += entry->amount;
+			} else {
+				sub_weight = std::max(sub_weight, entry_weight);
+				sub_slots = std::max(sub_slots, entry_slots);
+				sub_amounts[entry->nameid] = std::max(sub_amounts[entry->nameid], static_cast<uint64>(entry->amount));
+			}
+		}
+		weight += sub_weight; slots += sub_slots;
+		for (const auto& amount : sub_amounts) amounts[amount.first] += amount.second;
+	}
+	bool fits = weight + sd->weight <= sd->max_weight && slots <= pc_inventoryblank(sd);
+	for (const auto& amount : amounts) {
+		if (amount.second > MAX_AMOUNT || pc_checkadditem(sd, amount.first, static_cast<int32>(amount.second)) == CHKADDITEM_OVERAMOUNT) fits = false;
+	}
+	script_pushint(st, fits);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(checkweight2)
 {
 	//variable sub checkweight
@@ -26568,6 +26611,14 @@ BUILDIN_FUNC(duplicate)
  * Return the duplicate Unique name on success or empty string on failure.
  * duplicate_dynamic("<NPC name>"{,<character ID>});
  */
+BUILDIN_FUNC(goldpointinfo) {
+	map_session_data* sd;
+	if (!script_rid2sd(sd))
+		return SCRIPT_CMD_FAILURE;
+	clif_goldpc_info(*sd);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(duplicate_dynamic){
 	const char* old_npcname = script_getstr( st, 2 );
 	npc_data* nd = npc_name2id( old_npcname );
@@ -28833,6 +28884,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF2(cartcountitem,"cartcountitem2","viiiiiii?"),
 	BUILDIN_DEF(checkweight,"vi*"),
 	BUILDIN_DEF(checkweight2,"rr"),
+	BUILDIN_DEF(checkweightgroup,"i"),
 	BUILDIN_DEF(readparam,"i?"),
 	BUILDIN_DEF(getcharid,"i?"),
 	BUILDIN_DEF(getnpcid,"i?"),
@@ -29375,6 +29427,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(pnstorageprice,""),
 	BUILDIN_DEF(unloadnpc, "s"),
 	BUILDIN_DEF(duplicate, "ssii?????"),
+	BUILDIN_DEF(goldpointinfo, ""),
 	BUILDIN_DEF(duplicate_dynamic, "s?"),
 
 	// WoE TE

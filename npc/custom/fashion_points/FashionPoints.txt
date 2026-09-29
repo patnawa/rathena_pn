@@ -209,10 +209,13 @@ OnPCLoginEvent:
 		dispbottom "Gold Points are capped at 50. Use @goldpoints to visit the exchange desk (1 Gold = 1 Fashion Point).";
 		dispbottom "@goldpoints takes you to the Gold Point Manager. @fashion takes you to the fashion services. Click an NPC to use its service.";
 		@FP_TimerRunning = 0;
+		goldpointinfo;
 		end;
 	}
 	@FP_TimerRunning = 1;
+	@FP_GoldNextAt = gettimetick(2) + 180;
 	addtimer 180000,strnpcinfo(3) + "::OnGoldTick";
+	goldpointinfo;
 	end;
 
 OnGoldTick:
@@ -220,12 +223,15 @@ OnGoldTick:
 	if (#FP_Gold < 50) ++#FP_Gold;
 	if (#FP_Gold >= 50) {
 		#FP_Gold = 50;
+		goldpointinfo;
 		dispbottom "Gold Points reached 50. Use @goldpoints to exchange them for Fashion Points and resume earning.";
 		dispbottom "@goldpoints takes you to the Gold Point Manager. @fashion takes you to the fashion services. Click an NPC to use its service.";
 		end;
 	}
 	@FP_TimerRunning = 1;
+	@FP_GoldNextAt = gettimetick(2) + 180;
 	addtimer 180000,strnpcinfo(3) + "::OnGoldTick";
+	goldpointinfo;
 	end;
 
 OnAtActivity:
@@ -238,16 +244,47 @@ OnAtActivity:
 // Compatibility placement beside stock Designer Heidam.
 mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 	mes "[Gold Point Manager]";
-	mes "Gold Points: ^ff8800" + #FP_Gold + "/50^000000";
-	mes "Fashion Points: ^cc33cc" + #FP_Fashion + "^000000";
-	next;
-	.@choice=select("Exchange Gold Points (1 for 1):About account scope:Leave");
-	if (.@choice == 3) close;
-	if (.@choice == 2) {
+	mes "Gold Points: ^0000ff" + #FP_Gold + "^000000";
+	mes "Fashion Points: ^0000ff" + #FP_Fashion + "^000000";
+	mes "What do you want to do?";
+	.@choice=select("Convert Gold Points to Fashion Points:Exchange style consumables (1 point each):View balances:Cancel");
+	if (.@choice == 4) close;
+	if (.@choice == 3) {
+		next;
 		mes "[Gold Point Manager]";
-		mes "Fashion Points belong to your login account. Separate login accounts do not share points.";
+		mes "Gold Points: ^0000ff" + #FP_Gold + "/50^000000";
+		mes "Fashion Points: ^0000ff" + #FP_Fashion + "^000000";
+		mes "Earn 1 Gold Point every 3 minutes online, up to 50.";
+		mes "Points belong to your login account. Separate login accounts do not share points.";
 		close;
 	}
+	if (.@choice == 2) {
+		next;
+		mes "[Gold Point Manager]";
+		mes "Each dye costs 1 Gold Point.";
+		.@dye=select("Scarlet Dyestuffs:Lemon Dyestuffs:Cobaltblue Dyestuffs:Darkgreen Dyestuffs:Orange Dyestuffs:Violet Dyestuffs:White Dyestuffs:Black Dyestuffs:Cancel");
+		if (.@dye == 9) close;
+		setarray .@items[0],975,976,978,979,980,981,982,983;
+		.@item=.@items[.@dye-1];
+		mes "Exchange 1 Gold Point for " + getitemname(.@item) + "?";
+		next;
+		if (select("Exchange:Cancel") == 2) close;
+		if (#FP_Gold < 1 || !checkweight(.@item,1)) {
+			mes "You need 1 Gold Point and enough inventory space.";
+			close;
+		}
+		.@before=countitem(.@item);
+		getitem .@item,1;
+		if (countitem(.@item) != .@before+1) {
+			mes "The item could not be delivered. No points were spent.";
+			close;
+		}
+		--#FP_Gold;
+		callsub S_ResumeClock;
+		mes "Received " + getitemname(.@item) + ".";
+		close;
+	}
+	next;
 	if (#FP_Gold < 1) {
 		mes "[Gold Point Manager]";
 		mes "You do not have any Gold Points to exchange.";
@@ -266,13 +303,19 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 	}
 	#FP_Gold -= .@amount;
 	#FP_Fashion += .@amount;
+	callsub S_ResumeClock;
+	mes "[Gold Point Manager]";
+	mes "Exchanged ^0000ff" + .@amount + " Gold Points^000000 for ^0000ff" + .@amount + " Fashion Points^000000.";
+	close;
+
+S_ResumeClock:
 	if (!@FP_TimerRunning) {
 		@FP_TimerRunning = 1;
+		@FP_GoldNextAt = gettimetick(2) + 180;
 		addtimer 180000,"FashionPointClock::OnGoldTick";
 	}
-	mes "[Gold Point Manager]";
-	mes "Exchanged ^ff8800" + .@amount + " Gold Points^000000 for ^cc33cc" + .@amount + " Fashion Points^000000.";
-	close;
+	goldpointinfo;
+	return;
 }
 
 // Current wiki points to main_office,62,278; this server has no main_office map.

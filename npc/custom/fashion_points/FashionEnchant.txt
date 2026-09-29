@@ -12,7 +12,7 @@
 //= Complete Fashion Stone application service
 //===== Provenance / compatibility ===========================
 //= stone_catalogue.json records verified regional mappings and provenance.
-//= Original MuhRO revision 61305 pairs are retained; official regional stones
+//= Original revision 61305 pairs are retained; official regional stones
 //= and fourth-slot cosmetic families are added by the September 2026 audit.
 //= PN applies a supported stone deterministically into an empty compatible slot.
 //= This local policy also applies to regional materials sold as chance-based.
