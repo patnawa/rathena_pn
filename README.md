@@ -1,13 +1,14 @@
 # PN Ragnarok
 
-**Renewal progression. Shared account banking. Connected quest navigation.**
+**Renewal progression. Shared account banking. Recoverable shop purchases.**
 
 A customized [rAthena](https://github.com/rathena/rathena) server with fourth-job and Druid integration, expanded equipment services, and coordinated Windows client updates. This repository contains server source, custom content, client companion sources, and validation tools.
 
-**[Client releases](https://github.com/patnawa/rathena_pn/releases)** · [Wide Zeny release](doc/wide_economy_release_20260928.md) · [Native HUD fix](doc/native_zeny_hud_followup_20260928.md) · [Player services](#player-services) · [Server setup](#server-setup) · [Documentation](#documentation)
+**[Client releases](https://github.com/patnawa/rathena_pn/releases)** · [Latest server release](doc/shop_purchase_recovery_deployment_20260929.md) · [Native HUD fix](doc/native_zeny_hud_followup_20260928.md) · [Player services](#player-services) · [Server setup](#server-setup) · [Documentation](#documentation)
 
 | Client and server | Current state |
 | --- | --- |
+| Live server release | **29 September 2026 — durable market, barter and sale purchase recovery** |
 | Live client update | **28 September 2026 — full native Zeny display and PN branding** |
 | Signed updater release | `client-20260928-native-zeny`, sequence `2026092803` |
 | Game rules | Customized Renewal with fourth jobs and Druid → Karnos → Alitea |
@@ -15,6 +16,18 @@ A customized [rAthena](https://github.com/rathena/rathena) server with fourth-jo
 | Wallet and account bank | Each supports **9,223,372,036,854,775,807 Zeny** |
 | Connection | PN LAN server at `192.168.10.18` |
 | Server stack | Login, character, map and web processes; Docker build tooling |
+
+## Latest server release
+
+![PN Ragnarok shop recovery: plan the cart, commit stock and player assets with a receipt, then confirm delivery.](doc/images/shop-recovery-20260929.svg)
+
+**Deployed 29 September 2026 at 19:23 Bangkok.** Market carts with limited stock, limited-stock barter carts and cash-sale carts now save inventory, payment, stock and a purchase receipt together. Failed database writes leave the purchase pending for recovery; repeated replies cannot charge or grant twice. An exhausted sale stays at zero stock.
+
+Deployment verification recorded **seven healthy services** and **41 unchanged existing financial/storage groups**. These are dated verification results, not a live status feed. This server release does not require a new client update.
+
+The new stock-backed path rejects pet outputs and pet payment materials before charging. Durable pet delivery is the next repair; ordinary unlimited and script-controlled shops retain their existing paths. Earlier card-removal, enchanting and client audit candidates are not part of this live release.
+
+See the [implementation and scope](doc/shop_purchase_recovery_20260929.md), [database recovery tests](doc/shop_recovery_sql_test_20260929.md), and [live deployment, backup and rollback receipt](doc/shop_purchase_recovery_deployment_20260929.md).
 
 ## Play
 
@@ -123,6 +136,8 @@ This compiles all four server binaries into the mounted checkout. The Docker gui
 
 Deploy matching server binaries and client resources together. Follow the [bank installation guide](client-patch/account_bank/README.md) for migrations and companion files. Retain database backups and matching prior binaries; review upgrade SQL individually. Once bank balances exceed the old limit, restoring a 32-bit bank binary would truncate them.
 
+For the September 29 shop protocol, upgrade **map and character servers together** and apply [the stock/receipt migration](sql-files/upgrades/upgrade_20260929_shop_purchase.sql) while both writers are stopped. All participating tables must use InnoDB. Follow the [release procedure](doc/shop_purchase_recovery_deployment_20260929.md); code rollback retains current player data and purchase receipts.
+
 | Path | Contents |
 | --- | --- |
 | [src/](src/) | Engine, networking, combat and scripting |
@@ -133,6 +148,10 @@ Deploy matching server binaries and client resources together. Follow the [bank 
 | [doc/](doc/) | Guides, investigation reports and deployment evidence |
 
 ## Validation
+
+The **29 September shop recovery release** passed **55 workspace checks**, including three preceding NPC audit candidates excluded from this deployment; the pushed shop-only gate registers **52 applicable checks**. Focused coverage includes **30 native shop cases**, **31 delivery cases**, **26 planner cases**, acknowledgement handling, and real MariaDB rollback, restart, ownership and concurrent final-unit purchases. Both exact production binaries passed isolated startup. A fresh backup restored and verified **142 tables** before cutover. [Results and limitations](doc/shop_purchase_recovery_deployment_20260929.md).
+
+Earlier validation milestones:
 
 The [14 September audit](doc/audit_all_20260914.md) passed **40 release checks**, **15 bank scenarios**, delayed-mail capacity regressions and two-account economy transfers. Fresh backup restoration verified **137 production tables** in an isolated database. The earlier bank arithmetic baseline includes **500,000 randomized cases** and **49 SQL checks**.
 
@@ -147,6 +166,8 @@ Run relevant checks from the repository root:
 ```sh
 python3 tools/ci/bank_core_test.py
 python3 tools/ci/bank_service_test.py
+python3 tools/ci/shop_planner_test.py
+python3 tools/ci/shop_recovery_inter_test.py
 ```
 
 ```powershell
@@ -159,7 +180,10 @@ Native tests need the documented compiler/runtime dependencies. Dated reports re
 
 | Topic | Guides and evidence |
 | --- | --- |
-| Latest audit | [Six-area audit and deployed fixes](doc/audit_all_20260914.md) · [Rendered checklist](doc/rendered_acceptance_20260914.md) |
+| Latest server release | [Shop recovery and scope](doc/shop_purchase_recovery_20260929.md) · [Live deployment receipt](doc/shop_purchase_recovery_deployment_20260929.md) |
+| Purchase recovery tests | [Real SQL, crash and concurrency proof](doc/shop_recovery_sql_test_20260929.md) · [Acknowledgement handling](doc/shop_recovery_inter_test_20260929.md) |
+| Remaining recovery work | [Asynchronous pet delivery findings](doc/transaction_async_audit_20260929.md) |
+| Earlier audit | [September 14 six-area audit](doc/audit_all_20260914.md) · [Rendered checklist](doc/rendered_acceptance_20260914.md) |
 | Current client | [Wide economy release](doc/wide_economy_release_20260928.md) · [Native HUD fix](doc/native_zeny_hud_followup_20260928.md) |
 | Banking | [Current wide economy](doc/wide_economy_release_20260928.md) · [Historical v2.3 panel](doc/bank_compact_20260914.md) · [Earlier 64-bit bank persistence](doc/account_bank_64bit_20260913.md) |
 | Storage | [Pages, expansion, migration and validation](doc/multi_storage_20260913.md) |
