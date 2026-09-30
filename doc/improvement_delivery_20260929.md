@@ -2,7 +2,7 @@
 
 Authorized objective: implement roadmap items 1–8 and the unfinished work, test them without requiring user client interaction, deploy to live and push Git. Completion requires current implementation, appropriately scoped tests, deployment evidence and remote Git verification. A partial gate or earlier receipt cannot close this ledger.
 
-Baseline: `ce00fd541` on `codex/server-improvements-20260919`. Existing card-removal, armor-enchant, Mayomayo, combat-test and client-overlay work is integrated; unrelated local analysis is preserved outside staging. Implementation commit `7d4d3dcee55edc4d38a789c3e6002b3525913ba5` was pushed to that origin branch and verified using `git ls-remote` on 30 September. No live rollout has occurred.
+Baseline: `ce00fd541` on `codex/server-improvements-20260919`. Existing card-removal, armor-enchant, Mayomayo, combat-test and client-overlay work is integrated; unrelated local analysis is preserved outside staging. Implementation commit `7d4d3dcee55edc4d38a789c3e6002b3525913ba5` was pushed to that origin branch and verified using `git ls-remote` on 30 September. The live rollout is complete under the user testing handoff recorded below.
 
 Current frozen source: `ef5350c8ae8522ba1077848716fdfa1caafd0224e9b9339bde29eae7472ce617`.
 The last change repairs the real-world lab driver: identify the actual spawned
@@ -15,6 +15,46 @@ acceptance and deployment remain incomplete. The sections below retain historica
 checkpoints; the dated checkpoint immediately below is authoritative for current status.
 
 ## Current checkpoint — 30 September 2026
+
+### Live rollout complete; remaining client testing belongs to the user
+
+The frozen `ef5350c8` implementation is installed on production and admissions
+are open. All four loaded server binaries match the frozen binding. FluxCP and
+all four servers are healthy, original restart policies are restored, and all
+task-owned maintenance rules are removed. The fresh database backup passed its
+restore check before installation. Existing player/financial table fingerprints
+were unchanged through migration and startup. All 1,086 intended paths and the
+66 preserved originals were checked by the guarded deployment workflow.
+
+Client release `2026092905` is published. Its signature and all six introduced
+public objects were verified by actual downloads. The signed feed explicitly
+records incomplete rendered acceptance and the three user-deferred cases;
+these were not relabeled as successful tests. No further party or client
+journeys were run after the handoff.
+
+The OPS-only authorization adapter preserves the frozen release controller,
+original test receipts and `passed:false` for full rendered acceptance. Its
+separate authorization binds the exact user instruction and the existing
+native/SQL/performance evidence. The deployed integrity collector verifies
+backup, installed/loaded hashes, service health, data invariants and remote Git
+for all ten delivery scopes, with the deferred functional checks explicit.
+
+Final operations evidence (outside Git to preserve private deployment data):
+
+- `candidate-authorized-user-handoff-ef5350c8.json`, SHA-256
+  `cfc34d3619d72f952a4e2f78d68158584e5fd21cfeffa951194d1fc1faa5fbc3`.
+- `deployment-complete-user-handoff-ef5350c8.json`, SHA-256
+  `42477eb13123a2be13456f656bb97d17a5e41abd96539186ab617cf927f35d2f`.
+- `reopened-health-user-handoff-ef5350c8.json`, SHA-256
+  `4cf349cfc768bcdc5465bc86ec5806ee6670f7ebf36fe1203fabff5ae32bd94c`.
+- `reopened-proof-user-handoff-ef5350c8.json` confirms open admissions, restored
+  restart policies and removal of the owned maintenance fence.
+- `client-publication/verified-client-publication.json` and its `verification/`
+  artifacts bind the actual deployment, signed feed and public downloads.
+
+This completed rollout supersedes all historical "live pending" and "publication
+pending" entries below. Encounter/reward, storage transfer/relog and changed
+client visual samples remain for the user's own testing as requested.
 
 User testing handoff (supersedes the rendered-test requirements below): the user
 instructed, "no need to test i will test my self". Further client tests are
