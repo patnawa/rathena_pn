@@ -70,6 +70,23 @@ def prepare(build):
             case['expected']['magic_hit']=10000+case['expected']['magic_all']*100
         elif case['name'].startswith('purified-'):
             case['expected']['magic_hit']=12000 if case['name']=='purified-ultimate' else 11000
+    # Renewal physical cardfix covers class/size categories; ranged/melee
+    # damage bonuses occur later in the attack pipeline and are not asserted
+    # as part of this stage.
+    for case in cases:
+        if case['name'].startswith('purified-'):
+            hit=12000 if case['name']=='purified-ultimate' else 11000
+            case['expected'].update(weapon_cardfix_hit=hit,projectile_cardfix_hit=hit)
+        if case['name'].startswith('ranger-size-'):
+            hit=10000+300*(int(case['name'].rsplit('-',1)[1])//2)
+            case['expected'].update(weapon_cardfix_hit=hit,projectile_cardfix_hit=hit)
+        if case['name'] in ('range-native','range-legacy'):
+            case['remove_middle']={'long':6}
+        if case['name'] in ('23rd-range-native','23rd-range-legacy'):
+            case['remove_middle']={'long':9}
+    cases.append(dict(name='purified-ranger-size-stack',garment=[313741],lower=[0,0,315327],
+        learned={'RA_AIMEDBOLT':10},expected={'physical_class':10,'size_all':15,
+        'weapon_cardfix_hit':12650,'projectile_cardfix_hit':12650}))
     for case in cases:case['kind']='independent'
     # Exhaustive unique-output smoke coverage has no fabricated numeric oracle.
     # Exercise the catalogue's actual position, including effect slot4/Festa2.
@@ -155,7 +172,7 @@ def run(build):
               'source_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sources if p.is_relative_to(ROOT)},
               'database_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in (ROOT/'db/import/fashion_stone_expansion_items.yml',ROOT/'db/import/fashion_stone_expansion_combos.yml')},
               'oracle':'hand-authored official descriptions; not script-derived fixture JSON',
-              'boundaries':'synthetic inventory/player and lookup, transport/registry/persistence wrappers; no server startup; magic cardfix stage and native cast/delay, not full skill attack simulation'}
+              'boundaries':'synthetic inventory/player and lookup, transport/registry/persistence wrappers; no server startup; magic and physical class/size cardfix stages, partial card removal/reinsert, and native cast/delay; not full skill attack simulation or native unequip packet handling'}
     (build/'evidence.json').write_text(json.dumps(evidence,indent=2)+'\n')
     print('COSTUME_COMBAT_MUTATIONS_OK rejected='+str(len(mutation_results)))
 

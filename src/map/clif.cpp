@@ -1,3 +1,4 @@
+#include <custom/item_use.hpp>
 #include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // Copyright (c) Hercules Dev Team - Licensed under GNU GPL
@@ -2428,11 +2429,20 @@ void clif_npc_market_purchase_ack( map_session_data& sd, e_purchase_result res, 
 // Durable results use the immutable plan, never a reloaded/closed NPC pointer.
 void clif_shop_commit_result(map_session_data& sd,const pn_shop::Commit& request,
 	const std::vector<pn_shop::Event>& events,bool committed) {
-	if(request.kind==pn_shop::Barter) {
+	if(((request.kind==pn_shop::Asset || request.kind==pn_shop::ItemUse) && request.response==pn_shop::Automatic) || request.kind==pn_shop::PetClaim) {
+		clif_displaymessage(sd.fd,committed?(request.kind==pn_shop::PetClaim?
+			"Pet rewards recovered.":"Rewards secured."):"Reward transaction rejected; no payment was taken.");
+		return;
+	}
+	if(request.kind==pn_shop::Barter || request.response==pn_shop::BarterResponse || request.response==pn_shop::ShopResponse) {
 		clif_npc_buy_result(&sd,committed?e_purchase_result::PURCHASE_SUCCEED:e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED);
 		return;
 	}
-	if(request.kind==pn_shop::Sale) {
+	if(request.response==pn_shop::CashNpcResponse) {
+		clif_cashshop_ack(&sd,committed?ERROR_TYPE_NONE:ERROR_TYPE_PURCHASE_FAIL);
+		return;
+	}
+	if(request.kind==pn_shop::Sale || request.response==pn_shop::CashButtonResponse) {
 		if(!committed){clif_cashshop_result(&sd,0,CASHSHOP_RESULT_ERROR_UNKNOWN);return;}
 		std::vector<uint32> sent;
 		for(const auto& event:events)if(std::find(sent.begin(),sent.end(),event.nameid)==sent.end()) {
@@ -2925,6 +2935,7 @@ void clif_additem( const map_session_data* sd, int32 n, int32 amount, unsigned c
 	p.count = amount;
 	p.result = fail;
 
+	if(pn_item_use_defer(sd,[sd,p](){clif_send(&p,sizeof(p),sd,SELF);}))return;
 	clif_send( &p, sizeof( p ), sd, SELF );
 }
 
@@ -2954,6 +2965,7 @@ void clif_dropitem( const map_session_data& sd, int32 index, int32 amount ){
 ///     6 = Item sold
 ///     7 = Consumed by Four Spirit Analysis (SO_EL_ANALYSIS) skill
 void clif_delitem( const map_session_data& sd, int32 index, int32 amount, int16 reason ){
+	if(pn_item_use_defer(&sd,[&sd,index,amount,reason](){clif_delitem(sd,index,amount,reason);}))return;
 #if PACKETVER >= 20091117
 	PACKET_ZC_DELETE_ITEM_FROM_BODY packet{};
 
@@ -3674,6 +3686,7 @@ static void clif_longlongpar_change(map_session_data& sd, uint16 varId, int64 am
 
 /// Notifies client of a character parameter change.
 void clif_updatestatus( map_session_data& sd, enum _sp type ){
+	if((type==SP_WEIGHT || type==SP_ZENY) && pn_item_use_defer(&sd,[&sd,type](){clif_updatestatus(sd,type);}))return;
 	switch(type){
 		case SP_WEIGHT:
 			pc_updateweightstatus(sd);
@@ -4527,6 +4540,12 @@ void clif_useitemack( const map_session_data* sd, int32 index, int32 amount, boo
 #endif
 	p.amount = amount;
 	p.result = ok;
+
+	const int32 original_amount=sd->inventory.u.items_inventory[index].amount;
+	if(pn_item_use_ack(sd,[sd,p,original_amount](bool committed)mutable{
+		if(!committed){p.result=false;p.amount=original_amount;}
+		clif_send(&p,sizeof(p),sd,p.result?AREA:SELF);
+	}))return;
 
 	if( !ok ){
 		clif_send( &p, sizeof(p), sd, SELF );
@@ -16657,6 +16676,8 @@ void clif_parse_Mail_getattach( int32 fd, map_session_data *sd ){
 		return;
 	}
 
+	if(pn_mail_getattachment_atomic(*sd,*msg,attachment))return;
+
 	if( attachment&MAIL_ATT_ZENY ){
 		if( sd->status.zeny < 0 || sd->mail.pending_zeny < 0 ||
 			sd->mail.pending_zeny > MAX_WALLET_ZENY - sd->status.zeny ||
@@ -17532,6 +17553,7 @@ void clif_cashshop_show( map_session_data& sd, const npc_data& nd ){
 ///     8 = Some items could not be purchased. (ERROR_TYPE_PURCHASE_FAIL)
 void clif_cashshop_ack(map_session_data* sd, int32 error)
 {
+	if(error==pn_shop::cash_pending)return;
 	int32 fd, cost[2] = { 0, 0 };
 	npc_data *nd;
 
@@ -25160,6 +25182,42 @@ void clif_parse_itempackage_select( int32 fd, map_session_data* sd ){
 		return;
 	}
 
+	// Pet packages commit their box and the complete reward selection together.
+	// Random metadata is fixed once before dispatch and retained by the receipt.
+	bool has_pet = false;
+	for (const auto& entry : group->items) {
+		auto data = item_db.find(entry.second->item_id);
+		if (data && (data->type == IT_PETEGG || pet_db_search(data->nameid, PET_EGG))) has_pet = true;
+	}
+	if (has_pet) {
+		std::vector<pn_shop::Grant> grants;
+		for (const auto& entry : group->items) {
+			const auto& reward = *entry.second;
+			auto data = item_db.find(reward.item_id);
+			if (!data || !reward.amount || reward.amount > MAX_AMOUNT) return;
+			const bool separate = !itemdb_isstackable2(data.get()) || reward.rentalhours;
+			const uint32 count = separate ? reward.amount : 1;
+			if (count > MAX_INVENTORY - grants.size()) return;
+			for (uint32 n = 0; n < count; ++n) {
+				pn_shop::Grant grant{};
+				grant.nameid = reward.item_id;
+				grant.amount = separate ? 1 : reward.amount;
+				grant.prototype.nameid = grant.nameid;
+				grant.prototype.identify = 1;
+				grant.prototype.refine = static_cast<uint8>(reward.refine);
+				grant.prototype.enchantgrade = static_cast<uint8>(reward.grade);
+				if (reward.rentalhours) grant.prototype.expire_time = static_cast<uint32>(time(nullptr) + reward.rentalhours * 3600);
+				if (reward.randomOptionGroup) reward.randomOptionGroup->apply(grant.prototype);
+				grants.push_back(grant);
+			}
+		}
+		uint32 costs[MAX_INVENTORY]{};
+		costs[index] = 1;
+		if (!pn_shop_begin(*sd, pn_shop_request(*sd, pn_shop::Asset), grants, costs))
+			clif_displaymessage(sd->fd, "The package could not be opened. Your box has not been consumed.");
+		return;
+	}
+
 	// Validate the complete selection before consuming its box. Reserve fresh
 	// slots conservatively because refinement, rental and random-option metadata
 	// can prevent an otherwise stackable reward from merging into existing items.
@@ -25195,14 +25253,7 @@ void clif_parse_itempackage_select( int32 fd, map_session_data* sd ){
 			item.expire_time = (uint32)( time( nullptr ) + entry.second->rentalhours * 3600 );
 		}
 
-		// Check if it is a pet egg
-		std::shared_ptr<s_pet_db> pet = pet_db_search( item.nameid, PET_EGG );
-
-		if( pet != nullptr ){
-			for( int32 i = 0; i < entry.second->amount; i++ ){
-				pet_create_egg( sd, item.nameid );
-			}
-		}else if( entry.second->amount > 1 && ( !itemdb_isstackable( item.nameid ) || item.expire_time > 0 ) ){
+		if( entry.second->amount > 1 && ( !itemdb_isstackable( item.nameid ) || item.expire_time > 0 ) ){
 			for( int32 i = 0; i < entry.second->amount; i++ ){
 				// New random options on each iteration
 				if( entry.second->randomOptionGroup != nullptr ){
@@ -25838,7 +25889,8 @@ static int32 clif_parse(int32 fd)
 	sd = (TBL_PC *)session[fd]->session_data;
 	// Keep pending bank users attached even after a cable pull, until the SQL
 	// commit is acknowledged. Queued gameplay input resumes afterwards.
-	if (sd && (pc_transaction_pending(sd) || sd->multi_storage.loading)) return 0;
+	if(sd && pn_item_use_capture_waiting(sd) && session[fd]->flag.eof)pet_catch_cancel(*sd);
+	if (sd && ((pc_transaction_pending(sd) && !pn_item_use_capture_waiting(sd)) || sd->multi_storage.loading)) return 0;
 
 	if (session[fd]->flag.eof) {
 		if (sd) {
@@ -25945,6 +25997,10 @@ static int32 clif_parse(int32 fd)
 		sd->cryptKey = ((sd->cryptKey * clif_cryptKey[1]) + clif_cryptKey[2]) & 0xFFFFFFFF; // Update key for the next packet
 #endif
 
+	if(sd && pn_item_use_capture_waiting(sd) && packet_db[cmd].func!=clif_parse_CatchPet) {
+		RFIFOSKIP(fd,packet_len);
+		continue;
+	}
 	if( packet_db[cmd].func == clif_parse_debug )
 		packet_db[cmd].func(fd, sd);
 	else if( packet_db[cmd].func != nullptr ) {

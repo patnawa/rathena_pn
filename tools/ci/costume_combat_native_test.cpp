@@ -32,6 +32,10 @@ json snapshot(map_session_data& sd) {
     target->battle_status.race=RC_DEMIHUMAN;target->battle_status.class_=CLASS_NORMAL;
     target->battle_status.def_ele=ELE_NEUTRAL;
     int magic_hit=10000+battle_calc_cardfix(BF_MAGIC,&sd,target.get(),{},ELE_NEUTRAL,ELE_NEUTRAL,10000,0,BF_MAGIC|BF_SKILL|BF_LONG);
+    int weapon_hit=10000+battle_calc_cardfix(BF_WEAPON,&sd,target.get(),{},ELE_NEUTRAL,ELE_NEUTRAL,10000,2,BF_WEAPON|BF_SKILL|BF_SHORT);
+    sd.state.arrow_atk=true;
+    int projectile_hit=10000+battle_calc_cardfix(BF_WEAPON,&sd,target.get(),{},ELE_NEUTRAL,ELE_NEUTRAL,10000,2,BF_WEAPON|BF_SKILL|BF_LONG);
+    sd.state.arrow_atk=false;
     return {{"str",sd.base_status.str},{"agi",sd.base_status.agi},{"vit",sd.base_status.vit},
       {"int",sd.base_status.int_},{"dex",sd.base_status.dex},{"luk",sd.base_status.luk},
       {"pow",sd.base_status.pow},{"sta",sd.base_status.sta},{"wis",sd.base_status.wis},
@@ -43,6 +47,7 @@ json snapshot(map_session_data& sd) {
       {"magic_all",sd.indexed_bonus.magic_atk_ele[ELE_ALL]},
       {"size_all",sd.right_weapon.addsize[SZ_ALL]},{"physical_class",sd.right_weapon.addclass[CLASS_ALL]},
       {"magic_class",sd.indexed_bonus.magic_addclass[CLASS_ALL]},{"magic_hit",magic_hit},
+      {"weapon_cardfix_hit",weapon_hit},{"projectile_cardfix_hit",projectile_hit},
       {"soulstrike_delay",skill_delayfix(&sd,MG_SOULSTRIKE,1)},
       {"soulstrike_cast",skill_vfcastfix(&sd,400,MG_SOULSTRIKE,1)},
       {"matk_bonus",sd.bonus.ematk},{"batk_bonus",sd.bonus.eatk},{"hit",sd.base_status.hit},
@@ -97,6 +102,17 @@ extern "C" int __wrap_main(int argc,char** argv) {
         check(status_calc_pc_sub(sd.get(),SCO_FIRST)==0,"second status recalculation completes");
         auto repeated=snapshot(*sd);result.erase("name");
         check(repeated==result,"recalculation does not accumulate stone bonuses");
+        if(test.contains("remove_middle")) {
+            auto& middle=sd->inventory.u.items_inventory[1];auto saved=middle.card[1];middle.card[1]=0;
+            sd->combos.clear();pc_load_combo(sd.get());
+            check(status_calc_pc_sub(sd.get(),SCO_FIRST)==0,"partial combo removal recalculates");
+            auto partial=snapshot(*sd);
+            for(auto it=test["remove_middle"].begin();it!=test["remove_middle"].end();++it)
+                check(partial[it.key()]==it.value(),"partial removal retains only remaining bonuses");
+            middle.card[1]=saved;sd->combos.clear();pc_load_combo(sd.get());
+            check(status_calc_pc_sub(sd.get(),SCO_FIRST)==0,"combo restoration recalculates");
+            check(snapshot(*sd)==result,"reinserted combo restores exact original snapshot");
+        }
         // Inventory replacement is a fixture boundary; native combo discovery
         // and status calculation still execute after removal.
         for(auto& it:sd->inventory.u.items_inventory)for(int slot=0;slot<MAX_SLOTS;++slot)if(it.card[slot]){

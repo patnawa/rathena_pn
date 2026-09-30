@@ -24,6 +24,9 @@ enum mail_attach_result {
 	MAIL_ATTACH_EQUIPSWITCH = 99,
 };
 
+namespace pn_shop { struct Commit; }
+bool pn_mail_getattachment_atomic(map_session_data& sd,mail_message& msg,int32 type);
+void pn_mail_asset_result(map_session_data& sd,const pn_shop::Commit& request,bool committed);
 void mail_clear(map_session_data *sd);
 int32 mail_removeitem(map_session_data *sd, int16 flag, int32 idx, int32 amount);
 bool mail_removezeny(map_session_data *sd, bool flag);

@@ -24,13 +24,14 @@ struct Pending {bool pending=false;};
 struct Bank:Pending {uint64_t nonce_hi=123,nonce_lo=456,request_id=789,trade_id=0,trade_revision=0;uint32_t result=pn_bank::SaveFailed,collected_characters=7,skipped_characters=2;};
 struct map_session_data {
  struct {uint32_t char_id=10,account_id=20;int64_t zeny=9007199254740993LL;char name[24]="fixture";}status;
- Bank bank_ui;Pending pair_commit,multi_storage,mail_companion;
+ Bank bank_ui;Pending pair_commit,multi_storage,mail_companion,shop_commit;bool capture_waiting=false;
  int64_t bank_vault=100000000000LL;int m=0;
  struct{uint32_t id=0;}trade_partner;
  struct{bool trading=false;uint32_t deal_locked=0;}state;
  struct{int64_t zeny=0;}deal;
 };
 struct{bool feature_banking=true;}battle_config;
+bool pn_item_use_capture_waiting(const map_session_data* sd){return sd->capture_waiting;}
 constexpr int MF_NOBANK=1;
 bool no_bank=false,connected=true;
 int rnd(){return 1;}
@@ -61,6 +62,7 @@ int main(){
  }
  battle_config.feature_banking=true;no_bank=false;connected=true;
  map_session_data sd;
+ sd.capture_waiting=true;assert(pc_transaction_pending(&sd));assert(pn_bank_snapshot(sd).result==pn_bank::Saving);sd.capture_waiting=false;
  auto failed=pn_bank_snapshot(sd);assert(failed.result==pn_bank::SaveFailed);
  sd.status.zeny+=123;auto later=pn_bank_snapshot(sd);
  assert(later.result==pn_bank::SaveFailed && later.wallet==failed.wallet+123 && pn_bank::valid_reply(later));

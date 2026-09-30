@@ -50,8 +50,12 @@ bool fixture_durable_begin(map_session_data&,std::shared_ptr<pn_shop::Commit>,
     buy=buy.replace('pn_shop_begin(', 'fixture_durable_begin(')
     barter=barter.replace('pn_shop_begin(', 'fixture_durable_begin(')
     button=button.replace('pn_shop_begin(', 'fixture_durable_begin(')
+    planner=(ROOT/'src/custom/shop_map.inc').read_text()
+    planner=planner[planner.index('bool pn_shop_plan_inventory('):planner.index('bool pn_shop_begin(')]
+    planner=planner.replace('pn_shop_plan_inventory(', 'audit_pn_shop_plan_inventory(', 1)
+    barter=barter.replace('pn_shop_plan_inventory(', 'audit_pn_shop_plan_inventory(')
     driver=out/'native.cpp'
-    driver.write_text(prefix+(ROOT/'tools/ci/shop_delivery_native_test.cpp').read_text().replace('// FUNCTION','npc_data* fixture_shop=nullptr;\nvoid fixture_cash_result(const map_session_data*,t_itemid,uint16){}\n'+boundary+deletion+buy+cash+barter+button))
+    driver.write_text(prefix+(ROOT/'tools/ci/shop_delivery_native_test.cpp').read_text().replace('// FUNCTION','npc_data* fixture_shop=nullptr;\nvoid fixture_cash_result(const map_session_data*,t_itemid,uint16){}\n'+'#include <custom/retired_tokens.hpp>\n'+boundary+planner+deletion+buy+cash+barter+button))
     flags=['g++','-std=c++17','-O0','-fsanitize=address,undefined','-fno-sanitize-recover=all','-DPACKETVER=20260219']
     flags+=['-I'+str(ROOT/p) for p in ('src','3rdparty/libconfig','3rdparty/rapidyaml/src','3rdparty/rapidyaml/ext/c4core/src','3rdparty/json/include')]+['-I/usr/include/mysql']
     objects=list((ROOT/'src/map/obj').rglob('*.o'))

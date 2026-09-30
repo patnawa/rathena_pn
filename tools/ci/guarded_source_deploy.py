@@ -24,6 +24,7 @@ import subprocess
 import tarfile
 
 from deploy_scope_manifest import digest, safe_path
+from release_controller import verify_candidate_bundle
 
 
 def target(root, name):
@@ -49,6 +50,9 @@ def main():
     parser.add_argument('--archive', type=Path)
     parser.add_argument('--manifest', type=Path)
     parser.add_argument('--startup-log', type=Path)
+    parser.add_argument('--candidate', type=Path)
+    parser.add_argument('--release-bundle', type=Path)
+    parser.add_argument('--release-baseline', type=Path)
     parser.add_argument('--container', default='rathena-map')
     args = parser.parse_args()
     root, backup = args.root.resolve(), args.backup.resolve()
@@ -114,6 +118,13 @@ def main():
     print(json.dumps({'mode': args.mode, 'root': str(root), 'paths': list(contents)}, indent=2))
     if args.mode == 'plan':
         return
+    if not args.candidate or not args.release_bundle or not args.release_baseline:
+        parser.error('--candidate, --release-bundle and --release-baseline required for apply')
+    candidate=args.candidate.resolve()
+    verify_candidate_bundle(candidate,args.release_bundle,args.release_baseline)
+    for name,data in contents.items():
+        if target(candidate,name).read_bytes()!=data:
+            raise ValueError('Archive differs from certified candidate: '+name)
     check_stopped(args.container)
     if not args.startup_log:
         parser.error('--startup-log required after isolated candidate validation')

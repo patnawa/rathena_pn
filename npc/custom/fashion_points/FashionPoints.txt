@@ -150,7 +150,7 @@ function	script	FP_OpenBox	{
 	}
 	// DelayConsume: verify delivery before consuming the box. No input yields.
 	.@before=countitem(.@reward);
-	getitem .@reward,1;
+	getordinaryitem .@reward,1;
 	if (countitem(.@reward)!=.@before+1) return 0;
 	delitem .@box_item,1;
 	dispbottom "The Fashion box awarded " + getitemname(.@reward) + ". (Uniform compatibility selection.)";

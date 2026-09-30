@@ -1262,6 +1262,7 @@ void clif_parse_Auction_cancelreg(int32 fd, map_session_data *sd);
 
 void clif_bossmapinfo( const map_session_data& sd, mob_data* md, e_bossmap_info flag );
 void clif_cashshop_show( map_session_data& sd, const npc_data& nd );
+void clif_cashshop_ack( map_session_data* sd, int32 error );
 
 // ADOPTION
 void clif_Adopt_reply( const map_session_data* sd, int32 type );

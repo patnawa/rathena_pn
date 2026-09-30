@@ -1,3 +1,4 @@
+#include <custom/item_use.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -397,6 +398,7 @@ int32 intif_wis_message_to_gm(char *wisp_name, int32 permission, char *mes)
  */
 int32 intif_saveregistry(map_session_data *sd)
 {
+	if(sd && pn_item_use_save_defer(sd,CSAVE_NORMAL))return -1;
 	if (sd && pc_transaction_pending(sd)) return -1;
 	DBIterator *iter;
 	DBKey key;
@@ -2400,6 +2402,7 @@ int32 intif_Mail_read(int32 mail_id)
  * @return 0=error, 1=msg sent
  */
 bool intif_mail_getattach( map_session_data* sd, struct mail_message *msg, enum mail_attachment_type type){
+	if(type&MAIL_ATT_ITEM)return false; // Items require the atomic Asset protocol.
 	if (CheckForCharServer())
 		return false;
 

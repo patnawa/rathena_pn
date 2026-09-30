@@ -2,6 +2,7 @@
 // Production NPC bodies and their fashion mapping functions are parsed unchanged.
 // Persistence, inventory debit and outbound UI are explicit fixture boundaries.
 #include "map/npc.hpp"
+#include "map/pet.hpp"
 namespace {
 bool reject_debit=false;
 unsigned debit_calls=0;
@@ -539,6 +540,19 @@ extern "C" int __wrap_main(int argc,char** argv) {
         }
         if(kind!=0)before.unchanged();
         check(nums[add_str("#FP_Fashion")]==100,"opening a paid box does not charge points again");finish_player();
+    }
+    for(int egg_kind=0;egg_kind<2;++egg_kind) {
+        auto sd=fashion_player();put(0,41090,1);Snapshot before;
+        std::vector<item_types> types;
+        for(auto id:box_materials[0]) {
+            auto data=item_db.find(id);types.push_back(data->type);
+            if(egg_kind==0)data->type=IT_PETEGG;
+            else {auto pet=std::make_shared<s_pet_db>();pet->class_=id;pet->EggID=id;pet_db.put(id,pet);}
+        }
+        fashion_walk(open_box,{});before.unchanged();
+        check(count(41090)==1 && nums[add_str("#FP_Fashion")]==100,"ordinary-only box refuses pet types and pet-db eggs before charging");
+        for(size_t i=0;i<box_materials[0].size();++i)item_db.find(box_materials[0][i])->type=types[i];
+        pet_db.clear();finish_player();
     }
     script_free_code(open_box);script_free_code(catalogue);script_free_code(boxes);script_free_code(enchanter);
     script_free_code(gold);script_free_code(recover);script_free_code(designer);

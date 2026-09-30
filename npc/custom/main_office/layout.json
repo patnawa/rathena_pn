@@ -281,6 +281,20 @@
       "unique_name": "Player Settings#O"
     },
     {
+      "name": "Pet Recovery",
+      "map": "pn_office",
+      "npc": [
+        134,
+        44
+      ],
+      "approach": [
+        134,
+        43
+      ],
+      "source": "PN Pet Recovery",
+      "unique_name": "Pet Recovery#O"
+    },
+    {
       "name": "Directory",
       "map": "pn_train",
       "npc": [

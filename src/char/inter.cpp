@@ -21,6 +21,7 @@
 #include <common/timer.hpp>
 
 #include "char.hpp"
+#include <custom/global_point.hpp>
 #include "char_logif.hpp"
 #include "char_mapif.hpp"
 #include "inter.hpp"
@@ -1279,6 +1280,12 @@ int32 mapif_parse_WisToGM(int32 fd)
 int32 mapif_parse_Registry(int32 fd)
 {
 	uint32 account_id = RFIFOL(fd, 4), char_id = RFIFOL(fd, 8);
+	// Final offline reconnect saves remain valid for unrelated registries.
+	// Keys used by durable point receipts require the current map/character owner.
+	auto owner=char_get_onlinedb().find(account_id);
+	const bool current_owner=owner!=char_get_onlinedb().end() && owner->second && owner->second->char_id==char_id &&
+	   owner->second->server>=0 && owner->second->server<MAX_MAP_SERVERS &&
+	   map_server[owner->second->server].fd==fd;
 	uint16 count = RFIFOW(fd, 12);
 
 	if( count ) {
@@ -1294,17 +1301,21 @@ int32 mapif_parse_Registry(int32 fd)
 			std::string key( src_key, lenkey );
 			cursor += static_cast<decltype(cursor)>( lenkey + 1 );
 
-			uint32  index = RFIFOL(fd, cursor);
+			uint32 index;memcpy(&index,RFIFOP(fd,cursor),sizeof(index));
 			cursor += 4;
 
 			switch (RFIFOB(fd, cursor++)) {
 				// int32
-				case 0:
-					inter_savereg( account_id, char_id, key.c_str(), index, RFIFOQ( fd, cursor ), nullptr, false );
+				case 0: {
+					int64 value;memcpy(&value,RFIFOP(fd,cursor),sizeof(value));
+					if(current_owner || index || !pn_global_point::protected_key(sql_handle,account_id,char_id,key.c_str()))
+						inter_savereg( account_id, char_id, key.c_str(), index, value, nullptr, false );
 					cursor += 8;
 					break;
+				}
 				case 1:
-					inter_savereg( account_id, char_id, key.c_str(), index, 0, nullptr, false );
+					if(current_owner || index || !pn_global_point::protected_key(sql_handle,account_id,char_id,key.c_str()))
+						inter_savereg( account_id, char_id, key.c_str(), index, 0, nullptr, false );
 					break;
 				// str
 				case 2:

@@ -5764,7 +5764,7 @@ a rune and has the appropriate raw materials in their inventory.
 
 ---------------------------------------
 
-*successremovecards <equipment slot>;
+*successremovecards <equipment slot>{,<zeny fee>,<material ID 1>,<material ID 2>};
 
 This command will remove all cards of the cards slots defined in db/item_db.yml
 from the item found in the specified equipment slot of the invoking character,
@@ -5776,11 +5776,24 @@ binding, expiry, random options, and synthetic enchant slots. The command first
 checks the complete card output, then unequips and compare-and-swaps the exact
 inventory record. It returns 1 after a completed operation (including a no-card
 no-op), or 0 if validation, output capacity, or the compare-and-swap fails. On a
-0 result, neither the equipment nor any cards are consumed or duplicated.
+0 result, the command does not consume the equipment or duplicate cards.
+Changes made by equipment/quest scripts during validation are not rolled back.
+
+The optional three fee arguments must be supplied together. A completed paid
+operation charges the nonnegative Zeny fee and one of each of two distinct Etc
+material IDs. Materials must be in inventory and not equipped or registered for
+equipment switching. Bound, rental, and other material metadata are consumed
+from the selected existing stack; no generic replacement/refund is created.
+Fees are revalidated after unequip callbacks and returned-card delivery, and
+charged only after the requested outcome commits, before re-equip callbacks.
+A technical abort returns 0 without charging the fee or consuming fee materials.
+Paid operation on an item with no physical cards returns 0; the original no-fee
+form retains its historical successful no-op behavior. Do not precharge these
+fees in the calling script or reconstruct materials with getitem on failure.
 
 ---------------------------------------
 
-*failedremovecards <equipment slot>,<type>;
+*failedremovecards <equipment slot>,<type>{,<zeny fee>,<material ID 1>,<material ID 2>};
 
 This command will remove all cards from the item found in the specified
 equipment slot of the invoking character. 'type' determines what happens to the
@@ -5797,8 +5810,10 @@ Retained equipment is modified in place with all metadata and its unique ID
 preserved. Card-return capacity and the exact equipped inventory record are
 validated before commit. The command returns 1 after a completed outcome
 (including a no-card no-op), or 0 if validation, capacity, or compare-and-swap
-fails. A 0 result leaves the equipment/cards unchanged so a caller can safely
-refund any separately charged service cost.
+fails. The optional fee arguments have the same requirements and atomic payment
+behavior as successremovecards. Every completed advertised outcome, including
+harmless failure, charges the fee; technical aborts do not. Changes made by
+equipment/quest callbacks themselves are not rolled back.
 
 ---------------------------------------
 
@@ -11988,3 +12003,29 @@ Set position for NPC dialog in pixels.
 Set position for NPC dialog in screen size percent.
 
 ---------------------------------------
+
+---------------------------------------
+
+*getpetreward(<egg id>,<quantity>{,<material id>,<material quantity>})
+
+PN atomic pet reward/exchange for the attached character. Returns 1 when an
+immutable transaction is submitted, or 0 if it cannot start. A submitted request
+is still pending; its character-server acknowledgement owns the final outcome.
+Do not separately delete the material or award the pet. Payment, pet identity,
+and the recoverable entitlement commit together. Unclaimed rewards remain owned
+by the original character and can be recovered with @petrewards or on login.
+
+Quantity must be 1..MAX_INVENTORY. Both optional material arguments must be given
+together and positive. Eligible material stacks are consumed in inventory order;
+equipped and equipment-switch items are excluded. Remaining metadata is preserved.
+This command does not make surrounding script registry or quest changes atomic.
+Do not grant completion-dependent progress merely because it returned 1.
+
+Example: getpetreward(9123,1,1000103,30); // Little Manager for 30 Barmeal Tickets
+
+*getordinaryitem <item id>,<amount>{,<account id>};
+
+Custom synchronous getitem variant for ordinary reward domains. Rejects items
+classified as PetEgg or registered as eggs in the current pet database. Rejection
+delivers nothing and displays a message. Verify inventory counts before consuming
+a source item or charging currency. Other delivery rules match getitem.

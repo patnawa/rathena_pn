@@ -17,6 +17,7 @@
 #include "common/timer.hpp"
 #include "custom/shop_commit.hpp"
 #include "custom/shop_sql.inc"
+#include "custom/pet_entitlement.hpp"
 
 static int checks=0;
 static void require(bool ok,const char* label){if(!ok){std::cerr<<"FAIL: "<<label<<std::endl;std::abort();}++checks;}
@@ -37,6 +38,7 @@ static void connect_db(){
     require(result("SELECT DATABASE()") == "shop_recovery_probe|\n","fixture DB guard");
     std::strcpy(schema_config.inventory_db,"inventory");std::strcpy(schema_config.char_db,"char");
     std::strcpy(schema_config.acc_reg_num_table,"acc_reg_num");
+    std::strcpy(schema_config.pet_db,"pet");
 }
 static std::string state(bool receipts=true){
     std::string value=result("SELECT char_id,account_id,zeny,uniqueitem_counter FROM `char` ORDER BY char_id")+
@@ -92,9 +94,22 @@ static void newer(){
     sql("UPDATE market SET amount=2 WHERE nameid=501");
     sql("UPDATE acc_reg_num SET value=123 WHERE account_id=990013 AND `key`='#CASHPOINTS'");
 }
+#include "pet_entitlement_sql_cases.inc"
+#include "pet_mail_sql_cases.inc"
+#include "pet_floor_sql_cases.inc"
+#include "point_asset_sql_cases.inc"
+#include "point_global_sql_cases.inc"
+
 extern "C" int __wrap_main(int argc,char** argv){
     malloc_init();timer_init();connect_db();const std::string mode=argc>1?argv[1]:"normal";
     auto r=request();
+    if(mode.rfind("global-",0)==0)return global_point_cases(mode);
+    if(mode.rfind("floor-pet",0)==0)return pet_floor_sql_cases(mode);
+    if(mode=="point-assets")return point_asset_cases();
+    if(mode=="pet-assets")return pet_asset_cases();
+    if(mode=="pet-mail")return pet_mail_cases();
+    if(mode=="pet-retirement")return pet_retirement_cases();
+    if(mode.rfind("pet-",0)==0)return pet_cases(mode);
     if(mode=="race-a" || mode=="race-b"){
         const bool second=mode=="race-b";
         r.stock_count=1;r.stocks[0].before=1;r.stocks[0].after=0;r.wallet_after=900;r.items[3]={};

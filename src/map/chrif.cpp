@@ -1,3 +1,4 @@
+#include <custom/item_use.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -275,6 +276,7 @@ int32 chrif_isconnected(void) {
  *  CSAVE_CART: Character changed cart data
  */
 int32 chrif_save(map_session_data *sd, int32 flag) {
+	if(sd && pn_item_use_save_defer(sd,flag))return -1;
 	// The bank commits inventory, wallet and account registry together. Ordinary
 	// saves resume after its acknowledgement; sending them now breaks atomicity.
 	if (sd && pc_transaction_pending(sd)) return -1;

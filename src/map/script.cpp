@@ -1,3 +1,4 @@
+#include <custom/item_use.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -2670,6 +2671,8 @@ struct script_code* parse_script_( const char *src, const char *file, int32 line
 	code->local.arrays = nullptr;
 	return code;
 }
+
+#include <custom/item_use_script.inc>
 
 /// Returns the player attached to this script, identified by the rid.
 /// If there is no player attached, the script is terminated.
@@ -7790,6 +7793,16 @@ BUILDIN_FUNC(getitem)
 	if( sd == nullptr ) // no target
 		return SCRIPT_CMD_SUCCESS;
 
+	// Ordinary-only rewards are synchronous: callers may verify delivery before payment.
+	if (!strcmp(command,"getordinaryitem") && (id->type==IT_PETEGG || pet_db_search(nameid,PET_EGG))) {
+		clif_displaymessage(sd->fd,"This reward requires an ordinary item.");
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	const auto pet_result=pn_pet_grant(*sd,it,amount);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
+
 	//Check if it's stackable.
 	if( !itemdb_isstackable2( id.get() ) ){
 		get_count = 1;
@@ -7799,8 +7812,7 @@ BUILDIN_FUNC(getitem)
 
 	for (i = 0; i < amount; i += get_count)
 	{
-		// if not pet egg
-		if (!pet_create_egg(sd, nameid))
+		// Pet outputs were submitted as one immutable batch above.
 		{
 			e_additem_result flag = pc_additem( sd, &it, get_count, LOG_TYPE_SCRIPT );
 
@@ -7956,6 +7968,10 @@ BUILDIN_FUNC(getitem2)
 			}
 		}
 
+		if(amount<=0)return SCRIPT_CMD_SUCCESS;
+		const auto pet_result=pn_pet_grant(*sd,item_tmp,amount);
+		if(pet_result!=pn_pet_grant_result::NotPet)
+			return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 		int32 get_count = 0;
 	
 		//Check if it's stackable.
@@ -7967,8 +7983,7 @@ BUILDIN_FUNC(getitem2)
 
 		for (int32 i = 0; i < amount; i += get_count)
 		{
-			// if not pet egg
-			if (!pet_create_egg(sd, nameid))
+			// Pet outputs were submitted as one immutable batch above.
 			{
 				e_additem_result flag = pc_additem( sd, &item_tmp, get_count, LOG_TYPE_SCRIPT );
 
@@ -8023,6 +8038,9 @@ BUILDIN_FUNC(rentitem) {
 	it.identify = 1;
 	it.expire_time = (uint32)(time(nullptr) + seconds);
 	it.bound = BOUND_NONE;
+	const auto pet_result=pn_pet_grant(*sd,it,1);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 
 	if( (flag = pc_additem(sd, &it, 1, LOG_TYPE_SCRIPT)) )
 	{
@@ -8134,6 +8152,9 @@ BUILDIN_FUNC(rentitem2) {
 		it.enchantgrade = static_cast<e_enchantgrade>(grade);
 	}
 
+	const auto pet_result=pn_pet_grant(*sd,it,1);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 	unsigned char flag = 0;
 
 	if( (flag = pc_additem(sd, &it, 1, LOG_TYPE_SCRIPT)) ) {
@@ -8199,6 +8220,11 @@ BUILDIN_FUNC(getnameditem)
 	item_tmp.card[0]=CARD0_CREATE; //we don't use 255! because for example SIGNED WEAPON shouldn't get TOP10 BS Fame bonus [Lupus]
 	item_tmp.card[2]=GetWord(tsd->status.char_id,0);
 	item_tmp.card[3]=GetWord(tsd->status.char_id,1);
+	const auto pet_result=pn_pet_grant(*sd,item_tmp,1);
+	if(pet_result!=pn_pet_grant_result::NotPet) {
+		script_pushint(st,pet_result==pn_pet_grant_result::Pending?1:0);
+		return SCRIPT_CMD_SUCCESS;
+	}
 	if(pc_additem(sd,&item_tmp,1,LOG_TYPE_SCRIPT)) {
 		script_pushint(st,0);
 		return SCRIPT_CMD_SUCCESS;	//Failed to add item, we will not drop if they don't fit
@@ -8445,7 +8471,7 @@ static void buildin_delitem_delete(map_session_data* sd, int32 idx, int32* amoun
 	{
 		if( itemdb_type(itm->nameid) == IT_PETEGG && itm->card[0] == CARD0_PET )
 		{// delete associated pet
-			intif_delete_petdata(MakeDWord(itm->card[1], itm->card[2]));
+			if(!pn_item_use_active(sd))intif_delete_petdata(MakeDWord(itm->card[1], itm->card[2]));
 		}
 		switch(loc) {
 			case TABLE_CART:
@@ -11763,11 +11789,8 @@ BUILDIN_FUNC(makepet)
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
-
-	intif_create_pet( sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str() );
-
-	return SCRIPT_CMD_SUCCESS;
+	item egg{};egg.nameid=pet->EggID;egg.identify=1;
+	return pn_pet_grant(*sd,egg,1)==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 }
 
 /**
@@ -14960,7 +14983,76 @@ static bool script_add_removed_cards(map_session_data* sd, const std::vector<s_s
 	return true;
 }
 
-static bool script_remove_equipment_cards(map_session_data* sd, int32 position, e_script_card_removal mode) {
+struct s_script_card_removal_payment {
+	bool enabled = false;
+	int64 zeny = 0;
+	t_itemid materials[2] = {};
+	int16 indices[2] = { -1, -1 };
+};
+
+static bool script_read_card_removal_payment(script_state* st, int32 argument,
+	s_script_card_removal_payment& payment) {
+	if (!script_hasdata(st, argument)) {
+		return true;
+	}
+	if (!script_hasdata(st, argument + 2)) {
+		return false;
+	}
+	payment.enabled = true;
+	payment.zeny = script_getnum64(st, argument);
+	if (payment.zeny < 0 || payment.zeny > MAX_ZENY) {
+		return false;
+	}
+	for (int32 i = 0; i < 2; ++i) {
+		const int64 id = script_getnum64(st, argument + 1 + i);
+		if (id <= 0 || id > UINT32_MAX) {
+			return false;
+		}
+		payment.materials[i] = static_cast<t_itemid>(id);
+		auto data = item_db.find(payment.materials[i]);
+		// Fee materials cannot alias either equipment or returned card outputs.
+		if (data == nullptr || data->type != IT_ETC) {
+			return false;
+		}
+	}
+	return payment.materials[0] != payment.materials[1];
+}
+
+static bool script_check_card_removal_payment(map_session_data* sd, s_script_card_removal_payment& payment) {
+	if (!payment.enabled) {
+		return true;
+	}
+	if (pc_transaction_locked(sd) || sd->status.zeny < payment.zeny) {
+		return false;
+	}
+	for (int32 i = 0; i < 2; ++i) {
+		const int16 index = pc_search_inventory(sd, payment.materials[i]);
+		if (index < 0 || index >= sd->status.inventory_slots || sd->inventory_data[index] == nullptr ||
+			sd->inventory_data[index]->nameid != payment.materials[i] ||
+			sd->inventory_data[index]->type != IT_ETC ||
+			sd->inventory.u.items_inventory[index].equip || sd->inventory.u.items_inventory[index].equipSwitch) {
+			return false;
+		}
+		payment.indices[i] = index;
+	}
+	return true;
+}
+
+static void script_commit_card_removal_payment(map_session_data* sd, const s_script_card_removal_payment& payment) {
+	if (!payment.enabled) {
+		return;
+	}
+	// The post-callback preflight establishes every pc_payzeny/pc_delitem
+	// precondition. No script callbacks occur between it and these deductions;
+	// distinct unequipped Etc materials cannot overlap the card/item mutation.
+	pc_payzeny(sd, payment.zeny, LOG_TYPE_SCRIPT);
+	for (int16 index : payment.indices) {
+		pc_delitem(sd, index, 1, 8, 0, LOG_TYPE_SCRIPT);
+	}
+}
+
+static bool script_remove_equipment_cards(map_session_data* sd, int32 position, e_script_card_removal mode,
+	s_script_card_removal_payment payment = {}) {
 	if (!equip_index_check(position)) {
 		return false;
 	}
@@ -14994,10 +15086,15 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 	// Match the historical no-card behavior: nothing is destroyed and no
 	// visual effect is shown.
 	if (cards.empty()) {
-		return true;
+		return !payment.enabled;
+	}
+	if (!script_check_card_removal_payment(sd, payment)) {
+		return false;
 	}
 
 	if (mode == e_script_card_removal::HARMLESS) {
+		script_commit_card_removal_payment(sd, payment);
+		if (payment.enabled) pc_show_questinfo(sd);
 		clif_misceffect(*sd, NOTIFYEFFECT_REFINE_FAILURE);
 		return true;
 	}
@@ -15027,7 +15124,8 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 
 	// Unequip scripts may change weight, capacity, or other inventory stacks.
 	// Repeat the full output preflight against the post-unequip state.
-	if (returns_cards && !script_can_return_removed_cards(sd, cards)) {
+	if ((returns_cards && !script_can_return_removed_cards(sd, cards)) ||
+		!script_check_card_removal_payment(sd, payment)) {
 		pc_equipitem(sd, index, equipped_position);
 		return false;
 	}
@@ -15041,7 +15139,7 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 	// pc_additem does not run item scripts for these validated card outputs, but
 	// retain the exact compare-and-swap guard immediately before commit.
 	if (memcmp(&current_item, &expected_item, sizeof(struct item)) != 0 ||
-		sd->inventory_data[index] != selected_data) {
+		sd->inventory_data[index] != selected_data || !script_check_card_removal_payment(sd, payment)) {
 		if (script_rollback_removed_cards(sd, additions) &&
 			memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
 			sd->inventory_data[index] == selected_data) {
@@ -15051,11 +15149,12 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 	}
 
 	if (mode == e_script_card_removal::DESTROY_BOTH || mode == e_script_card_removal::DESTROY_ITEM) {
-		if (pc_delitem(sd, index, 1, 0, 2, LOG_TYPE_SCRIPT) != 0) {
+		if (pc_delitem(sd, index, 1, payment.enabled ? 8 : 0, 2, LOG_TYPE_SCRIPT) != 0) {
 			script_rollback_removed_cards(sd, additions);
 			pc_equipitem(sd, index, equipped_position);
 			return false;
 		}
+		script_commit_card_removal_payment(sd, payment);
 	} else {
 		log_pick_pc(sd, LOG_TYPE_SCRIPT, -1, &current_item);
 		for (const s_script_removed_card& card : cards) {
@@ -15065,10 +15164,12 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 
 		clif_delitem(*sd, index, 1, mode == e_script_card_removal::SUCCESS ? 3 : 2);
 		clif_additem(sd, index, 1, 0);
+		script_commit_card_removal_payment(sd, payment);
 		// Mutation is complete even if a map/item rule prevents re-equipping.
 		pc_equipitem(sd, index, equipped_position);
 	}
 
+	if (payment.enabled) pc_show_questinfo(sd);
 	clif_misceffect(*sd, mode == e_script_card_removal::SUCCESS ?
 		NOTIFYEFFECT_REFINE_SUCCESS : NOTIFYEFFECT_REFINE_FAILURE);
 	return true;
@@ -15076,7 +15177,7 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 
 /// Removes all physical cards from the equipped item in place and returns them.
 /// Returns 1 on commit (or a harmless no-op), 0 if validation/preflight/CAS fails.
-/// successremovecards <slot>;
+/// successremovecards <slot>{,<fee>,<material1>,<material2>};
 BUILDIN_FUNC(successremovecards) {
 	map_session_data* sd;
 
@@ -15085,13 +15186,14 @@ BUILDIN_FUNC(successremovecards) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	script_pushint(st, script_remove_equipment_cards(sd, script_getnum(st, 2),
-		e_script_card_removal::SUCCESS) ? 1 : 0);
+	s_script_card_removal_payment payment;
+	script_pushint(st, script_read_card_removal_payment(st, 3, payment) &&
+		script_remove_equipment_cards(sd, script_getnum(st, 2), e_script_card_removal::SUCCESS, payment) ? 1 : 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
 /// Removes all physical cards using the requested historical failure outcome.
-/// failedremovecards <slot>, <type>;
+/// failedremovecards <slot>, <type>{,<fee>,<material1>,<material2>};
 BUILDIN_FUNC(failedremovecards) {
 	map_session_data* sd;
 
@@ -15110,7 +15212,9 @@ BUILDIN_FUNC(failedremovecards) {
 		mode = e_script_card_removal::DESTROY_ITEM;
 	}
 
-	script_pushint(st, script_remove_equipment_cards(sd, script_getnum(st, 2), mode) ? 1 : 0);
+	s_script_card_removal_payment payment;
+	script_pushint(st, script_read_card_removal_payment(st, 4, payment) &&
+		script_remove_equipment_cards(sd, script_getnum(st, 2), mode, payment) ? 1 : 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -24009,6 +24113,10 @@ BUILDIN_FUNC(getrandgroupitem) {
 	if (!qty)
 		qty = entry->amount;
 
+	const auto pet_result=pn_pet_grant(*sd,item_tmp,qty);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
+
 	//Check if it's stackable.
 	if (!itemdb_isstackable(entry->nameid)) {
 		item_tmp.amount = 1;
@@ -24025,8 +24133,8 @@ BUILDIN_FUNC(getrandgroupitem) {
 	}
 
 	for (i = 0; i < get_count; i++) {
-		// if not pet egg
-		if (!pet_create_egg(sd, entry->nameid)) {
+		// Pet outputs were submitted as one immutable batch above.
+		{
 			e_additem_result flag = pc_additem( sd, &item_tmp, item_tmp.amount, LOG_TYPE_SCRIPT );
 
 			if( flag != ADDITEM_SUCCESS ){
@@ -29085,8 +29193,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setcastledata,"sii"),
 	BUILDIN_DEF(requestguildinfo,"i?"),
 	BUILDIN_DEF(getequipcardcnt,"i"),
-	BUILDIN_DEF(successremovecards,"i"),
-	BUILDIN_DEF(failedremovecards,"ii"),
+	BUILDIN_DEF(successremovecards,"i???"),
+	BUILDIN_DEF(failedremovecards,"ii???"),
 	BUILDIN_DEF(marriage,"s"),
 	BUILDIN_DEF2(wedding_effect,"wedding",""),
 	BUILDIN_DEF(divorce,"?"),

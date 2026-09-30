@@ -52,7 +52,8 @@ def run(build, source):
     def compile_one(path):
         target = build / (path.stem + '.o')
         stamp = target.with_suffix('.sha256')
-        fingerprint = hashlib.sha256(path.read_bytes() + repr(flags).encode()).hexdigest()
+        dependencies = b''.join(p.read_bytes() for p in sorted((ROOT / 'src/custom').glob('*')) if p.is_file()) if path.name == 'script.cpp' else b''
+        fingerprint = hashlib.sha256(path.read_bytes() + dependencies + repr(flags).encode()).hexdigest()
         if target.exists() and stamp.exists() and stamp.read_text() == fingerprint:
             return target
         print('Compiling ' + str(path) + ' SHA256=' + hashlib.sha256(path.read_bytes()).hexdigest(), flush=True)
@@ -75,7 +76,7 @@ def run(build, source):
     subprocess.run(['g++'] + sanitize + ['-o', str(binary)] +
                    [str(p) for p in objects + support + libraries] +
                    ['-Wl,--wrap=' + name for name in wrappers] +
-                   ['-lz', '-ldl', '-lmysqlclient', '-lzstd', '-lssl', '-lcrypto', '-lresolv', '-lm'],
+                   ['-lz', '-ldl', '-lmysqlclient', '-l:libzstd.so.1', '-lssl', '-lcrypto', '-lresolv', '-lm'],
                    cwd=ROOT, check=True)
     result = subprocess.run([str(binary), str(source)], cwd=ROOT, capture_output=True, text=True, timeout=60)
     print(result.stdout, end=''); print(result.stderr, end='')

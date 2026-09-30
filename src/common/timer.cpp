@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "timer.hpp"
+#include "runtime_metrics.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -366,6 +367,7 @@ t_tick do_timer(t_tick tick)
 		diff = DIFF_TICK(timer_data[tid].tick, tick);
 		if( diff > 0 )
 			break; // no more expired timers to process
+		pn_metrics::runtime.timer_late.observe(static_cast<uint64_t>(-diff));
 
 		// remove timer
 		BHEAP_POP(timer_heap, DIFFTICK_MINTOPCMP);
@@ -408,6 +410,10 @@ t_tick do_timer(t_tick tick)
 		}
 	}
 
+	const t_tick finished=gettick_nocache();
+	pn_metrics::runtime.dispatch.observe(pn_metrics::Runtime::elapsed(finished,tick));
+	if(pn_metrics::runtime.report_due(finished))
+		ShowInfo("PN_METRICS %s\n",pn_metrics::runtime.report(finished,time(nullptr)).c_str());
 	return cap_value(diff, TIMER_MIN_INTERVAL, TIMER_MAX_INTERVAL);
 }
 

@@ -53,7 +53,7 @@ class ReleaseRunnerTest(unittest.TestCase):
             check = report['checks'][-1]
             self.assertEqual(check['name'], 'fixture.py')
             self.assertFalse(check['passed'])
-            self.assertIn('regression must execute', Path(check['log']).read_text(encoding='utf-8'))
+            self.assertIn('regression must execute', (path.parent / check['log']).read_text(encoding='utf-8'))
 
     def test_failure_retains_output_and_exit_status(self):
         with self.fixture('print("defect evidence"); raise SystemExit(7)') as path:
@@ -63,7 +63,7 @@ class ReleaseRunnerTest(unittest.TestCase):
             check = report['checks'][-1]
             self.assertEqual(check['status'], 'failed')
             self.assertEqual(check['exit_code'], 7)
-            self.assertIn('defect evidence', Path(check['log']).read_text(encoding='utf-8'))
+            self.assertIn('defect evidence', (path.parent / check['log']).read_text(encoding='utf-8'))
             self.assertFalse(report['passed'])
 
     def test_timeout_retains_failed_check_and_diagnostic(self):
@@ -78,7 +78,7 @@ class ReleaseRunnerTest(unittest.TestCase):
             self.assertEqual(check['status'], 'failed')
             self.assertFalse(check['passed'])
             self.assertIn('timed out', check['error'])
-            self.assertIn('timed out', Path(check['log']).read_text(encoding='utf-8'))
+            self.assertIn('timed out', (path.parent / check['log']).read_text(encoding='utf-8'))
 
     def test_missing_yaml_dependency_still_writes_report(self):
         with self.fixture('print("not reached")') as path, patch.dict(sys.modules, {'yaml': None}):
@@ -99,17 +99,18 @@ class ReleaseRunnerTest(unittest.TestCase):
             self.assertEqual(check['name'], 'fixture.py')
             self.assertEqual(check['status'], 'failed')
             self.assertEqual(check['error'], 'KeyboardInterrupt')
-            self.assertIn('KeyboardInterrupt', Path(check['log']).read_text(encoding='utf-8'))
+            self.assertIn('KeyboardInterrupt', (path.parent / check['log']).read_text(encoding='utf-8'))
 
     def test_successful_source_run_retains_all_logs(self):
         with self.fixture('print("regression passed")') as path:
             release_checks.main()
             report = json.loads(path.read_text(encoding='utf-8'))
             self.assertTrue(report['passed'])
+            self.assertFalse(Path(report['checks'][1]['log']).is_absolute())
             self.assertEqual(len(report['checks']), 3)
             self.assertTrue(all(check['status'] == 'passed' for check in report['checks']))
-            self.assertIn('regression passed', Path(report['checks'][1]['log']).read_text(encoding='utf-8'))
-            self.assertIn('compatibility passed', Path(report['checks'][2]['log']).read_text(encoding='utf-8'))
+            self.assertIn('regression passed', (path.parent / report['checks'][1]['log']).read_text(encoding='utf-8'))
+            self.assertIn('compatibility passed', (path.parent / report['checks'][2]['log']).read_text(encoding='utf-8'))
 
     def test_full_startup_rejects_errors_timeouts_and_candidate_drift(self):
         for failure in ('diagnostic', 'timeout', 'drift'):

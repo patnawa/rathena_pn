@@ -496,6 +496,7 @@ struct spawn_data {
 };
 
 struct flooritem_data : public block_list {
+	uint64 pet_claim_token=0; // Reserved raw-pet source; never an encoded pet ID.
 	unsigned char subx,suby;
 	int32 cleartimer;
 	int32 first_get_charid,second_get_charid,third_get_charid;

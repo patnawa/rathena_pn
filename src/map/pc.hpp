@@ -14,6 +14,7 @@
 #include <common/strlib.hpp>// StringBuf
 #include <common/timer.hpp>
 #include <custom/bank_state.hpp>
+#include <custom/item_use.hpp>
 #include <custom/market_state.hpp>
 #include <custom/mail_state.hpp>
 #include <custom/pair_state.hpp>
@@ -384,6 +385,7 @@ struct s_qi_display {
 	e_questinfo_markcolor color;
 };
 
+struct PnItemUseState;
 class map_session_data : public block_list {
 public:
 	struct unit_data ud;
@@ -919,6 +921,7 @@ public:
 	pn_mail_state mail_companion;
 	pn_pair_state pair_commit;
 	pn_shop_state shop_commit;
+	std::shared_ptr<PnItemUseState> item_use;
 	pn_bank_state bank_ui; ///< One account bank operation, locked until SQL commit.
 	pn_storage::State multi_storage; ///< Tagged personal storage loads and atomic transfers.
 
@@ -1172,10 +1175,10 @@ extern JobDatabase job_db;
 #define pc_isidle_mer(sd)     ( (sd)->md && ( (sd)->chatID || (sd)->state.vending || (sd)->state.buyingstore || DIFF_TICK(last_tick, (sd)->idletime_mer) >= battle_config.mer_idle_no_share ) )
 #define pc_istrading(sd)      ( (sd)->npc_id || (sd)->state.vending || (sd)->state.buyingstore || (sd)->state.trading )
 static inline bool pc_transaction_pending(const map_session_data* sd) {
-	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending || sd->pair_commit.pending || sd->shop_commit.pending;
+	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending || sd->pair_commit.pending || sd->shop_commit.pending || pn_item_use_capture_waiting(sd);
 }
 static inline bool pc_transaction_locked(const map_session_data* sd) {
-	return (sd->bank_ui.pending && !sd->bank_ui.applying) ||
+	return pn_item_use_capture_waiting(sd) || (sd->bank_ui.pending && !sd->bank_ui.applying) ||
 		(sd->mail_companion.pending && !sd->mail_companion.applying) ||
 		(sd->pair_commit.pending && !sd->pair_commit.applying) ||
 		(sd->shop_commit.pending && !sd->shop_commit.applying) ||
@@ -1485,8 +1488,9 @@ public:
 	PcItemDeliveryScope& operator=(const PcItemDeliveryScope&) = delete;
 	void added(int16 index, const item_data& data);
 	void refresh_questinfo();
+	void cancel();
 private:
-	struct Addition { int16 index; t_itemid nameid; uint64 unique_id; uint32 equip; uint32 value_sell; };
+	struct Addition { int16 index; t_itemid nameid; uint64 unique_id; uint32 equip; uint32 value_sell; uint32 expire_time; };
 	map_session_data& sd_;
 	bool owner_ = false, refresh_ = false;
 	std::vector<Addition> additions_;

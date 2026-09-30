@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "account.hpp"
+#include <custom/global_point.hpp>
 
 #include <algorithm> //min / max
 #include <cstdlib>
@@ -139,6 +140,10 @@ static bool account_db_sql_init(AccountDB* self) {
 	if( !db->codepage.empty() && SQL_ERROR == Sql_SetEncoding(sql_handle, db->codepage.c_str()) )
 		Sql_ShowDebug(sql_handle);
 
+	if(!pn_global_point::transactional(sql_handle,"pn_global_point_barriers") || !pn_global_point::transactional(sql_handle,db->global_acc_reg_num_table)){
+		ShowError("Global point adapter requires upgrade_20260929_point_assets.sql and InnoDB.\n");
+		Sql_Free(db->accounts);db->accounts=nullptr;return false;
+	}
 	self->remove_webtokens( self );
 
 	return true;
@@ -722,7 +727,14 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 	return result;
 }
 
-void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id) {
+bool mmo_point_pending(AccountDB* self,uint32 account_id) {
+ return pn_global_point::pending(((AccountDB_SQL*)self)->accounts,account_id);
+}
+bool mmo_point_barrier(AccountDB* self,const pn_shop::Commit& request) {
+ auto* db=(AccountDB_SQL*)self;return pn_global_point::approve(db->accounts,request,db->global_acc_reg_num_table);
+}
+
+void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id, int32 char_server) {
 	Sql* sql_handle = ((AccountDB_SQL*)self)->accounts;
 	AccountDB_SQL* db = (AccountDB_SQL*)self;
 	uint16 count = RFIFOW(fd, 12);
@@ -737,18 +749,24 @@ void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32
 			Sql_EscapeString(sql_handle, esc_key, key);
 			cursor += RFIFOB(fd, cursor) + 1;
 
-			index = RFIFOL(fd, cursor);
+			memcpy(&index,RFIFOP(fd,cursor),sizeof(index));
 			cursor += 4;
 
+			auto* owner=login_get_online_user(account_id);
+			const bool current_owner=char_server>=0 && owner && owner->char_server==char_server;
+			const bool fenced=index==0 && (pn_global_point::pending(sql_handle,account_id,key) ||
+			    (!current_owner && pn_global_point::known_global_key(sql_handle,account_id,key)));
 			switch (RFIFOB(fd, cursor++)) {
 				// int32
-				case 0:
-					if( SQL_ERROR == Sql_Query(sql_handle, "REPLACE INTO `%s` (`account_id`,`key`,`index`,`value`) VALUES ('%" PRIu32 "','%s','%" PRIu32 "','%" PRId64 "')", db->global_acc_reg_num_table, account_id, esc_key, index, RFIFOQ(fd, cursor)) )
+				case 0: {
+					int64 value;memcpy(&value,RFIFOP(fd,cursor),sizeof(value));
+					if( !fenced && SQL_ERROR == Sql_Query(sql_handle, "REPLACE INTO `%s` (`account_id`,`key`,`index`,`value`) VALUES ('%" PRIu32 "','%s','%" PRIu32 "','%" PRId64 "')", db->global_acc_reg_num_table, account_id, esc_key, index, value) )
 						Sql_ShowDebug(sql_handle);
 					cursor += 8;
 					break;
+				}
 				case 1:
-					if( SQL_ERROR == Sql_Query(sql_handle, "DELETE FROM `%s` WHERE `account_id` = '%" PRIu32 "' AND `key` = '%s' AND `index` = '%" PRIu32 "' LIMIT 1", db->global_acc_reg_num_table, account_id, esc_key, index) )
+					if( !fenced && SQL_ERROR == Sql_Query(sql_handle, "DELETE FROM `%s` WHERE `account_id` = '%" PRIu32 "' AND `key` = '%s' AND `index` = '%" PRIu32 "' LIMIT 1", db->global_acc_reg_num_table, account_id, esc_key, index) )
 						Sql_ShowDebug(sql_handle);
 					break;
 				// str

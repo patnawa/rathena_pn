@@ -143,6 +143,23 @@ def main():
     held=json.loads(args.held.read_text())['item_ids'] if args.held else []
     for item in held:root(inode(item_id(str(item))),'previously observed held item','supplied held-item snapshot')
     for item in (6024,12781):root(inode(item_id(str(item))),'bank exchange output','src/custom/bank_protocol.hpp')
+    # Only current, source-derived catalogs can close a reviewed dynamic line.
+    # Other dynamic services remain explicitly unresolved below.
+    catalog_path=REPO/'npc/custom/dynamic_reward_catalog.json'
+    resolved_dynamic=[]
+    if catalog_path.exists():
+        from dynamic_reward_catalog import validate as validate_catalog
+        catalog=json.loads(catalog_path.read_text())
+        validate_catalog(catalog,REPO)
+        hashes['npc/custom/dynamic_reward_catalog.json']=hashlib.sha256(catalog_path.read_bytes()).hexdigest()
+        covered=set()
+        for recipe in catalog['recipes']:
+            if recipe['source'] not in active:continue
+            covered.add((recipe['source'],recipe['line']))
+            for output in recipe['outputs']:
+                root(inode(output['item_id']),'catalog '+recipe['family'],recipe['source'],recipe['line'])
+        resolved_dynamic=[row for row in dynamic if (row['source'],row['line']) in covered]
+        dynamic=[row for row in dynamic if (row['source'],row['line']) not in covered]
     previous={node:(None,detail) for node,detail in roots.items()};queue=deque(previous)
     while queue:
         parent=queue.popleft()
@@ -171,9 +188,9 @@ def main():
     report={'summary':{'active_npc_files':len(active),'item_definitions':len(items),'item_groups':len(groups),
         'items_with_source_paths':sum(node.startswith('item:') for node in previous),
         'unresolved_catalog_item_ids':len(rows),'unresolved_ids_with_source_paths':sum(row['source_path_found'] for row in rows),
-        'dynamic_grant_lines_not_resolved':len(dynamic),'items_with_source_paths_without_client_metadata':len(no_metadata)},
+        'dynamic_grant_lines_not_resolved':len(dynamic),'dynamic_grant_lines_cataloged':len(resolved_dynamic),'items_with_source_paths_without_client_metadata':len(no_metadata)},
         'acquired_items':[{'item_id':int(node[5:]),'name':items[int(node[5:])].get('AegisName'),'path':trace(node)} for node in sorted(previous) if node.startswith('item:')],
-        'items':rows,'missing_metadata':no_metadata,'dynamic_grants':dynamic,
+        'items':rows,'missing_metadata':no_metadata,'dynamic_grants':dynamic,'cataloged_dynamic_grants':resolved_dynamic,
         'source_sha256':hashes,'metadata_sha256':hashlib.sha256(metadata_raw).hexdigest(),'triage_sha256':hashlib.sha256(triage_path.read_bytes()).hexdigest(),
         'boundary':'Typed source paths, configured barter and achievement outputs prioritize runtime QA; they are not gameplay proof. Conditions, dynamic grants/spawns, prerequisite reachability, loose files and runtime artwork fallbacks remain unverified. Held-item roots, when supplied, are an older snapshot.'}
     args.report.write_text(json.dumps(report,indent=2)+'\n')

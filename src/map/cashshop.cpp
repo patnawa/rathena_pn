@@ -14,7 +14,7 @@
 #include "clif.hpp"
 #include "log.hpp"
 #include "pc.hpp" // s_map_session_data
-#include "pet.hpp" // pet_create_egg
+#include "pet.hpp" // pet_db_search
 
 #if PACKETVER_SUPPORTS_SALES
 struct sale_item_db sale_items;
@@ -454,6 +454,7 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 		return false;
 	}
 
+	bool pet_outputs=false;
 	new_ = 0;
 
 	for( i = 0; i < n; ++i ){
@@ -517,7 +518,9 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 #endif
 		}
 
-		switch( pc_checkadditem_plain( sd, nameid, quantity ) ){
+		const bool pet_output=id->type==IT_PETEGG || pet_db_search(nameid,PET_EGG);
+		pet_outputs |= pet_output;
+		if(!pet_output)switch( pc_checkadditem_plain( sd, nameid, quantity ) ){
 			case CHKADDITEM_EXIST:
 				break;
 
@@ -531,7 +534,7 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 		}
 
 		totalcash += static_cast<uint64>( cash_item->price ) * quantity;
-		totalweight += static_cast<uint64>( itemdb_weight( nameid ) ) * quantity;
+		if(!pet_output)totalweight += static_cast<uint64>( itemdb_weight( nameid ) ) * quantity;
 	}
 
 	// pc_paycash accepts signed 32-bit values; reject before narrowing.
@@ -571,6 +574,18 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 		clif_cashshop_result(sd,0,CASHSHOP_RESULT_ERROR_UNKNOWN);return false;
 	}
 #endif
+	if(pet_outputs) {
+		auto request=pn_shop_request(*sd,pn_shop::Asset);request->response=pn_shop::CashButtonResponse;
+		const int64 preferred=std::min<int64>(kafrapoints,std::min<int64>(totalcash,MAX_KAFRAPOINT));
+		request->kafra_after-=preferred;request->cash_after-=static_cast<int64>(totalcash)-preferred;
+		if(request->kafra_after<0 || request->cash_after<0) {
+			clif_cashshop_result(sd,0,CASHSHOP_RESULT_ERROR_SHORTTAGE_CASH);return false;
+		}
+		std::vector<pn_shop::Grant> grants;
+		for(int j=0;j<n;++j)grants.push_back({item_list[j].itemId,item_list[j].amount,0});
+		if(pn_shop_begin(*sd,request,grants))return true;
+		clif_cashshop_result(sd,0,CASHSHOP_RESULT_ERROR_UNKNOWN);return false;
+	}
 	PcItemDeliveryScope delivery(*sd);
 	if(pc_paycash( sd, static_cast<int32>( totalcash ), static_cast<int32>( kafrapoints ), LOG_TYPE_CASH ) <= 0){
 		clif_cashshop_result( sd, 0, CASHSHOP_RESULT_ERROR_SHORTTAGE_CASH );
@@ -616,27 +631,27 @@ bool cashshop_buylist( map_session_data* sd, uint32 kafrapoints, int32 n, const 
 #endif
 
 		for (uint32 j = 0; j < quantity; j += get_amt) {
-			if( !pet_create_egg( sd, nameid ) ){
-				struct item item_tmp = { 0 };
+			// Pet carts returned through the durable asset path before payment.
+			struct item item_tmp = { 0 };
 
-				item_tmp.nameid = nameid;
-				item_tmp.identify = 1;
+			item_tmp.nameid = nameid;
+			item_tmp.identify = 1;
 
-				switch( pc_additem( sd, &item_tmp, get_amt, LOG_TYPE_CASH ) ){
-					case ADDITEM_OVERWEIGHT:
-						clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_INVENTORY_WEIGHT );
-						return false;
-					case ADDITEM_OVERITEM:
-						clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_INVENTORY_ITEMCNT );
-						return false;
-					case ADDITEM_OVERAMOUNT:
-						clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_OVER_PRODUCT_TOTAL_CNT );
-						return false;
-					case ADDITEM_STACKLIMIT:
-						clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_RUNE_OVERCOUNT );
-						return false;
-				}
+			switch( pc_additem( sd, &item_tmp, get_amt, LOG_TYPE_CASH ) ){
+				case ADDITEM_OVERWEIGHT:
+					clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_INVENTORY_WEIGHT );
+					return false;
+				case ADDITEM_OVERITEM:
+					clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_INVENTORY_ITEMCNT );
+					return false;
+				case ADDITEM_OVERAMOUNT:
+					clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_OVER_PRODUCT_TOTAL_CNT );
+					return false;
+				case ADDITEM_STACKLIMIT:
+					clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_ERROR_RUNE_OVERCOUNT );
+					return false;
 			}
+
 
 			clif_cashshop_result( sd, nameid, CASHSHOP_RESULT_SUCCESS );
 

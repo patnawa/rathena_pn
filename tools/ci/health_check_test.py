@@ -16,6 +16,37 @@ health = importlib.util.module_from_spec(spec); spec.loader.exec_module(health)
 
 
 class HealthTests(unittest.TestCase):
+    def metric(self, now, **changes):
+        data = {key: 0 for key in ('window_ms', 'shop_pending', 'shop_oldest_ms', 'shop_started',
+            'shop_committed', 'shop_rejected', 'shop_retry_attempts', 'shop_refresh_failures', 'shop_busy_refusals')}
+        data.update(version=1, utc=int(now.timestamp()))
+        data.update({prefix+suffix: 0 for prefix in ('timer_late', 'dispatch', 'shop_ack', 'shop_complete')
+                     for suffix in ('_count', '_p50_ms', '_p95_ms', '_p99_ms', '_max_ms')})
+        data.update(changes)
+        return '[Info]: PN_METRICS '+json.dumps(data)
+
+    def test_running_process_with_stalled_purchase_is_unhealthy(self):
+        now = datetime.now(timezone.utc)
+        state = {'Running': True, 'StartedAt': (now-timedelta(hours=1)).isoformat()}
+        with patch.object(health, 'command', side_effect=[json.dumps(state), self.metric(now, shop_pending=1, shop_oldest_ms=31000)]):
+            result = health.inspect_service('rathena-map', 15)
+        self.assertTrue(result['running'])
+        self.assertFalse(result['passed'])
+        self.assertEqual(result['runtime']['latest']['shop_oldest_ms'], 31000)
+
+    def test_metrics_freshness_schema_latency_and_bounded_history(self):
+        now = datetime.now(timezone.utc)
+        self.assertTrue(health.metrics_status('', now, 30)['passed'])
+        self.assertFalse(health.metrics_status('', now, 121)['passed'])
+        for stamp in (now-timedelta(seconds=151), now+timedelta(seconds=6)):
+            self.assertFalse(health.metrics_status(self.metric(stamp), now, 300)['passed'])
+        self.assertFalse(health.metrics_status(self.metric(now, version=True), now, 300)['passed'])
+        self.assertFalse(health.metrics_status(self.metric(now)+'\n[Info]: PN_METRICS {bad}', now, 300)['passed'])
+        self.assertFalse(health.metrics_status(self.metric(now, timer_late_p99_ms=1001), now, 300, 30, 1000)['passed'])
+        result = health.metrics_status('\n'.join(self.metric(now) for _ in range(100)), now, 300)
+        self.assertTrue(result['passed'])
+        self.assertEqual(len(result['trend']), 15)
+
     def test_nonfinite_thresholds_fail_before_inspecting_services(self):
         for option in ('--max-backup-hours', '--min-free-gib', '--max-disk-percent'):
             for value in ('nan', 'inf', '-inf'):

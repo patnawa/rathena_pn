@@ -1,3 +1,4 @@
+#include <custom/pet_floor.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -1116,6 +1117,7 @@ int32 mob_count_sub(block_list *bl, va_list ap) {
  */
 int32 mob_spawn (mob_data *md)
 {
+	md->pet_capture_token=0;
 	int32 i=0;
 	t_tick tick = gettick();
 
@@ -2108,6 +2110,7 @@ static bool mob_ai_sub_hard(mob_data *md, t_tick tick)
 			return true; //Busy attacking?
 
 		fitem = (flooritem_data *)tbl;
+		if(fitem->pet_claim_token){mob_unlocktarget(md,tick);return true;}
 		//Logs items, taken by (L)ooter Mobs [Lupus]
 		log_pick_mob(md, LOG_TYPE_LOOT, fitem->item.amount, &fitem->item);
 
@@ -2597,6 +2600,14 @@ static void mob_item_drop(mob_data *md, std::shared_ptr<s_item_drop_list>& dlist
 		test_autoloot = test_autoloot && sd->m == md->m
 		&& check_distance_blxy(sd, dlist->x, dlist->y, AUTOLOOT_DISTANCE);
 #endif
+	if(pn_pet_floor_raw(ditem->item_data)) {
+		// Keep an owned source until its entitlement receipt is committed. Busy or
+		// unavailable service leaves the visible drop available for a later pickup.
+		int32 id=map_addflooritem(&ditem->item_data,ditem->item_data.amount,dlist->m,dlist->x,dlist->y,
+			dlist->first_charid,dlist->second_charid,dlist->third_charid,0,md->mob_id,true);
+		if(id){auto* floor=BL_CAST(BL_ITEM,map_id2bl(id));if(sd && floor)pn_pet_floor_take(*sd,*floor);return;}
+		dlist->items.push_back(ditem);return;
+	}
 	if( test_autoloot ) {	//Autoloot.
 		struct party_data *p = party_search(sd->status.party_id);
 
@@ -2951,6 +2962,7 @@ static void mob_player_killcounter( map_session_data* sd, const mob_data& md, co
  *------------------------------------------*/
 int32 mob_dead(mob_data *md, block_list *src, int32 type)
 {
+	md->pet_capture_token=0;
 	struct status_data *status;
 	map_session_data *sd = nullptr, *tmpsd[DAMAGELOG_SIZE];
 	map_session_data *first_sd = nullptr, *second_sd = nullptr, *third_sd = nullptr;
@@ -3353,15 +3365,10 @@ int32 mob_dead(mob_data *md, block_list *src, int32 type)
 			if (rnd() % 10000 >= drop_rate)
 				continue;
 
-			if (first_sd != nullptr && it->type == IT_PETEGG) {
-				pet_create_egg(first_sd, entry->nameid);
-				continue;
-			}
-
 			std::shared_ptr<s_item_drop> ditem = mob_setdropitem(entry, 1, md->mob_id);
 
 			//A Rare Drop Global Announce by Lupus
-			if (first_sd != nullptr && entry->rate <= battle_config.rare_drop_announce) {
+			if (first_sd != nullptr && !pn_pet_floor_raw(ditem->item_data) && entry->rate <= battle_config.rare_drop_announce) {
 				char message[128];
 				sprintf(message, msg_txt(nullptr, 541), first_sd->status.name, md->name, it->ename.c_str(), (float)drop_rate / 100);
 				//MSG: "'%s' won %s's %s (chance: %0.02f%%)"
@@ -3522,11 +3529,12 @@ int32 mob_dead(mob_data *md, block_list *src, int32 type)
 				struct item item = {};
 				item.nameid=entry->nameid;
 				item.identify= itemdb_isidentified(item.nameid);
-				clif_mvp_item(mvp_sd,item.nameid);
+				const bool raw_pet=pn_pet_floor_raw(item);
+				if(!raw_pet)clif_mvp_item(mvp_sd,item.nameid);
 				log_mvp_nameid = item.nameid;
 
 				//A Rare MVP Drop Global Announce by Lupus
-				if(temp<=battle_config.rare_drop_announce) {
+				if(!raw_pet && temp<=battle_config.rare_drop_announce) {
 					char message[128];
 					sprintf (message, msg_txt(nullptr,541), mvp_sd->status.name, md->name, i_data->ename.c_str(), temp/100.);
 					//MSG: "'%s' won %s's %s (chance: %0.02f%%)"
@@ -3535,12 +3543,16 @@ int32 mob_dead(mob_data *md, block_list *src, int32 type)
 
 				mob_setdropitem_option( item, entry );
 
-				if((temp = pc_additem(mvp_sd,&item,1,LOG_TYPE_PICKDROP_PLAYER)) != 0) {
+				if(raw_pet){
+					int32 id=map_addflooritem(&item,1,mvp_sd->m,mvp_sd->x,mvp_sd->y,mvp_sd->status.char_id,
+						(second_sd?second_sd->status.char_id:0),(third_sd?third_sd->status.char_id:0),1,md->mob_id,true,DIR_CENTER);
+					if(auto* floor=BL_CAST(BL_ITEM,map_id2bl(id)))pn_pet_floor_take(*mvp_sd,*floor,true);
+				}else if((temp = pc_additem(mvp_sd,&item,1,LOG_TYPE_PICKDROP_PLAYER)) != 0) {
 					clif_additem(mvp_sd,0,0,temp);
 					map_addflooritem(&item,1,mvp_sd->m,mvp_sd->x,mvp_sd->y,mvp_sd->status.char_id,(second_sd?second_sd->status.char_id:0),(third_sd?third_sd->status.char_id:0),1,0,true,DIR_CENTER);
 				}
 
-				if (i_data->flag.broadcast)
+				if (!raw_pet && i_data->flag.broadcast)
 					intif_broadcast_obtain_special_item(mvp_sd, item.nameid, md->mob_id, ITEMOBTAIN_TYPE_MONSTER_ITEM);
 
 				//Logs items, MVP prizes [Lupus]

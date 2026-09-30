@@ -16,7 +16,7 @@ from biosphere_crown_transaction_test import WRAPPERS
 from audit_enchant_upgrades import renewal_records
 ROOT=Path(__file__).resolve().parents[2]
 
-def run(out, source, cash_source):
+def run(out, source, cash_source, fixture=None):
     items={}
     for row in renewal_records(ROOT,'db/item_db.yml'):
         if row['Id'] in {501,502}: items.setdefault(row['Id'],{}).update(row)
@@ -33,6 +33,8 @@ def run(out, source, cash_source):
     buy=buy.replace('npc_buylist(', 'audit_npc_buylist(',1).replace('npc_checknear(sd,map_id2bl(sd->npc_shopid))','fixture_shop')
     cash=src[src.index('static enum e_CASHSHOP_ACK npc_cashshop_process_payment'):src.index(' * Returns the shop currency type')]
     cash=cash[:cash.rfind('/**')].replace('npc_cashshop_buylist(', 'audit_npc_cashshop_buylist(',1).replace('(npc_data *)map_id2bl(sd->npc_shopid)','fixture_shop')
+    legacy=src[src.index('int32 npc_cashshop_buy(map_session_data'):src.index(' * NPC buylist for script-controlled shops')]
+    legacy=legacy[:legacy.rfind('/**')].replace('npc_cashshop_buy(', 'audit_npc_cashshop_buy(',1).replace('npc_cashshop_buylist(', 'audit_npc_cashshop_buylist(')
     pc=(ROOT/'src/map/pc.cpp').read_text()
     deletion=pc[pc.index('char pc_delitem('):pc.index(' * Attempt to drop an item.')]
     deletion=deletion[:deletion.rfind('/*')].replace('pc_delitem(', 'audit_pc_delitem(',1).replace('pc_show_questinfo(sd)','quest(sd)')
@@ -44,14 +46,28 @@ def run(out, source, cash_source):
     # turn async acceptance/refusal into a claimed synchronous delivery result.
     boundary = """
 unsigned durable_boundary_calls=0;
-bool fixture_durable_begin(map_session_data&,std::shared_ptr<pn_shop::Commit>,
- const std::vector<pn_shop::Grant>&,const uint32_t* = nullptr){++durable_boundary_calls;return false;}
+bool durable_allow=false;
+std::shared_ptr<pn_shop::Commit> durable_captured;
+bool audit_pn_shop_plan_inventory(const map_session_data&,pn_shop::Commit&,
+ const std::vector<pn_shop::Grant>&,const uint32_t*,std::vector<pn_shop::Event>&,uint32_t&);
+bool fixture_durable_begin(map_session_data& sd,std::shared_ptr<pn_shop::Commit> request,
+ const std::vector<pn_shop::Grant>& grants,const uint32_t* costs = nullptr){
+ ++durable_boundary_calls;if(!durable_allow)return false;
+ std::vector<pn_shop::Event> events;uint32_t weight=0;
+ if(!audit_pn_shop_plan_inventory(sd,*request,grants,costs,events,weight))return false;
+ durable_captured=request;return true;
+}
 """
+    cash=cash.replace('pn_shop_begin(', 'fixture_durable_begin(')
     buy=buy.replace('pn_shop_begin(', 'fixture_durable_begin(')
     barter=barter.replace('pn_shop_begin(', 'fixture_durable_begin(')
     button=button.replace('pn_shop_begin(', 'fixture_durable_begin(')
+    planner=(ROOT/'src/custom/shop_map.inc').read_text()
+    planner=planner[planner.index('bool pn_shop_plan_inventory('):planner.index('bool pn_shop_begin(')]
+    planner=planner.replace('pn_shop_plan_inventory(', 'audit_pn_shop_plan_inventory(', 1)
+    barter=barter.replace('pn_shop_plan_inventory(', 'audit_pn_shop_plan_inventory(')
     driver=out/'native.cpp'
-    driver.write_text(prefix+(ROOT/'tools/ci/shop_transaction_native_test.cpp').read_text().replace('// FUNCTION','npc_data* fixture_shop=nullptr;\nvoid fixture_cash_result(const map_session_data*,t_itemid,uint16){}\n'+boundary+deletion+buy+cash+barter+button))
+    driver.write_text(prefix+(fixture or ROOT/'tools/ci/shop_transaction_native_test.cpp').read_text().replace('// FUNCTION','npc_data* fixture_shop=nullptr;\nvoid fixture_cash_result(const map_session_data*,t_itemid,uint16){}\n'+'#include <custom/retired_tokens.hpp>\n#include <custom/item_use.hpp>\n'+boundary+planner+deletion+buy+cash+legacy+barter+button))
     flags=['g++','-std=c++17','-O0','-fsanitize=undefined','-fno-sanitize-recover=all','-DPACKETVER=20260219']
     flags+=['-I'+str(ROOT/p) for p in ('src','3rdparty/libconfig','3rdparty/rapidyaml/src','3rdparty/rapidyaml/ext/c4core/src','3rdparty/json/include')]+['-I/usr/include/mysql']
     objects=list((ROOT/'src/map/obj').rglob('*.o'))
@@ -70,3 +86,4 @@ if __name__=='__main__':
         args.build_dir.mkdir(parents=True,exist_ok=True);run(args.build_dir.resolve(),args.source.resolve(),args.cash_source.resolve())
     else:
         with tempfile.TemporaryDirectory(prefix='pn-shop-native-') as d:run(Path(d),args.source.resolve(),args.cash_source.resolve())
+

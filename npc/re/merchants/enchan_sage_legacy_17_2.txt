@@ -223,11 +223,6 @@ ba_in01,87,370,3	script	Lisa#ep172_merchant	20698,{
 -	marketshop	ep172littlemanager00	-1,1000227:172:999999
 
 ba_in01,87,386,3	script	Child Manager ©¬#ep172_pet	EP17_2_CHILD_ADMIN1,{
-	if (checkweight(1201,3) == 0) {
-		mes "- You have too many items.";
-		mes "Please clear your inventory and try again. -";
-		close;
-	}
 	mes "[Child Manager ©¬]";
 	mes "I have a whole bunch of little stuffs!";
 	next;
@@ -247,9 +242,12 @@ ba_in01,87,386,3	script	Child Manager ©¬#ep172_pet	EP17_2_CHILD_ADMIN1,{
 			close;
 		}
 		mes "[Child Manager ©¬]";
-		mes "Have fun with your new friend!";
-		delitem 1000103,30;
-		getitem 9123,1;
+		if (!getpetreward(9123,1,1000103,30)) {
+			mes "The exchange could not start. Your tickets have not been taken. Please try again.";
+			close;
+		}
+		mes "Your exchange is being processed. Your pet reward will be saved even if you disconnect.";
+		mes "If your inventory is full, free space and use @petrewards to collect it.";
 		close;
 	case 2:
 		callshop "ep172littlemanager00";

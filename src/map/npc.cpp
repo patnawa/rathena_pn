@@ -1,6 +1,7 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <common/runtime_identity.hpp>
 #include "npc.hpp"
 
 #include <cerrno>
@@ -2531,6 +2532,19 @@ int32 npc_cashshop_buylist( map_session_data *sd, int32 points, std::vector<s_np
 	if( item_list.empty() || item_list.size() > MAX_INVENTORY || points < 0 || pc_transaction_locked(sd) )
 		return ERROR_TYPE_PURCHASE_FAIL;
 
+	bool durable_cart=false;
+	if(nd->subtype==NPCTYPE_CASHSHOP || nd->subtype==NPCTYPE_ITEMSHOP || nd->subtype==NPCTYPE_POINTSHOP) {
+		for(const auto& entry:item_list)for(int index=0;index<nd->u.shop.count;++index) {
+			const auto itemid=nd->u.shop.shop_item[index].nameid;
+			if(entry.nameid!=itemid && entry.nameid!=itemdb_viewid(itemid))continue;
+			auto output=item_db.find(itemid);
+			durable_cart |= output && (output->type==IT_PETEGG || pet_db_search(itemid,PET_EGG));
+		}
+		if(nd->subtype==NPCTYPE_ITEMSHOP) {
+			auto currency=item_db.find(nd->u.shop.itemshop_nameid);
+			durable_cart |= currency && (currency->type==IT_PETEGG || pet_db_search(currency->nameid,PET_EGG));
+		}
+	}
 	new_ = 0;
 	w = 0;
 	vt = 0; // Global Value
@@ -2551,6 +2565,7 @@ int32 npc_cashshop_buylist( map_session_data *sd, int32 points, std::vector<s_np
 			return ERROR_TYPE_ITEM_ID;
 
 		nameid = item_list[i].nameid = nd->u.shop.shop_item[j].nameid; //item_avail replacement
+		id=item_db.find(nameid);if(!id)return ERROR_TYPE_ITEM_ID;
 		for( int32 previous = 0; previous < i; ++previous ){
 			if( item_list[previous].nameid == nameid )
 				return ERROR_TYPE_PURCHASE_FAIL;
@@ -2566,7 +2581,7 @@ int32 npc_cashshop_buylist( map_session_data *sd, int32 points, std::vector<s_np
 			continue;
 		}
 
-		switch( pc_checkadditem_plain(sd,nameid,amount) )
+		if(!durable_cart)switch( pc_checkadditem_plain(sd,nameid,amount) )
 		{
 			case CHKADDITEM_NEW:
 				new_ += id->inventorySlotNeeded(amount);
@@ -2579,11 +2594,47 @@ int32 npc_cashshop_buylist( map_session_data *sd, int32 points, std::vector<s_np
 		// Payment currencies and pc_paycash accept a signed 32-bit total.
 		if( vt > INT32_MAX )
 			return ERROR_TYPE_MONEY;
-		w += static_cast<int64>( itemdb_weight(nameid) ) * amount;
+		if(!durable_cart)w += static_cast<int64>( itemdb_weight(nameid) ) * amount;
 	}
 
 	if (nd->master_nd) //Script-based shops.
 		return npc_buylist_sub(sd,item_list,nd->master_nd);
+
+	// Paid pet outputs and their entire cart share one immutable transaction.
+	// The planner accounts for slots released by item currency consumption.
+	if(durable_cart) {
+		points=std::min<int64>(points,vt);
+		auto request=pn_shop_request(*sd,pn_shop::Asset);
+		request->response=pn_shop::CashNpcResponse;
+		uint32 costs[MAX_INVENTORY]{};
+		if(nd->subtype==NPCTYPE_CASHSHOP) {
+			request->kafra_after-=points;request->cash_after-=vt-points;
+			if(request->kafra_after<0 || request->cash_after<0)return ERROR_TYPE_MONEY;
+		}else if(nd->subtype==NPCTYPE_POINTSHOP) {
+			if(points)return ERROR_TYPE_PURCHASE_FAIL;
+			const char* key=nd->u.shop.pointshop_str;const int64 balance=pc_readreg2(sd,key);
+			if(balance<vt)return ERROR_TYPE_MONEY;
+			if(!strcmp(key,CASHPOINT_VAR))request->cash_after-=vt;
+			else if(!strcmp(key,KAFRAPOINT_VAR))request->kafra_after-=vt;
+			else {
+				auto& point=request->point;point.scope=key[0]=='@'?pn_shop::SessionPoint:key[0]=='#'?(key[1]=='#'?pn_shop::GlobalPoint:pn_shop::AccountPoint):pn_shop::CharacterPoint;
+				safestrncpy(point.key,key,sizeof(point.key));point.before=balance;point.after=balance-vt;
+			}
+		}else{
+			if(points || !item_db.find(nd->u.shop.itemshop_nameid))return ERROR_TYPE_PURCHASE_FAIL;
+			int64 remaining=vt;
+			for(int index=0;index<sd->status.inventory_slots && remaining>0;++index) {
+				const auto& material=sd->inventory.u.items_inventory[index];
+				if(material.nameid!=nd->u.shop.itemshop_nameid || material.amount<=0 || !sd->inventory_data[index] ||
+				   !pc_can_sell_item(sd,&material,nd->subtype))continue;
+				costs[index]=std::min<int64>(remaining,material.amount);remaining-=costs[index];
+			}
+			if(remaining)return ERROR_TYPE_PURCHASE_FAIL;
+		}
+		std::vector<pn_shop::Grant> grants;
+		for(const auto& entry:item_list)grants.push_back({entry.nameid,static_cast<uint32>(entry.qty),0});
+		return pn_shop_begin(*sd,request,grants,costs)?pn_shop::cash_pending:ERROR_TYPE_PURCHASE_FAIL;
+	}
 
 	if( w + sd->weight > sd->max_weight )
 		return ERROR_TYPE_INVENTORY_WEIGHT;
@@ -2600,20 +2651,20 @@ int32 npc_cashshop_buylist( map_session_data *sd, int32 points, std::vector<s_np
 		nameid = item_list[i].nameid;
 		amount = item_list[i].qty;
 
-		if( !pet_create_egg(sd,nameid) ) {
-			struct item item_tmp;
-			uint16 get_amt = amount;
+		// Pet carts returned through the durable asset path before payment.
+		struct item item_tmp;
+		uint16 get_amt = amount;
 
-			memset(&item_tmp, 0, sizeof(item_tmp));
-			item_tmp.nameid = nameid;
-			item_tmp.identify = 1;
+		memset(&item_tmp, 0, sizeof(item_tmp));
+		item_tmp.nameid = nameid;
+		item_tmp.identify = 1;
 
-			if ((itemdb_search(nameid))->flag.guid)
-				get_amt = 1;
+		if ((itemdb_search(nameid))->flag.guid)
+			get_amt = 1;
 
-			for (j = 0; j < amount; j += get_amt)
-				pc_additem(sd,&item_tmp,get_amt,LOG_TYPE_NPC);
-		}
+		for (j = 0; j < amount; j += get_amt)
+			pc_additem(sd,&item_tmp,get_amt,LOG_TYPE_NPC);
+
 	}
 
 	return ERROR_TYPE_NONE;
@@ -2690,87 +2741,9 @@ void npc_shop_currency_type( const map_session_data* sd, const npc_data* nd, int
  */
 int32 npc_cashshop_buy(map_session_data *sd, t_itemid nameid, int32 amount, int32 points)
 {
-	npc_data *nd = (npc_data *)map_id2bl(sd->npc_shopid);
-	int32 i, price, w;
-	enum e_CASHSHOP_ACK res;
-
-	if( amount <= 0 )
-		return ERROR_TYPE_ITEM_ID;
-
-	if( points < 0 )
-		return ERROR_TYPE_MONEY;
-
-	if( !nd || (nd->subtype != NPCTYPE_CASHSHOP && nd->subtype != NPCTYPE_ITEMSHOP && nd->subtype != NPCTYPE_POINTSHOP) )
-		return ERROR_TYPE_NPC;
-
-	if( sd->state.trading )
-		return ERROR_TYPE_EXCHANGE;
-
-	std::shared_ptr<item_data> id = item_db.find(nameid);
-
-	if( id == nullptr )
-		return ERROR_TYPE_ITEM_ID; // Invalid Item
-
-	ARR_FIND(0, nd->u.shop.count, i, nd->u.shop.shop_item[i].nameid == nameid || itemdb_viewid(nd->u.shop.shop_item[i].nameid) == nameid);
-	if( i == nd->u.shop.count )
-		return ERROR_TYPE_ITEM_ID;
-	if( nd->u.shop.shop_item[i].value <= 0 )
-		return ERROR_TYPE_ITEM_ID;
-
-	nameid = nd->u.shop.shop_item[i].nameid; //item_avail replacement
-
-	if(!itemdb_isstackable2(id.get()) && amount > 1)
-	{
-		ShowWarning("Player %s (%d:%d) sent a hexed packet trying to buy %d of nonstackable item %u!\n",
-			sd->status.name, sd->status.account_id, sd->status.char_id, amount, nameid);
-		amount = 1;
-	}
-
-	switch( pc_checkadditem(sd, nameid, amount) )
-	{
-		case CHKADDITEM_NEW:
-			if( pc_inventoryblank(sd) < id->inventorySlotNeeded(amount) )
-				return ERROR_TYPE_INVENTORY_WEIGHT;
-			break;
-		case CHKADDITEM_OVERAMOUNT:
-			return ERROR_TYPE_INVENTORY_WEIGHT;
-	}
-
-	w = id->weight * amount;
-	if( w + sd->weight > sd->max_weight )
-		return ERROR_TYPE_INVENTORY_WEIGHT;
-
-	if( (double)nd->u.shop.shop_item[i].value * amount > INT_MAX )
-	{
-		ShowWarning("npc_cashshop_buy: Item '%s' (%u) price overflow attempt!\n", id->name.c_str(), nameid);
-		ShowDebug("(NPC:'%s' (%s,%d,%d), player:'%s' (%d/%d), value:%d, amount:%d)\n",
-					nd->exname, map_mapid2mapname(nd->m), nd->x, nd->y, sd->status.name, sd->status.account_id, sd->status.char_id, nd->u.shop.shop_item[i].value, amount);
-		return ERROR_TYPE_ITEM_ID;
-	}
-
-	price = nd->u.shop.shop_item[i].value * amount;
-	if( points > price )
-		points = price;
-
-	if ((res = npc_cashshop_process_payment(nd, price, points, sd)) != ERROR_TYPE_NONE)
-		return res;
-
-	if( !pet_create_egg(sd, nameid) ) {
-		uint16 get_amt = amount;
-
-		struct item item_tmp = {};
-
-		item_tmp.nameid = nameid;
-		item_tmp.identify = 1;
-
-		if (id->flag.guid)
-			get_amt = 1;
-
-		for (int32 j = 0; j < amount; j += get_amt)
-			pc_additem(sd,&item_tmp, get_amt, LOG_TYPE_NPC);
-	}
-
-	return ERROR_TYPE_NONE;
+	// Both packet generations use the same validation and durable payment path.
+	std::vector<s_npc_buy_list> cart={{amount,nameid}};
+	return npc_cashshop_buylist(sd,points,cart);
 }
 
 /**
@@ -2923,9 +2896,11 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 		auto request=pn_shop_request(*sd,pn_shop::Market);
 		request->wallet_after-=z;
 		std::vector<pn_shop::Grant> grants;
+		bool pet_outputs=false;
 		for(size_t i=0;i<item_list.size();++i) {
 			const auto& entry=item_list[i];const auto& row=shop[market_index[i]];
 			grants.push_back({entry.nameid,static_cast<uint32>(entry.qty),0,row.value});
+			pet_outputs|=itemdb_type(entry.nameid)==IT_PETEGG || bool(pet_db_search(entry.nameid,PET_EGG));
 			if(row.qty>=0) {
 				auto& stock=request->stocks[request->stock_count++];
 				if(strlen(nd->exname)>=sizeof(stock.name))return e_purchase_result::PURCHASE_FAIL_COUNT;
@@ -2933,10 +2908,18 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 				stock.before=row.qty;stock.after=row.qty-entry.qty;stock.price=row.value;stock.flag=row.flag;
 			}
 		}
-		if(request->stock_count)return pn_shop_begin(*sd,request,grants)?
+		if(!request->stock_count && pet_outputs){request->kind=pn_shop::Asset;request->response=pn_shop::MarketResponse;}
+		if(request->stock_count || pet_outputs)return pn_shop_begin(*sd,request,grants)?
 			e_purchase_result::PURCHASE_PENDING:e_purchase_result::PURCHASE_FAIL_COUNT;
 	}
 #endif
+	if(std::any_of(item_list.begin(),item_list.end(),[](const s_npc_buy_list& entry){
+		return itemdb_type(entry.nameid)==IT_PETEGG || bool(pet_db_search(entry.nameid,PET_EGG));})) {
+		auto request=pn_shop_request(*sd,pn_shop::Asset);request->response=pn_shop::ShopResponse;
+		request->wallet_after-=z;std::vector<pn_shop::Grant> grants;
+		for(const auto& entry:item_list)grants.push_back({entry.nameid,static_cast<uint32>(entry.qty)});
+		return pn_shop_begin(*sd,request,grants)?e_purchase_result::PURCHASE_PENDING:e_purchase_result::PURCHASE_FAIL_COUNT;
+	}
 	PcItemDeliveryScope delivery(*sd);
 	if (pc_payzeny(sd, z, LOG_TYPE_NPC)) return e_purchase_result::PURCHASE_FAIL_MONEY;
 
@@ -2957,9 +2940,7 @@ e_purchase_result npc_buylist( map_session_data* sd, std::vector<s_npc_buy_list>
 		}
 #endif
 
-		if (itemdb_type(nameid) == IT_PETEGG)
-			pet_create_egg(sd, nameid);
-		else {
+		{ // Pet outputs returned through the durable asset path before payment.
 			uint16 get_amt = amount;
 
 			if ((itemdb_search(nameid))->flag.guid)
@@ -3193,7 +3174,6 @@ e_purchase_result npc_barter_purchase( map_session_data& sd, std::shared_ptr<s_n
 	uint64 requiredZeny = 0;
 	uint64 requiredWeight = 0;
 	uint64 reducedWeight = 0;
-	uint32 requiredSlots = 0;
 	uint32 requiredItems[MAX_INVENTORY] = { 0 };
 
 	// Validate untrusted quantities before narrowing or multiplying them.
@@ -3219,14 +3199,6 @@ e_purchase_result npc_barter_purchase( map_session_data& sd, std::shared_ptr<s_n
 			return e_purchase_result::PURCHASE_FAIL_STOCK_EMPTY;
 		}
 
-		char result = pc_checkadditem_plain( &sd, purchase.item->nameid, amount );
-
-		if( result == CHKADDITEM_OVERAMOUNT ){
-			return e_purchase_result::PURCHASE_FAIL_COUNT;
-		}else if( result == CHKADDITEM_NEW ){
-			requiredSlots += purchase.data->inventorySlotNeeded( amount );
-		}
-
 		requiredZeny += static_cast<uint64>( purchase.item->price ) * amount;
 		requiredWeight += static_cast<uint64>( purchase.data->weight ) * amount;
 
@@ -3240,8 +3212,9 @@ e_purchase_result npc_barter_purchase( map_session_data& sd, std::shared_ptr<s_n
 
 			if( itemdb_isstackable2( id.get() ) ){
 				int32 j;
+				uint64 remaining = static_cast<uint64>(requirement->amount) * amount;
 
-				for( j = 0; j < MAX_INVENTORY; j++ ){
+				for( j = 0; j < sd.status.inventory_slots && j < MAX_INVENTORY && remaining; j++ ){
 					if( sd.inventory.u.items_inventory[j].nameid == requirement->nameid ){
 						// Equipped items are not taken into account
 						if( sd.inventory.u.items_inventory[j].equip != 0 ){
@@ -3264,21 +3237,17 @@ e_purchase_result npc_barter_purchase( map_session_data& sd, std::shared_ptr<s_n
 							continue;
 						}
 
-						// Found a match, accumulate required amount
-						requiredItems[j] += requirement->amount * amount;
-
-						// Check if there are still enough items available
-						if( requiredItems[j] > sd.inventory.u.items_inventory[j].amount ){
-							return e_purchase_result::PURCHASE_FAIL_GOODS;
-						}
-
-						// Cancel the loop
-						break;
+						// Allocate only the unused part of each eligible stack.
+						const int64 available = static_cast<int64>(sd.inventory.u.items_inventory[j].amount) - requiredItems[j];
+						if( available <= 0 ) continue;
+						const uint32 take = static_cast<uint32>(std::min<uint64>(remaining, available));
+						requiredItems[j] += take;
+						remaining -= take;
 					}
 				}
 
 				// Required item not found
-				if( j == MAX_INVENTORY ){
+				if( remaining ){
 					return e_purchase_result::PURCHASE_FAIL_GOODS;
 				}
 			}else{
@@ -3399,20 +3368,24 @@ e_purchase_result npc_barter_purchase( map_session_data& sd, std::shared_ptr<s_n
 		return e_purchase_result::PURCHASE_FAIL_WEIGHT;
 	}
 
-	if( pc_inventoryblank( &sd ) < requiredSlots ){
-		return e_purchase_result::PURCHASE_FAIL_COUNT;
-	}
-
 	bool limited=false;
 	for(const auto& purchase:purchases)limited|=purchase.item->stockLimited;
-	if(limited) {
+	auto request=pn_shop_request(sd,pn_shop::Barter);
+	request->wallet_after-=static_cast<int64>(requiredZeny);
+	std::vector<pn_shop::Grant> grants;
+	for(const auto& purchase:purchases)
+		grants.push_back({purchase.item->nameid,purchase.amount,
+			static_cast<uint8>(itemdb_isstackable2(purchase.data)?0:purchase.item->refine)});
+	std::vector<pn_shop::Event> planned_events;
+	uint32 planned_weight=0;
+	// One immutable post-exchange plan includes both consumed and granted items.
+	// Native delivery below and the durable stock path share this preflight.
+	if(!pn_shop_plan_inventory(sd,*request,grants,requiredItems,planned_events,planned_weight))
+		return e_purchase_result::PURCHASE_FAIL_COUNT;
+	if(limited || request->pet_count || request->pet_retire_count) {
 		if(strcmp(barter_table,"barter"))return e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED;
-		auto request=pn_shop_request(sd,pn_shop::Barter);
-		request->wallet_after-=static_cast<int64>(requiredZeny);
-		std::vector<pn_shop::Grant> grants;
+		if(!limited){request->kind=pn_shop::Asset;request->response=pn_shop::BarterResponse;}
 		for(const auto& purchase:purchases) {
-			grants.push_back({purchase.item->nameid,purchase.amount,
-				static_cast<uint8>(itemdb_isstackable2(purchase.data)?0:purchase.item->refine)});
 			if(purchase.item->stockLimited) {
 				auto& stock=request->stocks[request->stock_count++];
 				if(barter->name.size()>=sizeof(stock.name))return e_purchase_result::PURCHASE_FAIL_COUNT;
@@ -3459,25 +3432,19 @@ e_purchase_result npc_barter_purchase( map_session_data& sd, std::shared_ptr<s_n
 				return e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED;
 			}
 		}else{
-			if( purchase.data->type == IT_PETEGG ){
-				for( int32 i = 0; i < purchase.amount; i++ ){
-					if( !pet_create_egg( &sd, purchase.item->nameid ) ){
-						return e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED;
-					}
-				}
-			}else{
-				for( int32 i = 0; i < purchase.amount; i++ ){
-					struct item it = {};
+			// Pet outputs were reserved by the durable inventory plan.
+			for( int32 i = 0; i < purchase.amount; i++ ){
+				struct item it = {};
 
-					it.nameid = purchase.item->nameid;
-					it.identify = true;
-					it.refine = purchase.item->refine;
+				it.nameid = purchase.item->nameid;
+				it.identify = true;
+				it.refine = purchase.item->refine;
 
-					if( pc_additem( &sd, &it, 1, LOG_TYPE_BARTER ) != ADDITEM_SUCCESS ){
-						return e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED;
-					}
+				if( pc_additem( &sd, &it, 1, LOG_TYPE_BARTER ) != ADDITEM_SUCCESS ){
+					return e_purchase_result::PURCHASE_FAIL_EXCHANGE_FAILED;
 				}
 			}
+
 		}
 	}
 
@@ -4956,10 +4923,12 @@ static int32 npc_market_checkall_sub(DBKey key, DBData *data, va_list ap) {
 
 		if (list->flag&1) { // Item added by npcshopitem/npcshopadditem, add new entry
 			RECREATE(nd->u.shop.shop_item, struct npc_item_list, nd->u.shop.count+1);
+			// This is a new allocation, not an existing unlimited-stock entry.
+			// Restore all persisted fields without inspecting uninitialized qty.
+			nd->u.shop.shop_item[j] = {};
 			nd->u.shop.shop_item[j].nameid = list->nameid;
 			nd->u.shop.shop_item[j].value = list->value;
-			if (nd->u.shop.shop_item[j].qty > -1)
-				nd->u.shop.shop_item[j].qty = list->qty;
+			nd->u.shop.shop_item[j].qty = list->qty;
 			nd->u.shop.shop_item[j].flag = list->flag;
 			nd->u.shop.count++;
 			npc_market_tosql(nd->exname, &nd->u.shop.shop_item[j]);
@@ -5734,6 +5703,7 @@ static const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, con
  */
 int32 npc_parsesrcfile(const char* filepath)
 {
+	pn_runtime_identity::invalidate();
 	if (check_filepath(filepath) != 2) { //this is not a file 
 		ShowDebug("npc_parsesrcfile: Path doesn't seem to be a file skipping it : '%s'.\n", filepath);
 		return 0;
@@ -6145,6 +6115,7 @@ void npc_clear_pathlist(void) {
 
 //Clear then reload npcs files
 int32 npc_reload(void) {
+	pn_runtime_identity::invalidate();
 	int32 npc_new_min = npc_id;
 	struct s_mapiterator* iter;
 	block_list* bl;
@@ -6243,6 +6214,7 @@ int32 npc_reload(void) {
 
 //Unload all npc in the given file
 bool npc_unloadfile( const char* path ) {
+	pn_runtime_identity::invalidate();
 	DBIterator * iter = db_iterator(npcname_db);
 	npc_data* nd = nullptr;
 	bool found = false;

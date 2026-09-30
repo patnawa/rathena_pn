@@ -91,11 +91,9 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	mes "[Private Damage Lab]";
 	mes "60-second HP-loss measurement. No rewards. Use identical gear, buffs, element and rotation for comparisons.";
 	mes "Target cannot move or attack and is status/knockback immune. This is a controlled dummy, not a full boss encounter.";
-	switch(select("Configure and run:Last result:Exit and destroy room")) {
+	switch(select("Configure and run:Saved runs and comparison:Exit and destroy room")) {
 	case 2:
-		mes "Last run: " + @PNLabLabel$;
-		mes "Damage: " + @PNLabDamage + "; elapsed ms: " + @PNLabMs;
-		mes "DPS: " + @PNLabDps;
+		callfunc "PN_LabHistory";
 		close;
 	case 3:
 		.@id = instance_id();
@@ -107,6 +105,7 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	}
 	mes "Give this run a short label (e.g. Fenrir / Ultra).";
 	input .@label$;
+	if (getstrlen(.@label$)<1 || getstrlen(.@label$)>40) { mes "Use a label of 1-40 characters."; close; }
 	mes "Size:"; .@size = select("Small:Medium:Large")-1;
 	mes "Race:"; .@race = select("Formless:Undead:Brute:Plant:Insect:Fish:Demon:Demi-Human:Angel:Dragon")-1;
 	mes "Defending element:"; .@element = select("Neutral:Water:Earth:Fire:Wind:Poison:Holy:Dark:Ghost:Undead")-1;
@@ -137,24 +136,33 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	setunitdata .@mob,UMOB_DMGIMMUNE,1;
 	for (.@i=3; .@i>0; .@i--) { dispbottom "Test starts in " + .@i; sleep2 1000; }
 	setunitdata .@mob,UMOB_DMGIMMUNE,0;
+	.@gear$=pnlabidentity(0);
+	.@buff$=pnlabidentity(1);
+	.@setup$="v1/60s/normal/def0/flee0/immune:size="+.@size+" race="+.@race+" ele="+.@element+" lv="+.@elelv+" mdef="+.@mdef+" mres="+.@mres;
+	.@build$=pnlabidentity(2);
+	if (.@build$=="") { killmonsterall .@map$; 'Running=0; dispbottom "Build verification is unavailable. No comparison run can be saved."; end; }
 	.@start = gettimetick(0);
 	dispbottom "GO: 60 seconds. Keep equipment and buffs consistent.";
 	while (gettimetick(0)-.@start < 60000) {
 		sleep2 100;
 		if (strcharinfo(3) != .@map$ || !unitexists(.@mob)) { .@invalid=1; break; }
+		if (pnlabidentity(0) != .@gear$) { .@invalid=1; break; }
+		if (pnlabidentity(1) != .@buff$) .@buffchanged=1;
 		getunitdata .@mob,.@data;
 		.@damage += 2000000000-.@data[UMOB_HP];
 		setunitdata .@mob,UMOB_HP,2000000000;
 	}
+	if (pnlabidentity(2)!=.@build$) .@invalid=1;
 	.@elapsed = gettimetick(0)-.@start;
 	if (unitexists(.@mob)) setunitdata .@mob,UMOB_DMGIMMUNE,1;
 	killmonsterall .@map$;
 	'Running = 0;
-	if (.@invalid) { dispbottom "INVALID: left room or target died. No DPS result saved."; end; }
+	if (.@invalid) { dispbottom "INVALID: left room, target died, or equipment/stats/skills changed. No DPS result saved."; end; }
 	@PNLabLabel$ = .@label$;
 	@PNLabDamage = .@damage;
 	@PNLabMs = .@elapsed;
 	@PNLabDps = .@damage*1000/max(1,.@elapsed);
+	callfunc "PN_LabSave",.@label$,.@damage,.@elapsed,.@setup$,.@gear$,.@buff$,.@build$,.@buffchanged;
 	callfunc "PN_WeeklyLabComplete";
 	dispbottom "RESULT " + .@label$ + ": damage=" + .@damage + " time_ms=" + .@elapsed + " DPS=" + @PNLabDps;
 	logmes "PNLAB label="+.@label$+" damage="+.@damage+" ms="+.@elapsed+" size="+.@size+" race="+.@race+" element="+.@element+" elelv="+.@elelv+" mdef="+.@mdef+" mres="+.@mres;
@@ -172,4 +180,67 @@ OnInstanceInit:
 	setmapflag instance_mapname("guild_vs1"),mf_noloot;
 	setmapflagnosave instance_mapname("guild_vs1"),"izlude",140,144;
 	end;
+}
+
+// Character registry arrays survive normal logout/relog. Only the completion
+// path above calls Save; no partial run becomes a saved result.
+function	script	PN_LabSave	{
+ if (getarg(2)<60000 || getarg(1)<0 || getarg(6)=="") return;
+ .@slot=PNLabNext%3;
+ PNLabValid[.@slot]=0;
+ PNLabName$[.@slot]=getarg(0);
+ PNLabDamage[.@slot]=getarg(1);
+ PNLabMs[.@slot]=getarg(2);
+ PNLabDps[.@slot]=getarg(1)*1000/getarg(2);
+ PNLabSetup$[.@slot]=getarg(3);
+ PNLabGear$[.@slot]=getarg(4);
+ PNLabBuff$[.@slot]=getarg(5);
+ PNLabBuild$[.@slot]=getarg(6);
+ PNLabVariable[.@slot]=getarg(7);
+ PNLabTime[.@slot]=gettimetick(2);
+ PNLabValid[.@slot]=1;
+ PNLabNext=(.@slot+1)%3;
+ return;
+}
+function	script	PN_LabCompatible	{
+ .@a=getarg(0); .@b=getarg(1);
+ if (.@a<0 || .@a>2 || .@b<0 || .@b>2) return 0;
+ return PNLabValid[.@a] && PNLabValid[.@b] && !PNLabVariable[.@a] && !PNLabVariable[.@b]
+  && PNLabSetup$[.@a]==PNLabSetup$[.@b] && PNLabBuff$[.@a]==PNLabBuff$[.@b]
+  && PNLabBuild$[.@a]!="" && PNLabBuild$[.@a]==PNLabBuild$[.@b];
+}
+function	script	PN_LabHistory	{
+ mes "[Saved Damage Lab Runs]";
+ mes "Last three completed runs, saved on this character. Dummy is immobile, normal class and status/knockback immune; boss-only bonuses are excluded.";
+ for (.@i=0; .@i<3; .@i++) {
+  if (!PNLabValid[.@i]) continue;
+  mes "Run "+(.@i+1)+": "+PNLabName$[.@i]+" | DPS "+PNLabDps[.@i];
+  mes "Damage "+PNLabDamage[.@i]+" / "+PNLabMs[.@i]+" ms; saved epoch "+PNLabTime[.@i];
+  mes PNLabSetup$[.@i];
+  mes "Gear/stats/traits/skills: "+PNLabGear$[.@i];
+  mes "Initial buffs: "+PNLabBuff$[.@i]+"; build: "+PNLabBuild$[.@i];
+  if (PNLabVariable[.@i]) mes "Buff state changed during this run; excluded from automatic comparison.";
+ }
+ next;
+ .@a=select("Compare run 1:Compare run 2:Compare run 3:Leave")-1;
+ if (.@a==3) return;
+ if (!PNLabValid[.@a]) { mes "That run slot is empty."; return; }
+ .@n=0;
+ for (.@i=0; .@i<3; .@i++) {
+  if (!callfunc("PN_LabCompatible",.@a,.@i)) continue;
+  if (PNLabGear$[.@a]!=PNLabGear$[.@i]) {
+   mes "A/B candidate run "+(.@i+1)+": DPS "+PNLabDps[.@i]+" vs "+PNLabDps[.@a]+". Target, initial buffs and build match; gear/stat/skill identity differs.";
+   continue;
+  }
+  .@dps[.@n]=PNLabDps[.@i]; .@n++;
+ }
+ if (!.@n) { mes "No comparable stable-buff runs. Keep targets, buffs and server build identical."; return; }
+ for (.@i=0; .@i<.@n; .@i++) for (.@j=.@i+1; .@j<.@n; .@j++) {
+  if (.@dps[.@i]>.@dps[.@j]) { .@v=.@dps[.@i]; .@dps[.@i]=.@dps[.@j]; .@dps[.@j]=.@v; }
+ }
+ .@median=.@dps[.@n/2];
+ if (.@n==2) .@median=.@dps[0]+(.@dps[1]-.@dps[0])/2;
+ mes "Identical setup repeats: "+.@n+"; median DPS "+.@median+"; min/max "+.@dps[0]+" / "+.@dps[.@n-1]+"; spread "+(.@dps[.@n-1]-.@dps[0]);
+ mes "Rotation and timing are player-controlled. Matching identities do not prove identical skill use.";
+ return;
 }

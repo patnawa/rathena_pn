@@ -1,3 +1,5 @@
+#include <custom/item_use.hpp>
+#include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -1200,7 +1202,7 @@ void pc_inventory_rental_clear(map_session_data *sd)
  */
 void pc_inventory_rentals(map_session_data *sd)
 {
-	if (sd->shop_commit.pending) {
+	if (sd->shop_commit.pending || pn_item_use_capture_waiting(sd)) {
 		sd->rental_timer = add_timer(gettick() + 1000, pc_inventory_rental_end, sd->id, 0);
 		return;
 	}
@@ -5674,7 +5676,7 @@ int32 pc_insert_card(map_session_data* sd, int32 idx_card, int32 idx_equip)
  */
 int32 pc_identifyall(map_session_data *sd, bool identify_item)
 {
-	if (identify_item && sd->shop_commit.pending && !sd->shop_commit.applying) return 0;
+	if (identify_item && ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd))) return 0;
 	int32 unidentified_count = 0;
 
 	for (int32 i = 0; i < MAX_INVENTORY; i++) {
@@ -5812,12 +5814,17 @@ PcItemDeliveryScope::PcItemDeliveryScope(map_session_data& sd) : sd_(sd) {
 
 void PcItemDeliveryScope::added(int16 index, const item_data& data) {
 	additions_.push_back({index, data.nameid, sd_.inventory.u.items_inventory[index].unique_id,
-		data.flag.autoequip ? data.equip : 0, data.value_sell});
+		data.flag.autoequip ? data.equip : 0, data.value_sell, sd_.inventory.u.items_inventory[index].expire_time});
 	refresh_ = true;
 }
 
 void PcItemDeliveryScope::refresh_questinfo() {
 	if (auto* root = pc_item_delivery_scope(&sd_)) root->refresh_ = true;
+}
+
+void PcItemDeliveryScope::cancel() {
+    if(owner_)pc_item_delivery_scopes.erase(&sd_);
+    owner_=false;additions_.clear();refresh_=false;
 }
 
 PcItemDeliveryScope::~PcItemDeliveryScope() {
@@ -5827,12 +5834,25 @@ PcItemDeliveryScope::~PcItemDeliveryScope() {
 	// output. Never equip a different inventory record in its place.
 	for (const auto& added : additions_) {
 		const auto& current = sd_.inventory.u.items_inventory[added.index];
+		if (added.expire_time && current.amount > 0 && current.nameid == added.nameid && current.unique_id == added.unique_id && current.expire_time == added.expire_time) {
+			const auto now = time(nullptr);
+			if (now >= added.expire_time) {
+				clif_rental_expired(&sd_, added.index, current.nameid);
+				pc_delitem(&sd_, added.index, current.amount, 1, 0, LOG_TYPE_OTHER);
+				continue;
+			}
+			const uint32 seconds = static_cast<uint32>(added.expire_time - now);
+			clif_rental_time(&sd_, current.nameid, seconds);
+			pc_inventory_rental_add(&sd_, seconds);
+		}
 		if (added.equip && current.amount > 0 && current.nameid == added.nameid && current.unique_id == added.unique_id)
 			pc_equipitem(&sd_, added.index, added.equip);
 		achievement_update_objective(&sd_, AG_GET_ITEM, 1, added.value_sell);
 	}
 	if (refresh_) pc_show_questinfo(&sd_);
 }
+
+#include <custom/item_use_map.inc>
 
 /*==========================================
  * Return number of available place in inventory
@@ -5902,7 +5922,7 @@ char pc_getzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uin
 {
 	nullpo_retr(-1,sd);
 	if ((sd->pair_commit.pending && !sd->pair_commit.applying) ||
-		(sd->shop_commit.pending && !sd->shop_commit.applying)) return 1;
+		(sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return 1;
 
 	// Reject negative values before arithmetic, including INT64_MIN.
 	if( zeny < 0 )
@@ -5925,7 +5945,9 @@ char pc_getzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uin
 		clif_messagecolor(sd, color_table[COLOR_LIGHT_GREEN], output, false, SELF);
 	}
 
-	achievement_update_objective(sd, AG_GET_ZENY, 1, static_cast<int32>(std::min<int64>(sd->status.zeny, MAX_ZENY)));
+	const int32 achievement_zeny=static_cast<int32>(std::min<int64>(sd->status.zeny,MAX_ZENY));
+	if(!pn_item_use_success_defer(sd,[sd,achievement_zeny](){achievement_update_objective(sd,AG_GET_ZENY,1,achievement_zeny);}))
+		achievement_update_objective(sd,AG_GET_ZENY,1,achievement_zeny);
 
 	return 0;
 }
@@ -5992,7 +6014,7 @@ int32 pc_getcash(map_session_data *sd, int32 cash, int32 points, e_log_pick_type
 	char output[CHAT_SIZE_MAX];
 
 	nullpo_retr(-1,sd);
-	if (sd->shop_commit.pending && !sd->shop_commit.applying) return -1;
+	if ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return -1;
 
 	cash = cap_value(cash, 0, MAX_CASHPOINT); //prevent command UB
 	points = cap_value(points, 0, MAX_KAFRAPOINT); //prevent command UB
@@ -6074,8 +6096,12 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 	uint32 w;
 
 	nullpo_retr(ADDITEM_INVALID, sd);
+	struct StagedAddition {
+		map_session_data* sd;bool success=false;
+		~StagedAddition(){if(!success){auto state=pn_item_use_state(sd);if(state && state->collecting)state->failed=true;}}
+	} staged_addition{sd};
 	if ((sd->pair_commit.pending && !sd->pair_commit.applying) ||
-		(sd->shop_commit.pending && !sd->shop_commit.applying)) return ADDITEM_INVALID;
+		(sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return ADDITEM_INVALID;
 	nullpo_retr(ADDITEM_INVALID, item);
 
 	if( item->nameid == 0 || amount <= 0 || pn_tokens::retired(item->nameid) )
@@ -6084,6 +6110,11 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 		return ADDITEM_OVERAMOUNT;
 
 	id = itemdb_search(item->nameid);
+
+	if(pn_item_use_active(sd) && item->card[0]!=CARD0_PET && (id->type==IT_PETEGG || pet_db_search(item->nameid,PET_EGG))) {
+		staged_addition.success=pn_item_use_collect_pet(*sd,*item,amount);
+		return staged_addition.success?ADDITEM_SUCCESS:ADDITEM_INVALID;
+	}
 
 	if( id->stack.inventory && amount > id->stack.amount )
 	{// item stack limitation
@@ -6157,7 +6188,7 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 		pc_equipitem(sd, i, id->equip);
 
 	/* rental item check */
-	if( item->expire_time ) {
+	if( !delivery && item->expire_time ) {
 		if( time(nullptr) > item->expire_time ) {
 			clif_rental_expired(sd, i, sd->inventory.u.items_inventory[i].nameid);
 			pc_delitem(sd, i, sd->inventory.u.items_inventory[i].amount, 1, 0, LOG_TYPE_OTHER);
@@ -6173,6 +6204,7 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 		pc_show_questinfo(sd);
 	}
 
+	staged_addition.success=true;
 	return ADDITEM_SUCCESS;
 }
 
@@ -6195,6 +6227,10 @@ char pc_delitem(map_session_data *sd,int32 n,int32 amount,int32 type, int16 reas
 	if(n < 0 || n >= MAX_INVENTORY || sd->inventory.u.items_inventory[n].nameid == 0 || amount <= 0 || sd->inventory.u.items_inventory[n].amount<amount || sd->inventory_data[n] == nullptr)
 		return 1;
 
+	if(pn_item_use_active(sd) && (sd->inventory.u.items_inventory[n].equip || sd->inventory.u.items_inventory[n].equipSwitch)) {
+		pn_item_use_world_allowed(sd);return 1;
+	}
+
 	log_pick_pc(sd, log_type, -amount, &sd->inventory.u.items_inventory[n]);
 
 	sd->inventory.u.items_inventory[n].amount -= amount;
@@ -6213,7 +6249,7 @@ char pc_delitem(map_session_data *sd,int32 n,int32 amount,int32 type, int16 reas
 	if(!(type&2))
 		clif_updatestatus(*sd,SP_WEIGHT);
 
-	if (!(type & 8))
+	if (!(type & 8) && !pn_item_use_success_defer(sd,[sd](){pc_show_questinfo(sd);}))
 		pc_show_questinfo(sd);
 
 	return 0;
@@ -6278,6 +6314,8 @@ bool pc_dropitem(map_session_data *sd,int32 n,int32 amount)
  * @param fitem Item that will be picked
  * @return False = fail; True = success
  *------------------------------------------*/
+#include <custom/pet_floor.inc>
+
 bool pc_takeitem(map_session_data *sd,flooritem_data *fitem)
 {
 	int32 flag = 0;
@@ -6338,6 +6376,8 @@ bool pc_takeitem(map_session_data *sd,flooritem_data *fitem)
 	// Cannot get item when wait time is still active
 	if (DIFF_TICK(tick, item_get_tick) < 0)
 		return false;
+
+	if(pn_pet_floor_raw(fitem->item))return pn_pet_floor_take(*sd,*fitem);
 
 	//This function takes care of giving the item to whoever should have it, considering party-share options.
 	if ((flag = party_share_loot(p,sd,&fitem->item, fitem->first_get_charid))) {
@@ -6621,6 +6661,14 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 		return 0;
 	}
 
+	const uint32 item_effects=script_item_use_effects(id->script);
+	const bool durable_item_use=(item_effects&PN_ITEM_PET)!=0;
+	if(durable_item_use && (item_effects&PN_ITEM_WORLD)) {
+		clif_displaymessage(sd->fd,"This item combines pet rewards with unsupported world actions. It has not been consumed.");
+		return 0;
+	}
+	if(durable_item_use && !pn_item_use_begin(*sd))return 0;
+
 	sd->itemid = item.nameid;
 	sd->itemindex = n;
 	amount = item.amount;
@@ -6657,6 +6705,8 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 
 	run_script( script, 0, sd->id, fake_nd->id );
 
+	if(durable_item_use && sd->st != nullptr)pn_item_use_world_allowed(sd); // No suspended VM may escape its cost scope.
+
 	if( sd->st != nullptr ){
 		script_free_state( sd->st );
 		sd->st = nullptr;
@@ -6672,7 +6722,7 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 	}
 
 	potion_flag = 0;
-	return 1;
+	return durable_item_use ? (pn_item_use_finish(*sd)?1:0) : 1;
 }
 
 /**
@@ -7032,7 +7082,7 @@ bool pc_steal_item(map_session_data *sd,block_list *bl, uint16 skill_lv)
 enum e_setpos pc_setpos(map_session_data* sd, uint16 mapindex, int32 x, int32 y, clr_type clrtype)
 {
 	nullpo_retr(SETPOS_OK,sd);
-	if (pc_transaction_pending(sd) || sd->multi_storage.loading) return SETPOS_MAPINDEX;
+	if (!pn_item_use_world_allowed(sd) || pc_transaction_pending(sd) || sd->multi_storage.loading) return SETPOS_MAPINDEX;
 
 	if( !mapindex || !mapindex_id2name(mapindex) ) {
 		ShowDebug("pc_setpos: Passed mapindex(%d) is invalid!\n", mapindex);
@@ -10587,7 +10637,7 @@ int64 pc_readparam( const map_session_data* sd, int64 type )
 bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 {
 	nullpo_retr(false,sd);
-	if (sd->shop_commit.pending && !sd->shop_commit.applying &&
+	if (((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) &&
 		(type == SP_ZENY || type == SP_CASHPOINTS || type == SP_KAFRAPOINTS)) return false;
 	if (pc_transaction_locked(sd) &&
 		(type == SP_BANK_VAULT || (type == SP_ZENY && val_tmp < sd->status.zeny))) return false;
@@ -11572,6 +11622,8 @@ bool pc_setreg(map_session_data* sd, int64 reg, int64 val)
 	uint32 index = script_getvaridx(reg);
 
 	nullpo_retr(false, sd);
+	if(sd->shop_commit.pending && !sd->shop_commit.applying && sd->shop_commit.request && index==0 &&
+	   sd->shop_commit.request->point.scope && !strcmp(get_str(script_getvarid(reg)),sd->shop_commit.request->point.key))return false;
 
 	if( val ) {
 		i64db_i64put(sd->regs.vars, reg, val);
@@ -11695,8 +11747,10 @@ bool pc_setregistry(map_session_data *sd, int64 reg, int64 val)
 	struct script_reg_num *p = nullptr;
 	const char *regname = get_str(script_getvarid(reg));
 	uint32 index = script_getvaridx(reg);
-	if (sd->shop_commit.pending && !sd->shop_commit.applying &&
-		(!strcmp(regname, CASHPOINT_VAR) || !strcmp(regname, KAFRAPOINT_VAR))) return false;
+	if (((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) &&
+		(!strcmp(regname, CASHPOINT_VAR) || !strcmp(regname, KAFRAPOINT_VAR) ||
+		 (sd->shop_commit.request && sd->shop_commit.request->point.scope && index==0 &&
+		  !strcmp(regname,sd->shop_commit.request->point.key)))) return false;
 
 	if ( !reg_load && !sd->vars_ok ) {
 		ShowError("pc_setregistry : refusing to set %s until vars are received.\n", regname);
@@ -12216,7 +12270,7 @@ bool pc_equipitem(map_session_data *sd,int16 n,int32 req_pos,bool equipswitch)
 	int16* equip_index;
 
 	nullpo_retr(false,sd);
-	if (sd->shop_commit.pending && !sd->shop_commit.applying) return false;
+	if ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return false;
 
 	if( n < 0 || n >= MAX_INVENTORY ) {
 		if( equipswitch ){
@@ -12597,7 +12651,7 @@ bool pc_unequipitem(map_session_data *sd, int32 n, int32 flag) {
 	int32 i, pos;
 
 	nullpo_retr(false,sd);
-	if (sd->shop_commit.pending && !sd->shop_commit.applying) return false;
+	if ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return false;
 
 	if (n < 0 || n >= MAX_INVENTORY) {
 		clif_unequipitemack(*sd,0,0,false);
@@ -15012,6 +15066,8 @@ void pc_scdata_received(map_session_data *sd) {
 
 	if (sd->sc.getSCE(SC_SOULENERGY))
 		sd->soulball = sd->sc.getSCE(SC_SOULENERGY)->val1;
+
+	pn_pet_schedule_recovery(*sd);
 }
 
 /**

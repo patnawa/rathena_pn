@@ -24,6 +24,8 @@ function	script	CH2_RepLevel	{
 
 function	script	CH2_Instance	{
 	.@name$ = getarg(0);
+	.@reason$ = callfunc("PN_InstanceMissing",.@name$);
+	if (.@reason$ != "") { mes .@reason$; close; }
 	.@party_id = getcharid(1);
 	if (.@party_id < 1) {
 		mes "[Chapter 2 Expedition]";
@@ -96,6 +98,8 @@ function	script	CH2_Instance	{
 		mes "The reservation changed before entry. Please try again.";
 		close;
 	}
+	.@reason$ = callfunc("PN_InstanceMissing",.@name$);
+	if (.@reason$ != "") { mes .@reason$; close; }
 	if (instance_enter(.@name$,-1,-1,getcharid(0),.@iid) != IE_OK) {
 		mes "[Chapter 2 Expedition]";
 		mes "The instance entrance is unavailable.";

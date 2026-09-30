@@ -49,6 +49,7 @@ struct Storage {
  int amount=0,max_amount=10,stor_id=0; bool status=false;
 };
 struct map_session_data {
+ bool capture_waiting=false;
  int m=0,fd=1,npc_id=0,npc_shopid=0;
  struct { int storage_flag=0;
   bool trading=false,vending=false,buyingstore=false,mail_writing=false;
@@ -64,6 +65,7 @@ struct map_session_data {
  Storage storage,premiumStorage;
 };
 bool restricted=false,allowed=true;
+bool pn_item_use_capture_waiting(const map_session_data* sd){return sd->capture_waiting;}
 int opened=0;
 bool map_getmapflag(int,int) { return restricted; }
 bool pc_can_give_items(map_session_data*) { return allowed; }
@@ -103,7 +105,7 @@ int main() {
  sd.npc_id=sd.state.storage_flag=0;
  storage_premiumStorage_open(&sd);
  assert(sd.state.storage_flag==3 && opened==2 && mail_invalid_operation(&sd));
- for(int pending=0;pending<6;++pending) {
+ for(int pending=0;pending<7;++pending) {
   map_session_data blocked;
   blocked.bank_ui.pending=pending==0;
   blocked.multi_storage.pending=pending==1;
@@ -111,6 +113,8 @@ int main() {
   blocked.mail_companion.pending=pending==3;
   blocked.pair_commit.pending=pending==4;
   blocked.shop_commit.pending=pending==5;
+  blocked.capture_waiting=pending==6;
+  if(blocked.capture_waiting){assert(mail_invalid_operation(&blocked));assert(pc_transaction_locked(&blocked));}
   assert(pc_cant_act2(&blocked));
   assert(storage_storageopen(&blocked)==1);
   storage_premiumStorage_open(&blocked);

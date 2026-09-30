@@ -9,8 +9,14 @@
 
 static bool pn_shop_tables(const pn_shop::Commit& r) {
     const char* stock = r.kind==pn_shop::Market ? "market" : r.kind==pn_shop::Barter ? "barter" : "sales";
-    const char* tables[] = {schema_config.char_db,schema_config.inventory_db,
-        schema_config.acc_reg_num_table,stock,"pn_shop_commits"};
+    std::vector<const char*> tables = {schema_config.char_db,schema_config.inventory_db,
+        schema_config.acc_reg_num_table,"pn_shop_commits"};
+    if(r.stock_count)tables.push_back(stock);
+    if(r.point.scope==pn_shop::CharacterPoint)tables.push_back(schema_config.char_reg_num_table);
+    if(r.point.scope==pn_shop::CharacterPoint || r.point.scope==pn_shop::AccountPoint)tables.push_back("pn_point_registry_keys");
+    if(r.point.scope==pn_shop::GlobalPoint)tables.push_back("pn_global_point_barriers");
+    if(r.mail_id){tables.push_back(schema_config.mail_db);tables.push_back(schema_config.mail_attachment_db);}
+    if(r.pet_count || r.pet_retire_count || r.mail_id){tables.push_back(schema_config.pet_db);tables.push_back("pn_pet_entitlements");}
     for(const char* table:tables) {
         if(Sql_Query(sql_handle,"SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='%s'",table)!=SQL_SUCCESS)return false;
         char* engine=nullptr;
@@ -29,10 +35,13 @@ static bool pn_shop_number(uint32 column,int64& out) {
     return !errno && end!=value && *end=='\0';
 }
 
+#include <custom/mail_asset_sql.inc>
+#include <custom/point_asset_sql.inc>
+
 static bool pn_shop_receipt(const pn_shop::Commit& r,uint32 outcome) {
     SqlStmt stmt{*sql_handle};
     return stmt.Prepare("INSERT INTO pn_shop_commits (account_id,nonce_hi,nonce_lo,sequence,outcome,payload) VALUES (%u,%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%u,?)",r.account_id,r.nonce_hi,r.nonce_lo,r.sequence,outcome)==SQL_SUCCESS &&
-        stmt.BindParam(0,SQLDT_BLOB,const_cast<pn_shop::Commit*>(&r),sizeof(r))==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS;
+        stmt.BindParam(0,SQLDT_BLOB,const_cast<pn_shop::Commit*>(&r),sizeof(r))==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS && pn_global_point::finish_locked(sql_handle,r);
 }
 
 // current_owner is checked by the authenticated inter-server handler. Keeping
@@ -81,6 +90,8 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
             if(balance!=before[i])reject=true;
         }
         if(!valid)break;
+
+        if(!pn_point_validate_locked(r,reject))break;
 
         struct StockRow { bool missing=false; std::string escaped,canonical; };
         std::vector<StockRow> stock_rows(r.stock_count);
@@ -132,6 +143,41 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
             outcome=pn_shop::Rejected;transaction_complete=true;break;
         }
 
+        // Pet creation/claim belongs to this same payment + inventory + stock
+        // transaction. A conflict must undo earlier outputs before recording a
+        // durable rejection; SQL failure remains an indeterminate retry.
+        if(r.pet_count || r.pet_retire_count || r.mail_id) {
+            if(Sql_Query(sql_handle,"SAVEPOINT pn_pet_outputs")!=SQL_SUCCESS)break;
+            bool conflict=false;
+            const auto mail_result=pn_mail_asset_take(r);
+            if(mail_result==pn_mail_asset_result::Error)break;
+            conflict=mail_result==pn_mail_asset_result::Conflict;
+            for(uint16_t i=0;i<r.pet_count && !conflict;++i) {
+                const auto& change=r.pets[i];pn_pet::Result result;
+                if(change.claim_id)result=pn_pet::claim_locked(r.account_id,r.char_id,change.claim_id,change.output.egg);
+                else {
+                    pn_pet::Key key{};key.account_id=r.account_id;key.char_id=r.char_id;
+                    key.nonce_hi=r.nonce_hi;key.nonce_lo=r.nonce_lo;key.sequence=r.sequence;key.ordinal=i;
+                    pn_pet::Entitlement issued{};result=pn_pet::issue_locked(key,change.output,issued);
+                }
+                if(result==pn_pet::Result::Error){valid=false;break;}
+                if(result!=(change.claim_id?pn_pet::Result::ClaimedNow:pn_pet::Result::Issued)){conflict=true;break;}
+            }
+            std::vector<pn_shop::PetRetirement> retirements(r.retired_pets,r.retired_pets+r.pet_retire_count);
+            std::sort(retirements.begin(),retirements.end(),[](const auto& a,const auto& b){return a.pet_id<b.pet_id;});
+            if(valid && !conflict)for(const auto& retired:retirements) {
+                const auto result=pn_pet::retire_locked(r.char_id,retired.pet_id,retired.egg_id);
+                if(result==pn_pet::Result::Error){valid=false;break;}
+                if(result!=pn_pet::Result::RetiredNow){conflict=true;break;}
+            }
+            if(!valid)break;
+            if(conflict) {
+                if(Sql_Query(sql_handle,"ROLLBACK TO SAVEPOINT pn_pet_outputs")!=SQL_SUCCESS ||
+                   !pn_shop_receipt(r,pn_shop::Rejected))break;
+                outcome=pn_shop::Rejected;transaction_complete=true;break;
+            }
+        }
+
         for(uint32 i:order) {
             const auto& s=r.stocks[i];const auto& state=stock_rows[i];
             if(r.kind==pn_shop::Market) {
@@ -152,7 +198,7 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
         if(Sql_Query(sql_handle,"UPDATE `%s` SET zeny=%" PRId64 ",uniqueitem_counter=%u WHERE char_id=%u AND account_id=%u",schema_config.char_db,r.wallet_after,r.counter_after,r.char_id,r.account_id)!=SQL_SUCCESS)break;
         const int64 after[]={r.cash_after,r.kafra_after};
         for(int i=0;i<2;++i)if(Sql_Query(sql_handle,"REPLACE INTO `%s` (account_id,`key`,`index`,value) VALUES (%u,'%s',0,%" PRId64 ")",schema_config.acc_reg_num_table,r.account_id,currency_keys[i],after[i])!=SQL_SUCCESS){valid=false;break;}
-        if(!valid || !pn_shop_receipt(r,pn_shop::Committed))break;
+        if(!valid || !pn_point_debit_locked(r) || !pn_shop_receipt(r,pn_shop::Committed))break;
         outcome=pn_shop::Committed;transaction_complete=new_commit=true;
     } while(false);
     // A failed COMMIT acknowledgement is indeterminate. An identical retry
@@ -175,6 +221,8 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
     return outcome;
 }
 
+#include <custom/global_point_char.inc>
+
 static void mapif_parse_ShopCommit(int32 fd) {
     if(RFIFOW(fd,2)!=sizeof(pn_shop::Commit))return;
     pn_shop::Commit request;memcpy(&request,RFIFOP(fd,0),sizeof(request));
@@ -187,5 +235,6 @@ static void mapif_parse_ShopCommit(int32 fd) {
     pn_shop::Ack reply;reply.account_id=request.account_id;reply.char_id=request.char_id;
     reply.nonce_hi=request.nonce_hi;reply.nonce_lo=request.nonce_lo;reply.sequence=request.sequence;
     reply.outcome=pn_shop_tosql(request,owner);
+    if(reply.outcome==pn_shop::Retry && owner && request.point.scope==pn_shop::GlobalPoint)pn_global_request_barrier(request);
     WFIFOHEAD(fd,sizeof(reply));memcpy(WFIFOP(fd,0),&reply,sizeof(reply));WFIFOSET(fd,sizeof(reply));
 }

@@ -1,3 +1,4 @@
+#include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -308,63 +309,48 @@ bool mail_setattachment(map_session_data *sd, struct mail_message *msg)
 	return true;
 }
 
+// Runs before legacy attachment deletion or pending-capacity reservations.
+bool pn_mail_getattachment_atomic(map_session_data& sd,mail_message& msg,int32 type) {
+    if(!(type&MAIL_ATT_ITEM))return false;
+    // Every item extraction uses this path, including ordinary items and
+    // existing encoded eggs. Catalog reload cannot reopen the legacy raw-egg
+    // window between attachment deletion and map delivery.
+    bool any=false;
+    for(const auto& attachment:msg.item)if(attachment.nameid && attachment.amount>0)any=true;
+    if(!any)return true;
+    auto request=pn_shop_request(sd,pn_shop::Asset);
+    request->mail_id=msg.id;
+    memcpy(request->mail_items,msg.item,sizeof(request->mail_items));
+    if(type&MAIL_ATT_ZENY) {
+        if(msg.zeny<0 || sd.status.zeny<0 || msg.zeny>MAX_WALLET_ZENY-sd.status.zeny){clif_mail_getattachment(&sd,&msg,1,MAIL_ATT_ZENY);return true;}
+        request->mail_zeny=msg.zeny;
+        request->wallet_after+=msg.zeny;
+    }
+    std::vector<pn_shop::Grant> grants;
+    for(const auto& attachment:msg.item)if(attachment.nameid && attachment.amount>0) {
+        pn_shop::Grant grant{};grant.nameid=attachment.nameid;grant.amount=attachment.amount;grant.prototype=attachment;
+        grants.push_back(grant);
+    }
+    if(!pn_shop_begin(sd,request,grants))clif_mail_getattachment(&sd,&msg,2,MAIL_ATT_ITEM);
+    return true;
+}
+
+void pn_mail_asset_result(map_session_data& sd,const pn_shop::Commit& request,bool committed) {
+    if(!request.mail_id)return;
+    for(auto& msg:sd.mail.inbox.msg)if(msg.id==request.mail_id) {
+        if(committed){memset(msg.item,0,sizeof(msg.item));if(request.mail_zeny)msg.zeny=0;}
+        clif_mail_getattachment(&sd,&msg,committed?0:2,MAIL_ATT_ITEM);
+        if(request.mail_zeny)clif_mail_getattachment(&sd,&msg,committed?0:1,MAIL_ATT_ZENY);
+        break;
+    }
+}
+
 void mail_getattachment(map_session_data* sd, struct mail_message* msg, int64 zeny, struct item* item){
-	int32 i;
-	bool item_received = false;
-
-	for( i = 0; i < MAIL_MAX_ITEM; i++ ){
-		if( item[i].nameid > 0 && item[i].amount > 0 ){
-			struct item_data* id = itemdb_search( item[i].nameid );
-
-			// Item does not exist (anymore?)
-			if( id == nullptr ){
-				continue;
-			}
-
-			// Reduce the pending weight
-			sd->mail.pending_weight -= ( id->weight * item[i].amount );
-
-			// Check if it is a pet egg
-			std::shared_ptr<s_pet_db> pet = pet_db_search( item[i].nameid, PET_EGG );
-
-			// If it is a pet egg and the card data does not contain a pet id or other special ids are set
-			if( pet != nullptr && item[i].card[0] == 0 ){
-				// Create a new pet
-				if( pet_create_egg( sd, item[i].nameid ) ){
-					sd->mail.pending_slots--;
-					item_received = true;
-				}else{
-					// Do not send receive packet so that the mail is still displayed with item attachment
-					item_received = false;
-					// Additionally stop the processing
-					break;
-				}
-			}else{
-				char check = pc_checkadditem( sd, item[i].nameid, item[i].amount );
-
-				// Add the item normally
-				if( check != CHKADDITEM_OVERAMOUNT && pc_additem( sd, &item[i], item[i].amount, LOG_TYPE_MAIL ) == ADDITEM_SUCCESS ){
-					item_received = true;
-
-					// Only reduce slots if it really required a new slot
-					if( check == CHKADDITEM_NEW ){
-						sd->mail.pending_slots -= id->inventorySlotNeeded( item[i].amount );
-					}
-				}else{
-					// Do not send receive packet so that the mail is still displayed with item attachment
-					item_received = false;
-					// Additionally stop the processing
-					break;
-				}
-			}
-
-			// Make sure no requests are possible anymore
-			item[i].amount = 0;
-		}	
-	}
-
-	if( item_received ){
-		clif_mail_getattachment( sd, msg, 0, MAIL_ATT_ITEM );
+	// The old extraction packet is retained for zeny only. Item transactions
+	// are acknowledged by pn_mail_asset_result; drain old requests at rollout.
+	for(int i=0;i<MAIL_MAX_ITEM;++i)if(item[i].nameid || item[i].amount) {
+		ShowError("mail_getattachment: unexpected legacy item reply for char %u mail %d; coordinated upgrade/drain required.\n",sd->status.char_id,msg->id);
+		return;
 	}
 
 	// Zeny receive
@@ -418,6 +404,7 @@ void mail_deliveryfail(map_session_data *sd, struct mail_message *msg){
 // This function only check if the mail operations are valid
 bool mail_invalid_operation( const map_session_data* sd )
 {
+	if(pc_transaction_pending(sd))return true;
 #if PACKETVER < 20150513
 	if( !map_getmapflag(sd->m, MF_TOWN) && !pc_can_use_command(sd, "mail", COMMAND_ATCOMMAND) )
 	{

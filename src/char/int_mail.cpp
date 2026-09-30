@@ -372,6 +372,7 @@ bool mail_DeleteAttach(int32 mail_id){
 
 void mapif_Mail_getattach(int32 fd, uint32 char_id, int32 mail_id, int32 type)
 {
+	if(type&MAIL_ATT_ITEM)return; // Coordinated peers extract items through Asset commits.
 	struct mail_message msg;
 
 	if( ( type&MAIL_ATT_ALL ) == 0 ){

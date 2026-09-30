@@ -58,6 +58,10 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 			close;
 		}
 		set .@cardcount,getequipcardcnt(.@part);
+		.@item_id = getequipid(.@part);
+		.@unique_id$ = getequipuniqueid(.@part);
+		for (.@i = 0; .@i < 4; ++.@i)
+			.@card[.@i] = getequipcardid(.@part,.@i);
 		
 		if (!checkweight(1202,(.@cardcount+1))) { 
 			mes "^3355FFJust a minute!";
@@ -95,12 +99,27 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 		case 3:
 			set .@failtype,2;
 		}
+		// The final menu can remain open while inventory/equipment changes.
+		// Revalidate the quoted item and payment after the last suspension.
+		if (getequipid(.@part) != .@item_id || getequipuniqueid(.@part) != .@unique_id$) {
+			mes "Your equipment changed. Please start again.";
+			close;
+		}
+		for (.@i = 0; .@i < 4; ++.@i) {
+			if (getequipcardid(.@part,.@i) != .@card[.@i]) {
+				mes "Your equipment changed. Please start again.";
+				close;
+			}
+		}
+		if (Zeny < .zenycost + .@cardcount * .percardcost || countitem(1000) < 1 || countitem(715) < 1) {
+			mes "You no longer have the required Zeny and materials. Please start again.";
+			close;
+		}
 		mes "[Wise Old Woman]";
 		mes "Very well. I shall begin.";
 		set .@cost, .zenycost+(.@cardcount * .percardcost);
-		set Zeny, Zeny - .@cost;
-		delitem 1000,1; //Star_Crumb
-		delitem 715,1; //Yellow_Gemstone
+		// Native card removal commits the fee with the selected outcome. A
+		// technical abort leaves the exact original material records untouched.
 		
 		// Replace the constants in the next 3 lines with failure chance values defined in refine_db.txt
 		// First value = Total failure chance (item and cards destroyed)
@@ -110,9 +129,8 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 		set .@failchance,rand(100);
 		if (.faildestroy==1) {
 			if(.@failchance < 2) {
-				next;
-				if (!failedremovecards(.@part,0))
-					callfunc "F_CardRemovalRefund",.@cost;
+				if (!failedremovecards(.@part,0,.@cost,1000,715))
+					callfunc "F_CardRemovalStopped";
 				mes "[Wise Old Woman]";
 				mes "The process was a total failure. I am afraid the item and the cards were destroyed.";
 				close;
@@ -120,18 +138,16 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 
 			if(.@failchance < 8) {
 				if (.@failtype == 1) {
-					next;
-					if (!failedremovecards(.@part,1))
-						callfunc "F_CardRemovalRefund",.@cost;
+					if (!failedremovecards(.@part,1,.@cost,1000,715))
+						callfunc "F_CardRemovalStopped";
 					mes "[Wise Old Woman]";
 					mes "While I have managed to remove the cards from the item, they were destroyed in the process. The item, however, is okay.";
 					close;
 				}
 
 				if (.@failtype == 2) {
-					next;
-					if (!failedremovecards(.@part,2))
-						callfunc "F_CardRemovalRefund",.@cost;
+					if (!failedremovecards(.@part,2,.@cost,1000,715))
+						callfunc "F_CardRemovalStopped";
 					mes "[Wise Old Woman]";
 					mes "Most unfortunate. I succeeded at removing the cards, but the item itself was destroyed in the process.";
 					close;
@@ -140,16 +156,14 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 		}
 
 		if(.@failchance < 10) {
-			next;
-			if (!failedremovecards(.@part,3))
-				callfunc "F_CardRemovalRefund",.@cost;
+			if (!failedremovecards(.@part,3,.@cost,1000,715))
+				callfunc "F_CardRemovalStopped";
 			mes "[Wise Old Woman]";
 			mes "I have failed to remove the cards. Luckily, however, both the item and the cards are still okay.";
 			close;
 		}
-		next;
-		if (!successremovecards(.@part))
-			callfunc "F_CardRemovalRefund",.@cost;
+		if (!successremovecards(.@part,.@cost,1000,715))
+			callfunc "F_CardRemovalStopped";
 		mes "[Wise Old Woman]";
 		mes "The process was a success. Here are your cards and your item. Farewell.";
 		close;
@@ -164,16 +178,11 @@ prt_in,28,73,4	script	Wise Old Woman#eAcustom	78,{
 	}
 }
 
-// A zero command result means the core transaction never committed (for
-// example, inventory capacity changed or an unequip script invalidated its
-// compare-and-swap guard). Only these technical aborts refund the service fee;
-// ordinary harmless/destructive outcomes still consume it as advertised.
-function	script	F_CardRemovalRefund	{
-	Zeny += getarg(0);
-	getitem 1000,1; // Star_Crumb
-	getitem 715,1;  // Yellow_Gemstone
+// Ordinary harmless/destructive outcomes still consume the advertised fee.
+// A zero result never charged it, including bound or otherwise marked materials.
+function	script	F_CardRemovalStopped	{
 	mes "[Wise Old Woman]";
 	mes "The operation was stopped safely because your equipment or inventory changed.";
-	mes "Your Zeny and materials have been refunded.";
+	mes "You have not been charged any Zeny or materials.";
 	close;
 }

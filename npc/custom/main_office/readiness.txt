@@ -1,0 +1,85 @@
+// Read-only guidance. Admission calls the same predicate again after dialogs.
+// Empty reason means prerequisites satisfied; it does not reserve an instance.
+function	script	PN_InstanceMissing	{
+	.@name$ = getarg(0);
+	if (.@name$ == "Crossroads of Tangled Mana") {
+		if (CH2_Step != 2) return "Missing prerequisite: Chapter 2 stage 2.";
+		if (CH2_Crossroads) return "Ready to report: Guardian El in Veledor.";
+	} else if (.@name$ == "Nyrholt") {
+		if (CH2_Step != 8 && CH2_Step != 9) return "Missing prerequisite: Chapter 2 stage 8 or 9.";
+		if (CH2_Nyrholt) return "Ready to report: Nyrholt Keeper.";
+		if (CH2_Step == 8 && countitem(512) < 5) return "Missing prerequisite: 5 Apples for the Keeper.";
+	} else if (.@name$ == "Phantom of Nyrholt") {
+		if (!callfunc("CH2_Complete")) {
+			if (CH2_Step != 11) return "Missing prerequisite: Chapter 2 stage 11.";
+			if (CH2_Phantom) return "Ready to report: Phantom Gate, then Guardian El.";
+		} else {
+			if (isbegin_quest(27119) == 2 && CH2_Daily_CD_27119 > gettimetick(2)) return "Cooldown: "+((CH2_Daily_CD_27119-gettimetick(2)+59)/60)+" minutes remain.";
+			if (isbegin_quest(27119) == 1 && CH2_DailyPhantom) return "Ready to report: claim 3 Flame Coins at the Phantom Gate.";
+		}
+	} else if (.@name$ == "Ghost Palace") {
+		if (BaseLevel < 120) return "Missing prerequisite: Base Level 120.";
+		if (checkquest(1261,PLAYTIME) == 0 || checkquest(1261,PLAYTIME) == 1) return "Cooldown: Cursed Swordsman quest timer.";
+		if (checkquest(1261,PLAYTIME) == 2) return "Timer expired: speak to the Royal Guard to clear it, then speak again.";
+		if (!is_party_leader()) return "Missing prerequisite: only the party leader can enter Ghost Palace.";
+	} else if (.@name$ == "Charleston in Distress") {
+		if (BaseLevel < 130) return "Missing prerequisite: Base Level 130.";
+		if (isbegin_quest(13184) != 1) return "Missing prerequisite: accept Charleston's assignment at verus04 75,114.";
+		if (checkquest(13185,PLAYTIME) == 0 || checkquest(13185,PLAYTIME) == 1) return "Cooldown: Charleston's 20-hour access timer.";
+		if (checkquest(13185,PLAYTIME) == 2) return "Timer expired: speak to the Machine to clear it, then speak again.";
+	} else return "This instance is not in the readiness pilot.";
+	if (!getcharid(1)) return "Missing prerequisite: form or join a party; one member is enough.";
+	.@iid = instance_id(IM_PARTY);
+	if (.@iid) {
+		if (instance_live_info(ILI_NAME,.@iid) != .@name$) return "Reserved elsewhere: finish your party's "+instance_live_info(ILI_NAME,.@iid)+" first.";
+		if (.@name$ != "Ghost Palace" && .@name$ != "Charleston in Distress") {
+			if (!compare(getinstancevar('ch2_roster$,.@iid),","+getcharid(0)+",")) return "Missing prerequisite: you were not on this expedition's original roster.";
+		}
+	} else if (!is_party_leader()) return "Missing prerequisite: ask your party leader to reserve this instance.";
+	return "";
+}
+
+function	script	PN_InstanceReadinessDesk	{
+	setarray .@names$,"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress";
+	setarray .@maps$,"veledor","ragsruth","ch2safe4","dali02","verus04";
+	setarray .@x,140,88,86,43,81;
+	setarray .@y,65,58,146,129,112;
+	setarray .@tags$,"Flame Coins (story)","Flame Coins (story)","Flame Coins (story/daily)","Gray Shards / Thanatos equipment","Charleston Components";
+	.@pick=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Leave")-1;
+	if (.@pick == 5) return;
+	mes .@names$[.@pick]+" | Materials: "+.@tags$[.@pick];
+	.@reason$=callfunc("PN_InstanceMissing",.@names$[.@pick]);
+	if (.@reason$ != "") mes .@reason$;
+	else if (instance_id(IM_PARTY)) mes "Reserved: your party's instance is ready for entry checks.";
+	else mes "Ready: visit the entrance to reserve and enter.";
+	mes "Entrance: "+.@maps$[.@pick]+" "+.@x[.@pick]+","+.@y[.@pick]+". The entrance rechecks your state.";
+	navigateto .@maps$[.@pick],.@x[.@pick],.@y[.@pick];
+	return;
+}
+
+function	script	PN_GuideOnboarding	{
+	if (BaseLevel < 200) {
+		mes "Next objective: reach Base Level 200 for Chapter 1. First review your job and skills with the Job Master.";
+		mes "Destination: Main Office lobby 46,40. Training and equipment services are upstairs.";
+		navigateto "pn_office",46,39;
+		return;
+	}
+	if (!isbegin_quest(18368)) {
+		mes "Next objective: accept Lara's invitation at the Small Ash Tree. Chapter 1 begins at Base Level 200.";
+		navigateto "prt_fild05",353,252; return;
+	}
+	setarray .@quests,18368,18369,18370,18371,24069,24070,24071,24072;
+	setarray .@maps$,"ygg_edge","ygg_fruit","ygg_fruit","ygg_roots","ygg_roots","ygg_roots","ygg_roots","ygg_roots";
+	setarray .@x,253,80,82,334,299,186,167,166;
+	setarray .@y,246,122,120,138,59,117,135,135;
+	setarray .@objectives$,"Speak to the Lapine Messenger after entering Ashridge through the Small Ash Tree.","Introduce yourself to Lapine Shasha.","Introduce yourself to Maysel beside Shasha.","Walk onto the first Investigation Point in the Land of Darkness.","Walk onto the second Investigation Point.","Walk onto the third Investigation Point.","Investigate the Source of Sound and speak to Chez.","Help Yvain by lifting the root at his location.";
+	for (.@i=0; .@i<8; ++.@i) {
+		if (isbegin_quest(.@quests[.@i]) != 1) continue;
+		mes "Next objective: "+.@objectives$[.@i];
+		mes "Destination: "+.@maps$[.@i]+" "+.@x[.@i]+","+.@y[.@i]+".";
+		navigateto .@maps$[.@i],.@x[.@i],.@y[.@i]; return;
+	}
+	mes "You have passed the first ten guided states. Follow your active Chapter 1 quest objective in the quest window.";
+	mes "The next chapter unlocks after Bring Down the Air Fortress is complete.";
+	return;
+}

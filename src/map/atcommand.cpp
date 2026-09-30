@@ -1,3 +1,5 @@
+#include <common/runtime_identity.hpp>
+#include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -1517,6 +1519,25 @@ ACMD_FUNC(item)
 		number = 1;
 	int32 get_count = number;
 
+	bool has_pet = false;
+	for (const auto& data : items)
+		if (data->type == IT_PETEGG || pet_db_search(data->nameid, PET_EGG)) has_pet = true;
+	if (has_pet) {
+		std::vector<pn_shop::Grant> grants;
+		for (const auto& data : items) {
+			pn_shop::Grant grant{};
+			grant.nameid = data->nameid; grant.amount = number;
+			grant.prototype.nameid = data->nameid; grant.prototype.identify = 1; grant.prototype.bound = bound;
+			grants.push_back(grant);
+		}
+		if (!pn_shop_begin(*sd, pn_shop_request(*sd, pn_shop::Asset), grants)) {
+			clif_displaymessage(fd, "The item grant could not start. No items were created.");
+			return -1;
+		}
+		clif_displaymessage(fd, "The item grant is being committed; pet rewards remain available through @petrewards.");
+		return 0;
+	}
+
 	// Produce items in list
 	for( const auto& item : items ){
 		t_itemid item_id = item->nameid;
@@ -1527,16 +1548,13 @@ ACMD_FUNC(item)
 		}
 
 		for( int32 i = 0; i < number; i += get_count ){
-			// if not pet egg
-			if (!pet_create_egg(sd, item_id)) {
-				struct item item_tmp = {};
+			struct item item_tmp = {};
 
-				item_tmp.nameid = item_id;
-				item_tmp.identify = 1;
-				item_tmp.bound = bound;
-				if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
-					clif_additem(sd, 0, 0, flag);
-			}
+			item_tmp.nameid = item_id;
+			item_tmp.identify = 1;
+			item_tmp.bound = bound;
+			if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
+				clif_additem(sd, 0, 0, flag);
 		}
 	}
 
@@ -1613,23 +1631,23 @@ ACMD_FUNC(item2)
 			refine = attr = 0;
 		}
 
+		struct item item_tmp = {};
+		item_tmp.nameid = item_data->nameid;
+		item_tmp.identify = identify;
+		item_tmp.refine = refine;
+		item_tmp.attribute = attr;
+		item_tmp.card[0] = c1; item_tmp.card[1] = c2;
+		item_tmp.card[2] = c3; item_tmp.card[3] = c4;
+		item_tmp.bound = bound;
+		const auto pet_result = pn_pet_grant(*sd, item_tmp, number);
+		if (pet_result != pn_pet_grant_result::NotPet) {
+			clif_displaymessage(fd, pet_result == pn_pet_grant_result::Pending ?
+				"Pet grant pending; unclaimed eggs remain available through @petrewards." : "The pet grant could not start.");
+			return pet_result == pn_pet_grant_result::Pending ? 0 : -1;
+		}
 		for (i = 0; i < loop; i++) {
-			// if not pet egg
-			if (!pet_create_egg(sd, item_data->nameid)) {
-				struct item item_tmp = {};
-
-				item_tmp.nameid = item_data->nameid;
-				item_tmp.identify = identify;
-				item_tmp.refine = refine;
-				item_tmp.attribute = attr;
-				item_tmp.card[0] = c1;
-				item_tmp.card[1] = c2;
-				item_tmp.card[2] = c3;
-				item_tmp.card[3] = c4;
-				item_tmp.bound = bound;
-				if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
-					clif_additem(sd, 0, 0, flag);
-			}
+			if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
+				clif_additem(sd, 0, 0, flag);
 		}
 
 		if (flag == 0)
@@ -3332,14 +3350,8 @@ ACMD_FUNC(makeegg) {
 
 	int32 res(-1);
 	if (pet != nullptr) {
-		std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
-		if(mdb){
-			if(intif_create_pet(sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str())){
-				res = 0;
-			} else {
-				res = -2; //char server down
-			}
-		}
+		struct item egg{}; egg.nameid = pet->EggID; egg.identify = 1;
+		res = pn_pet_grant(*sd, egg, 1) == pn_pet_grant_result::Pending ? 0 : -2;
 	} 
 	
 	switch(res){
@@ -12581,6 +12593,8 @@ bool is_atcommand(const int32 fd, map_session_data* sd, const char* message, int
 		}
 	}
 
+	// Reloads invalidate comparison identity even when a reload partly fails.
+	if(strstr(command,"reload") || strstr(command,"loadnpc") || strstr(command,"unloadnpc"))pn_runtime_identity::invalidate();
 	//Attempt to use the command
 	if ( (info->func(fd, ssd, command, params) != 0) )
 	{

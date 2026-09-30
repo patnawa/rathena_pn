@@ -20,14 +20,18 @@ import signal
 import subprocess
 import sys
 import time
+from release_bundle import binding
 
 ROOT = Path(__file__).resolve().parents[2]
 TESTS = (
-    'shop_planner_test.py', 'shop_recovery_inter_test.py',
-    'interserver_reconnect_test.py',
+    'market_restore_test.py',
+    'runtime_metrics_test.py', 'runtime_identity_test.py',
+    'shop_planner_test.py', 'shop_recovery_inter_test.py', 'point_barrier_wire_test.py',
+    'interserver_reconnect_test.py', 'custom_make_dependencies_test.py', 'pet_floor_test.py',
     'bank_core_test.py',
     'bank_service_test.py',
     'release_checks_test.py',
+    'release_bundle_test.py', 'release_controller_test.py',
     'bug_hunt_test.py',
     'scdata_reload_test.py', 'rodex_operation_test.py',
     'hotfix_bonus_regression.py', 'fly_wing_rental_regression.py',
@@ -47,6 +51,7 @@ TESTS = (
     'client_archive_stack_test.py',
     'client_release_audit_test.py',
     'dynamic_reward_audit_test.py',
+    'dynamic_reward_catalog_test.py',
     'client_preflight_test.py',
     'instance_access_manifest_test.py',
     'instance_geometry_test.py',
@@ -58,8 +63,12 @@ TESTS = (
     'instance_combat_rules_test.py',
 )
 FULL_TESTS = (
-    'shop_transaction_native_test.py', 'shop_delivery_native_test.py',
-    'npc_audit_fashion_test.py', 'chapter1_protection_test.py', 'instance_entry_native_test.py',
+    'item_use_metadata_native_test.py', 'item_use_pet_native_test.py',
+    'point_shop_native_test.py', 'package_pet_native_test.py', 'pet_reward_script_test.py', 'lab_history_test.py', 'onboarding_readiness_test.py',
+    'npc_audit_fashion_test.py', 'card_removal_transaction_test.py',
+    'armor_enchant_transaction_test.py', 'mayomayo_payment_test.py', 'shop_transaction_native_test.py',
+    'shop_delivery_native_test.py',
+    'chapter1_protection_test.py', 'instance_entry_native_test.py',
     'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
     'mob_matk_range_test.py', 'immortal_instance_test.py',
     'instance_warper_test.py', 'airship_briefing_test.py',
@@ -131,8 +140,15 @@ def run_process(command, stream, timeout):
 
 
 def run_logged_check(name, command, report, report_path, log_path, timeout=900, check=True):
+    # Reports and their log directory move together between containers and hosts.
+    # Preserve absolute paths for callers that deliberately choose an external log.
+    resolved_log = log_path.resolve()
+    try:
+        recorded_log = resolved_log.relative_to(report_path.resolve().parent).as_posix()
+    except ValueError:
+        recorded_log = str(resolved_log)
     row = {'name': name, 'passed': False, 'status': 'running',
-           'command': command, 'log': str(log_path)}
+           'command': command, 'log': recorded_log}
     report['checks'].append(row)
     save_report(report, report_path)
     started = time.monotonic()
@@ -153,6 +169,7 @@ def run_logged_check(name, command, report, report_path, log_path, timeout=900, 
         row.update(passed=False, status='failed', error=str(exc) or type(exc).__name__)
         raise
     finally:
+        if log_path.is_file(): row['sha256'] = hashlib.sha256(log_path.read_bytes()).hexdigest()
         row['seconds'] = round(time.monotonic() - started, 2)
         save_report(report, report_path)
     return row
@@ -179,6 +196,7 @@ def main():
     try:
         if args.phase == 'full':
             report['candidate_sha256'] = candidate_digest(ROOT)
+            report['binding'] = binding(ROOT)
         yaml_check = {'name': 'database_yaml_syntax', 'passed': False, 'status': 'running', 'files': 0}
         checks.append(yaml_check)
         save_report(report, args.report)
@@ -210,6 +228,8 @@ def main():
                 errors.append(f"map-server exited with status {startup['exit_code']}")
             if candidate_digest(ROOT) != report['candidate_sha256']:
                 errors.append('Candidate files changed during validation; rerun on a stable build')
+            if binding(ROOT) != report['binding']:
+                errors.append('Release inputs changed during validation')
             startup.update(passed=not errors, status='failed' if errors else 'passed',
                            sha256=hashlib.sha256(content).hexdigest(), errors=errors)
             if errors:

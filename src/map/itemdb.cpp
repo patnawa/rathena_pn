@@ -2,6 +2,8 @@
 // For more information, see LICENCE in the main folder
 
 #include <custom/retired_tokens.hpp>
+#include <custom/item_use.hpp>
+#include "pet.hpp"
 #include "itemdb.hpp"
 
 #include <algorithm>
@@ -3273,7 +3275,9 @@ void ItemGroupDatabase::pc_get_itemgroup_sub( map_session_data& sd, bool identif
 
 		if( flag == ADDITEM_SUCCESS ){
 			if( data->isAnnounced ){
-				intif_broadcast_obtain_special_item( &sd, data->nameid, sd.itemid, ITEMOBTAIN_TYPE_BOXITEM );
+				const auto reward_id=data->nameid,source_id=sd.itemid;
+				if(!pn_item_use_success_defer(&sd,[&sd,reward_id,source_id](){intif_broadcast_obtain_special_item(&sd,reward_id,source_id,ITEMOBTAIN_TYPE_BOXITEM);}))
+					intif_broadcast_obtain_special_item( &sd, reward_id, source_id, ITEMOBTAIN_TYPE_BOXITEM );
 			}
 		}else{
 			clif_additem( &sd, 0, 0, flag );
@@ -3301,6 +3305,14 @@ uint8 ItemGroupDatabase::pc_get_itemgroup( uint16 group_id, bool identify, map_s
 		return 3;
 	}
 
+	bool owns_pet_batch=false;
+	if(!pn_item_use_active(&sd)) {
+		for(const auto& subgroup:group->random)for(const auto& entry:subgroup.second->data) {
+			const auto data=item_db.find(entry.second->nameid);
+			if((data && data->type==IT_PETEGG) || pet_db_search(entry.second->nameid,PET_EGG))owns_pet_batch=true;
+		}
+		if(owns_pet_batch && !pn_item_use_batch_begin(sd))return 4;
+	}
 	for (const auto &random : group->random) {
 		switch( random.second->algorithm ) {
 			case GROUP_ALGORITHM_RANDOM:
@@ -3314,7 +3326,7 @@ uint8 ItemGroupDatabase::pc_get_itemgroup( uint16 group_id, bool identify, map_s
 		}
 	}
 
-	return 0;
+	return owns_pet_batch && !pn_item_use_batch_finish(sd)?4:0;
 }
 
 /** Searches for the item_data. Use this to check if item exists or not.

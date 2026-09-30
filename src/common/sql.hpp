@@ -77,6 +77,8 @@ uint32 Sql_GetError( Sql* self );
 // connection must fail the transaction, never continue it on a new session.
 int32 Sql_BeginTransaction( Sql* self );
 int32 Sql_EndTransaction( Sql* self, bool commit );
+// True only inside the reconnect-disabled transaction owned by these APIs.
+bool Sql_InTransaction( const Sql* self );
 
 
 

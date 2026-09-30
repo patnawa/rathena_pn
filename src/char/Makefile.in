@@ -71,6 +71,8 @@ obj/int_storage.o: ../custom/bank_sql.inc ../custom/bank_commit.hpp ../custom/ba
 	../custom/multi_storage_sql.inc ../custom/multi_storage.hpp ../custom/multi_storage_protocol.hpp
 obj/int_storage.o: ../custom/mail_sql.inc ../custom/mail_commit.hpp ../custom/mail_protocol.hpp ../custom/zeny_arithmetic.hpp
 obj/int_storage.o: ../custom/bank_sweep_sql.inc ../custom/bank_sweep.hpp ../custom/pair_sql.inc ../custom/pair_commit.hpp
+obj/int_storage.o: ../custom/shop_sql.inc ../custom/mail_asset_sql.inc ../custom/point_asset_sql.inc ../custom/global_point.hpp ../custom/global_point_char.inc ../custom/shop_commit.hpp ../custom/pet_entitlement.hpp
+obj/int_pet.o: ../custom/pet_entitlement_sql.inc ../custom/pet_entitlement.hpp
 obj/char.o: ../custom/multi_storage.hpp
 
 obj/%.o: %.cpp $(CHAR_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H)
@@ -86,3 +88,7 @@ $(LIBCONFIG_AR):
 	
 $(RAPIDYAML_AR):
 	@$(MAKE) -C ../../3rdparty/rapidyaml
+
+obj/char_logif.o: ../custom/global_point.hpp ../custom/shop_commit.hpp ../custom/pet_entitlement.hpp
+
+obj/inter.o: ../custom/global_point.hpp ../custom/shop_commit.hpp ../custom/pet_entitlement.hpp

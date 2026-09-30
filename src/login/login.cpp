@@ -357,6 +357,8 @@ int32 login_mmo_auth(struct login_session_data* sd, bool isServer) {
 		return 1; // 1 = Incorrect Password
 	}
 
+	if(!isServer && mmo_point_pending(accounts,acc.account_id))return 3; // Transaction settling; retry login shortly.
+
 	if( acc.expiration_time != 0 && acc.expiration_time < time(nullptr) ) {
 		ShowNotice("Connection refused (account: %s, expired ID, ip: %s)\n", sd->userid, ip);
 		return 2; // 2 = This ID is expired

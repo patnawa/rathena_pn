@@ -80,3 +80,5 @@ $(LIBCONFIG_AR):
 
 $(RAPIDYAML_AR):
 	@$(MAKE) -C ../../3rdparty/rapidyaml
+
+obj/account.o obj/login.o obj/loginchrif.o: ../custom/global_point.hpp ../custom/shop_commit.hpp ../custom/pet_entitlement.hpp

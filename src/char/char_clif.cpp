@@ -26,6 +26,7 @@
 #include "char_logif.hpp"
 #include "char_mapif.hpp"
 #include "inter.hpp"
+#include "int_storage.hpp"
 
 using namespace rathena;
 
@@ -1072,6 +1073,7 @@ void chclif_accessible_maps( int32 fd ){
 }
 
 bool chclif_parse_charselect( int32 fd, struct char_session_data& sd ){
+	if(pn_global_point_pending(sd.account_id)){chclif_accessible_maps(fd);return true;}
 	const PACKET_CH_SELECT_CHAR* p = reinterpret_cast<PACKET_CH_SELECT_CHAR*>( RFIFOP( fd, 0 ) );
 
 	int32 server_id;
