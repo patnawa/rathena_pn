@@ -33,25 +33,39 @@ This was a cohosted synthetic workload, not a production capacity measurement.
 Receipt: `final-responsiveness-ef5350c8/combined.json`, SHA-256
 `d127fc572c2d8752680fcd04f1c551e99edb8810fc31a8f78dacd980face6c1a`.
 
-The private Windows client reached character selection on 29 September. On
-resuming 30 September, the supported native UI bridge reported its pipe missing,
-including after the documented retry and session-reset procedure. None of the
-seven required rendered journeys is certified complete. Production has not been
-modified, client publication has not occurred, and final release acceptance must
-continue to reject missing rendered evidence. Twenty-eight receipt-bound derived
-SQL build inputs were staged only into the private deployment envelope; complete
-source, binary, configuration and runtime identities remained unchanged.
+The native client completed two of the seven required rendered journeys on
+30 September: saved lab comparisons after actual character relog, and pet
+recovery with full inventory, owner relog, another character's isolation,
+partial collection, empty replay and final relog. Original screenshots and
+SELECT-only persistence evidence are indexed in
+`root-reviewed-cases-progress-20260930T1256Z.json`. This is explicitly a partial
+progress record, not seven-case acceptance. The lab runs had different attack
+initiation; they verify persistence and comparison, not a controlled benchmark.
+
+The private client reconnected to the office at 13:18 UTC after restoration of
+its task-owned SSH tunnel and prompt service selection. Passive connection
+tracing corroborated character/map connections, and all 277 stable client inputs
+still matched their recorded identity. A later environment change left the
+native helper pipe unavailable and no running client at 13:44 UTC. Shop/storage,
+onboarding, encounter/reward, party re-entry and client visual samples remain
+unfinished. No shop purchase occurred during the attempted shop check.
+
+Production has not been modified and client publication has not occurred.
+Release acceptance continues to require the remaining rendered evidence.
+Twenty-eight receipt-bound derived SQL build inputs were staged only into the
+private deployment envelope; source, binary, configuration and runtime
+identities remained unchanged.
 
 | Requirement | Implementation | Verification | Live / Git |
 | --- | --- | --- | --- |
 | 1. Market restoration initialization | Deterministic entry initialization and retained stock restoration | Final native and SQL/restart suites passed | Git pushed; live pending |
-| 2. Durable pet delivery and recovery | All audited producer families, atomic entitlements, ownership/replay, consumed-pet handling and Recovery Desk implemented | Final native/SQL and actual world recovery passed; rendering pending | Git pushed; live pending |
+| 2. Durable pet delivery and recovery | All audited producer families, atomic entitlements, ownership/replay, consumed-pet handling and Recovery Desk implemented | Final native/SQL, actual world recovery and rendered recovery passed | Git pushed; live pending |
 | 3. Automatic release evidence | SQL CI job, release-branch triggers, scoped controller, private configuration separation and deployment guards implemented | Final 71-check gate and SQL validation passed; controller rejects missing rendered report | Git pushed; live pending |
 | 4. Barter allocation and capacity | Shared immutable plan handles split stacks, overlapping requirements, freed slots and metadata | Final native caller/planner and SQL proofs passed | Git pushed; live pending |
 | 5. Guide and readiness | Ten onboarding states and five instances share read-only admission checks | Native state/boundary tests passed; rendered journey pending | Git pushed; live pending |
 | 6. Dynamic rewards and client journeys | 2,681 recipes/342 output IDs cataloged; 32 Rune metadata definitions added | Native catalog coverage passed; 193 dynamic lines remain explicit unknowns outside this pilot; rendered journeys pending | Git pushed; live pending |
 | 7. Runtime observability | Bounded latency/pending/retry metrics and stall health checks implemented | All six final sustained workload/fault cases passed | Git pushed; live pending |
-| 8. Persistent lab comparisons | Three saved runs, equipment/buff/runtime identities, compatible comparisons and medians implemented | Final three positive 60-second runs, SQL relog and interruption preservation passed; rendering pending | Git pushed; live pending |
+| 8. Persistent lab comparisons | Three saved runs, equipment/buff/runtime identities, compatible comparisons and medians implemented | Final positive runs, SQL relog, interruption preservation and rendered saved comparison passed | Git pushed; live pending |
 | Existing NPC transaction fixes | Card removal, armor enchants and Mayomayo integrated | Included in final passing native gate | Git pushed; live pending |
 | Existing client fixes | 184 weights, Sealed Drake tooltip and Rune definitions prepared for signed publication | Effective payload hashes verified; rendered samples and publication pending | Git pushed; publication pending |
 | Final release | Musl binaries, private deployment envelope, reversible preservation and guarded cutover prepared | All 5,922 nonconfiguration inputs match committed Git blobs/generated templates; complete acceptance still required | Git pushed; deployment pending |
