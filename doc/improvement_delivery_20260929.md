@@ -2,7 +2,7 @@
 
 Authorized objective: implement roadmap items 1–8 and the unfinished work, test them without requiring user client interaction, deploy to live and push Git. Completion requires current implementation, appropriately scoped tests, deployment evidence and remote Git verification. A partial gate or earlier receipt cannot close this ledger.
 
-Baseline: `ce00fd541` on `codex/server-improvements-20260919`. Existing card-removal, armor-enchant, Mayomayo, combat-test and client-overlay work is integrated; unrelated local analysis is preserved outside staging. No rollout or Git push has occurred yet.
+Baseline: `ce00fd541` on `codex/server-improvements-20260919`. Existing card-removal, armor-enchant, Mayomayo, combat-test and client-overlay work is integrated; unrelated local analysis is preserved outside staging. Implementation commit `7d4d3dcee55edc4d38a789c3e6002b3525913ba5` was pushed to that origin branch and verified using `git ls-remote` on 30 September. No live rollout has occurred.
 
 Current frozen source: `ef5350c8ae8522ba1077848716fdfa1caafd0224e9b9339bde29eae7472ce617`.
 The last change repairs the real-world lab driver: identify the actual spawned
@@ -44,17 +44,17 @@ source, binary, configuration and runtime identities remained unchanged.
 
 | Requirement | Implementation | Verification | Live / Git |
 | --- | --- | --- | --- |
-| 1. Market restoration initialization | Deterministic entry initialization and retained stock restoration | Native poison tests and real SQL/restart suite passed; final binding rerun underway | Pending |
-| 2. Durable pet delivery and recovery | All audited producer families, atomic entitlements, ownership/replay, consumed-pet handling and Recovery Desk implemented | Native/SQL suites and actual world recovery passed on prior bound snapshot; final rerun and rendering remain | Pending |
-| 3. Automatic release evidence | SQL CI job, release-branch triggers, scoped controller, private configuration separation and deployment guards implemented | Full 71-check gate and SQL receipt validation passed before driver correction; final rerun underway | Pending |
-| 4. Barter allocation and capacity | Shared immutable plan handles split stacks, overlapping requirements, freed slots and metadata | Native caller/planner and SQL proofs passed before driver correction; final rerun underway | Pending |
-| 5. Guide and readiness | Ten onboarding states and five instances share read-only admission checks | Native state/boundary tests passed; rendered journey pending | Pending |
-| 6. Dynamic rewards and client journeys | 2,681 recipes/342 output IDs cataloged; 32 Rune metadata definitions added | Native catalog coverage passed; 193 dynamic lines remain explicit unknowns outside this pilot; rendered journeys pending | Pending |
-| 7. Runtime observability | Bounded latency/pending/retry metrics and stall health checks implemented | Partial superseded measurements preserved honestly; final sustained measurements pending | Pending |
-| 8. Persistent lab comparisons | Three saved runs, equipment/buff/runtime identities, compatible comparisons and medians implemented | Three nonzero 60-second world runs, SQL relog and interruption preservation passed; final rerun and rendering pending | Pending |
-| Existing NPC transaction fixes | Card removal, armor enchants and Mayomayo integrated | Included in passing native gate; final binding rerun underway | Pending |
-| Existing client fixes | 184 weights, Sealed Drake tooltip and Rune definitions prepared for signed publication | Effective payload hashes verified; rendered samples and publication pending | Pending |
-| Final release | Musl binaries, private deployment envelope, reversible preservation and guarded cutover prepared | All 5,922 nonconfiguration inputs match staged Git blobs/generated templates; complete acceptance still required | Deployment and Git push pending |
+| 1. Market restoration initialization | Deterministic entry initialization and retained stock restoration | Final native and SQL/restart suites passed | Git pushed; live pending |
+| 2. Durable pet delivery and recovery | All audited producer families, atomic entitlements, ownership/replay, consumed-pet handling and Recovery Desk implemented | Final native/SQL and actual world recovery passed; rendering pending | Git pushed; live pending |
+| 3. Automatic release evidence | SQL CI job, release-branch triggers, scoped controller, private configuration separation and deployment guards implemented | Final 71-check gate and SQL validation passed; controller rejects missing rendered report | Git pushed; live pending |
+| 4. Barter allocation and capacity | Shared immutable plan handles split stacks, overlapping requirements, freed slots and metadata | Final native caller/planner and SQL proofs passed | Git pushed; live pending |
+| 5. Guide and readiness | Ten onboarding states and five instances share read-only admission checks | Native state/boundary tests passed; rendered journey pending | Git pushed; live pending |
+| 6. Dynamic rewards and client journeys | 2,681 recipes/342 output IDs cataloged; 32 Rune metadata definitions added | Native catalog coverage passed; 193 dynamic lines remain explicit unknowns outside this pilot; rendered journeys pending | Git pushed; live pending |
+| 7. Runtime observability | Bounded latency/pending/retry metrics and stall health checks implemented | All six final sustained workload/fault cases passed | Git pushed; live pending |
+| 8. Persistent lab comparisons | Three saved runs, equipment/buff/runtime identities, compatible comparisons and medians implemented | Final three positive 60-second runs, SQL relog and interruption preservation passed; rendering pending | Git pushed; live pending |
+| Existing NPC transaction fixes | Card removal, armor enchants and Mayomayo integrated | Included in final passing native gate | Git pushed; live pending |
+| Existing client fixes | 184 weights, Sealed Drake tooltip and Rune definitions prepared for signed publication | Effective payload hashes verified; rendered samples and publication pending | Git pushed; publication pending |
+| Final release | Musl binaries, private deployment envelope, reversible preservation and guarded cutover prepared | All 5,922 nonconfiguration inputs match committed Git blobs/generated templates; complete acceptance still required | Git pushed; deployment pending |
 
 See [roadmap](improvement_roadmap_20260929.md) and [supporting research](improvement_research_20260929.md) for the full scope and evidence criteria. Additional architectural follow-ups are assessed alongside the affected implementation; none should silently weaken the listed guarantees.
 
