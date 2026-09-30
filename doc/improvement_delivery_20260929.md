@@ -16,6 +16,25 @@ checkpoints; the dated checkpoint immediately below is authoritative for current
 
 ## Current checkpoint — 30 September 2026
 
+User testing handoff (supersedes the rendered-test requirements below): the user
+instructed, "no need to test i will test my self". Further client tests are
+stopped. Encounter/reward, the remaining storage deposit/withdraw/relog steps,
+and client visual samples are unverified and handed to the user. They must not
+be represented as passed. The earlier request to deploy and push remains active;
+backup, payload identity, service health and rollback safeguards still apply.
+No live deployment or client publication has occurred at this handoff.
+
+Four rendered cases have supporting evidence: lab comparison, pet recovery,
+onboarding guidance preserved after relog, and party-member reconnect into the
+same Charleston instance. The current partial record is
+`root-reviewed-cases-progress-20260930T1501Z-party-reentry.json`, SHA-256
+`efcf6c77c47dbae63a7eade4b61f9782198f283458d73f13053f07abc171aade`.
+The party leader needed declared fixture revival while awaiting helper repairs;
+this establishes reconnect behavior, not combat/reward or cooldown-bypass proof.
+The actual shop purchase and insufficient-funds storage unlock refusal also
+passed their partial checks; storage item transfer remains unverified.
+The following paragraphs preserve the earlier checkpoints and their limitations.
+
 The final `ef5350c8` candidate passed the 71-check native gate
 (`musl-gate-1790701965/release.json`), combined SQL acceptance
 (`final-sql-ef5350c8/combined.json`, SHA-256
