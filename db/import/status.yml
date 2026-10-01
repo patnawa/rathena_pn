@@ -45,3 +45,19 @@ Body:
       NoDispell: true
       NoBanishingBuster: true
       NoClearance: true
+
+# Power Booster decreases SP cost; positive bUseSPrate increases it.
+  - Status: Limit_Power_Booster
+    Script: |
+      .@val1 = getstatus(SC_LIMIT_POWER_BOOSTER, 1);
+      .@val2 = getstatus(SC_LIMIT_POWER_BOOSTER, 2);
+      .@val3 = getstatus(SC_LIMIT_POWER_BOOSTER, 3);
+      bonus bBaseAtk, .@val1;
+      bonus bMatk, .@val1;
+      bonus bHit, .@val1;
+      bonus bFlee, .@val1;
+      bonus bFixedCastrate, -.@val1;
+      bonus bAtkRate, .@val2;
+      bonus bMatkRate, .@val2;
+      bonus bAspd, .@val2;
+      bonus bUseSPrate, -.@val3;

@@ -1,0 +1,30 @@
+{
+  "passed": false,
+  "exit_code": 1,
+  "input_hashes": {
+    "tools/ci/shop_sql_failure_audit.py": "e6c817c53929d8c6c88bcc8989c8caaf6546d80e140d362b46a311bfcafdb4ad",
+    "tools/ci/shop_sql_failure_audit.cpp": "ff2d8001aa0fdea3b7a81cf29299c8222db82f4f9d34e80f6e682760e93a1090",
+    "src/map/npc.cpp": "d418dab29ddb1213a631cf04bd0bed1c81df0c7848b6c37e5e017df3c27c4df1"
+  },
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "4g",
+    "--mount",
+    "type=bind,src=/app/pn-transaction-audit-20260929/candidate,dst=/rathena",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-w",
+    "/rathena",
+    "--entrypoint",
+    "python3",
+    "pn-bank-validation:20260929",
+    "tools/ci/shop_sql_failure_audit.py"
+  ]
+}

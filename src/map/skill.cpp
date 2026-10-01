@@ -75,6 +75,24 @@ AbraDatabase abra_db;
 ReadingSpellbookDatabase reading_spellbook_db;
 SkillArrowDatabase skill_arrow_db;
 
+// Only a live native rental item in this character's inventory waives a cost.
+// Permanent/admin-created non-rental tokens and expired rentals grant nothing.
+static bool skill_has_rental_catalyst(const map_session_data& sd, t_itemid material, time_t now = std::time(nullptr)) {
+	t_itemid rental = 0;
+	switch (material) {
+	case PN_SOUL_TALISMAN_MATERIAL: rental = PN_INFINITE_SOUL_TALISMAN; break;
+	case ITEMID_TRAP: rental = PN_INFINITE_TRAP; break;
+	case ITEMID_TRAP_ALLOY: rental = PN_INFINITE_ALLOY_TRAP; break;
+	default: return false;
+	}
+	for (int32 i = 0; i < MAX_INVENTORY; ++i) {
+		const item& token = sd.inventory.u.items_inventory[i];
+		if (token.nameid == rental && token.amount > 0 && token.expire_time > now)
+			return true;
+	}
+	return false;
+}
+
 #define MAX_SKILL_CHANGEMATERIAL_DB 75
 #define MAX_SKILL_CHANGEMATERIAL_SET 3
 struct s_skill_changematerial_db {
@@ -1654,6 +1672,12 @@ int32 skill_onskillusage(map_session_data *sd, block_list *bl, uint16 skill_id, 
 
 		uint16 skill = it.id;
 
+		// Elementals can be summoned or dismissed after equipment bonuses are
+		// registered. Check the current summon before consuming autocast costs.
+		if (skill == EM_ELEMENTAL_BUSTER &&
+			(sd->ed == nullptr || sd->ed->elemental.class_ < ELEMENTALID_DILUVIO || sd->ed->elemental.class_ > ELEMENTALID_SERPENS))
+			continue;
+
 		sd->state.autocast = 1; //set this to bypass sd->canskill_tick check
 
 		if( skill_isNotOk(skill, *sd) ) {
@@ -1680,11 +1704,11 @@ int32 skill_onskillusage(map_session_data *sd, block_list *bl, uint16 skill_id, 
 
 		e_cast_type type = skill_get_casttype(skill);
 
-		if (type == CAST_GROUND && !skill_pos_maxcount_check(sd, tbl->x, tbl->y, skill_id, skill_lv, BL_PC, false))
+		if (type == CAST_GROUND && !skill_pos_maxcount_check(sd, tbl->x, tbl->y, skill, skill_lv, BL_PC, false))
 			continue;
 
 		if (battle_config.autospell_check_range &&
-			!battle_check_range(bl, tbl, skill_get_range2(sd, skill, skill_lv, true)))
+			!battle_check_range(sd, tbl, skill_get_range2(sd, skill, skill_lv, true)))
 			continue;
 
 		sd->state.autocast = 1;
@@ -2000,6 +2024,7 @@ int32 skill_counter_additional_effect (block_list* src, block_list *bl, uint16 s
 --------------------------------------------------------------------------*/
 int32 skill_break_equip(block_list *src, block_list *bl, uint16 where, int32 rate, int32 flag)
 {
+	if (auto* pending = BL_CAST(BL_PC, bl); pending && pending->shop_commit.pending) return 0;
 	status_change *src_sc = status_get_sc(src);
 
 	// Grant player skills/items the ability to "break" non-player equipment.
@@ -4338,7 +4363,11 @@ int32 skill_castend_damage_id (block_list* src, block_list *bl, uint16 skill_id,
 	if (status_isdead(*bl))
 		return 1;
 
-	if (skill_id && skill_id != AG_DEADLY_PROJECTION && skill_get_type(skill_id) == BF_MAGIC && status_isimmune(bl) == 100)
+	// Genesis uses the caster as its initial splash center. Their own GTB must
+	// not cancel the search, while actual splash targets retain magic immunity.
+	if (skill_id && skill_id != AG_DEADLY_PROJECTION &&
+		!(skill_id == LG_RAYOFGENESIS && src == bl && !(flag & 1)) &&
+		skill_get_type(skill_id) == BF_MAGIC && status_isimmune(bl) == 100)
 	{	//GTB makes all targetted magic display miss with a single bolt.
 		sc_type sct = skill_get_sc(skill_id);
 		if(sct != SC_NONE)
@@ -5754,7 +5783,7 @@ int32 skill_castend_map (map_session_data *sd, uint16 skill_id, const char *mapn
 
 	case AL_WARP:
 		if( sd != nullptr ){
-			const struct s_point_str *p[4];
+			const struct s_point_str *p[MAX_MEMOPOINTS + 1];
 			std::shared_ptr<s_skill_unit_group> group;
 			int32 i, lv, wx, wy;
 			int32 maxcount=0;
@@ -5768,9 +5797,8 @@ int32 skill_castend_map (map_session_data *sd, uint16 skill_id, const char *mapn
 				return 0;
 			}
 			p[0] = &sd->status.save_point;
-			p[1] = &sd->status.memo_point[0];
-			p[2] = &sd->status.memo_point[1];
-			p[3] = &sd->status.memo_point[2];
+			for (int32 memo = 0; memo < MAX_MEMOPOINTS; ++memo)
+				p[memo + 1] = &sd->status.memo_point[memo];
 
 			if((maxcount = skill_get_maxcount(skill_id, sd->menuskill_val)) > 0) {
 				unit_skillunit_maxcount(sd->ud, skill_id, maxcount);
@@ -5790,8 +5818,9 @@ int32 skill_castend_map (map_session_data *sd, uint16 skill_id, const char *mapn
 			if( lv > 4 ) lv = 4; // crash prevention
 
 			// check if the chosen map exists in the memo list
-			ARR_FIND( 0, lv, i, strncmp( p[i]->map, mapname, sizeof( p[i]->map ) ) == 0 );
-			if( i < lv ) {
+			const int32 destinations = pc_memo_slots(sd, lv) + 1;
+			ARR_FIND( 0, destinations, i, strncmp( p[i]->map, mapname, sizeof( p[i]->map ) ) == 0 );
+			if( i < destinations ) {
 				x=p[i]->x;
 				y=p[i]->y;
 			} else {
@@ -5993,6 +6022,7 @@ std::shared_ptr<s_skill_unit_group> skill_unitsetting(block_list *src, uint16 sk
 	int32 link_group_id = 0;
 	int32 target, interval, range;
 	t_itemid req_item = 0;
+	bool rental_trap = false;
 	struct s_skill_unit_layout *layout;
 	map_session_data *sd;
 	status_change *sc;
@@ -6106,6 +6136,7 @@ std::shared_ptr<s_skill_unit_group> skill_unitsetting(block_list *src, uint16 sk
 	case SC_ESCAPE:
 		{
 			struct s_skill_condition req = skill_get_requirement(sd,skill_id,skill_lv);
+			rental_trap = req.rental_trap;
 			ARR_FIND(0, MAX_SKILL_ITEM_REQUIRE, i, req.itemid[i] && (req.itemid[i] == ITEMID_TRAP || req.itemid[i] == ITEMID_TRAP_ALLOY));
 			if( i != MAX_SKILL_ITEM_REQUIRE && req.itemid[i] )
 				req_item = req.itemid[i];
@@ -6417,6 +6448,7 @@ std::shared_ptr<s_skill_unit_group> skill_unitsetting(block_list *src, uint16 sk
 	group->state.song_dance = (((skill->unit_flag[UF_DANCE] || skill->unit_flag[UF_SONG])?1:0)|(skill->unit_flag[UF_ENSEMBLE]?2:0)); //Signals if this is a song/dance/duet
 	group->state.guildaura = ( skill_id >= GD_LEADERSHIP && skill_id <= GD_HAWKEYES )?1:0;
 	group->item_id = req_item;
+	group->state.rental_trap = rental_trap;
 
 	// If tick is greater than current, do not invoke onplace function just yet. [Skotlex]
 	if (DIFF_TICK(group->tick, gettick()) > SKILLUNITTIMER_INTERVAL)
@@ -10234,7 +10266,7 @@ struct s_skill_condition skill_get_requirement(map_session_data* sd, uint16 skil
 					if ((skill_id >= HT_SKIDTRAP && skill_id <= HT_TALKIEBOX && pc_checkskill(sd, RA_RESEARCHTRAP) > 0) || skill_id == SC_ESCAPE) {
 						int16 itIndex;
 
-						if ((itIndex = pc_search_inventory(sd,req.itemid[i])) < 0 || ( itIndex >= 0 && sd->inventory.u.items_inventory[itIndex].amount < req.amount[i])) {
+						if (!skill_has_rental_catalyst(*sd, req.itemid[i]) && ((itIndex = pc_search_inventory(sd,req.itemid[i])) < 0 || ( itIndex >= 0 && sd->inventory.u.items_inventory[itIndex].amount < req.amount[i]))) {
 							if (skill_id == SC_ESCAPE) // Alloy Trap has priority over normal Trap
 								req.itemid[i] = ITEMID_TRAP;
 							else
@@ -10432,6 +10464,15 @@ struct s_skill_condition skill_get_requirement(map_session_data* sd, uint16 skil
 			req.ap_rate = 0;
 	}
 
+	// Rental catalysts waive only these material costs, never SP/AP/ammunition.
+	for (int32 slot = 0; slot < MAX_SKILL_ITEM_REQUIRE; ++slot) {
+		if (req.itemid[slot] && skill_has_rental_catalyst(*sd, req.itemid[slot])) {
+			if (req.itemid[slot] == ITEMID_TRAP || req.itemid[slot] == ITEMID_TRAP_ALLOY)
+				req.rental_trap = true;
+			req.itemid[slot] = 0;
+			req.amount[slot] = 0;
+		}
+	}
 	return req;
 }
 
@@ -12617,7 +12658,7 @@ static int32 skill_unit_timer_sub(DBKey key, DBData *data, va_list ap)
 			case UNT_ICEBOUNDTRAP:
 			{
 				block_list* src;
-				if( unit->val1 > 0 && (src = map_id2bl(group->src_id)) != nullptr && src->type == BL_PC )
+				if( !group->state.rental_trap && unit->val1 > 0 && (src = map_id2bl(group->src_id)) != nullptr && src->type == BL_PC )
 				{ // revert unit back into a trap
 					struct item item_tmp;
 					memset(&item_tmp,0,sizeof(item_tmp));
@@ -12708,7 +12749,7 @@ static int32 skill_unit_timer_sub(DBKey key, DBData *data, va_list ap)
 			case UNT_B_TRAP:
 				{
 					block_list* src;
-					if (group->item_id && unit->val2 <= 0 && (src = map_id2bl(group->src_id)) && src->type == BL_PC) {
+					if (!group->state.rental_trap && group->item_id && unit->val2 <= 0 && (src = map_id2bl(group->src_id)) && src->type == BL_PC) {
 						struct item item_tmp;
 						memset(&item_tmp, 0, sizeof(item_tmp));
 						item_tmp.nameid = group->item_id;

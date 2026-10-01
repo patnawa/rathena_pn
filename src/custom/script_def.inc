@@ -9,3 +9,7 @@
  **/
 
 //BUILDIN_DEF(example,""),
+BUILDIN_DEF(getpetreward,"ii??"),
+BUILDIN_DEF(pnlabidentity,"i"),
+
+BUILDIN_DEF2(getitem,"getordinaryitem","vi?"),

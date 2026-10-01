@@ -1,0 +1,69 @@
+#include "map/party.hpp"
+#include "map/quest.hpp"
+#include "map/instance.hpp"
+#include "common/ers.hpp"
+#include <ctime>
+#include <regex>
+static party_data guide_party{};
+static std::string destination;
+extern "C" party_data* guide_party_search(int32 id) asm("__wrap__Z12party_searchi");
+extern "C" party_data* guide_party_search(int32 id){return id==7?&guide_party:nullptr;}
+extern "C" void guide_nav(const map_session_data*,const char*,uint16,uint16,uint8,bool,uint16) asm("__wrap__Z15clif_navigateToPK16map_session_dataPKctthbt");
+extern "C" void guide_nav(const map_session_data*,const char* map,uint16 x,uint16 y,uint8,bool,uint16){destination=std::string(map)+":"+std::to_string(x)+","+std::to_string(y);}
+static void functions(const std::string& source){
+    std::regex declaration("function[\\t ]+script[\\t ]+([A-Za-z0-9_]+)[\\t ]+\\{");
+    for(std::sregex_iterator it(source.begin(),source.end(),declaration),end;it!=end;++it){
+        const std::string name=(*it)[1];strdb_put(script_get_userfunc_db(),name.c_str(),compile(body(source,(*it).str()),name.c_str()));
+    }
+}
+static void invoke_guide(const std::string& command){auto* c=compile("{"+command+" end;}","guide entry");walk(c,{});script_free_code(c);}
+static void seedquest(int id,int state=1,bool expired=false){
+    auto* sd=attached;RECREATE(sd->quest_log,struct quest,sd->num_quests+1);auto& q=sd->quest_log[sd->num_quests++];q={};q.quest_id=id;q.state=state==2?Q_COMPLETE:Q_ACTIVE;q.time=time(nullptr)+(expired?-60:3600);
+    sd->avail_quests=sd->num_quests;
+}
+static std::unique_ptr<map_session_data> fresh(){
+    ++cases;nums.clear();strings.clear();messages.clear();destination.clear();guide_party={};
+    auto sd=std::make_unique<map_session_data>();attached=sd.get();sd->id=sd->status.account_id=99000001;sd->status.char_id=99000002;sd->type=BL_PC;
+    sd->status.base_level=200;sd->status.inventory_slots=MAX_INVENTORY;sd->status.zeny=7654321;sd->max_weight=10000000;sd->state.ignoretimeout=true;sd->npc_idle_timer=INVALID_TIMER;sd->vars_ok=true;
+    sd->status.party_id=7;guide_party.data[0].sd=sd.get();guide_party.party.member[0].leader=1;
+    return sd;
+}
+static void clean(){if(attached->quest_log)aFree(attached->quest_log);attached->quest_log=nullptr;if(attached->regs.arrays)attached->regs.arrays->destroy(attached->regs.arrays,script_free_array_db);attached->regs.arrays=nullptr;}
+static std::string reason(const std::string& name){messages.clear();invoke_guide("mes callfunc(\"PN_InstanceMissing\",\""+name+"\");");check(messages.size()==1,"one readiness result");return messages[0];}
+extern "C" int __wrap_main(int argc,char** argv){
+    check(argc==3,"fixture arguments");deny_network();static char server[]="onboarding-readiness-test";SERVER_NAME=server;
+    malloc_init();db_init();do_init_database();timer_init();do_init_script();battle_set_defaults();
+    num_reg_ers=ers_new(sizeof(script_reg_num),"guide:num",(ERSOptions)(ERS_OPT_CLEAN|ERS_OPT_FLEX_CHUNK));
+    str_reg_ers=ers_new(sizeof(script_reg_str),"guide:str",(ERSOptions)(ERS_OPT_CLEAN|ERS_OPT_FLEX_CHUNK));
+    auto items=read(std::string(argv[1])+"/armor-items.yml");auto tree=ryml::parse_in_arena(ryml::to_csubstr(items));for(auto row:tree["Body"])check(item_db.parseBodyNode(row)==1,"actual Apple metadata");
+    functions(read(argv[2]));strdb_put(script_get_userfunc_db(),"CH2_Complete",compile(body(read("npc/custom/chapter2/Chapter2.txt"),"function\tscript\tCH2_Complete"),"actual chapter completion"));
+    const int quests[]={0,0,18368,18369,18370,18371,24069,24070,24071,24072};
+    const char* expected[]={"pn_office:46,39","prt_fild05:353,252","ygg_edge:253,246","ygg_fruit:80,122","ygg_fruit:82,120","ygg_roots:334,138","ygg_roots:299,59","ygg_roots:186,117","ygg_roots:167,135","ygg_roots:166,135"};
+    for(int i=0;i<10;++i){auto sd=fresh();if(!i)sd->status.base_level=199;if(i>=2){seedquest(18368,i==2?1:2);if(i>2)seedquest(quests[i]);}Snapshot before;auto n=nums;auto count=sd->num_quests;
+        invoke_guide("callfunc \"PN_GuideOnboarding\";");check(destination==expected[i],"exact native quest-state destination");check(nums==n&&sd->num_quests==count,"guidance never changes progression registry or quests");before.unchanged();clean();}
+    for(const auto& name:std::vector<std::string>{"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress"}){
+        for(int variant=0;variant<4;++variant){auto sd=fresh();setnum("CH2_Step",name=="Crossroads of Tangled Mana"?2:name=="Nyrholt"?9:11);if(name=="Charleston in Distress")seedquest(13184);
+            if(variant==1)sd->status.party_id=0;if(variant==2)guide_party.party.member[0].leader=0;if(variant==3)guide_party.instance_id=42;
+            Snapshot before;auto n=nums;auto r=reason(name);check(variant? !r.empty():r.empty(),"ready/no party/nonleader/other reservation boundaries");check(nums==n,"readiness preserves progression registry");before.unchanged();clean();}
+    }
+    for(const auto& cfg:std::vector<std::pair<std::string,int>>{{"Ghost Palace",120},{"Charleston in Distress",130}}){
+        for(int delta:{-1,0,1}){auto sd=fresh();sd->status.base_level=cfg.second+delta;if(cfg.second==130)seedquest(13184);check(reason(cfg.first).empty()==(delta>=0),"exact entrance level boundary");clean();}
+        for(int state:{1,2})for(bool expired:{false,true}){auto sd=fresh();if(cfg.second==130)seedquest(13184);seedquest(cfg.second==120?1261:13185,state,expired);auto r=reason(cfg.first);check(r.find(expired?"Timer expired":"Cooldown")!=std::string::npos,"native active/completed/expired quest timer semantics");clean();}
+    }
+    for(int quantity:{4,5}){auto sd=fresh();setnum("CH2_Step",8);put(0,512,quantity);check(reason("Nyrholt").empty()==(quantity==5),"Apple requirement boundary without consumption");check(sd->inventory.u.items_inventory[0].amount==quantity,"readiness does not consume Apples");clean();}
+    for(int offset:{-60,60}){auto sd=fresh();seedquest(27101,2);seedquest(27119,2);setnum("CH2_Daily_CD_27119",time(nullptr)+offset);check(reason("Phantom of Nyrholt").empty()==(offset<0),"Phantom claimed reward cooldown boundary");clean();}
+    for(const auto& name:std::vector<std::string>{"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress"}){
+        auto sd=fresh();setnum("CH2_Step",name=="Crossroads of Tangled Mana"?2:name=="Nyrholt"?9:11);if(name=="Charleston in Distress")seedquest(13184);
+        auto definition=std::make_shared<s_instance_db>();definition->id=1;definition->name=name;instance_db.put(1,definition);
+        auto reservation=std::make_shared<s_instance_data>();reservation->id=1;reservation->state=INSTANCE_BUSY;reservation->mode=IM_PARTY;reservation->owner_id=7;instances[42]=reservation;guide_party.instance_id=42;
+        reservation->regs.vars=i64db_alloc(DB_OPT_RELEASE_DATA);
+        const bool chapter=name!="Ghost Palace"&&name!="Charleston in Distress";
+        if(chapter){invoke_guide("setinstancevar 'ch2_roster$,\",99000002,\",42;");guide_party.party.member[0].leader=0;}
+        check(reason(name).empty(),"matching reservation admits original members, including nonleader for Chapter 2");
+        if(chapter){invoke_guide("setinstancevar 'ch2_roster$,\",999,\",42;");check(reason(name).find("original roster")!=std::string::npos,"late joining character cannot reuse original roster");}
+        if(reservation->regs.arrays)reservation->regs.arrays->destroy(reservation->regs.arrays,script_free_array_db);
+        if(reservation->regs.vars)db_destroy(reservation->regs.vars);
+        reservation->regs={};instances.clear();instance_db.clear();clean();
+    }
+    attached=nullptr;item_db.clear();do_final_script();ers_destroy(num_reg_ers);ers_destroy(str_reg_ers);num_reg_ers=str_reg_ers=nullptr;timer_final();db_final();malloc_final();std::printf("ONBOARDING_READINESS_OK cases=%u assertions=%u\n",cases,assertions);return 0;
+}

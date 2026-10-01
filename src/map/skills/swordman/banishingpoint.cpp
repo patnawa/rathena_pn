@@ -22,7 +22,7 @@ void SkillBanishingPoint::calculateSkillRatio(const Damage* wd, const block_list
 	}
 
 	if (sc != nullptr && sc->getSCE(SC_SPEAR_SCAR)) {
-		skillratio += 800;
+		skillratio += 180 * skill_lv;
 	}
 
 	RE_LVL_DMOD(100);

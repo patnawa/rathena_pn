@@ -1,0 +1,8 @@
+[Status]: Memory manager initialised: log/(null).leaks
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+[SQL]: DB error - Deadlock found when trying to get lock; try restarting transaction
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+SHOP_RACE_OUTCOME account=990014 outcome=2 retries=1

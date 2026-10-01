@@ -1,0 +1,57 @@
+#ifndef PN_SHOP_STATE_HPP
+#define PN_SHOP_STATE_HPP
+#include "shop_commit.hpp"
+#include "shop_progression.hpp"
+#include <cstddef>
+#include <memory>
+#include <vector>
+class map_session_data;
+namespace pn_shop {
+constexpr size_t max_deferred_achievements = 1024;
+struct Grant {
+    uint32_t nameid=0,amount=0;
+    uint8_t refine=0;
+    uint32_t price=0;
+    item prototype{};
+    uint64_t pet_claim_id=0;
+};
+struct Event {
+    int16_t index=0;
+    uint32_t amount=0,nameid=0;
+    uint64_t unique_id=0;
+    uint32_t equip=0,value_sell=0,price=0;
+};
+struct AchievementEvent {
+    int32_t group=0;
+    std::vector<int32_t> arguments;
+};
+}
+struct pn_shop_state {
+    bool pending=false,applying=false,progression_prepared=false;
+    std::shared_ptr<const pn_shop::Commit> request;
+    std::vector<pn_shop::Event> events;
+    // Success-only objective callbacks known before submission. The submitter
+    // consumes these into the same durable before/after image as item delivery.
+    std::vector<pn_shop::AchievementEvent> planned_achievements;
+    std::vector<uint8_t> progression;
+    std::vector<achievement> progression_before;
+    std::vector<achievement> progression_after;
+    std::vector<pn_shop::AchievementEvent> deferred_achievements;
+    uint32_t final_weight=0;
+};
+std::shared_ptr<pn_shop::Commit> pn_shop_request(const map_session_data& sd,uint32_t kind);
+bool pn_shop_plan_inventory(const map_session_data& sd,pn_shop::Commit& request,
+    const std::vector<pn_shop::Grant>& grants,const uint32_t* requiredItems,
+    std::vector<pn_shop::Event>& events,uint32_t& final_weight);
+bool pn_shop_begin(map_session_data& sd,std::shared_ptr<pn_shop::Commit> request,
+    const std::vector<pn_shop::Grant>& grants,const uint32_t* requiredItems=nullptr);
+bool pn_shop_submit(map_session_data& sd,std::shared_ptr<pn_shop::Commit> request,
+    std::vector<pn_shop::Event> events,uint32_t final_weight);
+void pn_shop_committed_effects(map_session_data& sd,const pn_shop::Commit& request);
+bool pn_shop_stock_busy();
+bool pn_shop_stock_refresh(const pn_shop::Commit& request);
+bool pn_shop_sale_refresh(const pn_shop::Commit& request);
+bool pn_pet_describe_egg(const item& egg,pn_pet::Output& output);
+bool pn_pet_recover(map_session_data& sd);
+void pn_pet_schedule_recovery(map_session_data& sd);
+#endif

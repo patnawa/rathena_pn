@@ -1,0 +1,115 @@
+{
+  "checked_utc": "2026-10-01T11:51:29.009990+00:00",
+  "checks": {
+    "rathena-login": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0
+    },
+    "rathena-char": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0
+    },
+    "rathena-map": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0,
+      "runtime": {
+        "passed": true,
+        "reasons": [],
+        "age_seconds": 41.11,
+        "latest": {
+          "version": 1,
+          "utc": 1790855448,
+          "window_ms": 60002,
+          "shop_pending": 0,
+          "shop_oldest_ms": 0,
+          "shop_started": 0,
+          "shop_committed": 0,
+          "shop_rejected": 0,
+          "shop_retry_attempts": 0,
+          "shop_refresh_failures": 0,
+          "shop_busy_refusals": 0,
+          "timer_late_count": 3636,
+          "timer_late_p50_ms": 0,
+          "timer_late_p95_ms": 22,
+          "timer_late_p99_ms": 22,
+          "timer_late_max_ms": 22,
+          "dispatch_count": 1322,
+          "dispatch_p50_ms": 0,
+          "dispatch_p95_ms": 1,
+          "dispatch_p99_ms": 5,
+          "dispatch_max_ms": 7,
+          "shop_ack_count": 0,
+          "shop_ack_p50_ms": 0,
+          "shop_ack_p95_ms": 0,
+          "shop_ack_p99_ms": 0,
+          "shop_ack_max_ms": 0,
+          "shop_complete_count": 0,
+          "shop_complete_p50_ms": 0,
+          "shop_complete_p95_ms": 0,
+          "shop_complete_p99_ms": 0,
+          "shop_complete_max_ms": 0
+        },
+        "trend": [
+          {
+            "utc": 1790855388,
+            "timer_late_p99_ms": 25,
+            "dispatch_p99_ms": 5,
+            "shop_oldest_ms": 0
+          },
+          {
+            "utc": 1790855448,
+            "timer_late_p99_ms": 22,
+            "dispatch_p99_ms": 5,
+            "shop_oldest_ms": 0
+          }
+        ]
+      }
+    },
+    "rathena-web": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0
+    },
+    "rathena-db": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0
+    },
+    "rathena-fluxcp": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0
+    },
+    "npm": {
+      "passed": true,
+      "running": true,
+      "docker_health": "healthy",
+      "recent_error_lines": 0
+    },
+    "backup": {
+      "passed": true,
+      "report": "ragnarok-20261001T114814365976Z.sql.json",
+      "age_hours": 0.05,
+      "restore_verified": true,
+      "archive_checksum_verified": true
+    },
+    "disk": {
+      "passed": true,
+      "free_gib": 18.05,
+      "used_percent": 76.4
+    },
+    "backup_timer": {
+      "passed": true
+    }
+  },
+  "passed": true
+}

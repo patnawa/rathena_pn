@@ -12,6 +12,8 @@ void inter_storage_sql_init(void);
 void inter_storage_sql_final(void);
 
 bool inter_storage_parse_frommap(int32 fd);
+bool pn_global_point_pending(uint32 account_id);
+void pn_shop_progression_disconnect(int32 fd);
 
 bool guild_storage_tosql(int32 guild_id, struct s_storage *p);
 

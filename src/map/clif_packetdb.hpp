@@ -2071,4 +2071,7 @@
 #if PACKETVER_MAIN_NUM >= 20241016
     parseable_packet(0x0c16,9,clif_parse_rune_action,0);
 #endif
+#if PACKETVER >= 20140430
+	parseable_packet(HEADER_CZ_DYNAMICNPC_CREATE_REQUEST, sizeof(PACKET_CZ_DYNAMICNPC_CREATE_REQUEST), clif_parse_goldpc_npc, 0);
+#endif
 #endif /* CLIF_PACKETDB_HPP */

@@ -178,7 +178,9 @@ DWORD WINAPI run(void*){
     wchar_t path[MAX_PATH];GetModuleFileNameW(module,path,MAX_PATH);wchar_t* slash=wcsrchr(path,L'\\');if(!slash)return 1;
     wcscpy(slash+1,L"PN-Turbo.ini");wcscpy(config_path,path);wcscpy(slash+1,L"PN-Turbo.status.ini");wcscpy(status_path,path);
     tag=0x504e5400u^GetCurrentProcessId();
-    HMODULE bank=GetModuleHandleW(L"BankUI.dll");if(!bank)return 2;
+    HMODULE bank=GetModuleHandleW(L"PNWallet64.dll");
+    if(!bank)bank=GetModuleHandleW(L"BankUI.dll");
+    if(!bank)return 2;
     session_ready=reinterpret_cast<Ready>(GetProcAddress(bank,"PNGameInputReady@0"));
     auto found=GetProcAddress(bank,"PNGameWindow@0");static_assert(sizeof(game_window)==sizeof(found));memcpy(&game_window,&found,sizeof(found));if(!session_ready||!game_window)return 3;
     toast=CreateWindowExW(WS_EX_TOOLWINDOW|WS_EX_NOACTIVATE|WS_EX_TRANSPARENT,L"STATIC",L"",WS_POPUP|SS_CENTER|SS_CENTERIMAGE|WS_BORDER,0,0,365,28,nullptr,nullptr,module,nullptr);

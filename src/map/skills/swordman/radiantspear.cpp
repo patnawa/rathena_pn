@@ -19,10 +19,10 @@ void SkillRadiantSpear::calculateSkillRatio(const Damage* wd, const block_list* 
 
 	skillratio += -100 + 3500 + 1150 * skill_lv;
 	skillratio += pc_checkskill(sd, IG_SPEAR_SWORD_M) * 50;
-	skillratio += 5 * sstatus->pow;	// !TODO: check POW ratio
+	skillratio += 5 * sstatus->pow;
 
 	if (sc != nullptr && sc->getSCE(SC_SPEAR_SCAR))
-		skillratio += 250 * skill_lv;
+		skillratio += 250 * skill_lv + 2 * sstatus->pow;
 
 	RE_LVL_DMOD(100);
 }

@@ -107,12 +107,12 @@ $(MAP_GEN_OBJ_DIRS):
 
 map-server: obj $(MAP_DIR_OBJ) $(COMMON_AR) $(LIBCONFIG_AR) $(RAPIDYAML_AR)
 	@echo "	LD	@OMAP@@EXEEXT@"
-	@@CXX@ @LDFLAGS@ -o ../../@OMAP@@EXEEXT@ $(MAP_DIR_OBJ) $(COMMON_AR) $(LIBCONFIG_AR) $(RAPIDYAML_AR) @LIBS@ @PCRE_LIBS@ @MYSQL_LIBS@
+	@@CXX@ @LDFLAGS@ -o ../../@OMAP@@EXEEXT@ $(MAP_DIR_OBJ) $(COMMON_AR) $(LIBCONFIG_AR) $(RAPIDYAML_AR) @LIBS@ @PCRE_LIBS@ @MYSQL_LIBS@ -lcrypto
 
 
 map-server-generator: obj-gen $(MAP_GEN_DIR_OBJ) $(COMMON_AR) $(LIBCONFIG_AR) $(RAPIDYAML_AR)
 	@echo "	LD	map-server-generator@EXEEXT@"
-	@@CXX@ @LDFLAGS@ -o ../../map-server-generator@EXEEXT@ $(MAP_GEN_DIR_OBJ) $(COMMON_AR) $(LIBCONFIG_AR) $(RAPIDYAML_AR) @LIBS@ @PCRE_LIBS@ @MYSQL_LIBS@
+	@@CXX@ @LDFLAGS@ -o ../../map-server-generator@EXEEXT@ $(MAP_GEN_DIR_OBJ) $(COMMON_AR) $(LIBCONFIG_AR) $(RAPIDYAML_AR) @LIBS@ @PCRE_LIBS@ @MYSQL_LIBS@ -lcrypto
 
 
 # map object files
@@ -122,15 +122,18 @@ obj/npc.o: npc.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H)
 	@@CXX@ @CXXFLAG_CLEARS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
 # these have extra dependencies
-obj/clif.o obj-gen/clif.o: ../custom/bank_ui.inc
-obj/intif.o obj-gen/intif.o: ../custom/bank_inter.inc ../custom/multi_storage_inter.inc
+obj/clif.o obj-gen/clif.o: ../custom/bank_ui.inc ../custom/market_ui.inc ../custom/mail_ui.inc
+obj/intif.o obj-gen/intif.o: ../custom/bank_inter.inc ../custom/multi_storage_inter.inc ../custom/mail_inter.inc
+obj/intif.o obj-gen/intif.o: ../custom/bank_sweep_inter.inc ../custom/pair_inter.inc
 obj/storage.o obj-gen/storage.o: ../custom/multi_storage_map.inc
+obj/npc.o obj-gen/npc.o: npc.cpp ../custom/shop_map.inc
+obj/intif.o obj-gen/intif.o: ../custom/shop_inter.inc
 
 obj/atcommand.o: atcommand.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) ../custom/atcommand_def.inc ../custom/atcommand.inc
 	@echo "	CXX	$<"
 	@@CXX@ @CXXFLAGS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
-obj/script.o: script.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc
+obj/script.o: script.cpp ../custom/item_use.hpp ../custom/item_use_script.inc $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc ../custom/lab_history.inc
 	@echo "	CXX	$<"
 	@@CXX@ @CXXFLAGS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
@@ -159,3 +162,9 @@ $(LIBCONFIG_AR):
 
 $(RAPIDYAML_AR):
 	@$(MAKE) -C ../../3rdparty/rapidyaml
+
+# Generator builds must rebuild the same custom implementation bodies.
+obj/pc.o obj-gen/pc.o: ../custom/item_use_map.inc ../custom/pet_floor.inc
+obj-gen/script.o: script.cpp ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc ../custom/lab_history.inc ../custom/item_use_script.inc
+obj-gen/atcommand.o: atcommand.cpp ../custom/atcommand_def.inc ../custom/atcommand.inc
+obj-gen/battle.o: battle.cpp ../custom/battle_config_init.inc

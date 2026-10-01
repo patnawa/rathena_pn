@@ -1,0 +1,6 @@
+tb_cashshop_banner = { { "pn_cashshop_banner.bmp", "" } }
+function set_cashshop_banner()
+  for _, value in ipairs(tb_cashshop_banner) do
+    add_cashshop_banner(value[1], value[2])
+  end
+end

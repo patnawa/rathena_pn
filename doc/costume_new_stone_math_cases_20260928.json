@@ -1,0 +1,2223 @@
+{
+  "status": "Script-derived arithmetic fixtures mechanically evaluated from proposed scripts and local skill_db maximum levels. NOT independently derived from original descriptions; NOT independent correctness evidence; NOT an in-game runtime test.",
+  "integer_division": "Every 2 levels uses floor for nonnegative skill levels. All scripts apply unary minus outside quotient for reductions.",
+  "cases": [
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315057",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"MT_AXE_STOMP\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315058",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"IG_IMPERIAL_CROSS\"",
+          "value": 15,
+          "source_expression": "15"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"IG_OVERSLASH\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315059",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NW_WILD_FIRE\"",
+          "value": 15,
+          "source_expression": "15"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NW_MIDNIGHT_FALLEN\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315060",
+      "level_mode": "zero",
+      "skills": {
+        "NC_RESEARCHFE": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 0,
+          "source_expression": "2*getskilllv(\"NC_RESEARCHFE\")"
+        },
+        {
+          "bonus": "bonus bLongAtkRate",
+          "value": 0,
+          "source_expression": "2*getskilllv(\"NC_RESEARCHFE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315060",
+      "level_mode": "one",
+      "skills": {
+        "NC_RESEARCHFE": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 2,
+          "source_expression": "2*getskilllv(\"NC_RESEARCHFE\")"
+        },
+        {
+          "bonus": "bonus bLongAtkRate",
+          "value": 2,
+          "source_expression": "2*getskilllv(\"NC_RESEARCHFE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315060",
+      "level_mode": "maximum",
+      "skills": {
+        "NC_RESEARCHFE": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 10,
+          "source_expression": "2*getskilllv(\"NC_RESEARCHFE\")"
+        },
+        {
+          "bonus": "bonus bLongAtkRate",
+          "value": 10,
+          "source_expression": "2*getskilllv(\"NC_RESEARCHFE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315061",
+      "level_mode": "zero",
+      "skills": {
+        "NC_AXETORNADO": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_POWERSWING\"",
+          "value": 0,
+          "source_expression": "10*getskilllv(\"NC_AXETORNADO\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315061",
+      "level_mode": "one",
+      "skills": {
+        "NC_AXETORNADO": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_POWERSWING\"",
+          "value": 10,
+          "source_expression": "10*getskilllv(\"NC_AXETORNADO\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315061",
+      "level_mode": "maximum",
+      "skills": {
+        "NC_AXETORNADO": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_POWERSWING\"",
+          "value": 50,
+          "source_expression": "10*getskilllv(\"NC_AXETORNADO\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315062",
+      "level_mode": "zero",
+      "skills": {
+        "NC_TRAININGAXE": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bDelayrate",
+          "value": 0,
+          "source_expression": "-(getskilllv(\"NC_TRAININGAXE\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315062",
+      "level_mode": "one",
+      "skills": {
+        "NC_TRAININGAXE": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bDelayrate",
+          "value": 0,
+          "source_expression": "-(getskilllv(\"NC_TRAININGAXE\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315062",
+      "level_mode": "maximum",
+      "skills": {
+        "NC_TRAININGAXE": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bDelayrate",
+          "value": -5,
+          "source_expression": "-(getskilllv(\"NC_TRAININGAXE\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315063",
+      "level_mode": "zero",
+      "skills": {
+        "LG_INSPIRATION": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 0,
+          "source_expression": "2*getskilllv(\"LG_INSPIRATION\")"
+        },
+        {
+          "bonus": "bonus bLongAtkRate",
+          "value": 0,
+          "source_expression": "2*getskilllv(\"LG_INSPIRATION\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315063",
+      "level_mode": "one",
+      "skills": {
+        "LG_INSPIRATION": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 2,
+          "source_expression": "2*getskilllv(\"LG_INSPIRATION\")"
+        },
+        {
+          "bonus": "bonus bLongAtkRate",
+          "value": 2,
+          "source_expression": "2*getskilllv(\"LG_INSPIRATION\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315063",
+      "level_mode": "maximum",
+      "skills": {
+        "LG_INSPIRATION": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 10,
+          "source_expression": "2*getskilllv(\"LG_INSPIRATION\")"
+        },
+        {
+          "bonus": "bonus bLongAtkRate",
+          "value": 10,
+          "source_expression": "2*getskilllv(\"LG_INSPIRATION\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315064",
+      "level_mode": "zero",
+      "skills": {
+        "LG_PINPOINTATTACK": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_OVERBRAND\"",
+          "value": 0,
+          "source_expression": "10*getskilllv(\"LG_PINPOINTATTACK\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315064",
+      "level_mode": "one",
+      "skills": {
+        "LG_PINPOINTATTACK": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_OVERBRAND\"",
+          "value": 10,
+          "source_expression": "10*getskilllv(\"LG_PINPOINTATTACK\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315064",
+      "level_mode": "maximum",
+      "skills": {
+        "LG_PINPOINTATTACK": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_OVERBRAND\"",
+          "value": 50,
+          "source_expression": "10*getskilllv(\"LG_PINPOINTATTACK\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315065",
+      "level_mode": "zero",
+      "skills": {
+        "LG_PRESTIGE": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bVariableCastrate",
+          "value": 0,
+          "source_expression": "-2*getskilllv(\"LG_PRESTIGE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315065",
+      "level_mode": "one",
+      "skills": {
+        "LG_PRESTIGE": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bVariableCastrate",
+          "value": -2,
+          "source_expression": "-2*getskilllv(\"LG_PRESTIGE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315065",
+      "level_mode": "maximum",
+      "skills": {
+        "LG_PRESTIGE": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bVariableCastrate",
+          "value": -10,
+          "source_expression": "-2*getskilllv(\"LG_PRESTIGE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315066",
+      "level_mode": "zero",
+      "skills": {
+        "RL_P_ALTER": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_FIREDANCE\"",
+          "value": 0,
+          "source_expression": "7*getskilllv(\"RL_P_ALTER\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_HAMMER_OF_GOD\"",
+          "value": 0,
+          "source_expression": "7*getskilllv(\"RL_P_ALTER\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315066",
+      "level_mode": "one",
+      "skills": {
+        "RL_P_ALTER": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_FIREDANCE\"",
+          "value": 7,
+          "source_expression": "7*getskilllv(\"RL_P_ALTER\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_HAMMER_OF_GOD\"",
+          "value": 7,
+          "source_expression": "7*getskilllv(\"RL_P_ALTER\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315066",
+      "level_mode": "maximum",
+      "skills": {
+        "RL_P_ALTER": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_FIREDANCE\"",
+          "value": 35,
+          "source_expression": "7*getskilllv(\"RL_P_ALTER\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_HAMMER_OF_GOD\"",
+          "value": 35,
+          "source_expression": "7*getskilllv(\"RL_P_ALTER\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315067",
+      "level_mode": "zero",
+      "skills": {
+        "RL_S_STORM": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_BANISHING_BUSTER\"",
+          "value": 0,
+          "source_expression": "5*getskilllv(\"RL_S_STORM\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315067",
+      "level_mode": "one",
+      "skills": {
+        "RL_S_STORM": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_BANISHING_BUSTER\"",
+          "value": 5,
+          "source_expression": "5*getskilllv(\"RL_S_STORM\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315067",
+      "level_mode": "maximum",
+      "skills": {
+        "RL_S_STORM": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_BANISHING_BUSTER\"",
+          "value": 25,
+          "source_expression": "5*getskilllv(\"RL_S_STORM\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315068",
+      "level_mode": "zero",
+      "skills": {
+        "RL_HEAT_BARREL": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_D_TAIL\"",
+          "value": 0,
+          "source_expression": "7*getskilllv(\"RL_HEAT_BARREL\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315068",
+      "level_mode": "one",
+      "skills": {
+        "RL_HEAT_BARREL": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_D_TAIL\"",
+          "value": 7,
+          "source_expression": "7*getskilllv(\"RL_HEAT_BARREL\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "315068",
+      "level_mode": "maximum",
+      "skills": {
+        "RL_HEAT_BARREL": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_D_TAIL\"",
+          "value": 35,
+          "source_expression": "7*getskilllv(\"RL_HEAT_BARREL\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315057', 'aegis_315060']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"MT_MIGHTY_SMASH\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315057', 'aegis_315061']",
+      "level_mode": "zero",
+      "skills": {
+        "MT_TWOAXEDEF": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"MT_TWOAXEDEF\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315057', 'aegis_315061']",
+      "level_mode": "one",
+      "skills": {
+        "MT_TWOAXEDEF": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"MT_TWOAXEDEF\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315057', 'aegis_315061']",
+      "level_mode": "maximum",
+      "skills": {
+        "MT_TWOAXEDEF": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"MT_TWOAXEDEF\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315057', 'aegis_315062']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"MT_POWERFUL_SWING\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Mechanic_Robe', 'aegis_315060']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_POWERSWING\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Mechanic_Robe', 'aegis_315061']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillCooldown,\"NC_AXETORNADO\"",
+          "value": -1000,
+          "source_expression": "-1000"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Mechanic_Robe', 'aegis_315062']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_AXETORNADO\"",
+          "value": 15,
+          "source_expression": "15"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_POWERSWING\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Mechanic_Robe2', 'aegis_315060']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_VULCANARM\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Mechanic_Robe2', 'aegis_315061']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_BOOSTKNUCKLE\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Mechanic_Robe2', 'aegis_315062']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NC_ARMSCANNON\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315058', 'aegis_315063']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": -500,
+          "source_expression": "-500"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"IG_SHIELD_SHOOTING\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315058', 'aegis_315064']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bCRate",
+          "value": 5,
+          "source_expression": "5"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"IG_RADIANT_SPEAR\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315058', 'aegis_315065']",
+      "level_mode": "zero",
+      "skills": {
+        "IG_SPEAR_SWORD_M": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"IG_SPEAR_SWORD_M\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315058', 'aegis_315065']",
+      "level_mode": "one",
+      "skills": {
+        "IG_SPEAR_SWORD_M": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"IG_SPEAR_SWORD_M\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315058', 'aegis_315065']",
+      "level_mode": "maximum",
+      "skills": {
+        "IG_SPEAR_SWORD_M": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"IG_SPEAR_SWORD_M\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Royalguard_Robe', 'aegis_315063']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_BANISHINGPOINT\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Royalguard_Robe', 'aegis_315064']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillCooldown,\"LG_CANNONSPEAR\"",
+          "value": -500,
+          "source_expression": "-500"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Royalguard_Robe', 'aegis_315065']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_CANNONSPEAR\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Royalguard_Robe2', 'aegis_315063']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_RAYOFGENESIS\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Royalguard_Robe2', 'aegis_315064']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"LG_RAYOFGENESIS\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Royalguard_Robe2', 'aegis_315065']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddSize,Size_All",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315059', 'aegis_315066']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bCRate",
+          "value": 3,
+          "source_expression": "3"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NW_WILD_SHOT\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315059', 'aegis_315067']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NW_MAGAZINE_FOR_ONE\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315059', 'aegis_315068']",
+      "level_mode": "zero",
+      "skills": {
+        "NW_P_F_I": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": 0,
+          "source_expression": "-100*(getskilllv(\"NW_P_F_I\")/2)"
+        },
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"NW_P_F_I\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315059', 'aegis_315068']",
+      "level_mode": "one",
+      "skills": {
+        "NW_P_F_I": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": 0,
+          "source_expression": "-100*(getskilllv(\"NW_P_F_I\")/2)"
+        },
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"NW_P_F_I\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['aegis_315059', 'aegis_315068']",
+      "level_mode": "maximum",
+      "skills": {
+        "NW_P_F_I": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": -500,
+          "source_expression": "-100*(getskilllv(\"NW_P_F_I\")/2)"
+        },
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"NW_P_F_I\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Rebellion_Robe', 'aegis_315066']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_HAMMER_OF_GOD\"",
+          "value": 25,
+          "source_expression": "25"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Rebellion_Robe', 'aegis_315067']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_BANISHING_BUSTER\"",
+          "value": 20,
+          "source_expression": "20"
+        }
+      ]
+    },
+    {
+      "source": "costume_box43_proposal_20260928.json",
+      "record": "['Rebellion_Robe', 'aegis_315068']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RL_R_TRIP\"",
+          "value": 20,
+          "source_expression": "20"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315324",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"WH_FLAMETRAP\"",
+          "value": 10,
+          "source_expression": "10"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"WH_SWIFTTRAP\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315325",
+      "level_mode": "zero",
+      "skills": {
+        "RA_ARROWSTORM": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bDelayrate",
+          "value": 0,
+          "source_expression": "-(getskilllv(\"RA_ARROWSTORM\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315325",
+      "level_mode": "one",
+      "skills": {
+        "RA_ARROWSTORM": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bDelayrate",
+          "value": 0,
+          "source_expression": "-(getskilllv(\"RA_ARROWSTORM\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315325",
+      "level_mode": "maximum",
+      "skills": {
+        "RA_ARROWSTORM": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bDelayrate",
+          "value": -5,
+          "source_expression": "-(getskilllv(\"RA_ARROWSTORM\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315326",
+      "level_mode": "zero",
+      "skills": {
+        "RA_RESEARCHTRAP": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_AIMEDBOLT\"",
+          "value": 0,
+          "source_expression": "5*getskilllv(\"RA_RESEARCHTRAP\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315326",
+      "level_mode": "one",
+      "skills": {
+        "RA_RESEARCHTRAP": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_AIMEDBOLT\"",
+          "value": 5,
+          "source_expression": "5*getskilllv(\"RA_RESEARCHTRAP\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315326",
+      "level_mode": "maximum",
+      "skills": {
+        "RA_RESEARCHTRAP": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_AIMEDBOLT\"",
+          "value": 50,
+          "source_expression": "5*getskilllv(\"RA_RESEARCHTRAP\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315327",
+      "level_mode": "zero",
+      "skills": {
+        "RA_AIMEDBOLT": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"RA_AIMEDBOLT\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315327",
+      "level_mode": "one",
+      "skills": {
+        "RA_AIMEDBOLT": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"RA_AIMEDBOLT\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315327",
+      "level_mode": "maximum",
+      "skills": {
+        "RA_AIMEDBOLT": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddSize,Size_All",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"RA_AIMEDBOLT\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315328",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"EM_DIAMOND_STORM\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315329",
+      "level_mode": "zero",
+      "skills": {
+        "SO_PSYCHIC_WAVE": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": 0,
+          "source_expression": "-100*getskilllv(\"SO_PSYCHIC_WAVE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315329",
+      "level_mode": "one",
+      "skills": {
+        "SO_PSYCHIC_WAVE": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": -100,
+          "source_expression": "-100*getskilllv(\"SO_PSYCHIC_WAVE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315329",
+      "level_mode": "maximum",
+      "skills": {
+        "SO_PSYCHIC_WAVE": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bFixedCast",
+          "value": -500,
+          "source_expression": "-100*getskilllv(\"SO_PSYCHIC_WAVE\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315330",
+      "level_mode": "zero",
+      "skills": {
+        "SO_POISON_BUSTER": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bVariableCastrate",
+          "value": 0,
+          "source_expression": "-2*getskilllv(\"SO_POISON_BUSTER\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315330",
+      "level_mode": "one",
+      "skills": {
+        "SO_POISON_BUSTER": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bVariableCastrate",
+          "value": -2,
+          "source_expression": "-2*getskilllv(\"SO_POISON_BUSTER\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315330",
+      "level_mode": "maximum",
+      "skills": {
+        "SO_POISON_BUSTER": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bVariableCastrate",
+          "value": -10,
+          "source_expression": "-2*getskilllv(\"SO_POISON_BUSTER\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315331",
+      "level_mode": "zero",
+      "skills": {
+        "SO_DIAMONDDUST": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddSize,Size_All",
+          "value": 0,
+          "source_expression": "3*getskilllv(\"SO_DIAMONDDUST\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315331",
+      "level_mode": "one",
+      "skills": {
+        "SO_DIAMONDDUST": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddSize,Size_All",
+          "value": 3,
+          "source_expression": "3*getskilllv(\"SO_DIAMONDDUST\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315331",
+      "level_mode": "maximum",
+      "skills": {
+        "SO_DIAMONDDUST": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddSize,Size_All",
+          "value": 15,
+          "source_expression": "3*getskilllv(\"SO_DIAMONDDUST\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315332",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SS_KAGENOMAI\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315333",
+      "level_mode": "zero",
+      "skills": {
+        "KO_RIGHT": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_JYUMONJIKIRI\"",
+          "value": 0,
+          "source_expression": "5*getskilllv(\"KO_RIGHT\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315333",
+      "level_mode": "one",
+      "skills": {
+        "KO_RIGHT": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_JYUMONJIKIRI\"",
+          "value": 5,
+          "source_expression": "5*getskilllv(\"KO_RIGHT\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315333",
+      "level_mode": "maximum",
+      "skills": {
+        "KO_RIGHT": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_JYUMONJIKIRI\"",
+          "value": 25,
+          "source_expression": "5*getskilllv(\"KO_RIGHT\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315334",
+      "level_mode": "zero",
+      "skills": {
+        "KO_JYUMONJIKIRI": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HAPPOKUNAI\"",
+          "value": 0,
+          "source_expression": "3*getskilllv(\"KO_JYUMONJIKIRI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315334",
+      "level_mode": "one",
+      "skills": {
+        "KO_JYUMONJIKIRI": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HAPPOKUNAI\"",
+          "value": 3,
+          "source_expression": "3*getskilllv(\"KO_JYUMONJIKIRI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315334",
+      "level_mode": "maximum",
+      "skills": {
+        "KO_JYUMONJIKIRI": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HAPPOKUNAI\"",
+          "value": 30,
+          "source_expression": "3*getskilllv(\"KO_JYUMONJIKIRI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315335",
+      "level_mode": "zero",
+      "skills": {
+        "KO_MEIKYOUSISUI": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HUUMARANKA\"",
+          "value": 0,
+          "source_expression": "5*getskilllv(\"KO_MEIKYOUSISUI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315335",
+      "level_mode": "one",
+      "skills": {
+        "KO_MEIKYOUSISUI": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HUUMARANKA\"",
+          "value": 5,
+          "source_expression": "5*getskilllv(\"KO_MEIKYOUSISUI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315335",
+      "level_mode": "maximum",
+      "skills": {
+        "KO_MEIKYOUSISUI": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HUUMARANKA\"",
+          "value": 25,
+          "source_expression": "5*getskilllv(\"KO_MEIKYOUSISUI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315336",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SS_ANTENPOU\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315337",
+      "level_mode": "zero",
+      "skills": {
+        "KO_RIGHT": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\"",
+          "value": 0,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\"",
+          "value": 0,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KAMAITACHI\"",
+          "value": 0,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315337",
+      "level_mode": "one",
+      "skills": {
+        "KO_RIGHT": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\"",
+          "value": 7,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\"",
+          "value": 7,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KAMAITACHI\"",
+          "value": 7,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315337",
+      "level_mode": "maximum",
+      "skills": {
+        "KO_RIGHT": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\"",
+          "value": 35,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\"",
+          "value": 35,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KAMAITACHI\"",
+          "value": 35,
+          "source_expression": "7*getskilllv(\"KO_RIGHT\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315338",
+      "level_mode": "zero",
+      "skills": {
+        "KO_MEIKYOUSISUI": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Fire",
+          "value": 0,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Water",
+          "value": 0,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Wind",
+          "value": 0,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315338",
+      "level_mode": "one",
+      "skills": {
+        "KO_MEIKYOUSISUI": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Fire",
+          "value": 3,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Water",
+          "value": 3,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Wind",
+          "value": 3,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315338",
+      "level_mode": "maximum",
+      "skills": {
+        "KO_MEIKYOUSISUI": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Fire",
+          "value": 15,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Water",
+          "value": 15,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Wind",
+          "value": 15,
+          "source_expression": "3*getskilllv(\"KO_MEIKYOUSISUI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315339",
+      "level_mode": "zero",
+      "skills": {
+        "KO_IZAYOI": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KOUENKA\"",
+          "value": 0,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSENSOU\"",
+          "value": 0,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HUUJIN\"",
+          "value": 0,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315339",
+      "level_mode": "one",
+      "skills": {
+        "KO_IZAYOI": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KOUENKA\"",
+          "value": 4,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSENSOU\"",
+          "value": 4,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HUUJIN\"",
+          "value": 4,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "315339",
+      "level_mode": "maximum",
+      "skills": {
+        "KO_IZAYOI": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KOUENKA\"",
+          "value": 20,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSENSOU\"",
+          "value": 20,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HUUJIN\"",
+          "value": 20,
+          "source_expression": "4*getskilllv(\"KO_IZAYOI\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315324', 'aegis_315325']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"WH_HAWKRUSH\"",
+          "value": 15,
+          "source_expression": "15"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"WH_HAWKBOOMERANG\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315324', 'aegis_315326']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"WH_SOLIDTRAP\"",
+          "value": 10,
+          "source_expression": "10"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"WH_DEEPBLINDTRAP\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315324', 'aegis_315327']",
+      "level_mode": "zero",
+      "skills": {
+        "WH_NATUREFRIENDLY": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*getskilllv(\"WH_NATUREFRIENDLY\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315324', 'aegis_315327']",
+      "level_mode": "one",
+      "skills": {
+        "WH_NATUREFRIENDLY": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 3,
+          "source_expression": "3*getskilllv(\"WH_NATUREFRIENDLY\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315324', 'aegis_315327']",
+      "level_mode": "maximum",
+      "skills": {
+        "WH_NATUREFRIENDLY": 5
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 15,
+          "source_expression": "3*getskilllv(\"WH_NATUREFRIENDLY\")"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Ranger_Robe', 'aegis_315325']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_ARROWSTORM\"",
+          "value": 20,
+          "source_expression": "20"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Ranger_Robe', 'aegis_315326']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_ARROWSTORM\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Ranger_Robe', 'aegis_315327']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_ARROWSTORM\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Ranger_Robe2', 'aegis_315325']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SN_SHARPSHOOTING\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Ranger_Robe2', 'aegis_315326']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SN_SHARPSHOOTING\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Ranger_Robe2', 'aegis_315327']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"RA_AIMEDBOLT\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315328', 'aegis_315329']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"EM_TERRA_DRIVE\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315328', 'aegis_315330']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"EM_LIGHTNING_LAND\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315328', 'aegis_315331']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Earth",
+          "value": 10,
+          "source_expression": "10"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Water",
+          "value": 10,
+          "source_expression": "10"
+        },
+        {
+          "bonus": "bonus2 bMagicAtkEle,Ele_Wind",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Sorcerer_Robe', 'aegis_315329']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SO_PSYCHIC_WAVE\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Sorcerer_Robe', 'aegis_315330']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SO_POISON_BUSTER\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Sorcerer_Robe', 'aegis_315331']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SO_PSYCHIC_WAVE\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Sorcerer_Robe2', 'aegis_315329']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SO_VARETYR_SPEAR\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Sorcerer_Robe2', 'aegis_315330']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SO_DIAMONDDUST\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Sorcerer_Robe2', 'aegis_315331']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SO_DIAMONDDUST\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315333']",
+      "level_mode": "zero",
+      "skills": {
+        "SS_KAGEGARI": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"SS_KAGEGARI\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315333']",
+      "level_mode": "one",
+      "skills": {
+        "SS_KAGEGARI": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"SS_KAGEGARI\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315333']",
+      "level_mode": "maximum",
+      "skills": {
+        "SS_KAGEGARI": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bAddEle,Ele_All",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"SS_KAGEGARI\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315334']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bCRate",
+          "value": 3,
+          "source_expression": "3"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"SS_KAGEGISSEN\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315335']",
+      "level_mode": "zero",
+      "skills": {
+        "SS_KAGENOMAI": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bCritical",
+          "value": 0,
+          "source_expression": "getskilllv(\"SS_KAGENOMAI\")/2"
+        },
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"SS_KAGENOMAI\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315335']",
+      "level_mode": "one",
+      "skills": {
+        "SS_KAGENOMAI": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bCritical",
+          "value": 0,
+          "source_expression": "getskilllv(\"SS_KAGENOMAI\")/2"
+        },
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"SS_KAGENOMAI\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315332', 'aegis_315335']",
+      "level_mode": "maximum",
+      "skills": {
+        "SS_KAGENOMAI": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus bCritical",
+          "value": 5,
+          "source_expression": "getskilllv(\"SS_KAGENOMAI\")/2"
+        },
+        {
+          "bonus": "bonus bShortAtkRate",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"SS_KAGENOMAI\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Kagerou_Robe', 'aegis_315333']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HUUMARANKA\"",
+          "value": 25,
+          "source_expression": "25"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Kagerou_Robe', 'aegis_315334']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_HUUMARANKA\"",
+          "value": 25,
+          "source_expression": "25"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Kagerou_Robe', 'aegis_315335']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"KO_JYUMONJIKIRI\"",
+          "value": 25,
+          "source_expression": "25"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315336', 'aegis_315337']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SS_KINRYUUHOU\"",
+          "value": 15,
+          "source_expression": "15"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315336', 'aegis_315338']",
+      "level_mode": "zero",
+      "skills": {
+        "SS_SEKIENHOU": 0
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"SS_SEKIENHOU\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315336', 'aegis_315338']",
+      "level_mode": "one",
+      "skills": {
+        "SS_SEKIENHOU": 1
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddEle,Ele_All",
+          "value": 0,
+          "source_expression": "3*(getskilllv(\"SS_SEKIENHOU\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315336', 'aegis_315338']",
+      "level_mode": "maximum",
+      "skills": {
+        "SS_SEKIENHOU": 10
+      },
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bMagicAddEle,Ele_All",
+          "value": 15,
+          "source_expression": "3*(getskilllv(\"SS_SEKIENHOU\")/2)"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['aegis_315336', 'aegis_315339']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"SS_REIKETSUHOU\"",
+          "value": 10,
+          "source_expression": "10"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Oboro_Robe', 'aegis_315337']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KOUENKA\"",
+          "value": 25,
+          "source_expression": "25"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSENSOU\"",
+          "value": 25,
+          "source_expression": "25"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HUUJIN\"",
+          "value": 25,
+          "source_expression": "25"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Oboro_Robe', 'aegis_315338']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\"",
+          "value": 30,
+          "source_expression": "30"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\"",
+          "value": 30,
+          "source_expression": "30"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KAMAITACHI\"",
+          "value": 30,
+          "source_expression": "30"
+        }
+      ]
+    },
+    {
+      "source": "costume_box44_proposal_20260928.json",
+      "record": "['Oboro_Robe', 'aegis_315339']",
+      "level_mode": "constant",
+      "skills": {},
+      "expected_bonuses": [
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\"",
+          "value": 25,
+          "source_expression": "25"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\"",
+          "value": 25,
+          "source_expression": "25"
+        },
+        {
+          "bonus": "bonus2 bSkillAtk,\"NJ_KAMAITACHI\"",
+          "value": 25,
+          "source_expression": "25"
+        }
+      ]
+    }
+  ]
+}

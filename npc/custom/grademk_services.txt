@@ -34,8 +34,13 @@ grademk,42,184,4	script	Master Refiner#grademk	4_M_DWARF,{
 	mes "I can refine eligible weapons and armor using the modern refinement interface.";
 	mes "Refinement can break or downgrade equipment according to the selected material.";
 	next;
-	if (select("Open Refine UI:Cancel") == 2)
+	switch (select("Open Refine UI:Use a +15 Certificate:Cancel")) {
+	case 2:
+		callfunc "F_PNRefine15Ticket";
 		close;
+	case 3:
+		close;
+	}
 	close2;
 	refineui();
 	end;

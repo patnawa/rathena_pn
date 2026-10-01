@@ -1,0 +1,2734 @@
+{
+  "version": 1,
+  "sources": {
+    "legacy": "Fashion Points baseline revision61305; retained366 mappings. See existing integration evidence.",
+    "functional-omissions": "doc/costume_stone_reference_20260928.md; official descriptions and effective server scripts.",
+    "official-cosmetic": "Official September7 client item metadata; fourth-slot descriptions and rAthena enchant effects. See cosmetic reference.",
+    "kro44": "doc/costume_box44_official_20260928.json; official September7 itemInfo; kRO Box44.",
+    "kro43": "doc/costume_box43_proposal_20260928.json; official September7 metadata.",
+    "official-legacy": "doc/costume_official_material_candidates_20260928.json; official CRI1 HP50 SP10 descriptions and exact matching local effect cards.",
+    "thai": "doc/costume_stone_thai_reference_20260928.md; official September23 Thai client.",
+    "taiwan": "doc/costume_taiwan_reference_20260928.md; official September22 Taiwan metadata and corrected official notices."
+  },
+  "boxes": [
+    {
+      "index": 0,
+      "item": 41090,
+      "category": 0,
+      "pairs": [
+        {
+          "stone": 6636,
+          "enchant": 4700,
+          "source": "legacy"
+        },
+        {
+          "stone": 6740,
+          "enchant": 4930,
+          "source": "legacy"
+        },
+        {
+          "stone": 6944,
+          "enchant": 29030,
+          "source": "legacy"
+        },
+        {
+          "stone": 25172,
+          "enchant": 29156,
+          "source": "legacy"
+        },
+        {
+          "stone": 6637,
+          "enchant": 4710,
+          "source": "legacy"
+        },
+        {
+          "stone": 6741,
+          "enchant": 4805,
+          "source": "legacy"
+        },
+        {
+          "stone": 6999,
+          "enchant": 29013,
+          "source": "legacy"
+        },
+        {
+          "stone": 25304,
+          "enchant": 29359,
+          "source": "legacy"
+        },
+        {
+          "stone": 6638,
+          "enchant": 4730,
+          "source": "legacy"
+        },
+        {
+          "stone": 6790,
+          "enchant": 4936,
+          "source": "legacy"
+        },
+        {
+          "stone": 25000,
+          "enchant": 29032,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000375,
+          "enchant": 310325,
+          "source": "legacy"
+        },
+        {
+          "stone": 6639,
+          "enchant": 4720,
+          "source": "legacy"
+        },
+        {
+          "stone": 6791,
+          "enchant": 4937,
+          "source": "legacy"
+        },
+        {
+          "stone": 25068,
+          "enchant": 4807,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000377,
+          "enchant": 310327,
+          "source": "legacy"
+        },
+        {
+          "stone": 6640,
+          "enchant": 4740,
+          "source": "legacy"
+        },
+        {
+          "stone": 6792,
+          "enchant": 4938,
+          "source": "legacy"
+        },
+        {
+          "stone": 25069,
+          "enchant": 29053,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000528,
+          "enchant": 310664,
+          "source": "legacy"
+        },
+        {
+          "stone": 6641,
+          "enchant": 4750,
+          "source": "legacy"
+        },
+        {
+          "stone": 6943,
+          "enchant": 29028,
+          "source": "legacy"
+        },
+        {
+          "stone": 25171,
+          "enchant": 29159,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001168,
+          "enchant": 311921,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002396,
+          "enchant": 314662,
+          "source": "legacy"
+        },
+        {
+          "stone": 25207,
+          "enchant": 29208,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 25210,
+          "enchant": 29211,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 1002255,
+          "enchant": 314175,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 6716,
+          "enchant": 4926,
+          "source": "official-legacy"
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "item": 41091,
+      "category": 0,
+      "pairs": [
+        {
+          "stone": 25413,
+          "enchant": 29428,
+          "source": "legacy"
+        },
+        {
+          "stone": 25453,
+          "enchant": 29468,
+          "source": "legacy"
+        },
+        {
+          "stone": 25706,
+          "enchant": 29513,
+          "source": "legacy"
+        },
+        {
+          "stone": 25846,
+          "enchant": 29655,
+          "source": "legacy"
+        },
+        {
+          "stone": 25843,
+          "enchant": 29651,
+          "source": "legacy"
+        },
+        {
+          "stone": 25417,
+          "enchant": 29432,
+          "source": "legacy"
+        },
+        {
+          "stone": 25490,
+          "enchant": 29477,
+          "source": "legacy"
+        },
+        {
+          "stone": 25710,
+          "enchant": 29517,
+          "source": "legacy"
+        },
+        {
+          "stone": 25850,
+          "enchant": 29659,
+          "source": "legacy"
+        },
+        {
+          "stone": 25859,
+          "enchant": 29668,
+          "source": "legacy"
+        },
+        {
+          "stone": 25445,
+          "enchant": 29460,
+          "source": "legacy"
+        },
+        {
+          "stone": 25494,
+          "enchant": 29481,
+          "source": "legacy"
+        },
+        {
+          "stone": 25714,
+          "enchant": 29521,
+          "source": "legacy"
+        },
+        {
+          "stone": 25855,
+          "enchant": 29664,
+          "source": "legacy"
+        },
+        {
+          "stone": 25409,
+          "enchant": 29423,
+          "source": "legacy"
+        },
+        {
+          "stone": 25450,
+          "enchant": 29464,
+          "source": "legacy"
+        },
+        {
+          "stone": 25498,
+          "enchant": 29485,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001327,
+          "enchant": 312403,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002627,
+          "enchant": 314850,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "item": 41092,
+      "category": 0,
+      "pairs": [
+        {
+          "stone": 1000008,
+          "enchant": 310000,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000214,
+          "enchant": 310181,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000297,
+          "enchant": 310258,
+          "source": "legacy"
+        },
+        {
+          "stone": 25800,
+          "enchant": 29613,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000012,
+          "enchant": 310004,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000218,
+          "enchant": 310187,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000301,
+          "enchant": 310262,
+          "source": "legacy"
+        },
+        {
+          "stone": 25804,
+          "enchant": 29617,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000016,
+          "enchant": 310008,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000222,
+          "enchant": 310191,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000305,
+          "enchant": 310266,
+          "source": "legacy"
+        },
+        {
+          "stone": 25808,
+          "enchant": 29621,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "item": 41093,
+      "category": 0,
+      "pairs": [
+        {
+          "stone": 1000610,
+          "enchant": 310881,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000857,
+          "enchant": 311356,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001044,
+          "enchant": 311460,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000613,
+          "enchant": 310884,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000860,
+          "enchant": 311359,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001047,
+          "enchant": 311463,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000616,
+          "enchant": 310887,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000863,
+          "enchant": 311362,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001050,
+          "enchant": 311466,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000666,
+          "enchant": 311005,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000968,
+          "enchant": 311427,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001159,
+          "enchant": 311912,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000669,
+          "enchant": 311008,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000971,
+          "enchant": 311430,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001162,
+          "enchant": 311915,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000672,
+          "enchant": 311011,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000974,
+          "enchant": 311433,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001165,
+          "enchant": 311918,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002630,
+          "enchant": 314853,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "item": 41287,
+      "category": 0,
+      "pairs": [
+        {
+          "stone": 1002096,
+          "enchant": 314021,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002100,
+          "enchant": 314025,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002104,
+          "enchant": 314029,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002273,
+          "enchant": 314181,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002277,
+          "enchant": 314185,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002281,
+          "enchant": 314189,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002408,
+          "enchant": 314670,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002411,
+          "enchant": 314673,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002414,
+          "enchant": 314676,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001939,
+          "enchant": 313726,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001942,
+          "enchant": 313729,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001945,
+          "enchant": 313732,
+          "source": "legacy"
+        },
+        {
+          "stone": 1003054,
+          "enchant": 315325,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003058,
+          "enchant": 315329,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003062,
+          "enchant": 315333,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003066,
+          "enchant": 315337,
+          "source": "kro44"
+        },
+        {
+          "stone": 1002843,
+          "enchant": 315060,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002846,
+          "enchant": 315063,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002849,
+          "enchant": 315066,
+          "source": "kro43"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "item": 41094,
+      "category": 1,
+      "pairs": [
+        {
+          "stone": 6642,
+          "enchant": 4882,
+          "source": "legacy"
+        },
+        {
+          "stone": 6947,
+          "enchant": 4730,
+          "source": "legacy"
+        },
+        {
+          "stone": 25004,
+          "enchant": 29022,
+          "source": "legacy"
+        },
+        {
+          "stone": 25141,
+          "enchant": 29145,
+          "source": "legacy"
+        },
+        {
+          "stone": 6643,
+          "enchant": 4883,
+          "source": "legacy"
+        },
+        {
+          "stone": 6948,
+          "enchant": 4720,
+          "source": "legacy"
+        },
+        {
+          "stone": 25005,
+          "enchant": 29016,
+          "source": "legacy"
+        },
+        {
+          "stone": 25173,
+          "enchant": 29157,
+          "source": "legacy"
+        },
+        {
+          "stone": 6742,
+          "enchant": 4931,
+          "source": "legacy"
+        },
+        {
+          "stone": 6949,
+          "enchant": 4740,
+          "source": "legacy"
+        },
+        {
+          "stone": 25006,
+          "enchant": 29020,
+          "source": "legacy"
+        },
+        {
+          "stone": 25175,
+          "enchant": 29155,
+          "source": "legacy"
+        },
+        {
+          "stone": 6743,
+          "enchant": 4861,
+          "source": "legacy"
+        },
+        {
+          "stone": 6950,
+          "enchant": 4750,
+          "source": "legacy"
+        },
+        {
+          "stone": 25007,
+          "enchant": 29018,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000378,
+          "enchant": 310328,
+          "source": "legacy"
+        },
+        {
+          "stone": 6744,
+          "enchant": 4929,
+          "source": "legacy"
+        },
+        {
+          "stone": 25001,
+          "enchant": 29026,
+          "source": "legacy"
+        },
+        {
+          "stone": 25060,
+          "enchant": 29047,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000529,
+          "enchant": 310665,
+          "source": "legacy"
+        },
+        {
+          "stone": 6945,
+          "enchant": 4700,
+          "source": "legacy"
+        },
+        {
+          "stone": 25002,
+          "enchant": 29024,
+          "source": "legacy"
+        },
+        {
+          "stone": 25061,
+          "enchant": 310330,
+          "source": "legacy",
+          "previous_enchant": 29048,
+          "correction_source": "https://ro.gnjoy.com.tw/notice/Guide_View?id=216589"
+        },
+        {
+          "stone": 1001169,
+          "enchant": 311922,
+          "source": "legacy"
+        },
+        {
+          "stone": 6946,
+          "enchant": 4710,
+          "source": "legacy"
+        },
+        {
+          "stone": 25003,
+          "enchant": 29014,
+          "source": "legacy"
+        },
+        {
+          "stone": 25070,
+          "enchant": 29054,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002397,
+          "enchant": 314663,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002256,
+          "enchant": 314176,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 6717,
+          "enchant": 4927,
+          "source": "official-legacy"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "item": 41095,
+      "category": 1,
+      "pairs": [
+        {
+          "stone": 25410,
+          "enchant": 29424,
+          "source": "legacy"
+        },
+        {
+          "stone": 25451,
+          "enchant": 29465,
+          "source": "legacy"
+        },
+        {
+          "stone": 25499,
+          "enchant": 29486,
+          "source": "legacy"
+        },
+        {
+          "stone": 25860,
+          "enchant": 29669,
+          "source": "legacy"
+        },
+        {
+          "stone": 25844,
+          "enchant": 29652,
+          "source": "legacy"
+        },
+        {
+          "stone": 25414,
+          "enchant": 29429,
+          "source": "legacy"
+        },
+        {
+          "stone": 25454,
+          "enchant": 29469,
+          "source": "legacy"
+        },
+        {
+          "stone": 25707,
+          "enchant": 29514,
+          "source": "legacy"
+        },
+        {
+          "stone": 25856,
+          "enchant": 29665,
+          "source": "legacy"
+        },
+        {
+          "stone": 25847,
+          "enchant": 29656,
+          "source": "legacy"
+        },
+        {
+          "stone": 25418,
+          "enchant": 29433,
+          "source": "legacy"
+        },
+        {
+          "stone": 25491,
+          "enchant": 29478,
+          "source": "legacy"
+        },
+        {
+          "stone": 25711,
+          "enchant": 29518,
+          "source": "legacy"
+        },
+        {
+          "stone": 25495,
+          "enchant": 29482,
+          "source": "legacy"
+        },
+        {
+          "stone": 25851,
+          "enchant": 29660,
+          "source": "legacy"
+        },
+        {
+          "stone": 25446,
+          "enchant": 29461,
+          "source": "legacy"
+        },
+        {
+          "stone": 25715,
+          "enchant": 29522,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001328,
+          "enchant": 312404,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002628,
+          "enchant": 314851,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "item": 41096,
+      "category": 1,
+      "pairs": [
+        {
+          "stone": 25799,
+          "enchant": 29612,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000009,
+          "enchant": 310001,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000219,
+          "enchant": 310186,
+          "source": "legacy"
+        },
+        {
+          "stone": 25803,
+          "enchant": 29616,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000013,
+          "enchant": 310005,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000223,
+          "enchant": 310190,
+          "source": "legacy"
+        },
+        {
+          "stone": 25807,
+          "enchant": 29620,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000306,
+          "enchant": 310267,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000298,
+          "enchant": 310259,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000017,
+          "enchant": 310009,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000215,
+          "enchant": 310182,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000302,
+          "enchant": 310263,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "item": 41097,
+      "category": 1,
+      "pairs": [
+        {
+          "stone": 1000611,
+          "enchant": 310882,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000858,
+          "enchant": 311357,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001045,
+          "enchant": 311461,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000614,
+          "enchant": 310885,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000861,
+          "enchant": 311360,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001048,
+          "enchant": 311464,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000617,
+          "enchant": 310888,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000864,
+          "enchant": 311363,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001051,
+          "enchant": 311467,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000667,
+          "enchant": 311006,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000969,
+          "enchant": 311428,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001160,
+          "enchant": 311913,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000670,
+          "enchant": 311009,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000972,
+          "enchant": 311431,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001163,
+          "enchant": 311916,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000673,
+          "enchant": 311012,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000975,
+          "enchant": 311434,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001166,
+          "enchant": 311919,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002631,
+          "enchant": 314854,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "item": 41288,
+      "category": 1,
+      "pairs": [
+        {
+          "stone": 1002097,
+          "enchant": 314022,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002101,
+          "enchant": 314026,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002105,
+          "enchant": 314030,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002274,
+          "enchant": 314182,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002278,
+          "enchant": 314186,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002282,
+          "enchant": 314190,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002409,
+          "enchant": 314671,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002412,
+          "enchant": 314674,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002415,
+          "enchant": 314677,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001940,
+          "enchant": 313727,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001943,
+          "enchant": 313730,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001946,
+          "enchant": 313733,
+          "source": "legacy"
+        },
+        {
+          "stone": 1003055,
+          "enchant": 315326,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003059,
+          "enchant": 315330,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003063,
+          "enchant": 315334,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003067,
+          "enchant": 315338,
+          "source": "kro44"
+        },
+        {
+          "stone": 1002844,
+          "enchant": 315061,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002847,
+          "enchant": 315064,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002850,
+          "enchant": 315067,
+          "source": "kro43"
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "item": 41098,
+      "category": 2,
+      "pairs": [
+        {
+          "stone": 6644,
+          "enchant": 4884,
+          "source": "legacy"
+        },
+        {
+          "stone": 25012,
+          "enchant": 29015,
+          "source": "legacy"
+        },
+        {
+          "stone": 25064,
+          "enchant": 29050,
+          "source": "legacy"
+        },
+        {
+          "stone": 25228,
+          "enchant": 29229,
+          "source": "legacy"
+        },
+        {
+          "stone": 6645,
+          "enchant": 4859,
+          "source": "legacy"
+        },
+        {
+          "stone": 25013,
+          "enchant": 29017,
+          "source": "legacy"
+        },
+        {
+          "stone": 25065,
+          "enchant": 29051,
+          "source": "legacy"
+        },
+        {
+          "stone": 25229,
+          "enchant": 29228,
+          "source": "legacy"
+        },
+        {
+          "stone": 6745,
+          "enchant": 4932,
+          "source": "legacy"
+        },
+        {
+          "stone": 25014,
+          "enchant": 29033,
+          "source": "legacy"
+        },
+        {
+          "stone": 25066,
+          "enchant": 29052,
+          "source": "legacy"
+        },
+        {
+          "stone": 25305,
+          "enchant": 29360,
+          "source": "legacy"
+        },
+        {
+          "stone": 6951,
+          "enchant": 4861,
+          "source": "legacy"
+        },
+        {
+          "stone": 25015,
+          "enchant": 29027,
+          "source": "legacy"
+        },
+        {
+          "stone": 25071,
+          "enchant": 29055,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000376,
+          "enchant": 310326,
+          "source": "legacy"
+        },
+        {
+          "stone": 25008,
+          "enchant": 29021,
+          "source": "legacy"
+        },
+        {
+          "stone": 25016,
+          "enchant": 29029,
+          "source": "legacy"
+        },
+        {
+          "stone": 25072,
+          "enchant": 29057,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000379,
+          "enchant": 310329,
+          "source": "legacy"
+        },
+        {
+          "stone": 25009,
+          "enchant": 29023,
+          "source": "legacy"
+        },
+        {
+          "stone": 25017,
+          "enchant": 29031,
+          "source": "legacy"
+        },
+        {
+          "stone": 25139,
+          "enchant": 29146,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000530,
+          "enchant": 310666,
+          "source": "legacy"
+        },
+        {
+          "stone": 25010,
+          "enchant": 29019,
+          "source": "legacy"
+        },
+        {
+          "stone": 25062,
+          "enchant": 29046,
+          "source": "legacy"
+        },
+        {
+          "stone": 25174,
+          "enchant": 29158,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001170,
+          "enchant": 311923,
+          "source": "legacy"
+        },
+        {
+          "stone": 25011,
+          "enchant": 29025,
+          "source": "legacy"
+        },
+        {
+          "stone": 25063,
+          "enchant": 29049,
+          "source": "legacy"
+        },
+        {
+          "stone": 25227,
+          "enchant": 29227,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002398,
+          "enchant": 314664,
+          "source": "legacy"
+        },
+        {
+          "stone": 25140,
+          "enchant": 29147,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 6718,
+          "enchant": 4928,
+          "source": "official-legacy"
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "item": 41099,
+      "category": 2,
+      "pairs": [
+        {
+          "stone": 25411,
+          "enchant": 29425,
+          "source": "legacy"
+        },
+        {
+          "stone": 25447,
+          "enchant": 29462,
+          "source": "legacy"
+        },
+        {
+          "stone": 25492,
+          "enchant": 29479,
+          "source": "legacy"
+        },
+        {
+          "stone": 25708,
+          "enchant": 29515,
+          "source": "legacy"
+        },
+        {
+          "stone": 25857,
+          "enchant": 29666,
+          "source": "legacy"
+        },
+        {
+          "stone": 25415,
+          "enchant": 29430,
+          "source": "legacy"
+        },
+        {
+          "stone": 25452,
+          "enchant": 29466,
+          "source": "legacy"
+        },
+        {
+          "stone": 25496,
+          "enchant": 29483,
+          "source": "legacy"
+        },
+        {
+          "stone": 25712,
+          "enchant": 29519,
+          "source": "legacy"
+        },
+        {
+          "stone": 25861,
+          "enchant": 29670,
+          "source": "legacy"
+        },
+        {
+          "stone": 25419,
+          "enchant": 29434,
+          "source": "legacy"
+        },
+        {
+          "stone": 25455,
+          "enchant": 29470,
+          "source": "legacy"
+        },
+        {
+          "stone": 25500,
+          "enchant": 29487,
+          "source": "legacy"
+        },
+        {
+          "stone": 25716,
+          "enchant": 29523,
+          "source": "legacy"
+        },
+        {
+          "stone": 25848,
+          "enchant": 29657,
+          "source": "legacy"
+        },
+        {
+          "stone": 25852,
+          "enchant": 29661,
+          "source": "legacy"
+        },
+        {
+          "stone": 25845,
+          "enchant": 29653,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001329,
+          "enchant": 312405,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002629,
+          "enchant": 314852,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "item": 41100,
+      "category": 2,
+      "pairs": [
+        {
+          "stone": 25798,
+          "enchant": 29611,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000307,
+          "enchant": 310268,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000014,
+          "enchant": 310006,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000224,
+          "enchant": 310189,
+          "source": "legacy"
+        },
+        {
+          "stone": 25802,
+          "enchant": 29615,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000010,
+          "enchant": 310002,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000018,
+          "enchant": 310010,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000299,
+          "enchant": 310260,
+          "source": "legacy"
+        },
+        {
+          "stone": 25806,
+          "enchant": 29619,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000220,
+          "enchant": 310185,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000216,
+          "enchant": 310183,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000303,
+          "enchant": 310264,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "item": 41101,
+      "category": 2,
+      "pairs": [
+        {
+          "stone": 1000612,
+          "enchant": 310883,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000859,
+          "enchant": 311358,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001046,
+          "enchant": 311462,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000615,
+          "enchant": 310886,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000862,
+          "enchant": 311361,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001049,
+          "enchant": 311465,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000618,
+          "enchant": 310889,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000865,
+          "enchant": 311364,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001052,
+          "enchant": 311468,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000668,
+          "enchant": 311007,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000970,
+          "enchant": 311429,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001161,
+          "enchant": 311914,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000671,
+          "enchant": 311010,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000973,
+          "enchant": 311432,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001164,
+          "enchant": 311917,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000674,
+          "enchant": 311013,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000976,
+          "enchant": 311435,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001167,
+          "enchant": 311920,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002632,
+          "enchant": 314855,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "item": 41289,
+      "category": 2,
+      "pairs": [
+        {
+          "stone": 1002098,
+          "enchant": 314023,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002102,
+          "enchant": 314027,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002106,
+          "enchant": 314031,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002275,
+          "enchant": 314183,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002279,
+          "enchant": 314187,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002283,
+          "enchant": 314191,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002410,
+          "enchant": 314672,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002413,
+          "enchant": 314675,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002416,
+          "enchant": 314678,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001941,
+          "enchant": 313728,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001947,
+          "enchant": 313734,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001944,
+          "enchant": 313731,
+          "source": "legacy"
+        },
+        {
+          "stone": 1003056,
+          "enchant": 315327,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003060,
+          "enchant": 315331,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003064,
+          "enchant": 315335,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003068,
+          "enchant": 315339,
+          "source": "kro44"
+        },
+        {
+          "stone": 1002845,
+          "enchant": 315062,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002848,
+          "enchant": 315065,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002851,
+          "enchant": 315068,
+          "source": "kro43"
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "item": 41102,
+      "category": 3,
+      "pairs": [
+        {
+          "stone": 6908,
+          "enchant": 4807,
+          "source": "legacy"
+        },
+        {
+          "stone": 25067,
+          "enchant": 29056,
+          "source": "legacy"
+        },
+        {
+          "stone": 25303,
+          "enchant": 29361,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001053,
+          "enchant": 311469,
+          "source": "legacy"
+        },
+        {
+          "stone": 6963,
+          "enchant": 4992,
+          "source": "legacy"
+        },
+        {
+          "stone": 25170,
+          "enchant": 29154,
+          "source": "legacy"
+        },
+        {
+          "stone": 25306,
+          "enchant": 29358,
+          "source": "legacy"
+        },
+        {
+          "stone": 6964,
+          "enchant": 4993,
+          "source": "legacy"
+        },
+        {
+          "stone": 25302,
+          "enchant": 29362,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000922,
+          "enchant": 311426,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001054,
+          "enchant": 311470,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001171,
+          "enchant": 311924,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001938,
+          "enchant": 313725,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002399,
+          "enchant": 314665,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002404,
+          "enchant": 314666,
+          "source": "legacy"
+        },
+        {
+          "stone": 25208,
+          "enchant": 29209,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 25209,
+          "enchant": 29210,
+          "source": "functional-omissions"
+        },
+        {
+          "stone": 1002777,
+          "enchant": 313738,
+          "source": "thai"
+        },
+        {
+          "stone": 1001951,
+          "enchant": 313738,
+          "source": "thai"
+        },
+        {
+          "stone": 1002778,
+          "enchant": 313743,
+          "source": "thai"
+        },
+        {
+          "stone": 1001956,
+          "enchant": 313743,
+          "source": "thai"
+        },
+        {
+          "stone": 1002779,
+          "enchant": 313739,
+          "source": "thai"
+        },
+        {
+          "stone": 1001952,
+          "enchant": 313739,
+          "source": "thai"
+        },
+        {
+          "stone": 1002780,
+          "enchant": 313740,
+          "source": "thai"
+        },
+        {
+          "stone": 1001953,
+          "enchant": 313740,
+          "source": "thai"
+        },
+        {
+          "stone": 1002781,
+          "enchant": 313741,
+          "source": "thai"
+        },
+        {
+          "stone": 1001954,
+          "enchant": 313741,
+          "source": "thai"
+        },
+        {
+          "stone": 1002782,
+          "enchant": 313742,
+          "source": "thai"
+        },
+        {
+          "stone": 1001955,
+          "enchant": 313742,
+          "source": "thai"
+        },
+        {
+          "stone": 1002783,
+          "enchant": 313744,
+          "source": "thai"
+        },
+        {
+          "stone": 1001957,
+          "enchant": 313744,
+          "source": "thai"
+        },
+        {
+          "stone": 25934,
+          "enchant": 27427,
+          "source": "thai"
+        },
+        {
+          "stone": 25935,
+          "enchant": 27428,
+          "source": "thai"
+        },
+        {
+          "stone": 25936,
+          "enchant": 27429,
+          "source": "thai"
+        },
+        {
+          "stone": 25937,
+          "enchant": 27430,
+          "source": "thai"
+        },
+        {
+          "stone": 25938,
+          "enchant": 27431,
+          "source": "thai"
+        },
+        {
+          "stone": 25939,
+          "enchant": 27432,
+          "source": "thai"
+        },
+        {
+          "stone": 25940,
+          "enchant": 27433,
+          "source": "thai"
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "item": 41103,
+      "category": 3,
+      "pairs": [
+        {
+          "stone": 25412,
+          "enchant": 29426,
+          "source": "legacy"
+        },
+        {
+          "stone": 25448,
+          "enchant": 29463,
+          "source": "legacy"
+        },
+        {
+          "stone": 25493,
+          "enchant": 29480,
+          "source": "legacy"
+        },
+        {
+          "stone": 25709,
+          "enchant": 29516,
+          "source": "legacy"
+        },
+        {
+          "stone": 25416,
+          "enchant": 29431,
+          "source": "legacy"
+        },
+        {
+          "stone": 25449,
+          "enchant": 29467,
+          "source": "legacy"
+        },
+        {
+          "stone": 25497,
+          "enchant": 29484,
+          "source": "legacy"
+        },
+        {
+          "stone": 25713,
+          "enchant": 29520,
+          "source": "legacy"
+        },
+        {
+          "stone": 25420,
+          "enchant": 29435,
+          "source": "legacy"
+        },
+        {
+          "stone": 25456,
+          "enchant": 29471,
+          "source": "legacy"
+        },
+        {
+          "stone": 25501,
+          "enchant": 29488,
+          "source": "legacy"
+        },
+        {
+          "stone": 25717,
+          "enchant": 29524,
+          "source": "legacy"
+        },
+        {
+          "stone": 25854,
+          "enchant": 29663,
+          "source": "legacy"
+        },
+        {
+          "stone": 25858,
+          "enchant": 29667,
+          "source": "legacy"
+        },
+        {
+          "stone": 25862,
+          "enchant": 29671,
+          "source": "legacy"
+        },
+        {
+          "stone": 25842,
+          "enchant": 29654,
+          "source": "legacy"
+        },
+        {
+          "stone": 25849,
+          "enchant": 29658,
+          "source": "legacy"
+        },
+        {
+          "stone": 25853,
+          "enchant": 29662,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001326,
+          "enchant": 312402,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002625,
+          "enchant": 314848,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "item": 41104,
+      "category": 3,
+      "pairs": [
+        {
+          "stone": 25797,
+          "enchant": 29427,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000011,
+          "enchant": 310003,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000213,
+          "enchant": 310180,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000296,
+          "enchant": 310257,
+          "source": "legacy"
+        },
+        {
+          "stone": 25801,
+          "enchant": 29614,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000015,
+          "enchant": 310007,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000217,
+          "enchant": 310184,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000300,
+          "enchant": 310261,
+          "source": "legacy"
+        },
+        {
+          "stone": 25805,
+          "enchant": 29618,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000019,
+          "enchant": 310011,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000221,
+          "enchant": 310188,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000304,
+          "enchant": 310265,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "item": 41255,
+      "category": 3,
+      "pairs": [
+        {
+          "stone": 1001419,
+          "enchant": 312476,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001420,
+          "enchant": 312477,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001421,
+          "enchant": 312478,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001322,
+          "enchant": 312398,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001323,
+          "enchant": 312399,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001324,
+          "enchant": 312400,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001325,
+          "enchant": 312401,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001487,
+          "enchant": 312692,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001488,
+          "enchant": 312693,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001603,
+          "enchant": 313060,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001604,
+          "enchant": 313059,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001605,
+          "enchant": 313061,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001737,
+          "enchant": 313324,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001738,
+          "enchant": 313325,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001739,
+          "enchant": 313326,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001787,
+          "enchant": 313359,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001788,
+          "enchant": 313360,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001789,
+          "enchant": 313361,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001489,
+          "enchant": 312694,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002626,
+          "enchant": 314849,
+          "source": "legacy"
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "item": 41290,
+      "category": 3,
+      "pairs": [
+        {
+          "stone": 1002099,
+          "enchant": 314024,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002103,
+          "enchant": 314028,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002107,
+          "enchant": 314032,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002276,
+          "enchant": 314184,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002280,
+          "enchant": 314188,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002284,
+          "enchant": 314192,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002405,
+          "enchant": 314667,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002406,
+          "enchant": 314668,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002407,
+          "enchant": 314669,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001948,
+          "enchant": 313735,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001949,
+          "enchant": 313736,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001950,
+          "enchant": 313737,
+          "source": "legacy"
+        },
+        {
+          "stone": 1003053,
+          "enchant": 315324,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003057,
+          "enchant": 315328,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003061,
+          "enchant": 315332,
+          "source": "kro44"
+        },
+        {
+          "stone": 1003065,
+          "enchant": 315336,
+          "source": "kro44"
+        },
+        {
+          "stone": 1002831,
+          "enchant": 315057,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002832,
+          "enchant": 315058,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002833,
+          "enchant": 315059,
+          "source": "kro43"
+        },
+        {
+          "stone": 1002420,
+          "enchant": 300713,
+          "source": "taiwan"
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "item": 41105,
+      "category": 4,
+      "pairs": [
+        {
+          "stone": 1000520,
+          "enchant": 310654,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000675,
+          "enchant": 311014,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000855,
+          "enchant": 311354,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000676,
+          "enchant": 311015,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000527,
+          "enchant": 310667,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000856,
+          "enchant": 311355,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000526,
+          "enchant": 310662,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000521,
+          "enchant": 310658,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000921,
+          "enchant": 311425,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000525,
+          "enchant": 310663,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000524,
+          "enchant": 310661,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001055,
+          "enchant": 311471,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000523,
+          "enchant": 310660,
+          "source": "legacy"
+        },
+        {
+          "stone": 1000522,
+          "enchant": 310659,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001172,
+          "enchant": 311925,
+          "source": "legacy"
+        },
+        {
+          "stone": 1002395,
+          "enchant": 314661,
+          "source": "legacy"
+        },
+        {
+          "stone": 1001868,
+          "enchant": 313524,
+          "source": "taiwan"
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "item": 41500,
+      "category": 5,
+      "pairs": [
+        {
+          "stone": 25058,
+          "enchant": 29041,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25206,
+          "enchant": 29142,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1000365,
+          "enchant": 310322,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001069,
+          "enchant": 300419,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001175,
+          "enchant": 311926,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001252,
+          "enchant": 29727,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1000573,
+          "enchant": 310850,
+          "source": "thai"
+        },
+        {
+          "stone": 1001736,
+          "enchant": 300548,
+          "source": "taiwan"
+        }
+      ]
+    },
+    {
+      "index": 22,
+      "item": 41501,
+      "category": 6,
+      "pairs": [
+        {
+          "stone": 25059,
+          "enchant": 29040,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25136,
+          "enchant": 29142,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25138,
+          "enchant": 29144,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25176,
+          "enchant": 29160,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25177,
+          "enchant": 29162,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25178,
+          "enchant": 29161,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25224,
+          "enchant": 29224,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25225,
+          "enchant": 29226,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1000319,
+          "enchant": 300152,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1000345,
+          "enchant": 300157,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1000875,
+          "enchant": 300385,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002193,
+          "enchant": 314094,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002194,
+          "enchant": 314095,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001038,
+          "enchant": 311459,
+          "source": "official-cosmetic"
+        }
+      ]
+    },
+    {
+      "index": 23,
+      "item": 41502,
+      "category": 7,
+      "pairs": [
+        {
+          "stone": 25137,
+          "enchant": 29143,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25205,
+          "enchant": 29144,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 25226,
+          "enchant": 29225,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1000882,
+          "enchant": 29142,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001927,
+          "enchant": 313724,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001799,
+          "enchant": 300566,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001752,
+          "enchant": 313331,
+          "source": "taiwan"
+        },
+        {
+          "stone": 1002293,
+          "enchant": 314198,
+          "source": "taiwan"
+        },
+        {
+          "stone": 1002464,
+          "enchant": 300714,
+          "source": "taiwan"
+        },
+        {
+          "stone": 1002585,
+          "enchant": 314802,
+          "source": "taiwan"
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "item": 41503,
+      "category": 8,
+      "pairs": [
+        {
+          "stone": 1001615,
+          "enchant": 313065,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002822,
+          "enchant": 315055,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001616,
+          "enchant": 313066,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001617,
+          "enchant": 313067,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001650,
+          "enchant": 313068,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001651,
+          "enchant": 313069,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001772,
+          "enchant": 313345,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001907,
+          "enchant": 313558,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001908,
+          "enchant": 313559,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1001909,
+          "enchant": 313560,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002108,
+          "enchant": 313955,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002239,
+          "enchant": 314171,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002240,
+          "enchant": 314172,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002285,
+          "enchant": 313956,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002286,
+          "enchant": 314066,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002294,
+          "enchant": 314212,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002295,
+          "enchant": 314213,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002296,
+          "enchant": 314214,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002394,
+          "enchant": 313957,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002623,
+          "enchant": 314846,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002624,
+          "enchant": 314847,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002642,
+          "enchant": 314813,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002855,
+          "enchant": 313953,
+          "source": "official-cosmetic"
+        },
+        {
+          "stone": 1002856,
+          "enchant": 313954,
+          "source": "official-cosmetic"
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "item": 41504,
+      "category": 9,
+      "pairs": [
+        {
+          "stone": 1002784,
+          "enchant": 314797,
+          "source": "thai"
+        },
+        {
+          "stone": 1002559,
+          "enchant": 314797,
+          "source": "thai"
+        },
+        {
+          "stone": 1002785,
+          "enchant": 314795,
+          "source": "thai"
+        },
+        {
+          "stone": 1002561,
+          "enchant": 314795,
+          "source": "thai"
+        },
+        {
+          "stone": 1002786,
+          "enchant": 314798,
+          "source": "thai"
+        },
+        {
+          "stone": 1002560,
+          "enchant": 314798,
+          "source": "thai"
+        },
+        {
+          "stone": 1002787,
+          "enchant": 314799,
+          "source": "thai"
+        },
+        {
+          "stone": 1002562,
+          "enchant": 314799,
+          "source": "thai"
+        },
+        {
+          "stone": 1002788,
+          "enchant": 314800,
+          "source": "thai"
+        },
+        {
+          "stone": 1002563,
+          "enchant": 314800,
+          "source": "thai"
+        },
+        {
+          "stone": 1002789,
+          "enchant": 314801,
+          "source": "thai"
+        },
+        {
+          "stone": 1002564,
+          "enchant": 314801,
+          "source": "thai"
+        },
+        {
+          "stone": 1002790,
+          "enchant": 314796,
+          "source": "thai"
+        },
+        {
+          "stone": 1002558,
+          "enchant": 314796,
+          "source": "thai"
+        }
+      ]
+    }
+  ],
+  "recovery_aliases": [
+    {
+      "category": 3,
+      "stone": 25934,
+      "enchant": 25934,
+      "source": "thai"
+    },
+    {
+      "category": 3,
+      "stone": 25935,
+      "enchant": 25935,
+      "source": "thai"
+    },
+    {
+      "category": 3,
+      "stone": 25936,
+      "enchant": 25936,
+      "source": "thai"
+    },
+    {
+      "category": 3,
+      "stone": 25937,
+      "enchant": 25937,
+      "source": "thai"
+    },
+    {
+      "category": 3,
+      "stone": 25938,
+      "enchant": 25938,
+      "source": "thai"
+    },
+    {
+      "category": 3,
+      "stone": 25939,
+      "enchant": 25939,
+      "source": "thai"
+    },
+    {
+      "category": 3,
+      "stone": 25940,
+      "enchant": 25940,
+      "source": "thai"
+    },
+    {
+      "category": 1,
+      "stone": 25061,
+      "enchant": 29048,
+      "source": "taiwan"
+    }
+  ]
+}

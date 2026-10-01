@@ -161,11 +161,11 @@
   },
   {
     "path": "data/msgstringtable.csv",
-    "sha256": "4c89f3d52725932f55742fdc415025e751d3cd998bf1d8c844816e5e6896bc58"
+    "sha256": "971d7cd91d7d0b6dc3c76e7d88df0c365cc19f92d9ef507fa99be49828af21cd"
   },
   {
     "path": "data/msgstringtable.txt",
-    "sha256": "29a644ed4b73732fe2a21ff90b418643194723287fb077b805860f3db9f5e85a"
+    "sha256": "626eea554745bfbfae07031742c7c60811b91f9086bf35eb20df26eb1c95b36d"
   },
   {
     "path": "data/texture/유저인터페이스/login_interface/warning.bmp",

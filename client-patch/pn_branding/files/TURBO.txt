@@ -1,0 +1,25 @@
+PN TURBO
+
+Open Turbo Setup.cmd or the launcher Turbo Setup button to change keys.
+Initial PN bindings use your saved preferences (Turbo Setup shows your saved choices):
+  F1-F3: hold to repeat the skill and click at the mouse target.
+  F5-F7: hold to repeat a self skill, potion or hotbar item.
+  Alt+P: toggle turbo in this game window. Starts OFF by default.
+Release a key to stop. In-game Enter or Esc pauses turbo; Alt+P resumes it.
+
+Use Smart-cast for targeted skills. Use Key repeat for skills/items that
+activate without a target click. Assign only one mode to each key.
+Per-key delay is the gap between complete press cycles (10-5000 ms).
+Key/button pulses take a frame to register; server cast delays still apply.
+Settings reload within half a second; release held keys after saving.
+Optional Alt+right-click repeat is off by default.
+
+Turbo runs only in the focused PN game, after character authentication.
+Bank windows, native text fields and modifier shortcuts suspend repetition.
+After changing focus or session, release the held keys before using them again.
+For custom text boxes opened with the mouse, pause with Alt+P before typing.
+
+The game executable, GRFs and approved font module are unchanged.
+PN-Turbo.ini is personal and preserved by updates. PN-Turbo.status.ini
+contains current state and completed-cycle count, never typed text or tokens.
+Sources, tests and rollback copies are under Server-Development/turbo-20260919.

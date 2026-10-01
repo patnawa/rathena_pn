@@ -1,3 +1,4 @@
+#include <custom/item_use.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -261,6 +262,7 @@ void log_pick( int32 id, int16 m, e_log_pick_type type, int32 amount, const item
 void log_pick_pc( const map_session_data* sd, e_log_pick_type type, int32 amount, const item* itm )
 {
 	nullpo_retv(sd);
+	if(itm){const item copy=*itm;if(pn_item_use_defer(sd,[sd,type,amount,copy](){log_pick_pc(sd,type,amount,&copy);}))return;}
 	log_pick(sd->status.char_id, sd->m, type, amount, itm);
 }
 
@@ -276,6 +278,7 @@ void log_pick_mob( const mob_data* md, e_log_pick_type type, int32 amount, const
 // ids are char_ids
 void log_zeny( const map_session_data &target_sd, e_log_pick_type type, uint32 src_id, int64 amount )
 {
+	if(pn_item_use_defer(&target_sd,[&target_sd,type,src_id,amount](){log_zeny(target_sd,type,src_id,amount);}))return;
 	// Compare both signs directly; abs(INT64_MIN) would overflow.
 	if( !log_config.zeny || ( log_config.zeny != 1 && amount > -static_cast<int64>(log_config.zeny) && amount < log_config.zeny ) )
 		return;
@@ -493,6 +496,7 @@ void log_chat( e_log_chat_type type, int32 type_id, int32 src_charid, int32 src_
 
 /// logs cash transactions
 void log_cash( const map_session_data* sd, e_log_pick_type type, e_log_cash_type cash_type, int32 amount ){
+	if(pn_item_use_defer(sd,[sd,type,cash_type,amount](){log_cash(sd,type,cash_type,amount);}))return;
 	nullpo_retv( sd );
 
 	if( !log_config.cash )

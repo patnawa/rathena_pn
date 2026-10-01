@@ -335,6 +335,7 @@ struct s_dmglog{
 };
 
 struct mob_data : public block_list {
+	uint64 pet_capture_token=0;
 	struct unit_data  ud;
 	struct view_data *vd;
 	bool vd_changed;

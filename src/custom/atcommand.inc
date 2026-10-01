@@ -28,3 +28,10 @@ ACMD_FUNC(bank)
 	clif_bank_open(*sd);
 	return 0;
 }
+
+ACMD_FUNC(petrewards)
+{
+	if(!pn_pet_recover(*sd))
+		clif_displaymessage(fd,"No pet rewards could be claimed now. Check free inventory space/weight and wait for any pending transaction to finish.");
+	return 0;
+}

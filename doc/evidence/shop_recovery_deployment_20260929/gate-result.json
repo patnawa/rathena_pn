@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "production_database_accessed": false,
+  "map_sha256": "d676f20bfcf8522569a3e8ef8aaac3087073244cef079b4fa218043453cd4fff",
+  "gate_directory": "/app/pn-shop-recovery-20260929/gate-1790684043",
+  "exit_code": 0,
+  "checks": 55,
+  "errors": [],
+  "ready": true
+}

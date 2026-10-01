@@ -3,7 +3,7 @@ name: PN release validation
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, 'codex/server-improvements-*', 'release/**']
     paths: ['src/**', 'db/**', 'npc/**', 'conf/**', 'sql-files/**', 'tools/**', 'client-patch/**', '.github/workflows/**']
   pull_request:
     paths: ['src/**', 'db/**', 'npc/**', 'conf/**', 'sql-files/**', 'tools/**', 'client-patch/**', '.github/workflows/**']
@@ -12,6 +12,46 @@ permissions:
   contents: read
 
 jobs:
+  transaction-sql:
+    name: Durable purchase SQL recovery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      TOOLCHAIN: pn-transaction-ci:${{ github.sha }}
+      DATABASE_IMAGE: mariadb@sha256:dd9b303aed4f4890ed09f766d8ca9ddfd176c0c6f6267feff53b3192ec65a979
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the transaction test toolchain
+        run: |
+          docker build -t "$TOOLCHAIN" -f tools/ci/Dockerfile.transaction-tests tools/ci
+          docker pull "$DATABASE_IMAGE"
+      - name: Build current character-server objects
+        run: |
+          docker run --rm --network none \
+            --mount "type=bind,src=$GITHUB_WORKSPACE,dst=/rathena" \
+            "$TOOLCHAIN" sh -ec './configure --enable-prere=no --enable-packetver=20260219 --without-pcre && make import && make -j2 char login'
+      - name: Prove atomicity, replay, ownership, concurrency and database restart
+        run: |
+          python3 tools/ci/shop_recovery_sql_test.py \
+            --candidate "$GITHUB_WORKSPACE" \
+            --evidence "$RUNNER_TEMP/transaction-sql" \
+            --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
+      - name: Prove achievement snapshot rollback and database-crash recovery
+        run: |
+          python3 tools/ci/achievement_sql_test.py \
+            --candidate "$GITHUB_WORKSPACE" \
+            --evidence "$RUNNER_TEMP/achievement-sql" \
+            --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: transaction-sql-recovery
+          path: ${{ runner.temp }}/transaction-sql/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: achievement-sql-recovery
+          path: ${{ runner.temp }}/achievement-sql/
   release:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -20,7 +60,7 @@ jobs:
       - name: Install build and regression dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libmysqlclient-dev zlib1g-dev libpcre3-dev libssl-dev python3-yaml
+          sudo apt-get install -y build-essential libmysqlclient-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev python3-yaml lua5.1
           sudo systemctl start mysql.service
       - name: Build the configured Renewal candidate
         run: |
@@ -39,6 +79,8 @@ jobs:
           PY
           ./tools/ci/sql.sh
       - name: Run release gates
+        env:
+          LUA51: /usr/bin/lua5.1
         run: python3 tools/ci/release_checks.py --startup-log release-results/startup.log --report release-results/report.json
       - uses: actions/upload-artifact@v4
         if: always()

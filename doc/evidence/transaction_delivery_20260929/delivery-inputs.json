@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "exit_code": 0,
+  "input_hashes": {
+    "tools/ci/shop_delivery_native_test.py": "5db61c1a7672117c29712888a07f52a8869e018eaacb84368e6e4669bb1cb601",
+    "tools/ci/shop_delivery_native_test.cpp": "a3875ddde10da5a07c5a9b2d5e80f2e93253ec58983d51c70cfe6b5d7575bad2"
+  },
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--cpus",
+    "2",
+    "--memory",
+    "4g",
+    "--mount",
+    "type=bind,src=/app/pn-transaction-audit-20260929/candidate,dst=/rathena",
+    "-e",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "-w",
+    "/rathena",
+    "--entrypoint",
+    "python3",
+    "pn-bank-validation:20260929",
+    "tools/ci/shop_delivery_native_test.py"
+  ]
+}

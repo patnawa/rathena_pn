@@ -30,7 +30,7 @@ void SkillSensitiveKeen::castendDamageId(block_list *src, block_list *target, ui
 		std::shared_ptr<s_skill_unit_group> sg;
 
 		if (su && (sg = su->group) && skill_get_inf2(sg->skill_id, INF2_ISTRAP)) {
-			if( !(sg->unit_id == UNT_USED_TRAPS || (sg->unit_id == UNT_ANKLESNARE && sg->val2 != 0 )) )
+			if( !sg->state.rental_trap && !(sg->unit_id == UNT_USED_TRAPS || (sg->unit_id == UNT_ANKLESNARE && sg->val2 != 0 )) )
 			{
 				struct item item_tmp;
 				memset(&item_tmp,0,sizeof(item_tmp));

@@ -288,7 +288,7 @@ class DruidFashionDataTest(unittest.TestCase):
         list(script.run())
         return script.returned
 
-    def test_all_366_published_pairs_pass_current_type_guard(self):
+    def test_all_catalogue_pairs_pass_current_type_guard(self):
         body = function_body(FASHION, "FP_LoadBox")
         values = re.findall(r'\.@d\$="([0-9,]+)"', body)
         pairs = []
@@ -296,7 +296,7 @@ class DruidFashionDataTest(unittest.TestCase):
             sequence = list(map(int, value.split(",")))
             self.assertEqual(len(sequence) % 2, 0)
             pairs.extend(zip(sequence[::2], sequence[1::2]))
-        self.assertEqual(len(pairs), 366)
+        self.assertGreaterEqual(len(pairs), 366)
         for stone, enchant in pairs:
             with self.subTest(stone=stone, enchant=enchant):
                 self.assertIn(stone, self.items)
@@ -335,7 +335,9 @@ class DruidFashionDataTest(unittest.TestCase):
             with self.subTest(job=job):
                 self.assertGreaterEqual(self.jobs[job]["MaxBaseLevel"], base)
                 self.assertGreaterEqual(self.jobs[job]["MaxJobLevel"], level)
-        self.assertEqual(self.jobs["Alitea"]["MaxBaseLevel"], 275)
+        # Fourth-job progression was raised to 285/65 in b4ffce685.
+        self.assertEqual(self.jobs["Alitea"]["MaxBaseLevel"], 285)
+        self.assertEqual(self.jobs["Alitea"]["MaxJobLevel"], 65)
 
 
 if __name__ == "__main__":

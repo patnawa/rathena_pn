@@ -13,7 +13,6 @@
 //===== Description: =========================================
 //= Restores the temple infiltration instance and its report
 //= chain through Nadoyo, Tris, Wilhelm, Reinhardt and Maristella.
-//= Reference: https://wiki.gemstonero.com/guides/midgard/gimli_infiltration
 //============================================================
 
 function	script	EP21_GimliComplete	{

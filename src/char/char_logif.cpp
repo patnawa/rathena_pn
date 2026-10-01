@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "char_logif.hpp"
+#include <custom/global_point.hpp>
 
 #include <cstdlib>
 #include <cstring>
@@ -187,7 +188,7 @@ void chlogif_send_global_accreg(const char *key, uint32 index, int64 int_value, 
 	safestrncpy(WFIFOCP(login_fd,nlen), key, len);
 	nlen += static_cast<decltype(nlen)>( len );
 
-	WFIFOL(login_fd, nlen) = index;
+	memcpy(WFIFOP(login_fd,nlen),&index,sizeof(index));
 	nlen += 4;
 
 	if( is_string ) {
@@ -208,7 +209,7 @@ void chlogif_send_global_accreg(const char *key, uint32 index, int64 int_value, 
 		nlen += 1;
 
 		if( int_value ) {
-			WFIFOQ(login_fd, nlen) = int_value;
+			memcpy(WFIFOP(login_fd,nlen),&int_value,sizeof(int_value));
 			nlen += 8;
 		}
 	}
@@ -781,6 +782,9 @@ int32 chlogif_parse(int32 fd) {
 		int32 next = 1;
 		uint16 command = RFIFOW(fd,0);
 		switch( command ) {
+			case pn_global_point::ack_packet:
+				if(RFIFOREST(fd)<sizeof(pn_shop::Ack))return 0;
+				RFIFOSKIP(fd,sizeof(pn_shop::Ack));break; // Map retry reads the durable shared-DB approval.
 			case 0x2711: next = chlogif_parse_ackconnect(fd); break;
 			case 0x2713: next = chlogif_parse_ackaccreq(fd); break;
 			case 0x2717: next = chlogif_parse_reqaccdata(fd); break;

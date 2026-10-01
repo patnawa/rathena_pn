@@ -1,6 +1,7 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <common/runtime_identity.hpp>
 #include "battle.hpp"
 
 #include <cmath>
@@ -9013,6 +9014,7 @@ static const struct _battle_data {
  *--------------------------*/
 int32 battle_set_value(const char* w1, const char* w2)
 {
+	pn_runtime_identity::invalidate();
 	int32 val = config_switch(w2);
 
 	int32 i;

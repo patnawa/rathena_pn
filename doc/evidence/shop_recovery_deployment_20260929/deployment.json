@@ -1,0 +1,189 @@
+{
+  "deployed": true,
+  "started_utc": "2026-09-29T12:23:11.205785+00:00",
+  "files": {
+    "src/map/pc.cpp": {
+      "before": "4888228f9791b69ac333b118436e2dc843c7de622fe17cd736040986e347e167",
+      "after": "d78e1da68d9929055a8481d4b5e2dc8e3eb677f1729c82325691ef8264263398"
+    },
+    "src/map/pc.hpp": {
+      "before": "5dc0c403611907a33bffdaeba9b87a4f3468861a1d13af8cc9caa3d312651e10",
+      "after": "15f0fe3c3be95bdee24cb47da1803dfb4f7a00bad4b41948adb71a5632827c80"
+    },
+    "src/map/npc.cpp": {
+      "before": "236772467af7e7e044ebd9789d790e7c2ae75e78e9a6c40615abd06400043566",
+      "after": "b3876a062c6f03ffb30320ab6b4393eec7cb3b7980588c789372dce1ab848f8b"
+    },
+    "src/map/cashshop.cpp": {
+      "before": "70ac44339c2ec17d3c7f2208dd09aedc3556af7ad43e94293b7902c17dac9625",
+      "after": "c18d535077e533bb9a7876d45d26b26e560afef2827011ce61bf02a650f37ee1"
+    },
+    "src/map/clif.cpp": {
+      "before": "00fe49e8a95cea8e3c5f97f7bc8eeb89e2801e6075c811f27a7e05daa644cb66",
+      "after": "e0bc20b093554d61b43d8069e3e1e4e334d1fa5045d85b77465b35374521a90d"
+    },
+    "src/map/clif.hpp": {
+      "before": "99c60193261842b8b747a1c17e28a1cc744889eb3d3b42879a92136890737ca0",
+      "after": "6a32d1b9de6694fc1669d7a3e1bfe9b3c49ed2d3b7b6cf2ac77299ef5a2eeed1"
+    },
+    "src/map/intif.cpp": {
+      "before": "668233facd043230ab12c8d24ad3271177ffc4f0fbdd7a5724d1d4644abb830d",
+      "after": "fc4d2645d0cff6c17a99b7b3b71a56a20c33b2cedac0baa0d8862763f66e464e"
+    },
+    "src/map/skill.cpp": {
+      "before": "94cd954cf449b059361a91a923c4320b7a10b24032db77b1a40c3558bb073d21",
+      "after": "83f05505bed695362157c26be8a149130a260b9ce684aa2719a6a7e6bc50aabc"
+    },
+    "src/char/int_storage.cpp": {
+      "before": "c323d66376aeb337dc9c7435b3223bf4dfc35aac9e8f432cc8675b5fd7427469",
+      "after": "3d91a5c162d7ad46afbad63e8fb5b391c98332b9524c7ec67d4c8974cb389779"
+    },
+    "src/char/inter.cpp": {
+      "before": "81cd9e6885310bdeb13cbf5c88b2f1a106ea143699ceec5c1862020c38979be5",
+      "after": "8c83d7956a14060148eaca363d7b7dfb1c7947a60f126f3b07c83d21534a7a2c"
+    },
+    "src/custom/shop_commit.hpp": {
+      "before": null,
+      "after": "8ebe314ae18edf471dc3b41f1f8e684045d7ec9e6debfebb044a9727e03d5f0a"
+    },
+    "src/custom/shop_state.hpp": {
+      "before": null,
+      "after": "9929bb3bbafeed81873f5117e76fa509a570befc4af24a5e249cd8f11833a1a1"
+    },
+    "src/custom/shop_map.inc": {
+      "before": null,
+      "after": "f67d21859ad91c505cb0d9bbd1cc4c94ae8e07b20f018b411b0391f41d9f3033"
+    },
+    "src/custom/shop_sql.inc": {
+      "before": null,
+      "after": "d59ec0457322d63c7cb6644ea959f30d838ffbf5979e7ddbd7f74afe1963acf7"
+    },
+    "src/custom/shop_inter.inc": {
+      "before": null,
+      "after": "2a0d988fdb51ab5db96695af728a3c24c547bc69fe7e291ef9d28e13f409f3ae"
+    },
+    "sql-files/upgrades/upgrade_20260929_shop_purchase.sql": {
+      "before": null,
+      "after": "cd666c02945486cb66c6bbb73589515639de6d101e928a67ed43a9e4e5f2f6fc"
+    },
+    "src/map/script.cpp": {
+      "before": "bbd662dceb0fa95f27dc612c2a080846de905c3b34b7324bee3f79539b0fc635",
+      "after": "55785ecb4edaf0beace6b5dd26e77ca32b6833afa09c6530703ab7c9fc1788d0"
+    },
+    "map-server": {
+      "before": "d20f8e4a713d017d4b64267593cad4fd2b55c943955e87b49b0f14406437cbda",
+      "after": "d640fecb9be3bf3ad6268953c747487fa7c065b14b936394bdb562b010b36b5d"
+    },
+    "char-server": {
+      "before": "d547eba66db7f2b8156f24284a4fe407833164c6ffe267a41002333d25a5f75b",
+      "after": "fdffdc0bab08c9bd6f27545216374ba8d4dcb66f8b50c0574faebeaf9e320a7b"
+    }
+  },
+  "backup": "/app/rathena-database-backups/ragnarok-20260929T122301477362Z.sql.gz",
+  "rollback": "/app/pn-shop-recovery-20260929/deployment/before",
+  "financial_before": {
+    "wallets": "f2800788decbac09623ede47b03ebacef7dddcb7dcf95a97570b4c9619a39f44",
+    "acc_reg_num": "4e2c9c84a6068b1cfce123843c5daf2afb66f49ceecd993c3be4102f4120989f",
+    "acc_reg_str": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "auction": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "barter": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cart_inventory": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "char_reg_num": "f21501e987d3b057938b2480b917581c2f66d9440aecd14f9c3a9b48c5d28ff8",
+    "char_reg_str": "59679241d5d18a2bff2ee437ff9ced28285b8fb386001f5e6c90069bd5437a70",
+    "global_acc_reg_num": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "global_acc_reg_str": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "guild_storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "inventory": "1d323bd6ce48c562d2a8683678aefdf188469fc9a54222d67b3360d5d2ad3381",
+    "mail": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mail_attachments": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "market": "5f5f44d9831971a365025503acb52727bc502515491e71da5be51707e0858159",
+    "pet": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_bank_commits": "373c42744f073574db17c4d2b930e0876a05e4a25e035c4add17318d03428556",
+    "pn_bank_sweep_commits": "0887f0425a470537ae31dc186b483e0dee499394b7353a272ed98ba7b73626bd",
+    "pn_card_storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_character_storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_mail_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_01": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_02": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_03": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_04": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_05": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_06": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_pair_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_reserve_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_02": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_03": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_04": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_05": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_06": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_07": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_08": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_09": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_10": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_commits": "c718fdffc24be5c87711990d9a2dacffcd3369b45699e675036ab4345b68c72a",
+    "sales": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "database_restored": false,
+  "completed_utc": "2026-09-29T12:23:35.329306+00:00",
+  "all_services_healthy": true,
+  "other_five_services_unchanged": true,
+  "financial_after": {
+    "wallets": "f2800788decbac09623ede47b03ebacef7dddcb7dcf95a97570b4c9619a39f44",
+    "acc_reg_num": "4e2c9c84a6068b1cfce123843c5daf2afb66f49ceecd993c3be4102f4120989f",
+    "acc_reg_str": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "auction": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "barter": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cart_inventory": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "char_reg_num": "f21501e987d3b057938b2480b917581c2f66d9440aecd14f9c3a9b48c5d28ff8",
+    "char_reg_str": "59679241d5d18a2bff2ee437ff9ced28285b8fb386001f5e6c90069bd5437a70",
+    "global_acc_reg_num": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "global_acc_reg_str": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "guild_storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "inventory": "1d323bd6ce48c562d2a8683678aefdf188469fc9a54222d67b3360d5d2ad3381",
+    "mail": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mail_attachments": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "market": "5f5f44d9831971a365025503acb52727bc502515491e71da5be51707e0858159",
+    "pet": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_bank_commits": "373c42744f073574db17c4d2b930e0876a05e4a25e035c4add17318d03428556",
+    "pn_bank_sweep_commits": "0887f0425a470537ae31dc186b483e0dee499394b7353a272ed98ba7b73626bd",
+    "pn_card_storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_character_storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_mail_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_01": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_02": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_03": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_04": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_05": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_master_storage_06": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_pair_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_reserve_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_shop_commits": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_02": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_03": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_04": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_05": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_06": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_07": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_08": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_09": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_10": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pn_storage_commits": "c718fdffc24be5c87711990d9a2dacffcd3369b45699e675036ab4345b68c72a",
+    "sales": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "storage": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "existing_groups_unchanged": 41,
+  "engines": [
+    "acc_reg_num\tInnoDB",
+    "barter\tInnoDB",
+    "char\tInnoDB",
+    "inventory\tInnoDB",
+    "market\tInnoDB",
+    "pn_shop_commits\tInnoDB",
+    "sales\tInnoDB"
+  ],
+  "running_binaries": {
+    "map-server": "d640fecb9be3bf3ad6268953c747487fa7c065b14b936394bdb562b010b36b5d",
+    "char-server": "fdffdc0bab08c9bd6f27545216374ba8d4dcb66f8b50c0574faebeaf9e320a7b"
+  }
+}

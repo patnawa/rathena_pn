@@ -75,31 +75,31 @@ int main() {
     };
     std::thread initial(backend,pn_bank::Refresh,snapshot,false);
     pump_until([] { return verified && !busy; });initial.join();
-    for(int i=2;i<6;++i) assert(IsWindowEnabled(actions[i]));
-    // Timer request is genuinely in flight when the native Buy click arrives.
+    set_amount(0,1);for(auto control:actions) assert(IsWindowEnabled(control));
+    // Timer request is genuinely in flight when the native Deposit click arrives.
     received=false;std::thread refresh(backend,pn_bank::Refresh,snapshot,true);
     last_refresh=0;SendMessage(panel,WM_TIMER,1,0);pump_until([&] { return received.load(); });
-    assert(busy && refreshing && IsWindowEnabled(actions[4]));
-    SendMessage(actions[4],BM_CLICK,0,0);assert(queued_action==pn_bank::BuyNote && financial==0);
-    SendMessage(actions[4],BM_CLICK,0,0);SendMessage(panel,WM_COMMAND,404,0);
-    set_amount(2,2);assert(queued_amount==1); // Preserve the actual clicked quantity.
+    assert(busy && refreshing && IsWindowEnabled(actions[0]));
+    SendMessage(actions[0],BM_CLICK,0,0);assert(queued_action==pn_bank::Deposit && financial==0);
+    SendMessage(actions[0],BM_CLICK,0,0);SendMessage(panel,WM_COMMAND,400,0);
+    set_amount(0,2);assert(queued_amount==1); // Preserve the actual clicked quantity.
     SetEvent(gate);refresh.join();
     auto saving=snapshot;saving.result=pn_bank::Saving;saving.request_id=1;
-    std::thread purchase(backend,pn_bank::BuyNote,saving,false);
+    std::thread purchase(backend,pn_bank::Deposit,saving,false);
     pump_until([] { return state.result==pn_bank::Saving; });purchase.join();
     assert(financial==1 && queued_action==pn_bank::Refresh);
     assert(receipt.empty());
     for(auto control:actions) assert(!IsWindowEnabled(control));
-    snapshot.bank-=snapshot.buy[1];snapshot.max_withdraw=snapshot.bank;++snapshot.counts[1];++snapshot.max_sell[1];snapshot.request_id=1;
+    snapshot.bank+=1;snapshot.wallet-=1;snapshot.max_deposit=snapshot.wallet;snapshot.max_withdraw=std::min(snapshot.bank,pn_bank::wallet_limit-snapshot.wallet);snapshot.request_id=1;
     for(int i=0;i<2;++i) snapshot.max_buy[i]=snapshot.bank/snapshot.buy[i];
     std::thread committed(backend,pn_bank::Refresh,snapshot,false);
     submit(pn_bank::Refresh);pump_until([&] { return !busy && state.result==pn_bank::Ok && state.bank==snapshot.bank; });committed.join();
-    assert(financial==1 && state.counts[1]==11 && IsWindowEnabled(actions[4]) && IsWindowEnabled(actions[5]));
-    assert(receipt.find(L"Saved: Bought 1 Ticket.")==0);
+    assert(financial==1 && state.wallet==999999 && IsWindowEnabled(actions[0]) && IsWindowEnabled(actions[1]));
+    assert(receipt.find(L"Saved: Deposited 1z.")==0);
     // A logout between an explicit click and its balance reply cancels it.
     received=false;ResetEvent(gate);std::thread logout_refresh(backend,pn_bank::Refresh,snapshot,true);
     submit(pn_bank::Refresh);pump_until([&] { return received.load(); });
-    SendMessage(actions[5],BM_CLICK,0,0);assert(queued_action==pn_bank::SellNote);
+    SendMessage(actions[1],BM_CLICK,0,0);assert(queued_action==pn_bank::Withdraw);
     ShowWindow(panel,SW_SHOWNOACTIVATE);assert(IsWindowVisible(panel));
     closesocket(mc);pump_until([] { return !verified && !busy && queued_action==pn_bank::Refresh; });
     assert(!IsWindowVisible(panel));
@@ -109,5 +109,5 @@ int main() {
     for(auto control:actions) assert(!IsWindowEnabled(control));
     for(auto socket:{peer,cc,cs,ms,chars,maps}) closesocket(socket);
     CloseHandle(gate);DestroyWindow(panel);
-    std::cout<<"PASS: shipping UI + real hooked authentication + delayed fragmented loopback replies; timer refresh keeps Buy enabled; native click queues once and preserves quantity; pending save blocks actions; committed purchase restores Buy/Sell; logout cancels queued sale and stale reply\n";
+    std::cout<<"PASS: shipping UI + real hooked authentication + delayed fragmented loopback replies; timer refresh keeps Deposit enabled; native click queues once and preserves quantity; pending save blocks actions; committed deposit restores transfers; logout cancels queued withdrawal and stale reply\n";
 }

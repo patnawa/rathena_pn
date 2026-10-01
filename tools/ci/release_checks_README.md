@@ -17,6 +17,15 @@ Quick source checks (YAML syntax and focused regressions):
 python3 tools/ci/release_checks.py --phase source --report /tmp/source-checks.json
 ```
 
+Each executed command retains its combined output in a sibling directory named
+after the report, such as `/tmp/source-checks-logs/`. The JSON report is updated
+atomically before and after each check, including failures, timeouts, and
+interruptions. The gate stops at the first failure; later checks and server
+startup do not run. Failed checks retain their command, diagnostic, elapsed time,
+and exit code when available. Python assertion checks remain active even when
+`PYTHONOPTIMIZE` is set in the invoking environment. A timeout or interruption
+stops the check's process group, including compiler and native-test children.
+
 Before deployment, build the candidate in a separate directory with disposable
 SQL databases and isolated ports/network. Run the following only inside that
 isolated candidate directory; the runner launches its map server itself:

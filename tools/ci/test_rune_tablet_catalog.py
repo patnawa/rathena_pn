@@ -78,6 +78,21 @@ class CatalogTests(unittest.TestCase):
 
     def test_effective_database_dependencies_and_generated_drift(self):
         self.assertGreater(validate(self.data),1800)
-        self.assertEqual(generate(self.data),(ROOT/'npc/custom/rune_tablet/data.txt').read_text())
+        actual=(ROOT/'npc/custom/rune_tablet/data.txt').read_text()
+        banner='''// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  data.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/rune_tablet/data.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
+'''
+        # The repository license-header pass adds exactly this non-runtime prefix.
+        # Do not strip arbitrary source or weaken the complete generated-body check.
+        if actual.startswith(banner): actual=actual[len(banner):]
+        self.assertEqual(generate(self.data),actual)
 
 if __name__=='__main__':unittest.main()

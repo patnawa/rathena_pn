@@ -1,0 +1,30 @@
+{
+  "candidate": "/app/pn-shop-recovery-20260929/candidate",
+  "timing": "Captured immediately after successful production-object SQL proof; parent held character objects stable",
+  "sha256": {
+    "src/char/obj/char.o": "09cd6acb8154c28c9bd534e7031092639a6f7627120c8530017cc149bb96a05d",
+    "src/char/obj/char_clif.o": "7706c5fbc0a73d302046c697e2bad2256e1562d98b713dd205f82286209642af",
+    "src/char/obj/char_cnslif.o": "ffe404178f6a4d82312d43f3a08d19235f377b31cd031cbf3e65f8df9b653ca2",
+    "src/char/obj/char_logif.o": "af3f7b971a236f611c4f09d16b8f013e9f8cb3a575c3f8b1894e455d6be05b87",
+    "src/char/obj/char_mapif.o": "a2f093fd69604eaae1639893e0f8df77836e5f4bdf6cc9694bc76034853c3864",
+    "src/char/obj/int_achievement.o": "9034374e3445e745b6e230fe0831c37742a19c31681c54dd3ba823a3b127055e",
+    "src/char/obj/int_auction.o": "61a297ae9ec8ffa604fb5c037ddf9bf3141f9984b28e2caf16f91edc14ce89fe",
+    "src/char/obj/int_clan.o": "42f006ed069905afbe8fc650012ea65e8cb9455936cfb2a806bf7e6c6c1950b6",
+    "src/char/obj/int_elemental.o": "ffc147cf6ddf6d6032aa2392e1ceb142086abc2903afa0c63f193f56acff1255",
+    "src/char/obj/int_guild.o": "a57461b11c5698fa0f63cea1279a2d36c755a08033653befd8f784a76103518c",
+    "src/char/obj/int_homun.o": "957393e4513284caf7a977ffdfcbcf91e8260bbd0546d2412e25c32a51d461ee",
+    "src/char/obj/int_mail.o": "675eeba0d43dd3394a1bfdf25f61f1a67bf9d4cf92e90b9c6fb5d4b269977ce9",
+    "src/char/obj/int_mercenary.o": "812448628ec246d1b2f81346cd3a8a5953c612d64aec918e3e42ae65d8168aeb",
+    "src/char/obj/int_party.o": "979e7d7743f40b2b584b8a10ce1d7f9f13e8b9bf5a03f1b90dbac1a638dcf2c5",
+    "src/char/obj/int_pet.o": "8ab5c445f9b37a6838666b34279de23292c89490a9c6dd6718bb146cb9ce0731",
+    "src/char/obj/int_quest.o": "f6d4caa4085c5ba05e411c57c3686058a21e7a99438b8272b5d0324d7fb2d213",
+    "src/char/obj/int_storage.o": "4575631d0bff7bde1d88d10cb87f479cceeff3713d16dd82be8cfb37c0bfe1e2",
+    "src/char/obj/inter.o": "4d17a99690de66e2da60614d7d041268dcfcabb8e685a43590a70845cba52dc1",
+    "char-server": "fdffdc0bab08c9bd6f27545216374ba8d4dcb66f8b50c0574faebeaf9e320a7b",
+    "src/common/obj/common.a": "6de9172aa74f82ab9365a969bd4f16920be4e8a1bbcd1cf54cd2a7ec04f17d61",
+    "3rdparty/libconfig/obj/libconfig.a": "2c6faa4848da07aead529c409b53035f06ba3d6a54a18dea3390a8c1699288e4",
+    "3rdparty/rapidyaml/obj/ryml.a": "95999b20cf42070a832f600b3a585f988cf2dcaaeaa4f269ce2895bfcf960420"
+  },
+  "toolchain_image_id": "sha256:b17273c43a92428604e46db95b0bef8fd94041758096dfe0351d13bdd55ca199",
+  "database_image_id": "sha256:dd9b303aed4f4890ed09f766d8ca9ddfd176c0c6f6267feff53b3192ec65a979"
+}

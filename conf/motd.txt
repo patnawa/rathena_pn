@@ -1,2 +1,6 @@
 // Internal default is limited to 128 lines.  If you need more, you will need to modify the MOTD_LINE_SIZE definition in pc.cpp
-Welcome to rAthena! Enjoy! Please report any bugs you find.
+Welcome to rAthena PN! Enjoy your adventure.
+Project, source and updates: https://github.com/patnawa/rathena_pn
+Report bugs: https://github.com/patnawa/rathena_pn/issues
+Ctrl+B opens Wallet & Bank. Use direct Zeny deposits and withdrawals.
+@office returns to the PN Main Office.

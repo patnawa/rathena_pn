@@ -173,6 +173,8 @@ verus04,81,112,5	script	Machine#mcd	PORTAL,{
 			mes "^ff0000This machine cannot be accessed for 20 hours after your last access.^000000";
 			next;
 		}
+		.@reason$ = callfunc("PN_InstanceMissing",.@md_name$);
+		if (.@reason$ != "") { mes .@reason$; close; }
 		switch( instance_enter(.@md_name$) ) {
 		case IE_OTHER:
 			mes "[Machine]";

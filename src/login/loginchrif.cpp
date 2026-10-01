@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "loginchrif.hpp"
+#include <custom/global_point.hpp>
 
 #include <cstdlib>
 #include <cstring>
@@ -458,7 +459,7 @@ int32 logchrif_parse_upd_global_accreg(int32 fd, int32 id, char* ip){
 		if( !accounts->load_num(accounts, &acc, account_id) )
 			ShowStatus("Char-server '%s': receiving (from the char-server) of account_reg2 (account: %d not found, ip: %s).\n", ch_server[id].name, account_id, ip);
 		else
-			mmo_save_global_accreg(accounts,fd,account_id,RFIFOL(fd, 8));
+			mmo_save_global_accreg(accounts,fd,account_id,RFIFOL(fd, 8),id);
 		RFIFOSKIP(fd,RFIFOW(fd,2));
 	}
 	return 1;
@@ -773,6 +774,21 @@ int32 logchrif_parse_accinfo(int32 fd) {
  * @param fd: file descriptor to parse, (link to char-serv)
  * @return 0=invalid server,marked for disconnection,unknow packet; 1=success
  */
+static int32 logchrif_point_barrier(int32 fd,int32 cid) {
+ constexpr size_t size=4+sizeof(pn_shop::Commit);
+ static_assert(size<65536,"global point barrier frame");
+ if(RFIFOREST(fd)<4)return 0;
+ if(RFIFOW(fd,2)!=size){set_eof(fd);return 0;}
+ if(RFIFOREST(fd)<size)return 0;
+ pn_shop::Commit request;memcpy(&request,RFIFOP(fd,4),sizeof(request));RFIFOSKIP(fd,size);
+ auto* online=login_get_online_user(request.account_id);
+ const bool owner=online && online->char_server==cid;
+ const bool approved=owner && mmo_point_barrier(login_get_accounts_db(),request);
+ pn_shop::Ack reply;reply.packet=pn_global_point::ack_packet;reply.account_id=request.account_id;reply.char_id=request.char_id;
+ reply.nonce_hi=request.nonce_hi;reply.nonce_lo=request.nonce_lo;reply.sequence=request.sequence;reply.outcome=approved?1:0;
+ WFIFOHEAD(fd,sizeof(reply));memcpy(WFIFOP(fd,0),&reply,sizeof(reply));WFIFOSET(fd,sizeof(reply));return 1;
+}
+
 int32 logchrif_parse(int32 fd){
 	int32 cid; //char-serv id
 	uint32 ipl;
@@ -800,6 +816,7 @@ int32 logchrif_parse(int32 fd){
 		int32 next = 1; // 0: avoid processing followup packets (prev was probably incomplete) packet, 1: Continue parsing
 		uint16 command = RFIFOW(fd,0);
 		switch( command ){
+			case pn_global_point::request_packet: next=logchrif_point_barrier(fd,cid);break;
 			case 0x2712: next = logchrif_parse_reqauth(fd, cid, ip); break;
 			case 0x2714: next = logchrif_parse_ackusercount(fd, cid); break;
 			case 0x2716: next = logchrif_parse_reqaccdata(fd, cid, ip); break;

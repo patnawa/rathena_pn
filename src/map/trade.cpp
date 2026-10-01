@@ -2,6 +2,7 @@
 // For more information, see LICENCE in the main folder
 
 #include "trade.hpp"
+#include <custom/zeny_arithmetic.hpp>
 
 #include <cstdio>
 #include <cstring>
@@ -23,6 +24,21 @@
 
 #define TRADE_DISTANCE 2 ///Max distance from traders to enable a trade to take place.
 
+// A revision binds each companion confirmation to the displayed bilateral offer.
+static void trade_revision(map_session_data& sd, map_session_data& other, bool offer_changed = false) {
+    const uint64 next = std::max(sd.bank_ui.trade_revision, other.bank_ui.trade_revision) + 1;
+    sd.bank_ui.trade_revision = other.bank_ui.trade_revision = next;
+    if (offer_changed && (sd.deal.zeny > MAX_ZENY || other.deal.zeny > MAX_ZENY)) {
+        sd.state.deal_locked = other.state.deal_locked = 0;
+    }
+}
+static bool trade_wide_required(const map_session_data& sd, const map_session_data& other) {
+    return sd.deal.zeny > MAX_ZENY || other.deal.zeny > MAX_ZENY;
+}
+static void trade_clear_epoch(map_session_data& sd) {
+    sd.bank_ui.trade_id = sd.bank_ui.trade_revision = 0;
+}
+
 /**
  * Player initiates a trade request.
  * @param sd : player requesting the trade
@@ -37,7 +53,7 @@ void trade_traderequest(map_session_data *sd, map_session_data *target_sd)
 		return; //Can't trade in notrade mapflag maps.
 	}
 
-	if (target_sd == nullptr || sd == target_sd) {
+	if (target_sd == nullptr || sd == target_sd || pc_transaction_pending(sd) || pc_transaction_pending(target_sd)) {
 		clif_traderesponse(*sd, TRADE_ACK_CHARNOTEXIST);
 		return;
 	}
@@ -111,7 +127,7 @@ void trade_tradeack(map_session_data *sd, int32 type)
 
 	nullpo_retv(sd);
 
-	if (sd->state.trading || !sd->trade_partner.id)
+	if (pc_transaction_pending(sd) || sd->state.trading || !sd->trade_partner.id)
 		return; // Already trading or no partner set.
 
 	if ((tsd = map_id2sd(sd->trade_partner.id)) == nullptr) {
@@ -120,7 +136,7 @@ void trade_tradeack(map_session_data *sd, int32 type)
 		return;
 	}
 
-	if (tsd->state.trading || tsd->trade_partner.id != sd->id) {
+	if (pc_transaction_pending(tsd) || tsd->state.trading || tsd->trade_partner.id != sd->id) {
 		clif_traderesponse(*sd, TRADE_ACK_FAILED);
 		sd->trade_partner = {0,0};
 		return; // Already trading or wrong partner.
@@ -166,6 +182,12 @@ void trade_tradeack(map_session_data *sd, int32 type)
 	tsd->state.trading = 1;
 	memset(&sd->deal, 0, sizeof(sd->deal));
 	memset(&tsd->deal, 0, sizeof(tsd->deal));
+    static uint64 next_trade = 0;
+    if (++next_trade == 0) ++next_trade;
+    sd->bank_ui.trade_id = tsd->bank_ui.trade_id = next_trade;
+    sd->bank_ui.trade_revision = tsd->bank_ui.trade_revision = 1;
+    clif_bank_trade_open(*sd);
+    clif_bank_trade_open(*tsd);
 	clif_traderesponse(*tsd, static_cast<e_ack_trade_response>( type ));
 	clif_traderesponse(*sd, static_cast<e_ack_trade_response>( type ));
 }
@@ -252,9 +274,9 @@ int32 trade_check(map_session_data *sd, map_session_data *tsd)
 	int32 trade_i, i, n;
 
 	// check zeny value against hackers (Zeny was already checked on time of adding, but you never know when you lost some zeny since then.
-	if(sd->deal.zeny > sd->status.zeny || (tsd->status.zeny > MAX_ZENY - sd->deal.zeny))
+	if(sd->deal.zeny < 0 || sd->deal.zeny > sd->status.zeny || !pn_zeny::room(tsd->status.zeny, tsd->mail.pending_zeny, sd->deal.zeny))
 		return 0;
-	if(tsd->deal.zeny > tsd->status.zeny || (sd->status.zeny > MAX_ZENY - tsd->deal.zeny))
+	if(tsd->deal.zeny < 0 || tsd->deal.zeny > tsd->status.zeny || !pn_zeny::room(sd->status.zeny, sd->mail.pending_zeny, tsd->deal.zeny))
 		return 0;
 
 	// get inventory of player
@@ -458,6 +480,7 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
 		sd->deal.inventory_space++;
 
 	clif_tradeitemok(*sd, index, EXITEM_ADD_SUCCEED); // Return the index as it was received
+	trade_revision(*sd, *target_sd, true);
 	clif_tradeadditem(sd, target_sd, index+2, amount);
 }
 
@@ -468,7 +491,7 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
  * @param sd : Player who's adding zeny
  * @param amount : zeny amount
  */
-void trade_tradeaddzeny(map_session_data* sd, int32 amount)
+void trade_tradeaddzeny(map_session_data* sd, int64 amount)
 {
 	map_session_data* target_sd;
 
@@ -482,20 +505,29 @@ void trade_tradeaddzeny(map_session_data* sd, int32 amount)
 		return;
 	}
 
-	if( amount < 0 || amount > sd->status.zeny || amount > MAX_ZENY - target_sd->status.zeny ) { // invalid values, no appropriate packet for it => abort
+	if( amount < 0 || amount > sd->status.zeny || !pn_zeny::room(target_sd->status.zeny, target_sd->mail.pending_zeny, amount) ) { // invalid values, no appropriate packet for it => abort
 		trade_tradecancel(sd);
 		return;
 	}
 
-	sd->deal.zeny = amount;
-	clif_tradeadditem(sd, target_sd, 0, amount);
+    const bool previously_wide = trade_wide_required(*sd, *target_sd);
+    sd->deal.zeny = amount;
+    trade_revision(*sd, *target_sd, true);
+    if (previously_wide) sd->state.deal_locked = target_sd->state.deal_locked = 0;
+    // The stock item window cannot represent a wide offer. Its financial
+    // confirmation path is disabled while the companion owns such an offer.
+    clif_tradeadditem(sd, target_sd, 0, amount > MAX_ZENY ? 0 : static_cast<int32>(amount));
+    if (amount > MAX_ZENY) {
+        clif_displaymessage(sd->fd, "Review the full Zeny offer and confirm in Wallet & Bank.");
+        clif_displaymessage(target_sd->fd, "Review the full Zeny offer and confirm in Wallet & Bank.");
+    }
 }
 
 /**
  * 'Ok' button on the trade window is pressed.
  * @param sd : Player that pressed the button
  */
-void trade_tradeok(map_session_data *sd)
+void trade_tradeok(map_session_data *sd, bool wide)
 {
 	map_session_data *target_sd;
 
@@ -507,7 +539,11 @@ void trade_tradeok(map_session_data *sd)
 		return;
 	}
 
-	sd->state.deal_locked = 1;
+    if (!wide && trade_wide_required(*sd, *target_sd)) {
+        clif_displaymessage(sd->fd, "Confirm this Zeny offer in Wallet & Bank."); return;
+    }
+    sd->state.deal_locked = 1;
+    trade_revision(*sd, *target_sd);
 	clif_tradeitemok(*sd, -2, EXITEM_ADD_SUCCEED); // We pass -2 which will becomes 0 in clif_tradeitemok (Official behavior)
 	clif_tradedeal_lock( *sd, false );
 	clif_tradedeal_lock( *target_sd, true );
@@ -523,8 +559,11 @@ void trade_tradecancel(map_session_data *sd)
 	int32 trade_i;
 
 	nullpo_retv(sd);
+	if (sd->pair_commit.pending) return; // A durable decision cannot be canceled mid-save.
 
 	target_sd = map_id2sd(sd->trade_partner.id);
+	trade_clear_epoch(*sd);
+	if (target_sd) trade_clear_epoch(*target_sd);
 	sd->state.isBoundTrading = 0;
 
 	if(!sd->state.trading) { // Not trade accepted
@@ -583,12 +622,13 @@ void trade_tradecancel(map_session_data *sd)
  * lock sd and tsd trade data, execute the trade, clear, then save players
  * @param sd : Player that has click on trade button
  */
-void trade_tradecommit(map_session_data *sd)
+void trade_tradecommit(map_session_data *sd, bool wide)
 {
 	map_session_data *tsd;
 	int32 trade_i;
 
 	nullpo_retv(sd);
+	if (pc_transaction_pending(sd)) return;
 
 	if (!sd->state.trading || !sd->state.deal_locked) //Locked should be 1 (pressed ok) before you can press trade.
 		return;
@@ -598,7 +638,11 @@ void trade_tradecommit(map_session_data *sd)
 		return;
 	}
 
-	sd->state.deal_locked = 2;
+    if (!wide && trade_wide_required(*sd, *tsd)) {
+        clif_displaymessage(sd->fd, "Confirm this Zeny offer in Wallet & Bank."); return;
+    }
+    sd->state.deal_locked = 2;
+    trade_revision(*sd, *tsd);
 
 	if (tsd->state.deal_locked < 2)
 		return; //Not yet time for trading.
@@ -622,6 +666,8 @@ void trade_tradecommit(map_session_data *sd)
 		return;
 	}
 
+	// Lock both actors before any mutation; persistence owns the whole pair.
+	if (!pn_pair_begin(*sd,*tsd,pn_pair::Trade)) { trade_tradecancel(sd); return; }
 	// trade is accepted and correct.
 	for( trade_i = 0; trade_i < 10; trade_i++ ) {
 		int32 n;
@@ -633,8 +679,7 @@ void trade_tradecommit(map_session_data *sd)
 			flag = pc_additem(tsd, &sd->inventory.u.items_inventory[n], sd->deal.item[trade_i].amount,LOG_TYPE_TRADE);
 			if (flag == 0)
 				pc_delitem(sd, n, sd->deal.item[trade_i].amount, 1, 6, LOG_TYPE_TRADE);
-			else
-				clif_additem(sd, n, sd->deal.item[trade_i].amount, 0);
+			else { pn_pair_abort(*sd,*tsd);trade_tradecancel(sd);return; }
 			sd->deal.item[trade_i].index = 0;
 			sd->deal.item[trade_i].amount = 0;
 		}
@@ -645,8 +690,7 @@ void trade_tradecommit(map_session_data *sd)
 			flag = pc_additem(sd, &tsd->inventory.u.items_inventory[n], tsd->deal.item[trade_i].amount,LOG_TYPE_TRADE);
 			if (flag == 0)
 				pc_delitem(tsd, n, tsd->deal.item[trade_i].amount, 1, 6, LOG_TYPE_TRADE);
-			else
-				clif_additem(tsd, n, tsd->deal.item[trade_i].amount, 0);
+			else { pn_pair_abort(*sd,*tsd);trade_tradecancel(sd);return; }
 			tsd->deal.item[trade_i].index = 0;
 			tsd->deal.item[trade_i].amount = 0;
 		}
@@ -655,32 +699,63 @@ void trade_tradecommit(map_session_data *sd)
 	if( sd->deal.zeny ) {
 		pc_payzeny(sd ,sd->deal.zeny, LOG_TYPE_TRADE, tsd->status.char_id);
 		pc_getzeny(tsd,sd->deal.zeny,LOG_TYPE_TRADE, sd->status.char_id);
-		sd->deal.zeny = 0;
+
 
 	}
 
 	if ( tsd->deal.zeny) {
 		pc_payzeny(tsd,tsd->deal.zeny,LOG_TYPE_TRADE, sd->status.char_id);
 		pc_getzeny(sd ,tsd->deal.zeny,LOG_TYPE_TRADE, tsd->status.char_id);
-		tsd->deal.zeny = 0;
+
 	}
 
-	sd->state.deal_locked = 0;
-	sd->trade_partner = {0,0};
-	sd->state.trading = 0;
-	sd->state.isBoundTrading = 0;
+    pn_pair_submit(*sd,*tsd);
+}
 
-	tsd->state.deal_locked = 0;
-	tsd->trade_partner = {0,0};
-	tsd->state.trading = 0;
-	tsd->state.isBoundTrading = 0;
+// Only the matching durable pair acknowledgement can complete native trades.
+void trade_pair_completed(map_session_data& a,map_session_data& b) {
+    for(auto* sd:{&a,&b}) {
+        sd->state.deal_locked=0;sd->trade_partner={0,0};sd->state.trading=0;sd->state.isBoundTrading=0;
+        memset(&sd->deal,0,sizeof(sd->deal));trade_clear_epoch(*sd);
+        if(sd->bank_ui.action==pn_bank::TradeCommit)sd->bank_ui.result=pn_bank::Ok;
+        clif_tradecompleted(*sd);
+    }
+}
 
-	clif_tradecompleted( *sd );
-	clif_tradecompleted( *tsd );
-
-	// save both player to avoid crash: they always have no advantage/disadvantage between the 2 players
-	if (save_settings&CHARSAVE_TRADE) {
-		chrif_save(sd, CSAVE_INVENTORY|CSAVE_CART);
-		chrif_save(tsd, CSAVE_INVENTORY|CSAVE_CART);
-	}
+// Only reached through the authenticated companion. Item contents are still
+// reviewed in the native item window; all full-width Zeny confirmations bind
+// both that item revision and the explicit partner/amount snapshot.
+pn_bank::Result trade_wide_action(map_session_data& sd, const pn_bank::Request& request) {
+    auto* other = map_id2sd(sd.trade_partner.id);
+    if (!sd.state.trading || !other || !other->state.trading ||
+        other->trade_partner.id != sd.status.account_id || !request.trade_id ||
+        request.trade_id != sd.bank_ui.trade_id || request.trade_id != other->bank_ui.trade_id)
+        return pn_bank::Stale;
+    if (sd.pair_commit.pending || other->pair_commit.pending) return pn_bank::Saving;
+    if (request.action == pn_bank::TradeCancel) {
+        if (request.amount) return pn_bank::Invalid;
+        trade_tradecancel(&sd);return pn_bank::Ok;
+    }
+    if (request.trade_revision != sd.bank_ui.trade_revision || request.trade_revision != other->bank_ui.trade_revision)
+        return pn_bank::Stale;
+    if (pc_transaction_pending(&sd) || pc_transaction_pending(other) || !chrif_isconnected() ||
+        pc_isdead(&sd) || pc_isdead(other) || sd.state.warping || other->state.warping ||
+        sd.m != other->m || (!pc_can_use_command(&sd,"trade",COMMAND_ATCOMMAND) && !check_distance_bl(&sd,other,TRADE_DISTANCE)))
+        return pn_bank::Busy;
+    switch (request.action) {
+    case pn_bank::TradeSetOffer:
+        if (sd.state.deal_locked || request.amount < 0) return pn_bank::Invalid;
+        if (request.amount > sd.status.zeny) return pn_bank::Funds;
+        if (!pn_zeny::room(other->status.zeny,other->mail.pending_zeny,request.amount)) return pn_bank::Limit;
+        if (request.amount > MAX_ZENY && (!session_isValid(other->bank_ui.companion_fd) || session[other->bank_ui.companion_fd]->flag.eof)) return pn_bank::Busy;
+        trade_tradeaddzeny(&sd,request.amount);return pn_bank::Ok;
+    case pn_bank::TradeLock:
+        if (request.amount || sd.state.deal_locked) return pn_bank::Invalid;
+        trade_tradeok(&sd,true);return sd.state.deal_locked == 1 ? pn_bank::Ok : pn_bank::Invalid;
+    case pn_bank::TradeCommit:
+        if (request.amount || sd.state.deal_locked != 1 || other->state.deal_locked < 1) return pn_bank::Invalid;
+        if (!trade_check(&sd,other)) return pn_bank::Limit;
+        trade_tradecommit(&sd,true);return sd.pair_commit.pending ? pn_bank::Saving : pn_bank::Ok;
+    default: return pn_bank::Invalid;
+    }
 }

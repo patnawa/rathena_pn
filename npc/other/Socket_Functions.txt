@@ -1,0 +1,33 @@
+// Shared legacy socket transaction helpers. Call only after the final dialogue
+// pause; callers must not yield between selection, payment and replacement.
+function	script	F_Socket_SelectPermanent	{
+	getinventorylist;
+	.@fallback = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_id[.@i] != getarg(0) || @inventorylist_expire[.@i])
+			continue;
+		if (.@fallback == -1)
+			.@fallback = .@i;
+		// Match delitem's preference for unequipped, unrefined, uncarded gear,
+		// but never select a rental that countitem excluded from the payment.
+		if (!@inventorylist_equip[.@i] && !@inventorylist_refine[.@i]
+			&& !@inventorylist_card1[.@i] && !@inventorylist_card2[.@i]
+			&& !@inventorylist_card3[.@i] && !@inventorylist_card4[.@i])
+			return .@i;
+	}
+	return .@fallback;
+}
+
+function	script	F_Socket_DeletePermanent	{
+	.@remaining = getarg(1);
+	if (.@remaining < 0 || countitem(getarg(0)) < .@remaining)
+		return 0;
+	while (.@remaining > 0) {
+		.@entry = callfunc("F_Socket_SelectPermanent", getarg(0));
+		if (.@entry < 0) return 0;
+		.@take = min(.@remaining, @inventorylist_amount[.@entry]);
+		if (!delitemidx(@inventorylist_idx[.@entry], .@take)) return 0;
+		.@remaining -= .@take;
+	}
+	return 1;
+}

@@ -1,0 +1,6 @@
+[Status]: Memory manager initialised: log/(null).leaks
+CRASH_READY
+[Info]: Saved Inventory (0) data to table inventory for char_id: 99001313
+CRASH_RETURN 0
+[SQL]: DB error - TLS/SSL error: unexpected eof while reading
+[SQL]: DB error - Server has gone away

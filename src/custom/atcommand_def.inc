@@ -10,3 +10,4 @@
 
 //ACMD_DEF(newcommand),
 ACMD_DEF(bank),
+ACMD_DEF(petrewards),

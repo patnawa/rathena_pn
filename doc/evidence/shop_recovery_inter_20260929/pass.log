@@ -1,0 +1,1 @@
+PASS exact shop inter: all 3 kinds, immutable retries, ACK fences, refresh failure, commit/reject, duplicate ACK, submit guards

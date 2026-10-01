@@ -1,7 +1,8 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
-#include "buyingstore.hpp"  // struct s_buyingstore
+#include "buyingstore.hpp"
+#include <custom/retired_tokens.hpp>
 
 #include <cstdlib> // atoi
 
@@ -113,7 +114,7 @@ int8 buyingstore_setup(map_session_data* sd, unsigned char slots){
 * @param at Autotrader info, or nullptr if requetsed not from autotrade persistance
 * @return 0 If success, 1 - Cannot open, 2 - Manner penalty, 3 - Mapflag restiction, 4 - Cell restriction, 5 - Invalid count/result, 6 - Cannot give item, 7 - Will be overweight
 */
-int8 buyingstore_create( map_session_data* sd, int32 zenylimit, unsigned char result, const char* storename, const struct PACKET_CZ_REQ_OPEN_BUYING_STORE_sub* itemlist, uint32 count, struct s_autotrader *at ){
+int8 buyingstore_create( map_session_data* sd, int64 zenylimit, unsigned char result, const char* storename, const struct PACKET_CZ_REQ_OPEN_BUYING_STORE_sub* itemlist, uint32 count, struct s_autotrader *at ){
 	uint32 i, weight, listidx;
 	char message_sql[MESSAGE_SIZE*2];
 	StringBuf buf;
@@ -165,7 +166,7 @@ int8 buyingstore_create( map_session_data* sd, int32 zenylimit, unsigned char re
 		std::shared_ptr<item_data> id = item_db.find(item->itemId);
 
 		// invalid input
-		if( id == nullptr || item->amount == 0 ){	
+		if( id == nullptr || item->amount == 0 || pn_tokens::retired(item->itemId) ){
 			break;
 		}
 
@@ -205,7 +206,8 @@ int8 buyingstore_create( map_session_data* sd, int32 zenylimit, unsigned char re
 		weight+= id->weight*item->amount;
 		sd->buyingstore.items[i].nameid = item->itemId;
 		sd->buyingstore.items[i].amount = item->amount;
-		sd->buyingstore.items[i].price  = item->price;
+		sd->buyingstore.items[i].price  = at ? at->entries[i]->price : item->price;
+		if (sd->buyingstore.items[i].price <= 0) break;
 	}
 
 	if( i != count )
@@ -232,7 +234,7 @@ int8 buyingstore_create( map_session_data* sd, int32 zenylimit, unsigned char re
 	Sql_EscapeString( mmysql_handle, message_sql, sd->message );
 
 	if( Sql_Query( mmysql_handle, "INSERT INTO `%s`(`id`, `account_id`, `char_id`, `sex`, `map`, `x`, `y`, `title`, `limit`, `autotrade`, `body_direction`, `head_direction`, `sit`) "
-		"VALUES( %d, %d, %d, '%c', '%s', %d, %d, '%s', %d, %d, '%d', '%d', '%d' );",
+		"VALUES( %d, %d, %d, '%c', '%s', %d, %d, '%s', %" PRId64 ", %d, '%d', '%d', '%d' );",
 		buyingstores_table, sd->buyer_id, sd->status.account_id, sd->status.char_id, sd->status.sex == 0 ? 'F' : 'M', map_getmapdata(sd->m)->name, sd->x, sd->y, message_sql, sd->buyingstore.zenylimit, sd->state.autotrade, at ? at->dir : sd->ud.dir, at ? at->head_dir : sd->head_dir, at ? at->sit : pc_issit(sd) ) != SQL_SUCCESS ){
 		Sql_ShowDebug(mmysql_handle);
 	}
@@ -240,15 +242,17 @@ int8 buyingstore_create( map_session_data* sd, int32 zenylimit, unsigned char re
 	StringBuf_Init(&buf);
 	StringBuf_Printf(&buf, "INSERT INTO `%s`(`buyingstore_id`,`index`,`item_id`,`amount`,`price`) VALUES", buyingstore_items_table);
 	for (i = 0; i < sd->buyingstore.slots; i++){
-		StringBuf_Printf(&buf, "(%d,%d,%u,%d,%d)", sd->buyer_id, i, sd->buyingstore.items[i].nameid, sd->buyingstore.items[i].amount, sd->buyingstore.items[i].price);
+		StringBuf_Printf(&buf, "(%d,%d,%u,%d,%" PRId64 ")", sd->buyer_id, i, sd->buyingstore.items[i].nameid, sd->buyingstore.items[i].amount, sd->buyingstore.items[i].price);
 		if (i < sd->buyingstore.slots-1)
 			StringBuf_AppendStr(&buf, ",");
 	}
 	if (SQL_ERROR == Sql_QueryStr(mmysql_handle, StringBuf_Value(&buf)))
 		Sql_ShowDebug(mmysql_handle);
 
+	sd->market.revision = pn_market_revision();
+	sd->market.published = at != nullptr;
 	clif_buyingstore_myitemlist( *sd );
-	clif_buyingstore_entry( *sd );
+	if (sd->market.published) clif_buyingstore_entry( *sd );
 	idb_put(buyingstore_db, sd->status.char_id, sd);
 
 	return 0;
@@ -311,6 +315,11 @@ void buyingstore_open(map_session_data* sd, uint32 account_id)
 		return;
 	}
 
+	sd->market.last_target=pl_sd->status.account_id;
+	if (!pl_sd->market.published || std::any_of(pl_sd->buyingstore.items, pl_sd->buyingstore.items+pl_sd->buyingstore.slots, [](const s_buyingstore_item& row){return row.price>MAX_ZENY;})) {
+		clif_displaymessage(sd->fd, "Open Market in the Wallet64 panel to view this shop.");
+		return;
+	}
 	// success
 	clif_buyingstore_itemlist( *sd, *pl_sd );
 }
@@ -322,14 +331,14 @@ void buyingstore_open(map_session_data* sd, uint32 account_id)
 * @param *itemlist List of sold items { <index>.W, <nameid>.W, <amount>.W }*
 * @param count Number of item on the itemlist
 */
-void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id, const struct PACKET_CZ_REQ_TRADE_BUYING_STORE_sub* itemlist, uint32 count ){
-	int32 zeny = 0;
+void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id, const struct PACKET_CZ_REQ_TRADE_BUYING_STORE_sub* itemlist, uint32 count, bool market_request ){
+	int64 zeny = 0;
 	uint32 weight;
 	map_session_data* pl_sd;
 
 	nullpo_retv(sd);
 
-	if( count == 0 )
+	if( count == 0 || count > MAX_BUYINGSTORE_SLOTS )
 	{// nothing to do
 		return;
 	}
@@ -347,7 +356,7 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		return;
 	}
 
-	if( ( pl_sd = map_id2sd(account_id) ) == nullptr || !pl_sd->state.buyingstore || pl_sd->buyer_id != buyer_id )
+	if( ( pl_sd = map_id2sd(account_id) ) == nullptr || !pl_sd->state.buyingstore || !pl_sd->market.published || pl_sd->buyer_id != buyer_id )
 	{// not online, not buying or not same store
 		clif_buyingstore_trade_failed_seller(sd, BUYINGSTORE_TRADE_SELLER_FAILED, 0);
 		return;
@@ -366,6 +375,9 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		pl_sd->buyingstore.zenylimit = pl_sd->status.zeny;
 	}
 	weight = pl_sd->weight;
+	s_buyingstore demand = pl_sd->buyingstore;
+	item projected[MAX_INVENTORY];
+	memcpy(projected, pl_sd->inventory.u.items_inventory, sizeof(projected));
 
 	// check item list
 	for( int32 i = 0; i < count; i++ ){
@@ -384,7 +396,7 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		int32 index = item->index - 2; // TODO: clif::server_index
 
 		// invalid input
-		if( index < 0 || index >= ARRAYLENGTH( sd->inventory.u.items_inventory ) || sd->inventory_data[index] == nullptr || sd->inventory.u.items_inventory[index].nameid != item->itemId || sd->inventory.u.items_inventory[index].amount < item->amount ){
+		if( item->amount == 0 || pn_tokens::retired(item->itemId) || index < 0 || index >= ARRAYLENGTH( sd->inventory.u.items_inventory ) || sd->inventory_data[index] == nullptr || sd->inventory.u.items_inventory[index].nameid != item->itemId || sd->inventory.u.items_inventory[index].amount < item->amount ){
 			clif_buyingstore_trade_failed_seller( sd, BUYINGSTORE_TRADE_SELLER_FAILED, item->itemId );
 			return;
 		}
@@ -406,75 +418,109 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		}
 
 		// buyer does not need that much of the item
-		if( pl_sd->buyingstore.items[listidx].amount < item->amount ){
+		if( demand.items[listidx].amount < item->amount ){
 			clif_buyingstore_trade_failed_seller( sd, BUYINGSTORE_TRADE_SELLER_COUNT, item->itemId );
 			return;
 		}
 
-		// buyer does not have enough space for this item
-		if( pc_checkadditem( pl_sd, item->itemId, item->amount ) == CHKADDITEM_OVERAMOUNT ){
-			clif_buyingstore_trade_failed_seller( sd, BUYINGSTORE_TRADE_SELLER_FAILED, item->itemId );
-			return;
+		demand.items[listidx].amount -= item->amount;
+		// Project the whole batch, including separate seller stacks of the same
+		// item. pc_checkadditem alone cannot reserve cumulative space or demand.
+		const auto& source = sd->inventory.u.items_inventory[index];
+		auto* data = sd->inventory_data[index];
+		int slot = MAX_INVENTORY;
+		if (itemdb_isstackable2(data) && !(data->flag.guid && !source.unique_id)) {
+			for (int k = 0; k < MAX_INVENTORY; ++k) {
+				const auto& current = projected[k];
+				if (current.nameid == source.nameid && current.bound == source.bound && !current.expire_time &&
+					current.unique_id == source.unique_id && !memcmp(current.card, source.card, sizeof(source.card))) {
+					slot = k; break;
+				}
+			}
 		}
+		if (slot == MAX_INVENTORY) {
+			for (int k = 0; k < MAX_INVENTORY; ++k) if (!projected[k].nameid) { slot = k; break; }
+			if (slot >= pl_sd->status.inventory_slots) return;
+			projected[slot] = source; projected[slot].amount = 0;
+		}
+		if (slot >= pl_sd->status.inventory_slots || item->amount > MAX_AMOUNT - projected[slot].amount ||
+			(data->stack.inventory && item->amount > data->stack.amount - projected[slot].amount)) return;
+		projected[slot].amount += item->amount;
 
 		// normally this is not supposed to happen, as the total weight is
 		// checked upon creation, but the buyer could have gained items
-		if( item->amount * (uint32)sd->inventory_data[index]->weight > pl_sd->max_weight - weight ){
+		if( weight > pl_sd->max_weight || static_cast<uint64>(item->amount) * sd->inventory_data[index]->weight > pl_sd->max_weight - weight ){
 			clif_buyingstore_trade_failed_seller( sd, BUYINGSTORE_TRADE_SELLER_FAILED, item->itemId );
 			return;
 		}
 
 		weight += item->amount * sd->inventory_data[index]->weight;
 
+		const int64 unit_price = pl_sd->buyingstore.items[listidx].price;
+		if (unit_price <= 0 || (!market_request && unit_price > MAX_ZENY) || item->amount > (MAX_WALLET_ZENY-zeny) / unit_price) return;
+
 		// buyer does not have enough zeny
-		if( item->amount * pl_sd->buyingstore.items[listidx].price > pl_sd->buyingstore.zenylimit - zeny ){
+		if( static_cast<int64>(item->amount) * pl_sd->buyingstore.items[listidx].price > pl_sd->buyingstore.zenylimit - zeny ){
 			clif_buyingstore_trade_failed_seller( sd, BUYINGSTORE_TRADE_SELLER_ZENY, item->itemId );
 			return;
 		}
 
-		zeny += item->amount * pl_sd->buyingstore.items[listidx].price;
+		zeny += static_cast<int64>(item->amount) * pl_sd->buyingstore.items[listidx].price;
 	}
 
+	// Reserve seller headroom before transferring any item or money.
+	if (zeny > MAX_WALLET_ZENY - sd->status.zeny - sd->mail.pending_zeny || pc_transaction_locked(sd) || pc_transaction_locked(pl_sd)) {
+		clif_buyingstore_trade_failed_seller(sd, BUYINGSTORE_TRADE_SELLER_FAILED, 0);
+		return;
+	}
+
+	if (!pn_pair_begin(*sd, *pl_sd, pn_pair::Buying, 0)) return;
+	pl_sd->market.revision = pn_market_revision();
+	pl_sd->market.bought_count = 0;
 	// process item list
 	for( int32 i = 0; i < count; i++ ){
 		const struct PACKET_CZ_REQ_TRADE_BUYING_STORE_sub* item = &itemlist[i];
 		int32 listidx;
 
 		ARR_FIND( 0, pl_sd->buyingstore.slots, listidx, pl_sd->buyingstore.items[listidx].nameid == item->itemId );
-		zeny = item->amount * pl_sd->buyingstore.items[listidx].price;
+		zeny = static_cast<int64>(item->amount) * pl_sd->buyingstore.items[listidx].price;
 
 		int32 index = item->index - 2; // TODO: clif::server_index
 
 		// move item
-		pc_additem(pl_sd, &sd->inventory.u.items_inventory[index], item->amount, LOG_TYPE_BUYING_STORE);
-		pc_delitem(sd, index, item->amount, 1, 0, LOG_TYPE_BUYING_STORE);
+		if (pc_additem(pl_sd, &sd->inventory.u.items_inventory[index], item->amount, LOG_TYPE_BUYING_STORE) != ADDITEM_SUCCESS) {
+			pn_pair_abort(*sd, *pl_sd); return;
+		}
+		if (pc_delitem(sd, index, item->amount, 1, 0, LOG_TYPE_BUYING_STORE)) {
+			pn_pair_abort(*sd, *pl_sd); return;
+		}
 		pl_sd->buyingstore.items[listidx].amount -= item->amount;
 
-		if( pl_sd->buyingstore.items[listidx].amount > 0 ){
-			if( Sql_Query( mmysql_handle, "UPDATE `%s` SET `amount` = %d WHERE `buyingstore_id` = %d AND `index` = %d;", buyingstore_items_table, pl_sd->buyingstore.items[listidx].amount, pl_sd->buyer_id, listidx ) != SQL_SUCCESS ){
-				Sql_ShowDebug( mmysql_handle );
-			}
-		}else{
-			if( Sql_Query( mmysql_handle, "DELETE FROM `%s` WHERE `buyingstore_id` = %d AND `index` = %d;", buyingstore_items_table, pl_sd->buyer_id, listidx ) != SQL_SUCCESS ){
-				Sql_ShowDebug( mmysql_handle );
-			}
-		}
-
 		// pay up
-		pc_payzeny(pl_sd, zeny, LOG_TYPE_BUYING_STORE, sd->status.char_id);
-		pc_getzeny(sd, zeny, LOG_TYPE_BUYING_STORE, pl_sd->status.char_id);
+		if (pc_payzeny(pl_sd, zeny, LOG_TYPE_BUYING_STORE, sd->status.char_id) ||
+			pc_getzeny(sd, zeny, LOG_TYPE_BUYING_STORE, pl_sd->status.char_id)) {
+			pn_pair_abort(*sd, *pl_sd); return;
+		}
 		pl_sd->buyingstore.zenylimit-= zeny;
 
-		// notify clients
-		clif_buyingstore_delete_item(sd, index, item->amount, pl_sd->buyingstore.items[listidx].price);
-		clif_buyingstore_update_item(pl_sd, item->itemId, item->amount, sd->status.char_id, zeny);
+		// Defer native sale reports until both inventories, wallets and the
+		// remaining purchase order have one durable SQL receipt.
+		auto& report = pl_sd->market.bought[pl_sd->market.bought_count++];
+		report.index = index; report.amount = item->amount; report.item_id = item->itemId;
+		report.price = pl_sd->buyingstore.items[listidx].price; report.total = zeny;
 	}
+	pn_pair_submit(*sd, *pl_sd);
+}
 
-	if( save_settings&CHARSAVE_VENDING ) {
-		chrif_save(sd, CSAVE_NORMAL|CSAVE_INVENTORY);
-		chrif_save(pl_sd, CSAVE_NORMAL|CSAVE_INVENTORY);
+void buyingstore_pair_completed(map_session_data& seller, map_session_data& buyer) {
+	for (uint32 i = 0; i < buyer.market.bought_count; ++i) {
+		const auto& report = buyer.market.bought[i];
+		clif_buyingstore_delete_item(&seller, report.index, report.amount, static_cast<int32>(std::min<int64>(report.price, MAX_ZENY)));
+		clif_buyingstore_update_item(&buyer, report.item_id, report.amount, seller.status.char_id, static_cast<int32>(std::min<int64>(report.total, MAX_ZENY)));
 	}
-	
+	buyer.market.bought_count = 0;
+	auto* pl_sd = &buyer;
+
 	// check whether or not there is still something to buy
 	int32 i;
 	ARR_FIND( 0, pl_sd->buyingstore.slots, i, pl_sd->buyingstore.items[i].amount != 0 );
@@ -487,11 +533,7 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		clif_buyingstore_trade_failed_buyer(pl_sd, BUYINGSTORE_TRADE_BUYER_ZENY);
 	}
 	else
-	{// continue buying
-		if( Sql_Query( mmysql_handle, "UPDATE `%s` SET `limit` = %d WHERE `id` = %d;", buyingstores_table, pl_sd->buyingstore.zenylimit, pl_sd->buyer_id ) != SQL_SUCCESS ){
-			Sql_ShowDebug( mmysql_handle );
-		}
-
+	{// Remaining budget and orders already committed with both inventories.
 		return;
 	}
 
@@ -513,7 +555,7 @@ bool buyingstore_search( const map_session_data* sd, t_itemid nameid )
 
 	nullpo_ret(sd);
 
-	if( !sd->state.buyingstore )
+	if( !sd->state.buyingstore || !sd->market.published )
 	{// not buying
 		return false;
 	}
@@ -537,7 +579,7 @@ bool buyingstore_searchall( const map_session_data* sd, const struct s_search_st
 
 	nullpo_ret(sd);
 
-	if( !sd->state.buyingstore )
+	if( !sd->state.buyingstore || !sd->market.published )
 	{// not buying
 		return true;
 	}
@@ -551,12 +593,13 @@ bool buyingstore_searchall( const map_session_data* sd, const struct s_search_st
 		}
 		it = &sd->buyingstore.items[i];
 
-		if( s->min_price && s->min_price > (uint32)it->price )
+		if (it->price > MAX_ZENY) continue; // Wide quotes use PMK1 only.
+		if( s->min_price && s->min_price > it->price )
 		{// too low price
 			continue;
 		}
 
-		if( s->max_price && s->max_price < (uint32)it->price )
+		if( s->max_price && s->max_price < it->price )
 		{// too high price
 			continue;
 		}
@@ -611,7 +654,7 @@ void buyingstore_reopen( map_session_data* sd ){
 		for( int32 j = 0; j < at->count; j++) {
 			data[j].itemId = at->entries[j]->item_id;
 			data[j].amount = at->entries[j]->amount;
-			data[j].price = at->entries[j]->price;
+			data[j].price = static_cast<int32>(std::min<int64>(at->entries[j]->price, BUYINGSTORE_MAX_PRICE));
 		}
 
 		sd->state.autotrade = 1;
@@ -687,7 +730,7 @@ void do_init_buyingstore_autotrade( void ) {
 				Sql_GetData(mmysql_handle, 2, &data, nullptr); at->char_id = atoi(data);
 				Sql_GetData(mmysql_handle, 3, &data, nullptr); at->sex = (data[0] == 'F') ? SEX_FEMALE : SEX_MALE;
 				Sql_GetData(mmysql_handle, 4, &data, &len); safestrncpy(at->title, data, zmin(len + 1, MESSAGE_SIZE));
-				Sql_GetData(mmysql_handle, 5, &data, nullptr); at->limit = atoi(data);
+				Sql_GetData(mmysql_handle, 5, &data, nullptr); at->limit = strtoll(data, nullptr, 10);
 				Sql_GetData(mmysql_handle, 6, &data, nullptr); at->dir = atoi(data);
 				Sql_GetData(mmysql_handle, 7, &data, nullptr); at->head_dir = atoi(data);
 				Sql_GetData(mmysql_handle, 8, &data, nullptr); at->sit = atoi(data);
@@ -746,7 +789,7 @@ void do_init_buyingstore_autotrade( void ) {
 					CREATE(at->entries[j], struct s_autotrade_entry, 1);
 					Sql_GetData(mmysql_handle, 0, &data, nullptr); at->entries[j]->item_id = strtoul(data, nullptr, 10);
 					Sql_GetData(mmysql_handle, 1, &data, nullptr); at->entries[j]->amount = atoi(data);
-					Sql_GetData(mmysql_handle, 2, &data, nullptr); at->entries[j]->price = atoi(data);
+					Sql_GetData(mmysql_handle, 2, &data, nullptr); at->entries[j]->price = strtoll(data, nullptr, 10);
 					j++;
 				}
 				items += j;

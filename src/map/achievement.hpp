@@ -17,6 +17,7 @@
 
 class map_session_data;
 struct block_list;
+namespace pn_shop { struct AchievementEvent; }
 
 enum e_achievement_group {
 	AG_NONE = 0,
@@ -137,14 +138,40 @@ extern AchievementLevelDatabase achievement_level_db;
 void achievement_get_reward(map_session_data *sd, int32 achievement_id, time_t rewarded);
 struct achievement *achievement_add(map_session_data *sd, int32 achievement_id);
 bool achievement_remove(map_session_data *sd, int32 achievement_id);
+bool achievement_update_count(map_session_data *sd, int32 achievement_id, uint16 objective, int32 value);
 bool achievement_update_achievement(map_session_data *sd, int32 achievement_id, bool complete);
-void achievement_check_reward( const map_session_data* sd, int32 achievement_id );
+void achievement_check_reward( map_session_data* sd, int32 achievement_id );
 void achievement_free(map_session_data *sd);
 int32 achievement_check_progress( const map_session_data* sd, int32 achievement_id, int32 type );
 int32 *achievement_level(map_session_data *sd, bool flag);
 bool achievement_check_condition(struct script_code* condition, map_session_data* sd);
 void achievement_get_titles(uint32 char_id);
 void achievement_update_objective(map_session_data *sd, enum e_achievement_group group, uint8 arg_count, ...);
+void achievement_update_objective_values(map_session_data *sd, enum e_achievement_group group,
+	const std::vector<int32>& arguments);
+// Only the synchronous owned preparation may bypass the pending shop script
+// fence. Other players/scripts retain the ordinary transaction restrictions.
+bool achievement_shop_capture_active(const map_session_data* sd);
+// Prepare resolved item-delivery progression without changing the live log or
+// sending achievement packets. The caller supplies the projected player assets
+// and preserves delivery ordering; shop EXP/autoequip are separate operations.
+// Conditions run in the real VM and must obey the database's expression contract.
+// Snapshots omit zero-counter incomplete rows, matching character SQL's add
+// policy; callers must normalize SQL before-images to this same persisted form.
+// Derived scores are zero in canonical rows. The achievement log and registry
+// must both have completed their initial load before preparation is allowed.
+bool achievement_prepare_shop(map_session_data& sd, const std::vector<int32>& value_sell,
+	std::vector<achievement>& before, std::vector<achievement>& after);
+// General success-only events use the same owned snapshot path. The caller
+// preserves the order in which their live post-ACK callbacks would execute.
+bool achievement_prepare_shop_events(map_session_data& sd,
+	const std::vector<pn_shop::AchievementEvent>& events,
+	std::vector<achievement>& before, std::vector<achievement>& after);
+// Install an already durable snapshot, without rerunning conditions or rewards.
+// Caller must fence intervening progression until this replacement is settled.
+// Nonpersistable zero-counter incomplete rows in a supplied bundle are rejected.
+// Existing live transient rows absent from that bundle remain in the map log.
+bool achievement_apply_shop(map_session_data& sd, const std::vector<achievement>& rows);
 int32 achievement_update_objective_sub(block_list *bl, va_list ap);
 void achievement_read_db(void);
 void achievement_db_reload(void);

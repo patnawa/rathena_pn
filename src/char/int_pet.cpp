@@ -59,6 +59,8 @@ int32 inter_pet_tosql(int32 pet_id, struct s_pet* p)
 	return 1;
 }
 
+#include <custom/pet_entitlement_sql.inc>
+
 int32 inter_pet_fromsql(int32 pet_id, struct s_pet* p)
 {
 	char* data;

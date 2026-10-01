@@ -49,3 +49,5 @@ Footer:
     Mode: Renewal
   - Path: db/import/enchant_repair_combos.yml
     Mode: Renewal
+  - Path: db/import/fashion_stone_expansion_combos.yml
+    Mode: Renewal

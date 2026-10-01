@@ -150,6 +150,9 @@ struct AccountDB {
 };
 
 void mmo_send_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id);
-void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id);
+void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id, int32 char_server);
+namespace pn_shop { struct Commit; }
+bool mmo_point_pending(AccountDB* self,uint32 account_id);
+bool mmo_point_barrier(AccountDB* self,const pn_shop::Commit& request);
 
 #endif /* ACCOUNT_HPP */
