@@ -2492,8 +2492,11 @@ void pc_reg_received(map_session_data *sd)
 		sd->achievement_data.total_score = 0;
 		sd->achievement_data.level = 0;
 		sd->achievement_data.save = false;
+		sd->achievement_data.loaded = false;
+		sd->achievement_data.reward_pending_id = 0;
 		sd->achievement_data.count = 0;
 		sd->achievement_data.incompleteCount = 0;
+		sd->achievement_data.opaque_count = 0;
 		sd->achievement_data.achievements = nullptr;
 		intif_request_achievements(sd->status.char_id);
 	}
@@ -5822,9 +5825,13 @@ void PcItemDeliveryScope::refresh_questinfo() {
 	if (auto* root = pc_item_delivery_scope(&sd_)) root->refresh_ = true;
 }
 
+void PcItemDeliveryScope::suppress_achievements() {
+	if (auto* root = pc_item_delivery_scope(&sd_)) root->achievements_ = false;
+}
+
 void PcItemDeliveryScope::cancel() {
     if(owner_)pc_item_delivery_scopes.erase(&sd_);
-    owner_=false;additions_.clear();refresh_=false;
+    owner_=false;additions_.clear();refresh_=false;achievements_=true;
 }
 
 PcItemDeliveryScope::~PcItemDeliveryScope() {
@@ -5847,7 +5854,7 @@ PcItemDeliveryScope::~PcItemDeliveryScope() {
 		}
 		if (added.equip && current.amount > 0 && current.nameid == added.nameid && current.unique_id == added.unique_id)
 			pc_equipitem(&sd_, added.index, added.equip);
-		achievement_update_objective(&sd_, AG_GET_ITEM, 1, added.value_sell);
+		if (achievements_) achievement_update_objective(&sd_, AG_GET_ITEM, 1, added.value_sell);
 	}
 	if (refresh_) pc_show_questinfo(&sd_);
 }
@@ -5946,7 +5953,7 @@ char pc_getzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uin
 	}
 
 	const int32 achievement_zeny=static_cast<int32>(std::min<int64>(sd->status.zeny,MAX_ZENY));
-	if(!pn_item_use_success_defer(sd,[sd,achievement_zeny](){achievement_update_objective(sd,AG_GET_ZENY,1,achievement_zeny);}))
+	if(!pn_item_use_achievement_defer(sd,AG_GET_ZENY,{achievement_zeny}))
 		achievement_update_objective(sd,AG_GET_ZENY,1,achievement_zeny);
 
 	return 0;

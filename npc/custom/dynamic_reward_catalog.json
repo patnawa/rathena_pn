@@ -73930,7 +73930,7 @@
     },
     {
       "family": "rune.seal",
-      "key": "whitelist",
+      "key": "4480",
       "output_kind": "inventory_item",
       "outputs": [
         {
@@ -73940,7 +73940,1087 @@
           "chance_per_100000": 100000
         }
       ],
-      "costs": [],
+      "costs": [
+        {
+          "item_id": 4480,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4481",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4481,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4482",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4482,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4483",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4483,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4484",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4484,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4485",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4485,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4486",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4486,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4487",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4487,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4488",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4488,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4489",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4489,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4490",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4490,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4491",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4491,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4492",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4492,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4493",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4493,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4494",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4494,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4495",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4495,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4496",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4496,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4497",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4497,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4498",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4498,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4499",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4499,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4500",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4500,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4501",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4501,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4502",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4502,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4503",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4503,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4504",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4504,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4535",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4535,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4536",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4536,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4537",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4537,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4538",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4538,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "4539",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 4539,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "22875",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 22875,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300139",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300139,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300318",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300318,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300319",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300319,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300321",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300321,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300322",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300322,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300324",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300324,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300326",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300326,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300328",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300328,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300330",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300330,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300331",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300331,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300332",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300332,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "300334",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 300334,
+          "amount": 1
+        }
+      ],
+      "batch_maximum": 1,
+      "repeat": "repeatable",
+      "condition": "one card from Rune catalog seal whitelist",
+      "source": "npc/custom/rune_tablet/services.txt",
+      "line": 394,
+      "expression": "getitem 1001594,1;"
+    },
+    {
+      "family": "rune.seal",
+      "key": "311071",
+      "output_kind": "inventory_item",
+      "outputs": [
+        {
+          "item_id": 1001594,
+          "minimum": 1,
+          "maximum": 1,
+          "chance_per_100000": 100000
+        }
+      ],
+      "costs": [
+        {
+          "item_id": 311071,
+          "amount": 1
+        }
+      ],
       "batch_maximum": 1,
       "repeat": "repeatable",
       "condition": "one card from Rune catalog seal whitelist",

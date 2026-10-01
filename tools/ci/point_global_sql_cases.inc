@@ -74,6 +74,22 @@ static int global_point_cases(const std::string& mode){
   require(pn_global_point::expire(sql_handle),"orphan timeout resolves durably");require(!pn_global_point::pending(sql_handle,r.account_id),"timeout releases admission");
   require(!pn_global_point::approve(sql_handle,r,"global_acc_reg_num"),"late barrier cannot resurrect canceled request");require(pn_shop_tosql(r,true)==pn_shop::Rejected,"late map retry reads durable rejection");require(result("SELECT value FROM global_acc_reg_num")=="5000000000|\n","timeout never charges");
  }
+ // A coordinated upgrade can leave old raw Commit layouts in the barrier
+ // table. Expiry terminalizes every wrong-sized row without attempting to
+ // decode it, then continues processing valid requests in the same pass.
+ global_seed();require(sizeof(pn_shop::Commit)==59958,"current barrier payload layout is the expected 59958 bytes");
+ require(pn_global_point::prepare(sql_handle,r),"valid expiry request beside legacy payloads");
+ sql("INSERT INTO pn_global_point_barriers(account_id,nonce_hi,nonce_lo,sequence,char_id,point_key,payload,created_at) VALUES"
+     "(990014,901,902,1,99001314,'##Legacy',REPEAT('L',59954),DATE_SUB(NOW(),INTERVAL 120 SECOND)),"
+     "(990015,903,904,1,99001315,'##Corrupt','X',DATE_SUB(NOW(),INTERVAL 120 SECOND))");
+ global_old();require(pn_global_point::expire(sql_handle),"legacy payload lengths cannot poison valid expiry work");
+ require(result("SELECT account_id,state,OCTET_LENGTH(payload) FROM pn_global_point_barriers ORDER BY account_id")==
+     "990013|2|59958|\n990014|2|59954|\n990015|2|1|\n","valid and wrong-sized barrier rows all terminalized");
+ require(result("SELECT account_id,outcome,OCTET_LENGTH(payload) FROM pn_shop_commits ORDER BY account_id")==
+     "990013|2|59958|\n","only the valid expired request receives an immutable rejection receipt");
+ require(!pn_global_point::pending(sql_handle,990014) && !pn_global_point::pending(sql_handle,990015),"legacy barrier rows no longer fence admission");
+ require(pn_shop_tosql(r,false)==pn_shop::Rejected,"valid request beside legacy rows replays its terminal receipt");
+ require(result("SELECT value FROM global_acc_reg_num")=="5000000000|\n","mixed legacy expiry never debits global authority");
  global_seed();require(pn_global_point::prepare(sql_handle,r),"older flush fixture");
  sql("UPDATE global_acc_reg_num SET value=4999999999");require(pn_global_point::approve(sql_handle,r,"global_acc_reg_num"),"older flush drained before barrier");
  require(pn_shop_tosql(r,true)==pn_shop::Rejected,"stale map view rejected after actual authority compare");require(!pn_global_point::pending(sql_handle,r.account_id),"stale balance rejection releases fence");

@@ -11856,8 +11856,9 @@ Returns true on success and false on failure.
 
 *achievementremove(<achievement id>{,<char id>})
 
-This function will remove an achievement from the player's log for the attached
-player or the supplied <char id>.
+This function removes an all-zero, incomplete achievement from the player's log
+for the attached player or the supplied <char id>. Persisted counters, completion,
+and reward history cannot be removed because achievement persistence is monotonic.
 Returns true on success and false on failure.
 
 ---------------------------------------
@@ -11907,16 +11908,14 @@ Returns true on success and false on failure.
 
 *achievementupdate(<achievement id>,<type>,<value>{,<char id>})
 
-This function will update an achievement's value for an achievement of the attached
-player or the supplied <char id>. If the player does not have the achievement active
-(no progress has been made) it will be added to the player's log first before updating
-the <type> value.
+This function increases one of ACHIEVEINFO_COUNT1 through ACHIEVEINFO_COUNT10 for
+an achievement of the attached player or the supplied <char id>. If the player does
+not have the achievement active it will be added before updating the count. Negative
+values and decreases are rejected. Completion and reward timestamps are immutable;
+use achievementcomplete and the normal reward flow to set them.
 Returns true on success and false on failure.
 
-See 'achievementinfo' for valid <type> values.
-- ACHIEVEINFO_COMPLETE, ACHIEVEINFO_COMPLETEDATE, and ACHIEVEINFO_GOTREWARD require the
-  specific value returned from 'gettimetick(2)'.
-- Excludes ACHIEVEINFO_LEVEL and ACHIEVEINFO_SCORE.
+See 'achievementinfo' for the count <type> values.
 
 ---------------------------------------
 

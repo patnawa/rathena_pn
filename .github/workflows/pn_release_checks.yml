@@ -36,11 +36,22 @@ jobs:
             --candidate "$GITHUB_WORKSPACE" \
             --evidence "$RUNNER_TEMP/transaction-sql" \
             --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
+      - name: Prove achievement snapshot rollback and database-crash recovery
+        run: |
+          python3 tools/ci/achievement_sql_test.py \
+            --candidate "$GITHUB_WORKSPACE" \
+            --evidence "$RUNNER_TEMP/achievement-sql" \
+            --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: transaction-sql-recovery
           path: ${{ runner.temp }}/transaction-sql/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: achievement-sql-recovery
+          path: ${{ runner.temp }}/achievement-sql/
   release:
     runs-on: ubuntu-24.04
     timeout-minutes: 45

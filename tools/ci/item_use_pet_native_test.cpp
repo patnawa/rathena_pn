@@ -1,5 +1,6 @@
 #include <custom/item_use.hpp>
 #include <custom/shop_state.hpp>
+#include <map/achievement.hpp>
 #include <map/pet.hpp>
 #include <map/mob.hpp>
 #include <map/npc.hpp>
@@ -10,6 +11,8 @@ static unsigned submissions=0,baseline_saves=0,world_calls=0;
 static item baseline_item{};
 static std::shared_ptr<pn_shop::Commit> captured;
 static std::vector<pn_shop::Event> captured_events;
+static std::vector<std::pair<int32,std::vector<int32>>> captured_achievement_events,live_achievement_events;
+static bool simulate_progression_prepared=true;
 static mob_data* capture_target=nullptr;
 static unsigned removals=0,kills=0,roulettes=0;
 static bool roulette_success=false;
@@ -21,18 +24,24 @@ extern "C" int32 kill_target(block_list*,block_list*,int8,int8,int8,uint8) asm("
 extern "C" int32 kill_target(block_list*,block_list*,int8,int8,int8,uint8){++kills;return 0;}
 extern "C" void roulette(const map_session_data&,bool) asm("__wrap__Z17clif_pet_rouletteRK16map_session_datab");
 extern "C" void roulette(const map_session_data&,bool success){++roulettes;roulette_success=success;}
+extern "C" void achievement_values(map_session_data*,e_achievement_group,const std::vector<int32>&) asm("__wrap__Z35achievement_update_objective_valuesP16map_session_data19e_achievement_groupRKSt6vectorIiSaIiEE");
+extern "C" void achievement_values(map_session_data*,e_achievement_group group,const std::vector<int32>& arguments){live_achievement_events.emplace_back(static_cast<int32>(group),arguments);}
 extern "C" bool submit(map_session_data&,std::shared_ptr<pn_shop::Commit>,std::vector<pn_shop::Event>,uint32_t) asm("__wrap__Z14pn_shop_submitR16map_session_dataSt10shared_ptrIN7pn_shop6CommitEESt6vectorINS2_5EventESaIS6_EEj");
 extern "C" bool submit(map_session_data& sd,std::shared_ptr<pn_shop::Commit> request,std::vector<pn_shop::Event> events,uint32_t weight){
  ++submissions;check(!pn_item_use_active(&sd),"scope finalized before submit");
  check(!memcmp(&baseline_item,&sd.inventory.u.items_inventory[0],sizeof(item)),"original input restored before baseline save");
  check(sd.status.zeny==1000 && sd.status.uniqueitem_counter==10,"original wallet and counter restored before submit");
+ captured_achievement_events.clear();for(const auto& event:sd.shop_commit.planned_achievements)captured_achievement_events.emplace_back(event.group,event.arguments);
+ sd.shop_commit.planned_achievements.clear();sd.shop_commit.progression_prepared=false;
  if(!allow_submit)return false;
  ++baseline_saves;captured=std::make_shared<pn_shop::Commit>(*request);captured_events=events;
- sd.shop_commit.pending=true;sd.shop_commit.request=captured;sd.shop_commit.events=events;sd.shop_commit.final_weight=weight;return true;
+ sd.shop_commit.pending=true;sd.shop_commit.request=captured;sd.shop_commit.events=events;sd.shop_commit.final_weight=weight;
+ sd.shop_commit.progression_prepared=simulate_progression_prepared && !captured_achievement_events.empty();return true;
 }
 extern "C" e_setpos warp_boundary(map_session_data*,uint16,int32,int32,clr_type) asm("__wrap__Z9pc_setposP16map_session_datatii8clr_type");
 extern "C" e_setpos warp_boundary(map_session_data* sd,uint16,int32,int32,clr_type){check(!pn_item_use_active(sd),"ordinary warp bypasses pet scope");++world_calls;return SETPOS_OK;}
 extern "C" int __wrap_main(int argc,char** argv){
+ setvbuf(stdout,nullptr,_IONBF,0);
  deny_network();static char server[]="item-use-pet-test";SERVER_NAME=server;
  malloc_init();db_init();do_init_database();timer_init();mapindex_init();do_init_script();battle_set_defaults();
  auto data=read(std::string(argv[1])+"/items.yml");auto items=ryml::parse_in_arena(ryml::to_csubstr(data));for(auto n:items["Body"])check(item_db.parseBodyNode(n)==1,"item parses");
@@ -43,7 +52,7 @@ extern "C" int __wrap_main(int argc,char** argv){
  const char* scripts[]={"{ getitem 501,1; }","{ getitem 501,1; }","{ getitem 501,1; getitem 501,2; }","{ getitem 503,1; getitem 501,1; }","{ getitem 503,1; }","{ warp \"SavePoint\",0,0; }","{ warp \"SavePoint\",0,0; getitem 501,1; }","{ Zeny+=25; getitem 501,1; }","{ mes \"Choice\"; next; getitem 501,1; }",
  "{ catchpet 502; }","{ catchpet 502; }","{ catchpet 502; }","{ catchpet 502; }","{ catchpet 502; }","{ catchpet 502; }","{ catchpet 502; }"};
  for(unsigned mode=0;mode<std::size(scripts);++mode){
-  ++cases;captured.reset();captured_events.clear();submissions=baseline_saves=world_calls=0;allow_submit=mode!=1;
+  ++cases;captured.reset();captured_events.clear();captured_achievement_events.clear();live_achievement_events.clear();submissions=baseline_saves=world_calls=0;allow_submit=mode!=1;simulate_progression_prepared=true;
   removals=kills=roulettes=0;roulette_success=false;item_db.find(502)->flag.delay_consume=mode==10;
   auto sd=std::make_unique<map_session_data>();attached=sd.get();sd->id=sd->status.account_id=99001;sd->status.char_id=99000002;sd->type=BL_PC;
   sd->status.uniqueitem_counter=10;sd->status.zeny=1000;sd->status.inventory_slots=1;sd->max_weight=1000000;sd->status.base_level=200;sd->status.sex=SEX_MALE;
@@ -54,7 +63,7 @@ extern "C" int __wrap_main(int argc,char** argv){
   for(auto& index:sd->equip_index)index=-1;for(auto& timer:sd->eventtimer)timer=INVALID_TIMER;
   put(0,502,1);
   item unrelated_a{},unrelated_b{},retained_egg{};
-  if(mode>=9){
+  if(mode>=9 && mode<=15){
    sd->status.inventory_slots=5;put(1,503,3);put(4,503,2);
    auto& a=sd->inventory.u.items_inventory[1];a.bound=BOUND_ACCOUNT;a.refine=3;a.card[1]=4001;
    auto& b=sd->inventory.u.items_inventory[4];b.bound=BOUND_CHAR;b.refine=7;b.card[2]=4002;
@@ -81,21 +90,50 @@ extern "C" int __wrap_main(int argc,char** argv){
    check(captured && !memcmp(&captured->items[1],&unrelated_a,sizeof(item)) && !memcmp(&captured->items[4],&unrelated_b,sizeof(item)),"capture snapshot preserves unrelated slots quantities and metadata");
    check(!memcmp(&sd->inventory.u.items_inventory[1],&unrelated_a,sizeof(item)) && !memcmp(&sd->inventory.u.items_inventory[4],&unrelated_b,sizeof(item)),"waiting result keeps original unrelated inventory live");
    check(submissions==1 && baseline_saves==1,"lure is committed exactly once on cancel failure success and expiry");
+   check(captured_achievement_events==(caught?std::vector<std::pair<int32,std::vector<int32>>>{{AG_TAMING,{1002}}}:std::vector<std::pair<int32,std::vector<int32>>>{}),"successful capture journals exactly one taming objective");
    check(!memcmp(&captured->items[3],&retained_egg,sizeof(item)) && !memcmp(&sd->inventory.u.items_inventory[3],&retained_egg,sizeof(item)) && !captured->pet_retire_count,"cursor and commit retain existing pet identity without retirement");
    const bool committed=mode!=12;sd->shop_commit={};pn_item_use_settled(*sd,committed);
    if(!committed)check(!memcmp(&sd->inventory.u.items_inventory[0],&baseline_item,sizeof(item)),"SQL rejection preserves the original lure");
    const auto settled_removals=removals,settled_roulettes=roulettes;pn_item_use_settled(*sd,committed);check(removals==settled_removals && roulettes==settled_roulettes,"duplicate settlement cannot remove a target or acknowledge twice");
    if(mode!=15){const auto before=submissions;do_timer(gettick()+30001);check(submissions==before,"settled cursor timeout cannot consume lure again");}
-   ok=ok && roulettes==1 && roulette_success==(caught&&committed) && removals==(caught&&committed?1:0) && kills==removals && !sd->item_use;
+   ok=ok && roulettes==1 && roulette_success==(caught&&committed) && removals==(caught&&committed?1:0) && kills==removals && live_achievement_events.empty() && !sd->item_use;
    if(!ok)++errors;printf("ITEM_USE_PET case=%u capture %s\n",mode,ok?"PASS":"FAIL");capture_target=nullptr;item_db.find(502)->script=original_script;script_free_code(code);attached=nullptr;continue;
   }
   bool ok=bool(captured)==pending && bool(sd->shop_commit.pending)==pending;
-  if(pending){ok=ok && result==1 && submissions==1 && baseline_saves==1 && captured->kind==pn_shop::ItemUse && captured->pet_count==(mode==2?3:1) && !memcmp(&baseline_item,&sd->inventory.u.items_inventory[0],sizeof(item));if(mode==3)ok=ok && captured->items[0].nameid==503 && captured_events.size()==2;if(mode==7)ok=ok && captured->wallet_before==1000 && captured->wallet_after==1025;sd->shop_commit={};pn_item_use_settled(*sd,false);}
+  if(pending){
+   ok=ok && result==1 && submissions==1 && baseline_saves==1 && captured->kind==pn_shop::ItemUse && captured->pet_count==(mode==2?3:1) && !memcmp(&baseline_item,&sd->inventory.u.items_inventory[0],sizeof(item));
+   if(mode==3)ok=ok && captured->items[0].nameid==503 && captured_events.size()==2;
+   const bool zeny_mode=mode==7;
+   if(zeny_mode)check(captured->wallet_before==1000 && captured->wallet_after==1025,"Zeny item use captures the exact wallet transition");
+   sd->shop_commit={};pn_item_use_settled(*sd,zeny_mode);
+  }
   else if(mode==4)ok=ok && result==1 && sd->inventory.u.items_inventory[0].nameid==503 && !submissions;
   else if(mode==5)ok=ok && result==1 && !sd->inventory.u.items_inventory[0].nameid && world_calls==1 && !submissions;
   else ok=ok && result==0 && !memcmp(&baseline_item,&sd->inventory.u.items_inventory[0],sizeof(item)) && !world_calls;
   ok=ok && !sd->item_use;if(!ok)++errors;printf("ITEM_USE_PET case=%u result=%d submissions=%u %s\n",mode,result,submissions,ok?"PASS":"FAIL");
   item_db.find(502)->script=original_script;script_free_code(code);attached=nullptr;
+ }
+ for(bool prepared:{true,false}){
+  ++cases;captured.reset();captured_events.clear();captured_achievement_events.clear();live_achievement_events.clear();
+  submissions=baseline_saves=world_calls=0;allow_submit=true;simulate_progression_prepared=prepared;
+  auto sd=std::make_unique<map_session_data>();attached=sd.get();sd->id=sd->status.account_id=99001;sd->status.char_id=99000002;sd->type=BL_PC;
+  sd->status.uniqueitem_counter=10;sd->status.zeny=1000;sd->status.inventory_slots=2;sd->max_weight=1000000;sd->status.base_level=200;sd->status.sex=SEX_MALE;
+  sd->permissions.set(PC_PERM_ITEM_UNCONDITIONAL);sd->vars_ok=true;sd->ud.skilltimer=INVALID_TIMER;sd->rental_timer=INVALID_TIMER;
+  std::unique_ptr<DBMap,void(*)(DBMap*)> registry(i64db_alloc(DB_OPT_BASE),[](DBMap* db){db_destroy(db);});sd->regs.vars=registry.get();
+  for(auto& index:sd->equip_index)index=-1;for(auto& timer:sd->eventtimer)timer=INVALID_TIMER;
+  baseline_item=sd->inventory.u.items_inventory[0];item egg{};egg.nameid=501;egg.amount=1;egg.identify=1;
+  check(pn_item_use_batch_begin(*sd),"direct reward batch begins");
+  check(pc_getzeny(sd.get(),25,LOG_TYPE_SCRIPT)==0,"direct reward batch credits Zeny");
+  check(pn_item_use_collect_pet(*sd,egg,1),"direct reward batch stages a pet entitlement");
+  check(pn_item_use_batch_finish(*sd),"direct reward batch submits atomically");
+  const std::vector<std::pair<int32,std::vector<int32>>> expected{{AG_GET_ZENY,{1025}}};
+  check(captured && captured->wallet_before==1000 && captured->wallet_after==1025 && captured->pet_count==1,
+        "direct reward batch captures its wallet and pet assets");
+  check(captured_achievement_events==expected,"pc_getzeny stages its exact ItemUse success objective");
+  sd->shop_commit={};pn_item_use_settled(*sd,true);
+  check(prepared?live_achievement_events.empty():live_achievement_events==expected,
+        prepared?"durably prepared Zeny objective is not replayed live":"unprepared Zeny objective replays exactly once after commit");
+  check(!sd->item_use,"direct reward batch settlement clears its owned scope");attached=nullptr;
  }
  printf("ITEM_USE_PET cases=%u failures=%u\n",cases,errors);
  fake_nd=nullptr;fake.reset();pet_db.clear();mob_db.clear();pet.reset();mob.reset();item_db.clear();do_final_script();mapindex_final();timer_final();db_final();malloc_final();return errors?1:0;

@@ -1,10 +1,14 @@
 // Character-server owner of one immutable NPC purchase and its replay receipt.
 // Included by int_storage.cpp. SQL failure is unknown/retry, never a refund.
 #include <custom/shop_commit.hpp>
+#include <custom/shop_receipt_codec.hpp>
+#include <custom/shop_progression.hpp>
 #include <common/socket.hpp>
 #include <algorithm>
 #include <cerrno>
+#include <map>
 #include <string>
+#include <tuple>
 #include <vector>
 
 static bool pn_shop_tables(const pn_shop::Commit& r) {
@@ -17,6 +21,7 @@ static bool pn_shop_tables(const pn_shop::Commit& r) {
     if(r.point.scope==pn_shop::GlobalPoint)tables.push_back("pn_global_point_barriers");
     if(r.mail_id){tables.push_back(schema_config.mail_db);tables.push_back(schema_config.mail_attachment_db);}
     if(r.pet_count || r.pet_retire_count || r.mail_id){tables.push_back(schema_config.pet_db);tables.push_back("pn_pet_entitlements");}
+    if(r.progression_size)tables.push_back(schema_config.achievement_table);
     for(const char* table:tables) {
         if(Sql_Query(sql_handle,"SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='%s'",table)!=SQL_SUCCESS)return false;
         char* engine=nullptr;
@@ -38,16 +43,32 @@ static bool pn_shop_number(uint32 column,int64& out) {
 #include <custom/mail_asset_sql.inc>
 #include <custom/point_asset_sql.inc>
 
-static bool pn_shop_receipt(const pn_shop::Commit& r,uint32 outcome) {
+static std::vector<uint8> pn_shop_receipt_identity(const pn_shop::Commit& r,const pn_shop_progression::Bundle* progression) {
+    const size_t extra=progression?progression->bytes.size():0;
+    std::vector<uint8> identity(sizeof(r)+extra);memcpy(identity.data(),&r,sizeof(r));
+    if(extra)memcpy(identity.data()+sizeof(r),progression->bytes.data(),extra);
+    return identity;
+}
+
+static bool pn_shop_receipt(const pn_shop::Commit& r,uint32 outcome,const pn_shop_progression::Bundle* progression) {
+    auto identity=pn_shop_receipt_identity(r,progression);
+    if(identity.size()>pn_shop_receipt_codec::limit)return false;
+    auto payload = pn_shop_receipt_codec::encode(identity.data(),identity.size());
     SqlStmt stmt{*sql_handle};
     return stmt.Prepare("INSERT INTO pn_shop_commits (account_id,nonce_hi,nonce_lo,sequence,outcome,payload) VALUES (%u,%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%u,?)",r.account_id,r.nonce_hi,r.nonce_lo,r.sequence,outcome)==SQL_SUCCESS &&
-        stmt.BindParam(0,SQLDT_BLOB,const_cast<pn_shop::Commit*>(&r),sizeof(r))==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS && pn_global_point::finish_locked(sql_handle,r);
+        stmt.BindParam(0,SQLDT_BLOB,payload.data(),payload.size())==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS && pn_global_point::finish_locked(sql_handle,r);
 }
 
 // current_owner is checked by the authenticated inter-server handler. Keeping
 // it explicit also permits real-database tests without a running map server.
-static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
-    if(!pn_shop::valid(r) || !pn_shop_tables(r) || Sql_BeginTransaction(sql_handle)!=SQL_SUCCESS)return pn_shop::Retry;
+static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn_shop_progression::Bundle* progression=nullptr) {
+    const bool progression_valid=(!r.progression_size && !progression) ||
+        (progression && progression->bytes.size()==r.progression_size &&
+         progression->header.account_id==r.account_id && progression->header.char_id==r.char_id &&
+         progression->header.nonce_hi==r.nonce_hi && progression->header.nonce_lo==r.nonce_lo &&
+         progression->header.sequence==r.sequence);
+    if(!pn_shop::valid(r) || !progression_valid || !pn_shop_tables(r) || Sql_BeginTransaction(sql_handle)!=SQL_SUCCESS)return pn_shop::Retry;
+    const auto identity=pn_shop_receipt_identity(r,progression);
     uint32 outcome=pn_shop::Retry;
     bool transaction_complete=false,new_commit=false;
     do {
@@ -57,8 +78,15 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
         int row=Sql_NextRow(sql_handle);
         if(row==SQL_SUCCESS) {
             int64 recorded=0;char* payload=nullptr;size_t length=0;
-            bool same=pn_shop_number(0,recorded) && (recorded==pn_shop::Committed || recorded==pn_shop::Rejected) &&
-                Sql_GetData(sql_handle,1,&payload,&length)==SQL_SUCCESS && payload && length==sizeof(r) && !memcmp(payload,&r,sizeof(r));
+            bool same=pn_shop_number(0,recorded) && (recorded==pn_shop::Committed || recorded==pn_shop::Rejected ||
+                recorded==pn_shop::ProgressionStale) &&
+                Sql_GetData(sql_handle,1,&payload,&length)==SQL_SUCCESS &&
+                pn_shop_receipt_codec::matches(payload,length,identity.data(),identity.size());
+            // Global-point expiry can durably reject using the immutable commit
+            // before a companion progression frame is available. Rejection has
+            // no progression effect, so that exact historical/raw identity is safe.
+            if(!same && recorded==pn_shop::Rejected)
+                same=pn_shop_receipt_codec::matches(payload,length,&r,sizeof(r));
             Sql_FreeResult(sql_handle);
             if(same){outcome=static_cast<uint32>(recorded);transaction_complete=true;}
             break;
@@ -139,9 +167,14 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
         }
         if(!valid)break;
         if(reject) {
-            if(!pn_shop_receipt(r,pn_shop::Rejected))break;
+            if(!pn_shop_receipt(r,pn_shop::Rejected,progression))break;
             outcome=pn_shop::Rejected;transaction_complete=true;break;
         }
+
+        // Everything after this point is an output of the purchase. A newer or
+        // divergent achievement baseline must roll all of it back before its
+        // terminal stale receipt is recorded.
+        if(progression && Sql_Query(sql_handle,"SAVEPOINT pn_shop_outputs")!=SQL_SUCCESS)break;
 
         // Pet creation/claim belongs to this same payment + inventory + stock
         // transaction. A conflict must undo earlier outputs before recording a
@@ -173,7 +206,7 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
             if(!valid)break;
             if(conflict) {
                 if(Sql_Query(sql_handle,"ROLLBACK TO SAVEPOINT pn_pet_outputs")!=SQL_SUCCESS ||
-                   !pn_shop_receipt(r,pn_shop::Rejected))break;
+                   !pn_shop_receipt(r,pn_shop::Rejected,progression))break;
                 outcome=pn_shop::Rejected;transaction_complete=true;break;
             }
         }
@@ -198,7 +231,19 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
         if(Sql_Query(sql_handle,"UPDATE `%s` SET zeny=%" PRId64 ",uniqueitem_counter=%u WHERE char_id=%u AND account_id=%u",schema_config.char_db,r.wallet_after,r.counter_after,r.char_id,r.account_id)!=SQL_SUCCESS)break;
         const int64 after[]={r.cash_after,r.kafra_after};
         for(int i=0;i<2;++i)if(Sql_Query(sql_handle,"REPLACE INTO `%s` (account_id,`key`,`index`,value) VALUES (%u,'%s',0,%" PRId64 ")",schema_config.acc_reg_num_table,r.account_id,currency_keys[i],after[i])!=SQL_SUCCESS){valid=false;break;}
-        if(!valid || !pn_point_debit_locked(r) || !pn_shop_receipt(r,pn_shop::Committed))break;
+        if(!valid || !pn_point_debit_locked(r))break;
+        if(progression) {
+            const auto progression_result=mapif_achievement_compare_replace_locked(r.char_id,
+                progression->before.data(),static_cast<int32>(progression->before.size()),
+                progression->after.data(),static_cast<int32>(progression->after.size()));
+            if(progression_result==AchievementCompareReplaceResult::Error)break;
+            if(progression_result==AchievementCompareReplaceResult::Conflict) {
+                if(Sql_Query(sql_handle,"ROLLBACK TO SAVEPOINT pn_shop_outputs")!=SQL_SUCCESS ||
+                   !pn_shop_receipt(r,pn_shop::ProgressionStale,progression))break;
+                outcome=pn_shop::ProgressionStale;transaction_complete=true;break;
+            }
+        }
+        if(!pn_shop_receipt(r,pn_shop::Committed,progression))break;
         outcome=pn_shop::Committed;transaction_complete=new_commit=true;
     } while(false);
     // A failed COMMIT acknowledgement is indeterminate. An identical retry
@@ -223,18 +268,54 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner) {
 
 #include <custom/global_point_char.inc>
 
+using PnShopProgressionKey=std::tuple<uint32,uint32,uint64,uint64,uint64>;
+struct PnShopStagedProgression { int32 fd=0;pn_shop_progression::Bundle bundle; };
+static std::map<PnShopProgressionKey,PnShopStagedProgression> pn_shop_progressions;
+static void pn_shop_progression_disconnect_impl(int32 fd) {
+    for(auto it=pn_shop_progressions.begin();it!=pn_shop_progressions.end();) {
+        if(it->second.fd==fd)it=pn_shop_progressions.erase(it);else ++it;
+    }
+}
+static PnShopProgressionKey pn_shop_progression_key(uint32 account,uint32 character,uint64 hi,uint64 lo,uint64 sequence) {
+    return {account,character,hi,lo,sequence};
+}
+static bool pn_shop_current_owner(int32 fd,uint32 account,uint32 character) {
+    auto online=char_get_onlinedb().find(account);
+    if(online==char_get_onlinedb().end() || !online->second || online->second->char_id!=character)return false;
+    int32 server=online->second->server;
+    return server>=0 && server<MAX_MAP_SERVERS && map_server[server].fd==fd;
+}
+static void mapif_parse_ShopProgression(int32 fd) {
+    const uint16 length=RFIFOW(fd,2);pn_shop_progression::Bundle bundle;
+    if(!pn_shop_progression::decode(RFIFOP(fd,0),length,bundle) ||
+       !pn_shop_current_owner(fd,bundle.header.account_id,bundle.header.char_id))return;
+    const auto key=pn_shop_progression_key(bundle.header.account_id,bundle.header.char_id,
+        bundle.header.nonce_hi,bundle.header.nonce_lo,bundle.header.sequence);
+    auto found=pn_shop_progressions.find(key);
+    if(found!=pn_shop_progressions.end()) {
+        if(found->second.fd!=fd || found->second.bundle.bytes!=bundle.bytes)pn_shop_progressions.erase(found);
+        return;
+    }
+    // Only authenticated map servers can reach this parser. Bound abandoned
+    // staging if one sends companion frames without their matching commit.
+    size_t owned=0;for(const auto& row:pn_shop_progressions)if(row.second.fd==fd)++owned;
+    if(owned>=4)for(auto it=pn_shop_progressions.begin();it!=pn_shop_progressions.end();) {
+        if(it->second.fd==fd)it=pn_shop_progressions.erase(it);else ++it;
+    }
+    pn_shop_progressions.emplace(key,PnShopStagedProgression{fd,std::move(bundle)});
+}
+
 static void mapif_parse_ShopCommit(int32 fd) {
     if(RFIFOW(fd,2)!=sizeof(pn_shop::Commit))return;
     pn_shop::Commit request;memcpy(&request,RFIFOP(fd,0),sizeof(request));
-    bool owner=false;
-    auto online=char_get_onlinedb().find(request.account_id);
-    if(online!=char_get_onlinedb().end() && online->second && online->second->char_id==request.char_id) {
-        int32 server=online->second->server;
-        owner=server>=0 && server<MAX_MAP_SERVERS && map_server[server].fd==fd;
-    }
+    const bool owner=pn_shop_current_owner(fd,request.account_id,request.char_id);
+    const auto key=pn_shop_progression_key(request.account_id,request.char_id,request.nonce_hi,request.nonce_lo,request.sequence);
+    auto staged=pn_shop_progressions.find(key);pn_shop_progression::Bundle* progression=nullptr;
+    if(staged!=pn_shop_progressions.end() && staged->second.fd==fd)progression=&staged->second.bundle;
     pn_shop::Ack reply;reply.account_id=request.account_id;reply.char_id=request.char_id;
     reply.nonce_hi=request.nonce_hi;reply.nonce_lo=request.nonce_lo;reply.sequence=request.sequence;
-    reply.outcome=pn_shop_tosql(request,owner);
+    reply.outcome=pn_shop_tosql(request,owner,progression);
+    if(reply.outcome!=pn_shop::Retry && staged!=pn_shop_progressions.end())pn_shop_progressions.erase(staged);
     if(reply.outcome==pn_shop::Retry && owner && request.point.scope==pn_shop::GlobalPoint)pn_global_request_barrier(request);
     WFIFOHEAD(fd,sizeof(reply));memcpy(WFIFOP(fd,0),&reply,sizeof(reply));WFIFOSET(fd,sizeof(reply));
 }

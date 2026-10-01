@@ -50,6 +50,7 @@ struct Storage {
 };
 struct map_session_data {
  bool capture_waiting=false;
+ struct { uint32_t reward_pending_id=0; } achievement_data;
  int m=0,fd=1,npc_id=0,npc_shopid=0;
  struct { int storage_flag=0;
   bool trading=false,vending=false,buyingstore=false,mail_writing=false;
@@ -105,7 +106,7 @@ int main() {
  sd.npc_id=sd.state.storage_flag=0;
  storage_premiumStorage_open(&sd);
  assert(sd.state.storage_flag==3 && opened==2 && mail_invalid_operation(&sd));
- for(int pending=0;pending<7;++pending) {
+ for(int pending=0;pending<8;++pending) {
   map_session_data blocked;
   blocked.bank_ui.pending=pending==0;
   blocked.multi_storage.pending=pending==1;
@@ -114,6 +115,7 @@ int main() {
   blocked.pair_commit.pending=pending==4;
   blocked.shop_commit.pending=pending==5;
   blocked.capture_waiting=pending==6;
+  blocked.achievement_data.reward_pending_id=pending==7?1:0;
   if(blocked.capture_waiting){assert(mail_invalid_operation(&blocked));assert(pc_transaction_locked(&blocked));}
   assert(pc_cant_act2(&blocked));
   assert(storage_storageopen(&blocked)==1);
@@ -159,7 +161,7 @@ int main() {
   assert(!pc_cant_act2(&blocked));
   assert(storage_storageopen(&blocked)==0 && blocked.state.storage_flag==1 && opened==before+1);
  }
- std::cout << "256 RODEX state combinations, storage/composer transitions, delayed-claim capacity and 32 pending/applying masks: PASS\n";
+ std::cout << "256 RODEX state combinations, storage/composer transitions, 8 pending sources, delayed-claim capacity and 32 pending/applying masks: PASS\n";
 }
 '''
 test = prefix + '\n'.join([

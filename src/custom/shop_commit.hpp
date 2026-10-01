@@ -3,13 +3,14 @@
 #define PN_SHOP_COMMIT_HPP
 #include <common/mmo.hpp>
 #include <custom/pet_entitlement.hpp>
+#include <custom/shop_progression.hpp>
 #include <cstdint>
 #include <cstring>
 #include <limits>
 namespace pn_shop {
 enum Kind : uint32_t { Market=1, Barter=2, Sale=3, Asset=4, PetClaim=5, ItemUse=6 };
-constexpr uint16_t protocol_version=2;
-enum Outcome : uint32_t { Retry=0, Committed=1, Rejected=2 };
+constexpr uint16_t protocol_version=3;
+enum Outcome : uint32_t { Retry=0, Committed=1, Rejected=2, ProgressionStale=3 };
 enum Response : uint16_t { Automatic=0, BarterResponse=1, ShopResponse=2, MarketResponse=3, CashNpcResponse=4, CashButtonResponse=5 };
 constexpr int32_t cash_pending=254; // Internal only: never send as a client result.
 constexpr size_t stock_capacity=MAX_INVENTORY;
@@ -48,6 +49,7 @@ struct Commit {
     uint32_t mail_id=0;
     int64_t mail_zeny=0;
     item mail_items[MAIL_MAX_ITEM]{};
+    uint32_t progression_size=0; // Exact companion frame length; zero means no durable progression change.
 };
 struct Ack {
     uint16_t packet=0x3898;
@@ -57,12 +59,14 @@ struct Ack {
 };
 #pragma pack(pop)
 static_assert(sizeof(Commit)<65536,"NPC stock purchase exceeds inter-server frame");
+static_assert(sizeof(Commit)==59958,"Update durable shop payload migrations when Commit changes");
 static_assert(sizeof(Ack)==38,"NPC stock acknowledgement ABI");
 inline bool valid(const Commit& r) {
     if(r.packet!=0x3098 || r.length!=sizeof(r) || r.version!=protocol_version || r.kind<Market || r.kind>ItemUse ||
        !r.account_id || !r.char_id || !(r.nonce_hi|r.nonce_lo) || !r.sequence ||
        (r.kind<=Sale && !r.stock_count) || r.stock_count>stock_capacity || r.counter_after<r.counter_before ||
-       r.pet_count>MAX_INVENTORY || r.pet_retire_count>MAX_INVENTORY || r.response>CashButtonResponse || (r.kind>=Asset && r.stock_count) ||
+       r.pet_count>MAX_INVENTORY || r.pet_retire_count>MAX_INVENTORY || r.response>CashButtonResponse ||
+       r.progression_size>UINT16_MAX || (r.progression_size && r.progression_size<sizeof(pn_shop_progression::Header)) || (r.kind>=Asset && r.stock_count) ||
        r.wallet_before<0 || r.wallet_after<0 || (!r.mail_id && r.kind!=ItemUse && r.wallet_after>r.wallet_before) ||
        r.cash_before<0 || r.cash_before>INT32_MAX || r.cash_after<0 || r.cash_after>INT32_MAX || (r.kind!=ItemUse && r.cash_after>r.cash_before) ||
        r.kafra_before<0 || r.kafra_before>INT32_MAX || r.kafra_after<0 || r.kafra_after>INT32_MAX || (r.kind!=ItemUse && r.kafra_after>r.kafra_before))

@@ -76,9 +76,11 @@ def main():
                  candidate / 'tools/ci/pet_floor_sql_cases.inc',
                  candidate / 'tools/ci/point_asset_sql_cases.inc',
                  candidate / 'tools/ci/point_global_sql_cases.inc',
+                 candidate / 'tools/ci/shop_progression_sql_cases.inc',
                  candidate / 'tools/ci/point_login_sql_runtime.cpp',
                  candidate / 'sql-files/upgrades/upgrade_20260929_point_assets.sql',
                  candidate / 'sql-files/upgrades/upgrade_20260929_pet_entitlements.sql',
+                 candidate / 'sql-files/upgrades/upgrade_20261001_achievement_atomicity.sql',
                  candidate / 'tools/ci/shop_recovery_sql_runtime.cpp',
                  candidate / 'sql-files/main.sql',
                  candidate / 'sql-files/upgrades/upgrade_20260929_shop_purchase.sql'}
@@ -116,6 +118,7 @@ def main():
         sql('CREATE DATABASE shop_recovery_probe; USE shop_recovery_probe;\n' + schema + '\n' + migration.read_text())
         sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20260929_pet_entitlements.sql').read_text())
         sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20260929_point_assets.sql').read_text())
+        sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20261001_achievement_atomicity.sql').read_text())
         compiler = ['g++', '-std=c++17', '-g', '-O1', '-fsanitize=undefined', '-fno-sanitize-recover=all',
                     '-DPACKETVER=20260219']
         compiler += ['-I/rathena/' + p for p in ('src', '3rdparty/libconfig', '3rdparty/rapidyaml/src',
@@ -145,6 +148,9 @@ def main():
         assert 'SHOP_SQL_PASS' in output, output
         report['runtime'] = output.strip()
         report['character_wire_handler'] = runtime('wire').strip()
+        progression_output = runtime('progression')
+        assert 'SHOP_PROGRESSION_SQL_PASS' in progression_output, progression_output
+        report['progression_atomicity'] = progression_output.strip()
         runtime('seed-race')
         buyers = [(mode, subprocess.Popen(runtime_command(mode), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                   for mode in ('race-a', 'race-b')]

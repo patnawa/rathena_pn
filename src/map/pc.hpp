@@ -824,9 +824,12 @@ public:
 	struct s_achievement_data {
 		int32 total_score;                  ///< Total achievement points
 		int32 level;                        ///< Achievement level
-		bool save;                        ///< Flag to know if achievements need to be saved
+		bool save;                          ///< Flag to know if achievements need to be saved
+		bool loaded;                        ///< Authoritative SQL snapshot was received successfully
+		int32 reward_pending_id;            ///< Reward claim awaiting its character-server result
 		uint16 count;                     ///< Total achievements in log
 		uint16 incompleteCount;           ///< Total incomplete achievements in log
+		uint16 opaque_count;              ///< Durable rows unknown to this map's achievement database
 		struct achievement *achievements; ///< Achievement log entries
 	} achievement_data;
 
@@ -1175,7 +1178,9 @@ extern JobDatabase job_db;
 #define pc_isidle_mer(sd)     ( (sd)->md && ( (sd)->chatID || (sd)->state.vending || (sd)->state.buyingstore || DIFF_TICK(last_tick, (sd)->idletime_mer) >= battle_config.mer_idle_no_share ) )
 #define pc_istrading(sd)      ( (sd)->npc_id || (sd)->state.vending || (sd)->state.buyingstore || (sd)->state.trading )
 static inline bool pc_transaction_pending(const map_session_data* sd) {
-	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending || sd->pair_commit.pending || sd->shop_commit.pending || pn_item_use_capture_waiting(sd);
+	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending ||
+		sd->pair_commit.pending || sd->shop_commit.pending || sd->achievement_data.reward_pending_id ||
+		pn_item_use_capture_waiting(sd);
 }
 static inline bool pc_transaction_locked(const map_session_data* sd) {
 	return pn_item_use_capture_waiting(sd) || (sd->bank_ui.pending && !sd->bank_ui.applying) ||
@@ -1488,11 +1493,12 @@ public:
 	PcItemDeliveryScope& operator=(const PcItemDeliveryScope&) = delete;
 	void added(int16 index, const item_data& data);
 	void refresh_questinfo();
+	void suppress_achievements();
 	void cancel();
 private:
 	struct Addition { int16 index; t_itemid nameid; uint64 unique_id; uint32 equip; uint32 value_sell; uint32 expire_time; };
 	map_session_data& sd_;
-	bool owner_ = false, refresh_ = false;
+	bool owner_ = false, refresh_ = false, achievements_ = true;
 	std::vector<Addition> additions_;
 };
 uint8 pc_inventoryblank( const map_session_data* sd );

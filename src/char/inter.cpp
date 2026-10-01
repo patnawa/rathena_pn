@@ -63,11 +63,11 @@ int32 inter_recv_packet_length[] = {
 	-1, 6,-1,-1, 55,19, 6,-1, 14,-1,-1,-1, 18,19,186,-1,	// 3030-
 	-1, 9,10, 0,  0, 0, 0, 0,  8, 6,11,10, 10,-1,6+NAME_LENGTH, 0,	// 3040-
 	-1,-1,10,10,  0,-1,12, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3050-  Auction System [Zephyrus]
-	 6,-1, 6,-1, 16+NAME_LENGTH+ACHIEVEMENT_NAME_LENGTH, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-  Quest system [Kevin] [Inkfish] / Achievements [Aleos]
+	 6,-1, 0,-1, 16+NAME_LENGTH+ACHIEVEMENT_NAME_LENGTH, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 3060-  Quest system [Kevin] [Inkfish] / Achievements [Aleos]
 	-1,10, 6,-1,  0, 0, 0, 0,  0, 0, 0, 0, -1,10,  6,-1,	// 3070-  Mercenary packets [Zephyrus], Elemental packets [pakpil]
 	52,14,-1, 6,  0, 0, 0, 0,  0, 0,13,-1,  0,-1, -1,56,	// 3080-  Pet System, Storage
-	-1,10,-1, 6, -1,-1,-1,-1, -1, 0, 0, 0,  0, 0,  0, 0,	// 3090-  Homunculus packets [albator]
-	 2,-1, 6, 6,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 30A0-  Clan packets
+	-1,10,-1, 6, -1,-1,-1,-1, -1,-1, 0, 0,  0, 0,  0, 0,	// 3090-  Homunculus packets [albator] / durable shop
+	 2,-1, 6, 6,  7,-1, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 30A0-  Clan packets / versioned achievement load/logout save
 };
 
 #ifndef WHISPER_MESSAGE_SIZE
@@ -1415,6 +1415,11 @@ int32 inter_check_length(int32 fd, int32 length)
 		if( RFIFOREST(fd) < 4 )
 			return 0;
 		length = RFIFOW(fd,2);
+		if (length < 4) {
+			ShowError("inter_check_length: Invalid dynamic packet length %d from session %d.\n", length, fd);
+			set_eof(fd);
+			return 0;
+		}
 	}
 
 	if( (int32)RFIFOREST(fd) < length )

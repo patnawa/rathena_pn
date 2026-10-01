@@ -83,7 +83,8 @@ static bool script_rid2sd_( struct script_state *st, map_session_data** sd, cons
 // Explicit cross-player script targets must not mutate a pending immutable
 // purchase snapshot. Scripts attached to the buyer are deferred below.
 static bool script_shop_target(map_session_data** sd) {
-	if (*sd && (*sd)->shop_commit.pending && !(*sd)->shop_commit.applying) {
+	if (*sd && (*sd)->shop_commit.pending && !(*sd)->shop_commit.applying &&
+		!achievement_shop_capture_active(*sd)) {
 		*sd = nullptr;
 		return false;
 	}
@@ -4398,7 +4399,7 @@ void run_script_main(struct script_state *st)
 	// Keep the script's stack/position and resume once the receipt resolves.
 	// This also handles timer scripts that directly change item metadata.
 	sd = map_id2sd(st->rid);
-	if (sd && sd->shop_commit.pending && st->state != END) {
+	if (sd && sd->shop_commit.pending && !achievement_shop_capture_active(sd) && st->state != END) {
 		st->sleep.tick = 100;
 		goto shop_script_deferred;
 	}
@@ -4413,7 +4414,7 @@ void run_script_main(struct script_state *st)
 	while(st->state == RUN) {
 		// attachrid/addrid may change the target during this execution.
 		sd = map_id2sd(st->rid);
-		if (sd && sd->shop_commit.pending) {
+		if (sd && sd->shop_commit.pending && !achievement_shop_capture_active(sd)) {
 			st->sleep.tick = 100;
 			break;
 		}
@@ -26798,8 +26799,8 @@ BUILDIN_FUNC(achievementadd) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
+		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26830,8 +26831,8 @@ BUILDIN_FUNC(achievementremove) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
+		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26861,9 +26862,8 @@ BUILDIN_FUNC(achievementinfo) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !sd->state.pc_loaded ){
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
 		script_pushint(st, false);
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26890,16 +26890,16 @@ BUILDIN_FUNC(achievementcomplete) {
 		return SCRIPT_CMD_FAILURE;
 	}
 	
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
+		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
 	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
-	if (i == sd->achievement_data.count)
-		achievement_add(sd, achievement_id);
-	achievement_update_achievement(sd, achievement_id, true);
-	script_pushint(st, true);
+	bool success = i < sd->achievement_data.count || achievement_add(sd, achievement_id) != nullptr;
+	if (success)
+		success = achievement_update_achievement(sd, achievement_id, true);
+	script_pushint(st, success);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -26922,9 +26922,8 @@ BUILDIN_FUNC(achievementexists) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if( !sd->state.pc_loaded ){
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
 		script_pushint(st, false);
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26956,35 +26955,29 @@ BUILDIN_FUNC(achievementupdate) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
-	if (i == sd->achievement_data.count)
-		achievement_add(sd, achievement_id);
-
-	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
-	if (i == sd->achievement_data.count) {
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
 		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (type >= ACHIEVEINFO_COUNT1 && type <= ACHIEVEINFO_COUNT10)
-		sd->achievement_data.achievements[i].count[type - 1] = value;
-	else if (type == ACHIEVEINFO_COMPLETE || type == ACHIEVEINFO_COMPLETEDATE)
-		sd->achievement_data.achievements[i].completed = value;
-	else if (type == ACHIEVEINFO_GOTREWARD)
-		sd->achievement_data.achievements[i].rewarded = value;
-	else {
+	bool success = false;
+	if (type >= ACHIEVEINFO_COUNT1 && type <= ACHIEVEINFO_COUNT10) {
+		success = achievement_update_count(sd, achievement_id,
+			static_cast<uint16>(type - ACHIEVEINFO_COUNT1), value);
+	} else if (type == ACHIEVEINFO_COMPLETE || type == ACHIEVEINFO_COMPLETEDATE || type == ACHIEVEINFO_GOTREWARD) {
+		ARR_FIND(0, sd->achievement_data.count, i,
+			sd->achievement_data.achievements[i].achievement_id == achievement_id);
+		if (i < sd->achievement_data.count) {
+			const time_t current = type == ACHIEVEINFO_GOTREWARD ?
+				sd->achievement_data.achievements[i].rewarded : sd->achievement_data.achievements[i].completed;
+			success = value >= 0 && current == static_cast<time_t>(value);
+		}
+		if (!success)
+			ShowWarning("buildin_achievementupdate: Completion and reward timestamps are immutable; use achievementcomplete and the reward flow.\n");
+	} else {
 		ShowWarning("buildin_achievementupdate: Unknown type '%d'.\n", type);
-		script_pushint(st, false);
-		return SCRIPT_CMD_FAILURE;
 	}
-
-	achievement_update_achievement(sd, achievement_id, false);
-	script_pushint(st, true);
+	script_pushint(st, success);
 	return SCRIPT_CMD_SUCCESS;
 }
 

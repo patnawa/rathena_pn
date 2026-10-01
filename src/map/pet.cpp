@@ -1362,16 +1362,15 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
         const uint64 token=capture_sequence;md->pet_capture_token=token;
         const int32 captured_id=md->id;const uint16 captured_class=md->mob_id;
         item egg{};egg.nameid=pet->EggID;egg.amount=1;egg.identify=1;
-        pn_item_use_capture_finish(sd,&egg,[&sd,captured_id,captured_class,token](bool committed){
+        pn_item_use_capture_finish(sd,&egg,[&sd,captured_id,token](bool committed){
             auto* target=map_id2md(captured_id);
             const bool same=target && target->pet_capture_token==token;
             if(same)target->pet_capture_token=0;
             if(committed){
                 if(same && target->prev){unit_remove_map(target,CLR_OUTSIGHT);status_kill(target);}
-                achievement_update_objective(&sd,AG_TAMING,1,captured_class);
             }
             clif_pet_roulette(sd,committed);
-        });
+        },AG_TAMING,{captured_class});
     }
 
     pet_catchprocesses.erase( sd.status.char_id );

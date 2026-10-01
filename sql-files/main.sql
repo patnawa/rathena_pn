@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `achievement` (
   `rewarded` datetime,
   PRIMARY KEY (`char_id`,`id`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `auction`
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `barter` (
   `index` SMALLINT(5) UNSIGNED NOT NULL,
   `amount` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY  (`name`,`index`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for `db_roulette`
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `char_reg_num` (
   `value` bigint(11) NOT NULL default '0',
   PRIMARY KEY (`char_id`,`key`,`index`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `char_reg_str`
@@ -438,7 +438,7 @@ CREATE TABLE IF NOT EXISTS `global_acc_reg_num` (
   `value` bigint(11) NOT NULL default '0',
   PRIMARY KEY (`account_id`,`key`,`index`),
   KEY `account_id` (`account_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `global_acc_reg_str`
@@ -748,7 +748,8 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `equip_switch` int(11) unsigned NOT NULL default '0',
   `enchantgrade` tinyint unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `char_id` (`char_id`)
+  KEY `char_id` (`char_id`),
+  KEY `pn_pet_identity_lookup` (`card0`,`card1`,`card2`)
 ) ENGINE=InnoDB;
 
 --
@@ -880,7 +881,7 @@ CREATE TABLE IF NOT EXISTS `market` (
   `amount` INT(11) NOT NULL,
   `flag` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (`name`,`nameid`)
-) ENGINE = MyISAM;
+) ENGINE = InnoDB;
 
 --
 -- Table structure for table `memo`
@@ -937,7 +938,7 @@ CREATE TABLE IF NOT EXISTS `sales` (
   `end` datetime NOT NULL,
   `amount` int(11) NOT NULL,
   PRIMARY KEY (`nameid`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `sc_data`
@@ -1021,7 +1022,7 @@ CREATE TABLE IF NOT EXISTS `pet` (
   `incubate` int(11) unsigned NOT NULL default '0',
   `autofeed` tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (`pet_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `quest`
@@ -1154,6 +1155,66 @@ CREATE TABLE IF NOT EXISTS `vendings` (
   `sit` CHAR( 1 ) NOT NULL DEFAULT '1',
   `autotrade` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+-- Durable atomic shop receipt and replay identity.
+CREATE TABLE IF NOT EXISTS `pn_shop_commits` (
+  `account_id` INT UNSIGNED NOT NULL,
+  `nonce_hi` BIGINT UNSIGNED NOT NULL,
+  `nonce_lo` BIGINT UNSIGNED NOT NULL,
+  `sequence` BIGINT UNSIGNED NOT NULL,
+  `outcome` TINYINT UNSIGNED NOT NULL,
+  `payload` MEDIUMBLOB NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`)
+) ENGINE=InnoDB;
+
+-- Login-owned global point admission barrier.
+CREATE TABLE IF NOT EXISTS `pn_global_point_barriers` (
+ `account_id` INT UNSIGNED NOT NULL,
+ `nonce_hi` BIGINT UNSIGNED NOT NULL,
+ `nonce_lo` BIGINT UNSIGNED NOT NULL,
+ `sequence` BIGINT UNSIGNED NOT NULL,
+ `char_id` INT UNSIGNED NOT NULL,
+ `point_key` VARCHAR(32) BINARY NOT NULL,
+ `state` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+ `registry_table` VARCHAR(32) BINARY NOT NULL DEFAULT '',
+ `payload` MEDIUMBLOB NOT NULL,
+ `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `active_account` INT UNSIGNED GENERATED ALWAYS AS (CASE WHEN `state`<2 THEN `account_id` ELSE NULL END) STORED,
+ PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`),
+ UNIQUE KEY `one_pending_account` (`active_account`),
+ KEY `pending_age` (`state`,`created_at`),
+ KEY `protected_key` (`account_id`,`point_key`)
+) ENGINE=InnoDB;
+
+-- Ownership fence for registry keys used by atomic point payments.
+CREATE TABLE IF NOT EXISTS `pn_point_registry_keys` (
+ `account_id` INT UNSIGNED NOT NULL,
+ `char_id` INT UNSIGNED NOT NULL,
+ `point_key` VARCHAR(32) BINARY NOT NULL,
+ PRIMARY KEY (`account_id`,`char_id`,`point_key`)
+) ENGINE=InnoDB;
+
+-- Recoverable pet identities produced by committed asset transactions.
+CREATE TABLE IF NOT EXISTS `pn_pet_entitlements` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` INT UNSIGNED NOT NULL,
+  `char_id` INT UNSIGNED NOT NULL,
+  `nonce_hi` BIGINT UNSIGNED NOT NULL,
+  `nonce_lo` BIGINT UNSIGNED NOT NULL,
+  `sequence` BIGINT UNSIGNED NOT NULL,
+  `ordinal` SMALLINT UNSIGNED NOT NULL,
+  `pet_id` INT UNSIGNED NOT NULL,
+  `payload` BLOB NOT NULL,
+  `egg` BLOB NOT NULL,
+  `claimed` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `claimed_at` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `request_output` (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`,`ordinal`),
+  UNIQUE KEY `pet_identity` (`pet_id`),
+  KEY `owner_pending` (`account_id`,`char_id`,`claimed`,`id`)
 ) ENGINE=InnoDB;
 
 -- PN account-bank transaction journal.

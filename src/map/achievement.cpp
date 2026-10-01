@@ -8,15 +8,18 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <limits>
 
 #include <common/cbasetypes.hpp>
 #include <common/database.hpp>
 #include <common/malloc.hpp>
 #include <common/nullpo.hpp>
 #include <common/showmsg.hpp>
+#include <common/socket.hpp>
 #include <common/strlib.hpp>
 #include <common/utilities.hpp>
 #include <common/utils.hpp>
+#include <custom/achievement_protocol.hpp>
 
 #include "battle.hpp"
 #include "chrif.hpp"
@@ -31,6 +34,31 @@
 #include "status.hpp"
 
 using namespace rathena;
+
+// The map loop is synchronous. The owned capture temporarily substitutes only
+// achievement state; expressions continue to use the real player's VM context.
+static map_session_data* achievement_shop_capture_sd = nullptr;
+
+bool achievement_shop_capture_active(const map_session_data* sd) {
+	return sd && sd == achievement_shop_capture_sd;
+}
+
+static void achievement_notify_update(map_session_data* sd, const achievement* row, int32 completed) {
+	if (sd != achievement_shop_capture_sd)
+		clif_achievement_update(sd, row, completed);
+}
+
+static bool achievement_row_persistable(const achievement& row) {
+	return row.completed != 0 || row.rewarded != 0 ||
+		std::any_of(std::begin(row.count), std::end(row.count), [](int32 value) { return value != 0; });
+}
+
+static bool achievement_mutation_allowed(const map_session_data* sd) {
+	return sd && sd->achievement_data.loaded &&
+		(achievement_shop_capture_active(sd) ||
+		 (!sd->shop_commit.pending && !sd->achievement_data.reward_pending_id &&
+		  !pn_item_use_active(sd) && !pn_item_use_capture_waiting(sd)));
+}
 
 void AchievementDatabase::clear(){
 	TypesafeYamlDatabase::clear();
@@ -444,6 +472,8 @@ struct achievement *achievement_add(map_session_data *sd, int32 achievement_id)
 	int32 i, index;
 
 	nullpo_retr(nullptr, sd);
+	if (!achievement_mutation_allowed(sd))
+		return nullptr;
 
 	std::shared_ptr<s_achievement_db> adb = achievement_db.find( achievement_id );
 
@@ -455,6 +485,12 @@ struct achievement *achievement_add(map_session_data *sd, int32 achievement_id)
 	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
 	if (i < sd->achievement_data.count) {
 		ShowError("achievement_add: Character %d already has achievement %d.\n", sd->status.char_id, achievement_id);
+		return nullptr;
+	}
+	if (static_cast<size_t>(sd->achievement_data.count) + sd->achievement_data.opaque_count >=
+		pn_achievement_protocol::max_logout_rows(sizeof(struct achievement))) {
+		ShowWarning("achievement_add: Character %d has reached the safe achievement protocol row limit.\n",
+			sd->status.char_id);
 		return nullptr;
 	}
 
@@ -474,7 +510,7 @@ struct achievement *achievement_add(map_session_data *sd, int32 achievement_id)
 	sd->achievement_data.achievements[index].score = adb->score;
 	sd->achievement_data.save = true;
 
-	clif_achievement_update(sd, &sd->achievement_data.achievements[index], sd->achievement_data.count - sd->achievement_data.incompleteCount);
+	achievement_notify_update(sd, &sd->achievement_data.achievements[index], sd->achievement_data.count - sd->achievement_data.incompleteCount);
 
 	return &sd->achievement_data.achievements[index];
 }
@@ -491,6 +527,8 @@ bool achievement_remove(map_session_data *sd, int32 achievement_id)
 	int32 i;
 
 	nullpo_retr(false, sd);
+	if (!achievement_mutation_allowed(sd))
+		return false;
 
 	if (!achievement_db.exists(achievement_id)) {
 		ShowError("achievement_delete: Achievement %d not found in DB.\n", achievement_id);
@@ -500,6 +538,14 @@ bool achievement_remove(map_session_data *sd, int32 achievement_id)
 	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
 	if (i == sd->achievement_data.count) {
 		ShowError("achievement_delete: Character %d doesn't have achievement %d.\n", sd->status.char_id, achievement_id);
+		return false;
+	}
+	// Ordinary saves merge monotonically so a lost shop or reward response cannot
+	// roll durable facts back. Refuse a removal that such a save cannot represent;
+	// an all-zero transient row has no SQL state and remains removable.
+	if (achievement_row_persistable(sd->achievement_data.achievements[i])) {
+		ShowWarning("achievement_remove: Refusing to remove persisted achievement %d from character %u.\n",
+			achievement_id, sd->status.char_id);
 		return false;
 	}
 
@@ -521,7 +567,7 @@ bool achievement_remove(map_session_data *sd, int32 achievement_id)
 	// Send a removed fake achievement
 	memset(&dummy, 0, sizeof(struct achievement));
 	dummy.achievement_id = achievement_id;
-	clif_achievement_update(sd, &dummy, sd->achievement_data.count - sd->achievement_data.incompleteCount);
+	achievement_notify_update(sd, &dummy, sd->achievement_data.count - sd->achievement_data.incompleteCount);
 
 	return true;
 }
@@ -609,6 +655,8 @@ bool achievement_update_achievement(map_session_data *sd, int32 achievement_id, 
 	int32 i;
 
 	nullpo_retr(false, sd);
+	if (!achievement_mutation_allowed(sd))
+		return false;
 
 	std::shared_ptr<s_achievement_db> adb = achievement_db.find( achievement_id );
 
@@ -647,7 +695,7 @@ bool achievement_update_achievement(map_session_data *sd, int32 achievement_id, 
 		ARR_FIND(sd->achievement_data.incompleteCount, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id); // Look for the index again, the position most likely changed
 	}
 
-	clif_achievement_update(sd, &sd->achievement_data.achievements[i], sd->achievement_data.count - sd->achievement_data.incompleteCount);
+	achievement_notify_update(sd, &sd->achievement_data.achievements[i], sd->achievement_data.count - sd->achievement_data.incompleteCount);
 	sd->achievement_data.save = true; // Flag to save with the autosave interval
 
 	return true;
@@ -663,6 +711,10 @@ void achievement_get_reward(map_session_data *sd, int32 achievement_id, time_t r
 	int32 i;
 
 	nullpo_retv(sd);
+	if (!sd->achievement_data.loaded || pc_transaction_pending(sd)) {
+		clif_achievement_reward_ack(sd->fd, 0, achievement_id);
+		return;
+	}
 
 	std::shared_ptr<s_achievement_db> adb = achievement_db.find( achievement_id );
 
@@ -690,7 +742,7 @@ void achievement_get_reward(map_session_data *sd, int32 achievement_id, time_t r
 		clif_achievement_list_all(sd);
 	}else{
 		clif_achievement_reward_ack(sd->fd, 1, achievement_id);
-		clif_achievement_update(sd, &sd->achievement_data.achievements[i], sd->achievement_data.count - sd->achievement_data.incompleteCount);
+		achievement_notify_update(sd, &sd->achievement_data.achievements[i], sd->achievement_data.count - sd->achievement_data.incompleteCount);
 	}
 }
 
@@ -699,11 +751,15 @@ void achievement_get_reward(map_session_data *sd, int32 achievement_id, time_t r
  * @param sd: Player to get reward
  * @param achievement_id: Achievement to get reward data
  */
-void achievement_check_reward( const map_session_data* sd, int32 achievement_id )
+void achievement_check_reward( map_session_data* sd, int32 achievement_id )
 {
 	int32 i;
 
 	nullpo_retv(sd);
+	if (!sd->achievement_data.loaded || pc_transaction_pending(sd)) {
+		clif_achievement_reward_ack(sd->fd, 0, achievement_id);
+		return;
+	}
 
 	std::shared_ptr<s_achievement_db> adb = achievement_db.find( achievement_id );
 
@@ -766,6 +822,7 @@ void achievement_free(map_session_data *sd)
 		sd->achievement_data.achievements = nullptr;
 		sd->achievement_data.count = sd->achievement_data.incompleteCount = 0;
 	}
+	sd->achievement_data.opaque_count = 0;
 }
 
 /**
@@ -1089,33 +1146,244 @@ static bool achievement_update_objectives(map_session_data *sd, std::shared_ptr<
  */
 void achievement_update_objective(map_session_data *sd, enum e_achievement_group group, uint8 arg_count, ...)
 {
-	if (!battle_config.feature_achievement)
+	if (!battle_config.feature_achievement || !sd) return;
+	if (arg_count > MAX_ACHIEVEMENT_OBJECTIVES) {
+		ShowError("achievement_update_objective: Too many objective arguments (%u).\n", arg_count);
 		return;
+	}
+	std::vector<int32> arguments;
+	arguments.reserve(arg_count);
+	va_list ap;
+	va_start(ap, arg_count);
+	for (uint8 i = 0; i < arg_count; ++i)
+		arguments.push_back(va_arg(ap, int32));
+	va_end(ap);
+	achievement_update_objective_values(sd, group, arguments);
+}
 
-	if (sd) {
-		va_list ap;
+void achievement_update_objective_values(map_session_data *sd, enum e_achievement_group group,
+	const std::vector<int32>& arguments)
+{
+	if (!battle_config.feature_achievement || !sd || arguments.size() > MAX_ACHIEVEMENT_OBJECTIVES)
+		return;
+	// Preserve events raised during the asynchronous initial load or while a
+	// purchase/reward result is pending. The owned preparation bypasses its shop
+	// fence. A bounded queue fails the player closed
+	// instead of allowing an unavailable character server to exhaust map memory.
+	const bool capture = achievement_shop_capture_active(sd);
+	if (!capture && (!sd->achievement_data.loaded ||
+		sd->shop_commit.pending ||
+		sd->achievement_data.reward_pending_id)) {
+		if (sd->shop_commit.deferred_achievements.size() >= pn_shop::max_deferred_achievements) {
+			sd->achievement_data.loaded = false;
+			sd->achievement_data.save = false;
+			sd->shop_commit.deferred_achievements.clear();
+			set_eof(sd->fd);
+			return;
+		}
+		sd->shop_commit.deferred_achievements.push_back({static_cast<int32>(group), arguments});
+		return;
+	}
+	{
 		std::array<int32, MAX_ACHIEVEMENT_OBJECTIVES> count = {};
 
-		va_start(ap, arg_count);
-		for (int32 i = 0; i < arg_count; i++){
+		for (size_t i = 0; i < arguments.size(); i++){
 			std::string name = "ARG" + std::to_string(i);
 
-			count[i] = va_arg(ap, int32);
+			count[i] = arguments[i];
 
 			pc_setglobalreg( sd, add_str( name.c_str() ), (int32)count[i] );
 		}
-		va_end(ap);
 
 		for (auto &ach : achievement_db)
 			achievement_update_objectives(sd, ach.second, group, count);
 
 		// Remove variables that might have been set
-		for (int32 i = 0; i < arg_count; i++){
+		for (size_t i = 0; i < arguments.size(); i++){
 			std::string name = "ARG" + std::to_string(i);
 
 			pc_setglobalreg( sd, add_str( name.c_str() ), 0 );
 		}
 	}
+}
+
+// Keep the immutable snapshot in the same semantic form as character SQL:
+// mapif_achievement_add intentionally omits an incomplete row with no counters
+// or timestamps. Merely having an ID/derived score does not persist that row.
+static bool achievement_shop_snapshot(const map_session_data& sd, std::vector<achievement>& rows) {
+	const auto& data = sd.achievement_data;
+	if ((data.count && !data.achievements) || data.incompleteCount > data.count)
+		return false;
+	rows.clear();
+	rows.reserve(data.count);
+	std::unordered_map<int32, bool> identities;
+	for (size_t i = 0; i < data.count; ++i) {
+		const auto& source = data.achievements[i];
+		if (source.achievement_id <= 0 || !identities.emplace(source.achievement_id, true).second)
+			return false;
+		if (!achievement_row_persistable(source)) continue;
+		rows.emplace_back();
+		auto& row = rows.back();
+		// Padding is not part of progression. Initialize it deterministically for
+		// the immutable binary snapshot and copy only the meaningful fields.
+		std::memset(&row, 0, sizeof(row));
+		row.achievement_id = source.achievement_id;
+		std::copy(std::begin(source.count), std::end(source.count), row.count);
+		row.completed = source.completed;
+		row.rewarded = source.rewarded;
+		// Score is derived from map metadata, not stored by character SQL. The
+		// durable canonical image therefore keeps it zero; apply derives it again.
+	}
+	std::sort(rows.begin(), rows.end(), [](const achievement& a, const achievement& b) {
+		return a.achievement_id < b.achievement_id;
+	});
+	return true;
+}
+
+bool achievement_update_count(map_session_data *sd, int32 achievement_id, uint16 objective, int32 value)
+{
+	nullpo_retr(false, sd);
+	if (!achievement_mutation_allowed(sd) || objective >= MAX_ACHIEVEMENT_OBJECTIVES || value < 0 ||
+		!achievement_db.exists(achievement_id))
+		return false;
+
+	int32 i;
+	ARR_FIND(0, sd->achievement_data.count, i,
+		sd->achievement_data.achievements[i].achievement_id == achievement_id);
+	if (i == sd->achievement_data.count) {
+		if (!achievement_add(sd, achievement_id))
+			return false;
+		ARR_FIND(0, sd->achievement_data.count, i,
+			sd->achievement_data.achievements[i].achievement_id == achievement_id);
+	}
+	if (i == sd->achievement_data.count || value < sd->achievement_data.achievements[i].count[objective]) {
+		ShowWarning("achievement_update_count: Refusing to decrease achievement %d objective %u for character %u.\n",
+			achievement_id, objective + 1, sd->status.char_id);
+		return false;
+	}
+	if (value == sd->achievement_data.achievements[i].count[objective])
+		return true;
+
+	sd->achievement_data.achievements[i].count[objective] = value;
+	sd->achievement_data.save = true;
+	achievement_notify_update(sd, &sd->achievement_data.achievements[i],
+		sd->achievement_data.count - sd->achievement_data.incompleteCount);
+	return true;
+}
+
+class AchievementShopCapture {
+	map_session_data& sd_;
+	map_session_data::s_achievement_data saved_;
+	bool dirty_;
+	std::array<int64, MAX_ACHIEVEMENT_OBJECTIVES> keys_{};
+	std::array<script_reg_num, MAX_ACHIEVEMENT_OBJECTIVES> arguments_{};
+	std::array<bool, MAX_ACHIEVEMENT_OBJECTIVES> present_{};
+public:
+	explicit AchievementShopCapture(map_session_data& sd) : sd_(sd), saved_(sd.achievement_data), dirty_(sd.vars_dirty) {
+		for (size_t i = 0; i < keys_.size(); ++i) {
+			keys_[i] = add_str(("ARG" + std::to_string(i)).c_str());
+			const auto* value = static_cast<script_reg_num*>(i64db_get(sd_.regs.vars, keys_[i]));
+			present_[i] = value != nullptr;
+			if (value) arguments_[i] = *value;
+		}
+		sd_.achievement_data.achievements = nullptr;
+		if (saved_.count) {
+			CREATE(sd_.achievement_data.achievements, achievement, saved_.count);
+			std::memcpy(sd_.achievement_data.achievements, saved_.achievements, saved_.count * sizeof(achievement));
+		}
+		achievement_shop_capture_sd = &sd_;
+	}
+	~AchievementShopCapture() {
+		if (sd_.achievement_data.achievements) aFree(sd_.achievement_data.achievements);
+		sd_.achievement_data = saved_;
+		for (size_t i = 0; i < keys_.size(); ++i) {
+			auto* value = static_cast<script_reg_num*>(i64db_get(sd_.regs.vars, keys_[i]));
+			if (present_[i]) {
+				if (!value) {
+					pc_setglobalreg(&sd_, keys_[i], arguments_[i].value);
+					value = static_cast<script_reg_num*>(i64db_get(sd_.regs.vars, keys_[i]));
+				}
+				if (value) *value = arguments_[i];
+			} else if (value) {
+				script_reg_destroy_single(&sd_, keys_[i], &value->flag);
+			}
+		}
+		sd_.vars_dirty = dirty_;
+		achievement_shop_capture_sd = nullptr;
+	}
+	AchievementShopCapture(const AchievementShopCapture&) = delete;
+	AchievementShopCapture& operator=(const AchievementShopCapture&) = delete;
+};
+
+bool achievement_prepare_shop(map_session_data& sd, const std::vector<int32>& value_sell,
+	std::vector<achievement>& before, std::vector<achievement>& after)
+{
+	std::vector<pn_shop::AchievementEvent> events;
+	events.reserve(value_sell.size());
+	for (int32 value : value_sell)
+		events.push_back({AG_GET_ITEM, {value}});
+	return achievement_prepare_shop_events(sd, events, before, after);
+}
+
+bool achievement_prepare_shop_events(map_session_data& sd,
+	const std::vector<pn_shop::AchievementEvent>& events,
+	std::vector<achievement>& before, std::vector<achievement>& after)
+{
+	if (&before == &after || achievement_shop_capture_sd || !sd.achievement_data.loaded || !sd.vars_ok || !sd.regs.vars)
+		return false;
+	for (const auto& event : events)
+		if (event.group <= AG_NONE || event.group >= AG_MAX ||
+			event.arguments.size() > MAX_ACHIEVEMENT_OBJECTIVES)
+			return false;
+	before.clear();
+	after.clear();
+	if (!achievement_shop_snapshot(sd, before)) return false;
+	AchievementShopCapture capture(sd);
+	for (const auto& event : events)
+		achievement_update_objective_values(&sd,
+			static_cast<e_achievement_group>(event.group), event.arguments);
+	return achievement_shop_snapshot(sd, after);
+}
+
+bool achievement_apply_shop(map_session_data& sd, const std::vector<achievement>& rows)
+{
+	if (achievement_shop_capture_sd || rows.size() + sd.achievement_data.opaque_count >
+		pn_achievement_protocol::max_logout_rows(sizeof(struct achievement))) return false;
+	const auto& live = sd.achievement_data;
+	if ((live.count && !live.achievements) || live.incompleteCount > live.count) return false;
+	std::unordered_map<int32, bool> identities;
+	for (const auto& row : rows)
+		if (row.achievement_id <= 0 || !achievement_row_persistable(row) || !achievement_db.find(row.achievement_id) ||
+			!identities.emplace(row.achievement_id, true).second) return false;
+	std::vector<achievement> merged = rows;
+	// achievement_add can expose an unearned log entry to the client before it
+	// has anything SQL persists. Preserve that live transient state while
+	// replacing the durable portion, unless the same ID was actually earned.
+	for (uint16 i = 0; i < live.count; ++i) {
+		const auto& row = live.achievements[i];
+		if (achievement_row_persistable(row) || row.achievement_id <= 0 ||
+			!achievement_db.find(row.achievement_id) || !identities.emplace(row.achievement_id, true).second) continue;
+		if (merged.size() == std::numeric_limits<uint16>::max()) return false;
+		merged.push_back(row);
+	}
+	achievement* installed = nullptr;
+	if (!merged.empty()) CREATE(installed, achievement, merged.size());
+	uint16 incomplete = 0;
+	for (const auto& row : merged) if (!row.completed) installed[incomplete++] = row;
+	uint16 completed = incomplete;
+	for (const auto& row : merged) if (row.completed) installed[completed++] = row;
+	for (size_t i = 0; i < merged.size(); ++i)
+		installed[i].score = achievement_db.find(installed[i].achievement_id)->score;
+	if (sd.achievement_data.achievements) aFree(sd.achievement_data.achievements);
+	sd.achievement_data.achievements = installed;
+	sd.achievement_data.count = static_cast<uint16>(merged.size());
+	sd.achievement_data.incompleteCount = incomplete;
+	sd.achievement_data.save = false; // The supplied snapshot is already durable.
+	achievement_level(&sd, false);
+	achievement_get_titles(sd.status.char_id);
+	clif_achievement_update(&sd, nullptr, 0);
+	clif_achievement_list_all(&sd);
+	return true;
 }
 
 /**

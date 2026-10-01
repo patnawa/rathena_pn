@@ -17,6 +17,7 @@
 #include "char.hpp"
 #include "inter.hpp"
 #include "int_guild.hpp"
+#include "int_achievement.hpp"
 
 static void pn_global_points_init();
 static bool bank_tables_transactional();
@@ -583,6 +584,7 @@ static void mapif_parse_InventoryCommit( int32 fd ){
 #include <custom/bank_sweep_sql.inc>
 #include <custom/pair_sql.inc>
 #include <custom/shop_sql.inc>
+void pn_shop_progression_disconnect(int32 fd) { pn_shop_progression_disconnect_impl(fd); }
 bool pn_global_point_pending(uint32 account_id) {return pn_global_point::pending(sql_handle,account_id);}
 
 #include <custom/multi_storage_sql.inc>
@@ -605,6 +607,7 @@ bool inter_storage_parse_frommap(int32 fd)
 		case 0x3097: mapif_parse_BankSweep(fd); break;
 		case 0x3096: mapif_parse_PairCommit(fd); break;
 		case 0x3098: mapif_parse_ShopCommit(fd); break;
+		case 0x3099: mapif_parse_ShopProgression(fd); break;
 		default:
 			return false;
 	}

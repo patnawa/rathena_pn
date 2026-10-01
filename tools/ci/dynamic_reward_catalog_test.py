@@ -29,6 +29,13 @@ class CatalogTest(unittest.TestCase):
             else:data['source_sha256'][catalog.RUNE]='0'*64
             with self.assertRaisesRegex(ValueError,'Declared outputs'):catalog.validate(data)
 
+    def test_seal_costs_are_explicit_for_economy_analysis(self):
+        source=json.loads((catalog.ROOT/catalog.RUNE).read_text())
+        rows=[r for r in self.data['recipes'] if r['family']=='rune.seal']
+        self.assertEqual({r['key'] for r in rows},{str(i) for i in source['seals']})
+        for row in rows:
+            self.assertEqual(row['costs'],[{'item_id':int(row['key']),'amount':1}])
+
     def test_missing_metadata_and_resources_fail(self):
         ids=sorted({o['item_id'] for r in self.data['recipes'] for o in r['outputs']})
         with tempfile.TemporaryDirectory() as directory:

@@ -1,0 +1,1090 @@
+{
+  "phase": "full",
+  "passed": true,
+  "checks": [
+    {
+      "name": "database_yaml_syntax",
+      "passed": true,
+      "status": "passed",
+      "files": 314
+    },
+    {
+      "name": "market_restore_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/market_restore_test.py"
+      ],
+      "log": "full-report-logs/01-market_restore_test.log",
+      "exit_code": 0,
+      "sha256": "32a9483d9a364a23b0e8ece0658230299f8dbf0e92002af3b247584fc3a6b026",
+      "seconds": 0.41
+    },
+    {
+      "name": "durable_schema_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/durable_schema_test.py"
+      ],
+      "log": "full-report-logs/02-durable_schema_test.log",
+      "exit_code": 0,
+      "sha256": "de6fadb44aee65ad46baa43cb58102fcdb386f85130f0708d6a42607d4e26977",
+      "seconds": 0.03
+    },
+    {
+      "name": "achievement_persistence_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/achievement_persistence_test.py"
+      ],
+      "log": "full-report-logs/03-achievement_persistence_test.log",
+      "exit_code": 0,
+      "sha256": "db831e43ccfaa7ec44a4c9ac6756bbb71e22202028a7968a8a02858b44683848",
+      "seconds": 1.67
+    },
+    {
+      "name": "logout_save_recovery_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/logout_save_recovery_test.py"
+      ],
+      "log": "full-report-logs/04-logout_save_recovery_test.log",
+      "exit_code": 0,
+      "sha256": "4a2d3d5d1a6a3302a2adfca9517b46d8e167386de460860c3ac3ba209688eafa",
+      "seconds": 2.02
+    },
+    {
+      "name": "shop_receipt_codec_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_receipt_codec_test.py"
+      ],
+      "log": "full-report-logs/05-shop_receipt_codec_test.log",
+      "exit_code": 0,
+      "sha256": "79a13beda1d2c37d9be7e8f6405972482a8318a4844cfcb4f8991b6bd3f1bc0c",
+      "seconds": 1.27
+    },
+    {
+      "name": "runtime_metrics_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/runtime_metrics_test.py"
+      ],
+      "log": "full-report-logs/06-runtime_metrics_test.log",
+      "exit_code": 0,
+      "sha256": "076aaf022642074253dec6d7b7c6dcfc588ebcb1bfbea22745adb762c67eb353",
+      "seconds": 0.62
+    },
+    {
+      "name": "runtime_identity_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/runtime_identity_test.py"
+      ],
+      "log": "full-report-logs/07-runtime_identity_test.log",
+      "exit_code": 0,
+      "sha256": "083dc5664f29733ef9c7fc4ee39f3e0eff32be49379b05f91bc04609e45b4cae",
+      "seconds": 0.57
+    },
+    {
+      "name": "shop_planner_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_planner_test.py"
+      ],
+      "log": "full-report-logs/08-shop_planner_test.log",
+      "exit_code": 0,
+      "sha256": "45724f9dfa06a0322df1f1019a1e26f5bf12cfac8b352936fd7c12feff6bb6fc",
+      "seconds": 1.82
+    },
+    {
+      "name": "shop_recovery_inter_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_recovery_inter_test.py"
+      ],
+      "log": "full-report-logs/09-shop_recovery_inter_test.log",
+      "exit_code": 0,
+      "sha256": "d28ec3e252b13aa2a9e37114b205fd0eea50b2337389db28ffb9d3cc5e45bbb2",
+      "seconds": 2.77
+    },
+    {
+      "name": "point_barrier_wire_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/point_barrier_wire_test.py"
+      ],
+      "log": "full-report-logs/10-point_barrier_wire_test.log",
+      "exit_code": 0,
+      "sha256": "f46ff69bee1d9594e11bb86c04b86fd548cf0e447af540138651f318eb644f8e",
+      "seconds": 0.36
+    },
+    {
+      "name": "interserver_reconnect_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/interserver_reconnect_test.py"
+      ],
+      "log": "full-report-logs/11-interserver_reconnect_test.log",
+      "exit_code": 0,
+      "sha256": "11391ccc3db1372437dfbb06edaf1e3a527add3e434cca680289a33567a3719e",
+      "seconds": 0.36
+    },
+    {
+      "name": "custom_make_dependencies_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/custom_make_dependencies_test.py"
+      ],
+      "log": "full-report-logs/12-custom_make_dependencies_test.log",
+      "exit_code": 0,
+      "sha256": "7cceab19517f44726103c545994b5033f1339805b0303938c09bf9c7a975f5f6",
+      "seconds": 1.62
+    },
+    {
+      "name": "pet_floor_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/pet_floor_test.py"
+      ],
+      "log": "full-report-logs/13-pet_floor_test.log",
+      "exit_code": 0,
+      "sha256": "7988631883e9dbf862b5dca0b5fbeafdc0c64a82e983cca206b737d30e05c882",
+      "seconds": 1.22
+    },
+    {
+      "name": "bank_core_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/bank_core_test.py"
+      ],
+      "log": "full-report-logs/14-bank_core_test.log",
+      "exit_code": 0,
+      "sha256": "eb0e6cde6cf0ef49e908419c8b29c57c71a935f5ad86b66a3f5de94757e85a06",
+      "seconds": 0.52
+    },
+    {
+      "name": "bank_service_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/bank_service_test.py"
+      ],
+      "log": "full-report-logs/15-bank_service_test.log",
+      "exit_code": 0,
+      "sha256": "c6b9fedbcd5090ed9d7134fff7e00098a1ac9bd78930977d07a1a5c6d31ad211",
+      "seconds": 0.87
+    },
+    {
+      "name": "release_checks_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/release_checks_test.py"
+      ],
+      "log": "full-report-logs/16-release_checks_test.log",
+      "exit_code": 0,
+      "sha256": "34d8cc03e03a14e1fc4673bde24cb7217a94735b8889aafa9e0b7b8328359a1f",
+      "seconds": 0.21
+    },
+    {
+      "name": "release_bundle_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/release_bundle_test.py"
+      ],
+      "log": "full-report-logs/17-release_bundle_test.log",
+      "exit_code": 0,
+      "sha256": "f013944dca7418d03085cead197bc6a8ef45038e35c35d74bd81a5c65f6a3e8b",
+      "seconds": 0.26
+    },
+    {
+      "name": "release_controller_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/release_controller_test.py"
+      ],
+      "log": "full-report-logs/18-release_controller_test.log",
+      "exit_code": 0,
+      "sha256": "0177b55ffc691243f08e0e390db1782cb4fa83fdbca9be8f79fa00d56d7685cd",
+      "seconds": 0.26
+    },
+    {
+      "name": "bug_hunt_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/bug_hunt_test.py"
+      ],
+      "log": "full-report-logs/19-bug_hunt_test.log",
+      "exit_code": 0,
+      "sha256": "95e187355afe42d948c1d961889a228c74db59aadfc6b0b3ca5d71d5d3a37058",
+      "seconds": 2.27
+    },
+    {
+      "name": "scdata_reload_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/scdata_reload_test.py"
+      ],
+      "log": "full-report-logs/20-scdata_reload_test.log",
+      "exit_code": 0,
+      "sha256": "bfacb73c67f283a0fe5bdebda5de4c6d037df0042a981c9aa75f80ce58d9b336",
+      "seconds": 0.36
+    },
+    {
+      "name": "rodex_operation_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/rodex_operation_test.py"
+      ],
+      "log": "full-report-logs/21-rodex_operation_test.log",
+      "exit_code": 0,
+      "sha256": "082e5dde785278eff36baeb120d943f9c86cd55bfc096c8b071afad5e3c352c3",
+      "seconds": 0.26
+    },
+    {
+      "name": "hotfix_bonus_regression.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/hotfix_bonus_regression.py"
+      ],
+      "log": "full-report-logs/22-hotfix_bonus_regression.log",
+      "exit_code": 0,
+      "sha256": "dd892b4338cff521d60e70a779f23bf5135129b68e6acb24db58f8b971e6c764",
+      "seconds": 0.11
+    },
+    {
+      "name": "fly_wing_rental_regression.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/fly_wing_rental_regression.py"
+      ],
+      "log": "full-report-logs/23-fly_wing_rental_regression.log",
+      "exit_code": 0,
+      "sha256": "29e1bebf8958d3ea4048d7bc401274a0976c05aad003c436c471c841f66d80f4",
+      "seconds": 4.52
+    },
+    {
+      "name": "aquila_cast_time_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/aquila_cast_time_test.py"
+      ],
+      "log": "full-report-logs/24-aquila_cast_time_test.log",
+      "exit_code": 0,
+      "sha256": "33060fd73862c5e1af97335504d5b45211fce6d229657f556d8deceeadc52ce4",
+      "seconds": 0.06
+    },
+    {
+      "name": "dimension_autocast_runtime_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/dimension_autocast_runtime_test.py"
+      ],
+      "log": "full-report-logs/25-dimension_autocast_runtime_test.log",
+      "exit_code": 0,
+      "sha256": "66150a9e40014acfbe2fa2cb941be912d26f45d8300f90ba2e8333b7e8d20193",
+      "seconds": 2.92
+    },
+    {
+      "name": "equipment_progression_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/equipment_progression_test.py"
+      ],
+      "log": "full-report-logs/26-equipment_progression_test.log",
+      "exit_code": 0,
+      "sha256": "6f180e89448e3be2ec24e54432979c7fa4243433e9f5d2b9063ca95d5d6f0d71",
+      "seconds": 9.39
+    },
+    {
+      "name": "equipment_reform_transaction_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/equipment_reform_transaction_test.py"
+      ],
+      "log": "full-report-logs/27-equipment_reform_transaction_test.log",
+      "exit_code": 0,
+      "sha256": "6cf0116e9cdc2c8f890051fc05a923982d83cdf900dc454382e1c5f00fbdd93c",
+      "seconds": 1.52
+    },
+    {
+      "name": "reform_commit_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/reform_commit_test.py"
+      ],
+      "log": "full-report-logs/28-reform_commit_test.log",
+      "exit_code": 0,
+      "sha256": "d640438c39d776c7c43a13c7eb1316d0abf282770f95029325246fe19a74452e",
+      "seconds": 0.26
+    },
+    {
+      "name": "refine_transaction_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/refine_transaction_test.py"
+      ],
+      "log": "full-report-logs/29-refine_transaction_test.log",
+      "exit_code": 0,
+      "sha256": "f85ee56b2c880fd79beb5717da81acf0a26bc0cf90a93590dc7b7ffed88a3fe8",
+      "seconds": 0.67
+    },
+    {
+      "name": "episode_party_progression_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/episode_party_progression_test.py"
+      ],
+      "log": "full-report-logs/30-episode_party_progression_test.log",
+      "exit_code": 0,
+      "sha256": "713972b30bbbb93930114261a846150033bb4ae557443bb0167e5db8710ff990",
+      "seconds": 0.11
+    },
+    {
+      "name": "database_backup_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/database_backup_test.py"
+      ],
+      "log": "full-report-logs/31-database_backup_test.log",
+      "exit_code": 0,
+      "sha256": "b1dfb275ed0ae71c01b3d0bb9790aa4ca8c918df9c5674475092a423fe4f2afa",
+      "seconds": 0.16
+    },
+    {
+      "name": "health_check_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/health_check_test.py"
+      ],
+      "log": "full-report-logs/32-health_check_test.log",
+      "exit_code": 0,
+      "sha256": "9d5cbf50af2b5d43b53292e22efa8ffa4ca03168aabba92fa0d3e90b2ff6a317",
+      "seconds": 0.11
+    },
+    {
+      "name": "main_office_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/main_office_test.py"
+      ],
+      "log": "full-report-logs/33-main_office_test.log",
+      "exit_code": 0,
+      "sha256": "174551ca180b75198728183b3958974f39c13240b7431b0bb8eb3cca4c363ad2",
+      "seconds": 0.82
+    },
+    {
+      "name": "storage_sql_failure_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/storage_sql_failure_test.py"
+      ],
+      "log": "full-report-logs/34-storage_sql_failure_test.log",
+      "exit_code": 0,
+      "sha256": "df51b4d3067107e6312a0950d96128f0fc9c2b9cfae10e56b4c17cb1c2b84851",
+      "seconds": 1.27
+    },
+    {
+      "name": "storage_native_audit_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/storage_native_audit_test.py"
+      ],
+      "log": "full-report-logs/35-storage_native_audit_test.log",
+      "exit_code": 0,
+      "sha256": "e885cd518b16e7b6ce7fdec86c4adc5579cbd4d74d2066a4c2d46d2a145facb1",
+      "seconds": 0.36
+    },
+    {
+      "name": "mob_sql_schema_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/mob_sql_schema_test.py"
+      ],
+      "log": "full-report-logs/36-mob_sql_schema_test.log",
+      "exit_code": 0,
+      "sha256": "f63e9a7cdf7d9c4afb69a2afee06aa5a156ed5621ff30253cbcb79267bc5e57a",
+      "seconds": 1.17
+    },
+    {
+      "name": "client_archive_stack_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/client_archive_stack_test.py"
+      ],
+      "log": "full-report-logs/37-client_archive_stack_test.log",
+      "exit_code": 0,
+      "sha256": "b95b5805bef96b568b1b2424b637003cd6f306e6312d682e4f2e4e23f635b26a",
+      "seconds": 0.06
+    },
+    {
+      "name": "client_release_audit_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/client_release_audit_test.py"
+      ],
+      "log": "full-report-logs/38-client_release_audit_test.log",
+      "exit_code": 0,
+      "sha256": "ebb3a887a2a1dc91446bfdca1356ee06f5d00c5b7fff54bfc32add269dc00b08",
+      "seconds": 0.06
+    },
+    {
+      "name": "dynamic_reward_audit_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/dynamic_reward_audit_test.py"
+      ],
+      "log": "full-report-logs/39-dynamic_reward_audit_test.log",
+      "exit_code": 0,
+      "sha256": "83166b089fbcb82fac63f22522fa6ae99bb5e46368cd35d756277fd463dd6346",
+      "seconds": 0.06
+    },
+    {
+      "name": "dynamic_reward_catalog_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/dynamic_reward_catalog_test.py"
+      ],
+      "log": "full-report-logs/40-dynamic_reward_catalog_test.log",
+      "exit_code": 0,
+      "sha256": "d00be942e966b650cd7f0b5e5f90cdf25f1f26d30d38b6155f8f6ecbebc3f50c",
+      "seconds": 14.25
+    },
+    {
+      "name": "economy_cycles_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/economy_cycles_test.py"
+      ],
+      "log": "full-report-logs/41-economy_cycles_test.log",
+      "exit_code": 0,
+      "sha256": "a07595ad7356db2a323f306b29401cbd2be6d8642399ca0c578dacf660e9ee05",
+      "seconds": 0.11
+    },
+    {
+      "name": "eden_market_catalog_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/eden_market_catalog_test.py"
+      ],
+      "log": "full-report-logs/42-eden_market_catalog_test.log",
+      "exit_code": 0,
+      "sha256": "6f283ee6225d2cef4c0127d95456a6f954c45141c92b97dd89016cb1c630e8f4",
+      "seconds": 0.06
+    },
+    {
+      "name": "item_acquisition_audit_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/item_acquisition_audit_test.py"
+      ],
+      "log": "full-report-logs/43-item_acquisition_audit_test.log",
+      "exit_code": 0,
+      "sha256": "78428318c0431accf0cf9c123e52a1e4ccdb9078c7f7ced05b3aa90d2d84d3f7",
+      "seconds": 0.11
+    },
+    {
+      "name": "client_preflight_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/client_preflight_test.py"
+      ],
+      "log": "full-report-logs/44-client_preflight_test.log",
+      "exit_code": 0,
+      "sha256": "065c7d15facfd20f14fb9182747be315f3349fa1d5e1a0e966047509f4bfa9b1",
+      "seconds": 0.06
+    },
+    {
+      "name": "instance_access_manifest_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/instance_access_manifest_test.py"
+      ],
+      "log": "full-report-logs/45-instance_access_manifest_test.log",
+      "exit_code": 0,
+      "sha256": "be597915c1f151949686e34ced59f7dfd0c73b87d0e683738ff88938edd4f20a",
+      "seconds": 0.06
+    },
+    {
+      "name": "instance_geometry_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/instance_geometry_test.py"
+      ],
+      "log": "full-report-logs/46-instance_geometry_test.log",
+      "exit_code": 0,
+      "sha256": "a62a68103041ac0e4d76ff5ffa19cda5e68d6c21c8836d1ea291cd4a61cbe7fc",
+      "seconds": 0.36
+    },
+    {
+      "name": "warper_destination_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/warper_destination_test.py"
+      ],
+      "log": "full-report-logs/47-warper_destination_test.log",
+      "exit_code": 0,
+      "sha256": "d550915b89808055a02cef48c0b1e87e400d9e3a6b31ddf447b10c18aaaa3cb9",
+      "seconds": 0.26
+    },
+    {
+      "name": "bioresearch_geometry_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/bioresearch_geometry_test.py"
+      ],
+      "log": "full-report-logs/48-bioresearch_geometry_test.log",
+      "exit_code": 0,
+      "sha256": "b8b9be7c0826ff19645cd3990f3466345efdbcb0dd05d565521f129b9c4fb747",
+      "seconds": 0.26
+    },
+    {
+      "name": "alice_geometry_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/alice_geometry_test.py"
+      ],
+      "log": "full-report-logs/49-alice_geometry_test.log",
+      "exit_code": 0,
+      "sha256": "b2eaa42c316c69e53c122f4997b7b4a0dc3f58d8962830bf5200fc340ba235fe",
+      "seconds": 5.57
+    },
+    {
+      "name": "alice_database_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/alice_database_test.py"
+      ],
+      "log": "full-report-logs/50-alice_database_test.log",
+      "exit_code": 0,
+      "sha256": "f7cf85be8d5cbaeabc2a11fc5222747336342d563280e192388dad9044908cd3",
+      "seconds": 1.22
+    },
+    {
+      "name": "kro_285_progression_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/kro_285_progression_test.py"
+      ],
+      "log": "full-report-logs/51-kro_285_progression_test.log",
+      "exit_code": 0,
+      "sha256": "c7b99ab4a9be00ce28b670a18d38e94bc3d3b9d4466d8250d36c273a60562a91",
+      "seconds": 1.02
+    },
+    {
+      "name": "instance_combat_rules_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/instance_combat_rules_test.py"
+      ],
+      "log": "full-report-logs/52-instance_combat_rules_test.log",
+      "exit_code": 0,
+      "sha256": "ffa6c0d0924e7abe134181c1bde468633bc480d469395a60a54f42554b379b00",
+      "seconds": 0.26
+    },
+    {
+      "name": "item_use_metadata_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/item_use_metadata_native_test.py"
+      ],
+      "log": "full-report-logs/53-item_use_metadata_native_test.log",
+      "exit_code": 0,
+      "sha256": "66a37e54c820aca78d86c3b3173060a450ae3451097ef30291363b1721e9df39",
+      "seconds": 6.78
+    },
+    {
+      "name": "item_use_pet_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/item_use_pet_native_test.py"
+      ],
+      "log": "full-report-logs/54-item_use_pet_native_test.log",
+      "exit_code": 0,
+      "sha256": "7506fb68487d42ccc67286c233fcf3a81701b97131a40e1389be5788f1feb40a",
+      "seconds": 7.08
+    },
+    {
+      "name": "point_shop_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/point_shop_native_test.py"
+      ],
+      "log": "full-report-logs/55-point_shop_native_test.log",
+      "exit_code": 0,
+      "sha256": "2253dee1e79b899b724b9e095a269474f5fbfdeda4711ea8a255a3a1fd30a632",
+      "seconds": 7.33
+    },
+    {
+      "name": "package_pet_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/package_pet_native_test.py"
+      ],
+      "log": "full-report-logs/56-package_pet_native_test.log",
+      "exit_code": 0,
+      "sha256": "ac4103bdd7cbc2bfa438917798e318655a53077c4ceee36e8a8c15c4c2dad442",
+      "seconds": 7.28
+    },
+    {
+      "name": "pet_reward_script_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/pet_reward_script_test.py"
+      ],
+      "log": "full-report-logs/57-pet_reward_script_test.log",
+      "exit_code": 0,
+      "sha256": "d31ad6108c988658ef1514b9213fcc52cada604907806b04712e6a13410a57cd",
+      "seconds": 6.03
+    },
+    {
+      "name": "lab_history_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/lab_history_test.py"
+      ],
+      "log": "full-report-logs/58-lab_history_test.log",
+      "exit_code": 0,
+      "sha256": "ee1c9da7bb03b950fc3706877b9824d0f69439b22a00cd70196d6566d2e6c77f",
+      "seconds": 3.12
+    },
+    {
+      "name": "onboarding_readiness_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/onboarding_readiness_test.py"
+      ],
+      "log": "full-report-logs/59-onboarding_readiness_test.log",
+      "exit_code": 0,
+      "sha256": "a361a5f8aec3134bccf66723784b40335338b5be1470fa26061e64dce23ac768",
+      "seconds": 6.73
+    },
+    {
+      "name": "npc_audit_fashion_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/npc_audit_fashion_test.py"
+      ],
+      "log": "full-report-logs/60-npc_audit_fashion_test.log",
+      "exit_code": 0,
+      "sha256": "5d57c288608aa7ca31eb640cab9e638156546602794ee4c52e614979b19849b0",
+      "seconds": 14.95
+    },
+    {
+      "name": "card_removal_transaction_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/card_removal_transaction_test.py"
+      ],
+      "log": "full-report-logs/61-card_removal_transaction_test.log",
+      "exit_code": 0,
+      "sha256": "6a829ee292849108cf446b1cd18c64b9c6a0754ee5cfa67dc2f3bd0b0256f31a",
+      "seconds": 25.47
+    },
+    {
+      "name": "armor_enchant_transaction_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/armor_enchant_transaction_test.py"
+      ],
+      "log": "full-report-logs/62-armor_enchant_transaction_test.log",
+      "exit_code": 0,
+      "sha256": "39a29f23206849bbc683d31a254b2e9b5731b46832fa2d1f57e0c42ab0dd05f4",
+      "seconds": 5.68
+    },
+    {
+      "name": "mayomayo_payment_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/mayomayo_payment_test.py"
+      ],
+      "log": "full-report-logs/63-mayomayo_payment_test.log",
+      "exit_code": 0,
+      "sha256": "293af9227d57e2232ff78709f5145b180255ab2193b8248a0a35b77771a52fcd",
+      "seconds": 6.13
+    },
+    {
+      "name": "shop_transaction_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_transaction_native_test.py"
+      ],
+      "log": "full-report-logs/64-shop_transaction_native_test.log",
+      "exit_code": 0,
+      "sha256": "7449d572e3cfa00c9ba5417a2fe20ef68dd3ba0b418d33df40778b71bcb06081",
+      "seconds": 7.93
+    },
+    {
+      "name": "socket_transaction_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/socket_transaction_test.py"
+      ],
+      "log": "full-report-logs/65-socket_transaction_test.log",
+      "exit_code": 0,
+      "sha256": "cb0aa0f86576a365a7f4d5b49db672a385488f0ebc17386a801cb2d4b072d41c",
+      "seconds": 9.43
+    },
+    {
+      "name": "shop_delivery_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_delivery_native_test.py"
+      ],
+      "log": "full-report-logs/66-shop_delivery_native_test.log",
+      "exit_code": 0,
+      "sha256": "0170b5ddf080a75590ebfaa5be00a36d301724e949d3dfbf817f23025c5ff95c",
+      "seconds": 8.38
+    },
+    {
+      "name": "shop_progression_wire_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_progression_wire_test.py"
+      ],
+      "log": "full-report-logs/67-shop_progression_wire_test.log",
+      "exit_code": 0,
+      "sha256": "6737432c81a0e054e989753e2dae9e5edc604c92f1a240372fbf814f7d20b684",
+      "seconds": 0.97
+    },
+    {
+      "name": "shop_progression_capture_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/shop_progression_capture_test.py"
+      ],
+      "log": "full-report-logs/68-shop_progression_capture_test.log",
+      "exit_code": 0,
+      "sha256": "3af063e4e22c8acb0d3d91e68ec98ddd8dbea1a829b602a5569da0295d769ad7",
+      "seconds": 18.61
+    },
+    {
+      "name": "achievement_reward_inter_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/achievement_reward_inter_test.py"
+      ],
+      "log": "full-report-logs/69-achievement_reward_inter_test.log",
+      "exit_code": 0,
+      "sha256": "f27aa62f969ebd5602ccc801515929d7c0b90bf8c159700c0a142cad505e4851",
+      "seconds": 0.87
+    },
+    {
+      "name": "combat_pipeline_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/combat_pipeline_native_test.py"
+      ],
+      "log": "full-report-logs/70-combat_pipeline_native_test.log",
+      "exit_code": 0,
+      "sha256": "8daf9ee139c095066068ee787153780ff59ae7f94c8b017ad669bc9ed2d3df4e",
+      "seconds": 51.78
+    },
+    {
+      "name": "chapter1_protection_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/chapter1_protection_test.py"
+      ],
+      "log": "full-report-logs/71-chapter1_protection_test.log",
+      "exit_code": 0,
+      "sha256": "622abfb3a8a52a784404e5bc98182f86bd9d07a6507f21ff27822341ec8979a1",
+      "seconds": 13.75
+    },
+    {
+      "name": "instance_entry_native_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/instance_entry_native_test.py"
+      ],
+      "log": "full-report-logs/72-instance_entry_native_test.log",
+      "exit_code": 0,
+      "sha256": "0c7e23c3aa955da9f87afb743a4e4ff5a235a662a02b0f0c134724d889ac350f",
+      "seconds": 21.31
+    },
+    {
+      "name": "episode21_finale_flow_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/episode21_finale_flow_test.py"
+      ],
+      "log": "full-report-logs/73-episode21_finale_flow_test.log",
+      "exit_code": 0,
+      "sha256": "ffd52112fd9490ccfd40347411d2202bb157e9f19fea132fd6994e930d333815",
+      "seconds": 20.81
+    },
+    {
+      "name": "episode21_checkpoint_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/episode21_checkpoint_test.py"
+      ],
+      "log": "full-report-logs/74-episode21_checkpoint_test.log",
+      "exit_code": 0,
+      "sha256": "e1dfe48b148eeae0eda42f83c10a7fd52ed801acb4f04fe359e140704742a593",
+      "seconds": 21.76
+    },
+    {
+      "name": "mob_matk_range_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/mob_matk_range_test.py"
+      ],
+      "log": "full-report-logs/75-mob_matk_range_test.log",
+      "exit_code": 0,
+      "sha256": "12edec2b6f8ee48ad60e69afd4d0c61c0681b2f28cba77a7e2bbf3f8b98462c6",
+      "seconds": 1.37
+    },
+    {
+      "name": "immortal_instance_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/immortal_instance_test.py"
+      ],
+      "log": "full-report-logs/76-immortal_instance_test.log",
+      "exit_code": 0,
+      "sha256": "55605e3074ad200b04938c280516dba2616790c4759f607d73a78cf302d6de75",
+      "seconds": 21.41
+    },
+    {
+      "name": "instance_warper_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/instance_warper_test.py"
+      ],
+      "log": "full-report-logs/77-instance_warper_test.log",
+      "exit_code": 0,
+      "sha256": "8090498aa38e60e85e734666f90fdfc74bdf08444a1ab90bc100bd28d8ab386c",
+      "seconds": 21.26
+    },
+    {
+      "name": "airship_briefing_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/airship_briefing_test.py"
+      ],
+      "log": "full-report-logs/78-airship_briefing_test.log",
+      "exit_code": 0,
+      "sha256": "da4c2c2ea0fd5457af4e951f8679a763b6ac5f72e1f0e094713778720e285abf",
+      "seconds": 20.71
+    },
+    {
+      "name": "bioresearch_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/bioresearch_test.py"
+      ],
+      "log": "full-report-logs/79-bioresearch_test.log",
+      "exit_code": 0,
+      "sha256": "34fcd82c35fcc5b21def1489212b70598c4965df6bbc76fb417c014ae54317af",
+      "seconds": 21.66
+    },
+    {
+      "name": "alice_test.py",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/tools/ci/alice_test.py"
+      ],
+      "log": "full-report-logs/80-alice_test.log",
+      "exit_code": 0,
+      "sha256": "da71ce634abe60cfb9723b0b2a46d0c3de3d4cf7efb24e30f728cb3527eab9c2",
+      "seconds": 21.96
+    },
+    {
+      "name": "client_compat_assets",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/usr/bin/python3",
+        "/rathena/client-patch/client_compat/validate.py",
+        "--assets-only"
+      ],
+      "log": "full-report-logs/81-client_compat_assets.log",
+      "exit_code": 0,
+      "sha256": "03d390432243293330810416e2acf92d674d34316ec0ce82f996fb99501987ee",
+      "seconds": 0.11
+    },
+    {
+      "name": "isolated_startup",
+      "passed": true,
+      "status": "passed",
+      "command": [
+        "/rathena/map-server",
+        "--run-once"
+      ],
+      "log": "full-startup.log",
+      "exit_code": 0,
+      "sha256": "1e9f7cc52012e0072375fe56f839157f0c9b81b93848d0a9df8a855717f41bf3",
+      "seconds": 6.73,
+      "errors": []
+    }
+  ],
+  "candidate_sha256": "ad87ada581ef002c3ab1c6dfb1130fbc162d612e07e23961a03a14f778ebb8bb",
+  "binding": {
+    "source_sha256": "cd9e95051d643d67a504dd4bc2d587bf3e9536e3701dcf0096eaed04fd69eae8",
+    "binaries": {
+      "map-server": "2fc69dccb5ce5a7bf264ec882be22fd70263058d7ba27ecfb477d9723b4117bc",
+      "char-server": "3ee70d94308a5d566bfa66c56fdef2b75221245602138969ac8c8dd095ecf57f",
+      "login-server": "e03340f6609ede31cfbdc178a491732806721af4445a8a472f1ff6f32dff0e8d",
+      "web-server": "33ed9ef159c300be986898287536981d354a2076bf5ff88430b69d3fc71c591b"
+    }
+  }
+}

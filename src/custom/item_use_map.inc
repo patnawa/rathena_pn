@@ -15,6 +15,8 @@ struct PnItemUseState {
     std::vector<pn_shop::Grant> pets;
     std::vector<std::function<void()>> effects;
     std::vector<std::function<void()>> success_effects;
+    std::vector<pn_shop::AchievementEvent> achievement_events;
+    bool achievement_events_durable=false;
     std::function<void(bool)> use_ack;
     std::unique_ptr<PcItemDeliveryScope> delivery;
     ~PnItemUseState(){if(delivery)delivery->cancel();}
@@ -40,6 +42,15 @@ void pn_item_use_abort(map_session_data& sd) {auto state=pn_item_use_state(&sd);
 bool pn_item_use_success_defer(const map_session_data* sd,std::function<void()> effect) {
     auto state=pn_item_use_state(sd);if(!state || !state->collecting)return false;
     state->success_effects.push_back(std::move(effect));return true;
+}
+bool pn_item_use_achievement_defer(const map_session_data* sd,int32 group,std::vector<int32> arguments) {
+    auto state=pn_item_use_state(sd);if(!state || !state->collecting)return false;
+    if(group<=AG_NONE || group>=AG_MAX || arguments.size()>MAX_ACHIEVEMENT_OBJECTIVES ||
+       state->achievement_events.size()>=pn_shop::max_deferred_achievements)state->failed=true;
+    else state->achievement_events.push_back({group,std::move(arguments)});
+    // The owned item-use scope consumed the callback even when it failed
+    // closed; never mutate live progression for an asset set that will roll back.
+    return true;
 }
 bool pn_item_use_save_defer(map_session_data* sd,int32 flags) {
     auto state=pn_item_use_state(sd);if(!state || !state->collecting)return false;
@@ -81,6 +92,9 @@ void pn_item_use_settled(map_session_data& sd,bool committed) {
     sd.item_use.reset();
     if(state->use_ack)state->use_ack(committed);
     if(state->capture_result)state->capture_result(committed);
+    if(committed && !state->achievement_events_durable)
+        for(const auto& event:state->achievement_events)
+            achievement_update_objective_values(&sd,static_cast<e_achievement_group>(event.group),event.arguments);
     if(committed)for(auto& effect:state->success_effects)effect();
     if(!committed) {
         clif_inventorylist(&sd);clif_updatestatus(sd,SP_WEIGHT);clif_updatestatus(sd,SP_ZENY);
@@ -97,6 +111,8 @@ static bool pn_item_use_finish(map_session_data& sd) {
     if(!state->failed && state->pets.empty() && !state->force_commit) {
         state->collecting=false;sd.item_use.reset();
         for(auto& effect:state->effects)effect();
+        for(const auto& event:state->achievement_events)
+            achievement_update_objective_values(&sd,static_cast<e_achievement_group>(event.group),event.arguments);
         for(auto& effect:state->success_effects)effect();
         state->delivery.reset();
         if(state->save_requested)chrif_save(&sd,state->deferred_save);
@@ -134,7 +150,14 @@ static bool pn_item_use_finish(map_session_data& sd) {
     // submitter flushes its baseline. The consumed input never reaches SQL alone.
     pn_item_use_restore(sd,*state);
     state->delivery->cancel();state->delivery.reset();state->effects.clear();state->collecting=false;
-    if(state->failed || !pn_shop_submit(sd,request,std::move(events),final_weight)) {
+    bool submitted=false;
+    if(!state->failed) {
+        sd.shop_commit.planned_achievements=state->achievement_events;
+        submitted=pn_shop_submit(sd,request,std::move(events),final_weight);
+        if(submitted)state->achievement_events_durable=sd.shop_commit.progression_prepared;
+        else sd.shop_commit.planned_achievements.clear();
+    }
+    if(state->failed || !submitted) {
         pn_item_use_settled(sd,false);
         clif_displaymessage(sd.fd,"The pet reward could not be committed. Your inventory and currency cost were restored.");
         return false;
@@ -157,10 +180,18 @@ bool pn_item_use_capture_start(map_session_data& sd) {
     add_timer(gettick()+30000,pn_item_use_capture_timeout,sd.status.account_id,static_cast<intptr_t>(generation));
     return !external || pn_item_use_finish(sd);
 }
-bool pn_item_use_capture_finish(map_session_data& sd,const item* egg,std::function<void(bool)> result) {
+bool pn_item_use_capture_finish(map_session_data& sd,const item* egg,std::function<void(bool)> result,
+    int32 achievement_group,std::vector<int32> achievement_arguments) {
     auto state=pn_item_use_state(&sd);
     if(!pn_item_use_capture_waiting(&sd) || !state->capture_assets)return false;
     state->awaiting_capture=false;state->collecting=true;state->force_commit=true;state->capture_result=std::move(result);
+    if(achievement_group || !achievement_arguments.empty()) {
+        if(achievement_group<=AG_NONE || achievement_group>=AG_MAX ||
+           achievement_arguments.size()>MAX_ACHIEVEMENT_OBJECTIVES ||
+           state->achievement_events.size()>=pn_shop::max_deferred_achievements)state->failed=true;
+        else state->achievement_events.insert(state->achievement_events.begin(),
+            {achievement_group,std::move(achievement_arguments)});
+    }
     const auto& staged=*state->capture_assets;
     memcpy(sd.inventory.u.items_inventory,staged.items,sizeof(staged.items));sd.weight=state->capture_weight;
     sd.status.zeny=staged.wallet_after;sd.status.uniqueitem_counter=staged.counter_after;

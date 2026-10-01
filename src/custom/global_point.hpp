@@ -94,6 +94,10 @@ inline bool finish_locked(Sql* handle,const pn_shop::Commit& r) {
   Sql_Query(handle,"UPDATE pn_global_point_barriers SET state=2 WHERE %s AND state<2",where(r).c_str())==SQL_SUCCESS);
 }
 inline bool expire(Sql* handle) {
+ // A coordinated binary upgrade cannot resume an older raw Commit layout.
+ // Once its admission timeout expires, terminalize it exactly like a canceled
+ // intent so one legacy/corrupt row cannot poison every later expiry batch.
+ if(Sql_Query(handle,"UPDATE pn_global_point_barriers SET state=2 WHERE state<2 AND created_at<DATE_SUB(NOW(),INTERVAL %u SECOND) AND OCTET_LENGTH(payload)<>%u",timeout_seconds,static_cast<unsigned>(sizeof(pn_shop::Commit)))!=SQL_SUCCESS)return false;
  if(Sql_Query(handle,"SELECT payload FROM pn_global_point_barriers WHERE state<2 AND created_at<DATE_SUB(NOW(),INTERVAL %u SECOND) LIMIT 32",timeout_seconds)!=SQL_SUCCESS)return false;
  std::vector<pn_shop::Commit> requests;int row;
  while((row=Sql_NextRow(handle))==SQL_SUCCESS) {

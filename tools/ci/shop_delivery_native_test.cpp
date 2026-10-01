@@ -70,7 +70,7 @@ extern "C" int __wrap_main(int argc,char** argv){
   sd->regs.vars->destroy(sd->regs.vars,nullptr);sd->regs.vars=nullptr;
  }
  // Native achievement conditions and quest conditions observe scope timing.
- // The condition returns false, so achievement persistence/rewards are not used.
+  // The condition returns false, so achievement persistence/rewards are not used.
  for(int mode=0;mode<4;++mode){
   ++cases;nums.clear();auto sd=std::make_unique<map_session_data>();attached=sd.get();
   sd->id=sd->status.account_id=99000001;sd->type=BL_PC;sd->m=0;sd->status.inventory_slots=3;sd->max_weight=1000000;
@@ -83,6 +83,7 @@ extern "C" int __wrap_main(int argc,char** argv){
   auto achievement=std::make_shared<s_achievement_db>();achievement->achievement_id=99000001;achievement->group=AG_GET_ITEM;
   achievement->condition=compile("{ $@__SWach_VAL++; if(countitem(502)==0) $@__SWpartial_VAL++; achievement_condition(0); }","scope achievement observer");
   achievement_db.put(achievement->achievement_id,achievement);battle_config.feature_achievement=true;
+  sd->achievement_data.loaded=true; // Model an authenticated player with its authoritative achievement cache.
   auto add=[&](int id){item it{};it.nameid=id;it.identify=1;check(pc_additem(sd.get(),&it,1,LOG_TYPE_NPC)==ADDITEM_SUCCESS,"scope item added");};
   if(mode==0){add(501);check(nums[add_str("$@__SWach_VAL")]==1&&nums[add_str("$@__SWquests_VAL")]==1,"callbacks remain immediate outside scope");add(502);}
   if(mode==1||mode==2){

@@ -70,7 +70,9 @@ def generate(root=ROOT):
         for batch, outputs in batches.items():
             add('rune.decomposition', material+':'+batch, outputs, SERVICES,
                 'getitem @RT_DecompIds[.@i],.@quantity;', [(int(material),int(batch))], condition='independent random draw per output')
-    add('rune.seal', 'whitelist', exact([(1001594,1)]), SERVICES, 'getitem 1001594,1;', condition='one card from Rune catalog seal whitelist')
+    for card in rune['seals']:
+        add('rune.seal',card,exact([(1001594,1)]),SERVICES,'getitem 1001594,1;',[(card,1)],
+            condition='one card from Rune catalog seal whitelist')
     def array(text, name, index=0):
         hits = re.findall(r'setarray \.@'+name+r'\['+str(index)+r'\],([\d,]+);', text)
         require(len(hits)==1, 'Array syntax drift: '+name)

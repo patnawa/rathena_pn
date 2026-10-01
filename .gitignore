@@ -115,6 +115,9 @@ Thumbs.db
 
 # /src/custom/
 /src/custom/*
+!/src/custom/achievement_protocol.hpp
+!/src/custom/shop_receipt_codec.hpp
+!/src/custom/shop_progression.hpp
 !/src/custom/bank_commit.hpp
 !/src/custom/bank_inter.inc
 !/src/custom/bank_protocol.hpp

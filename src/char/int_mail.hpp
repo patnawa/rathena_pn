@@ -19,6 +19,7 @@ int32 inter_mail_sql_init(void);
 void inter_mail_sql_final(void);
 
 int32 mail_savemessage(struct mail_message* msg);
+int32 mail_savemessage_locked(struct mail_message* msg);
 void mapif_Mail_new(struct mail_message *msg);
 
 #endif /* INT_MAIL_HPP */

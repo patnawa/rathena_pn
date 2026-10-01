@@ -1,10 +1,13 @@
 #ifndef PN_SHOP_STATE_HPP
 #define PN_SHOP_STATE_HPP
 #include "shop_commit.hpp"
+#include "shop_progression.hpp"
+#include <cstddef>
 #include <memory>
 #include <vector>
 class map_session_data;
 namespace pn_shop {
+constexpr size_t max_deferred_achievements = 1024;
 struct Grant {
     uint32_t nameid=0,amount=0;
     uint8_t refine=0;
@@ -18,11 +21,22 @@ struct Event {
     uint64_t unique_id=0;
     uint32_t equip=0,value_sell=0,price=0;
 };
+struct AchievementEvent {
+    int32_t group=0;
+    std::vector<int32_t> arguments;
+};
 }
 struct pn_shop_state {
-    bool pending=false,applying=false;
+    bool pending=false,applying=false,progression_prepared=false;
     std::shared_ptr<const pn_shop::Commit> request;
     std::vector<pn_shop::Event> events;
+    // Success-only objective callbacks known before submission. The submitter
+    // consumes these into the same durable before/after image as item delivery.
+    std::vector<pn_shop::AchievementEvent> planned_achievements;
+    std::vector<uint8_t> progression;
+    std::vector<achievement> progression_before;
+    std::vector<achievement> progression_after;
+    std::vector<pn_shop::AchievementEvent> deferred_achievements;
     uint32_t final_weight=0;
 };
 std::shared_ptr<pn_shop::Commit> pn_shop_request(const map_session_data& sd,uint32_t kind);

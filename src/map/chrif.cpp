@@ -3,13 +3,18 @@
 // For more information, see LICENCE in the main folder
 
 #include "chrif.hpp"
+#include "chrif_save.hpp"
 
 #include <cstdlib>
 #include <cstring>
+#include <limits>
+#include <utility>
+#include <vector>
 
 #include <common/cbasetypes.hpp>
 #include <common/ers.hpp>
 #include <common/malloc.hpp>
+#include <common/logout_save.hpp>
 #include <common/nullpo.hpp>
 #include <common/showmsg.hpp>
 #include <common/socket.hpp>
@@ -36,6 +41,29 @@
 
 static TIMER_FUNC(check_connect_char_server);
 
+static int32 chrif_recover_achievement_channel(map_session_data* sd, va_list) {
+	if (!battle_config.feature_achievement) {
+		sd->achievement_data.reward_pending_id = 0;
+		return 0;
+	}
+	if (!sd->achievement_data.loaded || sd->achievement_data.reward_pending_id) {
+		// An initial load or reward commit may have completed on SQL while its
+		// response was lost. This cache is not authoritative enough to save or to
+		// release the reward fence; relog before accepting more progression.
+		sd->achievement_data.reward_pending_id = 0;
+		sd->achievement_data.loaded = false;
+		sd->achievement_data.save = false;
+		sd->shop_commit.deferred_achievements.clear();
+		set_eof(sd->fd);
+		return 0;
+	}
+	// A full snapshot save may have been queued immediately before the link
+	// failed. Its ACK is now unknowable, so retry the monotonic replacement
+	// after reconnect instead of treating the enqueue as durability.
+	sd->achievement_data.save = true;
+	return 0;
+}
+
 static struct eri *auth_db_ers; //For reutilizing player login structures.
 static DBMap* auth_db; // int32 id -> struct auth_node*
 static bool char_init_done = false; //server already initialized? Used for InterInitOnce and vending loadings
@@ -48,6 +76,7 @@ static const int32 packet_len_table[0x3d] = { // U - used, F - free
 	 2,10, 2,-1,-1,-1, 2, 7,	// 2b18-2b1f: U->2b18, U->2b19, U->2b1a, U->2b1b, U->2b1c, U->2b1d, U->2b1e, U->2b1f
 	-1,10, 8, 2, 2,14,19,19,	// 2b20-2b27: U->2b20, U->2b21, U->2b22, U->2b23, U->2b24, U->2b25, U->2b26, U->2b27
 	-1, 0, 6,15, 0, 6,-1,-1,	// 2b28-2b2f: U->2b28, F->2b29, U->2b2a, U->2b2b, F->2b2c, U->2b2d, U->2b2e, U->2b2f
+	 0,24,	// 2b30-2b31: logout save stream barrier request/response
  };
 
 //Used Packets:
@@ -145,6 +174,11 @@ bool chrif_auth_delete(uint32 account_id, uint32 char_id, enum sd_state state) {
 
 		if ( node->char_dat )
 			aFree(node->char_dat);
+		if (node->achievement_snapshot)
+			aFree(node->achievement_snapshot);
+		if (node->logout_status)
+			aFree(node->logout_status);
+		delete node->logout_saves;
 
 		if ( node->sd ) {
 			if (node->sd->regs.vars)
@@ -167,6 +201,7 @@ bool chrif_auth_delete(uint32 account_id, uint32 char_id, enum sd_state state) {
 
 //Moves the sd character to the auth_db structure.
 static bool chrif_sd_to_auth(TBL_PC* sd, enum sd_state state) {
+	static uint64 logout_generation = 0;
 	struct auth_node *node;
 
 	if ( chrif_search(sd->status.account_id) )
@@ -185,11 +220,66 @@ static bool chrif_sd_to_auth(TBL_PC* sd, enum sd_state state) {
 	node->sd = sd;	//Data from logged on char.
 	node->node_created = gettick(); //timestamp for node timeouts
 	node->state = state;
+	if (state == ST_LOGOUT) {
+		CREATE(node->logout_status, mmo_charstatus, 1);
+		*node->logout_status = sd->status;
+		node->logout_saves = new ChrifSaveBuffer;
+		if (++logout_generation == 0)
+			++logout_generation;
+		node->achievement_generation = logout_generation;
+	}
+	if (state == ST_LOGOUT && sd->achievement_data.loaded) {
+		node->achievement_count = sd->achievement_data.count;
+		if (node->achievement_count) {
+			CREATE(node->achievement_snapshot, achievement, node->achievement_count);
+			memcpy(node->achievement_snapshot, sd->achievement_data.achievements,
+				sizeof(achievement) * node->achievement_count);
+		}
+		node->achievement_pending = true;
+	}
 
 	sd->state.active = 0;
 
 	idb_put(auth_db, node->account_id, node);
 
+	return true;
+}
+
+static bool chrif_send_retained_final(auth_node* node) {
+	if (!node || node->state != ST_LOGOUT || node->logout_saves || node->achievement_pending || !node->logout_status)
+		return false;
+	node->final_save_pending = true;
+	if (!chrif_isconnected())
+		return false;
+	const uint16 len = static_cast<uint16>(sizeof(*node->logout_status) + 13);
+	WFIFOHEAD(char_fd, len);
+	WFIFOW(char_fd, 0) = 0x2b01;
+	WFIFOW(char_fd, 2) = len;
+	WFIFOL(char_fd, 4) = node->account_id;
+	WFIFOL(char_fd, 8) = node->char_id;
+	WFIFOB(char_fd, 12) = 1;
+	memcpy(WFIFOP(char_fd, 13), node->logout_status, sizeof(*node->logout_status));
+	WFIFOSET(char_fd, len);
+	return true;
+}
+
+bool chrif_auth_achievement_saved(uint32 account_id, uint32 char_id, uint64 generation, bool success) {
+	auth_node* node = chrif_auth_check(account_id, char_id, ST_LOGOUT);
+	if (!node || node->logout_saves || !node->achievement_pending || node->achievement_generation != generation)
+		return false;
+	if (!success) {
+		node->node_created = gettick();
+		return true;
+	}
+	node->achievement_pending = false;
+	if (node->achievement_snapshot) {
+		aFree(node->achievement_snapshot);
+		node->achievement_snapshot = nullptr;
+	}
+	node->achievement_count = 0;
+	// Only the exact tokenized logout snapshot ACK may release the retained final
+	// status. This narrow sender never reads the already-cleaned live session.
+	chrif_send_retained_final(node);
 	return true;
 }
 
@@ -264,6 +354,84 @@ int32 chrif_isconnected(void) {
 	return (session_isValid(char_fd) && chrif_state == 2);
 }
 
+bool chrif_save_available() {
+	return chrif_save_capture != nullptr || chrif_isconnected();
+}
+
+bool chrif_save_packet(const void* data, size_t size) {
+	if (chrif_save_capture)
+		return chrif_save_capture->append(data, size);
+	if (!chrif_isconnected() || !data || size < 2 || size > std::numeric_limits<uint16>::max())
+		return false;
+	WFIFOHEAD(char_fd, size);
+	memcpy(WFIFOP(char_fd, 0), data, size);
+	WFIFOSET(char_fd, size);
+	return true;
+}
+
+static bool chrif_send_retained_logout(auth_node* node) {
+	if (!node || node->state != ST_LOGOUT || !chrif_isconnected())
+		return false;
+	if (node->logout_saves) {
+		if (node->logout_saves->failed)
+			return false; // Never mark a character offline with an incomplete journal.
+		for (const auto& packet : node->logout_saves->packets)
+			if (!chrif_save_packet(packet.data(), packet.size()))
+				return false;
+		WFIFOHEAD(char_fd, logout_save::packet_size);
+		WFIFOW(char_fd, 0) = logout_save::request;
+		WFIFOW(char_fd, 2) = logout_save::version;
+		WFIFOL(char_fd, 4) = node->account_id;
+		WFIFOL(char_fd, 8) = node->char_id;
+		WFIFOL(char_fd, 12) = 0;
+		memcpy(WFIFOP(char_fd, 16), &node->achievement_generation, sizeof(uint64));
+		WFIFOSET(char_fd, logout_save::packet_size);
+		return true;
+	}
+	if (node->achievement_pending)
+		return intif_achievement_logout_save(node->account_id, node->char_id,
+			node->achievement_generation, node->achievement_snapshot, node->achievement_count);
+	return chrif_send_retained_final(node);
+}
+
+static void chrif_save_barrier_ack(int32 fd) {
+	uint64 generation;
+	memcpy(&generation, RFIFOP(fd, 16), sizeof(generation));
+	if (RFIFOW(fd, 2) != logout_save::version || RFIFOL(fd, 12) != 0)
+		return;
+	auth_node* node = chrif_auth_check(RFIFOL(fd, 4), RFIFOL(fd, 8), ST_LOGOUT);
+	if (!node || !node->logout_saves || node->logout_saves->failed ||
+		node->achievement_generation != generation)
+		return;
+	delete node->logout_saves;
+	node->logout_saves = nullptr;
+	chrif_send_retained_logout(node);
+}
+
+static void chrif_save_dependencies(map_session_data* sd, int32 flag) {
+	chrif_bsdata_save(sd, ((flag & CSAVE_QUITTING) && !(flag & CSAVE_AUTOTRADE)));
+	if (sd->storage.dirty)
+		storage_storagesave(sd);
+	if (flag & CSAVE_INVENTORY)
+		intif_storage_save(sd, &sd->inventory);
+	if (flag & CSAVE_CART)
+		intif_storage_save(sd, &sd->cart);
+	if (sd->premiumStorage.dirty)
+		storage_premiumStorage_save(sd);
+	if (sd->vars_dirty)
+		intif_saveregistry(sd);
+	if (sd->status.pet_id > 0 && sd->pd)
+		intif_save_petdata(sd->status.account_id, &sd->pd->pet);
+	if (hom_is_active(sd->hd))
+		hom_save(sd->hd);
+	if (sd->md && mercenary_get_lifetime(sd->md) > 0)
+		mercenary_save(sd->md);
+	if (sd->ed && elemental_get_lifetime(sd->ed) > 0)
+		elemental_save(sd->ed);
+	if (sd->save_quest)
+		intif_quest_save(sd);
+}
+
 /**
  * Saves character data.
  * @param sd: Player data
@@ -276,75 +444,66 @@ int32 chrif_isconnected(void) {
  *  CSAVE_CART: Character changed cart data
  */
 int32 chrif_save(map_session_data *sd, int32 flag) {
-	if(sd && pn_item_use_save_defer(sd,flag))return -1;
-	// The bank commits inventory, wallet and account registry together. Ordinary
-	// saves resume after its acknowledgement; sending them now breaks atomicity.
+	if (sd && pn_item_use_save_defer(sd, flag)) return -1;
 	if (sd && pc_transaction_pending(sd)) return -1;
-	uint16 mmo_charstatus_len = 0;
-
 	nullpo_retr(-1, sd);
 
-	pc_makesavestatus(sd);
+	// A retained logout must never be rebuilt from the cleaned live session.
+	if (flag & CSAVE_QUIT)
+		if (auto* retained = chrif_auth_check(sd->status.account_id, sd->status.char_id, ST_LOGOUT))
+			return chrif_send_retained_logout(retained) ? 0 : -1;
 
-	if ( (flag&CSAVE_QUITTING) && sd->state.active) { //Store player data which is quitting
-		if (chrif_isconnected()) {
+	pc_makesavestatus(sd);
+	const bool quitting = (flag & CSAVE_QUITTING) && sd->state.active;
+	if (quitting) {
+		if (!(flag & CSAVE_QUIT) && chrif_isconnected()) {
 			chrif_save_scdata(sd);
 			chrif_skillcooldown_save(*sd);
 		}
-		if ( !(flag&CSAVE_AUTOTRADE) && !chrif_auth_logout(sd, (flag&CSAVE_QUIT) ? ST_LOGOUT : ST_MAPCHANGE) )
+		if (!(flag & CSAVE_AUTOTRADE) && !chrif_auth_logout(sd, (flag & CSAVE_QUIT) ? ST_LOGOUT : ST_MAPCHANGE))
 			ShowError("chrif_save: Failed to set up player %d:%d for proper quitting!\n", sd->status.account_id, sd->status.char_id);
 	}
+	auth_node* logout_node = (flag & CSAVE_QUIT) ?
+		chrif_auth_check(sd->status.account_id, sd->status.char_id, ST_LOGOUT) : nullptr;
+	if (logout_node) {
+		// Serialize before teardown, even when the character connection is absent.
+		// Each retry sends these exact replacement frames, followed by a tokenized
+		// stream barrier. No cleaned pointers or cleared registry flags are read.
+		{
+			ChrifSaveCapture capture(*logout_node->logout_saves);
+			chrif_save_scdata(sd);
+			chrif_skillcooldown_save(*sd);
+			chrif_save_dependencies(sd, flag);
+		}
+		if (logout_node->logout_saves->failed)
+			ShowError("chrif_save: Logout save journal exceeded packet or memory limits for %u:%u; retaining ownership.\n",
+				sd->status.account_id, sd->status.char_id);
+		// Guild storage is shared. Its existing reconnect path saves the current
+		// guild snapshot; replaying an old per-player copy could erase later edits.
+		if (sd->state.storage_flag == 2)
+			storage_guild_storagesave(sd->status.account_id, sd->status.guild_id, flag);
+		sd->state.storage_flag = 0;
+		return chrif_send_retained_logout(logout_node) ? 0 : -1;
+	}
 
-	chrif_check(-1); //Character is saved on reconnect.
-
-	chrif_bsdata_save(sd, ((flag&CSAVE_QUITTING) && !(flag&CSAVE_AUTOTRADE)));
-
-	if (sd->storage.dirty)
-		storage_storagesave(sd);
-	if (flag&CSAVE_INVENTORY)
-		intif_storage_save(sd,&sd->inventory);
-	if (flag&CSAVE_CART)
-		intif_storage_save(sd,&sd->cart);
-
-	//For data sync
+	chrif_check(-1);
+	chrif_save_dependencies(sd, flag);
 	if (sd->state.storage_flag == 2)
 		storage_guild_storagesave(sd->status.account_id, sd->status.guild_id, flag);
-	if (sd->premiumStorage.dirty)
-		storage_premiumStorage_save(sd);
+	if (flag & CSAVE_QUITTING)
+		sd->state.storage_flag = 0;
+	if (sd->achievement_data.loaded && sd->achievement_data.save)
+		intif_achievement_save(sd);
 
-	if (flag&CSAVE_QUITTING)
-		sd->state.storage_flag = 0; //Force close it.
-
-	//Saving of registry values.
-	if (sd->vars_dirty)
-		intif_saveregistry(sd);
-
-	mmo_charstatus_len = sizeof(sd->status) + 13;
+	const uint16 mmo_charstatus_len = sizeof(sd->status) + 13;
 	WFIFOHEAD(char_fd, mmo_charstatus_len);
 	WFIFOW(char_fd,0) = 0x2b01;
 	WFIFOW(char_fd,2) = mmo_charstatus_len;
 	WFIFOL(char_fd,4) = sd->status.account_id;
 	WFIFOL(char_fd,8) = sd->status.char_id;
-	WFIFOB(char_fd,12) = (flag&CSAVE_QUIT) ? 1 : 0; //Flag to tell char-server this character is quitting.
-
-	// Copy the whole status into the packet
-	memcpy( WFIFOP( char_fd, 13 ), &sd->status, sizeof( struct mmo_charstatus ) );
-
-	WFIFOSET(char_fd, WFIFOW(char_fd,2));
-
-	if( sd->status.pet_id > 0 && sd->pd )
-		intif_save_petdata(sd->status.account_id,&sd->pd->pet);
-	if( hom_is_active(sd->hd) )
-		hom_save(sd->hd);
-	if( sd->md && mercenary_get_lifetime(sd->md) > 0 )
-		mercenary_save(sd->md);
-	if( sd->ed && elemental_get_lifetime(sd->ed) > 0 )
-		elemental_save(sd->ed);
-	if( sd->save_quest )
-		intif_quest_save(sd);
-	if (sd->achievement_data.save)
-		intif_achievement_save(sd);
-
+	WFIFOB(char_fd,12) = (flag & CSAVE_QUIT) ? 1 : 0;
+	memcpy(WFIFOP(char_fd, 13), &sd->status, sizeof(sd->status));
+	WFIFOSET(char_fd, mmo_charstatus_len);
 	return 0;
 }
 
@@ -421,7 +580,9 @@ int32 chrif_removemap(int32 fd) {
 
 // received after a character has been "final saved" on the char-server
 static void chrif_save_ack(int32 fd) {
-	chrif_auth_delete(RFIFOL(fd,2), RFIFOL(fd,6), ST_LOGOUT);
+	auth_node* node = chrif_auth_check(RFIFOL(fd, 2), RFIFOL(fd, 6), ST_LOGOUT);
+	if (node && !node->logout_saves && node->final_save_pending && !node->achievement_pending)
+		chrif_auth_delete(node->account_id, node->char_id, ST_LOGOUT);
 }
 
 // request to move a character between mapservers
@@ -521,8 +682,7 @@ static int32 chrif_reconnect(DBKey key, DBData *data, va_list ap) {
 			}
 			break;
 		case ST_LOGOUT:
-			//Re-send final save
-			chrif_save(node->sd, CSAVE_QUIT|CSAVE_INVENTORY|CSAVE_CART);
+			chrif_send_retained_logout(node);
 			break;
 		case ST_MAPCHANGE: { //Re-send map-change request.
 			map_session_data *sd = node->sd;
@@ -752,9 +912,8 @@ int32 auth_db_cleanup_sub(DBKey key, DBData *data, va_list ap) {
 		const char* states[] = { "Login", "Logout", "Map change" };
 		switch (node->state) {
 			case ST_LOGOUT:
-				//Re-save attempt (->sd should never be null here).
-				node->node_created = gettick(); //Refresh tick (avoid char-server load if connection is really bad)
-				chrif_save(node->sd, CSAVE_QUIT|CSAVE_INVENTORY|CSAVE_CART);
+				node->node_created = gettick();
+				chrif_send_retained_logout(node);
 				break;
 			default:
 				//Clear data. any connected players should have timed out by now.
@@ -1284,13 +1443,13 @@ int32 chrif_save_scdata( const map_session_data* sd ) { //parses the sc_data of 
 	const status_change *sc = &sd->sc;
 	const struct TimerData *timer;
 
-	chrif_check(-1);
+	if (!chrif_save_available()) return -1;
 	tick = gettick();
 
-	WFIFOHEAD(char_fd, 14 + SC_MAX*sizeof(struct status_change_data));
-	WFIFOW(char_fd,0) = 0x2b1c;
-	WFIFOL(char_fd,4) = sd->status.account_id;
-	WFIFOL(char_fd,8) = sd->status.char_id;
+	std::vector<uint8> packet(14 + SC_MAX*sizeof(struct status_change_data));
+	WBUFW(packet.data(),0) = 0x2b1c;
+	WBUFL(packet.data(),4) = sd->status.account_id;
+	WBUFL(packet.data(),8) = sd->status.char_id;
 
 	for( const auto& [type, sce] : *sc ){
 		if (sce.timer != INVALID_TIMER) {
@@ -1308,15 +1467,15 @@ int32 chrif_save_scdata( const map_session_data* sd ) { //parses the sc_data of 
 		data.val2 = sce.val2;
 		data.val3 = sce.val3;
 		data.val4 = sce.val4;
-		memcpy(WFIFOP(char_fd,14 +count*sizeof(struct status_change_data)),
+		memcpy(WBUFP(packet.data(),14 +count*sizeof(struct status_change_data)),
 			&data, sizeof(struct status_change_data));
 		count++;
 	}
 
-	WFIFOW(char_fd,12) = count;
+	WBUFW(packet.data(),12) = count;
 	// Total packet size
-	WFIFOW( char_fd, 2 ) = static_cast<int16>( 14 + count * sizeof( struct status_change_data ) );
-	WFIFOSET(char_fd,WFIFOW(char_fd,2));
+	WBUFW(packet.data(), 2 ) = static_cast<int16>( 14 + count * sizeof( struct status_change_data ) );
+	chrif_save_packet(packet.data(), WBUFW(packet.data(),2));
 #endif
 	return 0;
 }
@@ -1362,17 +1521,17 @@ int32 chrif_load_scdata(int32 fd) {
  * @return -1 on failure or 0 otherwise
  */
 int chrif_skillcooldown_save( const map_session_data& sd ) {
-	chrif_check(-1);
+	if (!chrif_save_available()) return -1;
 
 	if (sd.scd.empty())
 		return 0;
 
 	t_tick tick = gettick();
 
-	WFIFOHEAD(char_fd, 14 + MAX_SKILLCOOLDOWN * sizeof (s_skill_cooldown_data));
-	WFIFOW(char_fd, 0) = 0x2b15;
-	WFIFOL(char_fd, 4) = sd.status.account_id;
-	WFIFOL(char_fd, 8) = sd.status.char_id;
+	std::vector<uint8> packet(14 + MAX_SKILLCOOLDOWN * sizeof (s_skill_cooldown_data));
+	WBUFW(packet.data(), 0) = 0x2b15;
+	WBUFL(packet.data(), 4) = sd.status.account_id;
+	WBUFL(packet.data(), 8) = sd.status.char_id;
 
 	uint16 count = 0;
 
@@ -1389,16 +1548,16 @@ int chrif_skillcooldown_save( const map_session_data& sd ) {
 
 		data.tick = DIFF_TICK(timer->tick, tick);
 		data.skill_id = entry.first;
-		memcpy(WFIFOP(char_fd, 14 + count * sizeof (s_skill_cooldown_data)), &data, sizeof (s_skill_cooldown_data));
+		memcpy(WBUFP(packet.data(), 14 + count * sizeof (s_skill_cooldown_data)), &data, sizeof (s_skill_cooldown_data));
 		count++;
 	}
 
 	if (count == 0)
 		return 0;
 
-	WFIFOW(char_fd, 12) = count;
-	WFIFOW( char_fd, 2 ) = static_cast<int16>( 14 + count * sizeof( s_skill_cooldown_data ) );
-	WFIFOSET(char_fd, WFIFOW(char_fd, 2));
+	WBUFW(packet.data(), 12) = count;
+	WBUFW(packet.data(), 2 ) = static_cast<int16>( 14 + count * sizeof( s_skill_cooldown_data ) );
+	chrif_save_packet(packet.data(), WBUFW(packet.data(), 2));
 
 	return 0;
 }
@@ -1504,6 +1663,7 @@ void chrif_on_disconnect(void) {
 	if( chrif_connected != 1 )
 		ShowWarning("Connection to Char Server lost.\n\n");
 	chrif_connected = 0;
+	map_foreachpc(chrif_recover_achievement_channel);
 
 	other_mapserver_count = 0; //Reset counter. We receive ALL maps from all map-servers on reconnect.
 	map_eraseallipport();
@@ -1621,7 +1781,7 @@ int32 chrif_bsdata_request(uint32 char_id) {
 int32 chrif_bsdata_save(map_session_data *sd, bool quit) {
 	uint8 i = 0;
 
-	chrif_check(-1);
+	if (!chrif_save_available()) return -1;
 
 	if (!sd)
 		return 0;
@@ -1639,9 +1799,9 @@ int32 chrif_bsdata_save(map_session_data *sd, bool quit) {
 
 	//ShowInfo("Saving %d bonus script for CID=%d\n", sd->bonus_script.count, sd->status.char_id);
 
-	WFIFOHEAD(char_fd, 9 + sd->bonus_script.count * sizeof(struct bonus_script_data));
-	WFIFOW(char_fd, 0) = 0x2b2e;
-	WFIFOL(char_fd, 4) = sd->status.char_id;
+	std::vector<uint8> packet(9 + sd->bonus_script.count * sizeof(struct bonus_script_data));
+	WBUFW(packet.data(), 0) = 0x2b2e;
+	WBUFL(packet.data(), 4) = sd->status.char_id;
 
 	if (sd->bonus_script.count) {
 		t_tick tick = gettick();
@@ -1661,7 +1821,7 @@ int32 chrif_bsdata_save(map_session_data *sd, bool quit) {
 			bs.flag = entry->flag;
 			bs.type = entry->type;
 			bs.icon = entry->icon;
-			memcpy(WFIFOP(char_fd, 9 + i * sizeof(struct bonus_script_data)), &bs, sizeof(struct bonus_script_data));
+			memcpy(WBUFP(packet.data(), 9 + i * sizeof(struct bonus_script_data)), &bs, sizeof(struct bonus_script_data));
 			i++;
 		}
 
@@ -1669,9 +1829,9 @@ int32 chrif_bsdata_save(map_session_data *sd, bool quit) {
 			ShowWarning("Only allowed to save %d (mmo.hpp::MAX_PC_BONUS_SCRIPT) bonus script each player.\n", MAX_PC_BONUS_SCRIPT);
 	}
 
-	WFIFOB(char_fd, 8) = i;
-	WFIFOW(char_fd, 2) = 9 + sd->bonus_script.count * sizeof(struct bonus_script_data);
-	WFIFOSET(char_fd, WFIFOW(char_fd, 2));
+	WBUFB(packet.data(), 8) = i;
+	WBUFW(packet.data(), 2) = 9 + sd->bonus_script.count * sizeof(struct bonus_script_data);
+	chrif_save_packet(packet.data(), WBUFW(packet.data(), 2));
 
 	return 0;
 }
@@ -1764,6 +1924,11 @@ int32 chrif_parse(int32 fd) {
 			if (RFIFOREST(fd) < 4)
 				return 0;
 			packet_len = RFIFOW(fd,2);
+			if (packet_len < 4) {
+				ShowError("chrif_parse: Invalid dynamic packet length %d from session %d.\n", packet_len, fd);
+				set_eof(fd);
+				return 0;
+			}
 		}
 
 		if ((int32)RFIFOREST(fd) < packet_len)
@@ -1797,6 +1962,7 @@ int32 chrif_parse(int32 fd) {
 			case 0x2b27: chrif_authfail(fd); break;
 			case 0x2b2b: chrif_parse_ack_vipActive(fd); break;
 			case 0x2b2f: chrif_bsdata_received(fd); break;
+			case 0x2b31: chrif_save_barrier_ack(fd); break;
 			default:
 				ShowError("chrif_parse : unknown packet (session #%d): 0x%x. Disconnecting.\n", fd, cmd);
 				set_eof(fd);
@@ -1828,10 +1994,25 @@ int32 send_users_tochar(void) {
 	int32 users = 0, i = 0;
 	map_session_data* sd;
 	struct s_mapiterator* iter;
+	std::vector<std::pair<uint32,uint32>> retained_logout;
 
 	chrif_check(-1);
 
-	users = map_usercount();
+	DBIterator* auth_iter = db_iterator(auth_db);
+	for (auth_node* node = static_cast<auth_node*>(dbi_first(auth_iter)); dbi_exists(auth_iter);
+		node = static_cast<auth_node*>(dbi_next(auth_iter)))
+		if (node->state == ST_LOGOUT && (node->logout_saves || node->achievement_pending || node->final_save_pending))
+			retained_logout.emplace_back(node->account_id, node->char_id);
+	dbi_destroy(auth_iter);
+	const size_t total_users = static_cast<size_t>(map_usercount()) + retained_logout.size();
+	constexpr size_t max_user_rows = (std::numeric_limits<uint16>::max() - 6) / 8;
+	if (total_users > max_user_rows) {
+		ShowError("send_users_tochar: %zu online/retained characters exceed the inter-server packet limit.\n",
+			total_users);
+		set_eof(char_fd);
+		return -1;
+	}
+	users = static_cast<int32>(total_users);
 
 	WFIFOHEAD(char_fd, 6+8*users);
 	WFIFOW(char_fd,0) = 0x2aff;
@@ -1845,10 +2026,15 @@ int32 send_users_tochar(void) {
 	}
 
 	mapit_free(iter);
+	for (const auto& identity : retained_logout) {
+		WFIFOL(char_fd,6+8*i) = identity.first;
+		WFIFOL(char_fd,6+8*i+4) = identity.second;
+		++i;
+	}
 
-	WFIFOW(char_fd,2) = 6 + 8*users;
-	WFIFOW(char_fd,4) = users;
-	WFIFOSET(char_fd, 6+8*users);
+	WFIFOW(char_fd,2) = 6 + 8*i;
+	WFIFOW(char_fd,4) = i;
+	WFIFOSET(char_fd, 6+8*i);
 
 	return 0;
 }
@@ -1917,6 +2103,11 @@ int32 auth_db_final(DBKey key, DBData *data, va_list ap) {
 
 	if (node->char_dat)
 		aFree(node->char_dat);
+	if (node->achievement_snapshot)
+		aFree(node->achievement_snapshot);
+	if (node->logout_status)
+		aFree(node->logout_status);
+	delete node->logout_saves;
 
 	if (node->sd) {
 		if (node->sd->regs.vars)

@@ -122,16 +122,23 @@ def preserve_prior(require_import=False):
     print(f'PRIOR_DATA_DEEP_PRESERVED items={len(old_items)} combos={len(old_combos)} own_sets=11 imports={len(visits)}')
 
 
-def validate(require_import=False):
+def validate(require_import=False, alias_source=None):
     for path, expected in outputs().items():
         require((ROOT / path).read_text() == expected, 'Generated data/description/provenance drift: ' + path)
     ids = {f['item']['Id'] for f in ITEMS}
     require(len(ids) == 23 and ids.isdisjoint(UNRESOLVED), 'Unreviewed identities')
-    # The original active compiled lookup already knows every supported identity.
-    names_path = ROOT.parent / 'audit-item-aliases-20260906/data/data/luafiles514/lua files/itemdbnametbl.lub'
-    require(digest(names_path) == '2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496', 'Original alias source drift')
-    tables = literal_tables(names_path.read_bytes())
-    mapping = next(t for t in tables.values() if isinstance(t, dict) and t.get('Sky_Rune_Crown_SHC') == 401171)
+    # Pinned independent subset extracted from the original compiled client
+    # lookup. Clean checkouts must not depend on an external audit directory.
+    fixture = (ROOT / 'tools/ci/fixtures/druid_crown_aliases.json').read_text(encoding='utf-8')
+    require(hashlib.sha256(fixture.encode()).hexdigest() ==
+            '135de026b6b408e7e4e0a096fc79f5a77b66f2e54fd514bd9b1dc832d36846b1', 'Pinned crown alias fixture drift')
+    aliases = json.loads(fixture)
+    mapping = aliases['aliases']
+    if alias_source:
+        require(digest(alias_source) == aliases['source_sha256'], 'Original alias source drift')
+        tables = literal_tables(alias_source.read_bytes())
+        original = next(t for t in tables.values() if isinstance(t, dict) and t.get('Sky_Rune_Crown_SHC') == 401171)
+        require(mapping == {name: original[name] for name in mapping}, 'Alias subset differs from original client')
     for f in ITEMS:
         row = f['item']; require(mapping.get(row['AegisName']) == row['Id'], 'Original name/ID mismatch')
         require(row['Classes'] == {'Fourth': True} and len(row['Jobs']) == 1, 'New-only trait filter drift')
@@ -231,7 +238,7 @@ def native(build):
                 '_Z17npc_event_dequeueP16map_session_datab', '_Z9ShowErrorPKcz')
     command = ['g++'] + sanitizer + ['-o', str(executable)] + [str(p) for p in fresh + objects + libraries]
     command += ['-Wl,--wrap=' + s for s in wrappers]
-    command += ['-lz', '-ldl', '-lmysqlclient', '-lzstd', '-lssl', '-lcrypto', '-lresolv', '-lm']
+    command += ['-lz', '-ldl', '-lmysqlclient', '-l:libzstd.so.1', '-lssl', '-lcrypto', '-lresolv', '-lm']
     subprocess.run(command, cwd=ROOT, check=True)
     result = subprocess.run([str(executable), str(build)], cwd=ROOT, capture_output=True, text=True, timeout=120)
     print(result.stdout, end=''); print(result.stderr, end='', file=sys.stderr)
@@ -247,6 +254,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--native-build-dir', type=Path)
     parser.add_argument('--require-import', action='store_true', help='Fail unless all three reviewed overlays are active once in Renewal')
+    parser.add_argument('--alias-source', type=Path, help='Also verify the pinned subset against the original compiled client lookup')
     args = parser.parse_args()
-    validate(args.require_import)
+    validate(args.require_import, args.alias_source)
     if args.native_build_dir: native(args.native_build_dir)

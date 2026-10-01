@@ -75,6 +75,16 @@ def candidates(body,names):
   return set(),{expr}
  return value
 
+def grant_sites(text,names):
+ for scope,offset,body in scopes(base.strip_comments(text)):
+  val=candidates(body,names)
+  for call in base.grant_calls(body):
+   expression=call['expression'];ids,unknown=val(expression)
+   yield {'line':text.count('\n',0,offset)+call['line'],'scope':scope,
+          'command':call['command'],'expression':expression,'candidate_ids':sorted(i for i in ids if i>0),
+          'unknown_dependencies':sorted(unknown),'dynamic':not (expression.isdigit() or expression.strip('"') in names)}
+
+
 def analyze(root):
  base.REPO=root;items={};sources={}
  for src,row in base.records('db/item_db.yml'):base.overlay(items.setdefault(row['Id'],{}),row);sources[row['Id']]=src
@@ -88,11 +98,7 @@ def analyze(root):
  visit('npc/re/scripts_main.conf');rows=[]
  for src in sorted(active):
   text=base.strip_comments((root/src).read_text(errors='replace'))
-  for scope,offset,body in scopes(text):
-   val=candidates(body,names)
-   for m in re.finditer(r'\b(getitem(?:bound)?[234]?|rentitem|getgroupitem|getrandgroupitem)\s+([^;]+);',body):
-    expression=split_args(m[2])[0];ids,unknown=val(expression)
-    rows.append({'source':src,'line':text.count('\n',0,offset+m.start())+1,'scope':scope,'command':m[1],'expression':expression,'candidate_ids':sorted(i for i in ids if i>0),'unknown_dependencies':sorted(unknown),'dynamic':not (expression.isdigit() or expression.strip('"') in names)})
+  rows.extend({'source':src,**row} for row in grant_sites(text,names))
  return items,active,rows
 
 def main():

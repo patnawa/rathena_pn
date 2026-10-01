@@ -5,10 +5,12 @@
 #include "intif.hpp"
 
 #include <cstdlib>
+#include <limits>
 
 #include <common/malloc.hpp>
 #include <common/mmo.hpp>
 #include <custom/multi_storage_protocol.hpp>
+#include <custom/achievement_protocol.hpp>
 #include <common/nullpo.hpp>
 #include <common/showmsg.hpp>
 #include <common/socket.hpp>
@@ -18,6 +20,7 @@
 #include "achievement.hpp"
 #include "battle.hpp"
 #include "chrif.hpp"
+#include "chrif_save.hpp"
 #include "clan.hpp"
 #include "clif.hpp"
 #include "date.hpp"
@@ -44,11 +47,11 @@ static const int32 packet_len_table[] = {
 	10,-1,15, 0, 79,19, 7,-1,  0,-1,-1,-1, 14,67,186,-1, //0x3830
 	-1,10, 0,18,  0, 0, 0, 0, -1,75,-1,11, 11,-1, 38, 0, //0x3840
 	-1,-1, 7, 7,  7,11, 8,-1,  0, 0, 0, 0,  0, 0,  0, 0, //0x3850  Auctions [Zephyrus] itembound[Akinari]
-	-1, 7,-1, 7, 14, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x3860  Quests [Kevin] [Inkfish] / Achievements [Aleos]
+	-1, 7, 0, 7, 14, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x3860  Quests [Kevin] [Inkfish] / Achievements [Aleos]
 	-1, 3, 3, 0,  0, 0, 0, 0,  0, 0, 0, 0, -1, 3,  3, 0, //0x3870  Mercenaries [Zephyrus] / Elemental [pakpil]
 	12,-1, 7, 3,  0, 0, 0, 0,  0, 0,-1, 9, -1,19, 35,-1, //0x3880  Pet System,  Storages
 	-1,-1, 7, 3, 38,38,38,54, 38, 0, 0, 0,  0, 0,  0, 0, //0x3890  Homunculus [albator]
-	-1,-1, 8, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x38A0  Clans
+	-1,-1, 8, 0, -1,24, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x38A0  Clans / versioned achievement load/logout save
 };
 
 extern int32 char_fd; // inter server Fd used for char_fd
@@ -149,14 +152,14 @@ int32 intif_request_petdata(uint32 account_id,uint32 char_id,int32 pet_id)
  */
 int32 intif_save_petdata( uint32 account_id, const s_pet* p )
 {
-	if (CheckForCharServer())
+	if (!chrif_save_available())
 		return 0;
-	WFIFOHEAD(inter_fd, sizeof(struct s_pet) + 8);
-	WFIFOW(inter_fd,0) = 0x3082;
-	WFIFOW(inter_fd,2) = sizeof(struct s_pet) + 8;
-	WFIFOL(inter_fd,4) = account_id;
-	memcpy(WFIFOP(inter_fd,8),p,sizeof(struct s_pet));
-	WFIFOSET(inter_fd,WFIFOW(inter_fd,2));
+	std::vector<uint8> packet(sizeof(struct s_pet) + 8);
+	WBUFW(packet.data(),0) = 0x3082;
+	WBUFW(packet.data(),2) = sizeof(struct s_pet) + 8;
+	WBUFL(packet.data(),4) = account_id;
+	memcpy(WBUFP(packet.data(),8),p,sizeof(struct s_pet));
+	chrif_save_packet(packet.data(), WBUFW(packet.data(),2));
 
 	return 1;
 }
@@ -406,15 +409,15 @@ int32 intif_saveregistry(map_session_data *sd)
 	int32 plen = 0;
 	size_t len;
 
-	if (CheckForCharServer() || !sd->regs.vars)
+	if (!chrif_save_available() || !sd->regs.vars)
 		return -1;
 
-	WFIFOHEAD(inter_fd, 60000 + 300);
-	WFIFOW(inter_fd,0)  = 0x3004;
+	std::vector<uint8> packet(60000 + 300);
+	WBUFW(packet.data(),0)  = 0x3004;
 	// 0x2 = length (set later)
-	WFIFOL(inter_fd,4)  = sd->status.account_id;
-	WFIFOL(inter_fd,8)  = sd->status.char_id;
-	WFIFOW(inter_fd,12) = 0; // count
+	WBUFL(packet.data(),4)  = sd->status.account_id;
+	WBUFL(packet.data(),8)  = sd->status.char_id;
+	WBUFW(packet.data(),12) = 0; // count
 
 	plen = 14;
 
@@ -445,19 +448,19 @@ int32 intif_saveregistry(map_session_data *sd)
 			ShowError("intif_saveregistry: Variable name length is too long (aid: %d, cid: %d): '%s' sz=%" PRIuPTR "\n", sd->status.account_id, sd->status.char_id, varname, len);
 			continue;
 		}
-		WFIFOB(inter_fd, plen) = (unsigned char)len; // won't be higher; the column size is 32
+		WBUFB(packet.data(), plen) = (unsigned char)len; // won't be higher; the column size is 32
 		plen += 1;
 
-		safestrncpy(WFIFOCP(inter_fd,plen), varname, len); //the key
+		safestrncpy(WBUFCP(packet.data(),plen), varname, len); //the key
 		plen += static_cast<decltype(plen)>( len );
 
-		WFIFOL(inter_fd, plen) = script_getvaridx(key.i64);
+		WBUFL(packet.data(), plen) = script_getvaridx(key.i64);
 		plen += 4;
 
 		if( src->type ) {
 			struct script_reg_str *p = (struct script_reg_str *)src;
 
-			WFIFOB(inter_fd, plen) = p->value ? 2 : 3; //var type
+			WBUFB(packet.data(), plen) = p->value ? 2 : 3; //var type
 			plen += 1;
 
 			if( p->value ) {
@@ -469,10 +472,10 @@ int32 intif_saveregistry(map_session_data *sd)
 					p->value[len - 1] = '\0'; //this is backward for old char-serv but new one doesn't need this
 				}
 
-				WFIFOB(inter_fd, plen) = (uint8)len; 
+				WBUFB(packet.data(), plen) = (uint8)len;
 				plen += 1;
 
-				safestrncpy(WFIFOCP(inter_fd,plen), p->value, len);
+				safestrncpy(WBUFCP(packet.data(),plen), p->value, len);
 				plen += static_cast<decltype(plen)>( len );
 			} else {
 				script_reg_destroy_single(sd,key.i64,&p->flag);
@@ -481,11 +484,11 @@ int32 intif_saveregistry(map_session_data *sd)
 		} else {
 			struct script_reg_num *p = (struct script_reg_num *)src;
 
-			WFIFOB(inter_fd, plen) =  p->value ? 0 : 1;
+			WBUFB(packet.data(), plen) =  p->value ? 0 : 1;
 			plen += 1;
 
 			if( p->value ) {
-				WFIFOQ(inter_fd, plen) = p->value;
+				WBUFQ(packet.data(), plen) = p->value;
 				plen += 8;
 			} else {
 				script_reg_destroy_single(sd,key.i64,&p->flag);
@@ -493,27 +496,27 @@ int32 intif_saveregistry(map_session_data *sd)
 
 		}
 
-		WFIFOW(inter_fd,12) += 1;
+		WBUFW(packet.data(),12) += 1;
 
 		if( plen > 60000 ) {
-			WFIFOW(inter_fd, 2) = plen;
-			WFIFOSET(inter_fd, plen);
+			WBUFW(packet.data(), 2) = plen;
+			chrif_save_packet(packet.data(), plen);
 
 			// prepare follow up
-			WFIFOHEAD(inter_fd, 60000 + 300);
-			WFIFOW(inter_fd,0)  = 0x3004;
+			packet.resize(60000 + 300);
+			WBUFW(packet.data(),0)  = 0x3004;
 			// 0x2 = length (set later)
-			WFIFOL(inter_fd,4)  = sd->status.account_id;
-			WFIFOL(inter_fd,8)  = sd->status.char_id;
-			WFIFOW(inter_fd,12) = 0; // count
+			WBUFL(packet.data(),4)  = sd->status.account_id;
+			WBUFL(packet.data(),8)  = sd->status.char_id;
+			WBUFW(packet.data(),12) = 0; // count
 
 			plen = 14;
 		}
 	}
 	dbi_destroy(iter);
 
-	WFIFOW(inter_fd, 2) = plen;
-	WFIFOSET(inter_fd, plen);
+	WBUFW(packet.data(), 2) = plen;
+	chrif_save_packet(packet.data(), plen);
 
 	sd->vars_dirty = false;
 
@@ -1241,14 +1244,14 @@ int32 intif_homunculus_requestload(uint32 account_id, int32 homun_id)
  */
 int32 intif_homunculus_requestsave( uint32 account_id, const s_homunculus* sh )
 {
-	if (CheckForCharServer())
+	if (!chrif_save_available())
 		return 0;
-	WFIFOHEAD(inter_fd, sizeof(struct s_homunculus)+8);
-	WFIFOW(inter_fd,0) = 0x3092;
-	WFIFOW(inter_fd,2) = sizeof(struct s_homunculus)+8;
-	WFIFOL(inter_fd,4) = account_id;
-	memcpy(WFIFOP(inter_fd,8),sh,sizeof(struct s_homunculus));
-	WFIFOSET(inter_fd, WFIFOW(inter_fd,2));
+	std::vector<uint8> packet(sizeof(struct s_homunculus)+8);
+	WBUFW(packet.data(),0) = 0x3092;
+	WBUFW(packet.data(),2) = sizeof(struct s_homunculus)+8;
+	WBUFL(packet.data(),4) = account_id;
+	memcpy(WBUFP(packet.data(),8),sh,sizeof(struct s_homunculus));
+	chrif_save_packet(packet.data(), WBUFW(packet.data(),2));
 	return 1;
 
 }
@@ -2129,16 +2132,16 @@ int32 intif_quest_save(map_session_data *sd)
 {
 	int32 len = sizeof(struct quest) * sd->num_quests + 8;
 
-	if(CheckForCharServer())
+	if(!chrif_save_available())
 		return 0;
 
-	WFIFOHEAD(inter_fd, len);
-	WFIFOW(inter_fd,0) = 0x3061;
-	WFIFOW(inter_fd,2) = len;
-	WFIFOL(inter_fd,4) = sd->status.char_id;
+	std::vector<uint8> packet(len);
+	WBUFW(packet.data(),0) = 0x3061;
+	WBUFW(packet.data(),2) = len;
+	WBUFL(packet.data(),4) = sd->status.char_id;
 	if( sd->num_quests )
-		memcpy(WFIFOP(inter_fd,8), sd->quest_log, sizeof(struct quest)*sd->num_quests);
-	WFIFOSET(inter_fd,  len);
+		memcpy(WBUFP(packet.data(),8), sd->quest_log, sizeof(struct quest)*sd->num_quests);
+	chrif_save_packet(packet.data(), len);
 
 	return 1;
 }
@@ -2156,10 +2159,11 @@ void intif_request_achievements(uint32 char_id)
 	if (CheckForCharServer())
 		return;
 
-	WFIFOHEAD(inter_fd, 6);
-	WFIFOW(inter_fd, 0) = 0x3062;
+	WFIFOHEAD(inter_fd, pn_achievement_protocol::request_size);
+	WFIFOW(inter_fd, 0) = pn_achievement_protocol::load_request;
 	WFIFOL(inter_fd, 2) = char_id;
-	WFIFOSET(inter_fd, 6);
+	WFIFOB(inter_fd, 6) = pn_achievement_protocol::version;
+	WFIFOSET(inter_fd, pn_achievement_protocol::request_size);
 }
 
 /**
@@ -2168,56 +2172,84 @@ void intif_request_achievements(uint32 char_id)
  */
 void intif_parse_achievements(int32 fd)
 {
-	uint32 char_id = RFIFOL(fd, 4), num_received = (RFIFOW(fd, 2) - 8) / sizeof(struct achievement);
+	const uint16 packet_length = RFIFOW(fd, 2);
+	if (packet_length < pn_achievement_protocol::response_size ||
+		RFIFOB(fd, 8) != pn_achievement_protocol::version ||
+		(packet_length - pn_achievement_protocol::response_size) % sizeof(struct achievement) != 0) {
+		ShowError("intif_parse_achievements: Invalid packet length %u.\n", packet_length);
+		// A legacy or truncated reply cannot establish an authoritative cache.
+		// When it still carries an identity, fail that player closed; otherwise
+		// reset the malformed inter-server stream so it cannot stay desynchronized.
+		if (packet_length >= 8) {
+			if (map_session_data* sd = map_charid2sd(RFIFOL(fd, 4))) {
+				sd->achievement_data.loaded = false;
+				sd->achievement_data.save = false;
+				sd->shop_commit.deferred_achievements.clear();
+				set_eof(sd->fd);
+			}
+		} else {
+			set_eof(fd);
+		}
+		return;
+	}
+	uint32 char_id = RFIFOL(fd, 4), num_received =
+		(packet_length - pn_achievement_protocol::response_size) / sizeof(struct achievement);
 	map_session_data *sd = map_charid2sd(char_id);
 
 	if (!sd) // User not online anymore
 		return;
-
-	if (num_received == 0) {
-		if (sd->achievement_data.achievements) {
-			aFree(sd->achievement_data.achievements);
-			sd->achievement_data.achievements = nullptr;
-			sd->achievement_data.incompleteCount = 0;
-			sd->achievement_data.count = 0;
-		}
-	} else {
-		struct achievement *received = (struct achievement *)RFIFOP(fd, 8);
-		int32 i, k = num_received;
-
-		if (sd->achievement_data.achievements)
-			RECREATE(sd->achievement_data.achievements, struct achievement, num_received);
-		else
-			CREATE(sd->achievement_data.achievements, struct achievement, num_received);
-
-		for (i = 0; i < num_received; i++) {
-			std::shared_ptr<s_achievement_db> adb = achievement_db.find( received[i].achievement_id );
-
-			if (!adb) {
-				ShowError("intif_parse_achievements: Achievement %d not found in achievement_db.\n", received[i].achievement_id);
-				continue;
-			}
-
-			received[i].score = adb->score;
-
-			if (received[i].completed == 0) // Insert at the beginning
-				memcpy(&sd->achievement_data.achievements[sd->achievement_data.incompleteCount++], &received[i], sizeof(struct achievement));
-			else // Insert at the end
-				memcpy(&sd->achievement_data.achievements[--k], &received[i], sizeof(struct achievement));
-			sd->achievement_data.count++;
-		}
-		if (sd->achievement_data.incompleteCount < k) {
-			// sd->achievement_data.incompleteCount and k didn't meet in the middle: some entries were skipped
-			if (k < num_received) // Move the entries at the end to fill the gap
-				memmove(&sd->achievement_data.achievements[k], &sd->achievement_data.achievements[sd->achievement_data.incompleteCount], sizeof(struct achievement) * (num_received - k));
-			sd->achievement_data.achievements = (struct achievement *)aRealloc(sd->achievement_data.achievements, sizeof(struct achievement) * sd->achievement_data.count);
-		}
+	if (!RFIFOB(fd, 9)) {
+		// An SQL error is not an authoritative empty log. Disconnect before any
+		// objective or save can replace the durable rows with partial state.
+		ShowError("intif_parse_achievements: Failed to load achievements for character %u.\n", char_id);
+		sd->achievement_data.loaded = false;
+		sd->achievement_data.save = false;
+		sd->shop_commit.deferred_achievements.clear();
+		set_eof(sd->fd);
+		return;
 	}
+
+	std::vector<achievement> incomplete, completed;
+	uint16 opaque_count = 0;
+	incomplete.reserve(num_received);
+	completed.reserve(num_received);
+	for (uint32 i = 0; i < num_received; ++i) {
+		achievement row{};
+		memcpy(&row, RFIFOP(fd, pn_achievement_protocol::response_size + i * sizeof(row)), sizeof(row));
+		const auto adb = achievement_db.find(row.achievement_id);
+		if (!adb) {
+			ShowError("intif_parse_achievements: Achievement %d not found in achievement_db.\n", row.achievement_id);
+			++opaque_count;
+			continue;
+		}
+		row.score = adb->score;
+		(row.completed == 0 ? incomplete : completed).push_back(row);
+	}
+	if (sd->achievement_data.achievements)
+		aFree(sd->achievement_data.achievements);
+	sd->achievement_data.achievements = nullptr;
+	sd->achievement_data.count = 0;
+	sd->achievement_data.incompleteCount = 0;
+	sd->achievement_data.opaque_count = opaque_count;
+	const size_t accepted = incomplete.size() + completed.size();
+	if (accepted) {
+		CREATE(sd->achievement_data.achievements, achievement, accepted);
+		std::copy(incomplete.begin(), incomplete.end(), sd->achievement_data.achievements);
+		std::copy(completed.begin(), completed.end(), sd->achievement_data.achievements + incomplete.size());
+		sd->achievement_data.incompleteCount = static_cast<uint16>(incomplete.size());
+		sd->achievement_data.count = static_cast<uint16>(accepted);
+	}
+	sd->achievement_data.loaded = true;
 
 	// Check all conditions and counters on login
 	for( int32 group = AG_NONE + 1; group < AG_MAX; group++ ){
 		achievement_update_objective( sd, static_cast<e_achievement_group>( group ), 0 );
 	}
+	// Events raised while the initial SQL request was in flight now build on
+	// the authoritative image in their original order.
+	auto deferred = std::move(sd->shop_commit.deferred_achievements);
+	for (const auto& event : deferred)
+		achievement_update_objective_values(sd, static_cast<e_achievement_group>(event.group), event.arguments);
 
 	achievement_level(sd, false); // Calculate level info but don't give any AG_GOAL_ACHIEVE achievements
 	achievement_get_titles(sd->status.char_id); // Populate the title list for completed achievements
@@ -2233,14 +2265,35 @@ void intif_parse_achievements(int32 fd)
  */
 void intif_parse_achievementsave(int32 fd)
 {
-	int32 cid = RFIFOL(fd, 2);
+	int32 cid;
+	memcpy(&cid, RFIFOP(fd, 2), sizeof(cid));
+	const bool success = RFIFOB(fd, 6) != 0;
 	map_session_data *sd = map_charid2sd(cid);
 
 	if (!sd) // User not online anymore
 		return;
 
-	if (!RFIFOB(fd, 6))
+	if (!success) {
+		// A sent snapshot is not durable until the character server accepts it.
+		// Retry current progress at the next save; success ACKs must not clear
+		// changes made after an earlier snapshot was sent.
+		sd->achievement_data.save = true;
 		ShowError("intif_parse_achievementsave: Failed to save achievement(s) for character %s (%d)!\n", sd->status.name, cid);
+	}
+}
+
+/** Parses the tokenized final achievement snapshot acknowledgement. */
+void intif_parse_achievementlogoutsave(int32 fd)
+{
+	if (RFIFOB(fd, 2) != pn_achievement_protocol::version) {
+		ShowError("intif_parse_achievementlogoutsave: Unsupported protocol version %u.\n", RFIFOB(fd, 2));
+		set_eof(fd);
+		return;
+	}
+	const uint32 account_id = RFIFOL(fd, 4);
+	const uint32 char_id = RFIFOL(fd, 8);
+	const uint64 generation = RFIFOQ(fd, 16);
+	chrif_auth_achievement_saved(account_id, char_id, generation, RFIFOB(fd, 3) != 0);
 }
 
 /**
@@ -2248,20 +2301,71 @@ void intif_parse_achievementsave(int32 fd)
  * @param sd: Character's data
  * @return 0 in case of success, nonzero otherwise
  */
-int32 intif_achievement_save(map_session_data *sd)
+int32 intif_achievement_save_snapshot(uint32 char_id, const struct achievement* rows, uint16 count)
 {
-	int32 len = sizeof(struct achievement) * sd->achievement_data.count + 8;
-
-	if (CheckForCharServer())
+	if ((count && !rows) || CheckForCharServer())
 		return 0;
-
+	const size_t packet_size = sizeof(struct achievement) * static_cast<size_t>(count) + 8;
+	if (packet_size > std::numeric_limits<uint16>::max())
+		return 0;
+	const uint16 len = static_cast<uint16>(packet_size);
 	WFIFOHEAD(inter_fd, len);
 	WFIFOW(inter_fd, 0) = 0x3063;
 	WFIFOW(inter_fd, 2) = len;
-	WFIFOL(inter_fd, 4) = sd->status.char_id;
-	if (sd->achievement_data.count)
-		memcpy(WFIFOP(inter_fd, 8), sd->achievement_data.achievements, sizeof(struct achievement) * sd->achievement_data.count);
+	WFIFOL(inter_fd, 4) = char_id;
+	if (count)
+		memcpy(WFIFOP(inter_fd, 8), rows, sizeof(struct achievement) * count);
 	WFIFOSET(inter_fd, len);
+	return 1;
+}
+
+int32 intif_achievement_logout_save(uint32 account_id, uint32 char_id, uint64 generation,
+	const struct achievement* rows, uint16 count)
+{
+	if (!account_id || !char_id || !generation || (count && !rows) || CheckForCharServer())
+		return 0;
+	const size_t packet_size = sizeof(struct achievement) * static_cast<size_t>(count) +
+		pn_achievement_protocol::logout_request_size;
+	if (packet_size > std::numeric_limits<uint16>::max())
+		return 0;
+	const uint16 len = static_cast<uint16>(packet_size);
+	WFIFOHEAD(inter_fd, len);
+	WFIFOW(inter_fd, 0) = pn_achievement_protocol::logout_save_request;
+	WFIFOW(inter_fd, 2) = len;
+	WFIFOL(inter_fd, 4) = account_id;
+	WFIFOL(inter_fd, 8) = char_id;
+	WFIFOB(inter_fd, 12) = pn_achievement_protocol::version;
+	memset(WFIFOP(inter_fd, 13), 0, 3);
+	WFIFOQ(inter_fd, 16) = generation;
+	if (count)
+		memcpy(WFIFOP(inter_fd, pn_achievement_protocol::logout_request_size), rows,
+			sizeof(struct achievement) * count);
+	WFIFOSET(inter_fd, len);
+	return 1;
+}
+
+int32 intif_achievement_save(map_session_data *sd)
+{
+	if (!sd->achievement_data.loaded) {
+		// Never serialize the empty bootstrap cache or a cache invalidated by a
+		// failed load, even if an unrelated path accidentally marked it dirty.
+		sd->achievement_data.save = false;
+		return 0;
+	}
+	const size_t packet_size = sizeof(struct achievement) * static_cast<size_t>(sd->achievement_data.count) + 8;
+	if (sd->achievement_data.count > pn_achievement_protocol::max_logout_rows(sizeof(struct achievement)) ||
+		packet_size > std::numeric_limits<uint16>::max()) {
+		ShowError("intif_achievement_save: Character %u has too many achievement rows for the save protocol.\n",
+			sd->status.char_id);
+		sd->achievement_data.loaded = false;
+		sd->achievement_data.save = false;
+		sd->shop_commit.deferred_achievements.clear();
+		set_eof(sd->fd);
+		return 0;
+	}
+	if (!intif_achievement_save_snapshot(sd->status.char_id, sd->achievement_data.achievements,
+		sd->achievement_data.count))
+		return 0;
 
 	sd->achievement_data.save = false;
 
@@ -2280,15 +2384,24 @@ void intif_parse_achievementreward(int32 fd){
 	if( !sd ){
 		return;
 	}
+	const int32 achievement_id = RFIFOL(fd, 6);
+	if (sd->achievement_data.reward_pending_id != achievement_id)
+		return;
+	sd->achievement_data.reward_pending_id = 0;
 
-	achievement_get_reward(sd, RFIFOL(fd, 6), RFIFOL(fd, 10));
+	// Events that arrived while SQL owned the reward row now build on the same
+	// authoritative map image, in their original order.
+	auto deferred = std::move(sd->shop_commit.deferred_achievements);
+	for (const auto& event : deferred)
+		achievement_update_objective_values(sd, static_cast<e_achievement_group>(event.group), event.arguments);
+	achievement_get_reward(sd, achievement_id, RFIFOL(fd, 10));
 }
 
 /**
  * Request the achievement rewards from the inter server.
  */
-int32 intif_achievement_reward( const map_session_data* sd, struct s_achievement_db *adb ){
-	if( CheckForCharServer() ){
+int32 intif_achievement_reward( map_session_data* sd, struct s_achievement_db *adb ){
+	if( CheckForCharServer() || sd->achievement_data.reward_pending_id ){
 		return 0;
 	}
 
@@ -2301,6 +2414,7 @@ int32 intif_achievement_reward( const map_session_data* sd, struct s_achievement
 	safestrncpy(WFIFOCP(inter_fd, 16), sd->status.name, NAME_LENGTH);
 	safestrncpy(WFIFOCP(inter_fd, 16+NAME_LENGTH), adb->name.c_str(), ACHIEVEMENT_NAME_LENGTH);
 	WFIFOSET(inter_fd, 16+NAME_LENGTH+ACHIEVEMENT_NAME_LENGTH);
+	sd->achievement_data.reward_pending_id = adb->achievement_id;
 
 	return 1;
 }
@@ -3052,14 +3166,14 @@ int32 intif_mercenary_save(struct s_mercenary *merc)
 {
 	int32 size = sizeof(struct s_mercenary) + 4;
 
-	if( CheckForCharServer() )
+	if( !chrif_save_available() )
 		return 0;
 
-	WFIFOHEAD(inter_fd,size);
-	WFIFOW(inter_fd,0) = 0x3073;
-	WFIFOW(inter_fd,2) = size;
-	memcpy(WFIFOP(inter_fd,4), merc, sizeof(struct s_mercenary));
-	WFIFOSET(inter_fd,size);
+	std::vector<uint8> packet(size);
+	WBUFW(packet.data(),0) = 0x3073;
+	WBUFW(packet.data(),2) = size;
+	memcpy(WBUFP(packet.data(),4), merc, sizeof(struct s_mercenary));
+	chrif_save_packet(packet.data(), size);
 	return 1;
 }
 
@@ -3177,14 +3291,14 @@ int32 intif_elemental_save(struct s_elemental *ele)
 {
 	int32 size = sizeof(struct s_elemental) + 4;
 
-	if( CheckForCharServer() )
+	if( !chrif_save_available() )
 		return 0;
 
-	WFIFOHEAD(inter_fd,size);
-	WFIFOW(inter_fd,0) = 0x307f;
-	WFIFOW(inter_fd,2) = size;
-	memcpy(WFIFOP(inter_fd,4), ele, sizeof(struct s_elemental));
-	WFIFOSET(inter_fd,size);
+	std::vector<uint8> packet(size);
+	WBUFW(packet.data(),0) = 0x307f;
+	WBUFW(packet.data(),2) = size;
+	memcpy(WBUFP(packet.data(),4), ele, sizeof(struct s_elemental));
+	chrif_save_packet(packet.data(), size);
 	return 1;
 }
 
@@ -3664,17 +3778,17 @@ bool intif_storage_save( const map_session_data* sd, const s_storage* stor )
 	nullpo_retr(false, sd);
 	nullpo_retr(false, stor);
 
-	if (CheckForCharServer())
+	if (!chrif_save_available())
 		return false;
 
-	WFIFOHEAD(inter_fd, stor_size+13);
-	WFIFOW(inter_fd, 0) = 0x308b;
-	WFIFOW(inter_fd, 2) = stor_size+13;
-	WFIFOB(inter_fd, 4) = stor->type;
-	WFIFOL(inter_fd, 5) = sd->status.account_id;
-	WFIFOL(inter_fd, 9) = sd->status.char_id;
-	memcpy(WFIFOP(inter_fd, 13), stor, stor_size);
-	WFIFOSET(inter_fd, stor_size+13);
+	std::vector<uint8> packet(stor_size+13);
+	WBUFW(packet.data(), 0) = 0x308b;
+	WBUFW(packet.data(), 2) = stor_size+13;
+	WBUFB(packet.data(), 4) = stor->type;
+	WBUFL(packet.data(), 5) = sd->status.account_id;
+	WBUFL(packet.data(), 9) = sd->status.char_id;
+	memcpy(WBUFP(packet.data(), 13), stor, stor_size);
+	chrif_save_packet(packet.data(), stor_size+13);
 	return true;
 }
 
@@ -3836,6 +3950,11 @@ int32 intif_parse(int32 fd)
 		if(RFIFOREST(fd)<4)
 			return 2;
 		packet_len = RFIFOW(fd,2);
+		if (packet_len < 4) {
+			ShowError("intif_parse: Invalid dynamic packet length %d from session %d.\n", packet_len, fd);
+			set_eof(fd);
+			return 2;
+		}
 	}
 	if((int32)RFIFOREST(fd)<packet_len){
 		return 2;
@@ -3912,8 +4031,9 @@ int32 intif_parse(int32 fd)
 	case 0x3861:	intif_parse_questsave(fd); break;
 
 	//Achievement system
-	case 0x3862:	intif_parse_achievements(fd); break;
+	case pn_achievement_protocol::load_response:	intif_parse_achievements(fd); break;
 	case 0x3863:	intif_parse_achievementsave(fd); break;
+	case pn_achievement_protocol::logout_save_response: intif_parse_achievementlogoutsave(fd); break;
 	case 0x3864:	intif_parse_achievementreward(fd); break;
 
 	// Mercenary System

@@ -1,0 +1,85 @@
+{
+  "passed": true,
+  "verified_utc": "2026-10-01T11:51:28.982073+00:00",
+  "deployed_utc": "2026-10-01T11:50:37.498288+00:00",
+  "manifest_sha256": "753b35843f62a0469bf8cb2ba9980b920bc868d60de79256c354251d4d62d669",
+  "baseline_commit": "091107357d309b110249686ce5a525b05741d9cd",
+  "full_gate_checks": 83,
+  "full_gate_sha256": "ef1de7d5ded08901dd288109bbf7b66546db1cdfc49a4cb1b65d8c7cd2538fba",
+  "logout_live_sha256": "3be9b7ae3c1c4e92fda0447924d05509ea629cc9874d1b1950c8c1f5d94a308d",
+  "running_binaries": {
+    "login-server": "e03340f6609ede31cfbdc178a491732806721af4445a8a472f1ff6f32dff0e8d",
+    "char-server": "3ee70d94308a5d566bfa66c56fdef2b75221245602138969ac8c8dd095ecf57f",
+    "map-server": "2fc69dccb5ce5a7bf264ec882be22fd70263058d7ba27ecfb477d9723b4117bc",
+    "web-server": "33ed9ef159c300be986898287536981d354a2076bf5ff88430b69d3fc71c591b"
+  },
+  "services": {
+    "rathena-login": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-10-01T11:48:29.768423134Z"
+    },
+    "rathena-char": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-10-01T11:48:35.918961727Z"
+    },
+    "rathena-map": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-10-01T11:48:41.340695554Z"
+    },
+    "rathena-web": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-10-01T11:48:47.830025025Z"
+    },
+    "rathena-fluxcp": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-10-01T11:50:27.9091005Z"
+    },
+    "rathena-db": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-09-19T13:32:01.613804335Z"
+    },
+    "npm": {
+      "healthy": true,
+      "restarts": 0,
+      "started_at": "2026-09-19T13:32:47.825354661Z"
+    }
+  },
+  "health_passed": true,
+  "admissions_open": true,
+  "expected_catalog_delta": {
+    "table": "market",
+    "added_row": {
+      "name": "para_alc10",
+      "nameid": 7136,
+      "price": 7000,
+      "amount": 20,
+      "flag": 0
+    },
+    "existing_rows_unchanged": true
+  },
+  "achievement_engine": "InnoDB",
+  "pending_global_barriers": 0,
+  "unchanged_existing_tables": 54,
+  "backup": {
+    "archive_sha256": "3dbe148463b49d4cb8bd6ec1a5b0be02430b4335243686f18e779cfd8c6a51dd",
+    "restore_verified": true,
+    "path": "/app/rathena-database-backups/ragnarok-20261001T114814365976Z.sql.gz"
+  },
+  "rollback_directory": "/app/pn-deploy-20261001/deployment/before",
+  "cleanup": {
+    "obsolete_build_files": 2819,
+    "obsolete_build_bytes": 9881299822,
+    "obsolete_backup_files": 12298,
+    "obsolete_backup_bytes": 6251640568,
+    "compressed_test_bytes_saved": 1648866358,
+    "disk_free_bytes": 19380523008,
+    "disk_total_bytes": 105089261568,
+    "disk_used_bytes": 80323252224
+  }
+}

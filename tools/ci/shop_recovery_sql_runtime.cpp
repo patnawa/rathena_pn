@@ -10,6 +10,7 @@
 #include <vector>
 #include "char/char.hpp"
 #include "char/inter.hpp"
+#include "char/int_achievement.hpp"
 #include "char/int_storage.hpp"
 #include "common/malloc.hpp"
 #include "common/sql.hpp"
@@ -39,11 +40,13 @@ static void connect_db(){
     std::strcpy(schema_config.inventory_db,"inventory");std::strcpy(schema_config.char_db,"char");
     std::strcpy(schema_config.acc_reg_num_table,"acc_reg_num");
     std::strcpy(schema_config.pet_db,"pet");
+    std::strcpy(schema_config.achievement_table,"achievement");
 }
 static std::string state(bool receipts=true){
     std::string value=result("SELECT char_id,account_id,zeny,uniqueitem_counter FROM `char` ORDER BY char_id")+
         result("SELECT * FROM inventory ORDER BY id")+
         result("SELECT * FROM acc_reg_num ORDER BY account_id,`key`,`index`")+
+        result("SELECT * FROM achievement ORDER BY char_id,id")+
         result("SELECT * FROM market ORDER BY name,nameid")+result("SELECT * FROM barter ORDER BY name,`index`")+
         result("SELECT * FROM sales ORDER BY nameid");
     if(receipts)value+=result("SELECT account_id,nonce_hi,nonce_lo,sequence,HEX(payload),outcome FROM pn_shop_commits ORDER BY account_id,sequence");
@@ -66,8 +69,8 @@ static pn_shop::Commit request(uint32 kind=pn_shop::Market){
 }
 static void seed(){
     char_get_chardb().clear();auto cached=std::make_shared<mmo_charstatus>();cached->zeny=1000;cached->uniqueitem_counter=5;char_get_chardb()[99001313]=cached;
-    sql("DROP TRIGGER IF EXISTS shop_fault");sql("DROP TRIGGER IF EXISTS shop_crash");
-    for(const char* table:{"pn_shop_commits","inventory","acc_reg_num","market","barter","sales","char"})sql(std::string("DELETE FROM `")+table+"`");
+    sql("DROP TRIGGER IF EXISTS shop_fault");sql("DROP TRIGGER IF EXISTS shop_crash");sql("DROP TRIGGER IF EXISTS shop_progression_fault");
+    for(const char* table:{"pn_shop_commits","inventory","acc_reg_num","achievement","market","barter","sales","char"})sql(std::string("DELETE FROM `")+table+"`");
     sql("INSERT INTO `char` (char_id,account_id,name,zeny,uniqueitem_counter) VALUES (99001313,990013,'Shop fixture',1000,5),(99001314,990014,'Other fixture',777,9)");
     sql("INSERT INTO inventory(id,char_id,nameid,amount,identify,refine,bound,unique_id,card0) VALUES (1,99001313,1201,1,1,10,2,987654321,4001),(2,99001313,503,20,1,0,0,0,0)");
     sql("INSERT INTO acc_reg_num(account_id,`key`,`index`,`value`) VALUES (990013,'#CASHPOINTS',0,1000),(990013,'#KAFRAPOINTS',0,200),(990014,'#CASHPOINTS',0,77)");
@@ -99,6 +102,7 @@ static void newer(){
 #include "pet_floor_sql_cases.inc"
 #include "point_asset_sql_cases.inc"
 #include "point_global_sql_cases.inc"
+#include "shop_progression_sql_cases.inc"
 
 extern "C" int __wrap_main(int argc,char** argv){
     malloc_init();timer_init();connect_db();const std::string mode=argc>1?argv[1]:"normal";
@@ -110,6 +114,7 @@ extern "C" int __wrap_main(int argc,char** argv){
     if(mode=="pet-mail")return pet_mail_cases();
     if(mode=="pet-retirement")return pet_retirement_cases();
     if(mode.rfind("pet-",0)==0)return pet_cases(mode);
+    if(mode=="progression")return progression_sql_cases();
     if(mode=="race-a" || mode=="race-b"){
         const bool second=mode=="race-b";
         r.stock_count=1;r.stocks[0].before=1;r.stocks[0].after=0;r.wallet_after=900;r.items[3]={};
@@ -251,6 +256,27 @@ extern "C" int __wrap_main(int argc,char** argv){
         require(state(false)==owner_before,"wrong owner leaves player and stock untouched");
         require(result("SELECT outcome FROM pn_shop_commits")=="2|\n","wrong owner rejection is durable");seed();
         require(pn_shop_tosql(r,true)==pn_shop::Committed,"successful multirow purchase");committed(r);
+        require(std::stoul(result("SELECT OCTET_LENGTH(payload) FROM pn_shop_commits"))<sizeof(r)/10,"real receipt stored compactly");
+        auto replace_receipt=[&](const void* data,size_t size){
+            SqlStmt stmt{*sql_handle};
+            require(stmt.Prepare("UPDATE pn_shop_commits SET payload=?")==SQL_SUCCESS &&
+                stmt.BindParam(0,SQLDT_BLOB,const_cast<void*>(data),size)==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS,"install fixture receipt encoding");
+        };
+        replace_receipt(&r,sizeof(r));auto legacy=state();
+        require(pn_shop_tosql(r,false)==pn_shop::Committed,"historical raw receipt accepted after owner change");
+        require(state()==legacy,"raw replay leaves every asset and receipt unchanged");
+        auto encoded=pn_shop_receipt_codec::encode(&r,sizeof(r));
+        for(int damage=0;damage<4;++damage){
+            auto broken=encoded;
+            if(damage==0)broken[4]=2;
+            if(damage==1)broken.pop_back();
+            if(damage==2)broken.push_back(0);
+            if(damage==3)broken.back()^=1;
+            replace_receipt(broken.data(),broken.size());auto corrupt=state();
+            require(pn_shop_tosql(r,true)==pn_shop::Retry,"corrupt or unsupported receipt cannot acknowledge or reapply");
+            require(state()==corrupt,"corrupt receipt failure leaves all SQL state unchanged");
+        }
+        replace_receipt(encoded.data(),encoded.size());
         newer();auto after=state();
         require(pn_shop_tosql(r,true)==pn_shop::Committed,"lost ACK retries return receipt");require(state()==after,"retry does not replay stale snapshots");
         require(!char_get_chardb().count(r.char_id),"receipt replay evicts old character cache");

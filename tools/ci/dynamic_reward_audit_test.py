@@ -1,8 +1,14 @@
 import importlib.util,sys,unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from audit_dynamic_rewards import candidates,split_args,scopes
+from audit_dynamic_rewards import candidates,split_args,scopes,grant_sites
 class DynamicAuditTests(unittest.TestCase):
+ def test_actual_calls_only_with_parentheses_and_rental_variants(self):
+  text='x,1,1,1\tscript\tOne\t1,{\nmes "getitem 999,1;";\n.@id=501;\nrentitem2(.@id,60,1,0,0,0,0,0,0);\ngetitembound4 .@unknown,1,1,0,0,0,0,0,0,0,0,0;\n}'
+  rows=list(grant_sites(text,{}))
+  self.assertEqual([(r['command'],r['line']) for r in rows],[('rentitem2',4),('getitembound4',5)])
+  self.assertEqual(rows[0]['candidate_ids'],[501])
+  self.assertEqual(rows[1]['unknown_dependencies'],['.@unknown'])
  def test_constant_array_index_does_not_treat_prices_as_items(self):
   f=candidates('setarray .@catalog[0],516,100,7; setarray .@catalog[0],501,1100,7;',{})
   self.assertEqual(f('.@catalog[0]'),({516,501},set()))
