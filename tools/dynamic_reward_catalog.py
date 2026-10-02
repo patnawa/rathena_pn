@@ -29,7 +29,9 @@ def require(condition, message):
 def generate(root=ROOT):
     sources = {}
     def read(path):
-        raw = (root / path).read_bytes()
+        # Bind to canonical source text, like the NPC include-graph reader.
+        # Git's Windows checkout conversion must not change recipe identity.
+        raw = (root / path).read_bytes().replace(b'\r\n',b'\n').replace(b'\r',b'\n')
         sources[path] = hashlib.sha256(raw).hexdigest()
         return raw.decode('utf-8-sig')
     rune = json.loads(read(RUNE))

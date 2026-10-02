@@ -1,3 +1,14 @@
+#include "map/mob.hpp"
+#include "map/skill.hpp"
+static mob_data* lab_target=nullptr;
+extern "C" block_list* lab_lookup(int32) asm("__wrap__Z9map_id2bli");
+extern "C" block_list* lab_lookup(int32 id){
+ if(attached&&attached->id==id)return attached;
+ return lab_target&&lab_target->id==id?lab_target:nullptr;
+}
+// Only outgoing view refresh is doubled; target configuration/status are real.
+extern "C" void lab_refresh(const block_list*,bool) asm("__wrap__Z12unit_refreshPK10block_listb");
+extern "C" void lab_refresh(const block_list*,bool){}
 extern "C" bool lab_set(map_session_data*,int64,int64) asm("__wrap__Z14pc_setregistryP16map_session_datall");
 extern "C" bool lab_set(map_session_data* sd,int64 key,int64 value){nums[key]=value;script_array_update(&sd->regs,key,value==0);return true;}
 extern "C" bool lab_setstr(map_session_data*,int64,const char*) asm("__wrap__Z18pc_setregistry_strP16map_session_datalPKc");
@@ -15,13 +26,80 @@ static std::unique_ptr<map_session_data> lab_player(){
 }
 static void lab_detach(){if(attached->regs.arrays)attached->regs.arrays->destroy(attached->regs.arrays,script_free_array_db);attached->regs.arrays=nullptr;attached=nullptr;}
 extern "C" int __wrap_main(int argc,char**argv){
- check(argc==2,"source");deny_network();static char server[]="lab-history-audit";SERVER_NAME=server;
+ check(argc==3||argc==4,"source");const bool red=argc==4;deny_network();static char server[]="lab-history-audit";SERVER_NAME=server;
  malloc_init();db_init();do_init_database();timer_init();do_init_script();battle_set_defaults();
  const auto source=read(argv[1]);
+ auto* console=compile(body(source,"\tscript\tPN Lab Console"),"complete lab console");script_free_code(console);
  for(auto name:{"PN_LabSave","PN_LabCompatible","PN_LabHistory"}) {
   strdb_put(script_get_userfunc_db(),name,compile(body(source,std::string("function\tscript\t")+name),name));
  }
+ if(!red)for(auto name:{"PN_LabTargetValid","PN_LabPresetSave","PN_LabPresetLoad","PN_LabTargetIdentity","PN_LabApplyTarget"})
+  strdb_put(script_get_userfunc_db(),name,compile(body(source,std::string("function\tscript\t")+name),name));
  auto sd=lab_player();
+ {
+  auto target=std::make_unique<mob_data>();lab_target=target.get();target->id=99000004;target->type=BL_MOB;
+  target->db=std::make_shared<s_mob_db>();target->vd=&target->db->vd;target->ud.bl=target.get();
+  target->ud.walktimer=target->ud.attacktimer=target->ud.skilltimer=target->ud.steptimer=INVALID_TIMER;
+  target->db->status.hp=target->db->status.max_hp=2000000000;
+  target->db->status.ele_lv=1;target->status=target->db->status;
+  if(red){
+   auto begin=source.find("setunitdata .@mob,UMOB_MODE,");check(begin!=std::string::npos,"exact production target mode");
+   exec_lab(".@mob=99000004; "+source.substr(begin,source.find(';',begin)-begin+1));
+   std::printf("LAB_TARGET actual_class=%d expected_normal=%d\n",target->status.class_,CLASS_NORMAL);
+   check(target->status.class_==CLASS_NORMAL,"normal-class lab target must activate normal-only combat bonuses");
+  }else{
+   ++cases;
+   exec_lab("setarray @PNLabTarget[0],0,1,0,0,1,0,0,0,0; LabApplied=callfunc(\"PN_LabApplyTarget\",99000004);");
+   check(nums[add_str("LabApplied")]==1&&target->status.class_==CLASS_NORMAL,"normal target actual class after every production setting");
+   check(!status_has_mode(&target->status,MD_STATUSIMMUNE)&&status_has_mode(&target->status,MD_KNOCKBACKIMMUNE),"normal target permits effects and resists knockback");
+   check(!status_has_mode(&target->status,MD_CANATTACK)&&!status_has_mode(&target->status,MD_CANMOVE),"target neither attacks nor moves");
+   map_num=1;std::strcpy(map[0].name,"lab_test");map[0].initMapFlags();
+   std::vector<mapcell> cells(64);for(auto& c:cells){c.walkable=1;c.shootable=1;}
+   map[0].xs=map[0].ys=8;map[0].cell=cells.data();
+   target->m=0;target->x=4;target->y=4;target->damagetaken=100;
+   sd->m=0;sd->x=3;sd->y=4;sd->status.base_level=1;sd->status.class_=JOB_NOVICE;sd->class_=MAPID_NOVICE;
+   sd->battle_status.hp=sd->battle_status.max_hp=10000;sd->battle_status.batk=10000;
+   sd->battle_status.rhw.atk=sd->battle_status.rhw.atk2=10000;sd->battle_status.watk=10000;
+   sd->battle_status.rhw.ele=ELE_NEUTRAL;sd->bonus.perfect_hit=100;
+   for(auto& rate:sd->right_weapon.atkmods)rate=100;
+   auto item_source=read(argv[2]);auto tree=ryml::parse_in_arena(ryml::to_csubstr(item_source));
+   for(auto row:tree["Body"])check(item_db.parseBodyNode(row)>0,"real required-item identity parses");
+   check(skill_db.load(),"actual skill metadata loads");check(status_db.load(),"actual status metadata loads");
+   check(elemental_attribute_db.load(),"actual element table loads");
+   auto damage=[&](){generator.seed(42);auto hit=battle_calc_attack(BF_WEAPON,sd.get(),target.get(),0,0,0);check(hit.damage>0&&hit.damage2==0,"real physical hit succeeds");return hit.damage;};
+   auto normal=damage();sd->right_weapon.addclass[CLASS_BOSS]=100;check(damage()==normal,"boss-only bonus excluded on normal target");
+   exec_lab("@PNLabTarget[0]=1; callfunc \"PN_LabApplyTarget\",99000004;");
+   check(target->status.class_==CLASS_BOSS&&status_has_mode(&target->status,MD_STATUSIMMUNE),"boss actual class and immunity after all settings");
+   auto bonus=damage();sd->right_weapon.addclass[CLASS_BOSS]=0;auto boss=damage();
+   std::printf("LAB_CLASS_DAMAGE normal=%lld boss=%lld bonus=%lld\n",(long long)normal,(long long)boss,(long long)bonus);
+   check(bonus>boss&&boss==normal,"boss bonus increases actual damage only on boss-class target");
+   exec_lab("@PNLabTarget[5]=400; callfunc \"PN_LabApplyTarget\",99000004;");auto def=damage();
+   check(target->status.def==400&&def<boss,"configured DEF reduces actual physical damage");
+   exec_lab("@PNLabTarget[5]=0; @PNLabTarget[6]=400; callfunc \"PN_LabApplyTarget\",99000004;");auto res=damage();
+   check(target->status.res==400&&res<boss,"configured RES reduces actual physical damage");
+   std::printf("LAB_DAMAGE normal=%lld boss=%lld boss_bonus=%lld def400=%lld res400=%lld\n",(long long)normal,(long long)boss,(long long)bonus,(long long)def,(long long)res);
+   ++cases;
+   exec_lab("setarray @PNLabTarget[0],1,2,9,8,4,321,456,789,1000; LabSaved=callfunc(\"PN_LabPresetSave\",2,\"Boss preset\"); LabTarget$=callfunc(\"PN_LabTargetIdentity\");");
+   check(nums[add_str("LabSaved")]==1,"complete named preset saved");auto saved=strings[add_str("LabTarget$")];
+   check(saved.find("boss/status-immune")!=std::string::npos&&saved.find("def=321 res=456 mdef=789 mres=1000")!=std::string::npos,"identity includes class and all defenses");
+   // Simulated relog removes every temporary registry and reconstructs player.
+   lab_detach();sd.reset();
+   for(auto it=nums.begin();it!=nums.end();)if(get_str(script_getvarid(it->first))[0]=='@')it=nums.erase(it);else ++it;
+   for(auto it=strings.begin();it!=strings.end();)if(get_str(script_getvarid(it->first))[0]=='@')it=strings.erase(it);else ++it;
+   sd=lab_player();exec_lab("LabLoaded=callfunc(\"PN_LabPresetLoad\",2); LabTarget$=callfunc(\"PN_LabTargetIdentity\");");
+   check(nums[add_str("LabLoaded")]==1&&strings[add_str("LabTarget$")]==saved,"all nine settings survive character-registry relog boundary");
+   for(int i=0;i<9;++i){
+    exec_lab("callfunc \"PN_LabPresetLoad\",2; @PNLabTarget["+std::to_string(i)+"]=0; LabTarget$=callfunc(\"PN_LabTargetIdentity\");");
+    check(strings[add_str("LabTarget$")]!=saved,"each setting changes comparison identity or invalidates setup");
+   }
+   exec_lab("PNLabPreset[26]=1001; LabLoaded=callfunc(\"PN_LabPresetLoad\",2); LabApplied=callfunc(\"PN_LabApplyTarget\",99000004);");
+   check(nums[add_str("LabLoaded")]==0&&nums[add_str("LabApplied")]==0&&target->status.res==400,"corrupt preset rejected before target mutation");
+   auto before_num=nums;exec_lab("callfunc \"PN_LabPresetSave\",3,\"invalid\";");check(nums==before_num,"invalid slot changes no registry state");
+   exec_lab("PNLabPresetVersion[2]=0; LabLoaded=callfunc(\"PN_LabPresetLoad\",2);");check(nums[add_str("LabLoaded")]==0,"incomplete preset cannot load");
+   map[0].cell=nullptr;elemental_attribute_db.clear();
+  }
+  aFree(target->base_status);target->base_status=nullptr;lab_target=nullptr;
+ }
  ++cases;
  for(int d:{3000,1000,2000})exec_lab("callfunc \"PN_LabSave\",\"repeat\","+std::to_string(d*60)+",60000,\"target\",\"gear\",\"buff\",\"build\",0;");
  exec_lab("callfunc \"PN_LabHistory\";",{1});
@@ -63,6 +141,6 @@ extern "C" int __wrap_main(int argc,char**argv){
  check(identity(2).empty(),"missing startup attestation fails closed");
  exec_lab("PNLabBuild$[0]=\"\"; PNLabBuild$[1]=\"\"; LabCompat=callfunc(\"PN_LabCompatible\",0,1);");
  check(nums[add_str("LabCompat")]==0,"empty build IDs never compare");
- lab_detach();sd.reset();nums.clear();strings.clear();do_final_script();timer_final();db_final();malloc_final();
+ lab_detach();sd.reset();nums.clear();strings.clear();status_db.clear();skill_db.clear();item_db.clear();do_final_script();timer_final();db_final();malloc_final();
  std::printf("LAB_HISTORY_OK cases=%u assertions=%u\n",cases,assertions);return 0;
 }

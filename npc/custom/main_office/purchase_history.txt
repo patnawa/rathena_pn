@@ -1,0 +1,25 @@
+function	script	PN_PurchaseHistory	{
+	.@page=0;
+	mes "[Purchase and Recovery History]";
+	mes "This character's durable shop purchases, exchanges and item rewards are listed here from the history update onward.";
+	mes "Amounts are committed currency changes and net item quantities. Older purchases and services outside this transaction system are not listed.";
+	while(1) {
+		.@count=pnpurchasehistory(.@page); .@more=@PNHistoryMore;
+		if(.@count<0) { mes "History is temporarily unavailable. Try again shortly."; return; }
+		if(@PNHistoryPending) mes "A current purchase is still awaiting confirmation. It will appear when resolved.";
+		if(!.@count) { mes "No purchases on this page."; return; }
+		copyarray .@refs$[0],@PNHistoryRef$[0],.@count;
+		.@menu$="";
+		for(.@i=0;.@i<.@count;.@i++) .@menu$+=replacestr(@PNHistoryLabel$[.@i],":",".")+":";
+		.@pick=select(.@menu$+"Older purchases:Newer purchases:Back")-1;
+		if(.@pick<.@count) {
+			.@lines=pnpurchasedetail(.@refs$[.@pick]);
+			if(.@lines<0) { mes "That receipt is unavailable for this character. Try again shortly."; continue; }
+			for(.@i=0;.@i<.@lines;.@i++) { if(.@i%5==0) next; mes @PNHistoryLine$[.@i]; }
+			next;
+		}
+		else if(.@pick==.@count) { if(.@more) .@page++; else mes "This is the oldest page."; }
+		else if(.@pick==.@count+1) { if(.@page) .@page--; }
+		else return;
+	}
+}

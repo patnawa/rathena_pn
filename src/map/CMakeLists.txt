@@ -40,6 +40,7 @@ include_directories( ${INCLUDE_DIRS} )
 
 #message( STATUS "map-server SOURCE_FILES=${SOURCE_FILES}")
 add_executable( map-server ${SOURCE_FILES} )
+target_include_directories(map-server PRIVATE ${CMAKE_SOURCE_DIR}/3rdparty/json/include)
 #message( STATUS "map-server LIBRARIES=${LIBRARIES}, DEPENDENCIES=${DEPENDENCIES} DEFINITIONS=${DEFINITIONS}")
 add_dependencies( map-server ${DEPENDENCIES} )
 target_link_libraries( map-server ${LIBRARIES} ${DEPENDENCIES} )

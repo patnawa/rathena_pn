@@ -36,6 +36,8 @@ def require_innodb(table: str) -> None:
 
 
 migrations = {
+    "pn_purchase_history": "upgrade_20261002_purchase_history.sql",
+    "pn_registry_saves": "upgrade_20261002_registry_saves.sql",
     "pn_shop_commits": "upgrade_20260929_shop_purchase.sql",
     "pn_global_point_barriers": "upgrade_20260929_point_assets.sql",
     "pn_point_registry_keys": "upgrade_20260929_point_assets.sql",
@@ -52,7 +54,12 @@ for table, migration_name in migrations.items():
 # be transactional on a main.sql-only install.  Upgrade scripts enforce the
 # same property for an existing installation.
 for table in (
+    "pn_purchase_history",
     "acc_reg_num",
+    "acc_reg_str",
+    "char_reg_str",
+    "global_acc_reg_str",
+    "pn_registry_saves",
     "achievement",
     "barter",
     "char",
@@ -72,6 +79,17 @@ for table in (
     require_innodb(table)
 
 inventory = create_statement(MAIN, "inventory")
+for table in ("memo", "skill", "friends", "hotkey", "mercenary_owner"):
+    require_innodb(table)
+
+character_migration = (ROOT / "sql-files/upgrades/upgrade_20261002_character_save_atomicity.sql").read_text(encoding="utf-8")
+for table in ("char", "memo", "skill", "friends", "hotkey", "mercenary_owner"):
+    assert f"ALTER TABLE `{table}` ENGINE=InnoDB;" in character_migration
+
+registry_migration = (ROOT / "sql-files/upgrades/upgrade_20261002_registry_saves.sql").read_text(encoding="utf-8")
+for table in ("char_reg_str", "acc_reg_str", "global_acc_reg_str"):
+    assert f"ALTER TABLE `{table}` ENGINE=InnoDB;" in registry_migration, f"Missing registry engine migration: {table}"
+
 pet_lookup = re.search(
     r"(?:KEY|INDEX)\s+`pn_pet_identity_lookup`\s*"
     r"\(\s*`card0`\s*,\s*`card1`\s*,\s*`card2`\s*\)",
@@ -82,5 +100,5 @@ assert pet_lookup, "fresh inventory schema lacks the pet identity lookup index"
 
 print(
     "PASS durable schema: 4 migration-aligned tables, 16 InnoDB participants, "
-    "and pet identity index"
+    "5 character-status companion tables, and pet identity index"
 )

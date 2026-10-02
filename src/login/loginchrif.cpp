@@ -3,6 +3,7 @@
 
 #include "loginchrif.hpp"
 #include <custom/global_point.hpp>
+#include <custom/registry_save.hpp>
 
 #include <cstdlib>
 #include <cstring>
@@ -789,6 +790,22 @@ static int32 logchrif_point_barrier(int32 fd,int32 cid) {
  WFIFOHEAD(fd,sizeof(reply));memcpy(WFIFOP(fd,0),&reply,sizeof(reply));WFIFOSET(fd,sizeof(reply));return 1;
 }
 
+static int32 logchrif_registry_save(int32 fd, int32 server) {
+ if (RFIFOREST(fd) < 4) return 0;
+ const size_t length = RFIFOW(fd, 2);
+ if (length < pn_registry::header_size || length > pn_registry::max_packet) { set_eof(fd); return 0; }
+ if (RFIFOREST(fd) < length) return 0;
+ if (pn_registry::header(RFIFOP(fd, 0), length)) {
+  const auto id = pn_registry::identity(RFIFOP(fd, 0));
+  auto* online = login_get_online_user(id.account);
+  const bool owner = online && online->char_server == server;
+  const bool success = id.scope == 1 && mmo_registry_save(login_get_accounts_db(), RFIFOP(fd, 0), length, owner);
+  const auto ack = pn_registry::acknowledgement(RFIFOP(fd, 0), success, pn_registry::login_ack);
+  WFIFOHEAD(fd, ack.size()); std::memcpy(WFIFOP(fd, 0), ack.data(), ack.size()); WFIFOSET(fd, ack.size());
+ }
+ RFIFOSKIP(fd, length); return 1;
+}
+
 int32 logchrif_parse(int32 fd){
 	int32 cid; //char-serv id
 	uint32 ipl;
@@ -816,6 +833,7 @@ int32 logchrif_parse(int32 fd){
 		int32 next = 1; // 0: avoid processing followup packets (prev was probably incomplete) packet, 1: Continue parsing
 		uint16 command = RFIFOW(fd,0);
 		switch( command ){
+			case pn_registry::login_request: next = logchrif_registry_save(fd, cid); break;
 			case pn_global_point::request_packet: next=logchrif_point_barrier(fd,cid);break;
 			case 0x2712: next = logchrif_parse_reqauth(fd, cid, ip); break;
 			case 0x2714: next = logchrif_parse_ackusercount(fd, cid); break;

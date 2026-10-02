@@ -133,9 +133,9 @@ obj/atcommand.o: atcommand.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H
 	@echo "	CXX	$<"
 	@@CXX@ @CXXFLAGS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
-obj/script.o: script.cpp ../custom/item_use.hpp ../custom/item_use_script.inc $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc ../custom/lab_history.inc
+obj/script.o: script.cpp ../custom/item_use.hpp ../custom/item_use_script.inc $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) $(NLOHMANN_H) ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc ../custom/lab_history.inc
 	@echo "	CXX	$<"
-	@@CXX@ @CXXFLAGS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
+	@@CXX@ @CXXFLAGS@ $(COMMON_INCLUDE) $(RA_INCLUDE) $(LIBCONFIG_INCLUDE) $(PCRE_CFLAGS) $(RAPIDYAML_INCLUDE) $(NLOHMANN_INCLUDE) @MYSQL_CFLAGS@ @CPPFLAGS@ -c $(OUTPUT_OPTION) $<
 
 obj/battle.o: battle.cpp $(MAP_H) $(COMMON_H) $(LIBCONFIG_H) $(RAPIDYAML_H) ../custom/battle_config_init.inc
 	@echo "	CXX	$<"
@@ -166,5 +166,7 @@ $(RAPIDYAML_AR):
 # Generator builds must rebuild the same custom implementation bodies.
 obj/pc.o obj-gen/pc.o: ../custom/item_use_map.inc ../custom/pet_floor.inc
 obj-gen/script.o: script.cpp ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc ../custom/lab_history.inc ../custom/item_use_script.inc
+obj/script.o obj-gen/script.o: ../custom/player_guide.inc ../custom/equipment_planner.inc ../custom/planner_routes.inc ../custom/purchase_history_map.inc
+obj/intif.o obj-gen/intif.o: ../custom/registry_map.inc
 obj-gen/atcommand.o: atcommand.cpp ../custom/atcommand_def.inc ../custom/atcommand.inc
 obj-gen/battle.o: battle.cpp ../custom/battle_config_init.inc

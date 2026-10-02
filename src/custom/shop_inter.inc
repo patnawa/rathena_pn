@@ -1,6 +1,7 @@
 // Included by map/intif.cpp. Retry exactly the submitted bytes until a durable
 // result is known. No payment, item delivery, or client success precedes it.
 #include <algorithm>
+#include <deque>
 #include <custom/shop_state.hpp>
 #include <custom/item_use.hpp>
 #include <custom/pet_floor.hpp>
@@ -10,18 +11,74 @@
 
 static bool pn_shop_inflight = false;
 static uint64_t pn_shop_inflight_sequence=0;
-bool pn_shop_stock_busy() { return pn_shop_inflight; }
+static constexpr size_t pn_shop_queue_limit=32;
+struct PnShopQueued { uint32 account,character;uint64 sequence;t_tick since; };
+static std::deque<PnShopQueued> pn_shop_queue;
+// Catalog writes must wait for every unresolved purchase, even when another
+// buyer can join the queue. Admission capacity is a separate predicate.
+bool pn_shop_stock_busy() { return !pn_shop_queue.empty(); }
+bool pn_shop_queue_full() { return pn_shop_queue.size()>=pn_shop_queue_limit; }
+static void pn_shop_resolve(const pn_shop::Ack& reply,bool unsent=false);
+static void pn_shop_pump();
+static bool pn_shop_active(const pn_shop::Commit& request) {
+    return !pn_shop_queue.empty() && pn_shop_queue.front().account==request.account_id &&
+        pn_shop_queue.front().character==request.char_id && pn_shop_queue.front().sequence==request.sequence;
+}
+static void pn_shop_release(const pn_shop::Ack& reply) {
+    if(pn_shop_queue.empty() || pn_shop_queue.front().account!=reply.account_id ||
+       pn_shop_queue.front().character!=reply.char_id || pn_shop_queue.front().sequence!=reply.sequence)return;
+    pn_shop_queue.pop_front();pn_shop_inflight=!pn_shop_queue.empty();
+    pn_shop_inflight_sequence=pn_shop_inflight?pn_shop_queue.front().sequence:0;
+    pn_metrics::runtime.shop_queue_depth=pn_shop_queue.size();
+}
 
 static void pn_shop_send(const pn_shop::Commit& request,const std::vector<uint8_t>* progression=nullptr) {
-    if (CheckForCharServer() || !chrif_isconnected()) return;
+    if (CheckForCharServer() || !chrif_isconnected() || !pn_shop_active(request)) return;
+    std::shared_ptr<const pn_shop::Commit> owned;
+    const pn_shop::Commit* outgoing=&request;
+    if (auto* sd = map_id2sd(request.account_id)) {
+        if (sd->status.char_id!=request.char_id || !sd->shop_commit.pending ||
+            !sd->shop_commit.request || sd->shop_commit.request->sequence!=request.sequence)return;
+        if (!sd->registry_saves.empty()) { intif_registry_replay(sd); return; }
+        // Waiting players keep the existing transaction fence. Recheck capacity
+        // in case equipment/status effects changed the limit while queued.
+        if(!sd->shop_commit.admitted) {
+            bool capacity=sd->shop_commit.final_weight<=sd->max_weight &&
+                sd->status.inventory_slots>=1 && sd->status.inventory_slots<=MAX_INVENTORY;
+            for(int i=sd->status.inventory_slots;i<MAX_INVENTORY && capacity;++i)
+                if(request.items[i].nameid)capacity=false;
+            if(!capacity) {
+                pn_shop::Ack reply;reply.account_id=request.account_id;reply.char_id=request.char_id;
+                reply.nonce_hi=request.nonce_hi;reply.nonce_lo=request.nonce_lo;reply.sequence=request.sequence;
+                reply.outcome=pn_shop::Rejected;pn_shop_resolve(reply,true);return;
+            }
+            auto admitted=std::make_shared<pn_shop::Commit>(request);
+            if(!pn_shop_stock_rebase(*admitted))return;
+            sd->shop_commit.request=admitted;sd->shop_commit.admitted=true;
+        }
+        owned=sd->shop_commit.request;outgoing=owned.get();
+    }
     if(progression && !progression->empty()) {
         WFIFOHEAD(inter_fd,progression->size());
         memcpy(WFIFOP(inter_fd,0),progression->data(),progression->size());
         WFIFOSET(inter_fd,progression->size());
     }
-    WFIFOHEAD(inter_fd, sizeof(request));
-    memcpy(WFIFOP(inter_fd, 0), &request, sizeof(request));
-    WFIFOSET(inter_fd, sizeof(request));
+    WFIFOHEAD(inter_fd, sizeof(*outgoing));
+    memcpy(WFIFOP(inter_fd, 0), outgoing, sizeof(*outgoing));
+    WFIFOSET(inter_fd, sizeof(*outgoing));
+}
+static void pn_shop_pump() {
+    static bool pumping=false;if(pumping)return;pumping=true;
+    while(!pn_shop_queue.empty()) {
+        const auto next=pn_shop_queue.front();
+        if(!pn_metrics::runtime.pending)pn_metrics::runtime.shop_started(next.since);
+        auto* sd=map_id2sd(next.account);
+        if(sd && sd->status.char_id==next.character && sd->shop_commit.request && sd->shop_commit.request->sequence==next.sequence)
+            pn_shop_send(*sd->shop_commit.request,&sd->shop_commit.progression);
+        else if(auto floor=pn_pet_floor_pending(next.account,next.sequence))pn_shop_send(*floor);
+        if(!pn_shop_queue.empty() && pn_shop_queue.front().sequence==next.sequence)break;
+    }
+    pumping=false;
 }
 static TIMER_FUNC(pn_shop_retry) {
     auto* sd = map_id2sd(id);
@@ -41,7 +98,7 @@ bool pn_shop_submit(map_session_data& sd, std::shared_ptr<pn_shop::Commit> reque
     auto planned_achievements=std::move(sd.shop_commit.planned_achievements);
     sd.shop_commit.planned_achievements.clear();
     sd.shop_commit.progression_prepared=false;
-    if (!request || pn_shop_inflight || pc_transaction_pending(&sd) || pn_item_use_active(&sd) ||
+    if (!request || pn_shop_queue_full() || pc_transaction_pending(&sd) || pn_item_use_active(&sd) ||
         CheckForCharServer() || !chrif_isconnected() || !sd.vars_ok) return false;
     static uint64 sequence = 0;
     if (!(sd.bank_ui.nonce_hi | sd.bank_ui.nonce_lo)) {
@@ -107,37 +164,39 @@ bool pn_shop_submit(map_session_data& sd, std::shared_ptr<pn_shop::Commit> reque
     sd.shop_commit.progression_after = std::move(progression_after);
     sd.shop_commit.final_weight = final_weight;
     sd.shop_commit.pending = true;
-    pn_shop_inflight = true;pn_shop_inflight_sequence=request->sequence;
-    pn_metrics::runtime.shop_started(gettick());
-    pn_shop_send(*sd.shop_commit.request,&sd.shop_commit.progression);
+    pn_shop_queue.push_back({request->account_id,request->char_id,request->sequence,gettick()});
+    pn_shop_inflight=true;pn_shop_inflight_sequence=pn_shop_queue.front().sequence;
+    pn_metrics::runtime.shop_queue_depth=pn_shop_queue.size();
+    if(request->kind<=pn_shop::Sale && pn_shop_queue.size()>1)
+        clif_displaymessage(sd.fd,"Your purchase is queued. It will finish in turn.");
+    if(pn_shop_queue.size()==1)pn_shop_pump();
     add_timer(gettick() + 1000, pn_shop_retry, sd.status.account_id,
         static_cast<intptr_t>(request->sequence));
     return true;
 }
 
-static void intif_parse_ShopCommitted(int32 fd) {
-    pn_shop::Ack reply;
-    memcpy(&reply, RFIFOP(fd, 0), sizeof(reply));
+static void pn_shop_resolve(const pn_shop::Ack& reply,bool unsent) {
     const bool floor_resolved=pn_pet_floor_ack(reply);
     auto* sd = map_id2sd(reply.account_id);
     if (!sd || !sd->shop_commit.pending || !sd->shop_commit.request) {
-        if(floor_resolved && pn_shop_inflight_sequence==reply.sequence){pn_shop_inflight=false;pn_shop_inflight_sequence=0;}
+        if(floor_resolved && pn_shop_inflight_sequence==reply.sequence){pn_shop_release(reply);pn_metrics::runtime.shop_finished(gettick(),reply.outcome==pn_shop::Committed);pn_shop_pump();}
         return;
     }
     const auto request = sd->shop_commit.request;
+    if(!pn_shop_active(*request))return;
     if (sd->status.char_id != reply.char_id || request->account_id != reply.account_id ||
         request->char_id != reply.char_id || request->nonce_hi != reply.nonce_hi ||
         request->nonce_lo != reply.nonce_lo || request->sequence != reply.sequence ||
         (reply.outcome != pn_shop::Committed && reply.outcome != pn_shop::Rejected &&
          reply.outcome != pn_shop::ProgressionStale)) {
-        if(floor_resolved && pn_shop_inflight_sequence==reply.sequence){pn_shop_inflight=false;pn_shop_inflight_sequence=0;}
+        if(floor_resolved && pn_shop_inflight_sequence==reply.sequence){pn_shop_release(reply);pn_metrics::runtime.shop_finished(gettick(),reply.outcome==pn_shop::Committed);pn_shop_pump();}
         return;
     }
     // A reload/admin operation may have changed the shop since submission.
     // Refresh from authoritative SQL, including on rejection. Retry ACK lookup
     // if refresh fails instead of exposing a stale stock cache to the next buy.
     pn_metrics::runtime.shop_acknowledged(gettick());
-    if (!pn_shop_stock_refresh(*request)) {
+    if (!unsent && !pn_shop_stock_refresh(*request)) {
         ++pn_metrics::runtime.shop_refresh_failures;
         return;
     }
@@ -198,7 +257,7 @@ static void intif_parse_ShopCommitted(int32 fd) {
     }
     // Clear before callbacks; repeated ACKs cannot reinstall this snapshot.
     sd->shop_commit = {};
-    pn_shop_inflight = false;pn_shop_inflight_sequence=0;
+    pn_shop_release(reply);
     pn_metrics::runtime.shop_finished(gettick(),reply.outcome == pn_shop::Committed);
     pn_item_use_settled(*sd,reply.outcome == pn_shop::Committed);
     pn_mail_asset_result(*sd,*request,reply.outcome == pn_shop::Committed);
@@ -209,7 +268,7 @@ static void intif_parse_ShopCommitted(int32 fd) {
         sd->achievement_data.loaded=false;
         sd->achievement_data.save=false;
         set_eof(sd->fd);
-        return;
+        pn_shop_pump();return;
     }
     if (reply.outcome == pn_shop::Committed) {
         {
@@ -229,4 +288,8 @@ static void intif_parse_ShopCommitted(int32 fd) {
     chrif_save(sd, CSAVE_NORMAL | CSAVE_INVENTORY);
     if(reply.outcome==pn_shop::Committed && request->pet_count && request->kind!=pn_shop::PetClaim && !pn_pet_recover(*sd))
         clif_displaymessage(sd->fd,"Your pet rewards are saved. Free inventory space/weight and use @petrewards to recover them.");
+    pn_shop_pump();
+}
+static void intif_parse_ShopCommitted(int32 fd) {
+    pn_shop::Ack reply;memcpy(&reply,RFIFOP(fd,0),sizeof(reply));pn_shop_resolve(reply);
 }

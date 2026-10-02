@@ -10,6 +10,11 @@ struct pn_pair_rollback {
 
 static void pn_pair_request(const pn_pair::Commit& request) {
     if(CheckForCharServer() || !chrif_isconnected())return;
+    for (const auto& side : request.side) {
+        auto* sd = map_id2sd(side.account_id);
+        if (!sd || sd->status.char_id != side.char_id) return;
+        if (!sd->registry_saves.empty()) { intif_registry_replay(sd); return; }
+    }
     WFIFOHEAD(inter_fd,sizeof(request));memcpy(WFIFOP(inter_fd,0),&request,sizeof(request));WFIFOSET(inter_fd,sizeof(request));
 }
 static TIMER_FUNC(pn_pair_retry) {
@@ -25,6 +30,7 @@ bool pn_pair_begin(map_session_data& a,map_session_data& b,pn_pair::Kind kind,in
        !chrif_isconnected() || fee<0 || (kind!=pn_pair::Trade && kind!=pn_pair::Vending && kind!=pn_pair::Buying))return false;
     if(kind==pn_pair::Vending && (strcmp(vendings_table,"vendings") || strcmp(vending_items_table,"vending_items")))return false;
     if(kind==pn_pair::Buying && (strcmp(buyingstores_table,"buyingstores") || strcmp(buyingstore_items_table,"buyingstore_items")))return false;
+    if (intif_saveregistry(&a) < 0 || intif_saveregistry(&b) < 0) return false;
     static uint64 sequence=0;
     auto request=std::make_shared<pn_pair::Commit>();request->length=sizeof(*request);
     auto rollback=std::make_shared<pn_pair_rollback>();

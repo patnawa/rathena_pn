@@ -51,7 +51,7 @@ static const int32 packet_len_table[] = {
 	-1, 3, 3, 0,  0, 0, 0, 0,  0, 0, 0, 0, -1, 3,  3, 0, //0x3870  Mercenaries [Zephyrus] / Elemental [pakpil]
 	12,-1, 7, 3,  0, 0, 0, 0,  0, 0,-1, 9, -1,19, 35,-1, //0x3880  Pet System,  Storages
 	-1,-1, 7, 3, 38,38,38,54, 38, 0, 0, 0,  0, 0,  0, 0, //0x3890  Homunculus [albator]
-	-1,-1, 8, 0, -1,24, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x38A0  Clans / versioned achievement load/logout save
+	-1,-1, 8, 0, -1,24,48, 0,  0, 0, 0, 0,  0, 0,  0, 0, //0x38A0  Clans / versioned achievement load/logout save
 };
 
 extern int32 char_fd; // inter server Fd used for char_fd
@@ -399,129 +399,7 @@ int32 intif_wis_message_to_gm(char *wisp_name, int32 permission, char *mes)
  * @param sd : Player to save registry
  * @return 1=msg sent, -1=error
  */
-int32 intif_saveregistry(map_session_data *sd)
-{
-	if(sd && pn_item_use_save_defer(sd,CSAVE_NORMAL))return -1;
-	if (sd && pc_transaction_pending(sd)) return -1;
-	DBIterator *iter;
-	DBKey key;
-	DBData *data;
-	int32 plen = 0;
-	size_t len;
-
-	if (!chrif_save_available() || !sd->regs.vars)
-		return -1;
-
-	std::vector<uint8> packet(60000 + 300);
-	WBUFW(packet.data(),0)  = 0x3004;
-	// 0x2 = length (set later)
-	WBUFL(packet.data(),4)  = sd->status.account_id;
-	WBUFL(packet.data(),8)  = sd->status.char_id;
-	WBUFW(packet.data(),12) = 0; // count
-
-	plen = 14;
-
-	iter = db_iterator(sd->regs.vars);
-	for( data = iter->first(iter,&key); iter->exists(iter); data = iter->next(iter,&key) ) {
-		const char *varname = nullptr;
-		struct script_reg_state *src = nullptr;
-		bool lValid = false;
-
-		if( data->type != DB_DATA_PTR ) // it's a @number
-			continue;
-
-		varname = get_str(script_getvarid(key.i64));
-
-		if( varname[0] == '@' ) // @string$ can get here, so we skip
-			continue;
-
-		src = (struct script_reg_state *)db_data2ptr(data);
-
-		if( !src->update )
-			continue;
-
-		src->update = false;
-		lValid = script_check_RegistryVariableLength(0,varname,&len);
-		++len;
-
-		if (!lValid) { //this is sql colum size, must be retrieve from config
-			ShowError("intif_saveregistry: Variable name length is too long (aid: %d, cid: %d): '%s' sz=%" PRIuPTR "\n", sd->status.account_id, sd->status.char_id, varname, len);
-			continue;
-		}
-		WBUFB(packet.data(), plen) = (unsigned char)len; // won't be higher; the column size is 32
-		plen += 1;
-
-		safestrncpy(WBUFCP(packet.data(),plen), varname, len); //the key
-		plen += static_cast<decltype(plen)>( len );
-
-		WBUFL(packet.data(), plen) = script_getvaridx(key.i64);
-		plen += 4;
-
-		if( src->type ) {
-			struct script_reg_str *p = (struct script_reg_str *)src;
-
-			WBUFB(packet.data(), plen) = p->value ? 2 : 3; //var type
-			plen += 1;
-
-			if( p->value ) {
-				lValid = script_check_RegistryVariableLength(1,p->value,&len);
-				++len;
-				if ( !lValid ) { // error can't be higher; the column size is 254. (nb the transmission limit with be fixed with protobuf revamp)
-					ShowDebug( "intif_saveregistry: Variable value length is too long (aid: %d, cid: %d): '%s' sz=%" PRIuPTR " to be saved with current system and will be truncated\n",sd->status.account_id, sd->status.char_id,p->value,len);
-					len = 254;
-					p->value[len - 1] = '\0'; //this is backward for old char-serv but new one doesn't need this
-				}
-
-				WBUFB(packet.data(), plen) = (uint8)len;
-				plen += 1;
-
-				safestrncpy(WBUFCP(packet.data(),plen), p->value, len);
-				plen += static_cast<decltype(plen)>( len );
-			} else {
-				script_reg_destroy_single(sd,key.i64,&p->flag);
-			}
-
-		} else {
-			struct script_reg_num *p = (struct script_reg_num *)src;
-
-			WBUFB(packet.data(), plen) =  p->value ? 0 : 1;
-			plen += 1;
-
-			if( p->value ) {
-				WBUFQ(packet.data(), plen) = p->value;
-				plen += 8;
-			} else {
-				script_reg_destroy_single(sd,key.i64,&p->flag);
-			}
-
-		}
-
-		WBUFW(packet.data(),12) += 1;
-
-		if( plen > 60000 ) {
-			WBUFW(packet.data(), 2) = plen;
-			chrif_save_packet(packet.data(), plen);
-
-			// prepare follow up
-			packet.resize(60000 + 300);
-			WBUFW(packet.data(),0)  = 0x3004;
-			// 0x2 = length (set later)
-			WBUFL(packet.data(),4)  = sd->status.account_id;
-			WBUFL(packet.data(),8)  = sd->status.char_id;
-			WBUFW(packet.data(),12) = 0; // count
-
-			plen = 14;
-		}
-	}
-	dbi_destroy(iter);
-
-	WBUFW(packet.data(), 2) = plen;
-	chrif_save_packet(packet.data(), plen);
-
-	sd->vars_dirty = false;
-
-	return 0;
-}
+#include <custom/registry_map.inc>
 
 /**
  * Request the registries for this player.
@@ -4033,6 +3911,7 @@ int32 intif_parse(int32 fd)
 	//Achievement system
 	case pn_achievement_protocol::load_response:	intif_parse_achievements(fd); break;
 	case 0x3863:	intif_parse_achievementsave(fd); break;
+	case pn_registry::ack_packet: intif_parse_registry_saved(fd); break;
 	case pn_achievement_protocol::logout_save_response: intif_parse_achievementlogoutsave(fd); break;
 	case 0x3864:	intif_parse_achievementreward(fd); break;
 

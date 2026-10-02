@@ -3,6 +3,7 @@
 
 #include "account.hpp"
 #include <custom/global_point.hpp>
+#include <custom/registry_save_sql.hpp>
 
 #include <algorithm> //min / max
 #include <cstdlib>
@@ -725,6 +726,12 @@ static bool mmo_auth_tosql(AccountDB_SQL* db, const struct mmo_account* acc, boo
 	result &= ( SQL_SUCCESS == Sql_QueryStr(sql_handle, (result == true) ? "COMMIT" : "ROLLBACK") );
 
 	return result;
+}
+
+bool mmo_registry_save(AccountDB* self, const void* data, size_t length, bool owner) {
+ auto* db = (AccountDB_SQL*)self;
+ const pn_registry::Tables tables{nullptr, nullptr, db->global_acc_reg_num_table, db->global_acc_reg_str_table};
+ return pn_registry::save(db->accounts, data, length, tables, owner);
 }
 
 bool mmo_point_pending(AccountDB* self,uint32 account_id) {

@@ -31,10 +31,19 @@ def metrics_status(logs, now, uptime_seconds, max_pending_seconds=30, max_timer_
             continue
         try:
             data = json.loads(match.group(1))
-            if set(data) != fields or data['version'] != 1 or any(type(value) is not int or value < 0 for value in data.values()):
+            if not isinstance(data, dict) or any(type(value) is not int or value < 0 for value in data.values()):
+                raise ValueError('Invalid metrics schema')
+            version = data.get('version')
+            # Keep existing server heartbeats readable during a rolling update;
+            # each version still has an exact schema so missing data fails closed.
+            expected = fields if version == 1 else fields | {'shop_queue_depth'}
+            if version not in (1, 2) or set(data) != expected:
                 raise ValueError('Invalid metrics schema')
             if data['shop_pending'] not in (0, 1):
                 raise ValueError('Invalid pending count')
+            if version == 2 and (data['shop_queue_depth'] > 32 or
+                                 bool(data['shop_queue_depth']) != bool(data['shop_pending'])):
+                raise ValueError('Invalid queue depth')
             samples.append(data)
         except (ValueError, TypeError, KeyError):
             # Do not fall back to an earlier healthy sample after malformed output.

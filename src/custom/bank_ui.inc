@@ -75,6 +75,7 @@ static pn_bank::Result pn_bank_action(map_session_data& sd, const pn_bank::Reque
     if (!battle_config.feature_banking || map_getmapflag(sd.m, MF_NOBANK) || !chrif_isconnected()) return pn_bank::Unavailable;
     if (pc_isdead(&sd) || pc_cant_act(&sd) || sd.state.mail_writing || sd.mail.pending_zeny || sd.state.autotrade || sd.state.warping ||
         sd.state.changemap || gettick() - sd.bank_ui.last_action_tick < 250) return pn_bank::Busy;
+    if (intif_saveregistry(&sd) < 0) return pn_bank::Busy;
     auto snapshot = pn_bank_snapshot(sd);
     if (request.action == pn_bank::CollectOffline) {
         if (request.amount || snapshot.trade_id) return pn_bank::Invalid;

@@ -27,6 +27,8 @@ TESTS = (
     'market_restore_test.py',
     'durable_schema_test.py',
     'achievement_persistence_test.py',
+    'char_save_persistence_test.py',
+    'registry_save_recovery_test.py',
     'logout_save_recovery_test.py',
     'shop_receipt_codec_test.py',
     'runtime_metrics_test.py', 'runtime_identity_test.py',
@@ -71,7 +73,7 @@ TESTS = (
 )
 FULL_TESTS = (
     'item_use_metadata_native_test.py', 'item_use_pet_native_test.py',
-    'point_shop_native_test.py', 'package_pet_native_test.py', 'pet_reward_script_test.py', 'lab_history_test.py', 'onboarding_readiness_test.py',
+    'point_shop_native_test.py', 'package_pet_native_test.py', 'pet_reward_script_test.py', 'lab_history_test.py', 'onboarding_readiness_test.py', 'player_tools_test.py',
     'npc_audit_fashion_test.py', 'card_removal_transaction_test.py',
     'armor_enchant_transaction_test.py', 'mayomayo_payment_test.py', 'shop_transaction_native_test.py',
     'socket_transaction_test.py',

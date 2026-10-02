@@ -1,6 +1,7 @@
 #include <custom/bank_sweep.hpp>
 static void intif_bank_sweep_request(const map_session_data& sd) {
     if (CheckForCharServer() || !chrif_isconnected()) return;
+    if (!sd.registry_saves.empty()) { intif_registry_replay(&sd); return; }
     pn_bank_sweep request;request.account_id=sd.status.account_id;request.char_id=sd.status.char_id;
     request.nonce_hi=sd.bank_ui.nonce_hi;request.nonce_lo=sd.bank_ui.nonce_lo;request.request_id=sd.bank_ui.request_id;
     request.bank_before=sd.bank_ui.bank_before;

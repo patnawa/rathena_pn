@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
+#include <cerrno>
 #include <chrono>
 #include <iostream>
 #include <string>
@@ -19,6 +20,9 @@
 #include "custom/shop_commit.hpp"
 #include "custom/shop_sql.inc"
 #include "custom/pet_entitlement.hpp"
+#define mmysql_handle sql_handle
+#include "shop-admission.inc"
+#undef mmysql_handle
 
 static int checks=0;
 static void require(bool ok,const char* label){if(!ok){std::cerr<<"FAIL: "<<label<<std::endl;std::abort();}++checks;}
@@ -49,7 +53,8 @@ static std::string state(bool receipts=true){
         result("SELECT * FROM achievement ORDER BY char_id,id")+
         result("SELECT * FROM market ORDER BY name,nameid")+result("SELECT * FROM barter ORDER BY name,`index`")+
         result("SELECT * FROM sales ORDER BY nameid");
-    if(receipts)value+=result("SELECT account_id,nonce_hi,nonce_lo,sequence,HEX(payload),outcome FROM pn_shop_commits ORDER BY account_id,sequence");
+    if(receipts)value+=result("SELECT account_id,nonce_hi,nonce_lo,sequence,HEX(payload),outcome FROM pn_shop_commits ORDER BY account_id,sequence")+
+        result("SELECT * FROM pn_purchase_history ORDER BY account_id,nonce_hi,nonce_lo,sequence");
     return value;
 }
 static pn_shop::Commit request(uint32 kind=pn_shop::Market){
@@ -70,7 +75,7 @@ static pn_shop::Commit request(uint32 kind=pn_shop::Market){
 static void seed(){
     char_get_chardb().clear();auto cached=std::make_shared<mmo_charstatus>();cached->zeny=1000;cached->uniqueitem_counter=5;char_get_chardb()[99001313]=cached;
     sql("DROP TRIGGER IF EXISTS shop_fault");sql("DROP TRIGGER IF EXISTS shop_crash");sql("DROP TRIGGER IF EXISTS shop_progression_fault");
-    for(const char* table:{"pn_shop_commits","inventory","acc_reg_num","achievement","market","barter","sales","char"})sql(std::string("DELETE FROM `")+table+"`");
+    for(const char* table:{"pn_purchase_history","pn_shop_commits","inventory","acc_reg_num","achievement","market","barter","sales","char"})sql(std::string("DELETE FROM `")+table+"`");
     sql("INSERT INTO `char` (char_id,account_id,name,zeny,uniqueitem_counter) VALUES (99001313,990013,'Shop fixture',1000,5),(99001314,990014,'Other fixture',777,9)");
     sql("INSERT INTO inventory(id,char_id,nameid,amount,identify,refine,bound,unique_id,card0) VALUES (1,99001313,1201,1,1,10,2,987654321,4001),(2,99001313,503,20,1,0,0,0,0)");
     sql("INSERT INTO acc_reg_num(account_id,`key`,`index`,`value`) VALUES (990013,'#CASHPOINTS',0,1000),(990013,'#KAFRAPOINTS',0,200),(990014,'#CASHPOINTS',0,77)");
@@ -90,6 +95,13 @@ static void committed(const pn_shop::Commit& r){
     std::string q=r.kind==pn_shop::Market?"SELECT amount FROM market ORDER BY nameid":r.kind==pn_shop::Barter?"SELECT amount FROM barter ORDER BY `index`":"SELECT amount FROM sales ORDER BY nameid";
     require(result(q)=="4|\n4|\n","both stock rows committed");
     require(result("SELECT COUNT(*) FROM pn_shop_commits WHERE outcome=1")=="1|\n","one committed receipt");
+    require(result("SELECT account_id,char_id,kind,outcome FROM pn_purchase_history")=="990013|99001313|"+std::to_string(r.kind)+"|1|\n","history is scoped to both owners and committed once");
+    const auto encoded=result("SELECT details FROM pn_purchase_history");
+    const auto history=nlohmann::json::parse(encoded.substr(0,encoded.size()-2));
+    require(history.at("zeny").get<int64>()==r.wallet_after-r.wallet_before && history.at("cash").get<int64>()==r.cash_after-r.cash_before,"history contains actual committed currency deltas");
+    std::map<int,int> expected={{501,1},{502,1}};if(r.kind==pn_shop::Barter)expected[503]=-2;
+    std::map<int,int> actual;for(const auto& it:history.at("items"))actual[it[0].get<int>()]=it[1].get<int>();
+    require(actual==expected,"history separates output/material net changes from unchanged inventory");
 }
 static void newer(){
     sql("UPDATE `char` SET zeny=333,uniqueitem_counter=99 WHERE char_id=99001313");
@@ -115,6 +127,33 @@ extern "C" int __wrap_main(int argc,char** argv){
     if(mode=="pet-retirement")return pet_retirement_cases();
     if(mode.rfind("pet-",0)==0)return pet_cases(mode);
     if(mode=="progression")return progression_sql_cases();
+    if(mode=="queued") {
+        for(auto kind:{pn_shop::Market,pn_shop::Barter,pn_shop::Sale}) {
+            seed();std::vector<pn_shop::Commit> queued;
+            for(unsigned i=0;i<6;++i) {
+                auto offer=request(kind);offer.account_id=1000+i;offer.char_id=2000+i;offer.items[0]={};offer.items[1]={};
+                sql("INSERT INTO `char`(account_id,char_id,name,zeny,uniqueitem_counter) VALUES("+std::to_string(offer.account_id)+","+
+                    std::to_string(offer.char_id)+",'Queued "+std::to_string(i)+"',1000,5)");
+                sql("INSERT INTO acc_reg_num(account_id,`key`,`index`,value) VALUES("+std::to_string(offer.account_id)+",'#CASHPOINTS',0,1000),("+
+                    std::to_string(offer.account_id)+",'#KAFRAPOINTS',0,200)");
+                queued.push_back(offer); // Every buyer saw the same initial five units.
+            }
+            for(unsigned i=0;i<queued.size();++i) {
+                auto& offer=queued[i];require(pn_shop_stock_rebase(offer),"queued admission reads authoritative stock");
+                if(i<5)require(offer.stocks[0].before==5-i && offer.stocks[0].after==4-i,"rebased quantity preserves requested debit");
+                const auto outcome=i<5?pn_shop::Committed:pn_shop::Rejected;
+                require(pn_shop_tosql(offer,true)==outcome,"queued stock commits until exhausted then rejects without payment");
+                const auto settled=state();require(pn_shop_tosql(offer,true)==outcome,"queued immutable receipt replay");
+                require(state()==settled,"queued retry cannot repeat payment or delivery");
+                require(result("SELECT zeny FROM `char` WHERE char_id="+std::to_string(offer.char_id))==std::to_string(i<5?offer.wallet_after:offer.wallet_before)+"|\n","queue charges only successful buyer");
+            }
+            const std::string table=kind==pn_shop::Market?"market":kind==pn_shop::Barter?"barter":"sales";
+            require(result("SELECT SUM(amount) FROM "+table)=="0|\n","all five stock units consumed once");
+            require(result("SELECT SUM(amount) FROM inventory WHERE nameid=501")=="5|\n","five total deliveries");
+        }
+        std::cout<<"SHOP_QUEUED_SQL_PASS "<<checks<<" checks; all three stock kinds, five buyers, exhaustion and immutable receipts"<<std::endl;
+        return 0;
+    }
     if(mode=="race-a" || mode=="race-b"){
         const bool second=mode=="race-b";
         r.stock_count=1;r.stocks[0].before=1;r.stocks[0].after=0;r.wallet_after=900;r.items[3]={};
@@ -231,7 +270,7 @@ extern "C" int __wrap_main(int argc,char** argv){
     for(uint32 kind:{pn_shop::Market,pn_shop::Barter,pn_shop::Sale}){
         r=request(kind);seed();auto before=state();
         const std::string table=kind==pn_shop::Market?"market":kind==pn_shop::Barter?"barter":"sales";
-        for(const std::string& target:std::vector<std::string>{"char","inventory","acc_reg_num",table,"pn_shop_commits"}){
+        for(const std::string& target:std::vector<std::string>{"char","inventory","acc_reg_num",table,"pn_shop_commits","pn_purchase_history"}){
             sql("ALTER TABLE `"+target+"` ENGINE=MyISAM");
             require(pn_shop_tosql(r,true)!=pn_shop::Committed,"nontransactional table rejected");
             require(state()==before,"engine rejection changes no state");sql("ALTER TABLE `"+target+"` ENGINE=InnoDB");
@@ -244,6 +283,7 @@ extern "C" int __wrap_main(int argc,char** argv){
             "BEFORE UPDATE ON "+table+" FOR EACH ROW BEGIN IF NEW."+key+"="+(kind==pn_shop::Barter?"1":"502")+" THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='second stock fault'; END IF; END",
             "BEFORE INSERT ON pn_shop_commits FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='receipt fault'"};
         faults.push_back("BEFORE INSERT ON acc_reg_num FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='cash fault'");
+        faults.push_back("BEFORE INSERT ON pn_purchase_history FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='history fault'");
         for(const auto& fault:faults){
             sql("CREATE TRIGGER shop_fault "+fault);
             require(pn_shop_tosql(r,true)!=pn_shop::Committed,"injected write failure not committed");

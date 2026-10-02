@@ -415,26 +415,33 @@ int32 chmapif_parse_reqsavechar(int32 fd, int32 id){
 	if (RFIFOREST(fd) < 4 || RFIFOREST(fd) < RFIFOW(fd,2))
 		return 0;
 	else {
-		uint32 aid = RFIFOL( fd, 4 ), cid = RFIFOL( fd, 8 );
 		uint16 size = RFIFOW( fd, 2 );
 
-		if (size - 13 != sizeof(struct mmo_charstatus))
+		if (size != 13 + sizeof(struct mmo_charstatus))
 		{
 			ShowError("parse_from_map (save-char): Size mismatch! %d != %" PRIuPTR "\n", size-13, sizeof(struct mmo_charstatus));
 			RFIFOSKIP(fd,size);
 			return 1;
 		}
+		const uint32 aid = RFIFOL(fd, 4), cid = RFIFOL(fd, 8);
 
 		std::shared_ptr<struct online_char_data> character = util::umap_find( char_get_onlinedb(), aid );
-
-		//Check account only if this ain't final save. Final-save goes through because of the char-map reconnect
-		if( RFIFOB( fd, 12 ) || RFIFOB( fd, 13 ) || ( character != nullptr && character->char_id == cid ) ){
-			struct mmo_charstatus char_dat;
-			memcpy(&char_dat, RFIFOP(fd,13), sizeof(struct mmo_charstatus));
-			char_mmo_char_tosql(cid, &char_dat);
-		} else {	//This may be valid on char-server reconnection, when re-sending characters that already logged off.
-			ShowError("parse_from_map (save-char): Received data for non-existant/offline character (%d:%d).\n", aid, cid);
-			char_set_char_online(id, cid, aid);
+		struct mmo_charstatus char_dat;
+		memcpy(&char_dat, RFIFOP(fd,13), sizeof(char_dat));
+		// Reconnecting maps advertise retained ownership before replaying saves.
+		// A final flag or payload byte is never permission to replace another
+		// session's status. Leave unresolved saves retained on the owning map.
+		const bool current_owner = id >= 0 && id < MAX_MAP_SERVERS && map_server[id].fd == fd &&
+			character && character->char_id == cid && character->server == id;
+		if (!current_owner || char_dat.account_id != aid || char_dat.char_id != cid) {
+			ShowError("parse_from_map (save-char): Rejected unowned or mismatched save for %u:%u.\n", aid, cid);
+			RFIFOSKIP(fd, size);
+			return 1;
+		}
+		if (char_mmo_char_tosql(cid, &char_dat) != 0) {
+			ShowError("parse_from_map (save-char): Save failed for %u:%u; retaining online ownership for retry.\n", aid, cid);
+			RFIFOSKIP(fd, size);
+			return 1;
 		}
 
 		if (RFIFOB(fd,12))
@@ -1426,6 +1433,29 @@ static int32 chmapif_parse_logout_barrier(int32 fd, int32 id) {
 	return 1;
 }
 
+static int32 chmapif_parse_transfer_status(int32 fd, int32 id) {
+	if (RFIFOREST(fd) < 4) return 0;
+	const size_t length = RFIFOW(fd, 2);
+	if (length != logout_save::packet_size + sizeof(mmo_charstatus)) { set_eof(fd); return 0; }
+	if (RFIFOREST(fd) < length) return 0;
+	uint64 generation; memcpy(&generation, RFIFOP(fd, 16), sizeof(generation));
+	const uint32 aid = RFIFOL(fd, 8), cid = RFIFOL(fd, 12);
+	auto owner = char_get_onlinedb().find(aid);
+	mmo_charstatus status; memcpy(&status, RFIFOP(fd, logout_save::packet_size), sizeof(status));
+	const bool valid = RFIFOW(fd, 4) == logout_save::version && RFIFOW(fd, 6) == 0 && generation &&
+		id >= 0 && id < MAX_MAP_SERVERS && map_server[id].fd == fd &&
+		owner != char_get_onlinedb().end() && owner->second && owner->second->char_id == cid && owner->second->server == id &&
+		status.account_id == aid && status.char_id == cid;
+	if (valid && char_mmo_char_tosql(cid, &status) == 0) {
+		WFIFOHEAD(fd, logout_save::packet_size);
+		memcpy(WFIFOP(fd, 0), RFIFOP(fd, 0), logout_save::packet_size);
+		WFIFOW(fd, 0) = logout_save::transfer_status_response;
+		WFIFOW(fd, 2) = logout_save::packet_size;
+		WFIFOSET(fd, logout_save::packet_size);
+	}
+	RFIFOSKIP(fd, length); return 1;
+}
+
 int32 chmapif_parse(int32 fd){
 	int32 id; //mapserv id
 
@@ -1453,6 +1483,7 @@ int32 chmapif_parse(int32 fd){
 			case 0x2afe: next=chmapif_parse_getusercount(fd,id); break; //get nb user
 			case 0x2aff: next=chmapif_parse_regmapuser(fd,id); break; //register users
 			case 0x2b01: next=chmapif_parse_reqsavechar(fd,id); break;
+			case logout_save::transfer_status_request: next=chmapif_parse_transfer_status(fd,id); break;
 			case 0x2b02: next=chmapif_parse_authok(fd); break;
 			case 0x2b05: next=chmapif_parse_reqchangemapserv(fd); break;
 			case 0x2b07: next=chmapif_parse_askrmfriend(fd); break;

@@ -29,6 +29,15 @@ class CatalogTest(unittest.TestCase):
             else:data['source_sha256'][catalog.RUNE]='0'*64
             with self.assertRaisesRegex(ValueError,'Declared outputs'):catalog.validate(data)
 
+    def test_windows_checkout_line_endings_preserve_recipe_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            for name in self.data['source_sha256']:
+                target=root/name;target.parent.mkdir(parents=True,exist_ok=True)
+                raw=(catalog.ROOT/name).read_bytes().replace(b'\r\n',b'\n')
+                target.write_bytes(raw.replace(b'\n',b'\r\n'))
+            self.assertEqual(catalog.generate(root),self.data)
+
     def test_seal_costs_are_explicit_for_economy_analysis(self):
         source=json.loads((catalog.ROOT/catalog.RUNE).read_text())
         rows=[r for r in self.data['recipes'] if r['family']=='rune.seal']

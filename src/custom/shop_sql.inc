@@ -14,7 +14,7 @@
 static bool pn_shop_tables(const pn_shop::Commit& r) {
     const char* stock = r.kind==pn_shop::Market ? "market" : r.kind==pn_shop::Barter ? "barter" : "sales";
     std::vector<const char*> tables = {schema_config.char_db,schema_config.inventory_db,
-        schema_config.acc_reg_num_table,"pn_shop_commits"};
+        schema_config.acc_reg_num_table,"pn_shop_commits","pn_purchase_history"};
     if(r.stock_count)tables.push_back(stock);
     if(r.point.scope==pn_shop::CharacterPoint)tables.push_back(schema_config.char_reg_num_table);
     if(r.point.scope==pn_shop::CharacterPoint || r.point.scope==pn_shop::AccountPoint)tables.push_back("pn_point_registry_keys");
@@ -42,6 +42,7 @@ static bool pn_shop_number(uint32 column,int64& out) {
 
 #include <custom/mail_asset_sql.inc>
 #include <custom/point_asset_sql.inc>
+#include <custom/purchase_history_sql.inc>
 
 static std::vector<uint8> pn_shop_receipt_identity(const pn_shop::Commit& r,const pn_shop_progression::Bundle* progression) {
     const size_t extra=progression?progression->bytes.size():0;
@@ -50,13 +51,14 @@ static std::vector<uint8> pn_shop_receipt_identity(const pn_shop::Commit& r,cons
     return identity;
 }
 
-static bool pn_shop_receipt(const pn_shop::Commit& r,uint32 outcome,const pn_shop_progression::Bundle* progression) {
+static bool pn_shop_receipt(const pn_shop::Commit& r,uint32 outcome,const pn_shop_progression::Bundle* progression,const PnPurchaseCounts* before=nullptr) {
     auto identity=pn_shop_receipt_identity(r,progression);
     if(identity.size()>pn_shop_receipt_codec::limit)return false;
     auto payload = pn_shop_receipt_codec::encode(identity.data(),identity.size());
     SqlStmt stmt{*sql_handle};
     return stmt.Prepare("INSERT INTO pn_shop_commits (account_id,nonce_hi,nonce_lo,sequence,outcome,payload) VALUES (%u,%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%u,?)",r.account_id,r.nonce_hi,r.nonce_lo,r.sequence,outcome)==SQL_SUCCESS &&
-        stmt.BindParam(0,SQLDT_BLOB,payload.data(),payload.size())==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS && pn_global_point::finish_locked(sql_handle,r);
+        stmt.BindParam(0,SQLDT_BLOB,payload.data(),payload.size())==SQL_SUCCESS && stmt.Execute()==SQL_SUCCESS &&
+        pn_purchase_record(r,outcome,before) && pn_global_point::finish_locked(sql_handle,r);
 }
 
 // current_owner is checked by the authenticated inter-server handler. Keeping
@@ -227,6 +229,8 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
             if(!valid || Sql_NumRowsAffected(sql_handle)!=1){valid=false;break;}
         }
         if(!valid)break;
+        PnPurchaseCounts history_before;
+        if(!pn_purchase_before(r,history_before))break;
         if(char_memitemdata_to_sql(r.items,MAX_INVENTORY,r.char_id,TABLE_INVENTORY,0)!=0)break;
         if(Sql_Query(sql_handle,"UPDATE `%s` SET zeny=%" PRId64 ",uniqueitem_counter=%u WHERE char_id=%u AND account_id=%u",schema_config.char_db,r.wallet_after,r.counter_after,r.char_id,r.account_id)!=SQL_SUCCESS)break;
         const int64 after[]={r.cash_after,r.kafra_after};
@@ -243,7 +247,7 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
                 outcome=pn_shop::ProgressionStale;transaction_complete=true;break;
             }
         }
-        if(!pn_shop_receipt(r,pn_shop::Committed,progression))break;
+        if(!pn_shop_receipt(r,pn_shop::Committed,progression,&history_before))break;
         outcome=pn_shop::Committed;transaction_complete=new_commit=true;
     } while(false);
     // A failed COMMIT acknowledgement is indeterminate. An identical retry
@@ -253,11 +257,11 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
     // row. Receipt replay must not copy an old snapshot over newer state;
     // evict instead, so a later authentication reloads authoritative state.
     if((new_commit && ended!=SQL_SUCCESS) || (transaction_complete && outcome==pn_shop::Committed && !new_commit))
-        char_get_chardb().erase(r.char_id);
+        char_get_chardb().erase(static_cast<uint32>(r.char_id));
     if(ended!=SQL_SUCCESS)return pn_shop::Retry;
     if(!transaction_complete)return pn_shop::Retry;
     if(new_commit) {
-        auto found=char_get_chardb().find(r.char_id);
+        auto found=char_get_chardb().find(static_cast<uint32>(r.char_id));
         if(found!=char_get_chardb().end() && found->second) {
             found->second->zeny=r.wallet_after;
             found->second->uniqueitem_counter=r.counter_after;

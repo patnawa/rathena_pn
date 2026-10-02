@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `char_reg_str` (
   `value` varchar(254) NOT NULL default '0',
   PRIMARY KEY (`char_id`,`key`,`index`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `charlog`
@@ -425,7 +425,7 @@ CREATE TABLE IF NOT EXISTS `friends` (
   `char_id` int(11) unsigned NOT NULL default '0',
   `friend_id` int(11) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`, `friend_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `global_acc_reg_num`
@@ -451,7 +451,7 @@ CREATE TABLE IF NOT EXISTS `global_acc_reg_str` (
   `value` varchar(254) NOT NULL default '0',
   PRIMARY KEY (`account_id`,`key`,`index`),
   KEY `account_id` (`account_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `guild`
@@ -695,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `hotkey` (
   `itemskill_id` INT(11) unsigned NOT NULL default '0',
   `skill_lvl` TINYINT(4) unsigned NOT NULL default '0',
   PRIMARY KEY (`char_id`,`hotkey`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 -- 
 -- Table structure for table `interlog`
@@ -895,7 +895,7 @@ CREATE TABLE IF NOT EXISTS `memo` (
   `y` smallint(4) unsigned NOT NULL default '0',
   PRIMARY KEY  (`memo_id`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `mercenary`
@@ -926,7 +926,7 @@ CREATE TABLE IF NOT EXISTS `mercenary_owner` (
   `sword_calls` int(11) NOT NULL default '0',
   `sword_faith` int(11) NOT NULL default '0',
   PRIMARY KEY  (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 -- ----------------------------
 -- Table structure for `sales`
@@ -1049,7 +1049,7 @@ CREATE TABLE IF NOT EXISTS `skill` (
   `lv` tinyint(4) unsigned NOT NULL default '0',
   `flag` TINYINT(1) UNSIGNED NOT NULL default 0,
   PRIMARY KEY  (`char_id`,`id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `skill_homunculus`
@@ -1365,4 +1365,32 @@ CREATE TABLE IF NOT EXISTS `pn_pair_commits` (
   `sequence` BIGINT UNSIGNED NOT NULL,
   `payload` MEDIUMBLOB NOT NULL,
   PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `pn_registry_saves` (
+  `account_id` int unsigned NOT NULL,
+  `char_id` int unsigned NOT NULL,
+  `nonce_hi` bigint unsigned NOT NULL,
+  `nonce_lo` bigint unsigned NOT NULL,
+  `scope` tinyint unsigned NOT NULL,
+  `sequence` bigint unsigned NOT NULL,
+  `payload` mediumblob NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`account_id`,`char_id`,`nonce_hi`,`nonce_lo`,`scope`,`sequence`)
+) ENGINE=InnoDB;
+-- Keep receipts while a map process may retry. Do not age-delete them during
+-- service: a missing receipt would make an old currency save writable again.
+
+CREATE TABLE IF NOT EXISTS `pn_purchase_history` (
+  `account_id` int unsigned NOT NULL,
+  `char_id` int unsigned NOT NULL,
+  `nonce_hi` bigint unsigned NOT NULL,
+  `nonce_lo` bigint unsigned NOT NULL,
+  `sequence` bigint unsigned NOT NULL,
+  `kind` int unsigned NOT NULL,
+  `outcome` int unsigned NOT NULL,
+  `details` mediumtext NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`),
+  KEY `owner_recent` (`account_id`,`char_id`,`created_at`)
 ) ENGINE=InnoDB;

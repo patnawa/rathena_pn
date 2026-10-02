@@ -12,6 +12,7 @@ import subprocess
 import time
 import uuid
 from release_bundle import binding
+from achievement_persistence_test import function
 
 
 def main():
@@ -82,6 +83,9 @@ def main():
                  candidate / 'sql-files/upgrades/upgrade_20260929_pet_entitlements.sql',
                  candidate / 'sql-files/upgrades/upgrade_20261001_achievement_atomicity.sql',
                  candidate / 'tools/ci/shop_recovery_sql_runtime.cpp',
+                 candidate / 'tools/ci/player_tools_test.py',
+                 candidate / 'tools/ci/player_tools_test.cpp',
+                 candidate / 'sql-files/upgrades/upgrade_20261002_purchase_history.sql',
                  candidate / 'sql-files/main.sql',
                  candidate / 'sql-files/upgrades/upgrade_20260929_shop_purchase.sql'}
         paths.update(p for p in (candidate / 'src').rglob('*') if p.is_file()
@@ -119,11 +123,14 @@ def main():
         sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20260929_pet_entitlements.sql').read_text())
         sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20260929_point_assets.sql').read_text())
         sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20261001_achievement_atomicity.sql').read_text())
+        sql('USE shop_recovery_probe; DROP TABLE pn_purchase_history;\n' + (candidate / 'sql-files/upgrades/upgrade_20261002_purchase_history.sql').read_text())
+        sql('USE shop_recovery_probe;\n' + (candidate / 'sql-files/upgrades/upgrade_20261002_purchase_history.sql').read_text())
         compiler = ['g++', '-std=c++17', '-g', '-O1', '-fsanitize=undefined', '-fno-sanitize-recover=all',
                     '-DPACKETVER=20260219']
         compiler += ['-I/rathena/' + p for p in ('src', '3rdparty/libconfig', '3rdparty/rapidyaml/src',
                                                 '3rdparty/rapidyaml/ext/c4core/src', '3rdparty/json/include')]
-        compiler += ['-I/usr/include/mysql', '/rathena/tools/ci/shop_recovery_sql_runtime.cpp']
+        (evidence / 'shop-admission.inc').write_text(function(candidate / 'src/custom/shop_map.inc', 'bool pn_shop_stock_rebase('))
+        compiler += ['-I/usr/include/mysql', '-I/evidence', '/rathena/tools/ci/shop_recovery_sql_runtime.cpp']
         compiler += ['/rathena/' + str(p.relative_to(candidate)) for p in sorted((candidate / 'src/char/obj').glob('*.o'))]
         compiler += ['/rathena/' + p for p in ('src/common/obj/common.a', '3rdparty/libconfig/obj/libconfig.a',
                                               '3rdparty/rapidyaml/obj/ryml.a')]
@@ -147,6 +154,15 @@ def main():
         output = runtime('normal')
         assert 'SHOP_SQL_PASS' in output, output
         report['runtime'] = output.strip()
+        report['queued_admission'] = runtime('queued').strip()
+        player = subprocess.run(['docker','run','--rm','--network',net,'--memory','2g','--cpus','2',
+            '--mount','type=bind,src='+str(candidate)+',dst=/rathena,readonly',
+            '--mount','type=bind,src='+str(evidence)+',dst=/evidence','-w','/rathena',
+            '--entrypoint','python3',args.image,'tools/ci/player_tools_test.py','--sql','--evidence','/evidence'],
+            text=True,capture_output=True,timeout=180)
+        (evidence/'player-tools-run.log').write_text(player.stdout+player.stderr)
+        if player.returncode:raise RuntimeError('Player tools SQL failed: '+(player.stdout+player.stderr)[-5000:])
+        report['player_tools_sql']=player.stdout.strip()
         report['character_wire_handler'] = runtime('wire').strip()
         progression_output = runtime('progression')
         assert 'SHOP_PROGRESSION_SQL_PASS' in progression_output, progression_output

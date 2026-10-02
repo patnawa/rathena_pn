@@ -4,14 +4,17 @@ The common timer dispatcher emits one `PN_METRICS` JSON record per process appro
 
 Measurements:
 
+The shop measurements describe end-to-end scheduling and resolution. They are not exact wire counters or database round-trip timings.
+
 - Timer lateness uses the dispatcher's existing due-time comparison; dispatcher duration samples elapsed time at the end of `do_timer`.
-- Shop acknowledgement latency ends at the first valid committed/rejected acknowledgement; completion latency also includes successful stock-cache refresh. Retry responses do not count as durable acknowledgements.
-- An unresolved purchase keeps its pending age across reporting windows. Failed refreshes and transport retry attempts are counted. A metric never unlocks, refunds, resubmits a changed payload or otherwise changes transaction outcomes.
-- `shop_busy_refusals` counts attempts rejected at the shared purchase entry while the process-wide stock fence is held; it is not a count of every possible client refusal.
+- Shop acknowledgement latency starts when the purchase joins the FIFO queue and ends at its first final committed/rejected result; completion latency also includes successful stock-cache refresh when required. Queue waiting time is included. An admission-capacity rejection before submission is a local final result and also contributes to these histograms, so acknowledgement counts are not exact SQL round-trip counts. Retry responses do not count as final results.
+- An unresolved purchase keeps its pending age across reporting windows. Failed refreshes and retry timer attempts are counted. Retry attempts include queued entries still waiting for their turn and do not count only packets sent. A metric never unlocks, refunds, resubmits a changed payload or otherwise changes transaction outcomes.
+- `shop_pending` is zero or one for the active queue head. Schema version 2 adds `shop_queue_depth`, the number of queued purchases including that head, bounded from zero to 32. `shop_oldest_ms` is the head's age since enqueue, including any earlier waiting time. `shop_started` advances when a purchase becomes the active head.
+- `shop_busy_refusals` counts the instrumented shared-entry refusals when the queue is full; it is not a count of every possible client refusal.
 
 The health checker requires a fresh map-server heartbeat after a 120-second startup grace. A heartbeat older than 150 seconds fails readiness even if Docker still reports the process running. Its recent trend retains at most 15 samples.
 
-`--max-shop-pending-seconds` defaults to 30 as an operational unresolved-purchase threshold. `--max-timer-p99-ms` is optional: choose it after recording representative idle and combat/load baselines. Missing or malformed metrics cannot fall back to an older green sample. This health script and the map binary that emits metrics must be deployed together.
+`--max-shop-pending-seconds` defaults to 30 as an operational unresolved-purchase threshold. `--max-timer-p99-ms` is optional: choose it after recording representative idle and combat/load baselines. Missing or malformed metrics cannot fall back to an older green sample. The health checker accepts the exact version 1 schema and the version 2 schema so an existing server remains readable while its checker is updated. Version 2 validates the queue bound and that a nonempty queue has an active head. Deploy the updated health script before or together with the version 2 map binary.
 
 Portable validation executes one million observations and reports timing, tests lifecycle/percentile behavior, and injects a stalled purchase into the health checker. That timing is a fixture observation, not a production overhead or capacity claim. A 30-minute idle/load baseline and real-process stall acceptance remain required in the improvement delivery ledger.
 

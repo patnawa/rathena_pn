@@ -3,6 +3,7 @@
 
 static void intif_bank_save_request(const map_session_data& sd) {
     if (CheckForCharServer() || !chrif_isconnected()) return;
+    if (!sd.registry_saves.empty()) { intif_registry_replay(&sd); return; }
     pn_bank_commit request;
     request.length = sizeof(request) + sizeof(s_storage);
     request.account_id = sd.status.account_id; request.char_id = sd.status.char_id;

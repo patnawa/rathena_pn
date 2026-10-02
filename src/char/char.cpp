@@ -256,6 +256,42 @@ void char_set_all_offline_sql(void){
 		Sql_ShowDebug(sql_handle);
 }
 
+// Keep metadata locks until commit so a concurrent engine change cannot turn
+// replacement writes into a partially durable save. Custom table names use the
+// same rules as the durable asset tables.
+static bool char_status_tables_lock(uint32 account_id, uint32 char_id) {
+	const char* tables[] = { schema_config.char_db, schema_config.memo_db,
+		schema_config.skill_db, schema_config.friend_db, schema_config.mercenary_owner_db,
+#ifdef HOTKEY_SAVING
+		schema_config.hotkey_db,
+#endif
+	};
+	for (size_t i = 0; i < ARRAYLENGTH(tables); ++i) {
+		const char* table = tables[i];
+		if (!table || !*table) return false;
+		for (const char* c = table; *c; ++c)
+			if (!((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z') ||
+				(*c >= '0' && *c <= '9') || *c == '_')) return false;
+		const int32 result = i == 0 ?
+			Sql_Query(sql_handle, "SELECT `char_id` FROM `%s` WHERE `char_id`=%u AND `account_id`=%u FOR UPDATE", table, char_id, account_id) :
+			Sql_Query(sql_handle, "SELECT `char_id` FROM `%s` WHERE `char_id`=%u FOR UPDATE", table, char_id);
+		const bool locked = result == SQL_SUCCESS && (i != 0 || Sql_NumRows(sql_handle) == 1);
+		Sql_FreeResult(sql_handle);
+		if (!locked) return false;
+		char* engine = nullptr;
+		const bool transactional = Sql_Query(sql_handle,
+			"SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='%s'", table) == SQL_SUCCESS &&
+			Sql_NextRow(sql_handle) == SQL_SUCCESS &&
+			Sql_GetData(sql_handle, 0, &engine, nullptr) == SQL_SUCCESS && engine && !strcmp(engine, "InnoDB");
+		Sql_FreeResult(sql_handle);
+		if (!transactional) {
+			ShowError("Character save requires InnoDB table '%s'; apply the character-save migration.\n", table);
+			return false;
+		}
+	}
+	return true;
+}
+
 int32 char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 	int32 i = 0;
 	int32 count = 0;
@@ -264,7 +300,12 @@ int32 char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 	int32 errors = 0; //If there are any errors while saving, "cp" will not be updated at the end.
 	StringBuf buf;
 
-	if (char_id!=p->char_id) return 0;
+	if (!p || !char_id || char_id != p->char_id || !p->account_id) return 1;
+	if (Sql_BeginTransaction(sql_handle) != SQL_SUCCESS) return 1;
+	if (!char_status_tables_lock(p->account_id, char_id)) {
+		Sql_EndTransaction(sql_handle, false);
+		return 1;
+	}
 
 	std::shared_ptr<struct mmo_charstatus> cp = util::umap_find( char_get_chardb(), char_id );
 
@@ -521,14 +562,16 @@ int32 char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 	}
 #endif
 
-	if (save_status[0]!='\0' && charserv_config.save_log)
-		ShowInfo("Saved char %d - %s:%s.\n", char_id, p->name, save_status);
+	if (Sql_EndTransaction(sql_handle, errors == 0) != SQL_SUCCESS)
+		++errors;
 
 	if( !errors ){
 		memcpy( cp.get(), p, sizeof( struct mmo_charstatus ) );
+		if (save_status[0]!='\0' && charserv_config.save_log)
+			ShowInfo("Saved char %d - %s:%s.\n", char_id, p->name, save_status);
 	}
 
-	return 0;
+	return errors;
 }
 
 /// Saves an array of 'item' entries into the specified table.

@@ -90,12 +90,19 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	if ('Running) { mes "A test is already running. Wait up to 75 seconds after an interrupted run."; close; }
 	mes "[Private Damage Lab]";
 	mes "60-second HP-loss measurement. No rewards. Use identical gear, buffs, element and rotation for comparisons.";
-	mes "Target cannot move or attack and is status/knockback immune. This is a controlled dummy, not a full boss encounter.";
-	switch(select("Configure and run:Saved runs and comparison:Exit and destroy room")) {
+	mes "Targets cannot move or attack. Both resist knockback; boss targets also resist status effects. Normal targets can receive status effects.";
+	switch(select("Configure and run:Load target preset:Saved runs and comparison:Exit and destroy room")) {
 	case 2:
+		for (.@i=0; .@i<3; .@i++) mes "Preset "+(.@i+1)+": "+((PNLabPresetVersion[.@i]==2)?PNLabPresetName$[.@i]:"Empty");
+		.@slot=select("Preset 1:Preset 2:Preset 3:Cancel")-1;
+		if (.@slot==3) close;
+		if (!callfunc("PN_LabPresetLoad",.@slot)) { mes "This preset is empty or invalid. Configure and save it again."; close; }
+		.@loaded=1;
+		break;
+	case 3:
 		callfunc "PN_LabHistory";
 		close;
-	case 3:
+	case 4:
 		.@id = instance_id();
 		if (@PNLabOffice == 2) warp "pn_train",50,35;
 		else if (@PNLabOffice == 1) warp "pn_office",100,40;
@@ -106,14 +113,29 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	mes "Give this run a short label (e.g. Fenrir / Ultra).";
 	input .@label$;
 	if (getstrlen(.@label$)<1 || getstrlen(.@label$)>40) { mes "Use a label of 1-40 characters."; close; }
-	mes "Size:"; .@size = select("Small:Medium:Large")-1;
-	mes "Race:"; .@race = select("Formless:Undead:Brute:Plant:Insect:Fish:Demon:Demi-Human:Angel:Dragon")-1;
-	mes "Defending element:"; .@element = select("Neutral:Water:Earth:Fire:Wind:Poison:Holy:Dark:Ghost:Undead")-1;
-	mes "Element level (1-4):"; input .@elelv,1,4;
-	mes "MDEF (0-1000):"; input .@mdef,0,1000;
-	mes "MRES (0-1000):"; input .@mres,0,1000;
+	if (!.@loaded) {
+		mes "Combat class:"; @PNLabTarget[0]=select("Normal:Boss")-1;
+		mes "Size:"; @PNLabTarget[1]=select("Small:Medium:Large")-1;
+		mes "Race:"; @PNLabTarget[2]=select("Formless:Undead:Brute:Plant:Insect:Fish:Demon:Demi-Human:Angel:Dragon")-1;
+		mes "Defending element:"; @PNLabTarget[3]=select("Neutral:Water:Earth:Fire:Wind:Poison:Holy:Dark:Ghost:Undead")-1;
+		mes "Element level (1-4):"; input @PNLabTarget[4],1,4;
+		mes "Physical DEF (0-1000):"; input @PNLabTarget[5],0,1000;
+		mes "Physical RES (0-1000):"; input @PNLabTarget[6],0,1000;
+		mes "MDEF (0-1000):"; input @PNLabTarget[7],0,1000;
+		mes "MRES (0-1000):"; input @PNLabTarget[8],0,1000;
+		if (select("Run without saving preset:Save target preset")==2) {
+			.@slot=select("Replace preset 1:Replace preset 2:Replace preset 3:Cancel")-1;
+			if (.@slot<3) {
+				mes "Preset name (1-40 characters):"; input .@preset$;
+				if (!callfunc("PN_LabPresetSave",.@slot,.@preset$)) { mes "Invalid preset name or settings."; close; }
+			}
+		}
+	}
+	.@setup$=callfunc("PN_LabTargetIdentity");
+	if (.@setup$=="") { mes "Invalid target settings. Configure the target again."; close; }
+	mes .@setup$;
 	mes "Prepare all buffs before continuing. Timing starts after the countdown.";
-	mes "Boss-only bonuses are NOT represented by this normal-class dummy.";
+	mes "Boss-only bonuses apply only to Boss class. This dummy does not reproduce encounter skills or boss phases.";
 	if (select("Start:Cancel")==2) close;
 	close2;
 	'Running = 1;
@@ -122,15 +144,7 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	killmonsterall .@map$;
 	monster .@map$,50,50,"Damage Lab Target",1002,1;
 	.@mob = $@mobid[0];
-	setunitdata .@mob,UMOB_MODE,MD_STATUSIMMUNE|MD_KNOCKBACKIMMUNE;
-	setunitdata .@mob,UMOB_SIZE,.@size;
-	setunitdata .@mob,UMOB_RACE,.@race;
-	setunitdata .@mob,UMOB_ELETYPE,.@element;
-	setunitdata .@mob,UMOB_ELELEVEL,.@elelv;
-	setunitdata .@mob,UMOB_DEF,0;
-	setunitdata .@mob,UMOB_MDEF,.@mdef;
-	setunitdata .@mob,UMOB_MRES,.@mres;
-	setunitdata .@mob,UMOB_FLEE,0;
+	if (!callfunc("PN_LabApplyTarget",.@mob)) { killmonsterall .@map$; 'Running=0; end; }
 	setunitdata .@mob,UMOB_MAXHP,2000000000;
 	setunitdata .@mob,UMOB_HP,2000000000;
 	setunitdata .@mob,UMOB_DMGIMMUNE,1;
@@ -138,7 +152,6 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	setunitdata .@mob,UMOB_DMGIMMUNE,0;
 	.@gear$=pnlabidentity(0);
 	.@buff$=pnlabidentity(1);
-	.@setup$="v1/60s/normal/def0/flee0/immune:size="+.@size+" race="+.@race+" ele="+.@element+" lv="+.@elelv+" mdef="+.@mdef+" mres="+.@mres;
 	.@build$=pnlabidentity(2);
 	if (.@build$=="") { killmonsterall .@map$; 'Running=0; dispbottom "Build verification is unavailable. No comparison run can be saved."; end; }
 	.@start = gettimetick(0);
@@ -165,7 +178,7 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	callfunc "PN_LabSave",.@label$,.@damage,.@elapsed,.@setup$,.@gear$,.@buff$,.@build$,.@buffchanged;
 	callfunc "PN_WeeklyLabComplete";
 	dispbottom "RESULT " + .@label$ + ": damage=" + .@damage + " time_ms=" + .@elapsed + " DPS=" + @PNLabDps;
-	logmes "PNLAB label="+.@label$+" damage="+.@damage+" ms="+.@elapsed+" size="+.@size+" race="+.@race+" element="+.@element+" elelv="+.@elelv+" mdef="+.@mdef+" mres="+.@mres;
+	logmes "PNLAB label="+.@label$+" damage="+.@damage+" ms="+.@elapsed+" target="+.@setup$;
 	end;
 OnInstanceInit:
 	'Running = 0;
@@ -180,6 +193,56 @@ OnInstanceInit:
 	setmapflag instance_mapname("guild_vs1"),mf_noloot;
 	setmapflagnosave instance_mapname("guild_vs1"),"izlude",140,144;
 	end;
+}
+
+// Settings order: class, size, race, element, element level, DEF, RES, MDEF, MRES.
+// Character presets contain data only; loading one cannot start or award a run.
+function	script	PN_LabTargetValid	{
+ if (@PNLabTarget[0]<0 || @PNLabTarget[0]>1 || @PNLabTarget[1]<0 || @PNLabTarget[1]>2
+  || @PNLabTarget[2]<0 || @PNLabTarget[2]>9 || @PNLabTarget[3]<0 || @PNLabTarget[3]>9
+  || @PNLabTarget[4]<1 || @PNLabTarget[4]>4) return 0;
+ for (.@i=5; .@i<9; .@i++) if (@PNLabTarget[.@i]<0 || @PNLabTarget[.@i]>1000) return 0;
+ return 1;
+}
+function	script	PN_LabPresetSave	{
+ .@slot=getarg(0); .@name$=getarg(1);
+ if (.@slot<0 || .@slot>2 || getstrlen(.@name$)<1 || getstrlen(.@name$)>40 || !callfunc("PN_LabTargetValid")) return 0;
+ PNLabPresetVersion[.@slot]=0;
+ for (.@i=0; .@i<9; .@i++) PNLabPreset[.@slot*9+.@i]=@PNLabTarget[.@i];
+ PNLabPresetName$[.@slot]=.@name$;
+ PNLabPresetVersion[.@slot]=2;
+ return 1;
+}
+function	script	PN_LabPresetLoad	{
+ .@slot=getarg(0);
+ if (.@slot<0 || .@slot>2 || PNLabPresetVersion[.@slot]!=2) return 0;
+ for (.@i=0; .@i<9; .@i++) @PNLabTarget[.@i]=PNLabPreset[.@slot*9+.@i];
+ return callfunc("PN_LabTargetValid");
+}
+function	script	PN_LabTargetIdentity	{
+ if (!callfunc("PN_LabTargetValid")) return "";
+ return "v2/60s/"+((@PNLabTarget[0])?"boss/status-immune":"normal/status-enabled")+"/flee0/pdodge0/knockback-immune:size="+@PNLabTarget[1]
+  +" race="+@PNLabTarget[2]+" ele="+@PNLabTarget[3]+" lv="+@PNLabTarget[4]+" def="+@PNLabTarget[5]
+  +" res="+@PNLabTarget[6]+" mdef="+@PNLabTarget[7]+" mres="+@PNLabTarget[8];
+}
+function	script	PN_LabApplyTarget	{
+ .@mob=getarg(0);
+ if (!callfunc("PN_LabTargetValid") || !unitexists(.@mob)) return 0;
+ // The combat engine derives class from mode, not the UMOB_CLASS appearance.
+ .@mode=MD_KNOCKBACKIMMUNE;
+ if (@PNLabTarget[0]) .@mode|=MD_STATUSIMMUNE|MD_DETECTOR;
+ setunitdata .@mob,UMOB_MODE,.@mode;
+ setunitdata .@mob,UMOB_SIZE,@PNLabTarget[1];
+ setunitdata .@mob,UMOB_RACE,@PNLabTarget[2];
+ setunitdata .@mob,UMOB_ELETYPE,@PNLabTarget[3];
+ setunitdata .@mob,UMOB_ELELEVEL,@PNLabTarget[4];
+ setunitdata .@mob,UMOB_DEF,@PNLabTarget[5];
+ setunitdata .@mob,UMOB_RES,@PNLabTarget[6];
+ setunitdata .@mob,UMOB_MDEF,@PNLabTarget[7];
+ setunitdata .@mob,UMOB_MRES,@PNLabTarget[8];
+ setunitdata .@mob,UMOB_FLEE,0;
+ setunitdata .@mob,UMOB_PDODGE,0;
+ return 1;
 }
 
 // Character registry arrays survive normal logout/relog. Only the completion
@@ -211,7 +274,7 @@ function	script	PN_LabCompatible	{
 }
 function	script	PN_LabHistory	{
  mes "[Saved Damage Lab Runs]";
- mes "Last three completed runs, saved on this character. Dummy is immobile, normal class and status/knockback immune; boss-only bonuses are excluded.";
+ mes "Last three completed runs, saved on this character. Each run records its exact target class and defenses. Older v1 targets used Guardian class and cannot compare with v2 targets.";
  for (.@i=0; .@i<3; .@i++) {
   if (!PNLabValid[.@i]) continue;
   mes "Run "+(.@i+1)+": "+PNLabName$[.@i]+" | DPS "+PNLabDps[.@i];

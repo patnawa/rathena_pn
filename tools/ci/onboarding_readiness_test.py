@@ -5,6 +5,7 @@ party lookup are explicit boundaries; quest state/timers, instance metadata,
 leader checks, inventory and scripts use production code. No rendered proof.
 """
 import argparse
+import json
 from pathlib import Path
 import subprocess
 import tempfile
@@ -30,21 +31,39 @@ def main():
         entrance = (root / 'npc/re/instances' / entry).read_text()
         assert 'callfunc("PN_InstanceMissing",.@md_name$)' in entrance
     assert 'npc: npc/custom/main_office/readiness.txt' in (root / 'npc/scripts_custom.conf').read_text()
+    assert (root/'npc/custom/chapter1/CH1.c').read_text().count('callfunc("PN_InstanceMissing",.@md_name$)')==6
+    subprocess.run([sys.executable,str(root/'tools/generate_chapter1_guide.py'),'--check'],cwd=root,check=True)
 
     items = {}
     for row in renewal_records(root, 'db/item_db.yml'):
-        if row['Id'] == 512:
+        if row['Id'] == 512 or row.get('AegisName') in ('Dragon_Scale','Ch1_Broken_Petal'):
             items.setdefault(row['Id'], {}).update(row)
     prefix = (root / 'tools/ci/biosphere_crown_transaction_test.cpp').read_text().split('extern "C" int __wrap_main(', 1)[0]
+    prefix = prefix.replace('std::map<int64,int64> nums;', '''std::map<int64,int64> nums;
+std::map<int,map_session_data*> guide_players;
+std::map<int,std::map<int64,int64>> guide_member_nums;
+std::map<int64,int64>& guide_values(const map_session_data* sd){return sd==attached?nums:guide_member_nums[sd->status.account_id];}''')
+    prefix = prefix.replace('return attached&&attached->id==id?attached:nullptr;', 'auto it=guide_players.find(id);return it!=guide_players.end()?it->second:(attached&&attached->id==id?attached:nullptr);')
+    prefix = prefix.replace('check(name.rfind("$@__SW",0)==0&&name.substr(name.size()-4)=="_VAL",', 'check(name=="$@partymembercount"||(name.rfind("$@__SW",0)==0&&name.substr(name.size()-4)=="_VAL"),')
     # Reading an unset registry returns zero without creating a stored entry.
     prefix = prefix.replace('return nums[key];', 'auto it=nums.find(key);return it==nums.end()?0:it->second;')
     prefix = prefix.replace('return nums[add_str(name)];', 'auto it=nums.find(add_str(name));return it==nums.end()?0:it->second;')
+    for function in ('readreg','registry','named_registry'):
+        prefix=prefix.replace(function+'(const map_session_data*,',function+'(const map_session_data* sd,')
+    prefix=prefix.replace('auto it=nums.find(key);return it==nums.end()?0:it->second;', 'auto& values=guide_values(sd);auto it=values.find(key);return it==values.end()?0:it->second;')
+    prefix=prefix.replace('auto it=nums.find(add_str(name));return it==nums.end()?0:it->second;', 'auto& values=guide_values(sd);auto it=values.find(add_str(name));return it==values.end()?0:it->second;')
+    prefix=prefix.replace('switch_read(int64 key){auto& values=guide_values(sd);','switch_read(int64 key){auto& values=nums;')
+    prefix=prefix.replace('mes(const map_session_data&,uint32,const char* text){messages.emplace_back(text);}', 'mes(const map_session_data& sd,uint32,const char* text){check(&sd==attached,"readiness dialog only reaches requesting player");messages.emplace_back(text);}')
     prefix = prefix.replace('check(attached->status.zeny==7654321,"no Zeny charge");', '')
     original = 'nums[key]=value;return true;}'
     assert original in prefix
     prefix = prefix.replace(original, 'nums[key]=value;if(script_getvaridx(key))script_array_update(&attached->regs,key,value==0);return true;}', 1)
     with tempfile.TemporaryDirectory(prefix='onboarding-readiness-') as temp:
         work = Path(temp)
+        quest = next(row for row in renewal_records(root, 'db/quest_db.yml') if row['Id'] == 8964)
+        mobs = {row['Id']: row for row in renewal_records(root, 'db/mob_db.yml') if row.get('AegisName') == 'CH1_SHADOW_JAILER'}
+        (work / 'guide-quest.yml').write_text(yaml.safe_dump({'Body': [quest]}))
+        (work / 'guide-mobs.json').write_text(json.dumps(list(mobs.values())))
         (work / 'armor-items.yml').write_text(yaml.safe_dump({'Header': {'Type': 'ITEM_DB', 'Version': 3}, 'Body': list(items.values())}, sort_keys=False))
         driver = work / 'driver.cpp'
         driver.write_text(prefix + args.driver.read_text())
@@ -54,7 +73,7 @@ def main():
         libraries = [root / p for p in ('src/common/obj/common.a', '3rdparty/libconfig/obj/libconfig.a', '3rdparty/rapidyaml/obj/ryml.a')]
         includes = ['src', '3rdparty/libconfig', '3rdparty/rapidyaml/src', '3rdparty/rapidyaml/ext/c4core/src', '3rdparty/json/include', '/usr/include/mysql']
         binary = work / 'guide-test'
-        command = ['g++', '-std=c++17', '-O0', '-DPACKETVER=20260219']
+        command = ['g++', '-std=c++17', '-O0', '-g', '-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-DPACKETVER=20260219']
         command += ['-I' + value for value in includes]
         command += [str(driver)] + [str(p) for p in objects + libraries]
         command += ['-Wl,--wrap=' + value for value in (*WRAPPERS, '_Z12party_searchi', '_Z15clif_navigateToPK16map_session_dataPKctthbt')]

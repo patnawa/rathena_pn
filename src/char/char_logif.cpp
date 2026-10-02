@@ -3,6 +3,7 @@
 
 #include "char_logif.hpp"
 #include <custom/global_point.hpp>
+#include <custom/registry_save.hpp>
 
 #include <cstdlib>
 #include <cstring>
@@ -782,7 +783,17 @@ int32 chlogif_parse(int32 fd) {
 		int32 next = 1;
 		uint16 command = RFIFOW(fd,0);
 		switch( command ) {
-			case pn_global_point::ack_packet:
+			case pn_registry::login_ack: {
+                if (RFIFOREST(fd) < pn_registry::header_size) return 0;
+                if (pn_registry::header(RFIFOP(fd, 0), pn_registry::header_size)) {
+                    pn_registry::Packet ack(pn_registry::header_size);
+                    std::memcpy(ack.data(), RFIFOP(fd, 0), ack.size());
+                    pn_registry::write<uint16_t>(ack.data(), 0, pn_registry::ack_packet);
+                    chmapif_sendall(ack.data(), ack.size());
+                }
+                RFIFOSKIP(fd, pn_registry::header_size); break;
+            }
+            case pn_global_point::ack_packet:
 				if(RFIFOREST(fd)<sizeof(pn_shop::Ack))return 0;
 				RFIFOSKIP(fd,sizeof(pn_shop::Ack));break; // Map retry reads the durable shared-DB approval.
 			case 0x2711: next = chlogif_parse_ackconnect(fd); break;

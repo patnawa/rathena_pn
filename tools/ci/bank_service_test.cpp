@@ -2,6 +2,7 @@
 #include <common/mmo.hpp>
 #include <custom/bank_state.hpp>
 #include <custom/bank_commit.hpp>
+#include <custom/registry_save.hpp>
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -21,6 +22,7 @@ struct map_session_data {
     struct {uint32 id=0;} trade_partner;
     struct {int64 zeny=0;} deal;
     pn_bank_state bank_ui;
+    pn_registry::Journal registry_saves;
     int64 bank_vault=1000000000;
     int32 weight=0,max_weight=1000000,fd=2,m=0;
     uint32 login_id1=11,login_id2=22;
@@ -47,6 +49,11 @@ int inter_fd=1; int64 clock_tick=10000;
 bool connected=true,disabled=false,world_busy=false,present=true,add_fails=false,partner_present=false;
 int delete_failure=-1,save_count=0,timers=0,refreshes=0;
 int native_replies=0, native_closes=0, wallet_refreshes=0,trade_calls=0,sweep_calls=0;
+// Registry encoding/transport has its own native and SQL suite. This fixture
+// controls capture success and ACK timing at the bank's ordering boundary.
+int registry_capture=0,registry_replays=0;
+int intif_saveregistry(map_session_data*){return registry_capture;}
+void intif_registry_replay(const map_session_data*){++registry_replays;}
 pn_bank::Result trade_result=pn_bank::Ok;
 pn_bank::Request last_trade;
 struct {bool feature_banking=true;} battle_config;
@@ -196,6 +203,21 @@ static void current_ui_boundaries(){
 }
 int main(){
     using namespace pn_bank;
+    {
+        map_session_data waiting;
+        std::vector<pn_registry::Packet> batch{pn_registry::Packet(pn_registry::header_size)};
+        assert(waiting.registry_saves.retain(waiting.status.account_id,waiting.status.char_id,batch));
+        out_size[1]=0;intif_bank_save_request(waiting);
+        assert(!out_size[1] && registry_replays==1);
+        const auto ack=pn_registry::acknowledgement(waiting.registry_saves.packets[0].data(),true);
+        assert(waiting.registry_saves.acknowledge(ack.data(),ack.size()));
+        intif_bank_save_request(waiting);assert(out_size[1]>0);
+        auto snapshot=pn_bank_snapshot(waiting);Request blocked;
+        blocked.nonce_hi=snapshot.nonce_hi;blocked.nonce_lo=snapshot.nonce_lo;blocked.request_id=1;blocked.action=Deposit;blocked.amount=1;
+        registry_capture=-1;const auto wallet=waiting.status.zeny;
+        assert(pn_bank_action(waiting,blocked)==Busy && waiting.status.zeny==wallet && !waiting.bank_ui.pending);
+        registry_capture=0;out_size[1]=0;
+    }
     player.inventory.type=TABLE_INVENTORY;
     Request request; request.account_id=player.status.account_id;request.char_id=player.status.char_id;request.login_id1=11;request.login_id2=22;
     auto snapshot=rpc(request);assert(snapshot.result==Ok && snapshot.bank==1000000000 && snapshot.nonce_hi);

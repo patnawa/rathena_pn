@@ -52,3 +52,6 @@ BUILDIN_FUNC(getpetreward)
 	return SCRIPT_CMD_SUCCESS;
 }
 #include "lab_history.inc"
+#include "player_guide.inc"
+#include "equipment_planner.inc"
+#include "purchase_history_map.inc"

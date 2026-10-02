@@ -22,6 +22,7 @@
 
 #include "char.hpp"
 #include <custom/global_point.hpp>
+#include <custom/registry_save_sql.hpp>
 #include "char_logif.hpp"
 #include "char_mapif.hpp"
 #include "inter.hpp"
@@ -67,7 +68,7 @@ int32 inter_recv_packet_length[] = {
 	-1,10, 6,-1,  0, 0, 0, 0,  0, 0, 0, 0, -1,10,  6,-1,	// 3070-  Mercenary packets [Zephyrus], Elemental packets [pakpil]
 	52,14,-1, 6,  0, 0, 0, 0,  0, 0,13,-1,  0,-1, -1,56,	// 3080-  Pet System, Storage
 	-1,10,-1, 6, -1,-1,-1,-1, -1,-1, 0, 0,  0, 0,  0, 0,	// 3090-  Homunculus packets [albator] / durable shop
-	 2,-1, 6, 6,  7,-1, 0, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 30A0-  Clan packets / versioned achievement load/logout save
+	 2,-1, 6, 6,  7,-1,-1, 0,  0, 0, 0, 0,  0, 0,  0, 0,	// 30A0-  Clan packets / versioned achievement load/logout save
 };
 
 #ifndef WHISPER_MESSAGE_SIZE
@@ -1276,6 +1277,8 @@ int32 mapif_parse_WisToGM(int32 fd)
 	return 0;
 }
 
+ #include <custom/registry_char.inc>
+
 // Save account_reg into sql (type=2)
 int32 mapif_parse_Registry(int32 fd)
 {
@@ -1446,6 +1449,7 @@ int32 inter_parse_frommap(int32 fd)
 	case 0x3001: mapif_parse_WisRequest(fd); break;
 	case 0x3002: mapif_parse_WisReply(fd); break;
 	case 0x3003: mapif_parse_WisToGM(fd); break;
+	case pn_registry::request_packet: mapif_parse_registry_save(fd); break;
 	case 0x3004: mapif_parse_Registry(fd); break;
 	case 0x3005: mapif_parse_RegistryRequest(fd); break;
 	case 0x3006: mapif_parse_NameChangeRequest(fd); break;

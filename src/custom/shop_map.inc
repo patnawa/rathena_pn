@@ -126,8 +126,8 @@ bool pn_shop_plan_inventory(const map_session_data& sd,pn_shop::Commit& request,
 
 bool pn_shop_begin(map_session_data& sd,std::shared_ptr<pn_shop::Commit> r,
     const std::vector<pn_shop::Grant>& grants,const uint32_t* requiredItems) {
-	if(pn_shop_stock_busy())++pn_metrics::runtime.shop_busy_refusals;
-    if(!r || pn_shop_stock_busy() || pc_transaction_pending(&sd) ||
+	if(pn_shop_queue_full())++pn_metrics::runtime.shop_busy_refusals;
+    if(!r || pn_shop_queue_full() || pc_transaction_pending(&sd) ||
        sd.mail.pending_zeny || sd.mail.pending_slots || sd.mail.pending_weight ||
        r->account_id!=sd.status.account_id || r->char_id!=sd.status.char_id ||
        r->wallet_before!=sd.status.zeny || r->cash_before!=sd.cashPoints ||
@@ -139,6 +139,39 @@ bool pn_shop_begin(map_session_data& sd,std::shared_ptr<pn_shop::Commit> r,
     uint32_t weight=0;
     if(!pn_shop_plan_inventory(sd,*r,grants,requiredItems,events,weight))return false;
     return pn_shop_submit(sd,std::move(r),std::move(events),weight);
+}
+
+// Called once, before the first send of a queued immutable purchase. The SQL
+// commit still checks stock, price and sale dates atomically. Subsequent retries
+// must keep this admitted payload byte-for-byte, even after a lost reply.
+bool pn_shop_stock_rebase(pn_shop::Commit& request) {
+    for (uint32 i=0;i<request.stock_count;++i) {
+        auto& stock=request.stocks[i];
+        const int64 wanted=stock.before-stock.after;
+        char escaped[sizeof(stock.name)*2+1];Sql_EscapeString(mmysql_handle,escaped,stock.name);
+        int queried;
+        if(request.kind==pn_shop::Sale)
+            queried=Sql_Query(mmysql_handle,"SELECT amount FROM sales WHERE nameid=%u",stock.key);
+        else if(request.kind==pn_shop::Market)
+            queried=Sql_Query(mmysql_handle,"SELECT amount FROM market WHERE name='%s' AND nameid=%u",escaped,stock.key);
+        else
+            queried=Sql_Query(mmysql_handle,"SELECT amount FROM barter WHERE name='%s' AND `index`=%u",escaped,stock.key);
+        if(queried!=SQL_SUCCESS)return false;
+        const int row=Sql_NextRow(mmysql_handle);char* value=nullptr;
+        int64 amount=0;
+        if(row==SQL_SUCCESS) {
+            if(Sql_GetData(mmysql_handle,0,&value,nullptr)!=SQL_SUCCESS || !value){Sql_FreeResult(mmysql_handle);return false;}
+            char* end=nullptr;errno=0;amount=strtoll(value,&end,10);
+            if(errno || !end || *end || amount<0 || amount>INT32_MAX){Sql_FreeResult(mmysql_handle);return false;}
+        }
+        Sql_FreeResult(mmysql_handle);
+        if(row!=SQL_SUCCESS && row!=SQL_NO_DATA)return false;
+        // Missing legacy rows retain the declared initial catalog stock. An
+        // insufficient existing row keeps the old request so SQL records a
+        // durable rejection without charging or delivering anything.
+        if(row==SQL_SUCCESS && amount>=wanted) { stock.before=amount;stock.after=amount-wanted; }
+    }
+    return pn_shop::valid(request);
 }
 
 bool pn_shop_stock_refresh(const pn_shop::Commit& r) {
@@ -193,7 +226,7 @@ void pn_shop_committed_effects(map_session_data& sd,const pn_shop::Commit& reque
 }
 
 bool pn_pet_recover(map_session_data& sd) {
-    if(!sd.vars_ok || !sd.state.pc_loaded || pc_transaction_pending(&sd) || pn_shop_stock_busy())return false;
+    if(!sd.vars_ok || !sd.state.pc_loaded || pc_transaction_pending(&sd) || pn_shop_queue_full())return false;
     if(Sql_Query(mmysql_handle,"SELECT id,egg FROM pn_pet_entitlements WHERE account_id=%u AND char_id=%u AND claimed=0 ORDER BY id LIMIT %u",
         sd.status.account_id,sd.status.char_id,static_cast<unsigned>(MAX_INVENTORY))!=SQL_SUCCESS)return false;
     std::vector<pn_shop::Grant> available;
@@ -225,7 +258,7 @@ bool pn_pet_recover(map_session_data& sd) {
 static TIMER_FUNC(pn_pet_login_recovery) {
     auto* sd=map_id2sd(id);
     if(!sd || sd->status.char_id!=static_cast<uint32>(data))return 0;
-    if(!sd->state.pc_loaded || pc_transaction_pending(sd) || pn_shop_stock_busy()) {
+    if(!sd->state.pc_loaded || pc_transaction_pending(sd) || pn_shop_queue_full()) {
         add_timer(tick+5000,pn_pet_login_recovery,id,data);return 0;
     }
     pn_pet_recover(*sd);

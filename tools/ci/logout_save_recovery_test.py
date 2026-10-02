@@ -15,24 +15,31 @@ def function(text, signature):
         end += 1
     return text[start:end] + '\n'
 
-def run(work):
+def run(work, transfer=False):
     work.mkdir(parents=True, exist_ok=True)
     text = (ROOT / 'src/map/chrif.cpp').read_text()
     signatures = [
         'bool chrif_save_available(', 'bool chrif_save_packet(',
-        'static bool chrif_sd_to_auth(', 'static bool chrif_send_retained_final(',
+        'static bool chrif_sd_to_auth(', 'static bool chrif_send_retained_transfer(', 'static bool chrif_send_retained_final(',
         'static bool chrif_send_retained_logout(', 'static void chrif_save_barrier_ack(',
+        'void chrif_registry_saved(',
         'static void chrif_save_dependencies(',
         'bool chrif_auth_achievement_saved(', 'static bool chrif_auth_logout(',
         'int32 chrif_save(', 'static int32 chrif_reconnect(',
+        'int32 chrif_changemapserver(',
+        'static void chrif_transfer_save_ack(',
     ]
     (work / 'logout-production.inc').write_text('\n'.join(function(text, s) for s in signatures) +
-        function((ROOT / 'src/char/char_mapif.cpp').read_text(), 'static int32 chmapif_parse_logout_barrier('))
+        function((ROOT / 'src/char/char_mapif.cpp').read_text(), 'static int32 chmapif_parse_logout_barrier(') +
+        function((ROOT / 'src/char/char_mapif.cpp').read_text(), 'static int32 chmapif_parse_transfer_status('))
     subprocess.run(['g++', '-std=c++17', '-O1', '-g', '-fsanitize=address,undefined',
                     '-fno-sanitize=alignment', '-fno-sanitize-recover=all',
                     '-I' + str(ROOT / 'src'), '-I' + str(work),
+                    *(['-DPN_TEST_TRANSFER'] if transfer else []),
                     str(Path(__file__).with_suffix('.cpp')), '-o', str(work / 'logout-test')], check=True)
     subprocess.run([str(work / 'logout-test')], check=True)
+    if transfer:
+        return
     serializers = (ROOT / 'src/map/intif.cpp').read_text()
     (work / 'logout-serializers.inc').write_text('\n'.join(function(serializers, signature) for signature in (
         'bool intif_storage_save(', 'int32 intif_quest_save(', 'int32 intif_save_petdata(',
@@ -48,9 +55,12 @@ def run(work):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--build-dir', type=Path)
+    parser.add_argument('--transfer', action='store_true')
     args = parser.parse_args()
     if args.build_dir:
-        run(args.build_dir)
+        run(args.build_dir, args.transfer)
     else:
         with tempfile.TemporaryDirectory(prefix='logout-save-') as directory:
-            run(Path(directory))
+            run(Path(directory), args.transfer)
+            if not args.transfer:
+                run(Path(directory) / 'transfer', True)

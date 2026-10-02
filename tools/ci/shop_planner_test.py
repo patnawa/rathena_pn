@@ -3,10 +3,14 @@
 This verifies planning invariants, not SQL, network recovery or native callbacks.
 """
 import pathlib, subprocess, tempfile
+from achievement_persistence_test import function
 root=pathlib.Path(__file__).resolve().parents[2]
 source=(root/'src/custom/shop_map.inc').read_text()
 recovery=source[source.index('bool pn_pet_recover('):source.index('static TIMER_FUNC(pn_pet_login_recovery)')]
-source=source[source.index('std::shared_ptr<pn_shop::Commit> pn_shop_request'):source.index('bool pn_shop_stock_refresh')]
+source='\n'.join(function(root/'src/custom/shop_map.inc',signature) for signature in (
+    'std::shared_ptr<pn_shop::Commit> pn_shop_request(',
+    'bool pn_shop_plan_inventory(',
+    'bool pn_shop_begin('))
 prefix=r"""
 #include <algorithm>
 #include <cassert>
@@ -47,7 +51,7 @@ int Sql_Query(int,const char* query,...){assert(std::string(query).find("WHERE a
 int Sql_NextRow(int){return ++cursor<int(sql_rows.size())?SQL_SUCCESS:SQL_NO_DATA;}
 int Sql_GetData(int,int column,char** data,size_t* size){auto& row=sql_rows.at(cursor);if(column==0)*data=row.first.data();else{*data=reinterpret_cast<char*>(&row.second);if(size)*size=sizeof(item)-(truncated_blob?1:0);}return SQL_SUCCESS;}
 void Sql_FreeResult(int){}
-bool busy=false;bool pn_shop_stock_busy(){return busy;}bool pc_transaction_pending(map_session_data* sd){return sd->pending;}
+bool busy=false;bool pn_shop_queue_full(){return busy;}bool pc_transaction_pending(map_session_data* sd){return sd->pending;}
 std::shared_ptr<pn_shop::Commit> submitted;std::vector<pn_shop::Event> observed;uint32_t planned_weight=0;
 bool pn_shop_submit(map_session_data&,std::shared_ptr<pn_shop::Commit> r,std::vector<pn_shop::Event> e,uint32_t w){submitted=r;observed=e;planned_weight=w;return true;}
 """

@@ -14155,9 +14155,13 @@ hem_dun01,205,248,4	script(CLOAKED)	Wizard Professor#w1	9,{
 		instance_warning(1);
 	}
 	.@md_name$ = "Simulated Dark Whisper";
+	.@reason$=callfunc("PN_InstanceMissing",.@md_name$);
+	if (.@reason$!="") { mes .@reason$; close; }
 	.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
 	if ( .@active == false && is_party_leader() == true ) {
 		select("Create Simulated Dark Whisper");
+		.@reason$=callfunc("PN_InstanceMissing",.@md_name$);
+		if (.@reason$!="") { mes .@reason$; close; }
 		.@instance_id = instance_create(.@md_name$);
 		if ( .@instance_id < 0 ) {
 			mes "[Wizard Professor]";
@@ -14168,6 +14172,8 @@ hem_dun01,205,248,4	script(CLOAKED)	Wizard Professor#w1	9,{
 	}
 	if ( .@active == true ) {
 		select("Enter Simulated Dark Whisper");
+		.@reason$=callfunc("PN_InstanceMissing",.@md_name$);
+		if (.@reason$!="") { mes .@reason$; close; }
 		if( instance_enter(.@md_name$) != IE_OK ){
 			mes "^0000ffTalk to me again after everything is ready^000000";
 			close;
@@ -14237,9 +14243,13 @@ hem_dun01,209,248,4	script(CLOAKED)	Est#wsp1	4_F_ESTLOVELOY,{
 			close;
 		}
 		.@md_name$ = "Ominous Dark Whisper";
+		.@reason$=callfunc("PN_InstanceMissing",.@md_name$);
+		if (.@reason$!="") { mes .@reason$; close; }
 		.@active = instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$;
 		if ( .@active == false && is_party_leader() == true ) {
 			select("Create Ominous Dark Whisper");
+			.@reason$=callfunc("PN_InstanceMissing",.@md_name$);
+			if (.@reason$!="") { mes .@reason$; close; }
 			.@instance_id = instance_create(.@md_name$);
 			if ( .@instance_id < 0 ) {
 				mes "[Est]";
@@ -14250,6 +14260,8 @@ hem_dun01,209,248,4	script(CLOAKED)	Est#wsp1	4_F_ESTLOVELOY,{
 		}
 		if ( .@active == true ) {
 			select("Enter Ominous Dark Whisper");
+			.@reason$=callfunc("PN_InstanceMissing",.@md_name$);
+			if (.@reason$!="") { mes .@reason$; close; }
 			if( instance_enter(.@md_name$) != IE_OK ){
 				mes "^0000ffTalk to me again after you are ready^000000";
 				close;

@@ -65,7 +65,9 @@ def main():
                 end += 1
             return content[start:end]
         inter = (root / 'src/custom/shop_inter.inc').read_text()
-        fence = inter[inter.index('static bool pn_shop_inflight'):inter.index('\n\nstatic void pn_shop_send')]
+        # Extract only the real queue and guard predicates. Later wire handlers
+        # use player/session types outside this SQL/catalog fixture's boundary.
+        fence = inter[inter.index('static bool pn_shop_inflight'):inter.index('static void pn_shop_resolve')]
         body = fence + '\n' + '\n'.join(function(sig) for sig in (
             'void npc_market_tosql(', 'void npc_market_delfromsql_(',
             'static int32 npc_market_checkall_sub(', 'static void npc_market_fromsql(void) {'))

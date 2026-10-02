@@ -19,20 +19,27 @@ function	script	PN_InstanceMissing	{
 		}
 	} else if (.@name$ == "Ghost Palace") {
 		if (BaseLevel < 120) return "Missing prerequisite: Base Level 120.";
-		if (checkquest(1261,PLAYTIME) == 0 || checkquest(1261,PLAYTIME) == 1) return "Cooldown: Cursed Swordsman quest timer.";
+		if (checkquest(1261,PLAYTIME) == 0 || checkquest(1261,PLAYTIME) == 1) return "Cooldown: Cursed Swordsman; "+((max(0,pnquestremaining(1261))+59)/60)+" minutes remain.";
 		if (checkquest(1261,PLAYTIME) == 2) return "Timer expired: speak to the Royal Guard to clear it, then speak again.";
 		if (!is_party_leader()) return "Missing prerequisite: only the party leader can enter Ghost Palace.";
 	} else if (.@name$ == "Charleston in Distress") {
 		if (BaseLevel < 130) return "Missing prerequisite: Base Level 130.";
 		if (isbegin_quest(13184) != 1) return "Missing prerequisite: accept Charleston's assignment at verus04 75,114.";
-		if (checkquest(13185,PLAYTIME) == 0 || checkquest(13185,PLAYTIME) == 1) return "Cooldown: Charleston's 20-hour access timer.";
+		if (checkquest(13185,PLAYTIME) == 0 || checkquest(13185,PLAYTIME) == 1) return "Cooldown: Charleston; "+((max(0,pnquestremaining(13185))+59)/60)+" minutes remain (20-hour timer).";
 		if (checkquest(13185,PLAYTIME) == 2) return "Timer expired: speak to the Machine to clear it, then speak again.";
-	} else return "This instance is not in the readiness pilot.";
+	} else if (.@name$ == "Ominous Dark Whisper") {
+		if (isbegin_quest(12663)==1) return "Missing prerequisite: finish Est's infiltration briefing at hem_dun01 209,248.";
+		if (isbegin_quest(12666)!=1 && isbegin_quest(12664)!=1) return "Missing prerequisite: Chapter 1 Sky Fortress infiltration assignment.";
+	} else if (.@name$ == "Simulated Dark Whisper") {
+		if (isbegin_quest(12660)!=2) return "Missing prerequisite: complete Chapter 1 and register with the Wizard Professor at hem_dun01 205,248.";
+		if (checkquest(12661,PLAYTIME)==0 || checkquest(12661,PLAYTIME)==1) return "Cooldown: simulation; "+((max(0,pnquestremaining(12661))+59)/60)+" minutes remain (76-hour timer).";
+		if (checkquest(12661,PLAYTIME)==2) return "Timer expired: speak to the Wizard Professor to clear it.";
+	} else return "Readiness information is unavailable for this instance.";
 	if (!getcharid(1)) return "Missing prerequisite: form or join a party; one member is enough.";
 	.@iid = instance_id(IM_PARTY);
 	if (.@iid) {
 		if (instance_live_info(ILI_NAME,.@iid) != .@name$) return "Reserved elsewhere: finish your party's "+instance_live_info(ILI_NAME,.@iid)+" first.";
-		if (.@name$ != "Ghost Palace" && .@name$ != "Charleston in Distress") {
+		if (.@name$ == "Crossroads of Tangled Mana" || .@name$ == "Nyrholt" || .@name$ == "Phantom of Nyrholt") {
 			if (!compare(getinstancevar('ch2_roster$,.@iid),","+getcharid(0)+",")) return "Missing prerequisite: you were not on this expedition's original roster.";
 		}
 	} else if (!is_party_leader()) return "Missing prerequisite: ask your party leader to reserve this instance.";
@@ -40,13 +47,13 @@ function	script	PN_InstanceMissing	{
 }
 
 function	script	PN_InstanceReadinessDesk	{
-	setarray .@names$,"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress";
-	setarray .@maps$,"veledor","ragsruth","ch2safe4","dali02","verus04";
-	setarray .@x,140,88,86,43,81;
-	setarray .@y,65,58,146,129,112;
-	setarray .@tags$,"Flame Coins (story)","Flame Coins (story)","Flame Coins (story/daily)","Gray Shards / Thanatos equipment","Charleston Components";
-	.@pick=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Leave")-1;
-	if (.@pick == 5) return;
+	setarray .@names$,"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress","Ominous Dark Whisper","Simulated Dark Whisper";
+	setarray .@maps$,"veledor","ragsruth","ch2safe4","dali02","verus04","hem_dun01","hem_dun01";
+	setarray .@x,140,88,86,43,81,209,205;
+	setarray .@y,65,58,146,129,112,248,248;
+	setarray .@tags$,"Flame Coins (story)","Flame Coins (story)","Flame Coins (story/daily)","Gray Shards / Thanatos equipment","Charleston Components","Chapter 1 story finale","Chapter 1 repeatable simulation";
+	.@pick=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Ominous Dark Whisper:Simulated Dark Whisper:Leave")-1;
+	if (.@pick == 7) return;
 	mes .@names$[.@pick]+" | Materials: "+.@tags$[.@pick];
 	.@reason$=callfunc("PN_InstanceMissing",.@names$[.@pick]);
 	if (.@reason$ != "") mes .@reason$;
@@ -54,6 +61,37 @@ function	script	PN_InstanceReadinessDesk	{
 	else mes "Ready: visit the entrance to reserve and enter.";
 	mes "Entrance: "+.@maps$[.@pick]+" "+.@x[.@pick]+","+.@y[.@pick]+". The entrance rechecks your state.";
 	navigateto .@maps$[.@pick],.@x[.@pick],.@y[.@pick];
+	if (getcharid(1) && select("Check every party member:Done")==1) callfunc "PN_PartyReadiness",.@names$[.@pick];
+	return;
+}
+
+// Take one synchronous snapshot. Never force attachment to a member already
+// using an NPC, never open a dialog on that member, and restore the caller before
+// displaying results. Remote map-server sessions cannot be inspected here.
+function	script	PN_PartyReadiness	{
+	.@name$=getarg(0); .@owner=getcharid(3); .@ownerchar=getcharid(0); .@party=getcharid(1);
+	if (!.@party) { mes "Join a party to check its members."; return; }
+	.@count=getpartymember(.@party,0,.@names$);
+	getpartymember .@party,1,.@chars;
+	getpartymember .@party,2,.@accounts;
+	for (.@i=0; .@i<.@count; .@i++) {
+		.@result$[.@i]="Unavailable: offline or on another map server.";
+		if (!isloggedin(.@accounts[.@i],.@chars[.@i])) continue;
+		if (.@accounts[.@i]!=.@owner && !attachrid(.@accounts[.@i],0)) {
+			.@result$[.@i]="Unavailable: currently using another NPC."; continue;
+		}
+		if (getcharid(0)!=.@chars[.@i] || getcharid(1)!=.@party) .@result$[.@i]="Unavailable: party membership changed.";
+		else {
+			.@result$[.@i]=callfunc("PN_InstanceMissing",.@name$);
+			if (.@result$[.@i]=="") .@result$[.@i]=(instance_id(IM_PARTY))?"Ready: matching reservation and reentry checks passed.":"Ready to reserve at the entrance.";
+		}
+		if (.@accounts[.@i]!=.@owner && !attachrid(.@owner,0)) end;
+	}
+	if (getcharid(3)!=.@owner || getcharid(0)!=.@ownerchar) end;
+	mes "[Party readiness: "+.@name$+"]";
+	if (!.@count) mes "Party details are unavailable. Try again shortly.";
+	for (.@i=0; .@i<.@count; .@i++) mes .@names$[.@i]+": "+.@result$[.@i];
+	mes "Checked now. The entrance checks each member again before entry. Unavailable members must check from their own session.";
 	return;
 }
 
@@ -68,18 +106,29 @@ function	script	PN_GuideOnboarding	{
 		mes "Next objective: accept Lara's invitation at the Small Ash Tree. Chapter 1 begins at Base Level 200.";
 		navigateto "prt_fild05",353,252; return;
 	}
-	setarray .@quests,18368,18369,18370,18371,24069,24070,24071,24072;
-	setarray .@maps$,"ygg_edge","ygg_fruit","ygg_fruit","ygg_roots","ygg_roots","ygg_roots","ygg_roots","ygg_roots";
-	setarray .@x,253,80,82,334,299,186,167,166;
-	setarray .@y,246,122,120,138,59,117,135,135;
-	setarray .@objectives$,"Speak to the Lapine Messenger after entering Ashridge through the Small Ash Tree.","Introduce yourself to Lapine Shasha.","Introduce yourself to Maysel beside Shasha.","Walk onto the first Investigation Point in the Land of Darkness.","Walk onto the second Investigation Point.","Walk onto the third Investigation Point.","Investigate the Source of Sound and speak to Chez.","Help Yvain by lifting the root at his location.";
-	for (.@i=0; .@i<8; ++.@i) {
-		if (isbegin_quest(.@quests[.@i]) != 1) continue;
-		mes "Next objective: "+.@objectives$[.@i];
-		mes "Destination: "+.@maps$[.@i]+" "+.@x[.@i]+","+.@y[.@i]+".";
-		navigateto .@maps$[.@i],.@x[.@i],.@y[.@i]; return;
-	}
-	mes "You have passed the first ten guided states. Follow your active Chapter 1 quest objective in the quest window.";
-	mes "The next chapter unlocks after Bring Down the Air Fortress is complete.";
+	if (callfunc("PN_CH1Guide")) return;
+	mes "No active Chapter 1 story objective was found. Revisit your last story NPC to finish its conversation. If the quest did not advance, report your last quest title to support.";
 	return;
+}
+
+function	script	PN_CH1GuideShow	{
+	.@q=getarg(0); .@map$=getarg(3); .@x=getarg(4); .@y=getarg(5);
+	mes "Chapter 1: "+getarg(1);
+	mes "Next objective: "+getarg(2);
+	if (.@q==18373) mes "Dragon Scales: "+countitem("Dragon_Scale")+" / 5; missing "+max(0,5-countitem("Dragon_Scale"))+".";
+	if (.@q==8964) {
+		mes "Broken Petals: "+countitem("Ch1_Broken_Petal")+" / 5; missing "+max(0,5-countitem("Ch1_Broken_Petal"))+".";
+		mes (checkquest(8964,HUNTING)==2)?"Shadow Jailer hunt: complete.":"Shadow Jailer hunt: still in progress (10 required).";
+	}
+	// These destinations are conditional gateways, not ordinary map links.
+	if (.@q==18376 && strcharinfo(3)!="ch1_sf01") { .@map$="mu_fild01"; .@x=95; .@y=154; }
+	if (.@q==17891 && strcharinfo(3)!="ch1_sf03") { .@map$="hem_fild"; .@x=102; .@y=161; }
+	if (.@q==19225 && strcharinfo(3)!="ch1_vrgef2" && strcharinfo(3)!="ch1_vrgef1") { .@map$="ygg_edge"; .@x=211; .@y=211; }
+	if (.@q==12666 || .@q==12664) {
+		.@reason$=callfunc("PN_InstanceMissing","Ominous Dark Whisper");
+		if (.@reason$!="") mes .@reason$;
+	}
+	mes "Destination: "+.@map$+" "+.@x+","+.@y+".";
+	navigateto .@map$,.@x,.@y;
+	return 1;
 }

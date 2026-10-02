@@ -47,6 +47,32 @@ class HealthTests(unittest.TestCase):
         self.assertTrue(result['passed'])
         self.assertEqual(len(result['trend']), 15)
 
+    def test_queue_metrics_versions_bounds_and_pending_consistency(self):
+        now = datetime.now(timezone.utc)
+        legacy = self.metric(now)
+        self.assertTrue(health.metrics_status(legacy, now, 300)['passed'])
+        for depth in (0, 1, 4, 32):
+            with self.subTest(depth=depth):
+                queued = self.metric(now, version=2, shop_queue_depth=depth, shop_pending=int(depth > 0))
+                result = health.metrics_status(legacy+'\n'+queued, now, 300)
+                self.assertTrue(result['passed'])
+                self.assertEqual(result['latest']['shop_queue_depth'], depth)
+        for changes in (
+            {'version': 2},
+            {'version': 2, 'shop_queue_depth': 33, 'shop_pending': 1},
+            {'version': 2, 'shop_queue_depth': -1},
+            {'version': 2, 'shop_queue_depth': True, 'shop_pending': 1},
+            {'version': 2, 'shop_queue_depth': 0, 'shop_pending': 1},
+            {'version': 2, 'shop_queue_depth': 1, 'shop_pending': 0},
+            {'version': 2, 'shop_queue_depth': 0, 'unknown_field': 0},
+            {'version': 1, 'shop_queue_depth': 0},
+            {'version': 3, 'shop_queue_depth': 0},
+        ):
+            with self.subTest(changes=changes):
+                result = health.metrics_status(legacy+'\n'+self.metric(now, **changes), now, 300)
+                self.assertFalse(result['passed'])
+                self.assertEqual(result['reason'], 'Malformed runtime metrics')
+
     def test_nonfinite_thresholds_fail_before_inspecting_services(self):
         for option in ('--max-backup-hours', '--min-free-gib', '--max-disk-percent'):
             for value in ('nan', 'inf', '-inf'):

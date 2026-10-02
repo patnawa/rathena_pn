@@ -13,6 +13,7 @@
 #include <common/mmo.hpp> // JOB_*, MAX_FAME_LIST, struct fame_list, struct mmo_charstatus
 #include <common/strlib.hpp>// StringBuf
 #include <common/timer.hpp>
+#include <custom/registry_save.hpp>
 #include <custom/bank_state.hpp>
 #include <custom/item_use.hpp>
 #include <custom/market_state.hpp>
@@ -897,6 +898,7 @@ public:
 	struct reg_db regs;
 	unsigned char vars_received; // char loading is only complete when you get it all.
 	bool vars_ok;
+	pn_registry::Journal registry_saves;
 	bool vars_dirty;
 
 	int32 c_marker[MAX_SKILL_CRIMSON_MARKER]; /// Store target that marked by Crimson Marker [Cydh]

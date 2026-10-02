@@ -24,6 +24,7 @@ include_directories( ${INCLUDE_DIRS} )
 
 #message( STATUS "char-server SOURCE_FILES=${SOURCE_FILES}")
 add_executable( char-server ${SOURCE_FILES} )
+target_include_directories(char-server PRIVATE ${CMAKE_SOURCE_DIR}/3rdparty/json/include)
 #message( STATUS "char-server LIBRARIES=${LIBRARIES}, DEPENDENCIES=${DEPENDENCIES} DEFINITIONS=${DEFINITIONS}")
 add_dependencies( char-server ${DEPENDENCIES} )
 target_link_libraries( char-server ${LIBRARIES} ${DEPENDENCIES} )

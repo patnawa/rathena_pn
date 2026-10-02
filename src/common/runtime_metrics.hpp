@@ -31,6 +31,7 @@ struct Runtime {
     Histogram timer_late,dispatch,shop_ack,shop_complete;
     uint64_t shop_started_count=0,shop_committed=0,shop_rejected=0;
     uint64_t shop_retry_attempts=0,shop_refresh_failures=0,shop_busy_refusals=0;
+    uint32_t shop_queue_depth=0;
     bool pending=false,ack_seen=false;
     int64_t pending_since=0,last_report=0;
     static uint64_t elapsed(int64_t now,int64_t before) {
@@ -54,9 +55,10 @@ struct Runtime {
     }
     std::string report(int64_t now,int64_t utc_seconds) {
         std::ostringstream out;
-        out << "{\"version\":1,\"utc\":" << utc_seconds
+        out << "{\"version\":2,\"utc\":" << utc_seconds
             << ",\"window_ms\":" << elapsed(now,last_report)
             << ",\"shop_pending\":" << (pending?1:0)
+            << ",\"shop_queue_depth\":" << shop_queue_depth
             << ",\"shop_oldest_ms\":" << (pending?elapsed(now,pending_since):0)
             << ",\"shop_started\":" << shop_started_count
             << ",\"shop_committed\":" << shop_committed

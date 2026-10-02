@@ -303,6 +303,7 @@ TIMER_FUNC(char_chardb_waiting_disconnect);
 
 int32 char_mmo_gender(const struct char_session_data *sd, const struct mmo_charstatus *p, char sex);
 int32 char_mmo_char_tobuf( CHARACTER_INFO& info, mmo_charstatus& p );
+// Returns zero only after the complete character-status transaction commits.
 int32 char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p);
 int32 char_mmo_char_fromsql(uint32 char_id, struct mmo_charstatus* p, bool load_everything);
 int32 char_mmo_chars_fromsql( char_session_data& sd, CHARACTER_INFO chars[], uint8* count = nullptr );

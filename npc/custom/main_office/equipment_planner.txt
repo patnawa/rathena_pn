@@ -1,0 +1,118 @@
+// Equipment exchange recipes come from the running barter database. Character
+// wishlist contains item IDs only; no stale prices or quantities are persisted.
+function	script	PN_EquipmentPlanner	{
+	while (1) {
+		mes "[Equipment Wishlist]";
+		mes "Plan an equipment exchange and save up to eight goals for this character.";
+		mes "Recipes cover loaded barter exchanges. Other crafting and reform services keep their own recipes.";
+		.@action=select("Search equipment exchanges:My wishlist:Leave");
+		if (.@action==3) return;
+		if (.@action==2) {
+			.@menu$=""; .@count=0;
+			for (.@i=0;.@i<8;.@i++) if(PNWishItem[.@i]>0) {
+				.@slots[.@count++]=.@i;
+				.@menu$+=getitemname(PNWishItem[.@i])+":";
+			}
+			if (!.@count) { mes "Your wishlist is empty. Search for your first goal."; next; continue; }
+			.@pick=select(.@menu$+"Back")-1;
+			if (.@pick<.@count) callfunc "PN_PlanGoal",PNWishItem[.@slots[.@pick]];
+			next; continue;
+		}
+		mes "Enter part of an equipment name or its item ID. Leave blank to browse.";
+		input .@query$; .@page=0;
+		while(1) {
+			.@count=pnplansearch(.@query$,.@page); .@more=@PNPlanMore; .@menu$="";
+			for(.@i=0;.@i<.@count;.@i++) { .@ids[.@i]=@PNPlanItem[.@i]; .@menu$+=getitemname(.@ids[.@i])+":"; }
+			if(!.@count) { mes "No matching exchange recipes."; break; }
+			.@pick=select(.@menu$+"Next page:Previous page:Back")-1;
+			if(.@pick<.@count) { callfunc "PN_PlanGoal",.@ids[.@pick]; next; }
+			else if(.@pick==.@count) { if(.@more) .@page++; else mes "This is the last page."; }
+			else if(.@pick==.@count+1) { if(.@page) .@page--; }
+			else break;
+		}
+		next;
+	}
+}
+
+function	script	PN_PlanGoal	{
+	.@id=getarg(0);
+	while(1) {
+		mes "["+getitemname(.@id)+"]";
+		.@slot=-1; .@empty=-1;
+		for(.@i=0;.@i<8;.@i++) { if(PNWishItem[.@i]==.@id) .@slot=.@i; if(!PNWishItem[.@i] && .@empty<0) .@empty=.@i; }
+		.@action=select("Show exchange recipes:"+(.@slot>=0?"Remove from wishlist":"Save to wishlist")+":Find acquisition sources:Back");
+		if(.@action==4) return;
+		if(.@action==2) {
+			if(.@slot>=0) { PNWishItem[.@slot]=0; mes "Goal removed."; }
+			else if(.@empty<0) mes "All eight slots are used. Remove a goal before adding another.";
+			else if(pnplanrecipes(.@id)>0) { PNWishItem[.@empty]=.@id; mes "Goal saved for this character."; }
+			else mes "This item no longer has an exchange recipe.";
+			continue;
+		}
+		if(.@action==3) { callfunc "PN_PlanSources",.@id; continue; }
+		.@count=pnplanrecipes(.@id); .@page=0;
+		if(!.@count) { mes "No current exchange recipe. The wishlist keeps this goal until you remove it."; continue; }
+		copyarray .@shops$[0],@PNRecipeShop$[0],.@count;
+		copyarray .@indices[0],@PNRecipeIndex[0],.@count;
+		while(1) {
+			.@menu$=""; .@shown=min(15,.@count-.@page*15);
+			for(.@i=0;.@i<.@shown;.@i++) .@menu$+=.@shops$[.@page*15+.@i]+" #"+.@indices[.@page*15+.@i]+":";
+			.@pick=select(.@menu$+"Next page:Previous page:Back")-1;
+			if(.@pick<.@shown) { .@j=.@page*15+.@pick; callfunc "PN_PlanRecipe",.@shops$[.@j],.@indices[.@j]; next; }
+			else if(.@pick==.@shown) { if((.@page+1)*15<.@count) .@page++; }
+			else if(.@pick==.@shown+1) { if(.@page) .@page--; }
+			else break;
+		}
+	}
+}
+
+function	script	PN_PlanRecipe	{
+	.@count=pnplanrecipe(getarg(0),getarg(1));
+	if(.@count<0) { mes "That recipe is unavailable. Refresh the equipment search."; return; }
+	.@map$=@PNPlanMap$; .@x=@PNPlanX; .@y=@PNPlanY;
+	copyarray .@materials[0],@PNMaterial[0],.@count;
+	mes "[Exchange Plan]";
+	mes "Output: 1 x "+getitemname(@PNPlanOutput)+" (refine +"+@PNPlanRefine+").";
+	mes "Exchange: "+@PNPlanNpc$+".";
+	if(.@map$!="") mes "Destination: "+.@map$+" ("+.@x+","+.@y+").";
+	mes "Zeny: "+@PNPlanZeny+"; wallet: "+Zeny+"; missing: "+max(0,@PNPlanZeny-Zeny)+".";
+	if(@PNPlanStock>=0) mes "Current stock: "+@PNPlanStock+". Availability can change.";
+	if(@PNPlanRules$!="") mes @PNPlanRules$;
+	mes "Held counts include inventory and unlocked personal storage, including this character's page. Cart, mail and guild storage are excluded.";
+	mes "Counts are item totals. Refine, equipped/favorite status and NPC quest requirements still apply. Withdraw materials before exchanging.";
+	if(!@PNPlanKnown) mes "Holdings unavailable while storage or a transaction is busy, or the database cannot be read. Try again shortly.";
+	for(.@i=0;.@i<.@count;.@i++) {
+		if(.@i%4==0) next;
+		mes getitemname(@PNMaterial[.@i])+": need "+@PNRequired[.@i]+".";
+		if(@PNPlanKnown) mes "Inventory "+@PNInventory[.@i]+" + storage "+@PNStorage[.@i]+"; missing quantity "+max(0,@PNRequired[.@i]-@PNInventory[.@i]-@PNStorage[.@i])+".";
+	}
+	while(1) {
+		.@menu$="Navigate to exchange:";
+		for(.@i=0;.@i<.@count;.@i++) .@menu$+="Find "+getitemname(.@materials[.@i])+":";
+		.@pick=select(.@menu$+"Back")-1;
+		if(.@pick==0) { if(.@map$!="") navigateto .@map$,.@x,.@y; else mes "This exchange has no verified public destination in the planner."; }
+		else if(.@pick<=.@count) callfunc "PN_PlanSources",.@materials[.@pick-1];
+		else return;
+	}
+}
+
+function	script	PN_PlanSources	{
+	.@id=getarg(0); .@page=0;
+	mes "[Find "+getitemname(.@id)+"]";
+	mes "These destinations come from loaded exchanges and monsters with normal map spawns. Quest, instance and event rewards may offer other sources.";
+	while(1) {
+		.@count=pnplansources(.@id,.@page); .@more=@PNSourceMore; .@menu$="";
+		if(!.@count) { mes "No verified exchange or normal-spawn drop destination is listed for this item."; return; }
+		for(.@i=0;.@i<.@count;.@i++) .@menu$+=replacestr(@PNSourceLabel$[.@i],":"," -")+":";
+		.@pick=select(.@menu$+"Next page:Previous page:Back")-1;
+		if(.@pick<.@count) {
+			mes @PNSourceLabel$[.@pick]+".";
+			mes "Map: "+@PNSourceMap$[.@pick]+". Access requirements still apply.";
+			if(@PNSourceX[.@pick]>0 && @PNSourceY[.@pick]>0) navigateto @PNSourceMap$[.@pick],@PNSourceX[.@pick],@PNSourceY[.@pick];
+			else mes "Search this map for the monster. Drops are random; this is not a guaranteed reward.";
+		}
+		else if(.@pick==.@count) { if(.@more) .@page++; }
+		else if(.@pick==.@count+1) { if(.@page) .@page--; }
+		else return;
+	}
+}

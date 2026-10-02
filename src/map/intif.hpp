@@ -32,6 +32,7 @@ int32 intif_main_message(map_session_data* sd, const char* message);
 int32 intif_wis_message(map_session_data *sd, char *nick, char *mes, size_t mes_len);
 int32 intif_wis_message_to_gm(char *Wisp_name, int32 permission, char *mes);
 
+void intif_registry_replay(const map_session_data* sd);
 int32 intif_saveregistry(map_session_data *sd);
 int32 intif_request_registry(map_session_data *sd, int32 flag);
 

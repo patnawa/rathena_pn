@@ -27,7 +27,7 @@ struct AchievementEvent {
 };
 }
 struct pn_shop_state {
-    bool pending=false,applying=false,progression_prepared=false;
+    bool pending=false,applying=false,progression_prepared=false,admitted=false;
     std::shared_ptr<const pn_shop::Commit> request;
     std::vector<pn_shop::Event> events;
     // Success-only objective callbacks known before submission. The submitter
@@ -49,7 +49,9 @@ bool pn_shop_submit(map_session_data& sd,std::shared_ptr<pn_shop::Commit> reques
     std::vector<pn_shop::Event> events,uint32_t final_weight);
 void pn_shop_committed_effects(map_session_data& sd,const pn_shop::Commit& request);
 bool pn_shop_stock_busy();
+bool pn_shop_queue_full();
 bool pn_shop_stock_refresh(const pn_shop::Commit& request);
+bool pn_shop_stock_rebase(pn_shop::Commit& request);
 bool pn_shop_sale_refresh(const pn_shop::Commit& request);
 bool pn_pet_describe_egg(const item& egg,pn_pet::Output& output);
 bool pn_pet_recover(map_session_data& sd);

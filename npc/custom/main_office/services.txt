@@ -103,6 +103,9 @@ OnInit:
 
 -	script	PN Pet Recovery	-1,{
 	mes "[Pet Recovery Desk]";
+	.@choice=select("Check waiting pet rewards:Purchase and recovery history:Leave");
+	if(.@choice==2) { callfunc "PN_PurchaseHistory"; close; }
+	if(.@choice==3) close;
 	if (query_sql("SELECT COUNT(*) FROM pn_pet_entitlements WHERE account_id="+getcharid(3)+" AND char_id="+getcharid(0)+" AND claimed=0",.@pending) != 1) {
 		mes "The reward list is unavailable. Please try again shortly.";
 		close;
@@ -174,13 +177,14 @@ OnInit:
 		callfunc "PN_GuideDailies";
 		break;
 	case 3:
-		switch(select("Refine and ores:Equipment enchants:Shadow enchants:Rune crowns:Biosphere materials:Flame Coins:Leave")) {
+		switch(select("Refine and ores:Equipment enchants:Shadow enchants:Rune crowns:Biosphere materials:Flame Coins:Equipment wishlist and farming planner:Leave")) {
 		case 1: mes "Review success rates, fees and break risk with the Master Refiner. The Ore Dealer is across the training room."; navigateto "pn_train",32,49; break;
 		case 2: mes "The Equipment Enchanter lists compatible equipment and the exact materials for each supported recipe."; navigateto "pn_train",36,59; break;
 		case 3: mes "The Shadow Enchanter lists supported targets, materials and upgrade options. Check the target before paying."; navigateto "pn_train",64,59; break;
 		case 4: mes "The Rune Crown desk lists its equipment and enchant recipes. Use its material list to choose a hunt."; navigateto "pn_train",42,67; break;
 		case 5: mes "At Base Level 240, Research Admin Beta offers seven habitat hunts. Each awards 5 habitat runes and 2 essences. Omega exchanges fragments, runes and essences."; navigateto "ba_in01",252,353; break;
 		case 6: mes "Finish Chapter 2, then take Flame Branch missions. The Phantom clear awards 3 Flame Coins and has a four-hour timer after claiming."; navigateto "ch2safe4",86,146; break;
+		case 7: callfunc "PN_EquipmentPlanner"; break;
 		}
 		break;
 	case 4:

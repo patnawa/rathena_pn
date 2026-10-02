@@ -47,6 +47,7 @@ static void intif_parse_StoragePage(int32 fd) {
 }
 static void intif_storage_commit_request(const map_session_data& sd) {
     if (CheckForCharServer() || !chrif_isconnected()) return;
+    if (!sd.registry_saves.empty()) { intif_registry_replay(&sd); return; }
     auto request = storage_request_identity(sd);request.packet = 0x3094;
     request.action = sd.multi_storage.action;request.wallet_before = sd.multi_storage.wallet_before;
     request.wallet_after = sd.status.zeny;

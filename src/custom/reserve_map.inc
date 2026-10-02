@@ -26,6 +26,7 @@ static int32 pn_reserve_purchase(map_session_data& sd, int64 cost, uint32 id0, i
         if(amounts[n]>MAX_AMOUNT-target.amount || (data->stack.inventory && amounts[n]>data->stack.amount-target.amount))return 0;
         target.nameid=ids[n];target.amount+=amounts[n];
     }
+    if (intif_saveregistry(&sd) < 0) return 0;
     // No event-loop yield occurs from lock acquisition through request send.
     auto before=sd.inventory;auto old_weight=sd.weight;auto& state=sd.bank_ui;
     state.pending=state.applying=true;

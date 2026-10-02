@@ -149,6 +149,7 @@ struct AccountDB {
 	AccountDBIterator* (*iterator)(AccountDB* self);
 };
 
+bool mmo_registry_save(AccountDB* self, const void* data, size_t length, bool owner);
 void mmo_send_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id);
 void mmo_save_global_accreg(AccountDB* self, int32 fd, uint32 account_id, uint32 char_id, int32 char_server);
 namespace pn_shop { struct Commit; }

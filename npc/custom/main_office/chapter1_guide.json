@@ -1,0 +1,1626 @@
+{
+  "schema": 1,
+  "source": "npc/custom/chapter1/CH1.c",
+  "steps": [
+    {
+      "quest": 18368,
+      "title": "Call of The World Tree (1)",
+      "npc": "Lapine Messenger#c1p1_04",
+      "map": "ygg_edge",
+      "x": 253,
+      "y": 246,
+      "objective": "Speak to the Lapine Messenger after entering Ashridge through the Small Ash Tree."
+    },
+    {
+      "quest": 18369,
+      "title": "Call of The World Tree (2)",
+      "npc": "Lapine Shasha#c1p1ssha01",
+      "map": "ygg_fruit",
+      "x": 80,
+      "y": 122,
+      "objective": "Introduce yourself to Lapine Shasha."
+    },
+    {
+      "quest": 18370,
+      "title": "Call of The World Tree (3)",
+      "npc": "Maysel#c1p1may01",
+      "map": "ygg_fruit",
+      "x": 82,
+      "y": 120,
+      "objective": "Introduce yourself to Maysel beside Shasha."
+    },
+    {
+      "quest": 18371,
+      "title": "Twisted Land of Darkness",
+      "npc": "Investigation Point#ch01_1",
+      "map": "ygg_roots",
+      "x": 334,
+      "y": 138,
+      "objective": "Walk onto the first Investigation Point in the Land of Darkness."
+    },
+    {
+      "quest": 18372,
+      "title": "To Fallen Geffen",
+      "npc": "Ascetic Jeon#c01ms00",
+      "map": "ygg_roots",
+      "x": 164,
+      "y": 231,
+      "objective": "Meet Ascetic Jeon at the gate to Fallen Geffen."
+    },
+    {
+      "quest": 18373,
+      "title": "Fire Resistance Material",
+      "npc": "Debris#c1p1demi02",
+      "map": "ygg_fruit",
+      "x": 71,
+      "y": 78,
+      "objective": "Bring 5 Dragon Scales to Debris for his fire resistance research."
+    },
+    {
+      "quest": 18374,
+      "title": "Bad News",
+      "npc": "Lapine Shasha#c1p1ssha01",
+      "map": "ygg_fruit",
+      "x": 80,
+      "y": 122,
+      "objective": "Speak to Shasha again to receive the Muspelheim assignment."
+    },
+    {
+      "quest": 18375,
+      "title": "Good News",
+      "npc": "Debris#c1p1demi02",
+      "map": "ygg_fruit",
+      "x": 71,
+      "y": 78,
+      "objective": "Receive fire protection from Debris before entering Muspelheim."
+    },
+    {
+      "quest": 18376,
+      "title": "Land of Fire",
+      "npc": "Chez#ch01_mu1",
+      "map": "ch1_sf01",
+      "x": 190,
+      "y": 214,
+      "objective": "Enter the Survey Point at mu_fild01 95,154, then speak to Chez in the scout camp."
+    },
+    {
+      "quest": 18378,
+      "title": "To Ashridge",
+      "npc": "Lapine Shasha#c1p1ssha01",
+      "map": "ygg_fruit",
+      "x": 80,
+      "y": 122,
+      "objective": "Return to Shasha and report the Land of Darkness investigation."
+    },
+    {
+      "quest": 24069,
+      "title": "Regeneration",
+      "npc": "Investigation Point#ch01_2",
+      "map": "ygg_roots",
+      "x": 299,
+      "y": 59,
+      "objective": "Walk onto the second Investigation Point."
+    },
+    {
+      "quest": 24070,
+      "title": "Regeneration",
+      "npc": "Investigation Point#ch01_3",
+      "map": "ygg_roots",
+      "x": 186,
+      "y": 117,
+      "objective": "Walk onto the third Investigation Point."
+    },
+    {
+      "quest": 24071,
+      "title": "Regeneration",
+      "npc": "Source of Sound#ch01",
+      "map": "ygg_roots",
+      "x": 167,
+      "y": 135,
+      "objective": "Investigate the Source of Sound and speak to Chez."
+    },
+    {
+      "quest": 24072,
+      "title": "Regeneration",
+      "npc": "Yvain#ch01",
+      "map": "ygg_roots",
+      "x": 166,
+      "y": 135,
+      "objective": "Help Yvain by lifting the root at his location."
+    },
+    {
+      "quest": 24073,
+      "title": "Regeneration",
+      "npc": "Magi#ch01_1",
+      "map": "ygg_roots",
+      "x": 153,
+      "y": 203,
+      "objective": "Speak to Magi to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24074,
+      "title": "Regeneration",
+      "npc": "Magi#ch01_2",
+      "map": "ygg_roots",
+      "x": 161,
+      "y": 237,
+      "objective": "Speak to Magi to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24075,
+      "title": "Regeneration",
+      "npc": "Investigator#ch01_1",
+      "map": "hem_fild",
+      "x": 208,
+      "y": 22,
+      "objective": "Speak to Investigator to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24076,
+      "title": "Regeneration",
+      "npc": "Magi#ch01_2",
+      "map": "ygg_roots",
+      "x": 161,
+      "y": 237,
+      "objective": "Speak to Magi to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24077,
+      "title": "Regeneration",
+      "npc": "Investigator#ch01_2",
+      "map": "ygg_roots",
+      "x": 112,
+      "y": 246,
+      "objective": "Speak to Investigator to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24078,
+      "title": "Regeneration",
+      "npc": "Mark#ch01_1",
+      "map": "ygg_roots",
+      "x": 39,
+      "y": 268,
+      "objective": "Speak to Mark to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24079,
+      "title": "Regeneration",
+      "npc": "Tamarin#ch01_1",
+      "map": "ygg_roots",
+      "x": 91,
+      "y": 149,
+      "objective": "Speak to Tamarin to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24080,
+      "title": "Regeneration",
+      "npc": "Tamarin#ch01_2",
+      "map": "ygg_roots",
+      "x": 40,
+      "y": 129,
+      "objective": "Speak to Tamarin to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24081,
+      "title": "Regeneration",
+      "npc": "Alf#ch01",
+      "map": "uknw_ruin",
+      "x": 244,
+      "y": 239,
+      "objective": "Speak to Alf to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24082,
+      "title": "Regeneration",
+      "npc": "Tamarin#ch01_2",
+      "map": "ygg_roots",
+      "x": 40,
+      "y": 129,
+      "objective": "Speak to Tamarin to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24083,
+      "title": "Regeneration",
+      "npc": "Investigator#ch01_3",
+      "map": "ygg_roots",
+      "x": 204,
+      "y": 178,
+      "objective": "Speak to Investigator to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24084,
+      "title": "Regeneration",
+      "npc": "Investigator#ch01_4",
+      "map": "ygg_roots",
+      "x": 297,
+      "y": 200,
+      "objective": "Speak to Investigator to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24085,
+      "title": "Regeneration",
+      "npc": "Mark#ch01_2",
+      "map": "ygg_roots",
+      "x": 338,
+      "y": 243,
+      "objective": "Speak to Mark to continue Regeneration. Finish the conversation."
+    },
+    {
+      "quest": 24086,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Harban#ch01_1-1",
+      "map": "ch1_sf01",
+      "x": 55,
+      "y": 214,
+      "objective": "Speak to Harban to continue Cool Headed and Warm Feet. Finish the conversation."
+    },
+    {
+      "quest": 24087,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Tamarin#ch01-1",
+      "map": "ch1_sf01",
+      "x": 265,
+      "y": 226,
+      "objective": "Speak to Tamarin to continue Cool Headed and Warm Feet. Finish the conversation."
+    },
+    {
+      "quest": 24088,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Yuvilus#ch01_in",
+      "map": "ch1_sf01",
+      "x": 110,
+      "y": 227,
+      "objective": "Speak to Yuvilus to continue Cool Headed and Warm Feet. Finish the conversation."
+    },
+    {
+      "quest": 24089,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_1",
+      "map": "mu_fild01",
+      "x": 237,
+      "y": 299,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24090,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_2",
+      "map": "mu_fild01",
+      "x": 220,
+      "y": 313,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24091,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_3",
+      "map": "mu_fild01",
+      "x": 166,
+      "y": 370,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24092,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_4",
+      "map": "mu_fild01",
+      "x": 134,
+      "y": 311,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24093,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_5",
+      "map": "mu_fild01",
+      "x": 126,
+      "y": 306,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24094,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_6",
+      "map": "mu_fild01",
+      "x": 35,
+      "y": 194,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24095,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_7",
+      "map": "mu_fild01",
+      "x": 91,
+      "y": 196,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24096,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Worker#ch01_8",
+      "map": "mu_fild01",
+      "x": 121,
+      "y": 236,
+      "objective": "Speak to the worker at this survey point, then continue to the next worker."
+    },
+    {
+      "quest": 24097,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Yuvilus#ch01_in",
+      "map": "ch1_sf01",
+      "x": 110,
+      "y": 227,
+      "objective": "Speak to Yuvilus to continue Cool Headed and Warm Feet. Finish the conversation."
+    },
+    {
+      "quest": 24098,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Harban#ch01_2",
+      "map": "ch1_sf01",
+      "x": 120,
+      "y": 224,
+      "objective": "Speak to Harban to continue Cool Headed and Warm Feet. Finish the conversation."
+    },
+    {
+      "quest": 24099,
+      "title": "Cool Headed and Warm Feet",
+      "npc": "Yuvilus#ch01_in",
+      "map": "ch1_sf01",
+      "x": 110,
+      "y": 227,
+      "objective": "Speak to Yuvilus to continue Cool Headed and Warm Feet. Finish the conversation."
+    },
+    {
+      "quest": 17891,
+      "title": "Parallel World Geffen",
+      "npc": "Reno#c01ms00",
+      "map": "ch1_sf03",
+      "x": 190,
+      "y": 257,
+      "objective": "Use the gateway at hem_fild 102,161, then meet Reno at the Fallen Geffen camp."
+    },
+    {
+      "quest": 17892,
+      "title": "Parallel World Geffen",
+      "npc": "Geffen Resident#c01ms10",
+      "map": "ch1_geffen",
+      "x": 190,
+      "y": 123,
+      "objective": "Speak to Geffen Resident to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17893,
+      "title": "Parallel World Geffen",
+      "npc": "Geffen Resident#c01ms10",
+      "map": "ch1_geffen",
+      "x": 190,
+      "y": 123,
+      "objective": "Speak to Geffen Resident to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17894,
+      "title": "Parallel World Geffen",
+      "npc": "Geffen Resident#c01ms13",
+      "map": "ch1_geffen",
+      "x": 149,
+      "y": 55,
+      "objective": "Speak to Geffen Resident to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17895,
+      "title": "Parallel World Geffen",
+      "npc": "Charles#c01ms12",
+      "map": "ch1_geffen",
+      "x": 120,
+      "y": 115,
+      "objective": "Speak to Charles to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17896,
+      "title": "Parallel World Geffen",
+      "npc": "Clover#c01ms10",
+      "map": "ch1_geffen",
+      "x": 122,
+      "y": 118,
+      "objective": "Speak to Clover to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17897,
+      "title": "Parallel World Geffen",
+      "npc": "Ascetic Jeon#c01ms12",
+      "map": "ch1_geffen",
+      "x": 117,
+      "y": 117,
+      "objective": "Speak to Ascetic Jeon to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17898,
+      "title": "Parallel World Geffen",
+      "npc": "Doctor Neumann#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 70,
+      "y": 64,
+      "objective": "Speak to Doctor Neumann to continue Parallel World Geffen. Finish the conversation."
+    },
+    {
+      "quest": 17899,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Clover#c01ms10",
+      "map": "ch1_geffen",
+      "x": 122,
+      "y": 118,
+      "objective": "Speak to Clover to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17900,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Charles#c01ms20",
+      "map": "hem_dun01",
+      "x": 25,
+      "y": 116,
+      "objective": "Speak to Charles to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17901,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Clover#c01ms21",
+      "map": "ch1_sf03",
+      "x": 264,
+      "y": 171,
+      "objective": "Speak to Clover to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17902,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Sua#c01ms20",
+      "map": "ch1_sf03",
+      "x": 265,
+      "y": 173,
+      "objective": "Speak to Sua to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17903,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Parsifal#c01ms20",
+      "map": "ch1_sf03",
+      "x": 261,
+      "y": 175,
+      "objective": "Speak to Parsifal to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17904,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Charles#c01ms22",
+      "map": "ch1_sf03",
+      "x": 107,
+      "y": 173,
+      "objective": "Speak to Charles to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17905,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Clover#c01ms23",
+      "map": "ch1_sf03",
+      "x": 116,
+      "y": 181,
+      "objective": "Speak to Clover to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17906,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Parsifal#c01ms22",
+      "map": "ch1_sf03",
+      "x": 111,
+      "y": 181,
+      "objective": "Speak to Parsifal to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17907,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Ascetic Jeon#c01ms23",
+      "map": "ch1_sf03",
+      "x": 114,
+      "y": 183,
+      "objective": "Speak to Ascetic Jeon to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17908,
+      "title": "Between Civilization and Barbarism",
+      "npc": "Charles#c01ms24",
+      "map": "hem_dun01",
+      "x": 221,
+      "y": 209,
+      "objective": "Speak to Charles to continue Between Civilization and Barbarism. Finish the conversation."
+    },
+    {
+      "quest": 17909,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Ascetic Jeon#c01ms30",
+      "map": "ch1_dw",
+      "x": 260,
+      "y": 295,
+      "objective": "Speak to Ascetic Jeon to continue Sky Fortress' Dark Whisper. Finish the conversation."
+    },
+    {
+      "quest": 17910,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Clover#c01ms31",
+      "map": "ch1_dw",
+      "x": 269,
+      "y": 67,
+      "objective": "Speak to Clover to continue Sky Fortress' Dark Whisper. Finish the conversation."
+    },
+    {
+      "quest": 17911,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Advanced Device#c01ms32",
+      "map": "ch1_dw",
+      "x": 217,
+      "y": 87,
+      "objective": "Search the Advanced Device at 217,87 to collect its sample."
+    },
+    {
+      "quest": 17912,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Immortal Corps#c01ms35",
+      "map": "ch1_dw",
+      "x": 340,
+      "y": 85,
+      "objective": "Search all three marked Immortal Corps and collect the unusual sample."
+    },
+    {
+      "quest": 17913,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Immortal Corps#c01ms35",
+      "map": "ch1_dw",
+      "x": 340,
+      "y": 85,
+      "objective": "Search the first Immortal Corps at 340,85."
+    },
+    {
+      "quest": 17914,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Immortal Corps#c01ms36",
+      "map": "ch1_dw",
+      "x": 340,
+      "y": 82,
+      "objective": "Search the second Immortal Corps at 340,82."
+    },
+    {
+      "quest": 17915,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Immortal Corps#c01ms37",
+      "map": "ch1_dw",
+      "x": 340,
+      "y": 78,
+      "objective": "Search the third Immortal Corps at 340,78."
+    },
+    {
+      "quest": 17916,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Ascetic Jeon#c01ms31",
+      "map": "ch1_dw",
+      "x": 264,
+      "y": 66,
+      "objective": "Speak to Ascetic Jeon to continue Sky Fortress' Dark Whisper. Finish the conversation."
+    },
+    {
+      "quest": 17917,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Clover#c01ms22",
+      "map": "ch1_sf03",
+      "x": 108,
+      "y": 171,
+      "objective": "Speak to Clover to continue Sky Fortress' Dark Whisper. Finish the conversation."
+    },
+    {
+      "quest": 17918,
+      "title": "Sky Fortress' Dark Whisper",
+      "npc": "Clover#c01ms10",
+      "map": "ch1_geffen",
+      "x": 122,
+      "y": 118,
+      "objective": "Speak to Clover to continue Sky Fortress' Dark Whisper. Finish the conversation."
+    },
+    {
+      "quest": 17919,
+      "title": "Plague's Essence",
+      "npc": "Einhar#c01ms40",
+      "map": "ch1_gef_in",
+      "x": 173,
+      "y": 186,
+      "objective": "Speak to Einhar to continue Plague's Essence. Finish the conversation."
+    },
+    {
+      "quest": 17920,
+      "title": "Plague's Identity",
+      "npc": "Ascetic Jeon#c01ms40",
+      "map": "ch1_gef_in",
+      "x": 175,
+      "y": 188,
+      "objective": "Speak to Ascetic Jeon to continue Plague's Identity. Finish the conversation."
+    },
+    {
+      "quest": 17921,
+      "title": "Plague's Identity",
+      "npc": "Wandering Patient#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 75,
+      "y": 66,
+      "objective": "Speak to Wandering Patient to continue Plague's Identity. Finish the conversation."
+    },
+    {
+      "quest": 17922,
+      "title": "Clover's Dillema",
+      "npc": "Sua#c01ms20",
+      "map": "ch1_sf03",
+      "x": 265,
+      "y": 173,
+      "objective": "Speak to Sua to continue Clover's Dillema. Finish the conversation."
+    },
+    {
+      "quest": 17923,
+      "title": "Clover's Dillema",
+      "npc": "Ascetic Jeon#c01ms13",
+      "map": "ch1_geffen",
+      "x": 167,
+      "y": 173,
+      "objective": "Speak to Ascetic Jeon to continue Clover's Dillema. Finish the conversation."
+    },
+    {
+      "quest": 17924,
+      "title": "Clover's Dillema",
+      "npc": "Sua#c01ms20",
+      "map": "ch1_sf03",
+      "x": 265,
+      "y": 173,
+      "objective": "Speak to Sua to continue Clover's Dillema. Finish the conversation."
+    },
+    {
+      "quest": 17925,
+      "title": "Clover's Dillema",
+      "npc": "Clover#c01ms10",
+      "map": "ch1_geffen",
+      "x": 122,
+      "y": 118,
+      "objective": "Speak to Clover to continue Clover's Dillema. Finish the conversation."
+    },
+    {
+      "quest": 16912,
+      "title": "Clinic Patients Examination",
+      "npc": "Coughing Patient#rch1_0",
+      "map": "ch1_gef_in",
+      "x": 109,
+      "y": 39,
+      "objective": "Interview the Coughing Patient and finish the examination dialogue."
+    },
+    {
+      "quest": 16913,
+      "title": "Clinic Patients Examination",
+      "npc": "Bath Craved Patient#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 104,
+      "y": 33,
+      "objective": "Ask the Bath Craved Patient about their symptoms and request a warm towel."
+    },
+    {
+      "quest": 16914,
+      "title": "Clinic Patients Examination",
+      "npc": "Skinny Patient#rch1_",
+      "map": "ch1_gef_in",
+      "x": 65,
+      "y": 112,
+      "objective": "Interview the Skinny Patient about their symptoms and rations."
+    },
+    {
+      "quest": 16915,
+      "title": "Clinic Patients Examination",
+      "npc": "Young Patient#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 108,
+      "y": 106,
+      "objective": "Ask the Young Patient about the sweet food in their dream."
+    },
+    {
+      "quest": 16916,
+      "title": "Clinic Patients Examination",
+      "npc": "Elderly Patient#rch1",
+      "map": "ch1_gef_in",
+      "x": 105,
+      "y": 104,
+      "objective": "Interview the Elderly Patient and finish the examination dialogue."
+    },
+    {
+      "quest": 16917,
+      "title": "Soren Syndrome Information",
+      "npc": "Einhar#rch1_03",
+      "map": "ch1_gef_in",
+      "x": 75,
+      "y": 58,
+      "objective": "Report the completed patient examinations to Einhar."
+    },
+    {
+      "quest": 16918,
+      "title": "Warm Towel",
+      "npc": "Clinic Volunteer#rch1_",
+      "map": "ch1_gef_in",
+      "x": 115,
+      "y": 40,
+      "objective": "Ask the Clinic Volunteer for a warm towel."
+    },
+    {
+      "quest": 16919,
+      "title": "Warm Towel",
+      "npc": "Bath Craved Patient#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 104,
+      "y": 33,
+      "objective": "Deliver the warm towel to the Bath Craved Patient."
+    },
+    {
+      "quest": 16920,
+      "title": "Request for Extra Rations",
+      "npc": "Clinic Volunteer#rch1",
+      "map": "ch1_gef_in",
+      "x": 113,
+      "y": 102,
+      "objective": "Ask the Clinic Volunteer for extra rations."
+    },
+    {
+      "quest": 16921,
+      "title": "Extra Rations",
+      "npc": "Skinny Patient#rch1_",
+      "map": "ch1_gef_in",
+      "x": 65,
+      "y": 112,
+      "objective": "Deliver the extra rations to the Skinny Patient."
+    },
+    {
+      "quest": 16922,
+      "title": "Reporting Patients Symptoms",
+      "npc": "Doctor Neumann#rch1_02",
+      "map": "ch1_gef_in",
+      "x": 81,
+      "y": 74,
+      "objective": "Report the patient symptoms to Doctor Neumann."
+    },
+    {
+      "quest": 16923,
+      "title": "Sweet Food in a Dream",
+      "npc": "Clinic Volunteer#rch1",
+      "map": "ch1_gef_in",
+      "x": 113,
+      "y": 102,
+      "objective": "Ask the Clinic Volunteer about sweet food."
+    },
+    {
+      "quest": 16924,
+      "title": "Sweet Food in Reality",
+      "npc": "Young Patient#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 108,
+      "y": 106,
+      "objective": "Return to the Young Patient with the sweet food."
+    },
+    {
+      "quest": 16925,
+      "title": "Visiting the Acolyte's Clinic",
+      "npc": "Gregor#rch1_04",
+      "map": "ch1_gef_in",
+      "x": 29,
+      "y": 174,
+      "objective": "Visit the acolyte clinic and speak to Gregor."
+    },
+    {
+      "quest": 16926,
+      "title": "Visiting the Wizard's Clinic",
+      "npc": "Einhar#rch1_05",
+      "map": "ch1_gef_in",
+      "x": 70,
+      "y": 170,
+      "objective": "Visit the wizard clinic and speak to Einhar."
+    },
+    {
+      "quest": 16927,
+      "title": "Research Clue",
+      "npc": "Gregor#rch1_06",
+      "map": "ch1_gef_in",
+      "x": 179,
+      "y": 193,
+      "objective": "Meet Gregor to plan the blood sample research."
+    },
+    {
+      "quest": 16928,
+      "title": "Collecting Patient's Blood",
+      "npc": "Doctor Neumann#rch1_02",
+      "map": "ch1_gef_in",
+      "x": 81,
+      "y": 74,
+      "objective": "Ask Doctor Neumann for permission to take a patient blood sample."
+    },
+    {
+      "quest": 16929,
+      "title": "Collecting Non-Infected Blood",
+      "npc": "Aire#rch1_01",
+      "map": "ch1_geffen",
+      "x": 180,
+      "y": 147,
+      "objective": "Ask Aire politely for a non-infected blood sample."
+    },
+    {
+      "quest": 16930,
+      "title": "Collecting Recovered Patient's Blood",
+      "npc": "Dapan#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 75,
+      "y": 143,
+      "objective": "Ask Dapan for a recovered patient blood sample."
+    },
+    {
+      "quest": 16931,
+      "title": "Delivering Patient's Blood",
+      "npc": "Einhar#rch1_06",
+      "map": "ch1_gef_in",
+      "x": 183,
+      "y": 194,
+      "objective": "Deliver the patient blood sample to Einhar."
+    },
+    {
+      "quest": 16932,
+      "title": "Delivering Non-Infected Blood",
+      "npc": "Einhar#rch1_06",
+      "map": "ch1_gef_in",
+      "x": 183,
+      "y": 194,
+      "objective": "Deliver the non-infected blood sample to Einhar."
+    },
+    {
+      "quest": 16933,
+      "title": "Delivering Recovered Patient's Blood",
+      "npc": "Einhar#rch1_06",
+      "map": "ch1_gef_in",
+      "x": 183,
+      "y": 194,
+      "objective": "Deliver the recovered patient blood sample to Einhar."
+    },
+    {
+      "quest": 16934,
+      "title": "Research's Conclusion",
+      "npc": "Gregor#rch1_06",
+      "map": "ch1_gef_in",
+      "x": 179,
+      "y": 193,
+      "objective": "Speak to Gregor about the research results."
+    },
+    {
+      "quest": 16935,
+      "title": "Collecting Patient's Blood",
+      "npc": "Patient in Care#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 79,
+      "y": 73,
+      "objective": "Collect the blood sample from the Patient in Care."
+    },
+    {
+      "quest": 16936,
+      "title": "What Dr.Neumann Doesn't Know",
+      "npc": "#rch1_hw08",
+      "map": "ch1_geffen",
+      "x": 176,
+      "y": 66,
+      "objective": "Walk to the meeting point to observe Doctor Neumann."
+    },
+    {
+      "quest": 16937,
+      "title": "What Dr.Neumann is Hiding",
+      "npc": "Gregor#rch1_08",
+      "map": "ch1_gef_in",
+      "x": 111,
+      "y": 169,
+      "objective": "Meet Gregor in the back room."
+    },
+    {
+      "quest": 16938,
+      "title": "Something that Dr.Neumann is Hiding",
+      "npc": "Einhar#rch1_09",
+      "map": "ch1_gef_in",
+      "x": 144,
+      "y": 171,
+      "objective": "Speak to Einhar about the hidden information."
+    },
+    {
+      "quest": 16939,
+      "title": "To The Clinic",
+      "npc": "Ascetic Jeon#c01ms13",
+      "map": "ch1_geffen",
+      "x": 167,
+      "y": 173,
+      "objective": "Speak to Ascetic Jeon to continue To The Clinic. Finish the conversation."
+    },
+    {
+      "quest": 16940,
+      "title": "The Locked Door, Opened",
+      "npc": "#rch1_hw11",
+      "map": "ch1_gef_in",
+      "x": 26,
+      "y": 70,
+      "objective": "Enter the unlocked room through ch1_gef_in 52,65 and walk to the investigation point."
+    },
+    {
+      "quest": 16941,
+      "title": "Art of Eavesdropping",
+      "npc": "Doorway#rch1_01",
+      "map": "ch1_gef_in",
+      "x": 26,
+      "y": 34,
+      "objective": "Use the basement entrance at ch1_gef_in 25,64, then listen at the Doorway."
+    },
+    {
+      "quest": 16942,
+      "title": "Urgent Rescue",
+      "npc": "9clock_basementafter",
+      "map": "ch1_gef_in",
+      "x": 29,
+      "y": 22,
+      "objective": "Approach the basement exit and speak to Einhar about the rescue."
+    },
+    {
+      "quest": 16943,
+      "title": "Urgent Rescue",
+      "npc": "#rch1_w2",
+      "map": "ch1_gef_in",
+      "x": 29,
+      "y": 29,
+      "objective": "Step into Einhar's portal to Ashridge."
+    },
+    {
+      "quest": 16944,
+      "title": "Urgent Rescue",
+      "npc": "Ascetic Jeon#rch1_1",
+      "map": "ygg_fruit",
+      "x": 40,
+      "y": 72,
+      "objective": "Ask Ascetic Jeon for help with the rescue."
+    },
+    {
+      "quest": 16945,
+      "title": "Urgent Rescue",
+      "npc": "9clockroom_basement",
+      "map": "ch1_gef_in",
+      "x": 25,
+      "y": 64,
+      "objective": "Return through the clinic basement entrance at ch1_gef_in 25,64."
+    },
+    {
+      "quest": 16946,
+      "title": "Disturbing Traces",
+      "npc": "Gregor#rch1_11",
+      "map": "ch1_que01",
+      "x": 141,
+      "y": 114,
+      "objective": "Speak to Gregor to continue Disturbing Traces. Finish the conversation."
+    },
+    {
+      "quest": 16947,
+      "title": "Ominous Traces",
+      "npc": "Ascetic Jeon#rch1_3",
+      "map": "ch1_que01",
+      "x": 126,
+      "y": 57,
+      "objective": "Speak to Ascetic Jeon to continue Ominous Traces. Finish the conversation."
+    },
+    {
+      "quest": 16948,
+      "title": "Unsettling Traces",
+      "npc": "Ascetic Jeon#rch1_4",
+      "map": "ch1_que01",
+      "x": 51,
+      "y": 46,
+      "objective": "Speak to Ascetic Jeon to continue Unsettling Traces. Finish the conversation."
+    },
+    {
+      "quest": 16949,
+      "title": "What's at the Traces' End",
+      "npc": "Einhar#rch1_11",
+      "map": "ch1_que01",
+      "x": 67,
+      "y": 128,
+      "objective": "Speak to Einhar to continue What's at the Traces' End. Finish the conversation."
+    },
+    {
+      "quest": 16950,
+      "title": "Searching for a Better Solution",
+      "npc": "Maxim#rch1_1",
+      "map": "ch1_gef_in",
+      "x": 69,
+      "y": 33,
+      "objective": "Speak to Maxim to continue Searching for a Better Solution. Finish the conversation."
+    },
+    {
+      "quest": 16951,
+      "title": "To Ashridge",
+      "npc": "Professor Telcos#C1DY",
+      "map": "ygg_edge",
+      "x": 209,
+      "y": 209,
+      "objective": "Speak to Professor Telcos to continue To Ashridge. Finish the conversation."
+    },
+    {
+      "quest": 19225,
+      "title": "Fantasy Series Exploration",
+      "npc": "Ziegler#p11_1",
+      "map": "ch1_vrgef2",
+      "x": 139,
+      "y": 199,
+      "objective": "Enter the Illusion Book at ygg_edge 211,211, then meet Ziegler near the north of the village."
+    },
+    {
+      "quest": 19226,
+      "title": "Completed Fantasy Series Exploration",
+      "npc": "Professor Telcos#C1DY",
+      "map": "ygg_edge",
+      "x": 209,
+      "y": 209,
+      "objective": "Speak to Professor Telcos to continue Completed Fantasy Series Exploration. Finish the conversation."
+    },
+    {
+      "quest": 19227,
+      "title": "Matthias Ziegler",
+      "npc": "Ziegler#p11_2",
+      "map": "ch1_vrgef2",
+      "x": 190,
+      "y": 137,
+      "objective": "Speak to Ziegler to continue Matthias Ziegler. Finish the conversation."
+    },
+    {
+      "quest": 19228,
+      "title": "We Met Again.",
+      "npc": "Ziegler#p11_3",
+      "map": "ch1_vrgef2",
+      "x": 50,
+      "y": 93,
+      "objective": "Speak to Ziegler to continue We Met Again.. Finish the conversation."
+    },
+    {
+      "quest": 19229,
+      "title": "We Met Once Again.",
+      "npc": "Ziegler#p11_4",
+      "map": "ch1_vrgef1",
+      "x": 66,
+      "y": 137,
+      "objective": "Speak to Ziegler to continue We Met Once Again.. Finish the conversation."
+    },
+    {
+      "quest": 19230,
+      "title": "Explore? Observe?",
+      "npc": "Ziegler#p11_4",
+      "map": "ch1_vrgef1",
+      "x": 66,
+      "y": 137,
+      "objective": "All seven objects examined: report the findings to Ziegler inside the house."
+    },
+    {
+      "quest": 19231,
+      "title": "Bed",
+      "npc": "Bed#DM_01",
+      "map": "ch1_vrgef1",
+      "x": 75,
+      "y": 140,
+      "objective": "Examine the bed until the dried sweat on the pillow is described, then call Ziegler."
+    },
+    {
+      "quest": 19232,
+      "title": "Water Container",
+      "npc": "Water Container#DM_02",
+      "map": "ch1_vrgef1",
+      "x": 62,
+      "y": 140,
+      "objective": "Examine the water container until the splashed water is described, then call Ziegler."
+    },
+    {
+      "quest": 19233,
+      "title": "Clock",
+      "npc": "Clock#DM_03",
+      "map": "ch1_vrgef1",
+      "x": 62,
+      "y": 145,
+      "objective": "Examine the clock."
+    },
+    {
+      "quest": 19234,
+      "title": "Gap",
+      "npc": "Desk#DM_04",
+      "map": "ch1_vrgef1",
+      "x": 76,
+      "y": 144,
+      "objective": "Examine the desk until the piece of skin is described, then call Ziegler."
+    },
+    {
+      "quest": 19235,
+      "title": "Wardrobe",
+      "npc": "Wardrobe#DM_05",
+      "map": "ch1_vrgef1",
+      "x": 77,
+      "y": 137,
+      "objective": "Examine the wardrobe."
+    },
+    {
+      "quest": 19236,
+      "title": "Barrel",
+      "npc": "Barrels#DM_06",
+      "map": "ch1_vrgef1",
+      "x": 63,
+      "y": 137,
+      "objective": "Examine the barrels."
+    },
+    {
+      "quest": 19237,
+      "title": "Shelf",
+      "npc": "Shelf#DM_07",
+      "map": "ch1_vrgef1",
+      "x": 67,
+      "y": 145,
+      "objective": "Examine the shelf."
+    },
+    {
+      "quest": 19238,
+      "title": "See You Outside.",
+      "npc": "Ziegler#p11_3",
+      "map": "ch1_vrgef2",
+      "x": 50,
+      "y": 93,
+      "objective": "Speak to Ziegler to continue See You Outside.. Finish the conversation."
+    },
+    {
+      "quest": 19239,
+      "title": "Farewell Without Promise",
+      "npc": "eventtrigger#EG03",
+      "map": "ch1_vrgef1",
+      "x": 138,
+      "y": 146,
+      "objective": "Walk onto the encounter point and wait for the witnessed scene to finish."
+    },
+    {
+      "quest": 19240,
+      "title": "Unwanted Witness",
+      "npc": "Ziegler#p11_5",
+      "map": "ch1_vrgef2",
+      "x": 173,
+      "y": 64,
+      "objective": "Report the witnessed scene to Ziegler near the fountain."
+    },
+    {
+      "quest": 23271,
+      "title": "Truth About The Doctor",
+      "npc": "Maxim#ch1_t_maxim1",
+      "map": "ch1_gef_in",
+      "x": 172,
+      "y": 187,
+      "objective": "Speak to Maxim to continue Truth About The Doctor. Finish the conversation."
+    },
+    {
+      "quest": 23272,
+      "title": "What Kind of Person is The Doctor? 1",
+      "npc": "Geffen Resident#ch1_t_1",
+      "map": "ch1_geffen",
+      "x": 183,
+      "y": 161,
+      "objective": "Interview the resident about Doctor Neumann."
+    },
+    {
+      "quest": 23273,
+      "title": "What Kind of Person is The Doctor? 2",
+      "npc": "Geffen Resident#ch1_t_2",
+      "map": "ch1_geffen",
+      "x": 61,
+      "y": 92,
+      "objective": "Interview the second resident about Doctor Neumann."
+    },
+    {
+      "quest": 23274,
+      "title": "What Kind of Person is The Doctor? 3",
+      "npc": "Geffen Resident#ch1_t3",
+      "map": "ch1_geffen",
+      "x": 129,
+      "y": 197,
+      "objective": "Interview the third resident about Doctor Neumann."
+    },
+    {
+      "quest": 23275,
+      "title": "Truth About The Doctor",
+      "npc": "Maxim#ch1_t_maxim1",
+      "map": "ch1_gef_in",
+      "x": 172,
+      "y": 187,
+      "objective": "Speak to Maxim to continue Truth About The Doctor. Finish the conversation."
+    },
+    {
+      "quest": 23276,
+      "title": "The Epidemic, Doctor, and Nurse",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Epidemic, Doctor, and Nurse. Finish the conversation."
+    },
+    {
+      "quest": 23277,
+      "title": "The Epidemic, Doctor, and Nurse",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Epidemic, Doctor, and Nurse. Finish the conversation."
+    },
+    {
+      "quest": 23278,
+      "title": "The Epidemic, Doctor, and Nurse",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Epidemic, Doctor, and Nurse. Finish the conversation."
+    },
+    {
+      "quest": 23279,
+      "title": "The Epidemic, Doctor, and Nurse",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Epidemic, Doctor, and Nurse. Finish the conversation."
+    },
+    {
+      "quest": 23280,
+      "title": "The Doctor and Nurse's Story",
+      "npc": "Water Kettle#ch1_t_w",
+      "map": "ch1_gef_in",
+      "x": 104,
+      "y": 173,
+      "objective": "Inspect the water kettle for the doctor and nurse investigation."
+    },
+    {
+      "quest": 23281,
+      "title": "The Doctor and Nurse's Story",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Doctor and Nurse's Story. Finish the conversation."
+    },
+    {
+      "quest": 23282,
+      "title": "The Doctor and Nurse's Story",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Doctor and Nurse's Story. Finish the conversation."
+    },
+    {
+      "quest": 23283,
+      "title": "The Doctor and Nurse's Story",
+      "npc": "Neumann's Record#ch1_t_nn",
+      "map": "ch1_gef_in",
+      "x": 112,
+      "y": 175,
+      "objective": "Read Neumann's Record completely."
+    },
+    {
+      "quest": 23284,
+      "title": "The Doctor and Nurse's Story",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue The Doctor and Nurse's Story. Finish the conversation."
+    },
+    {
+      "quest": 23285,
+      "title": "Cure Creation's Hope",
+      "npc": "Assistant Baily#ch1_t_baily",
+      "map": "ygg_fruit",
+      "x": 103,
+      "y": 73,
+      "objective": "Speak to Assistant Baily to continue Cure Creation's Hope. Finish the conversation."
+    },
+    {
+      "quest": 23286,
+      "title": "Cure Creation's Hope",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue Cure Creation's Hope. Finish the conversation."
+    },
+    {
+      "quest": 23287,
+      "title": "Cure Creation's Hope",
+      "npc": "Assistant Baily#ch1_t_baily_gef",
+      "map": "ch1_gef_in",
+      "x": 140,
+      "y": 141,
+      "objective": "Speak to Assistant Baily to continue Cure Creation's Hope. Finish the conversation."
+    },
+    {
+      "quest": 23288,
+      "title": "Cure Creation's Hope",
+      "npc": "Baily's Shelf#ch1_t_bs",
+      "map": "ygg_fruit",
+      "x": 109,
+      "y": 76,
+      "objective": "Search Baily's Shelf for the Brimir information."
+    },
+    {
+      "quest": 23289,
+      "title": "Cure Creation",
+      "npc": "Assistant Baily#ch1_t_baily",
+      "map": "ygg_fruit",
+      "x": 103,
+      "y": 73,
+      "objective": "Speak to Assistant Baily to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 23290,
+      "title": "Cure Creation",
+      "npc": "Maxim#ch1_t_maxim1",
+      "map": "ch1_gef_in",
+      "x": 172,
+      "y": 187,
+      "objective": "Speak to Maxim to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 23291,
+      "title": "Cure Creation",
+      "npc": "Nurse Margot#ch1_margot1",
+      "map": "ch1_gef_in",
+      "x": 142,
+      "y": 143,
+      "objective": "Speak to Nurse Margot to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 23292,
+      "title": "Cure Creation",
+      "npc": "Maxim#ch1_t_maxim2",
+      "map": "ch1_gef_in",
+      "x": 139,
+      "y": 142,
+      "objective": "Speak to Maxim to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 23293,
+      "title": "Cure Creation",
+      "npc": "Maxim's Journals#ch1",
+      "map": "ch1_gef_in",
+      "x": 175,
+      "y": 187,
+      "objective": "Read Maxim's Journals completely."
+    },
+    {
+      "quest": 23294,
+      "title": "Cure Creation",
+      "npc": "Maxim#ch1_t_maxim2",
+      "map": "ch1_gef_in",
+      "x": 139,
+      "y": 142,
+      "objective": "Speak to Maxim to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 23295,
+      "title": "Distribution of the Cure 1",
+      "npc": "Weak Patient#ch1_t_p1",
+      "map": "ch1_gef_in",
+      "x": 61,
+      "y": 76,
+      "objective": "Deliver the cure to the Weak Patient."
+    },
+    {
+      "quest": 23296,
+      "title": "Distribution of the Cure 2",
+      "npc": "Skinny Patient#ch1_",
+      "map": "ch1_gef_in",
+      "x": 107,
+      "y": 33,
+      "objective": "Deliver the cure to the Skinny Patient."
+    },
+    {
+      "quest": 23297,
+      "title": "Distribution of the Cure 3",
+      "npc": "Drowsy Patient#ch1_t_p3",
+      "map": "ch1_gef_in",
+      "x": 110,
+      "y": 102,
+      "objective": "Deliver the cure to the Drowsy Patient."
+    },
+    {
+      "quest": 23298,
+      "title": "Cure Creation",
+      "npc": "Maxim#ch1_t_maxim1",
+      "map": "ch1_gef_in",
+      "x": 172,
+      "y": 187,
+      "objective": "Speak to Maxim to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 23299,
+      "title": "Cure Creation",
+      "npc": "Maxim#ch1_t_maxim1",
+      "map": "ch1_gef_in",
+      "x": 172,
+      "y": 187,
+      "objective": "Speak to Maxim to continue Cure Creation. Finish the conversation."
+    },
+    {
+      "quest": 8955,
+      "title": "To Brimir",
+      "npc": "Elise Isha#cpt1",
+      "map": "ch1_sf02",
+      "x": 185,
+      "y": 40,
+      "objective": "Speak to Elise Isha to continue To Brimir. Finish the conversation."
+    },
+    {
+      "quest": 8956,
+      "title": "The Gray Valkyrie",
+      "npc": "One#cpt1",
+      "map": "ch1_sf02",
+      "x": 184,
+      "y": 41,
+      "objective": "Speak to One to continue The Gray Valkyrie. Finish the conversation."
+    },
+    {
+      "quest": 8957,
+      "title": "Land Without Divinity",
+      "npc": "Elise Isha#cpt1",
+      "map": "ch1_sf02",
+      "x": 185,
+      "y": 40,
+      "objective": "Speak to Elise Isha to continue Land Without Divinity. Finish the conversation."
+    },
+    {
+      "quest": 8958,
+      "title": "Remaining Valkyries",
+      "npc": "Zero#cpt1",
+      "map": "ch1_sf02",
+      "x": 189,
+      "y": 44,
+      "objective": "Speak to Zero to continue Remaining Valkyries. Finish the conversation."
+    },
+    {
+      "quest": 8959,
+      "title": "Brimir Exploration",
+      "npc": "!@#cpt1",
+      "map": "ch1_sf02",
+      "x": 114,
+      "y": 46,
+      "objective": "Investigate each of the three remaining residents in Brimir."
+    },
+    {
+      "quest": 8960,
+      "title": "Meaning of God's Love",
+      "npc": "!@#cpt1",
+      "map": "ch1_sf02",
+      "x": 114,
+      "y": 46,
+      "objective": "Speak to the resident at 114,46 about the meaning of divine love."
+    },
+    {
+      "quest": 8961,
+      "title": "Severed World",
+      "npc": "%^#cpt1",
+      "map": "ch1_sf02",
+      "x": 111,
+      "y": 271,
+      "objective": "Speak to the resident at 111,271 about the severed world."
+    },
+    {
+      "quest": 8962,
+      "title": "Flow of Time",
+      "npc": "~+#cpt1",
+      "map": "ch1_sf02",
+      "x": 45,
+      "y": 54,
+      "objective": "Speak to the resident at 45,54 about the flow of time."
+    },
+    {
+      "quest": 8963,
+      "title": "To The Plaza",
+      "npc": "One#cpt2",
+      "map": "ch1_sf02",
+      "x": 160,
+      "y": 160,
+      "objective": "Speak to One to continue To The Plaza. Finish the conversation."
+    },
+    {
+      "quest": 8964,
+      "title": "What They Want",
+      "npc": "One#cpt2",
+      "map": "ch1_sf02",
+      "x": 160,
+      "y": 160,
+      "objective": "Defeat 10 Shadow Jailers and bring 5 Broken Petals to One."
+    },
+    {
+      "quest": 8965,
+      "title": "Before The Flower Blooms (1)",
+      "npc": "!@#cpt1",
+      "map": "ch1_sf02",
+      "x": 114,
+      "y": 46,
+      "objective": "Place the petals on the first resident."
+    },
+    {
+      "quest": 8966,
+      "title": "Before The Flower Blooms (2)",
+      "npc": "%^#cpt1",
+      "map": "ch1_sf02",
+      "x": 111,
+      "y": 271,
+      "objective": "Place the petals on the second resident."
+    },
+    {
+      "quest": 8967,
+      "title": "Before The Flower Blooms (3)",
+      "npc": "~+#cpt1",
+      "map": "ch1_sf02",
+      "x": 45,
+      "y": 54,
+      "objective": "Place the petals on the third resident."
+    },
+    {
+      "quest": 8968,
+      "title": "Colorful Flowers",
+      "npc": "One#cpt2",
+      "map": "ch1_sf02",
+      "x": 160,
+      "y": 160,
+      "objective": "Speak to One to continue Colorful Flowers. Finish the conversation."
+    },
+    {
+      "quest": 8969,
+      "title": "Return to Ashridge",
+      "npc": "Lapine Shasha#c1p1ssha01",
+      "map": "ygg_fruit",
+      "x": 80,
+      "y": 122,
+      "objective": "Return to Shasha with the news from Brimir."
+    },
+    {
+      "quest": 12663,
+      "title": "Destroying the Sky Fortress",
+      "npc": "Est#wsp1",
+      "map": "hem_dun01",
+      "x": 209,
+      "y": 248,
+      "objective": "Discuss the Sky Fortress infiltration plan with Est."
+    },
+    {
+      "quest": 12664,
+      "title": "Battle With The Dark Whisper",
+      "npc": "Est#wsp1",
+      "map": "hem_dun01",
+      "x": 209,
+      "y": 248,
+      "objective": "Continue Ominous Dark Whisper with Est and defeat Himmelmez. Return to Est at the entrance if disconnected."
+    },
+    {
+      "quest": 12665,
+      "title": "Return to The Village",
+      "npc": "Lapine Shasha#c1p1ssha01",
+      "map": "ygg_fruit",
+      "x": 80,
+      "y": 122,
+      "objective": "Return to Shasha and report the completed operation to finish Chapter 1."
+    },
+    {
+      "quest": 12666,
+      "title": "Disgusting Place's Infiltration",
+      "npc": "Est#wsp1",
+      "map": "hem_dun01",
+      "x": 209,
+      "y": 248,
+      "objective": "Form a party. Have its leader reserve Ominous Dark Whisper with Est, then enter the operation."
+    }
+  ]
+}

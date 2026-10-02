@@ -1,10 +1,12 @@
 // Exact production market functions, real common Sql/SqlStmt and MariaDB.
 // Explicit doubles: NPC catalog, item metadata, DBMap and poisoned allocations.
 #include <common/sql.hpp>
+#include <common/timer.hpp>
 #include <cassert>
 #include <cinttypes>
 #include <cstring>
 #include <cstdlib>
+#include <deque>
 #include <iostream>
 #include <map>
 #include <memory>
@@ -101,7 +103,8 @@ int main(int argc,char** argv) {
   Sql* owner=Sql_Malloc();assert(Sql_Connect(owner,"root","market-fixture-only","market-db",3306,"market_probe")==SQL_SUCCESS);
   assert(Sql_Query(owner,"START TRANSACTION")==SQL_SUCCESS);
   assert(Sql_Query(owner,"UPDATE market SET amount=6 WHERE name='market' AND nameid=502")==SQL_SUCCESS);
-  pn_shop_inflight=true;
+  pn_shop_inflight=true;pn_shop_queue.push_back({1,1,1,0});
+  assert(pn_shop_stock_busy() && !pn_shop_queue_full());
   npc_market_tosql("market",&npc.u.shop.shop_item[1]);
   npc_market_delfromsql_("market",502,false);npc_market_delfromsql_("market",0,true);
   assert(quantity(502)==7); // MVCC: committed value while independent owner holds its row lock.
@@ -113,7 +116,7 @@ int main(int argc,char** argv) {
   pn_shop::Commit request;
   assert(pn_shop_stock_refresh(request));
   assert(npc.u.shop.shop_item[1].qty==6 && pn_shop_stock_busy());
-  pn_shop_inflight=false;
+  pn_shop_inflight=false;pn_shop_queue.clear();
   clear();catalog();npc_market_fromsql();restore(markets.begin()->second);
   assert(npc.u.shop.shop_item[1].qty==6 && quantity(502)==6);
   std::cout<<"MARKET_SQL_FENCE_PASS committed=6 stale_writes_and_deletes=refused reloaded_pending=7 ack_refresh=6\n";

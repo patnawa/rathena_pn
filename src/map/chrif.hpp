@@ -36,6 +36,8 @@ struct auth_node {
 	struct achievement *achievement_snapshot; // Final monotonic snapshot retained through logout ACK.
 	struct mmo_charstatus *logout_status; // Final status retained after the live session is released.
 	ChrifSaveBuffer* logout_saves; // Replacement save packets retained through the stream barrier.
+	ChrifSaveBuffer* transfer_request; // Owned handoff frame; never reads a released client socket.
+	bool transfer_saved;
 	uint16 achievement_count;
 	uint64 achievement_generation;
 	bool achievement_pending;
@@ -59,6 +61,7 @@ extern char charserver_name[NAME_LENGTH];
 struct auth_node* chrif_search(uint32 account_id);
 struct auth_node* chrif_auth_check(uint32 account_id, uint32 char_id, enum sd_state state);
 bool chrif_auth_delete(uint32 account_id, uint32 char_id, enum sd_state state);
+void chrif_registry_saved(map_session_data* sd);
 bool chrif_auth_finished( const map_session_data* sd );
 bool chrif_auth_achievement_saved(uint32 account_id, uint32 char_id, uint64 generation, bool success);
 

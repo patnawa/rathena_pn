@@ -8,22 +8,22 @@ CASES={
  'map': {
   'obj/npc.o':('npc.cpp','../custom/shop_map.inc'),
   'obj-gen/npc.o':('npc.cpp','../custom/shop_map.inc'),
-  'obj/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc'),
-  'obj-gen/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc'),
+  'obj/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc','../custom/player_guide.inc','../custom/equipment_planner.inc','../custom/planner_routes.inc','../custom/purchase_history_map.inc'),
+  'obj-gen/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc','../custom/player_guide.inc','../custom/equipment_planner.inc','../custom/planner_routes.inc','../custom/purchase_history_map.inc'),
   'obj/pc.o':('pc.cpp','../custom/item_use_map.inc','../custom/pet_floor.inc'),
   'obj-gen/pc.o':('pc.cpp','../custom/item_use_map.inc','../custom/pet_floor.inc'),
-  'obj/intif.o':('intif.cpp','../custom/shop_inter.inc'),
-  'obj-gen/intif.o':('intif.cpp','../custom/shop_inter.inc'),
+  'obj/intif.o':('intif.cpp','../custom/shop_inter.inc','../custom/registry_map.inc'),
+  'obj-gen/intif.o':('intif.cpp','../custom/shop_inter.inc','../custom/registry_map.inc'),
   'obj/atcommand.o':('atcommand.cpp','../custom/atcommand.inc'),
   'obj-gen/atcommand.o':('atcommand.cpp','../custom/atcommand.inc'),
   'obj/battle.o':('battle.cpp','../custom/battle_config_init.inc'),
   'obj-gen/battle.o':('battle.cpp','../custom/battle_config_init.inc'),
  },
  'char': {
-  'obj/int_storage.o':('int_storage.cpp','../custom/shop_sql.inc','../custom/mail_asset_sql.inc','../custom/point_asset_sql.inc','../custom/global_point.hpp','../custom/global_point_char.inc','../custom/pet_entitlement.hpp'),
+  'obj/int_storage.o':('int_storage.cpp','../custom/shop_sql.inc','../custom/mail_asset_sql.inc','../custom/point_asset_sql.inc','../custom/global_point.hpp','../custom/global_point_char.inc','../custom/pet_entitlement.hpp','../custom/purchase_history_sql.inc'),
   'obj/int_pet.o':('int_pet.cpp','../custom/pet_entitlement_sql.inc','../custom/pet_entitlement.hpp'),
   'obj/char_logif.o':('char_logif.cpp','../custom/global_point.hpp'),
-  'obj/inter.o':('inter.cpp','../custom/global_point.hpp'),
+  'obj/inter.o':('inter.cpp','../custom/global_point.hpp','../custom/registry_char.inc','../custom/registry_save_sql.hpp'),
  },
  'login':{target:(target[4:-2]+'.cpp','../custom/global_point.hpp','../custom/shop_commit.hpp','../custom/pet_entitlement.hpp') for target in ('obj/account.o','obj/login.o','obj/loginchrif.o')}
 }

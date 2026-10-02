@@ -25,11 +25,11 @@ jobs:
         run: |
           docker build -t "$TOOLCHAIN" -f tools/ci/Dockerfile.transaction-tests tools/ci
           docker pull "$DATABASE_IMAGE"
-      - name: Build current character-server objects
+      - name: Build current character, login and map server objects
         run: |
           docker run --rm --network none \
             --mount "type=bind,src=$GITHUB_WORKSPACE,dst=/rathena" \
-            "$TOOLCHAIN" sh -ec './configure --enable-prere=no --enable-packetver=20260219 --without-pcre && make import && make -j2 char login'
+            "$TOOLCHAIN" sh -ec './configure --enable-prere=no --enable-packetver=20260219 --without-pcre && make import && make -j2 char login map'
       - name: Prove atomicity, replay, ownership, concurrency and database restart
         run: |
           python3 tools/ci/shop_recovery_sql_test.py \
@@ -42,16 +42,38 @@ jobs:
             --candidate "$GITHUB_WORKSPACE" \
             --evidence "$RUNNER_TEMP/achievement-sql" \
             --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
+      - name: Prove character-save rollback and database-crash recovery
+        run: |
+          python3 tools/ci/char_save_sql_test.py \
+            --candidate "$GITHUB_WORKSPACE" \
+            --evidence "$RUNNER_TEMP/character-save-sql" \
+            --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: transaction-sql-recovery
           path: ${{ runner.temp }}/transaction-sql/
+      - name: Prove registry receipts, ordering and database-crash recovery
+        run: |
+          python3 tools/ci/registry_save_sql_test.py \
+            --candidate "$GITHUB_WORKSPACE" \
+            --evidence "$RUNNER_TEMP/registry-save-sql" \
+            --image "$TOOLCHAIN" --database-image "$DATABASE_IMAGE"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: registry-save-sql-recovery
+          path: ${{ runner.temp }}/registry-save-sql/
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: achievement-sql-recovery
           path: ${{ runner.temp }}/achievement-sql/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: character-save-sql-recovery
+          path: ${{ runner.temp }}/character-save-sql/
   release:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
