@@ -4,6 +4,48 @@ This release implements the four reliability repairs and five player features
 requested in the October 2 review, against baseline
 `a5efdec854371b0ac807a1ac9a80e71e4b3dbccd`.
 
+## October 3 follow-ups
+
+The guide/readiness, warper ordering and Damage Lab comparison feedback changes
+were deployed as source `fc93c44ec356c754517c31214ba3920c93e5c6e6728f793d3cb4824cef86b930`
+from commit `8fc6c49937a9fda6817b8819f1f402ffd82e7272`. Only the map service
+restarted; its executable and the other three executables were unchanged.
+The operational receipt is `followup-production-cutover-2/report.json`, SHA-256
+`0703d9ba36d064a7231671491a0e441c2bec38159e656f6903a7c481bd52ae20`.
+
+Signed client updater sequence `2026092906` now distributes the quest loader,
+Chapter 1 guide records and corrected simulation-clock wording. The four changed
+objects include the derived client manifest; 5,648 existing entries are unchanged.
+Signature verification, installed launcher acceptance and public downloads passed.
+The receipt is `client-updater-publication-20261003-1/verified-client-publication.json`,
+SHA-256 `232588474e0a3cf92d1b2d9d912873d36f69b86489b0094b73217b58ac6567ab`.
+
+The zero-value barter cash-log follow-up is fixed in commit
+`264f6b1b66f37ac1538cd6203c5f9079ba307910`. Each currency logs only when its
+balance changes. The exact ACK handler passes 24 zero/nonzero, rejection and
+duplicate cases, plus its existing handler/FIFO tests. An incremental Linux build
+recompiled only `intif.cpp`; all three other server executables are unchanged.
+The fix is deployed as source
+`f6209269b4b15e2551286510287cf0b1ed589cb1cc1a5d1c355d427bf8b6dad8`.
+Only the map service restarted after fresh quiescence observations; no SQL
+migration was needed. Its new heartbeat passed, all seven services are healthy
+with zero restart counts, FluxCP returned HTTP 200, and ingress is reopened.
+The receipt is `followup-production-cutover-3/report.json`, SHA-256
+`2d0e5c7816ba0a2824a19020e8b46e3668d885977ff4c313b723c7dd4510836e`.
+
+The pre-deployment check also found a changed runtime manifest whose three
+Docker import entries hashed empty host stubs. The actual mounted configuration
+files, source and executables were unchanged. The exact approved manifest was
+restored without a restart; both versions are retained in
+`runtime-manifest-reconciliation-3`. Its receipt SHA-256 is
+`846f656f24414ae74fd959c1fa7dcad5b4792a091342bf0f18f2e229dff3b9fc`.
+The writer that changed the manifest was not identified.
+
+Existing accepted Damage Lab and baseline audits were reused at the user's
+direction. No broad audit was rerun, and the historical full-controller result
+was not relabelled as passed. The sections below preserve the original release
+and its acceptance limits.
+
 ## Implementation
 
 | Area | Result |
@@ -18,7 +60,7 @@ requested in the October 2 review, against baseline
 | Purchase history | Owner-scoped immutable purchase details commit in the same SQL transaction as the purchase. History includes costs, outputs and current pet recovery status. Existing receipts are not replayed or backfilled. |
 | Party readiness | Each member's prerequisites, cooldowns and original-roster reentry are evaluated independently. Busy, unavailable and offline states are explicit. Original-roster checks cover the three Chapter 2 instances. |
 
-## Deployment status
+## Original deployment status
 
 Deployment to the existing server completed on 3 October 2026. Its source,
 effective runtime identity and four running executables match the verified
@@ -43,7 +85,7 @@ The implementation is published on `codex/improvements-20261002` as
 `2d48ece7550d83d21b10e2d140e50d53a88d9002`. Unrelated EM analysis, probe files
 and screenshots remain untouched.
 
-## Exact Linux package
+## Original Linux package
 
 The original validation archive contained CRLF baseline files, whereas the
 deployed Linux tree uses LF. Exhaustive comparison identified 5,158 files with
@@ -124,23 +166,25 @@ are retained. Recovery never automatically restores a stale database backup.
 
 ## Remaining limits
 
-The host filesystem is 97% used, with approximately 3.2 GiB free after deployment.
-The retained task directory occupies about 14 GiB. Backup and evidence cleanup
-remains a storage follow-up; the passing service checks do not certify disk
-capacity.
+The host filesystem had approximately 2.1 GiB free before the incremental
+follow-up build and about 0.97 GiB after retaining its build and rollback files.
+Backup and evidence cleanup remains a storage follow-up; the passing service
+checks do not certify disk capacity.
 
-The six rendered cases remain unverified: `onboarding`, `encounter-reward`,
-`party-reentry`, `shop-storage`, `client-visuals`, and `lab-relog-comparison`.
-Computer Use initialization succeeds, but app discovery returns native pipe
-OS error 2. Automated and packet checks are not substitutes for rendered tests.
-The full release controller must therefore remain failed for missing rendered
-evidence, even if operational deployment completes under the user's direction.
+The original controller lacks six rendered receipts: `onboarding`,
+`encounter-reward`, `party-reentry`, `shop-storage`, `client-visuals`, and
+`lab-relog-comparison`. At the original deployment, app discovery returned
+native pipe OS error 2. Later private-client checks and the user's acceptance
+of the existing Damage Lab audit do not retroactively add those receipts.
+The historical full-controller result remains failed; operational deployment
+and targeted follow-ups have their own receipts.
 
-A separate pre-existing unlimited pet barter issue attempts zero-value cash
+A separate pre-existing unlimited pet barter issue attempted zero-value cash
 audit inserts with type `J`, which the bundled `cashlog` enum rejects. Asset,
 payment, receipt and pet identity assertions pass. The relevant implementation
 and schema fragments match baseline, and original error logs are retained in
-`cash-log-followup.json` and the pet receipts. This issue remains unfixed.
+`cash-log-followup.json` and the pet receipts. The narrow fix and validation are
+recorded in the October 3 follow-ups above.
 
 Detailed evidence is retained under `OPS/improvements-20261002` locally and the
 corresponding task directory on the server. SQL archives and private
