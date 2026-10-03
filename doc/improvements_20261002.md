@@ -168,8 +168,16 @@ are retained. Recovery never automatically restores a stale database backup.
 
 The host filesystem had approximately 2.1 GiB free before the incremental
 follow-up build and about 0.97 GiB after retaining its build and rollback files.
-Backup and evidence cleanup remains a storage follow-up; the passing service
-checks do not certify disk capacity.
+Four inactive build roots were subsequently archived off-host and removed,
+recovering 2.577 GiB and leaving approximately 3.544 GiB free. All 26,775 archived
+files were verified by hash; both source inventories matched before removal.
+Container and native-process references were checked, including exited
+containers. The active realm, original audit evidence and deployment rollback
+files remain on the server. Archived candidate-specific checks require restoring
+the retained archive first; completed cutovers must not be replayed.
+The archive SHA-256 is
+`2298c099186b7b2913f362b56e6f9e8dcc3ee46bce9443223f13d20c5e7a7af2`.
+The storage receipt is `storage-reclaimed-3.json`.
 
 The original controller lacks six rendered receipts: `onboarding`,
 `encounter-reward`, `party-reentry`, `shop-storage`, `client-visuals`, and
