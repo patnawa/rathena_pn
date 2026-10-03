@@ -108,7 +108,9 @@ static int64_t point_value=100;
 static int64_t pc_readreg2(const map_session_data*,const char*){return point_value;}
 static bool set_reg_num(void*,map_session_data*,int64_t,const char*,int64_t value,void*){point_value=value;return true;}
 static bool pc_setaccountreg(map_session_data*,int64_t,int64_t){return true;}
-void log_cash(const map_session_data*,e_log_pick_type,e_log_cash_type,int32){}
+struct CashLogRow {e_log_pick_type type;e_log_cash_type currency;int32 amount;};
+static std::vector<CashLogRow> cash_logs;
+void log_cash(const map_session_data*,e_log_pick_type type,e_log_cash_type currency,int32 amount){cash_logs.push_back({type,currency,amount});}
 static void pc_setinventorydata(map_session_data&){}
 static void pc_setequipindex(map_session_data*){}
 void log_zeny(const map_session_data&,e_log_pick_type,uint32,int64){}
@@ -133,7 +135,7 @@ struct PcItemDeliveryScope {
 };
 void pn_shop_committed_effects(map_session_data&,const pn_shop::Commit&){++callbacks;}
 #include "shop_inter_body.inc"
-static void reset(){pn_shop_queue.clear();other_players.clear();current_stock=5;rebase_ok=true;player={};present=true;floor_request.reset();pn_metrics::runtime={};connected=refresh_ok=true;saves=results=callbacks=refreshes=timers=save_result=0;item_use_settlements=0;item_use_committed=false;frames.clear();order.clear();pn_shop_inflight=false;player.inventory.u.items_inventory[0].nameid=501;player.inventory.u.items_inventory[0].amount=1;
+static void reset(){cash_logs.clear();pn_shop_queue.clear();other_players.clear();current_stock=5;rebase_ok=true;player={};present=true;floor_request.reset();pn_metrics::runtime={};connected=refresh_ok=true;saves=results=callbacks=refreshes=timers=save_result=0;pet_recoveries=pet_messages=0;item_use_settlements=0;item_use_committed=false;frames.clear();order.clear();pn_shop_inflight=false;player.inventory.u.items_inventory[0].nameid=501;player.inventory.u.items_inventory[0].amount=1;
  battle_config.shop_exp=0;battle_config.feature_achievement=1;progression_prepare_ok=progression_apply_ok=true;progression_prepares=progression_applies=progression_suppressions=eof_calls=0;capture_before.clear();capture_after.clear();applied_rows.clear();prepared_achievements.clear();replayed_achievements.clear();}
 static std::shared_ptr<pn_shop::Commit> request(uint32_t kind=pn_shop::Market){
  auto r=std::make_shared<pn_shop::Commit>();r->kind=kind;r->account_id=11;r->char_id=22;r->wallet_before=100;r->wallet_after=kind==pn_shop::Sale?100:90;r->cash_before=50;r->cash_after=kind==pn_shop::Sale?40:50;r->kafra_before=r->kafra_after=20;r->stock_count=1;r->stocks[0].key=501;r->stocks[0].before=5;r->stocks[0].after=4;
@@ -153,8 +155,46 @@ static bool same_achievement(const achievement& lhs,const achievement& rhs){
 static pn_shop::Event item_event(uint32_t value_sell){
  pn_shop::Event event{};event.index=0;event.amount=1;event.nameid=501;event.value_sell=value_sell;return event;
 }
-#ifndef PN_TEST_SHOP_QUEUE
+static void cash_log_tests(){
+ // Unlimited pet barter is an Asset request with BarterResponse. Its balances
+ // do not change, so no J/C/0 or J/K/0 cashlog row should be attempted.
+ for(auto kind:{pn_shop::Asset,pn_shop::Sale,pn_shop::ItemUse}){
+  for(auto deltas:{std::pair<int32,int32>{0,0},{-10,0},{0,-5},{-10,-5}}){
+   for(bool committed:{false,true}){
+    reset();auto r=request(kind);r->stock_count=kind==pn_shop::Sale?1:0;
+    r->wallet_after=r->wallet_before;r->cash_after=r->cash_before+deltas.first;r->kafra_after=r->kafra_before+deltas.second;
+    const bool barter=kind==pn_shop::Asset && deltas.first==0 && deltas.second==0;
+    if(barter){
+     r->response=pn_shop::BarterResponse;r->pet_count=1;
+     r->pets[0].output.egg.nameid=9001;r->pets[0].output.egg.amount=1;
+     r->pets[0].output.pet_class=1002;r->pets[0].output.level=1;std::strcpy(r->pets[0].output.name,"Poring");
+    }
+    assert(pn_shop_submit(player,r,{},0));assert(cash_logs.empty());
+    auto a=ack(committed?pn_shop::Committed:pn_shop::Rejected);receive(a);
+    assert(!player.shop_commit.pending && results==1 && last_success==committed);
+    const size_t expected=committed?size_t(deltas.first!=0)+size_t(deltas.second!=0):0;
+    if(cash_logs.size()!=expected)std::cerr<<"Unexpected cash log count: kind="<<kind<<" barter="<<barter<<" committed="<<committed<<" cash_delta="<<deltas.first<<" kafra_delta="<<deltas.second<<" expected="<<expected<<" actual="<<cash_logs.size()<<"\n";
+    assert(cash_logs.size()==expected);
+    size_t index=0;
+    for(auto currency:{LOG_CASH_TYPE_CASH,LOG_CASH_TYPE_KAFRA}){
+     const int32 delta=currency==LOG_CASH_TYPE_CASH?deltas.first:deltas.second;
+     if(!committed || !delta)continue;
+     const auto& row=cash_logs[index++];
+     assert(row.currency==currency && row.amount==delta && row.type==(kind==pn_shop::Sale?LOG_TYPE_CASH:LOG_TYPE_NPC));
+    }
+    assert(player.cashPoints==50+(committed?deltas.first:0) && player.kafraPoints==20+(committed?deltas.second:0));
+    assert(player.inventory.u.items_inventory[0].amount==(committed?2:1));
+    receive(a);assert(cash_logs.size()==expected && results==1);
+   }
+  }
+ }
+ std::cout<<"PASS cash ACK logs: 24 sale/asset/item-use zero, cash-only, kafra-only, mixed, rejected and duplicate cases\n";
+}
+#if defined(PN_TEST_CASH_LOG_ONLY)
+int main(){cash_log_tests();}
+#elif !defined(PN_TEST_SHOP_QUEUE)
 int main(){
+ cash_log_tests();
  item_use_collecting=true;reset();assert(!pn_shop_submit(player,request(),{},0));assert(saves==0 && frames.empty());item_use_collecting=false;
  for(auto kind:{pn_shop::Market,pn_shop::Barter,pn_shop::Sale}){
   reset();auto r=request(kind);assert(pn_shop_submit(player,r,{{0,1,501}},10));unchanged();assert(player.shop_commit.pending && pn_shop_inflight);assert(pn_shop_stock_busy());assert(order==std::vector<std::string>({"save","send"}));auto frozen=frames[0];r->wallet_after=0;r->items[0].amount=99;

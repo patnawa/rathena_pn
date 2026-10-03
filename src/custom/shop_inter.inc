@@ -228,8 +228,10 @@ static void pn_shop_resolve(const pn_shop::Ack& reply,bool unsent) {
             sd->kafraPoints = static_cast<int32>(request->kafra_after);
             pc_setaccountreg(sd, add_str(CASHPOINT_VAR), request->cash_after);
             pc_setaccountreg(sd, add_str(KAFRAPOINT_VAR), request->kafra_after);
-            log_cash(sd, logtype, LOG_CASH_TYPE_CASH, request->cash_after - request->cash_before);
-            log_cash(sd, logtype, LOG_CASH_TYPE_KAFRA, request->kafra_after - request->kafra_before);
+            if (request->cash_after != request->cash_before)
+                log_cash(sd, logtype, LOG_CASH_TYPE_CASH, request->cash_after - request->cash_before);
+            if (request->kafra_after != request->kafra_before)
+                log_cash(sd, logtype, LOG_CASH_TYPE_KAFRA, request->kafra_after - request->kafra_before);
         }
         if(request->point.scope)set_reg_num(nullptr,sd,add_str(request->point.key),request->point.key,request->point.after,nullptr);
         sd->weight = sd->shop_commit.final_weight;
