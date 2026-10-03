@@ -3,7 +3,8 @@
 
 Supply the original 32-bit Lua 5.1 helper and matching runtime. Without --patch,
 this tests installed data and reproduces the missing-18369 popup. With --patch,
-it also proves all previous records survive and repeat loading is harmless.
+it also checks the simulation's exact-clock wording, preservation of unrelated
+records and harmless repeat loading.
 """
 import argparse
 import json
@@ -23,7 +24,7 @@ def main():
     parser.add_argument('--patch', type=Path)
     args = parser.parse_args()
     catalog = json.loads((ROOT / 'npc/custom/main_office/chapter1_guide.json').read_text(encoding='utf-8'))
-    ids = sorted({row['quest'] for row in catalog['steps']} | {18377, 18379})
+    ids = sorted({row['quest'] for row in catalog['steps']} | {12661, 18377, 18379})
     lua = r'''
 table.insert = nil -- Match the restricted client quest environment.
 local function clone(t)
@@ -40,6 +41,10 @@ end
 local allowed={}
 for _,id in ipairs(IDS) do allowed[id]=true end
 local reference
+local old_wait_summary="Resets after 3 days"
+local wait_summary="Resets 3 days after the next 04:00 server time"
+local old_wait_description="According to the professor, the energy required to recreate the Dark Whisper is limited to once every three days. Let's try again in three days."
+local wait_description="The simulation resets at 04:00 server time, 3 days after the next 04:00 following entry. The wait depends on when you enter. Speak to the Wizard Professor after the timer expires."
 for _,loader in ipairs({"SystemEN/OngoingQuests.lub", "SystemEN/OngoingQuestInfoList.lub",
                        "System/OngoingQuestInfoList.lub", "System/OngoingQuestInfoList_True.lub"}) do
  QuestInfoList=nil
@@ -48,10 +53,12 @@ for _,loader in ipairs({"SystemEN/OngoingQuests.lub", "SystemEN/OngoingQuestInfo
  if PATCH then dofile(PATCH) end
  dofile(HELPER)
  local descriptions=0
+ local wait_descriptions={}
  AddOngoingDescription=function(id,text)
   assert(type(text)=="string", "Invalid Chapter 1 description: "..id)
   if not before[id] then assert(text~="", "Empty added description: "..id) end
   descriptions=descriptions+1
+  if id==12661 then wait_descriptions[#wait_descriptions+1]=text end
  end
  AddOngoingRewardInfo=function(id,item,amount)
   assert(type(item)=="number" and type(amount)=="number", "Invalid reward: "..id)
@@ -69,11 +76,25 @@ for _,loader in ipairs({"SystemEN/OngoingQuests.lub", "SystemEN/OngoingQuestInfo
  assert(complete:find("completed Chapter 1",1,true) and complete:find("not a new assignment",1,true), "Completion marker became an active objective")
  local fire=table.concat(assert(QuestInfoList[18376]).Description,"\n")
  assert(fire:find("mu_fild01,95,154,0,101,0",1,true), "Land of Fire bypasses its public entrance")
+ local wait_ok,wait_title,wait_icon,wait_text=GetOngoingQuestInfoByID(12661)
+ assert(wait_ok and wait_text==wait_summary, "Simulation summary must describe the server's 04:00 schedule")
+ assert(wait_title==before[12661].Title and wait_icon==before[12661].IconName and QuestInfoList[12661].CoolTimeQuest==1, "Simulation metadata changed")
+ GetOngoingDescription(12661)
+ assert(#wait_descriptions==1 and wait_descriptions[1]==wait_description, "Simulation description must describe the server's 04:00 schedule")
  for _,id in ipairs(IDS) do
   assert(type(QuestInfoList[id])=="table", "Missing server Chapter 1 quest: "..id)
   GetOngoingQuestInfoByID(id); GetOngoingDescription(id); GetOngoingRewardInfo(id)
  end
- for id,old in pairs(before) do assert(equal(old,QuestInfoList[id]), "Existing quest changed: "..id) end
+ for id,old in pairs(before) do
+  local expected=clone(old)
+  if id==12661 then
+   if expected.Summary==old_wait_summary then expected.Summary=wait_summary end
+   for i,text in ipairs(expected.Description or {}) do
+    if text==old_wait_description then expected.Description[i]=wait_description end
+   end
+  end
+  assert(equal(expected,QuestInfoList[id]), "Existing quest changed beyond reviewed wording: "..id)
+ end
  for id in pairs(QuestInfoList) do assert(before[id] or allowed[id], "Unrelated quest added: "..id) end
  local once=clone(QuestInfoList)
  if PATCH then dofile(PATCH) end
@@ -89,6 +110,14 @@ if PATCH then
  QuestInfoList[18369]=custom
  dofile(PATCH)
  assert(QuestInfoList[18369]==custom, "Custom override replaced")
+ local custom_wait={Title="Owner's simulation guide",Summary="Custom summary",Description={"Custom instructions"},CoolTimeQuest=1}
+ QuestInfoList[12661]=custom_wait
+ local saved_wait=clone(custom_wait)
+ dofile(PATCH)
+ assert(QuestInfoList[12661]==custom_wait and equal(saved_wait,custom_wait), "Custom simulation wording replaced")
+ QuestInfoList[12661]=nil
+ dofile(PATCH)
+ assert(QuestInfoList[12661]==nil, "Missing simulation record was fabricated")
  assert(QuestInfoList[999999999]==nil, "Unknown-ID blanket fallback")
 end
 '''.replace('IDS', '{'+','.join(map(str, ids))+'}').replace('PATCH', json.dumps(args.patch.resolve().as_posix()) if args.patch else 'nil').replace('HELPER', json.dumps(args.helper.resolve().as_posix()))

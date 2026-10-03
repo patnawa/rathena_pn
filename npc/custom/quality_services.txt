@@ -290,13 +290,26 @@ function	script	PN_LabHistory	{
  if (!PNLabValid[.@a]) { mes "That run slot is empty."; return; }
  .@n=0;
  for (.@i=0; .@i<3; .@i++) {
-  if (!callfunc("PN_LabCompatible",.@a,.@i)) continue;
+  if (!PNLabValid[.@i]) continue;
+  if (!callfunc("PN_LabCompatible",.@a,.@i)) {
+   if (PNLabVariable[.@a]) .@reason$="selected run's buffs changed during the run.";
+   else if (PNLabVariable[.@i]) .@reason$="buffs changed during this run.";
+   else if (PNLabSetup$[.@a]!=PNLabSetup$[.@i]) .@reason$="target settings differ.";
+   else if (PNLabBuff$[.@a]!=PNLabBuff$[.@i]) .@reason$="initial buffs differ.";
+   else if (PNLabBuild$[.@a]=="" || PNLabBuild$[.@i]=="") .@reason$="verified server build is unavailable.";
+   else .@reason$="server build differs.";
+   mes "Run "+(.@i+1)+" excluded: "+.@reason$;
+   .@excluded++;
+   continue;
+  }
   if (PNLabGear$[.@a]!=PNLabGear$[.@i]) {
    mes "A/B candidate run "+(.@i+1)+": DPS "+PNLabDps[.@i]+" vs "+PNLabDps[.@a]+". Target, initial buffs and build match; gear/stat/skill identity differs.";
+   .@ab++;
    continue;
   }
   .@dps[.@n]=PNLabDps[.@i]; .@n++;
  }
+ mes "Comparison counts: "+.@n+" identical; "+.@ab+" A/B; "+.@excluded+" excluded.";
  if (!.@n) { mes "No comparable stable-buff runs. Keep targets, buffs and server build identical."; return; }
  for (.@i=0; .@i<.@n; .@i++) for (.@j=.@i+1; .@j<.@n; .@j++) {
   if (.@dps[.@i]>.@dps[.@j]) { .@v=.@dps[.@i]; .@dps[.@i]=.@dps[.@j]; .@dps[.@j]=.@v; }

@@ -478,7 +478,9 @@ F32: Restrict("Pre-RE",5);
 	Dungeons:
 // --------------------------------------------------
 @d = true;
-menu	"Abandoned Lab Amicitia",D1, "Abyss Lakes",D2, "Amatsu Dungeon",D3,
+menu	"Call of the World Tree",D56, "Chapter 1 / Zero Cell",D57,
+		"Chapter 2 - Flame Branch",D58,
+		"Abandoned Lab Amicitia",D1, "Abyss Lakes",D2, "Amatsu Dungeon",D3,
 		"Anthell",D4, "Ayothaya Dungeon",D5, "Beach Dungeon",D6,
 		"Bifrost Tower",D7, "Bio Labs",D8, "Brasilis Dungeon",D9,
 		"Byalan Dungeon",D10, "Clock Tower",D11, "Coal Mines",D12,
@@ -496,9 +498,7 @@ menu	"Abandoned Lab Amicitia",D1, "Abyss Lakes",D2, "Amatsu Dungeon",D3,
 		"Sunken Ship",D46, "Thanatos Tower",D47, "Thor Volcano",D48,
 		"Toy Factory",D49, "Turtle Dungeon",D50, "Umbala Dungeon",D51,
 		"Varmundt's Dungeon",D52, "Verus Area",D53,
-		"Episode 20 Areas",D54, "Episode 21 Areas",D55,
-		"Call of the World Tree",D56, "Chapter 1 / Zero Cell",D57,
-		"Chapter 2 - Flame Branch",D58;
+		"Episode 20 Areas",D54, "Episode 21 Areas",D55;
 
 D1: Restrict("RE");
 	setarray @c[2],253,244,145,278;

@@ -8,6 +8,15 @@
 #include <nlohmann/json.hpp>
 static party_data guide_party{};
 static std::string destination;
+// Only the simulation deadline cases replace the wall clock. Quest parsing,
+// quest_add/quest_time, expiry checks and the readiness VM remain production code.
+static time_t guide_clock;
+extern "C" time_t __real_time(time_t*);
+extern "C" time_t __wrap_time(time_t* out){if(!guide_clock)return __real_time(out);if(out)*out=guide_clock;return guide_clock;}
+extern "C" void guide_quest_add(const map_session_data*,const struct quest*) asm("__wrap__Z14clif_quest_addPK16map_session_dataPK5quest");
+extern "C" void guide_quest_add(const map_session_data*,const struct quest*){}
+extern "C" void guide_quest_objectives(const map_session_data*,const struct quest*) asm("__wrap__Z27clif_quest_update_objectivePK16map_session_dataPK5quest");
+extern "C" void guide_quest_objectives(const map_session_data*,const struct quest*){}
 extern "C" party_data* guide_party_search(int32 id) asm("__wrap__Z12party_searchi");
 extern "C" party_data* guide_party_search(int32 id){return id==7?&guide_party:nullptr;}
 extern "C" void guide_nav(const map_session_data*,const char*,uint16,uint16,uint8,bool,uint16) asm("__wrap__Z15clif_navigateToPK16map_session_dataPKctthbt");
@@ -47,6 +56,28 @@ extern "C" int __wrap_main(int argc,char** argv){
     auto quest_source=read(std::string(argv[1])+"/guide-quest.yml");auto quest_tree=ryml::parse_in_arena(ryml::to_csubstr(quest_source));for(auto row:quest_tree["Body"])check(quest_db.parseBodyNode(row)==1,"actual hunt objective metadata");
     functions(read(argv[2]));strdb_put(script_get_userfunc_db(),"CH2_Complete",compile(body(read("npc/custom/chapter2/Chapter2.txt"),"function\tscript\tCH2_Complete"),"actual chapter completion"));
     functions(read("npc/custom/main_office/chapter1_guide.txt"));
+    // The unprefixed "3d 4h" is an exact server-local clock schedule, not +76h.
+    auto simulation=quest_search(12661);
+    check(simulation&&simulation->time_at&&simulation->time==273600&&simulation->time_week==-1,"actual 12661 parser uses a 3-day offset at 04:00");
+    setenv("TZ","UTC0",1);tzset();
+    std::tm day{};day.tm_year=126;day.tm_mon=9;day.tm_mday=3;const time_t midnight=mktime(&day);
+    const int starts[]={0,7200,14399,14400,14401,43200,86399};
+    const int waits[]={273600,266400,259201,345600,345599,316800,273601};
+    save_settings=0;
+    for(size_t i=0;i<sizeof(starts)/sizeof(*starts);++i){
+        auto sd=fresh();guide_clock=midnight+starts[i];seedquest(12660,2);
+        check(quest_add(sd.get(),12661)==0,"actual simulation quest admission");
+        const time_t expiry=sd->quest_log[1].time;
+        check(expiry-guide_clock==waits[i],"simulation deadline follows 04:00 carry rather than a fixed 76-hour duration");
+        const auto* end=localtime(&expiry);check(end->tm_hour==4&&end->tm_min==0&&end->tm_sec==0,"simulation expires at server-local 04:00");
+        auto r=reason("Simulated Dark Whisper");
+        check(r.find(std::to_string((waits[i]+59)/60)+" minutes remain")!=std::string::npos,"readiness uses actual deadline remaining minutes");
+        check(r.find("3 days after the next 04:00 following entry")!=std::string::npos&&r.find("76-hour")==std::string::npos,"readiness describes the exact-clock schedule");
+        guide_clock=expiry;check(quest_check(sd.get(),12661,PLAYTIME)==0,"expiry comparison retains the exact boundary second");
+        guide_clock=expiry+1;check(quest_check(sd.get(),12661,PLAYTIME)==2,"timer expires after the deadline");
+        check(reason("Simulated Dark Whisper").find("Timer expired")!=std::string::npos,"expired simulation directs the player to clear the timer");
+        clean();guide_clock=0;
+    }
     const int quests[]={0,0,18368,18369,18370,18371,24069,24070,24071,24072};
     const char* expected[]={"pn_office:46,39","prt_fild05:353,252","ygg_edge:253,246","ygg_fruit:80,122","ygg_fruit:82,120","ygg_roots:334,138","ygg_roots:299,59","ygg_roots:186,117","ygg_roots:167,135","ygg_roots:166,135"};
     for(int i=0;i<10;++i){auto sd=fresh();if(!i)sd->status.base_level=199;if(i>=2){seedquest(18368,i==2?1:2);if(i>2)seedquest(quests[i]);}Snapshot before;auto n=nums;auto count=sd->num_quests;

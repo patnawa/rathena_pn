@@ -40,9 +40,26 @@ stable sampled buffs. Equipment identities may differ for A/B. Repeat medians
 require matching equipment identity too. With two samples the displayed median
 is the integer midpoint; with three it is the middle value. Spread is max minus
 min. An incompatible target/build/buff run never appears as an A/B candidate.
+The comparison lists each excluded saved run and its first blocking reason:
+variable buffs, different target settings, different initial buffs, or a missing
+or different verified server build. It then counts identical setups, gear A/B
+candidates and excluded saved runs. Empty slots are not counted; the selected
+run counts as an identical setup only when it is eligible. These explanations
+do not change eligibility, the repeat median/spread or stored records.
 
 Validation: `python3 tools/ci/lab_history_test.py --root <built Linux checkout>`
 executes the production script VM and identity builtin with network access denied.
 The transport and character registry are explicit doubles; player recreation
 retains persistent registry values to test the relog boundary. Actual SQL relog,
 timed world combat and client rendering must also pass release acceptance.
+
+For the focused comparison UI regression:
+
+```sh
+python3 tools/ci/lab_history_test.py --comparison-only --build-dir /tmp/lab-comparison
+/tmp/lab-comparison/test npc/custom/quality_services.txt /tmp/lab-comparison/items.yml comparison
+```
+
+Run the second command from the built checkout to test source-only wording
+changes without rebuilding the harness. The same cases also run in the full lab
+suite.

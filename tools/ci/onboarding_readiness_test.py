@@ -60,9 +60,10 @@ std::map<int64,int64>& guide_values(const map_session_data* sd){return sd==attac
     prefix = prefix.replace(original, 'nums[key]=value;if(script_getvaridx(key))script_array_update(&attached->regs,key,value==0);return true;}', 1)
     with tempfile.TemporaryDirectory(prefix='onboarding-readiness-') as temp:
         work = Path(temp)
-        quest = next(row for row in renewal_records(root, 'db/quest_db.yml') if row['Id'] == 8964)
+        quests = [row for row in renewal_records(root, 'db/quest_db.yml') if row['Id'] in (8964, 12661)]
+        assert {row['Id'] for row in quests} == {8964, 12661}
         mobs = {row['Id']: row for row in renewal_records(root, 'db/mob_db.yml') if row.get('AegisName') == 'CH1_SHADOW_JAILER'}
-        (work / 'guide-quest.yml').write_text(yaml.safe_dump({'Body': [quest]}))
+        (work / 'guide-quest.yml').write_text(yaml.safe_dump({'Body': quests}))
         (work / 'guide-mobs.json').write_text(json.dumps(list(mobs.values())))
         (work / 'armor-items.yml').write_text(yaml.safe_dump({'Header': {'Type': 'ITEM_DB', 'Version': 3}, 'Body': list(items.values())}, sort_keys=False))
         driver = work / 'driver.cpp'
@@ -76,7 +77,7 @@ std::map<int64,int64>& guide_values(const map_session_data* sd){return sd==attac
         command = ['g++', '-std=c++17', '-O0', '-g', '-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-DPACKETVER=20260219']
         command += ['-I' + value for value in includes]
         command += [str(driver)] + [str(p) for p in objects + libraries]
-        command += ['-Wl,--wrap=' + value for value in (*WRAPPERS, '_Z12party_searchi', '_Z15clif_navigateToPK16map_session_dataPKctthbt')]
+        command += ['-Wl,--wrap=' + value for value in (*WRAPPERS, 'time', '_Z14clif_quest_addPK16map_session_dataPK5quest', '_Z27clif_quest_update_objectivePK16map_session_dataPK5quest', '_Z12party_searchi', '_Z15clif_navigateToPK16map_session_dataPKctthbt')]
         command += ['-lz', '-ldl', '-lmysqlclient', '-l:libzstd.so.1', '-lssl', '-lcrypto', '-lresolv', '-lm', '-o', str(binary)]
         subprocess.run(command, cwd=root, check=True)
         run = subprocess.run([str(binary), str(work), str(source)], cwd=root, capture_output=True, text=True)

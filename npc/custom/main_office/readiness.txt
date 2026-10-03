@@ -32,7 +32,7 @@ function	script	PN_InstanceMissing	{
 		if (isbegin_quest(12666)!=1 && isbegin_quest(12664)!=1) return "Missing prerequisite: Chapter 1 Sky Fortress infiltration assignment.";
 	} else if (.@name$ == "Simulated Dark Whisper") {
 		if (isbegin_quest(12660)!=2) return "Missing prerequisite: complete Chapter 1 and register with the Wizard Professor at hem_dun01 205,248.";
-		if (checkquest(12661,PLAYTIME)==0 || checkquest(12661,PLAYTIME)==1) return "Cooldown: simulation; "+((max(0,pnquestremaining(12661))+59)/60)+" minutes remain (76-hour timer).";
+		if (checkquest(12661,PLAYTIME)==0 || checkquest(12661,PLAYTIME)==1) return "Cooldown: simulation; "+((max(0,pnquestremaining(12661))+59)/60)+" minutes remain. Resets at 04:00 server time, 3 days after the next 04:00 following entry.";
 		if (checkquest(12661,PLAYTIME)==2) return "Timer expired: speak to the Wizard Professor to clear it.";
 	} else return "Readiness information is unavailable for this instance.";
 	if (!getcharid(1)) return "Missing prerequisite: form or join a party; one member is enough.";

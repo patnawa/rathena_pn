@@ -25,8 +25,46 @@ static std::unique_ptr<map_session_data> lab_player(){
  for(auto& i:sd->equip_index)i=-1;return sd;
 }
 static void lab_detach(){if(attached->regs.arrays)attached->regs.arrays->destroy(attached->regs.arrays,script_free_array_db);attached->regs.arrays=nullptr;attached=nullptr;}
+static void comparison_cases(){
+ auto reset=[](){exec_lab("deletearray PNLabValid[0],3; PNLabNext=0;");};
+ auto save=[](const char* label,int dps,const char* target="normal target",const char* gear="gear",const char* buff="buff",const char* build="build",int variable=0){
+  exec_lab("callfunc \"PN_LabSave\",\""+std::string(label)+"\","+std::to_string(dps*60)+",60000,\""+target+"\",\""+gear+"\",\""+buff+"\",\""+build+"\","+std::to_string(variable)+";");
+ };
+ auto persistent_numbers=[](){std::map<int64,int64> result;for(const auto& entry:nums)if(entry.second&&std::string(get_str(script_getvarid(entry.first))).rfind("PNLab",0)==0)result.insert(entry);return result;};
+ auto persistent_strings=[](){std::map<int64,std::string> result;for(const auto& entry:strings)if(!entry.second.empty()&&std::string(get_str(script_getvarid(entry.first))).rfind("PNLab",0)==0)result.insert(entry);return result;};
+ auto history=[&](int choice=1){
+  auto before_num=persistent_numbers();auto before_str=persistent_strings();messages.clear();exec_lab("callfunc \"PN_LabHistory\";",{choice});
+  check(persistent_numbers()==before_num&&persistent_strings()==before_str,"comparison explanation never mutates saved history");
+ };
+ ++cases;reset();save("A",1000);save("B",2000,"boss target");
+ check(nums[reference_uid(add_str("PNLabValid"),0)]==1&&nums[reference_uid(add_str("PNLabValid"),1)]==1,"both comparison records are valid completed saves");
+ exec_lab("LabCompat=callfunc(\"PN_LabCompatible\",0,1);");check(nums[add_str("LabCompat")]==0,"target mismatch is actually incompatible");
+ // Changing only the target produces a compatible repeat and visible output.
+ exec_lab("PNLabSetup$[1]=\"normal target\";");history();
+ check(said("Identical setup repeats: 2; median DPS 1500"),"same-target control reaches the actual comparison UI");
+ exec_lab("PNLabSetup$[1]=\"boss target\";");history();
+ check(said("Identical setup repeats: 1; median DPS 1000"),"incompatible target remains outside repeat statistics");
+ check(said("Run 2 excluded: target settings differ."),"incompatible saved target has a visible exclusion reason");
+ check(said("Comparison counts: 1 identical; 0 A/B; 1 excluded."),"target exclusion count is explicit");
+ ++cases;reset();save("A",1000);save("B",3000);save("C",2000);history();
+ check(said("Comparison counts: 3 identical; 0 A/B; 0 excluded.")&&said("median DPS 2000; min/max 1000 / 3000; spread 2000"),"three exact repeats preserve median and spread");
+ ++cases;reset();save("A",1000);save("B",3000,"normal target","other gear");save("C",2000,"boss target");history();
+ check(said("A/B candidate run 2")&&!said("A/B candidate run 3")&&said("Comparison counts: 1 identical; 1 A/B; 1 excluded."),"gear A/B stays separate from repeat statistics and incompatible targets");
+ for(const char* change:{"PNLabBuff$[1]=\"other buff\";","PNLabBuild$[1]=\"other build\";","PNLabBuild$[1]=\"\";","PNLabVariable[1]=1;"}){
+  ++cases;reset();save("A",1000);save("B",2000);exec_lab(change);history();
+  const std::string mutation=change;
+  const char* why=mutation.find("Buff$")!=std::string::npos?"initial buffs differ.":mutation.find("other build")!=std::string::npos?"server build differs.":mutation.find("Build$")!=std::string::npos?"verified server build is unavailable.":"buffs changed during this run.";
+  check(said(("Run 2 excluded: "+std::string(why)).c_str()),"each existing incompatibility has its own visible reason");
+  check(said("Comparison counts: 1 identical; 0 A/B; 1 excluded.")&&said("Identical setup repeats: 1; median DPS 1000"),"explanations preserve eligibility and statistics");
+ }
+ ++cases;exec_lab("PNLabVariable[0]=1;");history();
+ check(said("selected run's buffs changed during the run.")&&said("Comparison counts: 0 identical; 0 A/B; 2 excluded.")&&said("No comparable stable-buff runs."),"unstable selected run explains why every saved run is excluded");
+ ++cases;reset();save("A",1000);history();
+ check(!said("Run 2 excluded:")&&!said("Run 3 excluded:")&&said("Comparison counts: 1 identical; 0 A/B; 0 excluded."),"empty slots are not counted as excluded histories");
+ std::printf("LAB_COMPARISON_UI_OK target/buff/build reasons, counts, unchanged statistics and read-only history\n");
+}
 extern "C" int __wrap_main(int argc,char**argv){
- check(argc==3||argc==4,"source");const bool red=argc==4;deny_network();static char server[]="lab-history-audit";SERVER_NAME=server;
+ check(argc==3||argc==4,"source");const bool red=argc==4&&std::string(argv[3])=="red";const bool comparison=argc==4&&std::string(argv[3])=="comparison";deny_network();static char server[]="lab-history-audit";SERVER_NAME=server;
  malloc_init();db_init();do_init_database();timer_init();do_init_script();battle_set_defaults();
  const auto source=read(argv[1]);
  auto* console=compile(body(source,"\tscript\tPN Lab Console"),"complete lab console");script_free_code(console);
@@ -36,6 +74,10 @@ extern "C" int __wrap_main(int argc,char**argv){
  if(!red)for(auto name:{"PN_LabTargetValid","PN_LabPresetSave","PN_LabPresetLoad","PN_LabTargetIdentity","PN_LabApplyTarget"})
   strdb_put(script_get_userfunc_db(),name,compile(body(source,std::string("function\tscript\t")+name),name));
  auto sd=lab_player();
+ if(comparison){
+  comparison_cases();lab_detach();sd.reset();nums.clear();strings.clear();do_final_script();timer_final();db_final();malloc_final();
+  std::printf("LAB_HISTORY_OK comparison-only cases=%u assertions=%u\n",cases,assertions);return 0;
+ }
  {
   auto target=std::make_unique<mob_data>();lab_target=target.get();target->id=99000004;target->type=BL_MOB;
   target->db=std::make_shared<s_mob_db>();target->vd=&target->db->vd;target->ud.bl=target.get();
@@ -141,6 +183,7 @@ extern "C" int __wrap_main(int argc,char**argv){
  check(identity(2).empty(),"missing startup attestation fails closed");
  exec_lab("PNLabBuild$[0]=\"\"; PNLabBuild$[1]=\"\"; LabCompat=callfunc(\"PN_LabCompatible\",0,1);");
  check(nums[add_str("LabCompat")]==0,"empty build IDs never compare");
+ comparison_cases();
  lab_detach();sd.reset();nums.clear();strings.clear();status_db.clear();skill_db.clear();item_db.clear();do_final_script();timer_final();db_final();malloc_final();
  std::printf("LAB_HISTORY_OK cases=%u assertions=%u\n",cases,assertions);return 0;
 }

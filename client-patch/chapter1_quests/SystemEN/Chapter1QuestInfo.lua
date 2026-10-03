@@ -1,6 +1,20 @@
 -- PN Chapter 1 quest records, GPL-3.0-or-later.
 -- Source: npc/custom/chapter1/CH1.c and db/import/quest_db.yml.
 -- Fill only the reviewed missing World Tree chain; preserve custom records.
+-- Correct known legacy wording for the unprefixed TimeLimit: 3d 4h.
+-- It is a server-local 04:00 schedule, not a fixed elapsed duration.
+local simulation = QuestInfoList[12661]
+if simulation then
+    if simulation.Summary == "Resets after 3 days" then
+        simulation.Summary = "Resets 3 days after the next 04:00 server time"
+    end
+    for i, text in ipairs(simulation.Description or {}) do
+        if text == "According to the professor, the energy required to recreate the Dark Whisper is limited to once every three days. Let's try again in three days." then
+            simulation.Description[i] = "The simulation resets at 04:00 server time, 3 days after the next 04:00 following entry. The wait depends on when you enter. Speak to the Wizard Professor after the timer expires."
+        end
+    end
+end
+
 local function quest(id, title, summary, description)
     if QuestInfoList[id] ~= nil then return end
     QuestInfoList[id] = {
