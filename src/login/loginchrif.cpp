@@ -533,19 +533,28 @@ int32 logchrif_parse_setaccoffline(int32 fd){
  * @return 0 not enough info transmitted, 1 success
  */
 int32 logchrif_parse_updonlinedb(int32 fd, int32 id){
-	if (RFIFOREST(fd) < 4 || RFIFOREST(fd) < RFIFOW(fd,2))
+	if( RFIFOREST(fd) < 4 )
 		return 0;
-	else{
-		//Set all chars from this char-server offline first
-		login_online_db_setoffline( id );
-
-		for( uint32 i = 0, users = RFIFOW(fd, 4); i < users; i++) {
-			uint32 aid = RFIFOL(fd,6+i*4);
-
-			login_add_online_user( id, aid );
-		}
-		RFIFOSKIP(fd,RFIFOW(fd,2));
+	const uint16 length = RFIFOW(fd, 2);
+	// The char-server sender writes an 8-byte header and 4 bytes per account.
+	if( length < 8 || (length - 8) % 4 != 0 ){
+		set_eof(fd);
+		return 0;
 	}
+	if( RFIFOREST(fd) < length )
+		return 0;
+	const uint32 users = RFIFOL(fd, 4);
+	if( users != static_cast<uint32>((length - 8) / 4) ){
+		set_eof(fd);
+		return 0;
+	}
+
+	// Validate the complete roster before changing any existing account state.
+	login_online_db_setoffline( id );
+	for( uint32 i = 0; i < users; ++i ){
+		login_add_online_user( id, RFIFOL(fd, 8 + i * 4) );
+	}
+	RFIFOSKIP(fd, length);
 	return 1;
 }
 

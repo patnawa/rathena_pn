@@ -33,7 +33,7 @@ TESTS = (
     'shop_receipt_codec_test.py',
     'runtime_metrics_test.py', 'runtime_identity_test.py',
     'shop_planner_test.py', 'shop_recovery_inter_test.py', 'point_barrier_wire_test.py',
-    'interserver_reconnect_test.py', 'custom_make_dependencies_test.py', 'pet_floor_test.py',
+    'interserver_reconnect_test.py', 'login_online_roster_test.py', 'custom_make_dependencies_test.py', 'pet_floor_test.py',
     'bank_core_test.py',
     'bank_service_test.py',
     'release_checks_test.py',

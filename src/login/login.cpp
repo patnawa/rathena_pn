@@ -174,7 +174,7 @@ TIMER_FUNC(login_waiting_disconnect_timer){
 }
 
 void login_online_db_setoffline( int32 char_server ){
-	for( std::pair<uint32,struct online_login_data> pair : online_db ){
+	for( auto& pair : online_db ){
 		if( char_server == -1 ){
 			pair.second.char_server = -1;
 
@@ -199,10 +199,12 @@ void login_online_db_setoffline( int32 char_server ){
  * @return : 0
  */
 static TIMER_FUNC(login_online_data_cleanup){
-	for( std::pair<uint32,struct online_login_data> pair : online_db  ){
+	for( auto it = online_db.begin(); it != online_db.end(); ){
+		// Advance before removal, which invalidates the current entry only.
+		const auto current = it++;
 		// Unknown server.. set them offline
-		if( pair.second.char_server == -2 ){
-			login_remove_online_user( pair.first );
+		if( current->second.char_server == -2 ){
+			login_remove_online_user( current->first );
 		}
 	}
 
