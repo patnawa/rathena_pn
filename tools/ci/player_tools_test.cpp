@@ -7,6 +7,8 @@
 #include <regex>
 npc_data* planner_npc=nullptr;
 static std::string planner_destination;
+extern "C" void planner_clear(const map_session_data&,int32) asm("__wrap__Z16clif_scriptclearRK16map_session_datai");
+extern "C" void planner_clear(const map_session_data&,int32){planner_visible.clear();}
 extern "C" int16 planner_map(uint16) asm("__wrap__Z18map_mapindex2mapidt");
 extern "C" int16 planner_map(uint16 index){return index==1?0:-1;}
 extern "C" bool planner_set(map_session_data*,int64,int64) asm("__wrap__Z14pc_setregistryP16map_session_datall");
@@ -14,7 +16,7 @@ extern "C" bool planner_set(map_session_data* sd,int64 key,int64 value){nums[key
 extern "C" void planner_nav(const map_session_data*,const char*,uint16,uint16,uint8,bool,uint16) asm("__wrap__Z15clif_navigateToPK16map_session_dataPKctthbt");
 extern "C" void planner_nav(const map_session_data*,const char* map,uint16 x,uint16 y,uint8,bool,uint16){planner_destination=std::string(map)+":"+std::to_string(x)+","+std::to_string(y);}
 static void functions(const std::string& source){std::regex pattern("function[\\t ]+script[\\t ]+([A-Za-z0-9_]+)[\\t ]+\\{");for(std::sregex_iterator it(source.begin(),source.end(),pattern),end;it!=end;++it){std::string name=(*it)[1];strdb_put(script_get_userfunc_db(),name.c_str(),compile(body(source,(*it).str()),name.c_str()));}}
-static void invoke(const std::string& command,const std::vector<int>& choices={}){++cases;auto* code=compile("{"+command+" end;}","player tools");walk(code,choices);script_free_code(code);}
+static void invoke(const std::string& command,const std::vector<int>& choices={}){++cases;auto* code=compile("{mes \"[fixture parent]\";"+command+" end;}","player tools");walk(code,choices);script_free_code(code);}
 static int64 num(const char* key,int index=0){return nums[reference_uid(add_str(key),index)];}
 static std::string str(const char* key,int index=0){return strings[reference_uid(add_str(key),index)];}
 static bool said(const char* part){for(const auto& text:messages)if(text.find(part)!=std::string::npos)return true;return false;}
@@ -53,9 +55,42 @@ extern "C" int __wrap_main(int argc,char** argv){
     messages.clear();invoke("callfunc \"PN_PlanRecipe\",\"barter_ep21_gaebolg_equipment\",0;",{3});check(said("missing quantity 5"),"actual dialog shows held/required/missing totals");
     auto mob=std::make_shared<s_mob_db>();mob->id=1002;mob->jname="Fixture Poring";auto drop=std::make_shared<s_mob_drop>();drop->nameid=material;drop->rate=100;mob->dropitem.push_back(drop);mob_db.put(mob->id,mob);mob_spawn_data[1002].push_back({1,5});
     invoke("@result=pnplansources("+std::to_string(material)+",0);");check(num("@result")==1 && str("@PNSourceMap$")=="prontera","drop source requires an actual loaded spawn");mob_spawn_data.clear();invoke("@result=pnplansources("+std::to_string(material)+",0);");check(num("@result")==0,"unspawned monster is not presented as a farming destination");
+    // Exercise real function-to-function transitions, retaining exactly the
+    // current client page until clear or the next-page response clears it.
+    nums[reference_uid(add_str("PNWishItem"),0)]=gear;
+    planner_visible.clear();planner_menu_pages.clear();planner_next_pages.clear();menu_text.clear();
+    invoke("mes \"[Progression Guide]\";callfunc \"PN_EquipmentPlanner\";",{2,1,1,1,3,4,4,3});
+    check(!planner_menu_pages.empty() && planner_menu_pages[0].front()=="[Equipment Wishlist]","planner entry clears caller dialog before its first menu");
+    check(!planner_next_pages.empty() && planner_next_pages[0].front()=="[Exchange Plan]","recipe first page is not buried below guide/wishlist text");
+    for(const auto& page_text:planner_menu_pages){check(std::find(page_text.begin(),page_text.end(),"[Progression Guide]")==page_text.end(),"caller header never accumulates on planner redraw");}
+    strcpy(npc.name,"Fixture exchange#planner_hidden");
+    planner_visible.clear();planner_menu_pages.clear();planner_next_pages.clear();menu_text.clear();
+    invoke("callfunc \"PN_PlanSources\","+std::to_string(gear)+";",{1,4});
+    check(str("@PNSourceLabel$").find("#planner_hidden")!=std::string::npos,"source identity remains unmodified for exact routing");
+    check(!menu_text.empty() && menu_text.front().find("Fixture exchange")!=std::string::npos && menu_text.front().find("#planner_hidden")==std::string::npos,"source menu displays public NPC name without internal suffix");
+    check(planner_destination=="prontera:150,180","friendly source label retains exact navigation coordinates");
+    check(planner_menu_pages.size()==2 && planner_menu_pages[1].front()=="[Find "+std::string(item_db.find(gear)->ename)+"]","source selection redraws its own page");
+    mob_spawn_data[1002].push_back({1,5});
+    planner_visible.clear();planner_menu_pages.clear();planner_next_pages.clear();menu_text.clear();
+    invoke("callfunc \"PN_PlanRecipe\",\"barter_ep21_gaebolg_equipment\",0;",{2,1,4,3});
+    check(planner_menu_pages.size()==4 && planner_next_pages.size()==2,"recipe material source returns to one freshly rendered recipe");
+    check(planner_next_pages[0]==planner_next_pages[1] && planner_next_pages[1].front()=="[Exchange Plan]","recipe arguments and first page survive source call and Back");
+    check(planner_menu_pages[0]==planner_menu_pages[3],"recipe material counts and menu survive source call and Back");
+    const auto& source_detail=planner_menu_pages[2];
+    check(source_detail.front()=="[Find "+std::string(item_db.find(material)->ename)+"]" && std::find(source_detail.begin(),source_detail.end(),"Fixture Poring drop at prontera.")!=source_detail.end() && std::find(source_detail.begin(),source_detail.end(),"Map: prontera. Access requirements still apply.")!=source_detail.end() && std::find(source_detail.begin(),source_detail.end(),"Search this map for the monster. Drops are random; this is not a guaranteed reward.")!=source_detail.end(),"selected source keeps friendly detail, map and drop guidance on its clean page");
+    check(num("@PNPlanOutput")==gear && num("@PNMaterial")==material && num("@PNRequired")==100 && num("@PNInventory")==25 && num("@PNStorage")==70,"return refresh preserves exact recipe and holdings arguments");
+    mob_spawn_data.clear();
+    planner_visible.clear();planner_menu_pages.clear();planner_next_pages.clear();menu_text.clear();
+    invoke("callfunc \"PN_PlanRecipe\",\"barter_ep21_gaebolg_equipment\",0;",{2,3});
+    check(planner_next_pages.size()==3 && planner_next_pages[1].front()=="[Find "+std::string(item_db.find(material)->ename)+"]" && std::find(planner_next_pages[1].begin(),planner_next_pages[1].end(),"No verified exchange or normal-spawn drop destination is listed for this item.")!=planner_next_pages[1].end(),"empty source notice remains visible until its Next acknowledgement");
+    check(planner_next_pages[0]==planner_next_pages[2] && planner_menu_pages.size()==2 && planner_menu_pages[0]==planner_menu_pages[1],"empty source acknowledgement returns to the same freshly rendered recipe");
+    planner_visible.clear();planner_menu_pages.clear();menu_text.clear();
+    invoke("callfunc \"PN_PlanGoal\","+std::to_string(gear)+";",{2,2,4});
+    check(planner_menu_pages.size()==3 && std::find(planner_menu_pages[1].begin(),planner_menu_pages[1].end(),"Goal removed.")!=planner_menu_pages[1].end() && std::find(planner_menu_pages[2].begin(),planner_menu_pages[2].end(),"Goal saved for this character.")!=planner_menu_pages[2].end(),"save/remove feedback survives page clear without another confirmation click");
+    nums.erase(reference_uid(add_str("PNWishItem"),0));strcpy(npc.name,"Fixture exchange");
     if(database){
         qsmysql_handle=Sql_Malloc();check(Sql_Connect(qsmysql_handle,"root","shop-fixture-only","shop-recovery-db",3306,"shop_recovery_probe")==SQL_SUCCESS,"isolated SQL connection");check(scalar("SELECT DATABASE()") == "shop_recovery_probe","fixture database guard");
-        for(const char* table:{"planner_regular","planner_character","planner_paid"}){sql(std::string("CREATE TABLE ")+table+" (account_id INT,nameid INT,amount INT) ENGINE=InnoDB");}
+        for(const char* table:{"planner_regular","planner_character","planner_paid"}){sql(std::string("CREATE TABLE ")+table+" ("+(std::string(table)=="planner_character"?"char_id":"account_id")+" INT,nameid INT,amount INT) ENGINE=InnoDB");}
         sql("INSERT INTO planner_regular VALUES(99000001,"+std::to_string(material)+",999),(123,"+std::to_string(material)+",888)");
         sql("INSERT INTO planner_character VALUES(99000002,"+std::to_string(material)+",35),(99000003,"+std::to_string(material)+",777)");
         sql("INSERT INTO planner_paid VALUES(99000001,"+std::to_string(material)+",50)");

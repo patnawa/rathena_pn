@@ -39,7 +39,9 @@ static bool holdings(map_session_data& sd,const Counts& wanted,Counts& inventory
         const auto& table=*entry.second;
         if(!pn_storage::managed(entry.first) || !storage_page_available(sd,entry.first))continue;
         if(!identifier(table.table,sizeof(table.table)))return false;
-        const uint32 owner=entry.first==pn_storage::character?sd.status.char_id:sd.status.account_id;
+        const bool character_owned=entry.first==pn_storage::character;
+        const uint32 owner=character_owned?sd.status.char_id:sd.status.account_id;
+        const char* owner_column=character_owned?"char_id":"account_id";
         // Ambiguous aliases are not counted twice, nor silently resolved to a
         // potentially different loaded page.
         if(!seen.emplace(lower(table.table),owner).second)return false;
@@ -49,7 +51,7 @@ static bool holdings(map_session_data& sd,const Counts& wanted,Counts& inventory
                 if(live)return false;live=candidate;
             }
         if(live){add(storage,live->u.items_storage,MAX_STORAGE,wanted);continue;}
-        selects.push_back("SELECT nameid,amount FROM `"+std::string(table.table)+"` WHERE account_id="+std::to_string(owner)+" AND nameid IN ("+ids+") AND amount>0");
+        selects.push_back("SELECT nameid,amount FROM `"+std::string(table.table)+"` WHERE "+owner_column+"="+std::to_string(owner)+" AND nameid IN ("+ids+") AND amount>0");
     }
     if(seen.empty())return false;
     if(selects.empty())return true;
