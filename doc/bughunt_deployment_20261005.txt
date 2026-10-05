@@ -1,0 +1,69 @@
+PN bug-hunt production deployment - 5 October 2026
+
+Product fixes: 869f2407ad3356ca2318fce1197485e2fb0198bf.
+Linux timeout-test correction: 522d1d749.
+Pushed branch: codex/improvements-20261002.
+
+Five reproduced product defects were repaired: partial rollback after refusing
+a changed newly installed file; partial rollback after discovering a missing
+previous manifest; status-handler overflow on oversized disk values; client
+preflight failure on oversized archive priorities; and missed inline Lua imports
+in the readiness launcher. The obsolete Windows launcher fixture now matches
+the current Turbo/wallet requirements. Both rollback refusals preserve installed
+files, user changes, backups, journals and installed metadata before mutation.
+
+Production 192.168.10.18 now publishes signed release client-20261005-bughunt,
+sequence 2026092907. Five file entries are updated or added: the new versioned
+PNLauncher-20261005-bughunt.exe, tools/client/start-client.ps1, Launch PN.cmd,
+Launch PN Dashboard.cmd and RELEASE.json. Earlier signed game entries and
+preservation flags are retained. The launcher is distributed under a new filename
+so a running older updater can install it. The public bootstrap was updated too.
+Players can check for updates, then reopen with Launch PN.cmd.
+
+Feed SHA-256:
+7af494ef25f626e55894e06028a39d296812cad07cc604a0f22f28925ade9a3d
+New bootstrap/versioned launcher SHA-256:
+d65d463fd6f5c7e9e8dd1fb9fb58e8019050222bc76ee26f006f62a2a9a6d898
+Previous signed envelope SHA-256:
+ae72d5a98c921159b1302fac8077cdb16da67dd9d09f74c1f8e21b8c8f4e3fd0
+
+Deployed scope:
+- Installed /opt/pn-operations/lan_client_service.py and repository tooling.
+- Installed the coherent committed launcher component (59 scoped source/asset
+  paths overall), recognizing exact older committed copies before replacement.
+- Installed verified immutable client objects before atomically publishing the
+  signed manifest. The RSA signature was verified using the embedded trust key.
+- Backed up each existing target before replacement, including the signed feed
+  and public bootstrap. pn-lan-client.service alone was restarted.
+- A supplemental scoped update installed the corrected timeout test.
+All seven game containers retained their identities and remained healthy.
+Game engine binaries, database schema, player data and installed personal client
+files were preserved.
+
+Validation:
+- 24 passing local portable/Windows suites, Windows launcher dashboard/console
+  builds and launcher self-tests. Every product regression fails on the pinned
+  original source and passes on the repaired source.
+- Ten passing isolated Linux suites, including all four previously blocked
+  tests: backup, instance combat rules, custom make dependencies and shared
+  character-header dependencies. The Linux process-group fixture exposed a
+  vanished /proc entry during reading; ProcessLookupError is now accepted as
+  completed termination alongside FileNotFoundError. Five reruns passed.
+  The initial failing report/log remains available separately.
+- Actual published feed verified with the new engine in a disposable client:
+  update, exact previous-release rollback, retained highest sequence, legacy
+  launcher update and published PowerShell readiness all passed. Its baseline
+  comprises 5,652 signed files. The game was not launched.
+- Production HTTP status, public bootstrap and signed-feed hashes matched the
+  candidate; the client metadata endpoint reports the new release.
+- git diff --check passed. This tooling/client deployment does not claim new
+  full-gameplay or SQL crash acceptance.
+
+Rollback originals (root-only):
+/var/backups/pn-operations/bughunt-20261005
+Production candidate and complete receipts:
+/app/pn-bughunt-deploy-20261005
+Local receipts and logs:
+OPS/bughunt-20261005 (outside this source repository)
+Portable public receipt: doc/evidence/bughunt_deployment_20261005.json.
+Publisher credentials and private configuration are excluded from these artifacts.
