@@ -5,6 +5,7 @@
 #define PARTY_HPP
 
 #include <cstdarg>
+#include <functional>
 
 #include <common/mmo.hpp> // struct party
 
@@ -94,6 +95,7 @@ int32 party_skill_check(map_session_data *sd, int32 party_id, uint16 skill_id, u
 int32 party_send_xy_clear(struct party_data *p);
 void party_exp_share(struct party_data *p,block_list *src,t_exp base_exp,t_exp job_exp,int32 zeny);
 int32 party_share_loot(struct party_data* p, map_session_data* sd, struct item* item, int32 first_charid);
+int32 party_share_loot_with(party_data* p,map_session_data* sd,item* item,int32 first_charid,const std::function<int32(map_session_data*)>& admit,bool notify);
 int32 party_send_dot_remove(map_session_data *sd);
 int32 party_sub_count(block_list *bl, va_list ap);
 int32 party_sub_count_class(block_list *bl, va_list ap);

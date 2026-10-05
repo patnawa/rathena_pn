@@ -1,0 +1,21 @@
+[Status]: Memory manager initialised: log/shop-audit.leaks
+[Status]: Loading 'db/const.yml'...[Status]: Loading '6' entries in 'db/const.yml'
+[Status]: Done reading '6' entries in 'db/const.yml'
+[Status]: Loading 'db/import/const.yml'...[Status]: Loading '3' entries in 'db/import/const.yml'
+[Status]: Done reading '3' entries in 'db/import/const.yml'
+[Status]: Loading 'db/import/zero_cell_const.yml'...[Status]: Loading '2' entries in 'db/import/zero_cell_const.yml'
+[Status]: Done reading '2' entries in 'db/import/zero_cell_const.yml'
+BARTER mode=0 result=1 zeny=10000000000 inputs=18 outputs=0 FAIL
+BARTER mode=1 result=0 zeny=10000000000 inputs=16 outputs=4 FAIL
+BARTER mode=2 result=11 zeny=10000000000 inputs=20 outputs=0 PASS
+BARTER mode=3 result=14 zeny=10000000000 inputs=20 outputs=0 PASS
+BARTER mode=4 result=0 zeny=9999999900 inputs=19 outputs=1 PASS
+BARTER mode=5 result=1 zeny=0 inputs=20 outputs=0 PASS
+BARTER mode=6 result=2 zeny=10000000000 inputs=20 outputs=0 PASS
+SHOP mode=0 result=0 zeny=9999999600 outputs=30000 FAIL
+SHOP mode=1 result=0 zeny=10000000000 outputs=0 FAIL
+SHOP mode=2 result=0 zeny=9999999900 outputs=1 FAIL
+SHOP mode=3 result=0 zeny=9999999900 outputs=1 PASS
+SHOP mode=4 result=3 zeny=9999999900 outputs=0 FAIL
+[Info]: Memory manager: No memory leaks found.
+pc_payzeny: Paying negative Zeny (zeny=-1294967296, account_id=0, char_id=0).

@@ -305,7 +305,7 @@ int32 char_mmo_char_tosql(uint32 char_id, struct mmo_charstatus* p){
 	)
 	{	//Save status
 		if( SQL_ERROR == Sql_Query(sql_handle, "UPDATE `%s` SET `base_level`='%d', `job_level`='%d',"
-			"`base_exp`='%" PRIu64 "', `job_exp`='%" PRIu64 "', `zeny`='%d',"
+			"`base_exp`='%" PRIu64 "', `job_exp`='%" PRIu64 "', `zeny`='%" PRId64 "',"
 			"`max_hp`='%u',`hp`='%u',`max_sp`='%u',`sp`='%u',`status_point`='%d',`skill_point`='%d',"
 			"`str`='%d',`agi`='%d',`vit`='%d',`int`='%d',`dex`='%d',`luk`='%d',"
 			"`option`='%d',`party_id`='%d',`guild_id`='%d',`pet_id`='%d',`homun_id`='%d',`elemental_id`='%d',"
@@ -969,7 +969,7 @@ int32 char_mmo_chars_fromsql( char_session_data& sd, CHARACTER_INFO chars[], uin
 	||	SQL_ERROR == stmt.BindColumn( 5,  SQLDT_UINT32, &p.job_level )
 	||	SQL_ERROR == stmt.BindColumn( 6,  SQLDT_UINT64, &p.base_exp )
 	||	SQL_ERROR == stmt.BindColumn( 7,  SQLDT_UINT64, &p.job_exp )
-	||	SQL_ERROR == stmt.BindColumn( 8,  SQLDT_INT32, &p.zeny )
+	||	SQL_ERROR == stmt.BindColumn( 8,  SQLDT_INT64, &p.zeny )
 	||	SQL_ERROR == stmt.BindColumn( 9,  SQLDT_INT16, &p.str )
 	||	SQL_ERROR == stmt.BindColumn( 10, SQLDT_INT16, &p.agi )
 	||	SQL_ERROR == stmt.BindColumn( 11, SQLDT_INT16, &p.vit )
@@ -1089,7 +1089,7 @@ int32 char_mmo_char_fromsql(uint32 char_id, struct mmo_charstatus* p, bool load_
 	||	SQL_ERROR == stmt.BindColumn(6, SQLDT_UINT32, &p->job_level)
 	||	SQL_ERROR == stmt.BindColumn(7, SQLDT_UINT64, &p->base_exp)
 	||	SQL_ERROR == stmt.BindColumn(8, SQLDT_UINT64, &p->job_exp)
-	||	SQL_ERROR == stmt.BindColumn(9, SQLDT_INT32, &p->zeny)
+	||	SQL_ERROR == stmt.BindColumn(9, SQLDT_INT64, &p->zeny)
 	||	SQL_ERROR == stmt.BindColumn(10, SQLDT_INT16, &p->str)
 	||	SQL_ERROR == stmt.BindColumn(11, SQLDT_INT16, &p->agi)
 	||	SQL_ERROR == stmt.BindColumn(12, SQLDT_INT16, &p->vit)
@@ -1810,7 +1810,7 @@ int32 char_mmo_char_tobuf( CHARACTER_INFO& info, mmo_charstatus& p ){
 #else
 	info.exp = (int32)u64min( p.base_exp, MAX_EXP );
 #endif
-	info.money = p.zeny;
+	info.money = static_cast<int32>(std::min<int64>(p.zeny, MAX_ZENY));
 #if PACKETVER >= 20170830
 	info.jobexp = u64min( p.job_exp, MAX_EXP );
 #else
@@ -3241,6 +3241,16 @@ bool CharacterServer::initialize( int32 argc, char *argv[] ){
 #endif
 
 	inter_init_sql(INTER_CONF_NAME); // inter server configuration
+
+	// Refuse startup before any wide wallet/mail can be truncated by an old schema.
+	if (Sql_Query(sql_handle, "SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN ('%s','%s') AND COLUMN_NAME='zeny' AND DATA_TYPE='bigint' AND COLUMN_TYPE NOT LIKE '%%unsigned%%'", schema_config.char_db, schema_config.mail_db) != SQL_SUCCESS) return false;
+	char* wide_columns = nullptr;
+	const bool wide_schema = Sql_NextRow(sql_handle) == SQL_SUCCESS && Sql_GetData(sql_handle, 0, &wide_columns, nullptr) == SQL_SUCCESS && wide_columns && atoi(wide_columns) == 2;
+	Sql_FreeResult(sql_handle);
+	if (!wide_schema) {
+		ShowFatalError("Wide Zeny requires signed BIGINT char.zeny and mail.zeny. Apply upgrade_20260928_wide_zeny.sql before starting all rebuilt servers together.\n");
+		return false;
+	}
 
 	char_mmo_sql_init();
 	char_read_fame_list(); //Read fame lists.

@@ -86,6 +86,8 @@ def archive_audit(client):
         verified = skipped = 0
         local = set()
         with path.open('rb') as stream:
+            stream.seek(42)
+            version = struct.unpack('<I', stream.read(4))[0]
             for name, size, length, flags, offset in rows:
                 if not flags & 1:
                     continue
@@ -105,7 +107,7 @@ def archive_audit(client):
                         try:
                             raw = expand(packed, length)
                         except (zlib.error, ValueError):
-                            if size != length:
+                            if version != 0x300 or size != length:
                                 raise
                             raw = packed
                         digest = hashlib.sha256(raw).hexdigest()
@@ -178,9 +180,11 @@ for id, row in pairs(tbl) do
     end
   end
 end
-local count = 0
+local count, registered = 0, {}
 AddItem = function(id, ...)
   assert(tbl[id], 'Registered unknown item')
+  assert(not registered[id], 'Registered duplicate item')
+  registered[id] = true
   count = count + 1
   return true
 end

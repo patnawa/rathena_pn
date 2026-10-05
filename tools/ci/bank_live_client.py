@@ -38,12 +38,13 @@ def drain(connection,seconds=.3):
     connection.settimeout(8);return result
 
 class Client:
-    def __init__(self,slot=0,attach=True,*,account_id=AID,character_id=CID,username=b'bankfixture',password=b'bank-fixture-only'):
+    def __init__(self,slot=0,attach=True,*,account_id=AID,character_id=CID,username=b'bankfixture',password=b'bank-fixture-only',login_port=6900,char_port=6121,map_port=5121):
         self.aid=account_id;self.cid=character_id+slot;self.sequence=0
+        self.map_port=map_port
         # A real map crash retains the old login session until the stock
         # disconnect watchdog clears it. Respect that recovery path.
         for attempt in range(12):
-            with socket.create_connection(('127.0.0.1',6900),8) as login:
+            with socket.create_connection(('127.0.0.1',login_port),8) as login:
                 login.sendall(struct.pack('<HI24s24sB',0x64,20260219,username,password,0))
                 head=exact(login,2);kind=struct.unpack('<H',head)[0]
                 if kind==0x81:
@@ -55,18 +56,18 @@ class Client:
                 self.key1,aid,self.key2=struct.unpack_from('<III',data,4);sex=data[46];assert aid==self.aid
                 break
         else:raise RuntimeError('Stock disconnect watchdog did not release fixture login')
-        self.char=socket.create_connection(('127.0.0.1',6121),8)
+        self.char=socket.create_connection(('127.0.0.1',char_port),8)
         self.char.sendall(struct.pack('<HIIIHB',0x65,self.aid,self.key1,self.key2,0,sex));assert struct.unpack('<I',exact(self.char,4))[0]==self.aid
         drain(self.char);self.char.sendall(struct.pack('<H',0x9a1));drain(self.char)
         self.char.sendall(struct.pack('<HB',0x66,slot));data=drain(self.char)
         position=data.find(b'\xc5\x0a');assert position>=0,'Character selection did not return a map endpoint'
         assert struct.unpack_from('<I',data,position+2)[0]==self.cid
-        self.world=socket.create_connection(('127.0.0.1',5121),8)
+        self.world=socket.create_connection(('127.0.0.1',map_port),8)
         self.world.sendall(struct.pack('<HIIIIIB',0x436,self.aid,self.cid,self.key1,1000,0,sex));assert drain(self.world)
         self.world.sendall(struct.pack('<H',0x7d));drain(self.world,1.5)
         if attach:self.attach()
     def attach(self):
-        self.companion=socket.create_connection(('127.0.0.1',5121),5)
+        self.companion=socket.create_connection(('127.0.0.1',self.map_port),5)
         self.nonce=(0,0);self.refresh()
     def bytes(self,action,amount,sequence=None):
         if sequence is None:

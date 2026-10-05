@@ -195,7 +195,7 @@ Body:
     AegisName: MD_AIRBOAT_BOSS
     Name: Unidentified Creature
     Level: 220
-    Hp: 800000000
+    Hp: 868754928
     Sp: 500000
     BaseExp: 0
     JobExp: 0
@@ -271,7 +271,7 @@ Body:
     AegisName: MD_AIRBOAT_BOSS3
     Name: Agile Crash Creature
     Level: 220
-    Hp: 800000000
+    Hp: 1578754928
     Sp: 500000
     BaseExp: 0
     JobExp: 0

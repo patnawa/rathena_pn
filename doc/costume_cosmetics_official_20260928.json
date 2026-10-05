@@ -1,0 +1,512 @@
+{
+  "korean_source_url": "http://ropatch.gnjoy.com/Patch/2026-09-07_live_client_3363_3364_1788764913.rgz",
+  "thai_source_url": "https://ropatch.gnjoy.in.th/patchfile/2026-09-23_live_client_3565_3567_1790134356.rgz",
+  "korean_items": [
+    {
+      "id": 313953,
+      "name_ko": "벚꽃 발자국",
+      "resource": "발자국이펙트",
+      "description_ko": [
+        "벚꽃 발자국"
+      ]
+    },
+    {
+      "id": 1002856,
+      "name_ko": "새싹 발자국(걸칠것)",
+      "resource": "발자국이펙트",
+      "description_ko": [
+        "걸칠것 의상 장비의 4번째 슬롯에 인챈트하여 이펙트를 부여한다.",
+        "^ff0000새싹 발자국^000000",
+        "^ffffff<NAVI>^4D4DFF[레이스 라 자드]^000000<INFO>mal_in01,20,107,0,100,0,0</INFO></NAVI>^000000",
+        "무게 : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 1002855,
+      "name_ko": "벚꽃 발자국(걸칠것)",
+      "resource": "발자국이펙트",
+      "description_ko": [
+        "걸칠것 의상 장비의 4번째 슬롯에 인챈트하여 이펙트를 부여한다.",
+        "^ff0000벚꽃 발자국^000000",
+        "^ffffff<NAVI>^4D4DFF[레이스 라 자드]^000000<INFO>mal_in01,20,107,0,100,0,0</INFO></NAVI>^000000",
+        "무게 : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 313954,
+      "name_ko": "새싹 발자국",
+      "resource": "발자국이펙트",
+      "description_ko": [
+        "새싹 발자국"
+      ]
+    }
+  ],
+  "thai_items": [
+    {
+      "id": 1000319,
+      "name": "Angel Blessing Effect (Middle)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Middle Enchant ที่ Slot 4 ของอุปกรณ์ Costume แล้วติดตั้งเอฟเฟกต์เข้าไป",
+        "^ff0000Angel Blessing^000000",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,22,112,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 1000365,
+      "name": "Magic Feather Effect (Upper)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Upper Enchant ที่ Slot ช่องที่ 4 ของอุปกรณ์ Costume แล้วติดตั้งเอฟเฟกต์เข้าไป",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,22,113,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 1000573,
+      "name": "Firework Effect (Upper)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "มอบ Effect ให้แก่อุปกรณ์ Costume หากนำไปให้ Effect Talor ที่ Aver De Dosh จะช่วย Enchant Costume ให้",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,22,112,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 1001069,
+      "name": "Baby Camellia Effect (Upper)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Upper Enchant ที่ Slot ช่องที่ 4 ของอุปกรณ์ Costume แล้วติดตั้งเอฟเฟกต์เข้าไป",
+        "^ff0000Baby Camellia^000000",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,22,113,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 1001175,
+      "name": "Romantic Rose Effect Stone (Upper)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Enchant Slot 4 ของ Costume (Upper) และมอบเอฟเฟกซ์ให้",
+        "^ff0000Romantic Rose^000000",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,24,121,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^7777771^000000"
+      ]
+    },
+    {
+      "id": 1001799,
+      "name": "Kiel Effect (Lower)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Lower Enchant ที่ Slot ช่องที่ 4 ของอุปกรณ์ Costume แล้วติดตั้งเอฟเฟกต์เข้าไป",
+        "น้ำหนัก : ^7777771^000000"
+      ]
+    },
+    {
+      "id": 1001927,
+      "name": "Melody Notes Effect (Lower)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "สามารถ Enchant Effect ผ่าน NPC Aver De Dosh",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,22,112,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^7777771^000000"
+      ]
+    },
+    {
+      "id": 1003031,
+      "name": "Red Flame Effect (Upper)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "มอบ Effect ให้แก่อุปกรณ์ Costume ที่ Slot ช่องที่ 4 ของอุปกรณ์ Costume แล้วติดตั้งเอฟเฟกต์เข้าไป",
+        "Red Flame Effect",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,23,113,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 315313,
+      "name": "Red Flame Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Red Flame Effect"
+      ]
+    },
+    {
+      "id": 300152,
+      "name": "Angel Blessing Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Angel Blessing Effect"
+      ]
+    },
+    {
+      "id": 300157,
+      "name": "Time Accessory Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Time Accessory Effect"
+      ]
+    },
+    {
+      "id": 300419,
+      "name": "Baby Camellia Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Baby Camellia Effect"
+      ]
+    },
+    {
+      "id": 300566,
+      "name": "Kiel Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Kiel Effect"
+      ]
+    },
+    {
+      "id": 313724,
+      "name": "Melody Notes Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Melody Notes Effect"
+      ]
+    },
+    {
+      "id": 310322,
+      "name": "Magic Feather Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Magic Feather Effect"
+      ]
+    },
+    {
+      "id": 1001252,
+      "name": "Roaring Effect (Upper)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Enchant Slot 4 ของ Costume (Upper) และมอบเอฟเฟกซ์ให้",
+        "^ff0000Roaring^000000",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,24,121,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^7777771^000000"
+      ]
+    },
+    {
+      "id": 1000875,
+      "name": "Valhalla Idol Effect (Middle)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Enchant Slot 4 ของ Costume (Middle) และมอบเอฟเฟกซ์ให้",
+        "^ff0000Will of Valhalla^000000",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,24,121,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 311926,
+      "name": "Romantic Rose Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Romantic Rose Effect"
+      ]
+    },
+    {
+      "id": 300385,
+      "name": "Valhalla Idol Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Valhalla Idol Effect"
+      ]
+    },
+    {
+      "id": 29727,
+      "name": "Roaring Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Roaring Effect"
+      ]
+    },
+    {
+      "id": 1000345,
+      "name": "Time Accessory Effect (Middle)",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Middle Enchant ที่ Slot ช่องที่ 4 ของอุปกรณ์ Costume แล้วติดตั้งเอฟเฟกต์เข้าไป",
+        "^ff0000Time Accessory^000000",
+        "^ffffff<NAVI>^4D4DFF[Aver De Dosh]^000000<INFO>mal_in01,22,113,0,100,0,0</INFO></NAVI>^000000",
+        "น้ำหนัก : ^77777710^000000"
+      ]
+    },
+    {
+      "id": 310850,
+      "name": "Firework Effect",
+      "resource": "블루크리스탈조각",
+      "description": [
+        "Firework Effect"
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "physical_id": 1002855,
+      "enchant_id": 313953,
+      "position": "Garment",
+      "slot_index": 3,
+      "effect": "FOOTPRINT_EF_BLOSSOM",
+      "effect_id": 257,
+      "evidence": "Official Korean identical name + Thai native FootPrintEffectTable blossom entry; server exported constant exists."
+    },
+    {
+      "physical_id": 1002856,
+      "enchant_id": 313954,
+      "position": "Garment",
+      "slot_index": 3,
+      "effect": "FOOTPRINT_EF_BUD",
+      "effect_id": 258,
+      "evidence": "Official Korean identical name + Thai native FootPrintEffectTable bud entry; server exported constant exists."
+    },
+    {
+      "physical_id": 1000573,
+      "enchant_id": 310850,
+      "position": "Upper",
+      "slot_index": 3,
+      "effect": "HAT_EF_FIREWORK",
+      "effect_id": 51,
+      "evidence": "Official Thai identical name, existing local enchant implementation."
+    },
+    {
+      "physical_id": 1001927,
+      "enchant_id": 313724,
+      "position": "Lower",
+      "slot_index": 3,
+      "effect": "HAT_EF_C_MELODY_WING",
+      "evidence": "Official Thai physical/card identical names and explicit lower fourth slot. Native effect symbol and its unique named graphical resource match the cosmetic. This is an inference from matching names and native graphics, not a recovered enchant-to-effect lookup.",
+      "effect_id": 173,
+      "mapping_status": "inferred_unique_native_semantic_match"
+    },
+    {
+      "physical_id": 1001799,
+      "enchant_id": 300566,
+      "position": "Lower",
+      "slot_index": 3,
+      "effect": "HAT_EF_C_KYEL_HYRE_ULTI_TW",
+      "evidence": "Official Thai physical/card identical names and explicit lower fourth slot. Native effect symbol and its unique named graphical resource match the cosmetic. This is an inference from matching names and native graphics, not a recovered enchant-to-effect lookup.",
+      "effect_id": 153,
+      "mapping_status": "inferred_unique_native_semantic_match"
+    },
+    {
+      "physical_id": 1003031,
+      "enchant_id": 315313,
+      "position": "Upper",
+      "slot_index": 3,
+      "effect": null,
+      "evidence": "Official Thai identical names and explicit fourth slot. No effect constant association established."
+    },
+    {
+      "physical_id": 1001038,
+      "enchant_id": 311459,
+      "position": "Middle",
+      "slot_index": 3,
+      "effect": "HAT_EF_EFST_C_20TH_ANNIVERSARY_HAT",
+      "effect_id": 176,
+      "mapping_status": "inferred_unique_native_semantic_match",
+      "evidence": "Official Korean 20th Anniversary physical/card name match and middle fourth-slot description. Native effect176 uniquely names the20th Anniversary graphic. This is a semantic inference, not recovered enchant association."
+    },
+    {
+      "physical_id": 1001736,
+      "enchant_id": 300548,
+      "position": "Upper",
+      "slot_index": 3,
+      "effect": "HAT_EF_C_MELODY_WING",
+      "effect_id": 173,
+      "mapping_status": "inferred_native_semantic_or_visual_match",
+      "evidence": "Official Taiwan March2024 image exactly matches flat colored notes and sparkle textures, disambiguating outlined-note effect188."
+    },
+    {
+      "physical_id": 1001752,
+      "enchant_id": 313331,
+      "position": "Lower",
+      "slot_index": 3,
+      "effect": "HAT_EF_C_RELEASED_GROUND",
+      "effect_id": 161,
+      "mapping_status": "inferred_native_semantic_or_visual_match",
+      "evidence": "Unique native Released Ground semantic name; official EP19event lower fourth-slot description resolves stale upper metadata line."
+    },
+    {
+      "physical_id": 1002293,
+      "enchant_id": 314198,
+      "position": "Lower",
+      "slot_index": 3,
+      "effect": "HAT_EF_GOLDEN_AURA_TW",
+      "effect_id": 278,
+      "mapping_status": "inferred_native_semantic_or_visual_match",
+      "evidence": "Exact unique Golden Aura native symbol/path; official Taiwan September30,2025 artwork recovered."
+    },
+    {
+      "physical_id": 1002585,
+      "enchant_id": 314802,
+      "position": "Lower",
+      "slot_index": 3,
+      "effect": "HAT_EF_DIGITAL_SPACE",
+      "effect_id": 87,
+      "mapping_status": "inferred_native_semantic_or_visual_match",
+      "evidence": "Exact unique native Digital Space name maps to built-in effect1240."
+    },
+    {
+      "physical_id": 1002464,
+      "enchant_id": 300714,
+      "position": "Lower",
+      "slot_index": 3,
+      "effect": "HAT_EF_C_DARK_LORD_CLOAK",
+      "effect_id": 185,
+      "mapping_status": "inferred_native_semantic_or_visual_match",
+      "evidence": "Official Taiwan October14,2025 image matches native blue flame-ring and triangular star-frame artwork."
+    }
+  ],
+  "constant_validation": [
+    {
+      "physical_id": 1002855,
+      "enchant_id": 313953,
+      "constant": "FOOTPRINT_EF_BLOSSOM",
+      "effect_id": 257,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1002856,
+      "enchant_id": 313954,
+      "constant": "FOOTPRINT_EF_BUD",
+      "effect_id": 258,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1000573,
+      "enchant_id": 310850,
+      "constant": "HAT_EF_FIREWORK",
+      "effect_id": 51,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1001927,
+      "enchant_id": 313724,
+      "constant": "HAT_EF_C_MELODY_WING",
+      "effect_id": 173,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1001799,
+      "enchant_id": 300566,
+      "constant": "HAT_EF_C_KYEL_HYRE_ULTI_TW",
+      "effect_id": 153,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1001038,
+      "enchant_id": 311459,
+      "constant": "HAT_EF_EFST_C_20TH_ANNIVERSARY_HAT",
+      "effect_id": 176,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1001736,
+      "enchant_id": 300548,
+      "constant": "HAT_EF_C_MELODY_WING",
+      "effect_id": 173,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1001752,
+      "enchant_id": 313331,
+      "constant": "HAT_EF_C_RELEASED_GROUND",
+      "effect_id": 161,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1002293,
+      "enchant_id": 314198,
+      "constant": "HAT_EF_GOLDEN_AURA_TW",
+      "effect_id": 278,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1002585,
+      "enchant_id": 314802,
+      "constant": "HAT_EF_DIGITAL_SPACE",
+      "effect_id": 87,
+      "enum_present": true,
+      "script_export_present": true
+    },
+    {
+      "physical_id": 1002464,
+      "enchant_id": 300714,
+      "constant": "HAT_EF_C_DARK_LORD_CLOAK",
+      "effect_id": 185,
+      "enum_present": true,
+      "script_export_present": true
+    }
+  ],
+  "client_asset_evidence": {
+    "audit_directory": "../../../../costume-stone-audit-20260928/cosmetic-client",
+    "footprint_candidate_manifest": "candidate-manifest.json",
+    "footprint_candidate_files": 51,
+    "footprint_candidate_expanded_bytes": 925851,
+    "footprint_source_groups": {
+      "thai_official_flower_garden": 31,
+      "mirror_blossom_sprout_matched_official_names_sizes": 18,
+      "current_preserving_table_additions": 2
+    },
+    "kiel_candidate_manifest": "kiel-candidate-manifest.json",
+    "kiel_candidate_files": 11,
+    "kiel_expanded_bytes": 4059448,
+    "kiel_source_url": "https://ropatch.gnjoy.in.th/patchfile/2021-07-08_live_data_68_68_1625547070.gpf",
+    "purified_icon_manifest": "icon-candidate-manifest.json",
+    "purified_icon_files": 4,
+    "purified_icon_expanded_bytes": 26224,
+    "full_resource_audit": "full-resource-audit.json",
+    "full_resource_audit_counts": {
+      "catalogue_ids": 996,
+      "resources": 94,
+      "resource_files": 376,
+      "missing_after_candidates": 0
+    },
+    "regional_effect_dependencies": "regional-effect-dependencies.json",
+    "installed": false,
+    "limitations": [
+      "Semantic effect associations for Melody,Kiel and20th are explicitly inferred.",
+      "18 Blossom/Sprout assets came from a patch mirror with official index names and expanded sizes cross-checked, not cryptographic primary-source authentication.",
+      "No in-game visual rendering verification performed.",
+      "Ghost/Camellia9files are documented reconstructions from LATAM mirror parsed animation and decoded texture data; no primary byte authentication. All retained fields and opaque pixels/transparency were verified.",
+      "22nd Anniversary numerical bonuses are supported, but its advertised halo remains unverified and unsupported."
+    ],
+    "base_footprint_candidate_manifest": "base-footprint-candidate-manifest.json",
+    "base_footprint_files": 2,
+    "base_footprint_expanded_bytes": 8552,
+    "base_footprint_source_url": "http://ropatch.gnjoy.com/Patch/2024-08-09_live_data_2171_2173_1723182689.gpf",
+    "all_cosmetic_dependency_audit": "all-cosmetic-effect-dependencies.json",
+    "golden_aura_manifest": "golden-candidate-manifest.json",
+    "golden_aura_files": 55,
+    "golden_aura_expanded_bytes": 26227208,
+    "taiwan_anniversary_icons_manifest": "anniversary-candidate-manifest.json",
+    "taiwan_anniversary_icon_files": 8,
+    "taiwan_anniversary_icon_expanded_bytes": 52264,
+    "reconstructed_legacy_manifest": "reconstructed-candidate-manifest.json",
+    "reconstructed_legacy_files": 9,
+    "final_effect_audit_counts": {
+      "catalogue_materials": 497,
+      "supported_ids": 996,
+      "visual_mappings": 56,
+      "unique_native_effects": 52,
+      "missing_dependencies": 0
+    },
+    "final_database_resolution": "Active Renewal import traversal with field-level overlays; excludes inactive/shadowed import records."
+  }
+}

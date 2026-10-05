@@ -77,24 +77,20 @@ int32 mail_fromsql(uint32 char_id, struct mail_data* md)
 	return 1;
 }
 
-/// Stores a single message in the database.
+/// Stores a single message inside the caller's transaction.
 /// Returns the message's ID if successful (or 0 if it fails).
-int32 mail_savemessage(struct mail_message* msg)
+int32 mail_savemessage_locked(struct mail_message* msg)
 {
+	if (msg->zeny < 0 || !Sql_InTransaction(sql_handle)) return 0;
 	StringBuf buf;
 	SqlStmt stmt{ *sql_handle };
 	int32 i, j;
 	bool found = false;
 
-	if( SQL_ERROR == Sql_QueryStr( sql_handle, "START TRANSACTION" ) ){
-		Sql_ShowDebug( sql_handle );
-		return 0;
-	}
-
 	// build message save query
 	StringBuf_Init(&buf);
 	StringBuf_Printf(&buf, "INSERT INTO `%s` (`send_name`, `send_id`, `dest_name`, `dest_id`, `title`, `message`, `time`, `status`, `zeny`,`type`", schema_config.mail_db);
-	StringBuf_Printf(&buf, ") VALUES (?, '%d', ?, '%d', ?, ?, '%lu', '%d', '%d', '%d'", msg->send_id, msg->dest_id, (unsigned long)msg->timestamp, msg->status, msg->zeny, msg->type);
+	StringBuf_Printf(&buf, ") VALUES (?, '%d', ?, '%d', ?, ?, '%lu', '%d', '%" PRId64 "', '%d'", msg->send_id, msg->dest_id, (unsigned long)msg->timestamp, msg->status, msg->zeny, msg->type);
 	StringBuf_AppendStr(&buf, ")");
 
 	// prepare and execute query
@@ -106,7 +102,6 @@ int32 mail_savemessage(struct mail_message* msg)
 	||  SQL_SUCCESS != stmt.Execute() )
 	{
 		SqlStmt_ShowDebug(stmt);
-		Sql_QueryStr( sql_handle, "ROLLBACK" );
 		return msg->id = 0;
 	} else
 		msg->id = (int32)stmt.LastInsertId();
@@ -147,14 +142,20 @@ int32 mail_savemessage(struct mail_message* msg)
 	if( found && SQL_ERROR == Sql_QueryStr(sql_handle, StringBuf_Value(&buf)) ){
 		Sql_ShowDebug(sql_handle);
 		msg->id = 0;
-		Sql_QueryStr( sql_handle, "ROLLBACK" );
 	}
 
-	if( msg->id && SQL_ERROR == Sql_QueryStr( sql_handle, "COMMIT" ) ){
-		Sql_ShowDebug( sql_handle );
+	return msg->id;
+}
+
+/// Stores a single message in its own transaction.
+/// Returns the message's ID if successful (or 0 if it fails).
+int32 mail_savemessage(struct mail_message* msg)
+{
+	if (Sql_BeginTransaction(sql_handle) != SQL_SUCCESS)
 		return 0;
-	}
-
+	const bool saved = mail_savemessage_locked(msg) != 0;
+	if (Sql_EndTransaction(sql_handle, saved) != SQL_SUCCESS || !saved)
+		return msg->id = 0;
 	return msg->id;
 }
 
@@ -181,7 +182,8 @@ bool mail_loadmessage(int32 mail_id, struct mail_message* msg)
 		Sql_GetData(sql_handle, 6, &data, nullptr); safestrncpy(msg->body, data, MAIL_BODY_LENGTH);
 		Sql_GetData(sql_handle, 7, &data, nullptr); msg->timestamp = atoi(data);
 		Sql_GetData(sql_handle, 8, &data, nullptr); msg->status = (mail_status)atoi(data);
-		Sql_GetData(sql_handle, 9, &data, nullptr); msg->zeny = atoi(data);
+		Sql_GetData(sql_handle, 9, &data, nullptr); msg->zeny = strtoll(data, nullptr, 10);
+		if (msg->zeny < 0) { Sql_FreeResult(sql_handle); return false; }
 		Sql_GetData(sql_handle,10, &data, nullptr); msg->type = (mail_inbox_type)atoi(data);
 
 		if( msg->type == MAIL_INBOX_NORMAL && charserv_config.mail_return_days > 0 ){
@@ -370,6 +372,7 @@ bool mail_DeleteAttach(int32 mail_id){
 
 void mapif_Mail_getattach(int32 fd, uint32 char_id, int32 mail_id, int32 type)
 {
+	if(type&MAIL_ATT_ITEM)return; // Coordinated peers extract items through Asset commits.
 	struct mail_message msg;
 
 	if( ( type&MAIL_ATT_ALL ) == 0 ){
@@ -414,20 +417,20 @@ void mapif_Mail_getattach(int32 fd, uint32 char_id, int32 mail_id, int32 type)
 	if( type == MAIL_ATT_NONE )
 		return; // No Attachment
 
-	WFIFOHEAD(fd, sizeof(struct item)*MAIL_MAX_ITEM + 16);
+	WFIFOHEAD(fd, sizeof(struct item)*MAIL_MAX_ITEM + 20);
 	WFIFOW(fd,0) = 0x384a;
-	WFIFOW(fd,2) = sizeof(struct item)*MAIL_MAX_ITEM + 16;
+	WFIFOW(fd,2) = sizeof(struct item)*MAIL_MAX_ITEM + 20;
 	WFIFOL(fd,4) = char_id;
 	WFIFOL(fd,8) = mail_id;
 	if( type & MAIL_ATT_ZENY ){
-		WFIFOL(fd,12) = msg.zeny;
+		WFIFOQ(fd,12) = msg.zeny;
 	}else{
-		WFIFOL(fd, 12) = 0;
+		WFIFOQ(fd, 12) = 0;
 	}
 	if( type & MAIL_ATT_ITEM ){
-		memcpy(WFIFOP(fd, 16), &msg.item, sizeof(struct item)*MAIL_MAX_ITEM);
+		memcpy(WFIFOP(fd, 20), &msg.item, sizeof(struct item)*MAIL_MAX_ITEM);
 	}else{
-		memset(WFIFOP(fd, 16), 0, sizeof(struct item)*MAIL_MAX_ITEM);
+		memset(WFIFOP(fd, 20), 0, sizeof(struct item)*MAIL_MAX_ITEM);
 	}
 	WFIFOSET(fd,WFIFOW(fd,2));
 }
@@ -657,7 +660,7 @@ void mapif_parse_Mail_send(int32 fd)
 	mapif_Mail_new(&msg); // notify recipient
 }
 
-bool mail_sendmail(int32 send_id, const char* send_name, int32 dest_id, const char* dest_name, const char* title, const char* body, int32 zeny, struct item *item, int32 amount)
+bool mail_sendmail(int32 send_id, const char* send_name, int32 dest_id, const char* dest_name, const char* title, const char* body, int64 zeny, struct item *item, int32 amount)
 {
 	struct mail_message msg;
 	memset(&msg, 0, sizeof(struct mail_message));

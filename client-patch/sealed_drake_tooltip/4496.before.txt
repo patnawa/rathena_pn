@@ -1,0 +1,19 @@
+	[4496] = {
+		Server = "iRO",
+		unidentifiedDisplayName = "Sealed Drake Card",
+		unidentifiedResourceName = "이름없는카드",
+		unidentifiedDescriptionName = { "" },
+		identifiedDisplayName = "Sealed Drake Card",
+		identifiedResourceName = "이름없는카드",
+		identifiedDescriptionName = {
+			"Increases Physical Damage against enemies of ^FF0000Small^000000, ^FF0000Medium^000000 and ^FF0000Large^000000 size by 50%.",
+			"_______________________",
+			"^0000CCType:^000000 Card",
+			"^0000CCCompound on:^000000 Armor",
+			"^0000CCWeight:^000000 1"
+		},
+		slotCount = 0,
+		ClassNum = 0,
+		costume = false,
+		EffectID = 1186
+	},

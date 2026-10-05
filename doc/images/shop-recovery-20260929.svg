@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">PN Ragnarok — September 29 shop recovery release</title>
+  <desc id="desc">Market, limited-stock barter and cash-sale purchases plan first, commit stock, payment, inventory and receipt together, then confirm delivery. Verification recorded seven healthy services and forty-one unchanged existing financial groups. Pet delivery recovery remains pending.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101c36"/><stop offset="1" stop-color="#182e48"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M1 1L7 5L1 9" fill="none" stroke="#69d3c2" stroke-width="2"/></marker>
+  </defs>
+  <rect width="1200" height="620" rx="24" fill="url(#bg)"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="48" y="53" fill="#69d3c2" font-size="18" font-weight="700" letter-spacing="3">PN RAGNAROK / RELEASE NOTES</text>
+    <text x="48" y="106" fill="#ffffff" font-size="40" font-weight="700">Purchases that recover safely</text>
+    <text x="48" y="141" fill="#c4d3e6" font-size="21">Market · Limited-stock barter · Cash-sale carts</text>
+    <rect x="898" y="35" width="254" height="42" rx="21" fill="#244b50"/>
+    <circle cx="921" cy="56" r="6" fill="#80e3ae"/>
+    <text x="939" y="63" fill="#d6ffe7" font-size="17" font-weight="600">DEPLOYED 29 SEP 2026</text>
+    <g fill="#203953" stroke="#3b5571">
+      <rect x="48" y="185" width="316" height="213" rx="16"/>
+      <rect x="442" y="185" width="316" height="213" rx="16"/>
+      <rect x="836" y="185" width="316" height="213" rx="16"/>
+    </g>
+    <g fill="#69d3c2" font-size="17" font-weight="700" letter-spacing="2">
+      <text x="74" y="223">01 / PLAN</text><text x="468" y="223">02 / COMMIT</text><text x="862" y="223">03 / CONFIRM</text>
+    </g>
+    <g fill="#ffffff" font-size="25" font-weight="600">
+      <text x="74" y="265">Check the whole cart</text><text x="468" y="265">One database commit</text><text x="862" y="265">Deliver once</text>
+    </g>
+    <g fill="#c4d3e6" font-size="19">
+      <text x="74" y="308">Validate payment and space.</text><text x="74" y="340">Keep player assets unchanged</text><text x="74" y="367">while the result is pending.</text>
+      <text x="468" y="308">Stock + payment + inventory</text><text x="468" y="340">are saved with a receipt.</text><text x="468" y="367">A retry reads the same result.</text>
+      <text x="862" y="308">Confirm after commit.</text><text x="862" y="340">Duplicate replies cannot</text><text x="862" y="367">reapply the purchase.</text>
+    </g>
+    <g stroke="#69d3c2" stroke-width="3" marker-end="url(#arrow)"><path d="M382 292H422"/><path d="M776 292H816"/></g>
+    <path d="M48 432H1152" stroke="#3b5571"/>
+    <g fill="#ffffff" font-size="33" font-weight="700"><text x="48" y="482">7 healthy services</text><text x="446" y="482">41 groups unchanged</text><text x="882" y="482">Crash + retry</text></g>
+    <g fill="#c4d3e6" font-size="17"><text x="48" y="513">Verified after live deployment</text><text x="446" y="513">Existing financial and storage data</text><text x="882" y="513">Real database recovery tests</text></g>
+    <text x="48" y="564" fill="#f5d58c" font-size="18">Next: durable pet delivery. Stock-backed pet purchases currently reject before payment.</text>
+    <text x="48" y="597" fill="#9bb0c8" font-size="15">Release overview, not a gameplay screenshot · Verified 29 September 2026, 19:23 Bangkok</text>
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+{
+  "rc": 0,
+  "evidence": "/app/pn-shop-recovery-20260929/sql-proof-1790683717670358600",
+  "hashes": {
+    "tools/ci/shop_recovery_sql_test.py": "3f8eaa1e6db2a2995ba2a9719fe9a4e15169871802087136579b1f159319a4a6",
+    "tools/ci/shop_recovery_sql_runtime.cpp": "c7d2f6a1cf4e0bbc28a3bfe7384abc31246741fcddbf2b12200a4575a2477d2b",
+    "src/custom/shop_commit.hpp": "8ebe314ae18edf471dc3b41f1f8e684045d7ec9e6debfebb044a9727e03d5f0a",
+    "src/custom/shop_sql.inc": "d59ec0457322d63c7cb6644ea959f30d838ffbf5979e7ddbd7f74afe1963acf7",
+    "sql-files/upgrades/upgrade_20260929_shop_purchase.sql": "cd666c02945486cb66c6bbb73589515639de6d101e928a67ed43a9e4e5f2f6fc"
+  }
+}

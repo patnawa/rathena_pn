@@ -630,6 +630,8 @@ L_Socket:
 			mes "Surely I don't enchant at card socket, therefore weapons that have 3 slots can be enchanted only 1 time. Don't forget this~";
 			close;
 		}
+		if (!callsub(S_PlainPayment,.@coin[.@coin_select],.@total[.@coin_select]))
+			close;
 		if (.@enchant == 9) {	//  Should never happen.
 			specialeffect2 EF_SUI_EXPLOSION;
 			mes "[Mayomayo]";
@@ -694,6 +696,8 @@ L_Socket:
 			if (getiteminfo(.@equip_card[.@i], ITEMINFO_SUBTYPE) == CARD_ENCHANT)
 				.@equip_card[.@i] = 0;// Armor Enchant System
 		}
+		if (!callsub(S_PlainPayment,6417,1))
+			close;
 		delitem 6417,1;	// Silvervine
 		if (!modifyequipenchantstate(EQI_HAND_R,.@equip_id,.@equip_refine,
 			.@old_card[0],.@old_card[1],.@old_card[2],.@old_card[3],
@@ -705,4 +709,40 @@ L_Socket:
 
 		close;
 	}
+	end;
+
+S_PlainPayment:
+	// Compensation uses getitem, so only accept currency it can reproduce.
+	// Check all matching rows: delitem may consume multiple inventory stacks.
+	.@payment_id = getarg(0);
+	if (countitem(.@payment_id) < getarg(1)) {
+		mes "[Mayomayo]";
+		mes "You no longer have enough payment items. Nothing was charged.";
+		return 0;
+	}
+	getinventorylist;
+	for (.@p = 0; .@p < @inventorylist_count; ++.@p) {
+		if (@inventorylist_id[.@p] != .@payment_id) continue;
+		if (@inventorylist_bound[.@p] || @inventorylist_expire[.@p]
+			|| @inventorylist_uniqueid$[.@p] != "0"
+			|| @inventorylist_favorite[.@p] || @inventorylist_equip[.@p]
+			|| !@inventorylist_identify[.@p] || @inventorylist_attribute[.@p]
+			|| @inventorylist_refine[.@p] || @inventorylist_enchantgrade[.@p]
+			|| @inventorylist_card1[.@p] || @inventorylist_card2[.@p]
+			|| @inventorylist_card3[.@p] || @inventorylist_card4[.@p]
+			|| @inventorylist_option_id1[.@p] || @inventorylist_option_id2[.@p]
+			|| @inventorylist_option_id3[.@p] || @inventorylist_option_id4[.@p]
+			|| @inventorylist_option_id5[.@p]
+			|| @inventorylist_option_value1[.@p] || @inventorylist_option_parameter1[.@p]
+			|| @inventorylist_option_value2[.@p] || @inventorylist_option_parameter2[.@p]
+			|| @inventorylist_option_value3[.@p] || @inventorylist_option_parameter3[.@p]
+			|| @inventorylist_option_value4[.@p] || @inventorylist_option_parameter4[.@p]
+			|| @inventorylist_option_value5[.@p] || @inventorylist_option_parameter5[.@p]) {
+			mes "[Mayomayo]";
+			mes "Nothing was charged. I can only accept permanent, unbound payment items without modifications or favorite marks.";
+			mes "Please put any other copies of that currency in storage before trying again.";
+			return 0;
+		}
+	}
+	return 1;
 }

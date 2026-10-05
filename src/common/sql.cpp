@@ -32,6 +32,7 @@ struct Sql
 	MYSQL_ROW row;
 	unsigned long* lengths;
 	int32 keepalive;
+	bool atomic_transaction;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,26 +68,36 @@ uint32 Sql_GetError( Sql* self ){
 }
 
 int32 Sql_BeginTransaction( Sql* self ){
+	// START TRANSACTION would silently commit an outer transaction in MySQL.
+	if( !self || self->atomic_transaction ) return SQL_ERROR;
 	// Reconnect before START, if needed, while no transaction is active.
 	if( Sql_Ping( self ) != SQL_SUCCESS )
 		return SQL_ERROR;
 	my_bool reconnect = 0;
 	if( mysql_options( &self->handle, MYSQL_OPT_RECONNECT, &reconnect ) != 0 )
 		return SQL_ERROR;
-	if( Sql_Query( self, "START TRANSACTION" ) == SQL_SUCCESS )
+	if( Sql_Query( self, "START TRANSACTION" ) == SQL_SUCCESS ){
+		self->atomic_transaction = true;
 		return SQL_SUCCESS;
+	}
 	reconnect = 1;
 	mysql_options( &self->handle, MYSQL_OPT_RECONNECT, &reconnect );
 	return SQL_ERROR;
 }
 
 int32 Sql_EndTransaction( Sql* self, bool commit ){
+	if( !self || !self->atomic_transaction ) return SQL_ERROR;
 	int32 result = Sql_Query( self, commit ? "COMMIT" : "ROLLBACK" );
 	if( commit && result != SQL_SUCCESS )
 		Sql_Query( self, "ROLLBACK" );
 	my_bool reconnect = 1;
 	mysql_options( &self->handle, MYSQL_OPT_RECONNECT, &reconnect );
+	self->atomic_transaction = false;
 	return result;
+}
+
+bool Sql_InTransaction( const Sql* self ){
+	return self && self->atomic_transaction;
 }
 
 static int32 Sql_P_Keepalive(Sql* self);

@@ -1,0 +1,217 @@
+// Independent implementation of the published Missionary Work quest.
+// PN extended Warp Portal memo slots.
+function	script	F_PNMemoEligible	{
+	return (Class == Job_Cardinal || Class == Job_Inquisitor) && getskilllv("AL_WARP") >= 4;
+}
+
+prontera,225,330,4	script	Missionary Rosetta#PNMemo	4_F_SISTER,{
+	mes "[Missionary Rosetta]";
+	if (!callfunc("F_PNMemoEligible")) {
+		mes "Cardinals and Inquisitors with Warp Portal level 4 can join our missionary work.";
+		close;
+	}
+	if (PN_MissionStage == 4) {
+		mes "Your Warp Portal remembers six locations. Use /memo to save a destination.";
+		mes "Resetting your skills removes this reward and you must repeat our work.";
+		close;
+	}
+	if (PN_MissionStage == 0) {
+		mes "Help our people in Umbala and Einbroch. Complete both missions to gain three extra memo slots.";
+		mes "A skill reset clears this quest and its extra slots.";
+		if (select("I'll participate:Not now") == 2)
+			close;
+		if (!callfunc("F_PNMemoEligible") || PN_MissionStage != 0)
+			close;
+		PN_MissionStage = 1;
+		PN_MemoExtra = 1;
+		setquest 16586;
+		mes "You may now remember four locations. Save the town with /memo when you arrive.";
+	}
+	if (PN_MissionStage == 3 && PN_MissionDone == 3) {
+		PN_MemoExtra = 3;
+		PN_MissionStage = 4;
+		completequest 16586;
+		mes "Both communities are safe. You can now remember six destinations.";
+		close;
+	}
+	if (PN_MissionRegion) {
+		mes "Your current mission is in " + ((PN_MissionRegion == 1) ? "Umbala. Speak with Tita." : "Einbroch. Speak with Suan.");
+		if (select("Travel to mission:Stay here") == 2)
+			close;
+		.@region = PN_MissionRegion;
+	} else {
+		if (PN_MissionDone == 0)
+			.@region = select("Umbala:Einbroch:Not now");
+		else
+			.@region = (PN_MissionDone == 1) ? 2 : 1;
+		if (.@region == 3)
+			close;
+		if (!callfunc("F_PNMemoEligible") || PN_MissionStage != 1 || PN_MissionRegion)
+			close;
+		PN_MissionRegion = .@region;
+		PN_MissionRescue = 0;
+		PN_MissionStage = 2;
+		setquest 16586 + .@region;
+	}
+	if (!callfunc("F_PNMemoEligible") || PN_MissionRegion != .@region)
+		close;
+	close2;
+	if (.@region == 1)
+		warp "umbala",127,138;
+	else
+		warp "einbroch",178,146;
+	// The second assignment automatically records its town in slot four.
+	if (PN_MissionDone)
+		atcommand "@memo 3";
+	end;
+}
+
+function	script	F_PNMemoMission	{
+	.@region = getarg(0);
+	.@hunt = (.@region == 1) ? 16592 : 16596;
+	mes "[" + getarg(1) + "]";
+	if (!callfunc("F_PNMemoEligible") || PN_MissionStage != 2 || PN_MissionRegion != .@region) {
+		mes "Missionary Rosetta in Prontera coordinates our rescue work.";
+		close;
+	}
+	if (checkquest(.@hunt) == -1) {
+		mes (.@region == 1) ? "Defeat 100 Brutal Murderers in the Dead's Banquet Hall and rescue Jhon, Maria and Blue." : "Defeat 100 Abyssmen in Einbech Mine 3 and rescue Las, Minas and Tiris.";
+		if (select("I'll help:Not now") == 2)
+			close;
+		if (!callfunc("F_PNMemoEligible") || PN_MissionStage != 2 || PN_MissionRegion != .@region || checkquest(.@hunt) != -1)
+			close;
+		setquest .@hunt;
+		for (.@q = .@hunt - 3; .@q < .@hunt; ++.@q)
+			setquest .@q;
+		mes "Find all three missing people and complete the hunt, then report to me.";
+		close;
+	}
+	if (checkquest(.@hunt,HUNTING) != 2 || PN_MissionRescue != 7) {
+		mes "The hunt and all three rescues must be complete.";
+		close;
+	}
+	// No yield between checking completion and updating the character's progress.
+	completequest .@hunt;
+	completequest 16586 + .@region;
+	PN_MissionDone |= .@region;
+	PN_MissionRegion = 0;
+	PN_MissionRescue = 0;
+	PN_MissionStage = (PN_MissionDone == 3) ? 3 : 1;
+	mes "Everyone has returned safely. Report to Missionary Rosetta in Prontera.";
+	close;
+}
+
+umbala,127,140,4	script	Tita#PNMemo	4_F_UMGIRL,{
+	callfunc "F_PNMemoMission",1,"Tita";
+	end;
+}
+einbroch,178,148,4	script	Suan#PNMemo	4_M_EINMAN,{
+	callfunc "F_PNMemoMission",2,"Suan";
+	end;
+}
+
+function	script	F_PNMemoRescue	{
+	.@region = getarg(0);
+	.@bit = getarg(1);
+	.@quest = getarg(2);
+	.@hunt = (.@region == 1) ? 16592 : 16596;
+	mes "[" + getarg(3) + "]";
+	if (!callfunc("F_PNMemoEligible") || PN_MissionStage != 2 || PN_MissionRegion != .@region || checkquest(.@hunt) < 0) {
+		mes "Please speak with the missionary coordinator in town first.";
+		close;
+	}
+	if (PN_MissionRescue & .@bit) {
+		mes "You already helped me home. Thank you!";
+		close;
+	}
+	PN_MissionRescue |= .@bit;
+	completequest .@quest;
+	specialeffect EF_PORTAL;
+	cloakonnpcself;
+	mes "Your portal will take me home safely. Thank you!";
+	close;
+}
+
+nif_dun01,101,246,4	script	Jhon#PNMemo	4_M_CHILD1,{
+	callfunc "F_PNMemoRescue",1,1,16589,"Jhon";
+	end;
+OnInit:
+	cloakonnpc;
+	end;
+}
+nif_dun01,101,246,0	script	#PNMemoRevealJhon	-1,5,5,{
+OnTouch:
+	if (PN_MissionStage == 2 && PN_MissionRegion == 1 && !(PN_MissionRescue & 1))
+		cloakoffnpcself "Jhon#PNMemo";
+	end;
+}
+
+nif_dun01,213,148,4	script	Maria#PNMemo	4_M_CHILD1,{
+	callfunc "F_PNMemoRescue",1,2,16590,"Maria";
+	end;
+OnInit:
+	cloakonnpc;
+	end;
+}
+nif_dun01,213,148,0	script	#PNMemoRevealMaria	-1,5,5,{
+OnTouch:
+	if (PN_MissionStage == 2 && PN_MissionRegion == 1 && !(PN_MissionRescue & 2))
+		cloakoffnpcself "Maria#PNMemo";
+	end;
+}
+
+nif_dun01,160,183,4	script	Blue#PNMemo	4_M_CHILD1,{
+	callfunc "F_PNMemoRescue",1,4,16591,"Blue";
+	end;
+OnInit:
+	cloakonnpc;
+	end;
+}
+nif_dun01,160,183,0	script	#PNMemoRevealBlue	-1,5,5,{
+OnTouch:
+	if (PN_MissionStage == 2 && PN_MissionRegion == 1 && !(PN_MissionRescue & 4))
+		cloakoffnpcself "Blue#PNMemo";
+	end;
+}
+
+ein_dun03,148,221,4	script	Las#PNMemo	4_M_CHILD1,{
+	callfunc "F_PNMemoRescue",2,1,16593,"Las";
+	end;
+OnInit:
+	cloakonnpc;
+	end;
+}
+ein_dun03,148,221,0	script	#PNMemoRevealLas	-1,5,5,{
+OnTouch:
+	if (PN_MissionStage == 2 && PN_MissionRegion == 2 && !(PN_MissionRescue & 1))
+		cloakoffnpcself "Las#PNMemo";
+	end;
+}
+
+ein_dun03,38,152,4	script	Minas#PNMemo	4_M_CHILD1,{
+	callfunc "F_PNMemoRescue",2,2,16594,"Minas";
+	end;
+OnInit:
+	cloakonnpc;
+	end;
+}
+ein_dun03,38,152,0	script	#PNMemoRevealMinas	-1,5,5,{
+OnTouch:
+	if (PN_MissionStage == 2 && PN_MissionRegion == 2 && !(PN_MissionRescue & 2))
+		cloakoffnpcself "Minas#PNMemo";
+	end;
+}
+
+ein_dun03,234,20,4	script	Tiris#PNMemo	4_M_CHILD1,{
+	callfunc "F_PNMemoRescue",2,4,16595,"Tiris";
+	end;
+OnInit:
+	cloakonnpc;
+	end;
+}
+ein_dun03,234,20,0	script	#PNMemoRevealTiris	-1,5,5,{
+OnTouch:
+	if (PN_MissionStage == 2 && PN_MissionRegion == 2 && !(PN_MissionRescue & 4))
+		cloakoffnpcself "Tiris#PNMemo";
+	end;
+}

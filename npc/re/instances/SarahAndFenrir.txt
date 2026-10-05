@@ -531,19 +531,42 @@ dali02,93,146,6	script	Assistant Professor#a1	4_M_REPAIR,{
 	}
 }
 
+// Optional per-instance story pacing. Combat timers and rewards are unchanged.
+1@glast,370,304,4	script	Story Guide#sarah_fast	4_M_SCIENCE,{
+	mes "[Story Guide]";
+	if ('sarah_scene_started) {
+		mes "The expedition has started. Story pacing is locked for this run.";
+		close;
+	}
+	if (!is_party_leader()) {
+		mes "Your party leader can choose the story pacing before approaching Fenrir.";
+		close;
+	}
+	mes "Fast Mode shortens pauses between story lines. Encounters, objectives and rewards stay the same.";
+	next;
+	.@mode = select("Normal Mode:Fast Mode:Leave");
+	// Another member can start the scene while this menu is open.
+	if ('sarah_scene_started || .@mode == 3 || !is_party_leader())
+		close;
+	'sarah_fast = (.@mode == 2);
+	mes "Story pacing selected for this expedition.";
+	close;
+}
+
 1@glast,360,295,0	script	#glast_event_1	HIDDEN_WARP_NPC,8,8,{
 	end;
 OnTouch:
+	'sarah_scene_started = 1;
 	disablenpc instance_npcname("#glast_event_1");
 	setpcblock PCBLOCK_NPC, true;
 	specialeffect2 EF_HIT2;
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Huh? Somebody there? Hello~ You must be a traveler.";
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "fenrir_a.bmp",2;
 	npctalk "Fenrith Fenrir: This is strange.. I don't recall Glast Heim castle being filled with such a dark presence..", 'fenrir_1$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Greetings can come later! Careful! It seems somebody has summoned a monster!", 'fenrir_1$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "",255;
 	specialeffect EF_LOCKON, AREA, 'fenrir_1$;
 	.@label$ = instance_npcname("#glast_event_1") + "::OnMobDead";
@@ -570,24 +593,24 @@ OnEvent:
 	// npctalk "Fenrith Fenrir: Buy me some time while I cast magic! I will handle this!", 'fenrir_1$;// double on official
 	sleep 3000;
 	npctalk "Fenrith Fenrir: Wrath of the true sky.", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Thunderbolt that may split the earth!", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Fall before me now!", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Aaah!! Thunder Storm!!!!!", 'fenrir_1$;
 	for ( .@i = 1; .@i < 8; .@i++ )
 		specialeffect EF_THUNDERSTORM, AREA, instance_npcname( "#effect_glast_event01_" + .@i );
 	killmonster 'map_glast$, instance_npcname("#glast_event_1") + "::OnMobDead";
 	sleep 4000;
 	npctalk "Fenrith Fenrir: Glast Heim, once the cathedral for the Asgard gods..", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Now it has completely become a habitat for monsters..", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Wait.. Come to think of it, something is strange..", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Galions are the monsters that habit this vicinity..", 'fenrir_1$;
-	sleep 3000;
+	sleep ('sarah_fast ? 100 : 3000);
 	enablenpc instance_npcname("#glast_event_3");
 	end;
 
@@ -602,23 +625,23 @@ OnTouch:
 	setpcblock PCBLOCK_NPC, true;
 	cutin "fenrir_a.bmp",2;
 	npctalk "Fenrith Fenrir: By the way, I know it was sudden but thank you for helping.", 'fenrir_1$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: Anyway, who are you?", 'fenrir_1$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Ah.. that is....";
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : .. I am a traveler who wanders around the world!";
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: Is that so..? I see.. I guess it does not matter.", 'fenrir_1$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: This place seems quite dangerous now. It is not too late to turn back.", 'fenrir_1$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: There is an object I need to find. I need to hurry before it is too late.", 'fenrir_1$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: Perhaps you can help me...", 'fenrir_1$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: No.. Then thank you! I hope we can meet again later!", 'fenrir_1$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "",255;
 	specialeffect EF_LOCKON, AREA, 'fenrir_1$;
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Did that.. person.. really happen to be.. the.. Fenrir..? No way.. probably not..";
@@ -750,33 +773,33 @@ OnTouch:
 	setpcblock PCBLOCK_NPC, true;
 	cutin "fenrir_a.bmp",2;
 	npctalk "Fenrith Fenrir: You are still in Glast Heim? Why aren't you leaving this dangerous place?", 'fenrir_2$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : I know it's dangerous but I thought it would be fun so I couldn't help myself..";
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: Hm.. Adventurers..", 'fenrir_2$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : You don't have to worry~! I am fairly strong myself!";
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: Oh.. really? Do you think you can assist me then?", 'fenrir_2$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: The object I am looking for is located somewhere in Glast Heim!", 'fenrir_2$;
 	viewpoint 1,47,270,1,0xFF0000;
 	sleep2 2000;
 	npctalk "Fenrith Fenrir: But others looking for the object will arrive there soon!", 'fenrir_2$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: This is urgent because there isn't enough time. We have to arrive there soon. 5 minutes at the latest!", 'fenrir_2$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: I will be waiting! If you are late I will have to go by myself!", 'fenrir_2$;
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	npctalk "Fenrith Fenrir: Alright, I will go on ahead and you decide if you are going to assist me!", 'fenrir_2$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "",255;
 	disablenpc 'fenrir_2$;
 	sleep2 1000;
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Hm.. what should I do..? I need shards of Gigantes as requested by Professor Bernhard..";
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Should I help that person.. Or should I look for Gigantes to take the shards as requested by Professor Bernhard..?";
-	sleep2 2000;
+	sleep2 ('sarah_fast ? 100 : 2000);
 	donpcevent instance_npcname("#fenrir_left_final_2") + "::OnStart";// timer (5 mins)
 	for ( .@i = 1; .@i < 7; .@i++ )
 		enablenpc instance_npcname("Ancient Gigantes#glast_" + .@i);
@@ -825,24 +848,24 @@ OnTouch:
 	setpcblock PCBLOCK_NPC, true;
 	cutin "fenrir_a.bmp",2;
 	npctalk "Fenrith Fenrir: The sword of Baldur, Sentinel Breeze... even after 1000 years..", 'fenrir_4$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: I can feel the evil of monsters in this place.. as if they are being controlled by someone..", 'fenrir_4$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Then there is someone else here other than me?", 'fenrir_4$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: That will do.. Now all I have to do is use Sentinel Breeze to find Baldur's whereabouts..", 'fenrir_4$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	enablenpc 'sarah_10$;
 	enablenpc instance_npcname("Gigantes#semi1");
 	enablenpc instance_npcname("Gigantes#semi2");
 	sleep2 1000;
 	cutin "sarah_hero3.bmp",0;
 	npctalk "Sarah Irene: Hehe.. I see... just as I expected.", 'sarah_10$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Sarah Irene: Was that blade the clue?", 'sarah_10$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Sarah Irene: Then, Fenrith Fenrir, that means a 1000 year old seal can be broken with it?", 'sarah_10$;
-	sleep2 3500;
+	sleep2 ('sarah_fast ? 100 : 3500);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Could it be he was the real Fenrir?";
 	npctalk "Fenrith Fenrir: Could this be.. Valkyrie! Now it is not fun anymore", 'fenrir_4$;
 	cutin "fenrir_b.bmp",2;
@@ -1078,13 +1101,13 @@ OnTouch:
 	cutin "fenrir_a.bmp",2;
 	sleep2 1000;
 	npctalk "Fenrith Fenrir: I need to go to Glast Heim Castle to retrieve the sword of Baldur.", 'fenrir_5$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: It could be difficult alone, I would gratefully accept your help.", 'fenrir_5$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Since there isn't enough time, we can't wait long.", 'fenrir_5$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: I will wait in the central castle of Glast Heim for about 5 minutes.", 'fenrir_5$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Since it is dangerous you do not have to feel obligated to help me. I will try by myself if I have to.", 'fenrir_5$;
 	viewpoint 1,199,237,1,0xFF0000;
 	sleep2 3000;
@@ -1167,9 +1190,9 @@ OnTouch:
 	setpcblock PCBLOCK_NPC, true;
 	sleep2 1000;
 	npctalk "Fenrith Fenrir: I was waiting. Thank you for not being late.", 'fenrir_6$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Let us climb the castle to retrieve Sentinel Breeze! Sarah will be waiting!", 'fenrir_6$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	disablenpc 'fenrir_6$;
 	enablenpc instance_npcname("#glast_move_03a");
 	enablenpc instance_npcname("#glast_event_18");
@@ -1190,16 +1213,16 @@ OnTouch:
 	cutin "sarah_hero3.bmp",0;
 	sleep2 1000;
 	npctalk "Sarah Irene: It seemed like forever waiting for you~ Fenrith Fenrir.", 'sarah_17$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "fenrir_b.bmp",2;
 	npctalk "Fenrith Fenrir: No need for useless words, hand over the Sentinel Breeze now!", 'fenrir_7$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "sarah_hero3.bmp",0;
 	npctalk "Sarah Irene: Try if you can.", 'sarah_17$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "fenrir_b.bmp",2;
 	npctalk "Fenrith Fenrir: Sarah may be too difficult for you to face alone. I must face her!", 'fenrir_7$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Pure white shackles, eternal prison, make a deal with me now!", 'fenrir_7$;
 	donpcevent instance_npcname("#glast_event_18") + "::OnBar";
 	sleep2 3000;
@@ -1208,20 +1231,20 @@ OnTouch:
 	sleep2 3000;
 	npctalk "Sarah Irene: Hurk.... he..", 'sarah_17$;
 	npctalk "Fenrith Fenrir: I will weaken Sarah with white imprison and face her while she's shackled,", 'fenrir_7$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: you take care of the monsters she summons. I'm counting on you.", 'fenrir_7$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	unittalk getcharid(3), "" + strcharinfo(0) + " : Will do. Powerful enemies make my blood boil.";
-	sleep2 6000;
+	sleep2 ('sarah_fast ? 100 : 6000);
 	npctalk "Fenrith Fenrir: This is a strategy to attack at once and finish Sarah off while she is in critical condition. Remember, our opponent is strong.", 'fenrir_7$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "sarah_hero3_2.bmp",0;
 	npctalk "Sarah Irene: So your plan was to tie me up with this sort of trick?", 'sarah_17$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Sarah Irene: Furthermore you borrow the assistance of such rookie adventurers...", 'sarah_17$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Sarah Irene: You need to disappear from here along with that worn out blade!!", 'sarah_17$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "",255;
 	hideonnpc 'sarah_17$;
 	donpcevent instance_npcname("#glast_event_19") + "::OnEvent";
@@ -1681,19 +1704,19 @@ OnTouch:
 	sleep2 1500;
 	cutin "fenrir_b.bmp",2;
 	npctalk "Fenrith Fenrir: Hehe.. You are certainly skilled but I think you have underestimated me, Valkyrie.", 'fenrir_10$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	mapannounce 'map_glast$, "Sarah Irene: You rather entertain me Fenrith...", bc_map,0xEBFF;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	mapannounce 'map_glast$, "Sarah Irene: Did you think you can escape that easily?", bc_map,0xEBFF;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	mapannounce 'map_glast$, "Sarah Irene: I shall turn Glast Heim into hell!!", bc_map,0xEBFF;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: If we don't escape now we will suffer a gruesome fate by Sarah's monsters and magic!", 'fenrir_10$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: Let's meet at Glast Heim entrance where we first met! If we flee that far it should be safe!", 'fenrir_10$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	npctalk "Fenrith Fenrir: There is no time! Hurry!", 'fenrir_10$;
-	sleep2 3000;
+	sleep2 ('sarah_fast ? 100 : 3000);
 	cutin "",255;
 	disablenpc 'fenrir_10$;
 	donpcevent instance_npcname("#sarah_wrath") + "::OnStart";

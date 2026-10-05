@@ -56,7 +56,12 @@ so saved custom status numeric identities do not shift.
 | --- | ---: | ---: |
 | Druid / Baby Druid | 99 | 70 |
 | Karnos / Baby Karnos | 200 | 70 |
-| Alitea | 275 | 60 |
+| Alitea | 285 | 65 |
+
+Alitea follows the fourth-job 285/65 progression introduced in `b4ffce685`
+on September 17, 2026. The Druid mentor and integration audit expectations were
+updated on September 28 to match that existing configuration; lower-stage
+caps and gameplay settings are unchanged.
 
 ## Deployment requirement
 

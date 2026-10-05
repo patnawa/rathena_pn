@@ -1,3 +1,5 @@
+#include <custom/item_use.hpp>
+#include <custom/pet_floor.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -665,25 +667,30 @@ void pet_set_intimate(pet_data *pd, int32 value)
  * @param item_id : item ID of tamer
  * @return true:success, false:failure
  */
-bool pet_create_egg(map_session_data *sd, t_itemid item_id)
+bool pn_pet_describe_egg(const item& egg,pn_pet::Output& output)
 {
-	std::shared_ptr<s_pet_db> pet = pet_db_search(item_id, PET_EGG);
+	const auto pet=pet_db_search(egg.nameid,PET_EGG);
+	if(!pet)return false;
+	const auto mob=mob_db.find(pet->class_);
+	if(!mob || mob->lv>INT16_MAX || pet->class_>INT16_MAX)return false;
+	output={};output.egg=egg;output.pet_class=pet->class_;output.level=mob->lv;
+	output.intimacy=pet->intimate;output.hungry=100;
+	safestrncpy(output.name,mob->jname.c_str(),sizeof(output.name));
+	pn_pet::Key validation{};validation.account_id=validation.char_id=1;
+	validation.nonce_hi=validation.sequence=1;
+	return pn_pet::valid(validation,output);
+}
 
-	if (!pet)
-		return false; //No pet egg here.
-
-	std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
-
-	if( mdb == nullptr ){
-		return false;
-	}
-
-	if (!pc_inventoryblank(sd))
-		return false; // Inventory full
-
-	intif_create_pet(sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str());
-
-	return true;
+pn_pet_grant_result pn_pet_grant(map_session_data& sd,const item& prototype,uint32 amount)
+{
+	const auto data=item_db.find(prototype.nameid);
+	if(!pet_db_search(prototype.nameid,PET_EGG) && (!data || data->type!=IT_PETEGG))
+		return pn_pet_grant_result::NotPet;
+	if(pn_item_use_active(&sd))return pn_item_use_collect_pet(sd,prototype,amount)?pn_pet_grant_result::Pending:pn_pet_grant_result::Rejected;
+	if(!amount || amount>MAX_INVENTORY)return pn_pet_grant_result::Rejected;
+	auto request=pn_shop_request(sd,pn_shop::Asset);
+	pn_shop::Grant grant{};grant.nameid=prototype.nameid;grant.amount=amount;grant.prototype=prototype;
+	return pn_shop_begin(sd,request,{grant})?pn_pet_grant_result::Pending:pn_pet_grant_result::Rejected;
 }
 
 /**
@@ -1216,6 +1223,14 @@ void pet_catch_process_start( map_session_data& sd, t_itemid item_id, e_pet_catc
 		clif_displaymessage(sd.fd, msg_txt(&sd, 669)); // You can't catch any pet on this map.
 		return;
 	}
+	const bool item_scope=pn_item_use_active(&sd);
+	if(!pn_item_use_capture_start(sd))return;
+	// Delayed-consumption lures reserve their cost at target selection too.
+	if(item_scope && sd.itemindex>=0 && sd.itemindex<MAX_INVENTORY && sd.inventory_data[sd.itemindex] &&
+	   sd.inventory_data[sd.itemindex]->flag.delay_consume && sd.inventory.u.items_inventory[sd.itemindex].nameid==sd.itemid) {
+		clif_useitemack(&sd,sd.itemindex,sd.inventory.u.items_inventory[sd.itemindex].amount-1,true);
+		pc_delitem(&sd,sd.itemindex,1,1,0,LOG_TYPE_CONSUME);
+	}
 
 	std::shared_ptr<s_pet_catch_process> process = util::umap_find( pet_catchprocesses, sd.status.char_id );
 
@@ -1233,6 +1248,13 @@ void pet_catch_process_start( map_session_data& sd, t_itemid item_id, e_pet_catc
 	clif_catch_process(sd);
 }
 
+void pet_catch_cancel(map_session_data& sd) {
+	pet_catchprocesses.erase(sd.status.char_id);
+	if(pn_item_use_capture_waiting(&sd))
+		pn_item_use_capture_finish(sd,nullptr,[&sd](bool){clif_pet_roulette(sd,false);});
+	else clif_pet_roulette(sd,false);
+}
+
 /**
  * Begin the actual catching process of a monster.
  * @param sd : player requesting
@@ -1241,8 +1263,8 @@ void pet_catch_process_start( map_session_data& sd, t_itemid item_id, e_pet_catc
 void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 	std::shared_ptr<s_pet_catch_process> process = util::umap_find( pet_catchprocesses, sd.status.char_id );
 
-	if( process == nullptr ){
-		clif_pet_roulette(sd, false);
+	if( process == nullptr || !pn_item_use_capture_waiting(&sd) ){
+		pet_catch_cancel(sd);
 
 		return;
 	}
@@ -1250,14 +1272,14 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 	mob_data* md = map_id2md( target_id );
 
 	if(md == nullptr || md->prev == nullptr) { // Invalid inputs/state, abort capture.
-		clif_pet_roulette( sd, false );
+		pet_catch_cancel(sd);
 		pet_catchprocesses.erase( sd.status.char_id );
 
 		return;
 	}
 
 	if (map_getmapflag(sd.m, MF_NOPETCAPTURE)) {
-		clif_pet_roulette( sd, false );
+		pet_catch_cancel(sd);
 		pet_catchprocesses.erase( sd.status.char_id );
 		clif_displaymessage(sd.fd, msg_txt(&sd, 669)); // You can't catch any pet on this map.
 
@@ -1269,7 +1291,7 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 	std::shared_ptr<s_pet_db> pet = pet_db.find(md->mob_id);
 
 	if (pet == nullptr) {
-		clif_pet_roulette(sd, false);
+		pet_catch_cancel(sd);
 		pet_catchprocesses.erase( sd.status.char_id );
 
 		return;
@@ -1279,7 +1301,7 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 		case PET_CATCH_NORMAL:
 			// If the taming item used is different from the taming item according to the pet database
 			if( process->taming_item != pet->itemID ){
-				clif_pet_roulette( sd, false );
+				pet_catch_cancel(sd);
 				pet_catchprocesses.erase( sd.status.char_id );
 
 				return;
@@ -1289,7 +1311,7 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 		case PET_CATCH_UNIVERSAL_NO_BOSS:
 			// PET_CATCH_UNIVERSAL_NO_BOSS is used for universal lures (except bosses for now).
 			if( status_has_mode( &md->status, MD_STATUSIMMUNE ) ){
-				clif_pet_roulette( sd, false );
+				pet_catch_cancel(sd);
 				pet_catchprocesses.erase( sd.status.char_id );
 
 				return;
@@ -1302,24 +1324,19 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 	}
 
 	if( battle_config.pet_distance_check && distance_bl( &sd, md ) > battle_config.pet_distance_check ){
-		clif_pet_roulette(sd, false);
+		pet_catch_cancel(sd);
 		pet_catchprocesses.erase( sd.status.char_id );
 
 		return;
 	}
 
-	if (!pc_inventoryblank(&sd)) {
-		clif_pet_roulette(sd, false);
-		pet_catchprocesses.erase( sd.status.char_id );
-		clif_msg_color( sd, MSI_CANT_GET_ITEM_BECAUSE_COUNT, color_table[COLOR_RED] );
-
-		return;
-	}
+	// Capture creates a durable entitlement. Its inventory delivery can wait
+	// for room, and the reserved lure slot must not count as an occupied cost.
 
 	status_change* tsc = status_get_sc( md );
 
 	if( battle_config.pet_hide_check && tsc && ( tsc->getSCE(SC_HIDING) || tsc->getSCE(SC_CLOAKING) || tsc->getSCE(SC_CAMOUFLAGE) || tsc->getSCE(SC_NEWMOON) || tsc->getSCE(SC_CLOAKINGEXCEED) ) ){
-		clif_pet_roulette( sd, false );
+		pet_catch_cancel(sd);
 		pet_catchprocesses.erase( sd.status.char_id );
 
 		return;
@@ -1338,20 +1355,25 @@ void pet_catch_process_end( map_session_data& sd, int32 target_id ){
 	if(battle_config.pet_catch_rate != 100)
 		pet_catch_rate = (pet_catch_rate*battle_config.pet_catch_rate)/100;
 
-	if(rnd_chance(pet_catch_rate, 10000)) {
-		achievement_update_objective(&sd, AG_TAMING, 1, md->mob_id);
-		unit_remove_map(md,CLR_OUTSIGHT);
-		status_kill(md);
-		clif_pet_roulette( sd, true );
+	if(md->pet_capture_token || !rnd_chance(pet_catch_rate, 10000)) {
+        pet_catch_cancel(sd);
+    } else {
+        static uint64 capture_sequence=0;if(++capture_sequence==0)++capture_sequence;
+        const uint64 token=capture_sequence;md->pet_capture_token=token;
+        const int32 captured_id=md->id;const uint16 captured_class=md->mob_id;
+        item egg{};egg.nameid=pet->EggID;egg.amount=1;egg.identify=1;
+        pn_item_use_capture_finish(sd,&egg,[&sd,captured_id,token](bool committed){
+            auto* target=map_id2md(captured_id);
+            const bool same=target && target->pet_capture_token==token;
+            if(same)target->pet_capture_token=0;
+            if(committed){
+                if(same && target->prev){unit_remove_map(target,CLR_OUTSIGHT);status_kill(target);}
+            }
+            clif_pet_roulette(sd,committed);
+        },AG_TAMING,{captured_class});
+    }
 
-		std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
-
-		intif_create_pet(sd.status.account_id, sd.status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str());
-	} else {
-		clif_pet_roulette( sd, false );
-	}
-
-	pet_catchprocesses.erase( sd.status.char_id );
+    pet_catchprocesses.erase( sd.status.char_id );
 
 	return;
 }
@@ -1858,6 +1880,11 @@ static int32 pet_ai_sub_hard(pet_data *pd, map_session_data *sd, t_tick tick)
 			return 0;
 		} else {
 			flooritem_data *fitem = (flooritem_data *)target;
+			if(fitem->pet_claim_token || pn_pet_floor_raw(fitem->item)) {
+				if(!fitem->pet_claim_token)pn_pet_floor_take(*sd,*fitem);
+				pet_unlocktarget(pd);
+				return 0;
+			}
 
 			if(pd->loot->count < pd->loot->max) {
 				memcpy(&pd->loot->item[pd->loot->count++],&fitem->item,sizeof(pd->loot->item[0]));
@@ -1916,6 +1943,7 @@ static int32 pet_ai_sub_hard_lootsearch(block_list *bl,va_list ap)
 {
 	pet_data* pd;
 	flooritem_data *fitem = (flooritem_data *)bl;
+	if(fitem->pet_claim_token)return 0;
 	block_list **target;
 	int32 sd_charid = 0;
 
@@ -2502,3 +2530,4 @@ void do_final_pet(void)
 
 	pet_db.clear();
 }
+

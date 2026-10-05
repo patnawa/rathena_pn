@@ -1,0 +1,5 @@
+-- Shared quest guide data; preserves the canonical compatibility patches.
+dofile("SystemEN/OngoingQuests.lub")
+
+-- Missionary Work memo quest metadata.
+dofile("SystemEN/ExtendedMemoQuests.lua")

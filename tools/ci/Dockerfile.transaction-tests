@@ -1,0 +1,10 @@
+# amd64 Ubuntu 24.04 manifest, resolved 2026-09-29. CI records the resulting
+# toolchain image ID and installed package versions with each SQL proof.
+FROM ubuntu:24.04@sha256:496754492fb28b4d3049432f2ca787449331e23fb14f0dd3fffea86bf5a93eb4
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential ca-certificates libmysqlclient-dev zlib1g-dev libpcre3-dev \
+    libssl-dev libzstd-dev python3 python3-yaml lua5.1 \
+    && dpkg-query -W > /toolchain-packages.txt \
+    && rm -rf /var/lib/apt/lists/*
+ENV LUA51=/usr/bin/lua5.1
+WORKDIR /rathena

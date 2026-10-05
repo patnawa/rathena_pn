@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "started_utc": "2026-09-28T05:59:13.896996+00:00",
+  "production_database_accessed": false,
+  "runtime_image": "sha256:cae30d441d1c6e8f784be1d5525ea0573d9cd680dd21baf077e85908ccfe531b",
+  "database_image": "sha256:dd9b303aed4f4890ed09f766d8ca9ddfd176c0c6f6267feff53b3192ec65a979",
+  "binary_sha256": {
+    "login-server": "888d43e09e96add93091e86d786213b809449b363c52f053a52ecde511905116",
+    "char-server": "d547eba66db7f2b8156f24284a4fe407833164c6ffe267a41002333d25a5f75b",
+    "map-server": "1c3a8688e981d01eb5e09d0f88587f5d8d92527a18822c9438ee31ff3141ed6b",
+    "web-server": "59d270250dfa8f227b2c9cf99ab52e0ff4ec032b47b5f6f72364291d65ea11f2"
+  },
+  "npc_sha256": "c4fafe984d2d9ce68881d0c91ca43172edb5ca2f1754dd1028cbe960efeff578",
+  "schema_files": 21,
+  "errors": [],
+  "gameplay_live": {
+    "passed": true,
+    "cases": [
+      "native Warp Portal lists save point + all six memo slots and selected sixth portal transports character",
+      "real missionary rescue function completes all three quest records out of order and tolerates duplicate rescue",
+      "native skill reset clears extra reward/mission state and restricts selection to three memo slots",
+      "native paid trap consumes/refunds once; rental expires and its trap recovery refunds no material",
+      "real Master Refiner function dialog consumes exactly one certificate and refines equipped club to +15",
+      "logout persists +15 result, consumed certificate, expired rental, and three memo records"
+    ]
+  },
+  "handshake_complete": true,
+  "finished_utc": "2026-09-28T06:00:16.726303+00:00"
+}

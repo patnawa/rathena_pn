@@ -1,0 +1,125 @@
+// TEST ONLY. Do not import in production. Root's disposable Docker fixture
+// BL_SKILL is not a script-exported constant; 0x40 matches map.hpp.
+// must provision the unique synthetic account/character below before loading.
+-	script	PNGameplayNativeFixture	-1,{
+OnInit:
+	bindatcmd "pngameplayfixture",strnpcinfo(3)+"::OnCommand",0,99;
+	end;
+OnCommand:
+	if (getcharid(0) != 99000032 || getcharid(3) != 99000031 || strcharinfo(0) != "gameplayfixture")
+		end;
+	.@action$ = .@atcmd_parameters$[0];
+	getmapxy .@map$,.@x,.@y,BL_PC;
+	if (.@action$ == "memo-unlock" || .@action$ == "memo-reset") {
+		jobchange Job_Cardinal;
+		if (.@action$ == "memo-reset") {
+			resetskill;
+			if (PN_MemoExtra || PN_MissionStage || PN_MissionDone) {
+				dispbottom "PN_GAMEPLAY_NATIVE_FAIL reset did not clear progress";
+				end;
+			}
+		} else {
+			PN_MemoExtra = 3;
+			PN_MissionStage = 4;
+			PN_MissionDone = 3;
+		}
+		skill "AL_WARP",4,0;
+		getitem 717,2;
+		percentheal 100,100;
+		unitskillusepos getcharid(3),"AL_WARP",4,.@x+2,.@y,-1000;
+		dispbottom "PN_GAMEPLAY_NATIVE memo request submitted";
+		end;
+	}
+	if (.@action$ == "memo-enter") {
+		unitwalk getcharid(3),.@x+2,.@y;
+		dispbottom "PN_GAMEPLAY_NATIVE portal walk submitted";
+		end;
+	}
+	if (.@action$ == "mission-setup") {
+		jobchange Job_Cardinal;
+		skill "AL_WARP",4,0;
+		PN_MemoExtra = 1;
+		PN_MissionStage = 2;
+		PN_MissionRegion = 1;
+		PN_MissionRescue = 0;
+		setquest 16592;
+		setquest 16589;
+		setquest 16590;
+		setquest 16591;
+		dispbottom "PN_GAMEPLAY_NATIVE mission rescue setup";
+		end;
+	}
+	if (.@action$ == "mission-rescue") {
+		.@which = atoi(.@atcmd_parameters$[1]);
+		if (.@which < 0 || .@which > 2) end;
+		callfunc "F_PNMemoRescue",1,1<<.@which,16589+.@which,"Fixture Rescue";
+		end;
+	}
+	if (.@action$ == "mission-report") {
+		if (PN_MissionRescue == 7 && checkquest(16589,HAVEQUEST) == 2 && checkquest(16590,HAVEQUEST) == 2 && checkquest(16591,HAVEQUEST) == 2)
+			dispbottom "PN_GAMEPLAY_NATIVE_PASS mission rescue bits and quest records";
+		else
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL mission rescue or quest records";
+		end;
+	}
+	if (.@action$ == "rental") {
+		jobchange Job_Windhawk;
+		skill "HT_SKIDTRAP",1,0;
+		skill "HT_REMOVETRAP",1,0;
+		percentheal 100,100;
+		if (countitem(1065)) delitem 1065,countitem(1065);
+		if (rentalcountitem(50152)) delitem 50152,rentalcountitem(50152);
+		getitem 1065,1;
+		unitskillusepos getcharid(3),"HT_SKIDTRAP",1,.@x+2,.@y,-1000;
+		sleep2 700;
+		.@count = getareaunits(0x40,.@map$,.@x+2,.@y,.@x+2,.@y,.@units);
+		if (.@count != 1 || countitem(1065) != 0) {
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL paid trap not deployed/consumed";
+			end;
+		}
+		unitskilluseid getcharid(3),"HT_REMOVETRAP",1,.@units[0],-1000;
+		sleep2 700;
+		if (countitem(1065) != 1) {
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL paid trap recovery";
+			end;
+		}
+		delitem 1065,1;
+		rentitem 50152,2;
+		unitskillusepos getcharid(3),"HT_SKIDTRAP",1,.@x+2,.@y,-1000;
+		sleep2 700;
+		.@count = getareaunits(0x40,.@map$,.@x+2,.@y,.@x+2,.@y,.@units);
+		if (.@count != 1 || countitem(1065) != 0) {
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL rental trap not deployed";
+			end;
+		}
+		sleep2 2500;
+		if (rentalcountitem(50152)) {
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL native rental expiry";
+			end;
+		}
+		unitskilluseid getcharid(3),"HT_REMOVETRAP",1,.@units[0],-1000;
+		sleep2 700;
+		if (countitem(1065) || getareaunits(0x40,.@map$,.@x+2,.@y,.@x+2,.@y)) {
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL expired rental trap created a refund";
+			end;
+		}
+		dispbottom "PN_GAMEPLAY_NATIVE_PASS paid recovery and expired-rental no-refund";
+		end;
+	}
+	if (.@action$ == "refiner") {
+		jobchange Job_Cardinal;
+		getitem 1501,1;
+		equip 1501;
+		getitem 6872,1;
+		callfunc "F_PNRefine15Ticket";
+		end;
+	}
+	if (.@action$ == "refiner-report") {
+		if (getequiprefinerycnt(EQI_HAND_R) == 15 && countitem(6872) == 0)
+			dispbottom "PN_GAMEPLAY_NATIVE_PASS refiner +15 single certificate";
+		else
+			dispbottom "PN_GAMEPLAY_NATIVE_FAIL refiner did not commit exactly once";
+		end;
+	}
+	end;
+}

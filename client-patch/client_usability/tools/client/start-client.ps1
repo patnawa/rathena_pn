@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 #  PN  /  CLIENT TOOLING
 #  start-client.ps1
 # ----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ try {
     $null = Require-ClientFile 'Ragexe.exe'
     # These are required features of the PN release, even if both bank files
     # are absent. Presence detection must not turn an incomplete install valid.
-    foreach ($name in @('BankUI.ini', 'BankUI.dll', 'FontScale.ini', 'FontScale.dll', 'FontScaleOriginal.dll', 'SystemEN/AccountBankInfo.lua')) {
+    foreach ($name in @('PNTurbo.dll', 'PNTurboConfig.exe', 'PNWallet64.ini', 'PNWallet64.dll', 'FontScale.ini', 'FontScale.dll', 'FontScaleOriginal.dll', 'SystemEN/AccountBankInfo.lua')) {
         $null = Require-ClientFile $name
     }
     $archives = @{}

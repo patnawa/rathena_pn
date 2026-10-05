@@ -14,6 +14,11 @@
 #include <common/strlib.hpp>// StringBuf
 #include <common/timer.hpp>
 #include <custom/bank_state.hpp>
+#include <custom/item_use.hpp>
+#include <custom/market_state.hpp>
+#include <custom/mail_state.hpp>
+#include <custom/pair_state.hpp>
+#include <custom/shop_state.hpp>
 #include <custom/multi_storage.hpp>
 
 #include "battleground.hpp"
@@ -380,6 +385,7 @@ struct s_qi_display {
 	e_questinfo_markcolor color;
 };
 
+struct PnItemUseState;
 class map_session_data : public block_list {
 public:
 	struct unit_data ud;
@@ -722,7 +728,8 @@ public:
 		struct s_item {
 			int16 index, amount;
 		} item[10];
-		int32 zeny, weight;
+		int64 zeny;
+		int32 weight;
 		uint8 inventory_space;
 	} deal;
 
@@ -798,11 +805,11 @@ public:
 			t_itemid nameid;
 			int32 index, amount;
 		} item[MAIL_MAX_ITEM];
-		int32 zeny;
+		int64 zeny;
 		struct mail_data inbox;
 		bool changed; // if true, should sync with charserver on next mailbox request
 		uint32 pending_weight;
-		uint32 pending_zeny;
+		int64 pending_zeny;
 		uint16 pending_slots;
 		uint32 dest_id;
 	} mail;
@@ -817,9 +824,12 @@ public:
 	struct s_achievement_data {
 		int32 total_score;                  ///< Total achievement points
 		int32 level;                        ///< Achievement level
-		bool save;                        ///< Flag to know if achievements need to be saved
+		bool save;                          ///< Flag to know if achievements need to be saved
+		bool loaded;                        ///< Authoritative SQL snapshot was received successfully
+		int32 reward_pending_id;            ///< Reward claim awaiting its character-server result
 		uint16 count;                     ///< Total achievements in log
 		uint16 incompleteCount;           ///< Total incomplete achievements in log
+		uint16 opaque_count;              ///< Durable rows unknown to this map's achievement database
 		struct achievement *achievements; ///< Achievement log entries
 	} achievement_data;
 
@@ -910,6 +920,11 @@ public:
 	int32 autotrade_tid;
 	int32 respawn_tid;
 	int64 bank_vault; ///< Shared account bank, independent of the character wallet cap.
+	pn_market_state market;
+	pn_mail_state mail_companion;
+	pn_pair_state pair_commit;
+	pn_shop_state shop_commit;
+	std::shared_ptr<PnItemUseState> item_use;
 	pn_bank_state bank_ui; ///< One account bank operation, locked until SQL commit.
 	pn_storage::State multi_storage; ///< Tagged personal storage loads and atomic transfers.
 
@@ -1163,10 +1178,15 @@ extern JobDatabase job_db;
 #define pc_isidle_mer(sd)     ( (sd)->md && ( (sd)->chatID || (sd)->state.vending || (sd)->state.buyingstore || DIFF_TICK(last_tick, (sd)->idletime_mer) >= battle_config.mer_idle_no_share ) )
 #define pc_istrading(sd)      ( (sd)->npc_id || (sd)->state.vending || (sd)->state.buyingstore || (sd)->state.trading )
 static inline bool pc_transaction_pending(const map_session_data* sd) {
-	return sd->bank_ui.pending || sd->multi_storage.pending;
+	return sd->bank_ui.pending || sd->multi_storage.pending || sd->mail_companion.pending ||
+		sd->pair_commit.pending || sd->shop_commit.pending || sd->achievement_data.reward_pending_id ||
+		pn_item_use_capture_waiting(sd);
 }
 static inline bool pc_transaction_locked(const map_session_data* sd) {
-	return (sd->bank_ui.pending && !sd->bank_ui.applying) ||
+	return pn_item_use_capture_waiting(sd) || (sd->bank_ui.pending && !sd->bank_ui.applying) ||
+		(sd->mail_companion.pending && !sd->mail_companion.applying) ||
+		(sd->pair_commit.pending && !sd->pair_commit.applying) ||
+		(sd->shop_commit.pending && !sd->shop_commit.applying) ||
 		(sd->multi_storage.pending && !sd->multi_storage.applying);
 }
 static bool pc_cant_act2( map_session_data* sd ){
@@ -1456,13 +1476,36 @@ enum e_setpos pc_setpos_savepoint( map_session_data& sd, clr_type clrtype = CLR_
 void pc_setsavepoint(map_session_data *sd, int16 mapindex,int32 x,int32 y);
 char pc_randomwarp(map_session_data *sd,clr_type type,bool ignore_mapflag = false);
 bool pc_memo(map_session_data* sd, int32 pos);
+int32 pc_memo_slots(map_session_data* sd, uint16 skill_lv);
 
 char pc_checkadditem( const map_session_data* sd, t_itemid nameid, int32 amount );
+// Shop outputs are plain items; match the same stack metadata as pc_additem.
+char pc_checkadditem_plain( const map_session_data* sd, t_itemid nameid, int32 amount );
+
+// Defers script-capable item side effects until a synchronous delivery batch
+// ends. This is not inventory/payment rollback or an asynchronous transaction.
+// Nested scopes share the outer queue. Ordinary item operations are unchanged.
+class PcItemDeliveryScope {
+public:
+	explicit PcItemDeliveryScope(map_session_data& sd);
+	~PcItemDeliveryScope();
+	PcItemDeliveryScope(const PcItemDeliveryScope&) = delete;
+	PcItemDeliveryScope& operator=(const PcItemDeliveryScope&) = delete;
+	void added(int16 index, const item_data& data);
+	void refresh_questinfo();
+	void suppress_achievements();
+	void cancel();
+private:
+	struct Addition { int16 index; t_itemid nameid; uint64 unique_id; uint32 equip; uint32 value_sell; uint32 expire_time; };
+	map_session_data& sd_;
+	bool owner_ = false, refresh_ = false, achievements_ = true;
+	std::vector<Addition> additions_;
+};
 uint8 pc_inventoryblank( const map_session_data* sd );
 int16 pc_search_inventory( const map_session_data* sd, t_itemid nameid);
-char pc_payzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uint32 log_charid = 0);
+char pc_payzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uint32 log_charid = 0);
 enum e_additem_result pc_additem(map_session_data *sd, struct item *item, int32 amount, e_log_pick_type log_type, bool favorite=false);
-char pc_getzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uint32 log_charid = 0);
+char pc_getzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uint32 log_charid = 0);
 char pc_delitem(map_session_data *sd, int32 n, int32 amount, int32 type, int16 reason, e_log_pick_type log_type);
 
 uint64 pc_generate_unique_id(map_session_data *sd);

@@ -1,6 +1,7 @@
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <common/runtime_identity.hpp>
 #include "database.hpp"
 
 #include <iostream>
@@ -90,6 +91,7 @@ bool YamlDatabase::reload(){
 }
 
 bool YamlDatabase::load(const std::string& path) {
+	pn_runtime_identity::invalidate();
 	ShowStatus("Loading '" CL_WHITE "%s" CL_RESET "'..." CL_CLL "\r", path.c_str());
 	FILE* f = fopen(path.c_str(), "r");
 	if (f == nullptr) {

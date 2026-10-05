@@ -1,0 +1,6 @@
+[Status]: Memory manager initialised: log/(null).leaks
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+[Info]: Saved Inventory (0) data to table inventory for char_id: 99001313
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+SHOP_RACE_OUTCOME account=990013 outcome=1 retries=0

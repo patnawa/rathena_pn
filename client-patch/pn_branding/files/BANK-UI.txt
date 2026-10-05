@@ -1,0 +1,61 @@
+PN independent wide-Zeny client - 28 September 2026
+
+Install together with the matching PN server maintenance release. The server
+wallet and account bank each support 9,223,372,036,854,775,807 Zeny. Each character
+keeps a separate wallet; the bank is shared by characters on that account.
+
+Open Wallet & Bank with the bank button, @bank, Ctrl+B or Alt+B. Use direct
+Deposit/Withdraw, +100K/+1M/+10M/+100M/+1B/+10B/Max, or Collect offline Zeny.
+Collect moves offline character wallets to the shared account bank. Saving
+status is pending; only a confirmed server receipt means the save completed.
+
+Use the companion Trade, Market and Mail controls for full-width Zeny values.
+Start player trades in the game, review native item lists, then set and lock the
+exact Zeny offer in Wallet & Bank. Confirm both offers explicitly. Create a
+native vending/buying draft, open Market, set exact prices and buying budget,
+review and Publish. Search and purchases use exact prices and confirmation.
+The server saves both players and market stock together before completion.
+Market checks pending status without automatically resending a purchase.
+Mail supports Zeny-only composition with an exact fee/debit preview; item-bearing
+and received mail remain in RODEX. Refresh after connection loss to check status.
+
+The normal game Zeny display now shows the confirmed full wallet balance,
+up to 9,223,372,036,854,775,807, with the matching native-HUD server update.
+Weight and Zeny appear on separate right-aligned lines in Basic Information.
+Other legacy numeric displays and inputs retain their original limits.
+Use the companion controls for larger transactions; the server rejects
+unsafe legacy transaction values. The Ragexe executable remains unchanged.
+This client provides the PN features documented in this release.
+
+Diamonds and 1M tickets are retired. Maintenance converts existing currency
+holdings into account-bank Zeny: 499,000,000 per 17carat diamond and 998,000 per
+1M Zeny Ticket. Guild storage credits its leader; mailed currency credits the
+recipient. The conversion preserves value at these stated redemption rates.
+Exchange controls are removed and retired tokens cannot create new currency.
+
+Included gameplay changes: corrected Imperial Guard skill calculations and
+Genesis/GTB handling; five unique Airship survivors determine the boss route;
+Sarah and Fenrir fast story mode; corrected awakened Yordos cards and refinement
+flags; a service mall with tools/storage and unlimited carrying capacity inside;
++15 certificate refinement; three 30-day catalyst rentals; validated bulk NPC
+sale batches; and the missionary quest with up to six Warp Portal memo slots.
+Rental catalysts use local item IDs and native expiry. This release does not
+add extra reward pools, custom costume assets, BG/event systems,
+900,000-item stacks, or a replacement native game interface.
+
+Launch PN.cmd selects PNLauncher-20260928.exe. The previous PNLauncher.exe stays
+available for rollback; it is not overwritten while running. The new launcher
+reuses verified large-file hashes only while holding read handles that prevent
+file changes, and Repair always performs a full verification.
+Rollback refuses before changing any files if it would replace or remove the
+running versioned launcher. Close it and run the preserved PNLauncher.exe to
+complete that rollback. Coordinate client rollback with the matching server.
+
+Font, turbo and original personal settings remain. Adjust the new panel scale
+and ports in PNWallet64.ini; old BankUI.ini customizations are not automatically
+migrated on other installations. Existing PNWallet64.ini is preserved by the
+update feed. BankUI.dll and
+BankUI.ini may remain on disk, but the loader activates only PNWallet64.dll.
+Do not load both economy modules. Close and restart the game after updating.
+Run Check Client.cmd and Verify Client.cmd. Automated component/file checks
+pass; rendered real-player gameplay acceptance remains a separate check.

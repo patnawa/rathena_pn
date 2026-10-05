@@ -37,13 +37,48 @@ def run(build):
     combined=build/'combined_rune_test.cpp'
     combined.write_text(prefix+'\n'+(ROOT/'tools/ci/rune_tablet_transaction_test.cpp').read_text())
     catalog=json.loads((ROOT/'npc/custom/rune_tablet/catalog.json').read_text())
+    # Exhaustively execute production grant families, using the authoritative
+    # recipe JSON as an independent output oracle for the generated script.
+    checks=[]
+    def exact(outputs):
+        expected={i:n for i,n in outputs}
+        lines=[f'check(count({i})=={n},"catalog output amount");' for i,n in expected.items()]
+        condition=' || '.join(f'it.nameid=={i}' for i in expected) or 'false'
+        lines.append('for(const auto& it:sd->inventory.u.items_inventory) if(it.nameid) check('+condition+',"no undeclared output");')
+        return ''.join(lines)
+    for tablet in catalog['sets']:
+        for tier,outputs in tablet['rewards'].items():
+            if not outputs: continue
+            suffix=tablet['id']-1260000
+            setup=f'reg("PNRTPaid",{suffix},1);reg("#PNRTClaims",{suffix},{127^(1<<(int(tier)-1))});'
+            setup+=''.join(f'reg("#PNRTPiece",{piece-1263000},1);' for piece in tablet['pieces'])
+            checks.append('{auto sd=rune_player();'+setup+f'invoke("callfunc \\"PN_RT_Claim\\",{tablet["id"]};",{{1,1}});'+exact(outputs)+'}')
+    for recipe in catalog['prints']:
+        checks.append('{auto sd=rune_player();'+f'put(0,{recipe["id"]},1);put(1,1001282,10);weight();invoke("callfunc \\"PN_RT_Print\\";",{{1,1}});'+exact([(recipe['output'],1)])+'}')
+    for index,recipe in enumerate(catalog['shop']):
+        setup=''.join(f'put({n},{i},{amount});' for n,(i,amount) in enumerate(recipe['cost']))
+        checks.append('{auto sd=rune_player();'+setup+f'weight();invoke("callfunc \\"PN_RT_Shop\\";",{{{index+1},1}});'+exact([(recipe['id'],1)])+'}')
+    for material,batches in catalog['decomposition'].items():
+        for batch,outputs in batches.items():
+            lines=f'put(0,{material},{batch});weight();invoke("callfunc \\"PN_RT_Decompose\\";",{{1,{1 if batch=="1" else 2},1}});'
+            for iid,lo,hi,chance in outputs:
+                lines+=f'check((count({iid})==0 && {chance}<100000) || (count({iid})>={lo} && count({iid})<={hi}),"decomposition range and guaranteed output");'
+            condition=' || '.join(f'it.nameid=={row[0]}' for row in outputs) or 'false'
+            lines+='for(const auto& it:sd->inventory.u.items_inventory) if(it.nameid) check('+condition+',"no undeclared decomposition output");'
+            checks.append('{auto sd=rune_player();'+lines+'}')
+    # Separate generated scopes keep ASan compiler analysis bounded: thousands
+    # of local unique_ptr lifetimes in one function otherwise compile very slowly.
+    generated_cases='\n'.join('[]()'+case+'();' for case in checks)+'\n'
+    (build/'rune_catalog_cases.inc').write_text(generated_cases)
     needed={4001,4700}
     def values(value):
         if isinstance(value,int) and value>=500: needed.add(value)
         elif isinstance(value,list):
             for v in value: values(v)
         elif isinstance(value,dict):
-            for v in value.values(): values(v)
+            for key,v in value.items():
+                if str(key).isdigit() and int(key)>=500: needed.add(int(key))
+                values(v)
     values(catalog)
     records={}
     for row in renewal_records(ROOT,'db/item_db.yml'):
@@ -59,7 +94,8 @@ def run(build):
     flags+=['-I'+str(ROOT/p) for p in ('src','3rdparty/libconfig','3rdparty/rapidyaml/src','3rdparty/rapidyaml/ext/c4core/src','3rdparty/json/include')]+['-I/usr/include/mysql']
     headerhash=hashlib.sha256(b''.join(p.read_bytes() for p in sorted((ROOT/'src').rglob('*.hpp')))).hexdigest()
     def compile_one(source):
-        target=build/(source.stem+'.o');signature=hashlib.sha256(source.read_bytes()+repr(flags).encode()+headerhash.encode()).hexdigest()
+        dependencies=generated_cases.encode() if source==combined else b''
+        target=build/(source.stem+'.o');signature=hashlib.sha256(source.read_bytes()+dependencies+repr(flags).encode()+headerhash.encode()).hexdigest()
         receipt=target.with_suffix('.sha')
         if not target.exists() or not receipt.exists() or receipt.read_text()!=signature:
             print('Compile '+str(source),flush=True);subprocess.run(flags+['-c',str(source),'-o',str(target)],cwd=ROOT,check=True);receipt.write_text(signature)

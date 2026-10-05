@@ -36,6 +36,15 @@ mysql -u $DB_ROOT -p$DB_ROOTPW $DB_NAME < sql-files/mob_skill_db2.sql || aborter
 mysql -u $DB_ROOT -p$DB_ROOTPW $DB_NAME < sql-files/mob_skill_db_re.sql || aborterror "Unable to import renewal monster skill table."
 mysql -u $DB_ROOT -p$DB_ROOTPW $DB_NAME < sql-files/mob_skill_db2_re.sql || aborterror "Unable to import renewal monster skill 2 table."
 mysql -u $DB_ROOT -p$DB_ROOTPW $DB_NAME < sql-files/roulette_default_data.sql || aborterror "Unable to import roulette table."
+# Keep fresh CI databases aligned with the durable purchase service schema.
+# Each migration is repeatable: IF NOT EXISTS tables, guarded pet index,
+# and engine conversions preserve existing rows. Apply parents before adapters.
+for migration in \
+    sql-files/upgrades/upgrade_20260929_shop_purchase.sql \
+    sql-files/upgrades/upgrade_20260929_pet_entitlements.sql \
+    sql-files/upgrades/upgrade_20260929_point_assets.sql; do
+    mysql -u "$DB_ROOT" -p"$DB_ROOTPW" "$DB_NAME" < "$migration" || aborterror "Unable to import $migration."
+done
 # MariaDB
 mysql -u $DB_ROOT -p$DB_ROOTPW -e "SET old_passwords=0; CREATE USER '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS';"
 # MySQL

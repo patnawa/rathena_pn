@@ -1,3 +1,4 @@
+#include <custom/item_use.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -79,6 +80,17 @@ static map_session_data* dummy_sd;
 
 static bool script_rid2sd_( struct script_state *st, map_session_data** sd, const char *func );
 
+// Explicit cross-player script targets must not mutate a pending immutable
+// purchase snapshot. Scripts attached to the buyer are deferred below.
+static bool script_shop_target(map_session_data** sd) {
+	if (*sd && (*sd)->shop_commit.pending && !(*sd)->shop_commit.applying &&
+		!achievement_shop_capture_active(*sd)) {
+		*sd = nullptr;
+		return false;
+	}
+	return true;
+}
+
 /**
  * Get `sd` from a account id in `loc` param instead of attached rid
  * @param st Script
@@ -93,7 +105,7 @@ static bool script_accid2sd_(struct script_state *st, uint8 loc, map_session_dat
 			ShowError("%s: Player with account id '%d' is not found.\n", func, id_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -114,7 +126,7 @@ static bool script_charid2sd_(struct script_state *st, uint8 loc, map_session_da
 			ShowError("%s: Player with char id '%d' is not found.\n", func, id_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -135,7 +147,7 @@ static bool script_nick2sd_(struct script_state *st, uint8 loc, map_session_data
 			ShowError("%s: Player with nick '%s' is not found.\n", func, name_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -156,7 +168,7 @@ static bool script_mapid2sd_(struct script_state *st, uint8 loc, map_session_dat
 			ShowError("%s: Player with map id '%d' is not found.\n", func, id_);
 			return false;
 		}else{
-			return true;
+			return script_shop_target(sd);
 		}
 	}
 	else
@@ -2661,13 +2673,15 @@ struct script_code* parse_script_( const char *src, const char *file, int32 line
 	return code;
 }
 
+#include <custom/item_use_script.inc>
+
 /// Returns the player attached to this script, identified by the rid.
 /// If there is no player attached, the script is terminated.
 static bool script_rid2sd_( struct script_state *st, map_session_data** sd, const char *func ){
 	*sd = map_id2sd( st->rid );
 
 	if( *sd ){
-		return true;
+		return script_shop_target(sd);
 	}else{
 		ShowError("%s: fatal error ! player not attached!\n",func);
 		script_reportfunc(st);
@@ -4382,6 +4396,13 @@ void run_script_main(struct script_state *st)
 	struct script_stack *stack = st->stack;
 
 	script_attach_state(st);
+	// Keep the script's stack/position and resume once the receipt resolves.
+	// This also handles timer scripts that directly change item metadata.
+	sd = map_id2sd(st->rid);
+	if (sd && sd->shop_commit.pending && !achievement_shop_capture_active(sd) && st->state != END) {
+		st->sleep.tick = 100;
+		goto shop_script_deferred;
+	}
 
 	if(st->state == RERUNLINE) {
 		run_func(st);
@@ -4391,6 +4412,12 @@ void run_script_main(struct script_state *st)
 		st->state = RUN;
 
 	while(st->state == RUN) {
+		// attachrid/addrid may change the target during this execution.
+		sd = map_id2sd(st->rid);
+		if (sd && sd->shop_commit.pending && !achievement_shop_capture_active(sd)) {
+			st->sleep.tick = 100;
+			break;
+		}
 		enum c_op c = get_com(st->script->script_buf,&st->pos);
 		switch(c){
 		case C_EOL:
@@ -4477,6 +4504,7 @@ void run_script_main(struct script_state *st)
 		}
 	}
 
+shop_script_deferred:
 	if(st->sleep.tick > 0) {
 		//Restore previous script
 		script_detach_state(st, false);
@@ -7557,6 +7585,49 @@ BUILDIN_FUNC(checkweight)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+// Conservative inventory preflight: reserve space for every possible group outcome
+// without drawing RNG or changing shared-pool state. Extra slots avoid relying on
+// stacking when entries carry bound, named, rental or unique-ID metadata.
+BUILDIN_FUNC(checkweightgroup) {
+	map_session_data* sd;
+	if (!script_rid2sd(sd)) return SCRIPT_CMD_FAILURE;
+	const int64 group_id = script_getnum(st, 2);
+	auto group = group_id > 0 && group_id <= UINT16_MAX ? itemdb_group.find(static_cast<uint16>(group_id)) : nullptr;
+	if (!group || group->random.empty()) { script_pushint(st, 0); return SCRIPT_CMD_SUCCESS; }
+	uint64 weight = 0, slots = 0;
+	std::unordered_map<t_itemid, uint64> amounts;
+	for (const auto& pair : group->random) {
+		const auto& sub = pair.second;
+		if (!sub || sub->data.empty()) { script_pushint(st, 0); return SCRIPT_CMD_SUCCESS; }
+		const bool all = sub->algorithm == GROUP_ALGORITHM_ALL;
+		uint64 sub_weight = 0, sub_slots = 0;
+		std::unordered_map<t_itemid, uint64> sub_amounts;
+		for (const auto& row : sub->data) {
+			const auto& entry = row.second;
+			auto item = entry ? item_db.find(entry->nameid) : nullptr;
+			if (!item || entry->amount == 0) { script_pushint(st, 0); return SCRIPT_CMD_SUCCESS; }
+			const uint64 entry_weight = static_cast<uint64>(item->weight) * entry->amount;
+			const uint64 entry_slots = itemdb_isstackable(entry->nameid) && entry->isStacked ? 1 : entry->amount;
+			if (all) {
+				sub_weight += entry_weight; sub_slots += entry_slots;
+				sub_amounts[entry->nameid] += entry->amount;
+			} else {
+				sub_weight = std::max(sub_weight, entry_weight);
+				sub_slots = std::max(sub_slots, entry_slots);
+				sub_amounts[entry->nameid] = std::max(sub_amounts[entry->nameid], static_cast<uint64>(entry->amount));
+			}
+		}
+		weight += sub_weight; slots += sub_slots;
+		for (const auto& amount : sub_amounts) amounts[amount.first] += amount.second;
+	}
+	bool fits = weight + sd->weight <= sd->max_weight && slots <= pc_inventoryblank(sd);
+	for (const auto& amount : amounts) {
+		if (amount.second > MAX_AMOUNT || pc_checkadditem(sd, amount.first, static_cast<int32>(amount.second)) == CHKADDITEM_OVERAMOUNT) fits = false;
+	}
+	script_pushint(st, fits);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(checkweight2)
 {
 	//variable sub checkweight
@@ -7723,6 +7794,16 @@ BUILDIN_FUNC(getitem)
 	if( sd == nullptr ) // no target
 		return SCRIPT_CMD_SUCCESS;
 
+	// Ordinary-only rewards are synchronous: callers may verify delivery before payment.
+	if (!strcmp(command,"getordinaryitem") && (id->type==IT_PETEGG || pet_db_search(nameid,PET_EGG))) {
+		clif_displaymessage(sd->fd,"This reward requires an ordinary item.");
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	const auto pet_result=pn_pet_grant(*sd,it,amount);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
+
 	//Check if it's stackable.
 	if( !itemdb_isstackable2( id.get() ) ){
 		get_count = 1;
@@ -7732,8 +7813,7 @@ BUILDIN_FUNC(getitem)
 
 	for (i = 0; i < amount; i += get_count)
 	{
-		// if not pet egg
-		if (!pet_create_egg(sd, nameid))
+		// Pet outputs were submitted as one immutable batch above.
 		{
 			e_additem_result flag = pc_additem( sd, &it, get_count, LOG_TYPE_SCRIPT );
 
@@ -7889,6 +7969,10 @@ BUILDIN_FUNC(getitem2)
 			}
 		}
 
+		if(amount<=0)return SCRIPT_CMD_SUCCESS;
+		const auto pet_result=pn_pet_grant(*sd,item_tmp,amount);
+		if(pet_result!=pn_pet_grant_result::NotPet)
+			return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 		int32 get_count = 0;
 	
 		//Check if it's stackable.
@@ -7900,8 +7984,7 @@ BUILDIN_FUNC(getitem2)
 
 		for (int32 i = 0; i < amount; i += get_count)
 		{
-			// if not pet egg
-			if (!pet_create_egg(sd, nameid))
+			// Pet outputs were submitted as one immutable batch above.
 			{
 				e_additem_result flag = pc_additem( sd, &item_tmp, get_count, LOG_TYPE_SCRIPT );
 
@@ -7956,6 +8039,9 @@ BUILDIN_FUNC(rentitem) {
 	it.identify = 1;
 	it.expire_time = (uint32)(time(nullptr) + seconds);
 	it.bound = BOUND_NONE;
+	const auto pet_result=pn_pet_grant(*sd,it,1);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 
 	if( (flag = pc_additem(sd, &it, 1, LOG_TYPE_SCRIPT)) )
 	{
@@ -8067,6 +8153,9 @@ BUILDIN_FUNC(rentitem2) {
 		it.enchantgrade = static_cast<e_enchantgrade>(grade);
 	}
 
+	const auto pet_result=pn_pet_grant(*sd,it,1);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 	unsigned char flag = 0;
 
 	if( (flag = pc_additem(sd, &it, 1, LOG_TYPE_SCRIPT)) ) {
@@ -8132,6 +8221,11 @@ BUILDIN_FUNC(getnameditem)
 	item_tmp.card[0]=CARD0_CREATE; //we don't use 255! because for example SIGNED WEAPON shouldn't get TOP10 BS Fame bonus [Lupus]
 	item_tmp.card[2]=GetWord(tsd->status.char_id,0);
 	item_tmp.card[3]=GetWord(tsd->status.char_id,1);
+	const auto pet_result=pn_pet_grant(*sd,item_tmp,1);
+	if(pet_result!=pn_pet_grant_result::NotPet) {
+		script_pushint(st,pet_result==pn_pet_grant_result::Pending?1:0);
+		return SCRIPT_CMD_SUCCESS;
+	}
 	if(pc_additem(sd,&item_tmp,1,LOG_TYPE_SCRIPT)) {
 		script_pushint(st,0);
 		return SCRIPT_CMD_SUCCESS;	//Failed to add item, we will not drop if they don't fit
@@ -8378,7 +8472,7 @@ static void buildin_delitem_delete(map_session_data* sd, int32 idx, int32* amoun
 	{
 		if( itemdb_type(itm->nameid) == IT_PETEGG && itm->card[0] == CARD0_PET )
 		{// delete associated pet
-			intif_delete_petdata(MakeDWord(itm->card[1], itm->card[2]));
+			if(!pn_item_use_active(sd))intif_delete_petdata(MakeDWord(itm->card[1], itm->card[2]));
 		}
 		switch(loc) {
 			case TABLE_CART:
@@ -11696,11 +11790,8 @@ BUILDIN_FUNC(makepet)
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
-
-	intif_create_pet( sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str() );
-
-	return SCRIPT_CMD_SUCCESS;
+	item egg{};egg.nameid=pet->EggID;egg.identify=1;
+	return pn_pet_grant(*sd,egg,1)==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
 }
 
 /**
@@ -13881,7 +13972,7 @@ BUILDIN_FUNC(warpwaitingpc)
 
 		if( cd->zeny )
 		{// fee set
-			if( (uint32)sd->status.zeny < cd->zeny )
+			if( sd->status.zeny < cd->zeny )
 			{// no zeny to cover set fee
 				break;
 			}
@@ -14893,7 +14984,76 @@ static bool script_add_removed_cards(map_session_data* sd, const std::vector<s_s
 	return true;
 }
 
-static bool script_remove_equipment_cards(map_session_data* sd, int32 position, e_script_card_removal mode) {
+struct s_script_card_removal_payment {
+	bool enabled = false;
+	int64 zeny = 0;
+	t_itemid materials[2] = {};
+	int16 indices[2] = { -1, -1 };
+};
+
+static bool script_read_card_removal_payment(script_state* st, int32 argument,
+	s_script_card_removal_payment& payment) {
+	if (!script_hasdata(st, argument)) {
+		return true;
+	}
+	if (!script_hasdata(st, argument + 2)) {
+		return false;
+	}
+	payment.enabled = true;
+	payment.zeny = script_getnum64(st, argument);
+	if (payment.zeny < 0 || payment.zeny > MAX_ZENY) {
+		return false;
+	}
+	for (int32 i = 0; i < 2; ++i) {
+		const int64 id = script_getnum64(st, argument + 1 + i);
+		if (id <= 0 || id > UINT32_MAX) {
+			return false;
+		}
+		payment.materials[i] = static_cast<t_itemid>(id);
+		auto data = item_db.find(payment.materials[i]);
+		// Fee materials cannot alias either equipment or returned card outputs.
+		if (data == nullptr || data->type != IT_ETC) {
+			return false;
+		}
+	}
+	return payment.materials[0] != payment.materials[1];
+}
+
+static bool script_check_card_removal_payment(map_session_data* sd, s_script_card_removal_payment& payment) {
+	if (!payment.enabled) {
+		return true;
+	}
+	if (pc_transaction_locked(sd) || sd->status.zeny < payment.zeny) {
+		return false;
+	}
+	for (int32 i = 0; i < 2; ++i) {
+		const int16 index = pc_search_inventory(sd, payment.materials[i]);
+		if (index < 0 || index >= sd->status.inventory_slots || sd->inventory_data[index] == nullptr ||
+			sd->inventory_data[index]->nameid != payment.materials[i] ||
+			sd->inventory_data[index]->type != IT_ETC ||
+			sd->inventory.u.items_inventory[index].equip || sd->inventory.u.items_inventory[index].equipSwitch) {
+			return false;
+		}
+		payment.indices[i] = index;
+	}
+	return true;
+}
+
+static void script_commit_card_removal_payment(map_session_data* sd, const s_script_card_removal_payment& payment) {
+	if (!payment.enabled) {
+		return;
+	}
+	// The post-callback preflight establishes every pc_payzeny/pc_delitem
+	// precondition. No script callbacks occur between it and these deductions;
+	// distinct unequipped Etc materials cannot overlap the card/item mutation.
+	pc_payzeny(sd, payment.zeny, LOG_TYPE_SCRIPT);
+	for (int16 index : payment.indices) {
+		pc_delitem(sd, index, 1, 8, 0, LOG_TYPE_SCRIPT);
+	}
+}
+
+static bool script_remove_equipment_cards(map_session_data* sd, int32 position, e_script_card_removal mode,
+	s_script_card_removal_payment payment = {}) {
 	if (!equip_index_check(position)) {
 		return false;
 	}
@@ -14927,10 +15087,15 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 	// Match the historical no-card behavior: nothing is destroyed and no
 	// visual effect is shown.
 	if (cards.empty()) {
-		return true;
+		return !payment.enabled;
+	}
+	if (!script_check_card_removal_payment(sd, payment)) {
+		return false;
 	}
 
 	if (mode == e_script_card_removal::HARMLESS) {
+		script_commit_card_removal_payment(sd, payment);
+		if (payment.enabled) pc_show_questinfo(sd);
 		clif_misceffect(*sd, NOTIFYEFFECT_REFINE_FAILURE);
 		return true;
 	}
@@ -14960,7 +15125,8 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 
 	// Unequip scripts may change weight, capacity, or other inventory stacks.
 	// Repeat the full output preflight against the post-unequip state.
-	if (returns_cards && !script_can_return_removed_cards(sd, cards)) {
+	if ((returns_cards && !script_can_return_removed_cards(sd, cards)) ||
+		!script_check_card_removal_payment(sd, payment)) {
 		pc_equipitem(sd, index, equipped_position);
 		return false;
 	}
@@ -14974,7 +15140,7 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 	// pc_additem does not run item scripts for these validated card outputs, but
 	// retain the exact compare-and-swap guard immediately before commit.
 	if (memcmp(&current_item, &expected_item, sizeof(struct item)) != 0 ||
-		sd->inventory_data[index] != selected_data) {
+		sd->inventory_data[index] != selected_data || !script_check_card_removal_payment(sd, payment)) {
 		if (script_rollback_removed_cards(sd, additions) &&
 			memcmp(&current_item, &expected_item, sizeof(struct item)) == 0 &&
 			sd->inventory_data[index] == selected_data) {
@@ -14984,11 +15150,12 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 	}
 
 	if (mode == e_script_card_removal::DESTROY_BOTH || mode == e_script_card_removal::DESTROY_ITEM) {
-		if (pc_delitem(sd, index, 1, 0, 2, LOG_TYPE_SCRIPT) != 0) {
+		if (pc_delitem(sd, index, 1, payment.enabled ? 8 : 0, 2, LOG_TYPE_SCRIPT) != 0) {
 			script_rollback_removed_cards(sd, additions);
 			pc_equipitem(sd, index, equipped_position);
 			return false;
 		}
+		script_commit_card_removal_payment(sd, payment);
 	} else {
 		log_pick_pc(sd, LOG_TYPE_SCRIPT, -1, &current_item);
 		for (const s_script_removed_card& card : cards) {
@@ -14998,10 +15165,12 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 
 		clif_delitem(*sd, index, 1, mode == e_script_card_removal::SUCCESS ? 3 : 2);
 		clif_additem(sd, index, 1, 0);
+		script_commit_card_removal_payment(sd, payment);
 		// Mutation is complete even if a map/item rule prevents re-equipping.
 		pc_equipitem(sd, index, equipped_position);
 	}
 
+	if (payment.enabled) pc_show_questinfo(sd);
 	clif_misceffect(*sd, mode == e_script_card_removal::SUCCESS ?
 		NOTIFYEFFECT_REFINE_SUCCESS : NOTIFYEFFECT_REFINE_FAILURE);
 	return true;
@@ -15009,7 +15178,7 @@ static bool script_remove_equipment_cards(map_session_data* sd, int32 position, 
 
 /// Removes all physical cards from the equipped item in place and returns them.
 /// Returns 1 on commit (or a harmless no-op), 0 if validation/preflight/CAS fails.
-/// successremovecards <slot>;
+/// successremovecards <slot>{,<fee>,<material1>,<material2>};
 BUILDIN_FUNC(successremovecards) {
 	map_session_data* sd;
 
@@ -15018,13 +15187,14 @@ BUILDIN_FUNC(successremovecards) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	script_pushint(st, script_remove_equipment_cards(sd, script_getnum(st, 2),
-		e_script_card_removal::SUCCESS) ? 1 : 0);
+	s_script_card_removal_payment payment;
+	script_pushint(st, script_read_card_removal_payment(st, 3, payment) &&
+		script_remove_equipment_cards(sd, script_getnum(st, 2), e_script_card_removal::SUCCESS, payment) ? 1 : 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
 /// Removes all physical cards using the requested historical failure outcome.
-/// failedremovecards <slot>, <type>;
+/// failedremovecards <slot>, <type>{,<fee>,<material1>,<material2>};
 BUILDIN_FUNC(failedremovecards) {
 	map_session_data* sd;
 
@@ -15043,7 +15213,9 @@ BUILDIN_FUNC(failedremovecards) {
 		mode = e_script_card_removal::DESTROY_ITEM;
 	}
 
-	script_pushint(st, script_remove_equipment_cards(sd, script_getnum(st, 2), mode) ? 1 : 0);
+	s_script_card_removal_payment payment;
+	script_pushint(st, script_read_card_removal_payment(st, 4, payment) &&
+		script_remove_equipment_cards(sd, script_getnum(st, 2), mode, payment) ? 1 : 0);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -23942,6 +24114,10 @@ BUILDIN_FUNC(getrandgroupitem) {
 	if (!qty)
 		qty = entry->amount;
 
+	const auto pet_result=pn_pet_grant(*sd,item_tmp,qty);
+	if(pet_result!=pn_pet_grant_result::NotPet)
+		return pet_result==pn_pet_grant_result::Pending?SCRIPT_CMD_SUCCESS:SCRIPT_CMD_FAILURE;
+
 	//Check if it's stackable.
 	if (!itemdb_isstackable(entry->nameid)) {
 		item_tmp.amount = 1;
@@ -23958,8 +24134,8 @@ BUILDIN_FUNC(getrandgroupitem) {
 	}
 
 	for (i = 0; i < get_count; i++) {
-		// if not pet egg
-		if (!pet_create_egg(sd, entry->nameid)) {
+		// Pet outputs were submitted as one immutable batch above.
+		{
 			e_additem_result flag = pc_additem( sd, &item_tmp, item_tmp.amount, LOG_TYPE_SCRIPT );
 
 			if( flag != ADDITEM_SUCCESS ){
@@ -26568,6 +26744,14 @@ BUILDIN_FUNC(duplicate)
  * Return the duplicate Unique name on success or empty string on failure.
  * duplicate_dynamic("<NPC name>"{,<character ID>});
  */
+BUILDIN_FUNC(goldpointinfo) {
+	map_session_data* sd;
+	if (!script_rid2sd(sd))
+		return SCRIPT_CMD_FAILURE;
+	clif_goldpc_info(*sd);
+	return SCRIPT_CMD_SUCCESS;
+}
+
 BUILDIN_FUNC(duplicate_dynamic){
 	const char* old_npcname = script_getstr( st, 2 );
 	npc_data* nd = npc_name2id( old_npcname );
@@ -26615,8 +26799,8 @@ BUILDIN_FUNC(achievementadd) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
+		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26647,8 +26831,8 @@ BUILDIN_FUNC(achievementremove) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
+		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26678,9 +26862,8 @@ BUILDIN_FUNC(achievementinfo) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !sd->state.pc_loaded ){
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
 		script_pushint(st, false);
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26707,16 +26890,16 @@ BUILDIN_FUNC(achievementcomplete) {
 		return SCRIPT_CMD_FAILURE;
 	}
 	
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
+		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
 	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
-	if (i == sd->achievement_data.count)
-		achievement_add(sd, achievement_id);
-	achievement_update_achievement(sd, achievement_id, true);
-	script_pushint(st, true);
+	bool success = i < sd->achievement_data.count || achievement_add(sd, achievement_id) != nullptr;
+	if (success)
+		success = achievement_update_achievement(sd, achievement_id, true);
+	script_pushint(st, success);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -26739,9 +26922,8 @@ BUILDIN_FUNC(achievementexists) {
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if( !sd->state.pc_loaded ){
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
 		script_pushint(st, false);
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
 		return SCRIPT_CMD_SUCCESS;
 	}
 
@@ -26773,35 +26955,29 @@ BUILDIN_FUNC(achievementupdate) {
 		return SCRIPT_CMD_FAILURE;
 	}
 
-	if( !sd->state.pc_loaded ){
-		// Simply ignore it on the first call, because the status will be recalculated after loading anyway
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
-	if (i == sd->achievement_data.count)
-		achievement_add(sd, achievement_id);
-
-	ARR_FIND(0, sd->achievement_data.count, i, sd->achievement_data.achievements[i].achievement_id == achievement_id);
-	if (i == sd->achievement_data.count) {
+	if (!sd->state.pc_loaded || !sd->achievement_data.loaded) {
 		script_pushint(st, false);
 		return SCRIPT_CMD_SUCCESS;
 	}
 
-	if (type >= ACHIEVEINFO_COUNT1 && type <= ACHIEVEINFO_COUNT10)
-		sd->achievement_data.achievements[i].count[type - 1] = value;
-	else if (type == ACHIEVEINFO_COMPLETE || type == ACHIEVEINFO_COMPLETEDATE)
-		sd->achievement_data.achievements[i].completed = value;
-	else if (type == ACHIEVEINFO_GOTREWARD)
-		sd->achievement_data.achievements[i].rewarded = value;
-	else {
+	bool success = false;
+	if (type >= ACHIEVEINFO_COUNT1 && type <= ACHIEVEINFO_COUNT10) {
+		success = achievement_update_count(sd, achievement_id,
+			static_cast<uint16>(type - ACHIEVEINFO_COUNT1), value);
+	} else if (type == ACHIEVEINFO_COMPLETE || type == ACHIEVEINFO_COMPLETEDATE || type == ACHIEVEINFO_GOTREWARD) {
+		ARR_FIND(0, sd->achievement_data.count, i,
+			sd->achievement_data.achievements[i].achievement_id == achievement_id);
+		if (i < sd->achievement_data.count) {
+			const time_t current = type == ACHIEVEINFO_GOTREWARD ?
+				sd->achievement_data.achievements[i].rewarded : sd->achievement_data.achievements[i].completed;
+			success = value >= 0 && current == static_cast<time_t>(value);
+		}
+		if (!success)
+			ShowWarning("buildin_achievementupdate: Completion and reward timestamps are immutable; use achievementcomplete and the reward flow.\n");
+	} else {
 		ShowWarning("buildin_achievementupdate: Unknown type '%d'.\n", type);
-		script_pushint(st, false);
-		return SCRIPT_CMD_FAILURE;
 	}
-
-	achievement_update_achievement(sd, achievement_id, false);
-	script_pushint(st, true);
+	script_pushint(st, success);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -26861,6 +27037,10 @@ BUILDIN_FUNC(getequiprefinecost) {
 			break;
 		case REFINE_ZENY_COST:
 			script_pushint( st, cost->zeny );
+			break;
+		case REFINE_SUCCESS_RATE:
+			// Preserve the selected recipe's full basis-point precision.
+			script_pushint( st, cost->chance );
 			break;
 		default:
 			script_pushint( st, -1 );
@@ -27009,14 +27189,11 @@ BUILDIN_FUNC(mail){
 	safestrncpy(msg.body, body, MAIL_BODY_LENGTH);
 
 	if( script_hasdata(st,6) ){
-		int32 zeny = script_getnum(st, 6);
+		int64 zeny = script_getnum64(st, 6);
 
 		if( zeny < 0 ){
 			ShowError( "buildin_mail: a negative amount of zeny can not be sent.\n" );
 			return SCRIPT_CMD_FAILURE;
-		}else if( zeny > MAX_ZENY ){
-			ShowError( "buildin_mail: amount of zeny %u is exceeding maximum of %u. Capping...\n", zeny, MAX_ZENY );
-			zeny = MAX_ZENY;
 		}
 
 		msg.zeny = zeny;
@@ -28832,6 +29009,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF2(cartcountitem,"cartcountitem2","viiiiiii?"),
 	BUILDIN_DEF(checkweight,"vi*"),
 	BUILDIN_DEF(checkweight2,"rr"),
+	BUILDIN_DEF(checkweightgroup,"i"),
 	BUILDIN_DEF(readparam,"i?"),
 	BUILDIN_DEF(getcharid,"i?"),
 	BUILDIN_DEF(getnpcid,"i?"),
@@ -29008,8 +29186,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setcastledata,"sii"),
 	BUILDIN_DEF(requestguildinfo,"i?"),
 	BUILDIN_DEF(getequipcardcnt,"i"),
-	BUILDIN_DEF(successremovecards,"i"),
-	BUILDIN_DEF(failedremovecards,"ii"),
+	BUILDIN_DEF(successremovecards,"i???"),
+	BUILDIN_DEF(failedremovecards,"ii???"),
 	BUILDIN_DEF(marriage,"s"),
 	BUILDIN_DEF2(wedding_effect,"wedding",""),
 	BUILDIN_DEF(divorce,"?"),
@@ -29374,6 +29552,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(pnstorageprice,""),
 	BUILDIN_DEF(unloadnpc, "s"),
 	BUILDIN_DEF(duplicate, "ssii?????"),
+	BUILDIN_DEF(goldpointinfo, ""),
 	BUILDIN_DEF(duplicate_dynamic, "s?"),
 
 	// WoE TE

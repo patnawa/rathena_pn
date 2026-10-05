@@ -1,0 +1,958 @@
+Header:
+  Type: ITEM_DB
+  Version: 3
+Body:
+- Id: 1003053
+  AegisName: aegis_1003053
+  Name: Windhawk Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1003054
+  AegisName: aegis_1003054
+  Name: Ranger Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1003055
+  AegisName: aegis_1003055
+  Name: Ranger Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1003056
+  AegisName: aegis_1003056
+  Name: Ranger Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 1003057
+  AegisName: aegis_1003057
+  Name: Elemental Master Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1003058
+  AegisName: aegis_1003058
+  Name: Sorcerer Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1003059
+  AegisName: aegis_1003059
+  Name: Sorcerer Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1003060
+  AegisName: aegis_1003060
+  Name: Sorcerer Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 1003061
+  AegisName: aegis_1003061
+  Name: Shinkiro Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1003062
+  AegisName: aegis_1003062
+  Name: Kagerou Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1003063
+  AegisName: aegis_1003063
+  Name: Kagerou Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1003064
+  AegisName: aegis_1003064
+  Name: Kagerou Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 1003065
+  AegisName: aegis_1003065
+  Name: Shiranui Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1003066
+  AegisName: aegis_1003066
+  Name: Oboro Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1003067
+  AegisName: aegis_1003067
+  Name: Oboro Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1003068
+  AegisName: aegis_1003068
+  Name: Oboro Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 315324
+  AegisName: aegis_315324
+  Name: Windhawk Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"WH_FLAMETRAP",10;
+
+    bonus2 bSkillAtk,"WH_SWIFTTRAP",10;
+
+    '
+- Id: 315325
+  AegisName: aegis_315325
+  Name: Ranger Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-(getskilllv("RA_ARROWSTORM")/2);
+
+    '
+- Id: 315326
+  AegisName: aegis_315326
+  Name: Ranger Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"RA_AIMEDBOLT",5*getskilllv("RA_RESEARCHTRAP");
+
+    '
+- Id: 315327
+  AegisName: aegis_315327
+  Name: Ranger Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bAddSize,Size_All,3*(getskilllv("RA_AIMEDBOLT")/2);
+
+    '
+- Id: 315328
+  AegisName: aegis_315328
+  Name: Elemental Master Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"EM_DIAMOND_STORM",15;
+
+    '
+- Id: 315329
+  AegisName: aegis_315329
+  Name: Sorcerer Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bFixedCast,-100*getskilllv("SO_PSYCHIC_WAVE");
+
+    '
+- Id: 315330
+  AegisName: aegis_315330
+  Name: Sorcerer Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bVariableCastrate,-2*getskilllv("SO_POISON_BUSTER");
+
+    '
+- Id: 315331
+  AegisName: aegis_315331
+  Name: Sorcerer Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bMagicAddSize,Size_All,3*getskilllv("SO_DIAMONDDUST");
+
+    '
+- Id: 315332
+  AegisName: aegis_315332
+  Name: Shinkiro Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"SS_KAGENOMAI",10;
+
+    '
+- Id: 315333
+  AegisName: aegis_315333
+  Name: Kagerou Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"KO_JYUMONJIKIRI",5*getskilllv("KO_RIGHT");
+
+    '
+- Id: 315334
+  AegisName: aegis_315334
+  Name: Kagerou Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"KO_HAPPOKUNAI",3*getskilllv("KO_JYUMONJIKIRI");
+
+    '
+- Id: 315335
+  AegisName: aegis_315335
+  Name: Kagerou Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"KO_HUUMARANKA",5*getskilllv("KO_MEIKYOUSISUI");
+
+    '
+- Id: 315336
+  AegisName: aegis_315336
+  Name: Shiranui Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"SS_ANTENPOU",10;
+
+    '
+- Id: 315337
+  AegisName: aegis_315337
+  Name: Oboro Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"NJ_BAKUENRYU",7*getskilllv("KO_RIGHT");
+
+    bonus2 bSkillAtk,"NJ_HYOUSYOURAKU",7*getskilllv("KO_RIGHT");
+
+    bonus2 bSkillAtk,"NJ_KAMAITACHI",7*getskilllv("KO_RIGHT");
+
+    '
+- Id: 315338
+  AegisName: aegis_315338
+  Name: Oboro Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bMagicAtkEle,Ele_Fire,3*getskilllv("KO_MEIKYOUSISUI");
+
+    bonus2 bMagicAtkEle,Ele_Water,3*getskilllv("KO_MEIKYOUSISUI");
+
+    bonus2 bMagicAtkEle,Ele_Wind,3*getskilllv("KO_MEIKYOUSISUI");
+
+    '
+- Id: 315339
+  AegisName: aegis_315339
+  Name: Oboro Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"NJ_KOUENKA",4*getskilllv("KO_IZAYOI");
+
+    bonus2 bSkillAtk,"NJ_HYOUSENSOU",4*getskilllv("KO_IZAYOI");
+
+    bonus2 bSkillAtk,"NJ_HUUJIN",4*getskilllv("KO_IZAYOI");
+
+    '
+- Id: 1002831
+  AegisName: aegis_1002831
+  Name: Meister Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1002832
+  AegisName: aegis_1002832
+  Name: Imperial Guard Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1002833
+  AegisName: aegis_1002833
+  Name: Night Watch Stone II (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 1002843
+  AegisName: aegis_1002843
+  Name: Mechanic Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002844
+  AegisName: aegis_1002844
+  Name: Mechanic Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1002845
+  AegisName: aegis_1002845
+  Name: Mechanic Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 1002846
+  AegisName: aegis_1002846
+  Name: Royal Guard Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002847
+  AegisName: aegis_1002847
+  Name: Royal Guard Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1002848
+  AegisName: aegis_1002848
+  Name: Royal Guard Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 1002849
+  AegisName: aegis_1002849
+  Name: Rebellion Stone II (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002850
+  AegisName: aegis_1002850
+  Name: Rebellion Stone II (Middle)
+  Type: Etc
+  Weight: 100
+- Id: 1002851
+  AegisName: aegis_1002851
+  Name: Rebellion Stone II (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 315057
+  AegisName: aegis_315057
+  Name: Meister Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"MT_AXE_STOMP",10;
+
+    '
+- Id: 315058
+  AegisName: aegis_315058
+  Name: Imperial Guard Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"IG_IMPERIAL_CROSS",15;
+
+    bonus2 bSkillAtk,"IG_OVERSLASH",15;
+
+    '
+- Id: 315059
+  AegisName: aegis_315059
+  Name: Night Watch Stone II (Garment)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"NW_WILD_FIRE",15;
+
+    bonus2 bSkillAtk,"NW_MIDNIGHT_FALLEN",15;
+
+    '
+- Id: 315060
+  AegisName: aegis_315060
+  Name: Mechanic Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bShortAtkRate,2*getskilllv("NC_RESEARCHFE");
+
+    bonus bLongAtkRate,2*getskilllv("NC_RESEARCHFE");
+
+    '
+- Id: 315061
+  AegisName: aegis_315061
+  Name: Mechanic Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"NC_POWERSWING",10*getskilllv("NC_AXETORNADO");
+
+    '
+- Id: 315062
+  AegisName: aegis_315062
+  Name: Mechanic Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-(getskilllv("NC_TRAININGAXE")/2);
+
+    '
+- Id: 315063
+  AegisName: aegis_315063
+  Name: Royal Guard Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bShortAtkRate,2*getskilllv("LG_INSPIRATION");
+
+    bonus bLongAtkRate,2*getskilllv("LG_INSPIRATION");
+
+    '
+- Id: 315064
+  AegisName: aegis_315064
+  Name: Royal Guard Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"LG_OVERBRAND",10*getskilllv("LG_PINPOINTATTACK");
+
+    '
+- Id: 315065
+  AegisName: aegis_315065
+  Name: Royal Guard Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bVariableCastrate,-2*getskilllv("LG_PRESTIGE");
+
+    '
+- Id: 315066
+  AegisName: aegis_315066
+  Name: Rebellion Stone II (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"RL_FIREDANCE",7*getskilllv("RL_P_ALTER");
+
+    bonus2 bSkillAtk,"RL_HAMMER_OF_GOD",7*getskilllv("RL_P_ALTER");
+
+    '
+- Id: 315067
+  AegisName: aegis_315067
+  Name: Rebellion Stone II (Middle)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"RL_BANISHING_BUSTER",5*getskilllv("RL_S_STORM");
+
+    '
+- Id: 315068
+  AegisName: aegis_315068
+  Name: Rebellion Stone II (Lower)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus2 bSkillAtk,"RL_D_TAIL",7*getskilllv("RL_HEAT_BARREL");
+
+    '
+- Id: 1002855
+  AegisName: aegis_1002855
+  Name: Cherry Blossom Footprint (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 313953
+  AegisName: aegis_313953
+  Name: Cherry Blossom Footprint
+  Type: Card
+  SubType: Enchant
+  Script: 'hateffect FOOTPRINT_EF_BLOSSOM,true;
+
+    '
+  UnEquipScript: 'hateffect FOOTPRINT_EF_BLOSSOM,false;
+
+    '
+- Id: 1002856
+  AegisName: aegis_1002856
+  Name: Sprout Footprint (Garment)
+  Type: Etc
+  Weight: 100
+- Id: 313954
+  AegisName: aegis_313954
+  Name: Sprout Footprint
+  Type: Card
+  SubType: Enchant
+  Script: 'hateffect FOOTPRINT_EF_BUD,true;
+
+    '
+  UnEquipScript: 'hateffect FOOTPRINT_EF_BUD,false;
+
+    '
+- Id: 313738
+  AegisName: Purified_STR_TH_Enchant
+  Name: Purified Stone Garment(STR)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bBaseAtk,100;
+
+    '
+- Id: 313739
+  AegisName: Purified_LUK_TH_Enchant
+  Name: Purified Stone Garment(LUK)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bCritAtkRate,20;
+
+    '
+- Id: 313740
+  AegisName: Purified_DEX_TH_Enchant
+  Name: Purified Stone Garment(DEX)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bLongAtkRate,10;
+
+    '
+- Id: 313741
+  AegisName: Purified_INT_TH_Enchant
+  Name: Purified Stone Garment(INT)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bMatk,100;
+
+    '
+- Id: 313742
+  AegisName: Purified_VIT_TH_Enchant
+  Name: Purified Stone Garment(VIT)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bMaxHPrate,20;
+
+    '
+- Id: 313743
+  AegisName: Purified_AGI_TH_Enchant
+  Name: Purified Stone Garment(AGI)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bHit,60;
+
+    '
+- Id: 313744
+  AegisName: Purified_Ultimate_TH_Enchant
+  Name: Purified Stone Garment(Ultimate)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-20;
+
+    bonus2 bAddClass,Class_All,20;
+
+    bonus2 bMagicAddClass,Class_All,20;
+
+    bonus bBaseAtk,100;
+
+    bonus bMatk,100;
+
+    bonus bHit,60;
+
+    bonus bLongAtkRate,10;
+
+    bonus bMaxHPrate,20;
+
+    bonus bCritAtkRate,20;
+
+    '
+- Id: 314795
+  AegisName: Festa_WIS_TH_Enchant
+  Name: Ragnarok Festa WIS (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bWis,5;
+
+    bonus bPAtk,5;
+
+    bonus bSMatk,5;
+
+    bonus bDelayrate,-5;
+
+    bonus bMRes,25;
+
+    bonus bMaxSPrate,5;
+
+    '
+- Id: 314796
+  AegisName: Festa_Supreme_TH_Enchant
+  Name: Ragnarok Festa Supreme (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bPow,10;
+
+    bonus bSta,10;
+
+    bonus bWis,10;
+
+    bonus bSpl,10;
+
+    bonus bCon,10;
+
+    bonus bCrt,10;
+
+    bonus bPAtk,10;
+
+    bonus bSMatk,10;
+
+    bonus bDelayrate,-10;
+
+    bonus bMaxHPrate,10;
+
+    bonus bMaxSPrate,10;
+
+    bonus bShortAtkRate,10;
+
+    bonus bLongAtkRate,10;
+
+    bonus bMatkRate,10;
+
+    skill "BS_GREED",1;
+
+    '
+- Id: 314797
+  AegisName: Festa_POW_TH_Enchant
+  Name: Ragnarok Festa POW (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bPow,5;
+
+    bonus bPAtk,5;
+
+    bonus bDelayrate,-5;
+
+    bonus bShortAtkRate,10;
+
+    '
+- Id: 314798
+  AegisName: Festa_STA_TH_Enchant
+  Name: Ragnarok Festa STA (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bSta,5;
+
+    bonus bPAtk,5;
+
+    bonus bSMatk,5;
+
+    bonus bDelayrate,-5;
+
+    bonus bRes,25;
+
+    bonus bMaxHPrate,5;
+
+    '
+- Id: 314799
+  AegisName: Festa_SPL_TH_Enchant
+  Name: Ragnarok Festa SPL (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bSpl,5;
+
+    bonus bSMatk,5;
+
+    bonus bDelayrate,-5;
+
+    bonus bMatkRate,10;
+
+    '
+- Id: 314800
+  AegisName: Festa_CON_TH_Enchant
+  Name: Ragnarok Festa CON (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bCon,5;
+
+    bonus bPAtk,5;
+
+    bonus bDelayrate,-5;
+
+    bonus bLongAtkRate,10;
+
+    '
+- Id: 314801
+  AegisName: Festa_CRT_TH_Enchant
+  Name: Ragnarok Festa CRT (Upper)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bCrt,5;
+
+    bonus bPAtk,5;
+
+    bonus bDelayrate,-5;
+
+    bonus bCritAtkRate,10;
+
+    '
+- Id: 1001951
+  AegisName: Purified_STR_TH_Stone
+  Name: Purified Stone Garment(STR)
+  Type: Etc
+  Weight: 10
+- Id: 1001952
+  AegisName: Purified_LUK_TH_Stone
+  Name: Purified Stone Garment(LUK)
+  Type: Etc
+  Weight: 10
+- Id: 1001953
+  AegisName: Purified_DEX_TH_Stone
+  Name: Purified Stone Garment(DEX)
+  Type: Etc
+  Weight: 10
+- Id: 1001954
+  AegisName: Purified_INT_TH_Stone
+  Name: Purified Stone Garment(INT)
+  Type: Etc
+  Weight: 10
+- Id: 1001955
+  AegisName: Purified_VIT_TH_Stone
+  Name: Purified Stone Garment(VIT)
+  Type: Etc
+  Weight: 10
+- Id: 1001956
+  AegisName: Purified_AGI_TH_Stone
+  Name: Purified Stone Garment(AGI)
+  Type: Etc
+  Weight: 10
+- Id: 1001957
+  AegisName: Purified_Ultimate_TH_Stone
+  Name: Purified Stone Garment(Ultimate)
+  Type: Etc
+  Weight: 10
+- Id: 1002558
+  AegisName: Festa_Supreme_TH_Stone
+  Name: Ragnarok Festa Stone Supreme (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002559
+  AegisName: Festa_POW_TH_Stone
+  Name: Ragnarok Festa Stone POW (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002560
+  AegisName: Festa_STA_TH_Stone
+  Name: Ragnarok Festa Stone STA (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002561
+  AegisName: Festa_WIS_TH_Stone
+  Name: Ragnarok Festa Stone WIS (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002562
+  AegisName: Festa_SPL_TH_Stone
+  Name: Ragnarok Festa Stone SPL (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002563
+  AegisName: Festa_CON_TH_Stone
+  Name: Ragnarok Festa Stone CON (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 1002564
+  AegisName: Festa_CRT_TH_Stone
+  Name: Ragnarok Festa Stone CRT (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 27427
+  AegisName: Loft_EnchantSTR_TH
+  Name: Loft Stone Garment(STR)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-5;
+
+    bonus2 bAddClass,Class_All,5;
+
+    bonus2 bMagicAddClass,Class_All,5;
+
+    bonus bBaseAtk,50;'
+- Id: 27428
+  AegisName: Loft_EnchantLUK_TH
+  Name: Loft Stone Garment(LUK)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-5;
+
+    bonus2 bAddClass,Class_All,5;
+
+    bonus2 bMagicAddClass,Class_All,5;
+
+    bonus bCritAtkRate,10;'
+- Id: 27429
+  AegisName: Loft_EnchantDEX_TH
+  Name: Loft Stone Garment(DEX)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-5;
+
+    bonus2 bAddClass,Class_All,5;
+
+    bonus2 bMagicAddClass,Class_All,5;
+
+    bonus bLongAtkRate,5;'
+- Id: 27430
+  AegisName: Loft_EnchantINT_TH
+  Name: Loft Stone Garment(INT)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-5;
+
+    bonus2 bAddClass,Class_All,5;
+
+    bonus2 bMagicAddClass,Class_All,5;
+
+    bonus bMatk,50;'
+- Id: 27431
+  AegisName: Loft_EnchantVIT_TH
+  Name: Loft Stone Garment(VIT)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-5;
+
+    bonus2 bAddClass,Class_All,5;
+
+    bonus2 bMagicAddClass,Class_All,5;
+
+    bonus bMaxHPrate,10;'
+- Id: 27432
+  AegisName: Loft_EnchantAGI_TH
+  Name: Loft Stone Garment(AGI)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-5;
+
+    bonus2 bAddClass,Class_All,5;
+
+    bonus2 bMagicAddClass,Class_All,5;
+
+    bonus bHit,30;'
+- Id: 27433
+  AegisName: Loft_EnchantUltimate_TH
+  Name: Loft Stone Garment(Ultimate)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bDelayrate,-10;
+
+    bonus2 bAddClass,Class_All,10;
+
+    bonus2 bMagicAddClass,Class_All,10;
+
+    bonus bBaseAtk,50;
+
+    bonus bMatk,50;
+
+    bonus bHit,30;
+
+    bonus bLongAtkRate,5;
+
+    bonus bMaxHPrate,10;
+
+    bonus bCritAtkRate,10;'
+- Id: 1000573
+  AegisName: Firework_Effect_Upper_TH
+  Name: Firework Effect (Upper)
+  Type: Etc
+  Weight: 100
+- Id: 311459
+  AegisName: Evt_20th_Effect
+  Name: 20th Anniversary Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_EFST_C_20TH_ANNIVERSARY_HAT,true;
+  UnEquipScript: hateffect HAT_EF_EFST_C_20TH_ANNIVERSARY_HAT,false;
+- Id: 1001927
+  AegisName: Costume_Effect_Stone_1001927
+  Name: Melody Notes Effect (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 313724
+  AegisName: Costume_Effect_313724
+  Name: Melody Notes Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_C_MELODY_WING,true;
+  UnEquipScript: hateffect HAT_EF_C_MELODY_WING,false;
+- Id: 1001799
+  AegisName: Costume_Effect_Stone_1001799
+  Name: Kiel Effect (Lower)
+  Type: Etc
+  Weight: 100
+- Id: 300566
+  AegisName: Costume_Effect_300566
+  Name: Kiel Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_C_KYEL_HYRE_ULTI_TW,true;
+  UnEquipScript: hateffect HAT_EF_C_KYEL_HYRE_ULTI_TW,false;
+- Id: 1001736
+  AegisName: TW_Stone_1001736
+  Name: Melody Note Effect Stone (Upper)
+  Type: Etc
+  Weight: 10
+- Id: 300548
+  AegisName: TW_Enchant_300548
+  Name: Melody Note Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_C_MELODY_WING,true;
+  UnEquipScript: hateffect HAT_EF_C_MELODY_WING,false;
+- Id: 1001752
+  AegisName: TW_Stone_1001752
+  Name: Released Power Effect Stone (Lower)
+  Type: Etc
+  Weight: 10
+- Id: 313331
+  AegisName: TW_Enchant_313331
+  Name: Released Power Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_C_RELEASED_GROUND,true;
+  UnEquipScript: hateffect HAT_EF_C_RELEASED_GROUND,false;
+- Id: 1001868
+  AegisName: TW_Stone_1001868
+  Name: 22nd Anniversary Stone (Dual)
+  Type: Etc
+  Weight: 10
+- Id: 313524
+  AegisName: TW_Enchant_313524
+  Name: 22nd Anniversary (Dual)
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bShortAtkRate,11;
+
+    bonus bLongAtkRate,11;
+
+    bonus2 bMagicAtkEle,Ele_All,11;'
+- Id: 1002293
+  AegisName: TW_Stone_1002293
+  Name: Golden Aura Effect Stone (Lower)
+  Type: Etc
+  Weight: 10
+- Id: 314198
+  AegisName: TW_Enchant_314198
+  Name: Golden Aura Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_GOLDEN_AURA_TW,true;
+  UnEquipScript: hateffect HAT_EF_GOLDEN_AURA_TW,false;
+- Id: 1002420
+  AegisName: TW_Stone_1002420
+  Name: 23rd Anniversary Stone (Garment)
+  Type: Etc
+  Weight: 10
+- Id: 300713
+  AegisName: TW_Enchant_300713
+  Name: 23rd Anniversary
+  Type: Card
+  SubType: Enchant
+  Script: 'bonus bFixedCast,-200;
+
+    bonus bDelayrate,-3;
+
+    bonus bCritical,5;
+
+    bonus bShortAtkRate,3;
+
+    bonus bLongAtkRate,3;
+
+    bonus2 bMagicAtkEle,Ele_All,3;
+
+    bonus bVariableCastrate,-5;'
+- Id: 1002464
+  AegisName: TW_Stone_1002464
+  Name: Dark Lord Circle Effect Stone (Lower)
+  Type: Etc
+  Weight: 10
+- Id: 300714
+  AegisName: TW_Enchant_300714
+  Name: Dark Lord Circle Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_C_DARK_LORD_CLOAK,true;
+  UnEquipScript: hateffect HAT_EF_C_DARK_LORD_CLOAK,false;
+- Id: 1002585
+  AegisName: TW_Stone_1002585
+  Name: Digital Space Effect Stone (Lower)
+  Type: Etc
+  Weight: 10
+- Id: 314802
+  AegisName: TW_Enchant_314802
+  Name: Digital Space Effect
+  Type: Card
+  SubType: Enchant
+  Script: hateffect HAT_EF_DIGITAL_SPACE,true;
+  UnEquipScript: hateffect HAT_EF_DIGITAL_SPACE,false;

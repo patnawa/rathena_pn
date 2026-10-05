@@ -15,21 +15,13 @@ void SkillWarpPortal::castendPos2(block_list* src, int32 x, int32 y, uint16 skil
 	status_change* sc = status_get_sc(src);
 
 	if(sd != nullptr) {
-		std::vector<std::string> maps( MAX_MEMOPOINTS + 1 );
+		std::vector<std::string> maps;
+		maps.reserve(MAX_MEMOPOINTS + 1);
 
 		maps.push_back( sd->status.save_point.map );
 
-		if( skill_lv >= 2 ){
-			maps.push_back( sd->status.memo_point[0].map );
-
-			if( skill_lv >= 3 ){
-				maps.push_back( sd->status.memo_point[1].map );
-
-				if( skill_lv >= 4 ){
-					maps.push_back( sd->status.memo_point[2].map );
-				}
-			}
-		}
+		for (int32 memo = 0; memo < pc_memo_slots(sd, skill_lv); ++memo)
+			maps.push_back(sd->status.memo_point[memo].map);
 
 		clif_skill_warppoint( *sd, getSkillId(), skill_lv, maps );
 	}

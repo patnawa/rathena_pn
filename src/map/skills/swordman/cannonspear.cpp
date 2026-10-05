@@ -27,7 +27,7 @@ void SkillCannonSpear::calculateSkillRatio(const Damage* wd, const block_list* s
 	skillratio += -100 + skill_lv * (120 + sstatus->str);
 
 	if (sc != nullptr && sc->getSCE(SC_SPEAR_SCAR)) {
-		skillratio += 400;
+		skillratio += 200 * skill_lv;
 	}
 
 	RE_LVL_DMOD(100);

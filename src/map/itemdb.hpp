@@ -22,6 +22,12 @@ enum e_ammo_type : uint8;
 
 ///Use apple for unknown items.
 const t_itemid UNKNOWN_ITEM_ID = 512;
+// PN's independently defined Infinite Catalyst Box and rental inventory tokens.
+constexpr t_itemid PN_INFINITE_CATALYST_BOX = 50150;
+constexpr t_itemid PN_INFINITE_SOUL_TALISMAN = 50151;
+constexpr t_itemid PN_INFINITE_TRAP = 50152;
+constexpr t_itemid PN_INFINITE_ALLOY_TRAP = 50153;
+constexpr t_itemid PN_SOUL_TALISMAN_MATERIAL = 1000563; // Soa_Charm
 /// The maximum number of item delays
 #define MAX_ITEMDELAYS	10
 ///Designed for search functions, species max number of matches to display.
@@ -3618,6 +3624,7 @@ private:
 };
 
 extern ItemGroupDatabase itemdb_group;
+int64 itemdb_token_box_bound(t_itemid nameid);
 
 struct s_laphine_synthesis_requirement{
 	t_itemid item_id;

@@ -1,6 +1,9 @@
+#include <custom/pet_floor.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <common/runtime_identity.hpp>
+#include <custom/retired_tokens.hpp>
 #include "map.hpp"
 
 #include <cstdlib>
@@ -52,6 +55,7 @@
 #include "pet.hpp"
 #include "quest.hpp"
 #include "storage.hpp"
+#include "status.hpp"
 #include "trade.hpp"
 
 using namespace rathena;
@@ -1688,7 +1692,9 @@ TIMER_FUNC(map_clearflooritem_timer){
 	}
 
 
-	if (pet_db_search(fitem->item.nameid, PET_EGG))
+	if(fitem->pet_claim_token){fitem->cleartimer=add_timer(tick+1000,map_clearflooritem_timer,fitem->id,0);return 0;}
+
+	if (fitem->item.card[0]==CARD0_PET && pet_db_search(fitem->item.nameid, PET_EGG))
 		intif_delete_petdata(MakeDWord(fitem->item.card[1], fitem->item.card[2]));
 
 	clif_clearflooritem( *fitem );
@@ -1703,6 +1709,7 @@ TIMER_FUNC(map_clearflooritem_timer){
  */
 void map_clearflooritem(block_list *bl) {
 	flooritem_data* fitem = (flooritem_data*)bl;
+	pn_pet_floor_removed(*fitem);
 
 	if( fitem->cleartimer != INVALID_TIMER )
 		delete_timer(fitem->cleartimer,map_clearflooritem_timer);
@@ -2010,6 +2017,7 @@ int32 map_addflooritem(struct item *item, int32 amount, int16 m, int16 x, int16 
 	flooritem_data *fitem = nullptr;
 
 	nullpo_ret(item);
+	if (pn_tokens::retired(item->nameid)) return 0;
 
 	if (!(flags&4) && battle_config.item_onfloor && (itemdb_traderight(item->nameid).trade))
 		return 0; //can't be dropped
@@ -4931,6 +4939,14 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 			} else
 				mapdata->setMapFlag(mapflag, false);
 			break;
+		case MF_UNLIMITEDWEIGHT:
+			mapdata->setMapFlag(mapflag, status);
+			// Script reloads and dynamic set/remove-mapflag must also update users.
+			map_foreachinmap([](block_list* bl, va_list) -> int32 {
+				status_calc_weight(BL_CAST(BL_PC, bl), CALCWT_MAXBONUS);
+				return 0;
+			}, m, BL_PC);
+			break;
 		case MF_SPECIALPOPUP:
 		case MF_INVINCIBLE_TIME:
 			if (status) {
@@ -5468,6 +5484,7 @@ bool MapServer::initialize( int32 argc, char *argv[] ){
 	do_init_buyingstore();
 
 	npc_event_do_oninit();	// Init npcs (OnInit)
+	if(!pn_runtime_identity::initialize())ShowWarning("Damage Lab build comparison unavailable: runtime identity is missing or invalid.\n");
 
 	if (battle_config.pk_mode)
 		ShowNotice("Server is running on '" CL_WHITE "PK Mode" CL_RESET "'.\n");

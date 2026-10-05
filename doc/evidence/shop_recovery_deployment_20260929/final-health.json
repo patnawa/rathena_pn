@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "checked_utc": "2026-09-29T12:23:49.299491+00:00",
+  "all_seven_healthy": true,
+  "lan_health_passed": true,
+  "existing_groups_unchanged": 41,
+  "financial_groups_verified": 42,
+  "running_binaries": {
+    "map-server": "d640fecb9be3bf3ad6268953c747487fa7c065b14b936394bdb562b010b36b5d",
+    "char-server": "fdffdc0bab08c9bd6f27545216374ba8d4dcb66f8b50c0574faebeaf9e320a7b"
+  },
+  "engines": [
+    "acc_reg_num\tInnoDB",
+    "barter\tInnoDB",
+    "char\tInnoDB",
+    "inventory\tInnoDB",
+    "market\tInnoDB",
+    "pn_shop_commits\tInnoDB",
+    "sales\tInnoDB"
+  ],
+  "online_characters": 0
+}

@@ -1,0 +1,236 @@
+# This file is a part of rAthena.
+#   Copyright(C) 2022 rAthena Development Team
+#   https://rathena.org - https://github.com/rathena
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+###########################################################################
+# Item Cash Database
+###########################################################################
+#
+# Item Cash Settings
+#
+###########################################################################
+# - Tab                     Cash shop tab. Available tabs are New, Hot, Limited, Rental, Permanent, Scrolls, Consumables, Other, Sale.
+#   Items:                  List of possible items.
+#     - Item                Item name.
+#       Price               Item cost in cash points (#CASHPOINTS).
+###########################################################################
+
+Header:
+  Type: ITEM_CASH_DB
+  Version: 1
+
+# Audited usable supplies, 2026-09-29. See doc/consumable_audit_20260929.md.
+Body:
+  - Tab: New
+    Items:
+      - Item: A_HD_Carnium_Box # 200071
+        Price: 25000
+      - Item: A_HD_Bradium_Box # 200072
+        Price: 25000
+      - Item: A_HD_Elunium_Box # 200069
+        Price: 25000
+      - Item: A_HD_Oridecon_Box # 200070
+        Price: 25000
+      - Item: A_Unlimited_10_Box # 17985
+        Price: 25000
+      - Item: A_Unlimited_Box # 17986
+        Price: 2500
+      - Item: A_DEF_Scroll_Box_Set # 17983
+        Price: 25000
+      - Item: A_DEF_Scroll_Box # 17984
+        Price: 2500
+      - Item: A_Infinity_10_Box # 17981
+        Price: 25000
+      - Item: A_Infinity_Box # 17982
+        Price: 2500
+      - Item: A_LimitPowerBooster_100 # 17979
+        Price: 25000
+      - Item: A_LimitPowerBooster # 17980
+        Price: 2500
+      - Item: A_HD_High_Refine_Box # 17978
+        Price: 25000
+      - Item: A_HD_Refine_Ore_Box # 17977
+        Price: 25000
+      - Item: A_Refine_Ore_Box_Set # 17975
+        Price: 25000
+      - Item: A_Refine_Ore_Box # 17976
+        Price: 2500
+      - Item: A_Almighty100_Box # 17973
+        Price: 25000
+      - Item: A_Almighty_Box # 17974
+        Price: 2500
+      - Item: A_3_Life_Potion_10pack # 17971
+        Price: 25000
+      - Item: A_3_Life_Potion_pack # 17972
+        Price: 2500
+      - Item: A_Vigorgra_Set # 17969
+        Price: 25000
+      - Item: A_Vigorgra_Package # 17970
+        Price: 2500
+      - Item: A_Force_Booster_10_Box # 200367
+        Price: 25000
+      - Item: A_Speed_Booster_10_Box # 200412
+        Price: 25000
+      - Item: A_Speed_Booster_Box # 200411
+        Price: 2500
+      - Item: A_Force_Booster_Box # 200366
+        Price: 2500
+  - Tab: Consumables
+    Items:
+      - Item: EXP_Drop_Up_Box # 200136
+        Price: 5000
+      - Item: C_S_ArmorBox10 # 16834
+        Price: 2400
+      - Item: C_Holy_Armor_S_Box30 # 16836
+        Price: 2400
+      - Item: C_MP_Scroll_Box50 # 16851
+        Price: 1300
+      - Item: C_Mental_Potion50_Box # 16859
+        Price: 2500
+      - Item: C_Job_Manual25_Box1 # 16862
+        Price: 500
+      - Item: C_Job_Manual25_Box10 # 16863
+        Price: 4000
+      - Item: C_Insurance_Package # 16790
+        Price: 1200
+      - Item: C_Insurance_Package50 # 16791
+        Price: 5400
+      - Item: C_Siegfried_Box5 # 16796
+        Price: 1800
+      - Item: C_Siegfried_Box20 # 16797
+        Price: 6000
+      - Item: C_Blessing_10_Box50 # 16801
+        Price: 1100
+      - Item: C_Inc_Agi_10_Box50 # 16803
+        Price: 1100
+      - Item: C_Aspersio_5_Box50 # 16807
+        Price: 1100
+      - Item: C_Battle_Manual_Box # 16808
+        Price: 800
+      - Item: C_Battle_Manual_Box10 # 16809
+        Price: 6600
+      - Item: C_Bubble_Gum_Box # 16810
+        Price: 500
+      - Item: C_Bubble_Gum_Box10 # 16811
+        Price: 4200
+      - Item: C_Abrasive_Box10 # 16820
+        Price: 1900
+      - Item: C_Max_Weight_Up_Box # 16823
+        Price: 2300
+      - Item: C_Regeneration_Box10 # 16825
+        Price: 600
+      - Item: C_Myst_Water_Box50 # 17179
+        Price: 2500
+      - Item: C_S_Life_Potion_Box50 # 16828
+        Price: 1400
+      - Item: C_Med_Life_Potion_Box50 # 16830
+        Price: 2400
+      - Item: C_Rapid_Life_Water_Box2 # 16876
+        Price: 2500
+      - Item: Shadow_Armor_S # 14539
+        Price: 80
+      - Item: Holy_Armor_S # 14540
+        Price: 80
+      - Item: Magic_Power_Scroll # 14593
+        Price: 26
+      - Item: Mental_Potion # 14600
+        Price: 50
+      - Item: Blessing_10_Scroll # 12215
+        Price: 22
+      - Item: Inc_Agi_10_Scroll # 12216
+        Price: 22
+      - Item: J_Aspersio_5_Scroll_C # 12645
+        Price: 22
+      - Item: Abrasive # 14536
+        Price: 190
+      - Item: Regeneration_Potion # 14537
+        Price: 60
+      - Item: Mysterious_Water # 12832
+        Price: 50
+      - Item: Small_Life_Potion # 14534
+        Price: 28
+      - Item: Med_Life_Potion # 14535
+        Price: 48
+      - Item: Rapid_Life_Water # 12578
+        Price: 250
+      - Item: Giant_Fly_Wing # 12212
+        Price: 16
+      - Item: HE_Battle_Manual # 12411
+        Price: 1600
+      - Item: HE_Bubble_Gum # 12412
+        Price: 1000
+      - Item: HE_Battle_Manual_Box # 16267
+        Price: 16000
+      - Item: HE_Bubble_Gum_Box # 16268
+        Price: 10000
+  - Tab: Other
+    Items:
+      - Item: Inventory_Ex_10Box # 200001
+        Price: 25000
+      - Item: Inventory_Ex_Box # 17999
+        Price: 2500
+      - Item: Nyangvine_Box40 # 17509
+        Price: 10000
+      - Item: Nyangvine_Box10 # 17508
+        Price: 2500
+      - Item: Nyangvine_Box4 # 17507
+        Price: 1000
+      - Item: C_Repair_Scroll_Box10 # 16842
+        Price: 1000
+      - Item: C_Siege_Scroll_Box1_30 # 16865
+        Price: 2600
+      - Item: C_Siege_Scroll_Box2_30 # 16867
+        Price: 2600
+      - Item: C_HD_Bradium_Box5 # 16868
+        Price: 5300
+      - Item: C_HD_Bradium_Box10 # 16869
+        Price: 9500
+      - Item: C_HD_Carnium_Box5 # 16870
+        Price: 5300
+      - Item: C_HD_Carnium_Box10 # 16871
+        Price: 9500
+      - Item: C_HD_Ori_Box5 # 16872
+        Price: 5300
+      - Item: C_HD_Ori_Box10 # 16873
+        Price: 9500
+      - Item: C_HD_Elu_Box5 # 16874
+        Price: 5300
+      - Item: C_HD_Elu_Box10 # 16875
+        Price: 9500
+      - Item: C_Giant_Fly_Wing_Box100 # 16795
+        Price: 1600
+      - Item: C_Convex_Mirror_Box30 # 16799
+        Price: 6000
+      - Item: C_Megaphone_Box10 # 16813
+        Price: 2000
+      - Item: C_Enriched_Elunium_Box # 16814
+        Price: 2700
+      - Item: C_Enriched_Elunium_Box5 # 16815
+        Price: 1500
+      - Item: C_Enriched_Oridecon_Box # 16816
+        Price: 2700
+      - Item: C_Enc_Oridecon_Box5 # 16817
+        Price: 1500
+      - Item: C_Neuralizer_Box # 16818
+        Price: 14700
+      - Item: Boarding_Halter_Box # 16682
+        Price: 20000
+      - Item: C_Alice_Scroll_Box10 # 16845
+        Price: 4300
+      - Item: C_Mimic_Scroll_Box10 # 16847
+        Price: 3200
+      - Item: C_Disguise_Croll_Box10 # 16849
+        Price: 3200

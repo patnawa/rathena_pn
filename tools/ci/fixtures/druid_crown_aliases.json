@@ -1,0 +1,29 @@
+{
+  "aliases": {
+    "FuriousCirclet_AT": 401176,
+    "Sky_Deadsoul_Staff": 550194,
+    "Sky_Dragon_Spear": 630066,
+    "Sky_Elemental_Book": 540125,
+    "Sky_Frost_Humma": 650062,
+    "Sky_Glacier_Mace": 590116,
+    "Sky_Music_Viollin": 570093,
+    "Sky_Music_Whip": 580093,
+    "Sky_Nightshot_Gatling": 830047,
+    "Sky_Rune_Crown_AG": 401172,
+    "Sky_Rune_Crown_AT": 401175,
+    "Sky_Rune_Crown_BO": 401173,
+    "Sky_Rune_Crown_DK": 401216,
+    "Sky_Rune_Crown_EM": 401217,
+    "Sky_Rune_Crown_NW": 401219,
+    "Sky_Rune_Crown_SHC": 401171,
+    "Sky_Rune_Crown_SOA": 401220,
+    "Sky_Rune_Crown_SS": 401218,
+    "Sky_Rune_Crown_TR": 401174,
+    "Sky_Seonang_Wand": 550197,
+    "Sky_Slasher_Katar": 610093,
+    "Sky_Thorns_Sword": 500136,
+    "Time_DM_R_Crown_AT": 400999
+  },
+  "source": "2026-09-06 original itemdbnametbl.lub",
+  "source_sha256": "2f4f35e157d25548f236dbe7785a3138f4c7ab23367becf9e1f95b958cc3c496"
+}

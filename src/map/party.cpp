@@ -1295,7 +1295,7 @@ void party_exp_share(struct party_data* p, block_list* src, t_exp base_exp, t_ex
 }
 
 //Does party loot. first_charid holds the charid of the player who has time priority to take the item.
-int32 party_share_loot(struct party_data* p, map_session_data* sd, struct item* item, int32 first_charid)
+int32 party_share_loot_with(struct party_data* p,map_session_data* sd,struct item* item,int32 first_charid,const std::function<int32(map_session_data*)>& admit,bool notify)
 {
 	TBL_PC* target = nullptr;
 	int32 i;
@@ -1315,7 +1315,7 @@ int32 party_share_loot(struct party_data* p, map_session_data* sd, struct item* 
 				if( (psd = p->data[i].sd) == nullptr || sd->m != psd->m || pc_isdead(psd) || (battle_config.idle_no_share && pc_isidle_party(psd)) )
 					continue;
 
-				if (pc_additem(psd,item,item->amount,LOG_TYPE_PICKDROP_PLAYER))
+				if (admit(psd))
 					continue; //Chosen char can't pick up loot.
 
 				//Successful pick.
@@ -1338,7 +1338,7 @@ int32 party_share_loot(struct party_data* p, map_session_data* sd, struct item* 
 			while (count > 0) { //Pick a random member.
 				i = rnd_value(0, count-1);
 
-				if (pc_additem(psd[i],item,item->amount,LOG_TYPE_PICKDROP_PLAYER)) { // Discard this receiver.
+				if (admit(psd[i])) { // Discard this receiver.
 					psd[i] = psd[count-1];
 					count--;
 				} else { // Successful pick.
@@ -1352,14 +1352,18 @@ int32 party_share_loot(struct party_data* p, map_session_data* sd, struct item* 
 	if (!target) {
 		target = sd; //Give it to the char that picked it up
 
-		if ((i = pc_additem(sd,item,item->amount,LOG_TYPE_PICKDROP_PLAYER)))
+		if ((i = admit(sd)))
 			return i;
 	}
 
-	if( p && battle_config.party_show_share_picker && battle_config.show_picker_item_type&(1<<itemdb_type(item->nameid)) )
+	if( notify && p && battle_config.party_show_share_picker && battle_config.show_picker_item_type&(1<<itemdb_type(item->nameid)) )
 		clif_party_show_picker(target, item);
 
 	return 0;
+}
+
+int32 party_share_loot(party_data* p,map_session_data* sd,item* item,int32 first_charid){
+ return party_share_loot_with(p,sd,item,first_charid,[&](map_session_data* target){return pc_additem(target,item,item->amount,LOG_TYPE_PICKDROP_PLAYER);},true);
 }
 
 int32 party_send_dot_remove(map_session_data *sd)

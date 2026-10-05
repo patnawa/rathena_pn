@@ -287,6 +287,19 @@ function	script	Func_Socket	{
 				mes "Alright then, let the work begin!";
 				mes "You'd better pray for a successful result.";
 				next;
+				// The dialogue pause can outlive the inventory/balance checked above.
+				// Revalidate all costs before deleting any equipment or materials.
+				if (Zeny < .@zeny_req * 1000 || countitem(.@item_id) < 1
+					|| countitem(.@item_req[0]) < .@req_amount[0]
+					|| countitem(getarg(7,512)) < .@req_amount[1]) {
+					mes "[Seiyablem]";
+					mes "Your equipment, materials or zeny changed. Please start again.";
+					close;
+				}
+				.@entry = callfunc("F_Socket_SelectPermanent", .@item_id);
+				if (.@entry < 0) close;
+				.@target_idx = @inventorylist_idx[.@entry];
+				.@target_bound = @inventorylist_bound[.@entry];
 				set .@a, rand(1,100);
 				if ((.@a > getarg(2)) && (.@a < getarg(3)))
 				{
@@ -294,12 +307,12 @@ function	script	Func_Socket	{
 					mes "[Seiyablem]";
 					mes "Great, it seems to be successful.";
 					mes "It looks pretty well done. Congratulations!";
-					delitem .@item_id,1;
-					delitem .@item_req[0],.@req_amount[0];
+					if (!delitemidx(.@target_idx,1)) close;
+					if (!callfunc("F_Socket_DeletePermanent",.@item_req[0],.@req_amount[0])) close;
 					if (.@item_req[1] != 0 && .@req_amount[1] != 0)
-						delitem .@item_req[1],.@req_amount[1];
+						if (!callfunc("F_Socket_DeletePermanent",.@item_req[1],.@req_amount[1])) close;
 					Zeny = Zeny - .@zeny_req *1000;
-					getitem getarg(1),1;
+					getitembound getarg(1),1,.@target_bound;
 					next;
 					mes "[Seiyablem]";
 					mes "See you again, buddy!";
@@ -313,10 +326,10 @@ function	script	Func_Socket	{
 					mes "However, I am completely innocent.";
 					mes "This is your luck, and it is destined by god, okay?";
 					mes "Don't be so disappointed, and try next time.";
-					delitem .@item_id,1;
-					delitem .@item_req[0],.@req_amount[0];
+					if (!delitemidx(.@target_idx,1)) close;
+					if (!callfunc("F_Socket_DeletePermanent",.@item_req[0],.@req_amount[0])) close;
 					if (.@item_req[1] != 0 && .@req_amount[1] != 0)
-						delitem .@item_req[1],.@req_amount[1];
+						if (!callfunc("F_Socket_DeletePermanent",.@item_req[1],.@req_amount[1])) close;
 					Zeny = Zeny - .@zeny_req *1000;
 					next;
 					mes "[Seiyablem]";

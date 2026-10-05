@@ -33,10 +33,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from build_main_office import cache_records
 
 ROOT = Path(__file__).resolve().parents[2]
-CLIENT = ROOT.parent.parent
+CLIENT = next((candidate for candidate in (ROOT.parent.parent, *(parent / 'PN-Client' for parent in ROOT.parents))
+               if (candidate / 'DATA.INI').is_file()), ROOT.parent.parent)
 
 
 def audit():
+    helper.CLIENT_ROOT = CLIENT
     ini = configparser.ConfigParser()
     ini.read(CLIENT / 'DATA.INI')
     order = [name for key, name in sorted(ini['Data'].items(), key=lambda p: int(p[0]))]

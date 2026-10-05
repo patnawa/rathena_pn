@@ -1995,3 +1995,49 @@ Body:
   Title: Episode 20 - The Immortal - Completed
 # END CODEX EPISODE 20 CLEAR GATE
 # END CODEX EPISODE 19 - EP19_Quest.yml
+
+# Missionary Work extended memo quest.
+- Id: 16586
+  Title: The Path of Missionary Work
+- Id: 16587
+  Title: Umbala Missionary Work
+- Id: 16588
+  Title: Einbroch Missionary Work
+- Id: 16589
+  Title: Rescue Jhon
+- Id: 16590
+  Title: Rescue Maria
+- Id: 16591
+  Title: Rescue Blue
+- Id: 16592
+  Title: Banquet of the Dead - Hunt
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: nif_dun01
+      MapName: Brutal Murderer
+      MapMobTargets:
+        BRUTAL_MURDERER: true
+- Id: 16593
+  Title: Rescue Las
+- Id: 16594
+  Title: Rescue Minas
+- Id: 16595
+  Title: Rescue Tiris
+- Id: 16596
+  Title: Einbech Mine - Hunt
+  Targets:
+    - Id: 1
+      Count: 100
+      Location: ein_dun03
+      MapName: Abyssman
+      MapMobTargets:
+        ABYSSMAN: true
+- Id: 16597
+  Title: Return to Prontera after Umbala
+- Id: 16598
+  Title: Return to Prontera after Einbroch
+- Id: 16599
+  Title: Safe Return from Umbala
+- Id: 16600
+  Title: Safe Return from Einbroch

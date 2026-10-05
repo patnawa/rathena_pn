@@ -176,3 +176,43 @@ Body:
       Container: true
     Script: |
       callfunc "FP_OpenBox",20,41105;
+  - Id: 41500
+    AegisName: FP_Effect_Box_0
+    Name: Top Visual Effect Box
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",21,41500;
+  - Id: 41501
+    AegisName: FP_Effect_Box_1
+    Name: Middle Visual Effect Box
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",22,41501;
+  - Id: 41502
+    AegisName: FP_Effect_Box_2
+    Name: Lower Visual Effect Box
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",23,41502;
+  - Id: 41503
+    AegisName: FP_Effect_Box_3
+    Name: Garment Footprint Box
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",24,41503;
+  - Id: 41504
+    AegisName: FP_Festa_Box
+    Name: Festa Upper Slot 2 Box
+    Type: Delayconsume
+    Flags:
+      Container: true
+    Script: |
+      callfunc "FP_OpenBox",25,41504;

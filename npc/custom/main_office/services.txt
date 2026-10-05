@@ -68,12 +68,25 @@ OnOffice:
 	 || getmapflag(.@map$,mf_nogo) || getmapflag(.@map$,mf_pvp) || getmapflag(.@map$,mf_gvg)
 	 || getmapflag(.@map$,mf_gvg_dungeon) || getmapflag(.@map$,mf_gvg_castle) || getmapflag(.@map$,mf_gvg_te) || getmapflag(.@map$,mf_gvg_te_castle)
 	 || getmapflag(.@map$,mf_battleground)) {
-		dispbottom "Return to an unrestricted town before using @office."; end;
+		dispbottom "Return to an unrestricted town before using @office, @fashion or @goldpoints."; end;
+	}
+	.@command$=strtolower(.@atcmd_command$);
+	if (.@command$ == "@goldpoints" || .@command$ == "#goldpoints") {
+		warp "pn_style",136,129;
+		dispbottom "Gold Point Manager: click the NPC beside you to exchange Gold Points for Fashion Points (1 for 1).";
+		end;
+	}
+	if (.@command$ == "@fashion" || .@command$ == "#fashion") {
+		warp "pn_style",140,140;
+		dispbottom "Fashion & Lounge: Gold Points, Designer, Recycler, Boxes and Enchants. @goldpoints goes straight to the exchange desk.";
+		end;
 	}
 	warp "pn_office",100,40;
 	end;
 OnInit:
 	bindatcmd "office",strnpcinfo(3)+"::OnOffice",0,99;
+	bindatcmd "fashion",strnpcinfo(3)+"::OnOffice",0,99;
+	bindatcmd "goldpoints",strnpcinfo(3)+"::OnOffice",0,99;
 	end;
 }
 
@@ -86,6 +99,25 @@ OnInit:
 		if(select("Save here:Cancel") == 1) { savepoint "pn_office",100,40; mes "Respawn point saved."; }
 	}
 	close;
+}
+
+-	script	PN Pet Recovery	-1,{
+	mes "[Pet Recovery Desk]";
+	if (query_sql("SELECT COUNT(*) FROM pn_pet_entitlements WHERE account_id="+getcharid(3)+" AND char_id="+getcharid(0)+" AND claimed=0",.@pending) != 1) {
+		mes "The reward list is unavailable. Please try again shortly.";
+		close;
+	}
+	if (!.@pending) {
+		mes "This character has no pet rewards waiting to be collected.";
+		close;
+	}
+	mes "Pet rewards waiting: "+.@pending+".";
+	mes "These rewards are saved for this character. Free inventory space and weight before collecting them.";
+	mes "You can also use @petrewards. Any rewards that do not fit will remain here.";
+	if (select("Collect what fits:Leave") == 2) close;
+	close2;
+	atcommand "@petrewards";
+	end;
 }
 
 -	script	PN Office Repair	-1,{
@@ -176,17 +208,8 @@ OnInit:
 // Advice and status only: these functions never accept/claim quests, reset
 // cooldowns, spend currency, give items or move the character.
 function	script	PN_GuideNext	{
-	if (BaseLevel < 200) {
-		mes "Prepare for Base Level 200: choose your job, learn its skills and equip suitable gear.";
-		mes "Job Master: lobby 46,40. Druid Mentor: lobby 56,40. Skill Supplies carries consumables; Training has the private damage lab.";
-		navigateto "pn_office",46,39;
-		return;
-	}
-	if (!CH1_Complete()) {
-		if (!isbegin_quest(18368)) {
-			mes "Start Chapter 1 at the Small Ash Tree, prt_fild05 353,252. It requires Base Level 200.";
-			navigateto "prt_fild05",353,252;
-		} else mes "Continue Chapter 1 in your quest window. Follow the active objective through Bring Down the Air Fortress; Robin's Zero Cell investigation comes afterward.";
+	if (BaseLevel < 200 || !CH1_Complete()) {
+		callfunc "PN_GuideOnboarding";
 		return;
 	}
 	if (BaseLevel < 225) { mes "Chapter 1 is complete. Reach Base Level 225 to begin Chapter 2 with Guardian El."; return; }
@@ -274,14 +297,16 @@ function	script	PN_GuideDailies	{
 	if (.@solo) mes "Your personal instance: "+instance_live_info(ILI_NAME,.@solo)+".";
 	if (.@party) mes "Your party instance: "+instance_live_info(ILI_NAME,.@party)+".";
 	if (!.@solo && !.@party) mes "No active personal or party instance found.";
-	mes "Use Travel Desk > Instances to reach the entrance NPC. It checks that instance's access and cooldown.";
-	mes "Use PN Services for Chapter 2, Zero Cell and Devoured Geffenia access details.";
+	callfunc "PN_InstanceReadinessDesk";
 	close;
 }
 
 -	script	PN Build Notes	-1,{
 	mes "[Build Notebook]";
 	mes "Keep three character-specific build notes for comparison. This notebook does not change stats, skills or equipment.";
+	.@section=select("Build notebooks:Saved lab runs:Leave");
+	if (.@section == 2) { callfunc "PN_LabHistory"; close; }
+	if (.@section == 3) close;
 	.@slot=select("Notebook 1:Notebook 2:Notebook 3:Leave")-1;
 	if (.@slot == 3) close;
 	if (PNBuildNote$[.@slot] != "") {
@@ -311,6 +336,12 @@ pn_style	mapflag	nobranch
 pn_style	mapflag	nomemo
 pn_style	mapflag	loadevent
 pn_style	mapflag	town
+
+// Walk-through entrance beside the Main Office NPC in Prontera.
+prontera,160,189,0	warp	PNOfficeEntrance	1,1,pn_office,100,40
+
+// Return route from the office lobby; destinations do not overlap a warp cell.
+pn_office,100,36,0	warp	PNOfficeExit	1,1,prontera,163,184
 
 -	script	PN Office Welcome	-1,{
 OnPCLoadMapEvent:

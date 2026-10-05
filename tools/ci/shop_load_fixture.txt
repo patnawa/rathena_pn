@@ -1,0 +1,7 @@
+// Isolated acceptance fixture only; never import into production NPC config.
+pn_office,104,40,4	marketshop	PNMetricsMarket	4_M_01,501:1:30000
+-	script	PNMetricsMarketIdentity	-1,{
+OnInit:
+	debugmes "PN_METRICS_MARKET_ID="+getnpcid(0,"PNMetricsMarket");
+	end;
+}

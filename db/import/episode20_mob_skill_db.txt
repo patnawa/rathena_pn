@@ -1,6 +1,5 @@
 // Episode 20 monster skills (rAthena 19-column format).
 // Secondary source checked 2026-09-05:
-// https://rockragnarok.com/edda/?module=monster
 // Divine Pride and RagnaPlace currently expose no kROM skill rows for these
 // monsters, so every row below is deliberately limited to skills implemented
 // by this fork's db/re/skill_db.yml. Exact duplicate rows in the source were

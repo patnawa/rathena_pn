@@ -141,6 +141,8 @@ extern "C" int __wrap_main(int argc,char** argv) {
     {auto sd=rune_player();put(0,4480,1);weight();invoke("callfunc \"PN_RT_Seal\";",{1,1});check(count(4480)==0&&count(1001594)==1,"whitelisted sealed card becomes one Rune Seal");}
     {auto sd=rune_player();put(0,4001,1);weight();Snapshot before;invoke("callfunc \"PN_RT_Seal\";");before.unchanged();}
     {auto sd=rune_player();put(0,1001595,30);weight();invoke("callfunc \"PN_RT_Decompose\";",{1,2,1});check(count(1001595)==0&&count(1001283)==30,"native30-stone recipe gives exact30 Perfect Runes");}
+    // Generated independent catalog oracle; every production reward recipe.
+    #include "rune_catalog_cases.inc"
     // Differential capacity proof against actual native pc_additem: conservative
     // refusals are allowed, but every approved plain output must really fit.
     for(int variant=0;variant<7;++variant)for(int amount:{1,30,30000})for(int existing:{0,1,29999,30000})for(int slots:{1,2}){

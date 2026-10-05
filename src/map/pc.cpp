@@ -1,6 +1,9 @@
+#include <custom/item_use.hpp>
+#include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
+#include <custom/retired_tokens.hpp>
 #include "pc.hpp"
 
 #include <cmath>
@@ -1199,6 +1202,10 @@ void pc_inventory_rental_clear(map_session_data *sd)
  */
 void pc_inventory_rentals(map_session_data *sd)
 {
+	if (sd->shop_commit.pending || pn_item_use_capture_waiting(sd)) {
+		sd->rental_timer = add_timer(gettick() + 1000, pc_inventory_rental_end, sd->id, 0);
+		return;
+	}
 	int32 i, c = 0;
 	uint32 next_tick = UINT_MAX;
 
@@ -2485,8 +2492,11 @@ void pc_reg_received(map_session_data *sd)
 		sd->achievement_data.total_score = 0;
 		sd->achievement_data.level = 0;
 		sd->achievement_data.save = false;
+		sd->achievement_data.loaded = false;
+		sd->achievement_data.reward_pending_id = 0;
 		sd->achievement_data.count = 0;
 		sd->achievement_data.incompleteCount = 0;
+		sd->achievement_data.opaque_count = 0;
 		sd->achievement_data.achievements = nullptr;
 		intif_request_achievements(sd->status.char_id);
 	}
@@ -3013,7 +3023,9 @@ uint16 pc_getpercentweight(const map_session_data& sd, uint32 weight)
 {
 	if (weight == 0)
 		weight = sd.weight;
-	return static_cast<uint16>(weight * 100 / std::max<uint32>(sd.max_weight, 1));
+	// A shopping-area load may greatly exceed ordinary capacity after leaving.
+	// Widen before multiplication and saturate rather than wrapping overweight.
+	return static_cast<uint16>(std::min<uint64>(static_cast<uint64>(weight) * 100 / std::max<uint32>(sd.max_weight, 1), UINT16_MAX));
 }
 
 /*==========================================
@@ -5667,6 +5679,7 @@ int32 pc_insert_card(map_session_data* sd, int32 idx_card, int32 idx_equip)
  */
 int32 pc_identifyall(map_session_data *sd, bool identify_item)
 {
+	if (identify_item && ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd))) return 0;
 	int32 unidentified_count = 0;
 
 	for (int32 i = 0; i < MAX_INVENTORY; i++) {
@@ -5736,7 +5749,7 @@ char pc_checkadditem( const map_session_data* sd, t_itemid nameid, int32 amount 
 
 	nullpo_ret(sd);
 
-	if(amount > MAX_AMOUNT)
+	if(amount > MAX_AMOUNT || pn_tokens::retired(nameid))
 		return CHKADDITEM_OVERAMOUNT;
 
 	data = itemdb_search(nameid);
@@ -5765,6 +5778,88 @@ char pc_checkadditem( const map_session_data* sd, t_itemid nameid, int32 amount 
 
 	return CHKADDITEM_NEW;
 }
+
+char pc_checkadditem_plain(const map_session_data* sd, t_itemid nameid, int32 amount) {
+	if (!sd || amount <= 0 || amount > MAX_AMOUNT || pn_tokens::retired(nameid))
+		return CHKADDITEM_OVERAMOUNT;
+	auto data = item_db.find(nameid);
+	if (!data || (data->stack.inventory && amount > data->stack.amount))
+		return CHKADDITEM_OVERAMOUNT;
+	if (!itemdb_isstackable2(data.get()) || data->flag.guid)
+		return CHKADDITEM_NEW;
+	const struct item plain = {};
+	for (int32 i = 0; i < MAX_INVENTORY; ++i) {
+		const auto& existing = sd->inventory.u.items_inventory[i];
+		if (existing.nameid != nameid || existing.bound || existing.expire_time || existing.unique_id ||
+			memcmp(existing.card, plain.card, sizeof(plain.card)) != 0)
+			continue;
+		if (i >= sd->status.inventory_slots || amount > MAX_AMOUNT - existing.amount ||
+			(data->stack.inventory && amount > data->stack.amount - existing.amount))
+			return CHKADDITEM_OVERAMOUNT;
+		return CHKADDITEM_EXIST;
+	}
+	return CHKADDITEM_NEW;
+}
+
+// The map loop is synchronous; scopes are stack-owned and never survive a
+// packet handler. Keeping the registry here avoids adding transient state to
+// player serialization or changing the player structure's layout.
+static std::map<map_session_data*, PcItemDeliveryScope*> pc_item_delivery_scopes;
+
+static PcItemDeliveryScope* pc_item_delivery_scope(map_session_data* sd) {
+	const auto found = pc_item_delivery_scopes.find(sd);
+	return found == pc_item_delivery_scopes.end() ? nullptr : found->second;
+}
+
+PcItemDeliveryScope::PcItemDeliveryScope(map_session_data& sd) : sd_(sd) {
+	owner_ = pc_item_delivery_scopes.emplace(&sd, this).second;
+}
+
+void PcItemDeliveryScope::added(int16 index, const item_data& data) {
+	additions_.push_back({index, data.nameid, sd_.inventory.u.items_inventory[index].unique_id,
+		data.flag.autoequip ? data.equip : 0, data.value_sell, sd_.inventory.u.items_inventory[index].expire_time});
+	refresh_ = true;
+}
+
+void PcItemDeliveryScope::refresh_questinfo() {
+	if (auto* root = pc_item_delivery_scope(&sd_)) root->refresh_ = true;
+}
+
+void PcItemDeliveryScope::suppress_achievements() {
+	if (auto* root = pc_item_delivery_scope(&sd_)) root->achievements_ = false;
+}
+
+void PcItemDeliveryScope::cancel() {
+    if(owner_)pc_item_delivery_scopes.erase(&sd_);
+    owner_=false;additions_.clear();refresh_=false;achievements_=true;
+}
+
+PcItemDeliveryScope::~PcItemDeliveryScope() {
+	if (!owner_) return;
+	pc_item_delivery_scopes.erase(&sd_);
+	// A preceding equip/achievement callback may remove or replace a later
+	// output. Never equip a different inventory record in its place.
+	for (const auto& added : additions_) {
+		const auto& current = sd_.inventory.u.items_inventory[added.index];
+		if (added.expire_time && current.amount > 0 && current.nameid == added.nameid && current.unique_id == added.unique_id && current.expire_time == added.expire_time) {
+			const auto now = time(nullptr);
+			if (now >= added.expire_time) {
+				clif_rental_expired(&sd_, added.index, current.nameid);
+				pc_delitem(&sd_, added.index, current.amount, 1, 0, LOG_TYPE_OTHER);
+				continue;
+			}
+			const uint32 seconds = static_cast<uint32>(added.expire_time - now);
+			clif_rental_time(&sd_, current.nameid, seconds);
+			pc_inventory_rental_add(&sd_, seconds);
+		}
+		if (added.equip && current.amount > 0 && current.nameid == added.nameid && current.unique_id == added.unique_id)
+			pc_equipitem(&sd_, added.index, added.equip);
+		if (achievements_) achievement_update_objective(&sd_, AG_GET_ITEM, 1, added.value_sell);
+	}
+	if (refresh_) pc_show_questinfo(&sd_);
+}
+
+#include <custom/item_use_map.inc>
 
 /*==========================================
  * Return number of available place in inventory
@@ -5795,15 +5890,15 @@ uint8 pc_inventoryblank( const map_session_data* sd )
  * @param log_charid: (optional) From who to log (if not needed, use 0)
  * @return 0: Success, 1: Failed (Removing negative Zeny or not enough Zeny), 2: Player not found
  */
-char pc_payzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uint32 log_charid)
+char pc_payzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uint32 log_charid)
 {
 	nullpo_retr(2,sd);
 	if (pc_transaction_locked(sd)) return 1;
 
-	zeny = cap_value(zeny,-MAX_ZENY,MAX_ZENY); //prevent command UB
+	// Reject negative values before arithmetic, including INT64_MIN.
 	if( zeny < 0 )
 	{
-		ShowError("pc_payzeny: Paying negative Zeny (zeny=%d, account_id=%d, char_id=%d).\n", zeny, sd->status.account_id, sd->status.char_id);
+		ShowError("pc_payzeny: Paying negative Zeny (zeny=%" PRId64 ", account_id=%d, char_id=%d).\n", zeny, sd->status.account_id, sd->status.char_id);
 		return 1;
 	}
 
@@ -5816,7 +5911,7 @@ char pc_payzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uin
 	log_zeny(*sd, type, log_charid, -zeny);
 	if( zeny > 0 && sd->state.showzeny ) {
 		char output[255];
-		sprintf(output, "Removed %dz.", zeny);
+		sprintf(output, "Removed %" PRId64 "z.", zeny);
 		clif_messagecolor(sd, color_table[COLOR_LIGHT_GREEN], output, false, SELF);
 	}
 
@@ -5830,19 +5925,22 @@ char pc_payzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uin
  * @param log_charid: (optional) From who to log (if not needed, use 0)
  * @return -1: Player not found, 0: Success, 1: Giving negative Zeny
  */
-char pc_getzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uint32 log_charid)
+char pc_getzeny(map_session_data *sd, int64 zeny, enum e_log_pick_type type, uint32 log_charid)
 {
 	nullpo_retr(-1,sd);
+	if ((sd->pair_commit.pending && !sd->pair_commit.applying) ||
+		(sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return 1;
 
-	zeny = cap_value(zeny,-MAX_ZENY,MAX_ZENY); //prevent command UB
+	// Reject negative values before arithmetic, including INT64_MIN.
 	if( zeny < 0 )
 	{
-		ShowError("pc_getzeny: Obtaining negative Zeny (zeny=%d, account_id=%d, char_id=%d).\n", zeny, sd->status.account_id, sd->status.char_id);
+		ShowError("pc_getzeny: Obtaining negative Zeny (zeny=%" PRId64 ", account_id=%d, char_id=%d).\n", zeny, sd->status.account_id, sd->status.char_id);
 		return 1;
 	}
 
-	if( zeny > MAX_ZENY - sd->status.zeny )
-		zeny = MAX_ZENY - sd->status.zeny;
+	const int64 wallet_room = MAX_WALLET_ZENY - sd->status.zeny - sd->mail.pending_zeny;
+	if( zeny > wallet_room )
+		zeny = std::max<int64>(0, wallet_room);
 
 	sd->status.zeny += zeny;
 	clif_updatestatus(*sd,SP_ZENY);
@@ -5850,11 +5948,13 @@ char pc_getzeny(map_session_data *sd, int32 zeny, enum e_log_pick_type type, uin
 	log_zeny(*sd, type, log_charid, zeny);
 	if( zeny > 0 && sd->state.showzeny ) {
 		char output[255];
-		sprintf(output, "Gained %dz.", zeny);
+		sprintf(output, "Gained %" PRId64 "z.", zeny);
 		clif_messagecolor(sd, color_table[COLOR_LIGHT_GREEN], output, false, SELF);
 	}
 
-	achievement_update_objective(sd, AG_GET_ZENY, 1, sd->status.zeny);
+	const int32 achievement_zeny=static_cast<int32>(std::min<int64>(sd->status.zeny,MAX_ZENY));
+	if(!pn_item_use_achievement_defer(sd,AG_GET_ZENY,{achievement_zeny}))
+		achievement_update_objective(sd,AG_GET_ZENY,1,achievement_zeny);
 
 	return 0;
 }
@@ -5871,8 +5971,12 @@ int32 pc_paycash(map_session_data *sd, int32 price, int32 points, e_log_pick_typ
 {
 	int32 cash;
 	nullpo_retr(-1,sd);
+	if( price < 0 || pc_transaction_locked(sd) )
+		return -1;
 
-	points = cap_value(points, 0, MAX_KAFRAPOINT); //prevent command UB
+	// A preferred-currency contribution cannot exceed the price. Otherwise
+	// the remaining Cash Point charge becomes negative and credits the buyer.
+	points = cap_value(points, 0, std::min(price, MAX_KAFRAPOINT));
 
 	cash = price-points;
 
@@ -5917,6 +6021,7 @@ int32 pc_getcash(map_session_data *sd, int32 cash, int32 points, e_log_pick_type
 	char output[CHAT_SIZE_MAX];
 
 	nullpo_retr(-1,sd);
+	if ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return -1;
 
 	cash = cap_value(cash, 0, MAX_CASHPOINT); //prevent command UB
 	points = cap_value(points, 0, MAX_KAFRAPOINT); //prevent command UB
@@ -5998,14 +6103,25 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 	uint32 w;
 
 	nullpo_retr(ADDITEM_INVALID, sd);
+	struct StagedAddition {
+		map_session_data* sd;bool success=false;
+		~StagedAddition(){if(!success){auto state=pn_item_use_state(sd);if(state && state->collecting)state->failed=true;}}
+	} staged_addition{sd};
+	if ((sd->pair_commit.pending && !sd->pair_commit.applying) ||
+		(sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return ADDITEM_INVALID;
 	nullpo_retr(ADDITEM_INVALID, item);
 
-	if( item->nameid == 0 || amount <= 0 )
+	if( item->nameid == 0 || amount <= 0 || pn_tokens::retired(item->nameid) )
 		return ADDITEM_INVALID;
 	if( amount > MAX_AMOUNT )
 		return ADDITEM_OVERAMOUNT;
 
 	id = itemdb_search(item->nameid);
+
+	if(pn_item_use_active(sd) && item->card[0]!=CARD0_PET && (id->type==IT_PETEGG || pet_db_search(item->nameid,PET_EGG))) {
+		staged_addition.success=pn_item_use_collect_pet(*sd,*item,amount);
+		return staged_addition.success?ADDITEM_SUCCESS:ADDITEM_INVALID;
+	}
 
 	if( id->stack.inventory && amount > id->stack.amount )
 	{// item stack limitation
@@ -6072,12 +6188,14 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 
 	sd->weight += w;
 	clif_updatestatus(*sd,SP_WEIGHT);
-	//Auto-equip
-	if(id->flag.autoequip)
+	auto* delivery = pc_item_delivery_scope(sd);
+	if (delivery) delivery->added(i, *id);
+	//Auto-equip may execute item scripts; defer it with the other callbacks.
+	if(!delivery && id->flag.autoequip)
 		pc_equipitem(sd, i, id->equip);
 
 	/* rental item check */
-	if( item->expire_time ) {
+	if( !delivery && item->expire_time ) {
 		if( time(nullptr) > item->expire_time ) {
 			clif_rental_expired(sd, i, sd->inventory.u.items_inventory[i].nameid);
 			pc_delitem(sd, i, sd->inventory.u.items_inventory[i].amount, 1, 0, LOG_TYPE_OTHER);
@@ -6088,9 +6206,12 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 		}
 	}
 
-	achievement_update_objective(sd, AG_GET_ITEM, 1, id->value_sell);
-	pc_show_questinfo(sd);
+	if (!delivery) {
+		achievement_update_objective(sd, AG_GET_ITEM, 1, id->value_sell);
+		pc_show_questinfo(sd);
+	}
 
+	staged_addition.success=true;
 	return ADDITEM_SUCCESS;
 }
 
@@ -6099,7 +6220,8 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
  * @param sd
  * @param n Item index in inventory
  * @param amount
- * @param type &1: Don't notify deletion; &2 Don't notify weight change; &4 Don't calculate status
+ * @param type &1: Don't notify deletion; &2 Don't notify weight change; &4 Don't calculate status;
+ *             &8: Defer quest icon scripts (caller must refresh after its transaction commits).
  * @param reason Delete reason
  * @param log_type e_log_pick_type
  * @return 1 - invalid itemid or negative amount; 0 - Success
@@ -6111,6 +6233,10 @@ char pc_delitem(map_session_data *sd,int32 n,int32 amount,int32 type, int16 reas
 
 	if(n < 0 || n >= MAX_INVENTORY || sd->inventory.u.items_inventory[n].nameid == 0 || amount <= 0 || sd->inventory.u.items_inventory[n].amount<amount || sd->inventory_data[n] == nullptr)
 		return 1;
+
+	if(pn_item_use_active(sd) && (sd->inventory.u.items_inventory[n].equip || sd->inventory.u.items_inventory[n].equipSwitch)) {
+		pn_item_use_world_allowed(sd);return 1;
+	}
 
 	log_pick_pc(sd, log_type, -amount, &sd->inventory.u.items_inventory[n]);
 
@@ -6130,7 +6256,8 @@ char pc_delitem(map_session_data *sd,int32 n,int32 amount,int32 type, int16 reas
 	if(!(type&2))
 		clif_updatestatus(*sd,SP_WEIGHT);
 
-	pc_show_questinfo(sd);
+	if (!(type & 8) && !pn_item_use_success_defer(sd,[sd](){pc_show_questinfo(sd);}))
+		pc_show_questinfo(sd);
 
 	return 0;
 }
@@ -6194,6 +6321,8 @@ bool pc_dropitem(map_session_data *sd,int32 n,int32 amount)
  * @param fitem Item that will be picked
  * @return False = fail; True = success
  *------------------------------------------*/
+#include <custom/pet_floor.inc>
+
 bool pc_takeitem(map_session_data *sd,flooritem_data *fitem)
 {
 	int32 flag = 0;
@@ -6254,6 +6383,8 @@ bool pc_takeitem(map_session_data *sd,flooritem_data *fitem)
 	// Cannot get item when wait time is still active
 	if (DIFF_TICK(tick, item_get_tick) < 0)
 		return false;
+
+	if(pn_pet_floor_raw(fitem->item))return pn_pet_floor_take(*sd,*fitem);
 
 	//This function takes care of giving the item to whoever should have it, considering party-share options.
 	if ((flag = party_share_loot(p,sd,&fitem->item, fitem->first_get_charid))) {
@@ -6397,6 +6528,14 @@ bool pc_isUseitem(map_session_data *sd,int32 n)
 	if( itemdb_group.item_exists(IG_MERCENARY, nameid) && sd->md != nullptr )
 		return false; // Mercenary Scrolls
 
+	// Refuse before consuming a legacy reward box if its largest direct-Zeny
+	// outcome cannot fit; never roll a reward and silently clip its value.
+	const int64 token_reward = itemdb_token_box_bound(nameid);
+	if (token_reward > MAX_WALLET_ZENY - sd->status.zeny - sd->mail.pending_zeny) {
+		clif_displaymessage(sd->fd, "Deposit Zeny before opening this reward box.");
+		return false;
+	}
+
 	// Safe check type cash disappear when overweight [Napster]
 	if( item->flag.group || item->type == IT_CASH ){
 		// Check if the player is not overweighted
@@ -6529,6 +6668,14 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 		return 0;
 	}
 
+	const uint32 item_effects=script_item_use_effects(id->script);
+	const bool durable_item_use=(item_effects&PN_ITEM_PET)!=0;
+	if(durable_item_use && (item_effects&PN_ITEM_WORLD)) {
+		clif_displaymessage(sd->fd,"This item combines pet rewards with unsupported world actions. It has not been consumed.");
+		return 0;
+	}
+	if(durable_item_use && !pn_item_use_begin(*sd))return 0;
+
 	sd->itemid = item.nameid;
 	sd->itemindex = n;
 	amount = item.amount;
@@ -6565,6 +6712,8 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 
 	run_script( script, 0, sd->id, fake_nd->id );
 
+	if(durable_item_use && sd->st != nullptr)pn_item_use_world_allowed(sd); // No suspended VM may escape its cost scope.
+
 	if( sd->st != nullptr ){
 		script_free_state( sd->st );
 		sd->st = nullptr;
@@ -6580,7 +6729,7 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 	}
 
 	potion_flag = 0;
-	return 1;
+	return durable_item_use ? (pn_item_use_finish(*sd)?1:0) : 1;
 }
 
 /**
@@ -6597,6 +6746,7 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 	int32 i,w;
 
 	nullpo_retr(ADDITEM_INVALID, sd);
+	if (sd->pair_commit.pending && !sd->pair_commit.applying) return ADDITEM_INVALID;
 	nullpo_retr(ADDITEM_INVALID, item);
 
 	if(item->nameid == 0 || amount <= 0)
@@ -6670,7 +6820,7 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 void pc_cart_delitem(map_session_data *sd,int32 n,int32 amount,int32 type,e_log_pick_type log_type)
 {
 	nullpo_retv(sd);
-	if (sd->multi_storage.pending && !sd->multi_storage.applying) return;
+	if (pc_transaction_locked(sd)) return;
 
 	if(sd->cart.u.items_cart[n].nameid == 0 ||
 		sd->cart.u.items_cart[n].amount < amount)
@@ -6939,7 +7089,7 @@ bool pc_steal_item(map_session_data *sd,block_list *bl, uint16 skill_lv)
 enum e_setpos pc_setpos(map_session_data* sd, uint16 mapindex, int32 x, int32 y, clr_type clrtype)
 {
 	nullpo_retr(SETPOS_OK,sd);
-	if (pc_transaction_pending(sd) || sd->multi_storage.loading) return SETPOS_MAPINDEX;
+	if (!pn_item_use_world_allowed(sd) || pc_transaction_pending(sd) || sd->multi_storage.loading) return SETPOS_MAPINDEX;
 
 	if( !mapindex || !mapindex_id2name(mapindex) ) {
 		ShowDebug("pc_setpos: Passed mapindex(%d) is invalid!\n", mapindex);
@@ -7129,10 +7279,13 @@ enum e_setpos pc_setpos(map_session_data* sd, uint16 mapindex, int32 x, int32 y,
 	} else if(sd->state.active) //Tag player for rewarping after map-loading is done. [Skotlex]
 		sd->state.rewarp = 1;
 
+	const bool previous_unlimited_weight = map_getmapflag(sd->m, MF_UNLIMITEDWEIGHT) != 0;
 	sd->mapindex = mapindex;
 	sd->m = m;
 	sd->x = sd->ud.to_x = x;
 	sd->y = sd->ud.to_y = y;
+	if (sd->state.active && previous_unlimited_weight != (map_getmapflag(m, MF_UNLIMITEDWEIGHT) != 0))
+		status_calc_weight(sd, CALCWT_MAXBONUS);
 
 	if( sd->status.guild_id > 0 && mapdata->getMapFlag(MF_GVG_CASTLE) )
 	{	// Increased guild castle regen [Valaris]
@@ -7242,6 +7395,18 @@ char pc_randomwarp(map_session_data *sd, clr_type type, bool ignore_mapflag)
  * Records a memo point at sd's current position
  * pos - entry to replace, (-1: shift oldest entry out)
  *------------------------------------------*/
+int32 pc_memo_slots(map_session_data* sd, uint16 skill_lv)
+{
+	if (skill_lv < 2)
+		return 0;
+	int32 slots = std::min<int32>(3, skill_lv - 1);
+#if PACKETVER_MAIN_NUM >= 20170502 || PACKETVER_RE_NUM >= 20170419 || defined(PACKETVER_ZERO)
+	if (skill_lv >= 4 && (sd->class_ == MAPID_CARDINAL || sd->class_ == MAPID_INQUISITOR))
+		slots += static_cast<int32>(std::clamp<int64>(pc_readglobalreg(sd, add_str("PN_MemoExtra")), 0, 3));
+#endif
+	return std::min<int32>(slots, MAX_MEMOPOINTS);
+}
+
 bool pc_memo(map_session_data* sd, int32 pos)
 {
 	int32 skill;
@@ -7264,8 +7429,14 @@ bool pc_memo(map_session_data* sd, int32 pos)
 		clif_skill_memomessage( *sd, WARPPOINT_NOT_LEARNED ); // "You haven't learned Warp."
 		return false;
 	}
-	if( skill < 2 || skill - 2 < pos ) {
+	const int32 slots = pc_memo_slots(sd, skill);
+	if( slots == 0 || pos >= slots ) {
 		clif_skill_memomessage( *sd, WARPPOINT_LOW_LEVEL ); // "Skill Level is not high enough."
+		return false;
+	}
+
+	if( map_getmapdata(sd->m)->instance_id ) {
+		clif_displaymessage( sd->fd, msg_txt(sd,384) ); // You cannot create a memo in an instance.
 		return false;
 	}
 
@@ -7275,14 +7446,9 @@ bool pc_memo(map_session_data* sd, int32 pos)
 		const char* mapname = map_mapid2mapname( sd->m );
 
 		// prevent memo-ing the same map multiple times
-		ARR_FIND( 0, MAX_MEMOPOINTS, i, strncmp( sd->status.memo_point[i].map, mapname, sizeof( sd->status.memo_point[i].map ) ) == 0 );
-		memmove( &sd->status.memo_point[1], &sd->status.memo_point[0], ( u8min( i, MAX_MEMOPOINTS - 1 ) ) * sizeof( struct s_point_str ) );
+		ARR_FIND( 0, slots, i, strncmp( sd->status.memo_point[i].map, mapname, sizeof( sd->status.memo_point[i].map ) ) == 0 );
+		memmove( &sd->status.memo_point[1], &sd->status.memo_point[0], ( std::min<int32>( i, slots - 1 ) ) * sizeof( struct s_point_str ) );
 		pos = 0;
-	}
-
-	if( map_getmapdata(sd->m)->instance_id ) {
-		clif_displaymessage( sd->fd, msg_txt(sd,384) ); // You cannot create a memo in an instance.
-		return false;
 	}
 
 	safestrncpy( sd->status.memo_point[pos].map, map_mapid2mapname( sd->m ), sizeof( sd->status.memo_point[pos].map ) );
@@ -9553,6 +9719,17 @@ int32 pc_resetskill(map_session_data* sd, int32 flag)
 
 	if( flag&2 || !skill_point ) return skill_point;
 
+	// The missionary reward is skill progress and is lost on an actual reset.
+	if (pc_readglobalreg(sd, add_str("PN_MemoExtra")) || pc_readglobalreg(sd, add_str("PN_MissionStage"))) {
+		for (const char* name : {"PN_MemoExtra", "PN_MissionStage", "PN_MissionRegion", "PN_MissionDone", "PN_MissionRescue"})
+			pc_setglobalreg(sd, add_str(name), 0);
+		for (int32 quest_id = 16586; quest_id <= 16600; ++quest_id)
+			if (quest_check(sd, quest_id, HAVEQUEST) >= 0)
+				quest_delete(sd, quest_id);
+		for (int32 memo = 3; memo < MAX_MEMOPOINTS; ++memo)
+			memset(&sd->status.memo_point[memo], 0, sizeof(sd->status.memo_point[memo]));
+	}
+
 	sd->status.skill_point += skill_point;
 
 	if (flag&1) {
@@ -10105,9 +10282,10 @@ int32 pc_dead(map_session_data *sd,block_list *src)
 		}
 
 		if( zeny_penalty > 0 && !mapdata->getMapFlag(MF_NOZENYPENALTY)) {
-			zeny_penalty = (uint32)( sd->status.zeny * ( zeny_penalty / 10000. ) );
-			if(zeny_penalty)
-				pc_payzeny(sd, zeny_penalty, LOG_TYPE_PICKDROP_PLAYER);
+			const int64 rate = std::min<uint32>(zeny_penalty, 10000);
+			const int64 penalty = (sd->status.zeny / 10000) * rate + ((sd->status.zeny % 10000) * rate) / 10000;
+			if(penalty)
+				pc_payzeny(sd, penalty, LOG_TYPE_PICKDROP_PLAYER);
 		}
 	}
 
@@ -10466,6 +10644,8 @@ int64 pc_readparam( const map_session_data* sd, int64 type )
 bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 {
 	nullpo_retr(false,sd);
+	if (((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) &&
+		(type == SP_ZENY || type == SP_CASHPOINTS || type == SP_KAFRAPOINTS)) return false;
 	if (pc_transaction_locked(sd) &&
 		(type == SP_BANK_VAULT || (type == SP_ZENY && val_tmp < sd->status.zeny))) return false;
 
@@ -10515,10 +10695,10 @@ bool pc_setparam(map_session_data *sd,int64 type,int64 val_tmp)
 		sd->status.trait_point = val;
 		break;
 	case SP_ZENY:
-		if( val < 0 )
+		if( val_tmp < 0 || val_tmp > MAX_WALLET_ZENY - sd->mail.pending_zeny )
 			return false;// can't set negative zeny
-		log_zeny(*sd, LOG_TYPE_SCRIPT, sd->status.char_id, -(sd->status.zeny - cap_value(val, 0, MAX_ZENY)));
-		sd->status.zeny = cap_value(val, 0, MAX_ZENY);
+		log_zeny(*sd, LOG_TYPE_SCRIPT, sd->status.char_id, val_tmp - sd->status.zeny);
+		sd->status.zeny = val_tmp;
 		break;
 	case SP_BASEEXP:
 		val_tmp = cap_value(val_tmp, 0, pc_is_maxbaselv(sd) ? MAX_LEVEL_BASE_EXP : MAX_EXP);
@@ -11449,6 +11629,8 @@ bool pc_setreg(map_session_data* sd, int64 reg, int64 val)
 	uint32 index = script_getvaridx(reg);
 
 	nullpo_retr(false, sd);
+	if(sd->shop_commit.pending && !sd->shop_commit.applying && sd->shop_commit.request && index==0 &&
+	   sd->shop_commit.request->point.scope && !strcmp(get_str(script_getvarid(reg)),sd->shop_commit.request->point.key))return false;
 
 	if( val ) {
 		i64db_i64put(sd->regs.vars, reg, val);
@@ -11572,6 +11754,10 @@ bool pc_setregistry(map_session_data *sd, int64 reg, int64 val)
 	struct script_reg_num *p = nullptr;
 	const char *regname = get_str(script_getvarid(reg));
 	uint32 index = script_getvaridx(reg);
+	if (((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) &&
+		(!strcmp(regname, CASHPOINT_VAR) || !strcmp(regname, KAFRAPOINT_VAR) ||
+		 (sd->shop_commit.request && sd->shop_commit.request->point.scope && index==0 &&
+		  !strcmp(regname,sd->shop_commit.request->point.key)))) return false;
 
 	if ( !reg_load && !sd->vars_ok ) {
 		ShowError("pc_setregistry : refusing to set %s until vars are received.\n", regname);
@@ -12091,6 +12277,7 @@ bool pc_equipitem(map_session_data *sd,int16 n,int32 req_pos,bool equipswitch)
 	int16* equip_index;
 
 	nullpo_retr(false,sd);
+	if ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return false;
 
 	if( n < 0 || n >= MAX_INVENTORY ) {
 		if( equipswitch ){
@@ -12471,6 +12658,7 @@ bool pc_unequipitem(map_session_data *sd, int32 n, int32 flag) {
 	int32 i, pos;
 
 	nullpo_retr(false,sd);
+	if ((sd->shop_commit.pending && !sd->shop_commit.applying) || pn_item_use_capture_waiting(sd)) return false;
 
 	if (n < 0 || n >= MAX_INVENTORY) {
 		clif_unequipitemack(*sd,0,0,false);
@@ -14885,6 +15073,8 @@ void pc_scdata_received(map_session_data *sd) {
 
 	if (sd->sc.getSCE(SC_SOULENERGY))
 		sd->soulball = sd->sc.getSCE(SC_SOULENERGY)->val1;
+
+	pn_pet_schedule_recovery(*sd);
 }
 
 /**
@@ -15009,12 +15199,11 @@ enum e_BANKING_WITHDRAW_ACK pc_bank_withdraw(map_session_data *sd, int32 money) 
 		return BWA_UNKNOWN_ERROR;
 	}
 
-	int64 limit_check = static_cast<int64>(money) + sd->status.zeny;
 	if( money <= 0 ) {
 		return BWA_UNKNOWN_ERROR;
 	} else if ( money > sd->bank_vault ) {
 		return BWA_NO_MONEY;
-	} else if ( limit_check > MAX_ZENY ) {
+	} else if ( money > MAX_WALLET_ZENY - sd->status.zeny ) {
 		/* no official response for this scenario exists. */
 		clif_messagecolor(sd,color_table[COLOR_RED],msg_txt(sd,1495),false,SELF); //You can't withdraw that much money
 		return BWA_UNKNOWN_ERROR;
@@ -15129,6 +15318,7 @@ struct s_bonus_script_entry *pc_bonus_script_add(map_session_data *sd, const cha
 				t_tick newdur = gettick() + dur;
 				if (flag&BSF_FORCE_REPLACE && entry->tick < newdur) { // Change duration
 					settick_timer(entry->tid, newdur);
+					entry->tick = newdur; // Later refreshes must compare against the current expiry.
 					script_free_code(script);
 					return nullptr;
 				}
@@ -15432,6 +15622,10 @@ void pc_validate_skill(map_session_data *sd) {
 void pc_show_questinfo(map_session_data *sd) {
 #if PACKETVER >= 20090218
 	nullpo_retv(sd);
+	if (auto* delivery = pc_item_delivery_scope(sd)) {
+		delivery->refresh_questinfo();
+		return;
+	}
 
 	if (sd->m < 0 || sd->m >= MAX_MAPINDEX)
 		return;

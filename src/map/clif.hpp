@@ -197,8 +197,14 @@ enum class e_purchase_result : uint8{
 	PURCHASE_FAIL_STOCK_EMPTY,
 	PURCHASE_FAIL_GOODS,
 	// End unknown names
+	PURCHASE_PENDING = 0xfe, // Internal only: the durable purchase ACK responds later.
 	PURCHASE_FAIL_ADD = 0xff,
 };
+namespace pn_shop { struct Commit; struct Event; }
+void clif_shop_commit_result(map_session_data& sd,const pn_shop::Commit& request,const std::vector<pn_shop::Event>& events,bool committed);
+struct s_npc_buy_list;
+void clif_npc_market_purchase_ack(map_session_data& sd,e_purchase_result res,std::vector<s_npc_buy_list>& list);
+void clif_npc_buy_result(map_session_data* sd,e_purchase_result result);
 
 #define packet_len(cmd) packet_db[cmd].len
 extern struct s_packet_db packet_db[MAX_PACKET_DB+1];
@@ -1256,6 +1262,7 @@ void clif_parse_Auction_cancelreg(int32 fd, map_session_data *sd);
 
 void clif_bossmapinfo( const map_session_data& sd, mob_data* md, e_bossmap_info flag );
 void clif_cashshop_show( map_session_data& sd, const npc_data& nd );
+void clif_cashshop_ack( map_session_data* sd, int32 error );
 
 // ADOPTION
 void clif_Adopt_reply( const map_session_data* sd, int32 type );
@@ -1501,6 +1508,8 @@ enum e_macro_checker_result : int16{
 
 void clif_macro_checker( const map_session_data& sd, e_macro_checker_result result );
 
+void clif_goldpc_info(map_session_data& sd);
+void clif_parse_goldpc_npc(int32 fd, map_session_data* sd);
 void clif_dynamicnpc_result( const map_session_data& sd, e_dynamicnpc_result result );
 
 void clif_set_dialog_align( const map_session_data& sd, int32 npcid, e_say_dialog_align align );
@@ -1520,4 +1529,8 @@ int32 clif_bank_native_transfer(map_session_data& sd, int32 amount, bool deposit
 void clif_bank_open(map_session_data& sd);
 void clif_bank_deposit(map_session_data& sd, e_BANKING_DEPOSIT_ACK reason);
 void clif_bank_withdraw(map_session_data& sd, e_BANKING_WITHDRAW_ACK reason);
+
+// Open the authenticated full-width wallet/trade companion.
+void clif_bank_trade_open(map_session_data& sd);
+
 #endif /* CLIF_HPP */

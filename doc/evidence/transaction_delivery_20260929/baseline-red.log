@@ -1,0 +1,25 @@
+[Status]: Memory manager initialised: log/shop-delivery-audit.leaks
+[Status]: Loading 'db/const.yml'...[Status]: Loading '6' entries in 'db/const.yml'
+[Status]: Done reading '6' entries in 'db/const.yml'
+[Status]: Loading 'db/import/const.yml'...[Status]: Loading '3' entries in 'db/import/const.yml'
+[Status]: Done reading '3' entries in 'db/import/const.yml'
+[Status]: Loading 'db/import/zero_cell_const.yml'...[Status]: Loading '2' entries in 'db/import/zero_cell_const.yml'
+[Status]: Done reading '2' entries in 'db/import/zero_cell_const.yml'
+DELIVERY mode=0 success=1 balance=9800 first=1 second=0 filled=1 FAIL
+DELIVERY mode=1 success=0 balance=9800 first=1 second=0 filled=1 FAIL
+DELIVERY mode=2 success=1 balance=9800 first=1 second=0 filled=1 FAIL
+DELIVERY mode=3 success=0 balance=9800 first=1 second=0 filled=1 FAIL
+DELIVERY mode=4 success=1 balance=9900 first=1 second=0 filled=0 FAIL
+DELIVERY mode=5 success=0 balance=9900 first=1 second=0 filled=0 FAIL
+DELIVERY mode=6 success=1 balance=9900 first=1 second=0 filled=0 FAIL
+DELIVERY mode=7 success=0 balance=9900 first=1 second=0 filled=0 FAIL
+SHOP_DELIVERY cases=8 failures=8
+Traceback (most recent call last):
+  File "/rathena/tools/ci/shop_delivery_native_test.py", line 60, in <module>
+    with tempfile.TemporaryDirectory(prefix='pn-shop-native-') as d:run(Path(d),args.source.resolve(),args.cash_source.resolve())
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rathena/tools/ci/shop_delivery_native_test.py", line 49, in run
+    subprocess.run([str(binary),str(out)],cwd=ROOT,check=True,timeout=60)
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/pn-shop-native-m2a6mx1l/shop-test', '/tmp/pn-shop-native-m2a6mx1l']' returned non-zero exit status 1.

@@ -3,7 +3,7 @@ name: PN combat and player command regression checks
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, 'codex/server-improvements-*', 'release/**']
     paths: ['src/map/**', 'db/**', 'conf/**', 'npc/custom/player_commands.txt', 'tools/ci/**', '.github/workflows/pn_combat_commands.yml']
   pull_request:
     paths: ['src/map/**', 'db/**', 'conf/**', 'npc/custom/player_commands.txt', 'tools/ci/**', '.github/workflows/pn_combat_commands.yml']

@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `acc_reg_str` (
   `value` varchar(254) NOT NULL default '0',
   PRIMARY KEY (`account_id`,`key`,`index`),
   KEY `account_id` (`account_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `achievement`
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `achievement` (
   `rewarded` datetime,
   PRIMARY KEY (`char_id`,`id`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `auction`
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `barter` (
   `index` SMALLINT(5) UNSIGNED NOT NULL,
   `amount` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY  (`name`,`index`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for `db_roulette`
@@ -137,9 +137,9 @@ CREATE TABLE IF NOT EXISTS `buyingstore_items` (
   `index` smallint(5) unsigned NOT NULL,
   `item_id` int(10) unsigned NOT NULL,
   `amount` smallint(5) unsigned NOT NULL,
-  `price` int(10) unsigned NOT NULL,
+  `price` BIGINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`buyingstore_id`, `index`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `buyingstores`
@@ -154,13 +154,13 @@ CREATE TABLE IF NOT EXISTS `buyingstores` (
   `x` smallint(5) unsigned NOT NULL,
   `y` smallint(5) unsigned NOT NULL,
   `title` varchar(80) NOT NULL,
-  `limit` int(10) unsigned NOT NULL,
+  `limit` BIGINT NOT NULL DEFAULT 0,
   `body_direction` CHAR( 1 ) NOT NULL DEFAULT '4',
   `head_direction` CHAR( 1 ) NOT NULL DEFAULT '0',
   `sit` CHAR( 1 ) NOT NULL DEFAULT '1',
   `autotrade` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `cart_inventory`
@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS `cart_inventory` (
   `enchantgrade` tinyint unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `char`
@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `char` (
   `job_level` smallint(6) unsigned NOT NULL default '1',
   `base_exp` bigint(20) unsigned NOT NULL default '0',
   `job_exp` bigint(20) unsigned NOT NULL default '0',
-  `zeny` int(11) unsigned NOT NULL default '0',
+  `zeny` bigint(20) NOT NULL default '0',
   `str` smallint(4) unsigned NOT NULL default '0',
   `agi` smallint(4) unsigned NOT NULL default '0',
   `vit` smallint(4) unsigned NOT NULL default '0',
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `char_reg_num` (
   `value` bigint(11) NOT NULL default '0',
   PRIMARY KEY (`char_id`,`key`,`index`),
   KEY `char_id` (`char_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `char_reg_str`
@@ -438,7 +438,7 @@ CREATE TABLE IF NOT EXISTS `global_acc_reg_num` (
   `value` bigint(11) NOT NULL default '0',
   PRIMARY KEY (`account_id`,`key`,`index`),
   KEY `account_id` (`account_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `global_acc_reg_str`
@@ -608,7 +608,7 @@ CREATE TABLE IF NOT EXISTS `guild_storage` (
   `enchantgrade` tinyint unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `guild_id` (`guild_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `guild_storage_log`
@@ -748,7 +748,8 @@ CREATE TABLE IF NOT EXISTS `inventory` (
   `equip_switch` int(11) unsigned NOT NULL default '0',
   `enchantgrade` tinyint unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  KEY `char_id` (`char_id`)
+  KEY `char_id` (`char_id`),
+  KEY `pn_pet_identity_lookup` (`card0`,`card1`,`card2`)
 ) ENGINE=InnoDB;
 
 --
@@ -761,7 +762,7 @@ CREATE TABLE IF NOT EXISTS `ipbanlist` (
   `rtime` datetime NOT NULL,
   `reason` varchar(255) NOT NULL default '',
   PRIMARY KEY (`list`, `btime`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `login`
@@ -812,7 +813,7 @@ CREATE TABLE IF NOT EXISTS `mail` (
   `message` varchar(500) NOT NULL default '',
   `time` int(11) unsigned NOT NULL default '0',
   `status` tinyint(2) NOT NULL default '0',
-  `zeny` int(11) unsigned NOT NULL default '0',
+  `zeny` bigint(20) NOT NULL default '0',
   `type` smallint(5) NOT NULL default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB;
@@ -867,7 +868,7 @@ CREATE TABLE IF NOT EXISTS `mapreg` (
   `index` int(11) unsigned NOT NULL default '0',
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`varname`,`index`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table `market` for market shop persistency
@@ -880,7 +881,7 @@ CREATE TABLE IF NOT EXISTS `market` (
   `amount` INT(11) NOT NULL,
   `flag` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY  (`name`,`nameid`)
-) ENGINE = MyISAM;
+) ENGINE = InnoDB;
 
 --
 -- Table structure for table `memo`
@@ -937,7 +938,7 @@ CREATE TABLE IF NOT EXISTS `sales` (
   `end` datetime NOT NULL,
   `amount` int(11) NOT NULL,
   PRIMARY KEY (`nameid`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `sc_data`
@@ -1021,7 +1022,7 @@ CREATE TABLE IF NOT EXISTS `pet` (
   `incubate` int(11) unsigned NOT NULL default '0',
   `autofeed` tinyint(2) NOT NULL default '0',
   PRIMARY KEY  (`pet_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `quest`
@@ -1121,7 +1122,7 @@ CREATE TABLE IF NOT EXISTS `storage` (
   `enchantgrade` tinyint unsigned NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `account_id` (`account_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `vending_items`
@@ -1132,9 +1133,9 @@ CREATE TABLE IF NOT EXISTS `vending_items` (
   `index` smallint(5) unsigned NOT NULL,
   `cartinventory_id` int(10) unsigned NOT NULL,
   `amount` smallint(5) unsigned NOT NULL,
-  `price` int(10) unsigned NOT NULL,
+  `price` BIGINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`vending_id`, `index`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table structure for table `vendings`
@@ -1154,7 +1155,67 @@ CREATE TABLE IF NOT EXISTS `vendings` (
   `sit` CHAR( 1 ) NOT NULL DEFAULT '1',
   `autotrade` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
+
+-- Durable atomic shop receipt and replay identity.
+CREATE TABLE IF NOT EXISTS `pn_shop_commits` (
+  `account_id` INT UNSIGNED NOT NULL,
+  `nonce_hi` BIGINT UNSIGNED NOT NULL,
+  `nonce_lo` BIGINT UNSIGNED NOT NULL,
+  `sequence` BIGINT UNSIGNED NOT NULL,
+  `outcome` TINYINT UNSIGNED NOT NULL,
+  `payload` MEDIUMBLOB NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`)
+) ENGINE=InnoDB;
+
+-- Login-owned global point admission barrier.
+CREATE TABLE IF NOT EXISTS `pn_global_point_barriers` (
+ `account_id` INT UNSIGNED NOT NULL,
+ `nonce_hi` BIGINT UNSIGNED NOT NULL,
+ `nonce_lo` BIGINT UNSIGNED NOT NULL,
+ `sequence` BIGINT UNSIGNED NOT NULL,
+ `char_id` INT UNSIGNED NOT NULL,
+ `point_key` VARCHAR(32) BINARY NOT NULL,
+ `state` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+ `registry_table` VARCHAR(32) BINARY NOT NULL DEFAULT '',
+ `payload` MEDIUMBLOB NOT NULL,
+ `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ `active_account` INT UNSIGNED GENERATED ALWAYS AS (CASE WHEN `state`<2 THEN `account_id` ELSE NULL END) STORED,
+ PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`),
+ UNIQUE KEY `one_pending_account` (`active_account`),
+ KEY `pending_age` (`state`,`created_at`),
+ KEY `protected_key` (`account_id`,`point_key`)
+) ENGINE=InnoDB;
+
+-- Ownership fence for registry keys used by atomic point payments.
+CREATE TABLE IF NOT EXISTS `pn_point_registry_keys` (
+ `account_id` INT UNSIGNED NOT NULL,
+ `char_id` INT UNSIGNED NOT NULL,
+ `point_key` VARCHAR(32) BINARY NOT NULL,
+ PRIMARY KEY (`account_id`,`char_id`,`point_key`)
+) ENGINE=InnoDB;
+
+-- Recoverable pet identities produced by committed asset transactions.
+CREATE TABLE IF NOT EXISTS `pn_pet_entitlements` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `account_id` INT UNSIGNED NOT NULL,
+  `char_id` INT UNSIGNED NOT NULL,
+  `nonce_hi` BIGINT UNSIGNED NOT NULL,
+  `nonce_lo` BIGINT UNSIGNED NOT NULL,
+  `sequence` BIGINT UNSIGNED NOT NULL,
+  `ordinal` SMALLINT UNSIGNED NOT NULL,
+  `pet_id` INT UNSIGNED NOT NULL,
+  `payload` BLOB NOT NULL,
+  `egg` BLOB NOT NULL,
+  `claimed` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `claimed_at` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `request_output` (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`,`ordinal`),
+  UNIQUE KEY `pet_identity` (`pet_id`),
+  KEY `owner_pending` (`account_id`,`char_id`,`claimed`,`id`)
+) ENGINE=InnoDB;
 
 -- PN account-bank transaction journal.
 CREATE TABLE IF NOT EXISTS `pn_bank_commits` (
@@ -1261,3 +1322,47 @@ CREATE TABLE IF NOT EXISTS `pn_reserve_commits` (
   KEY `character_history` (`char_id`,`committed_utc`)
 ) ENGINE=InnoDB;
 -- Keep the ledger and InnoDB conversion when rolling application code back.
+
+CREATE TABLE IF NOT EXISTS pn_mail_commits (
+  account_id INT UNSIGNED NOT NULL,
+  nonce_hi BIGINT UNSIGNED NOT NULL,
+  nonce_lo BIGINT UNSIGNED NOT NULL,
+  request_id BIGINT UNSIGNED NOT NULL,
+  char_id INT UNSIGNED NOT NULL,
+  wallet_before BIGINT NOT NULL,
+  payload VARBINARY(580) NOT NULL,
+  result INT UNSIGNED NOT NULL,
+  PRIMARY KEY(account_id,nonce_hi,nonce_lo,request_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS pn_bank_sweep_commits (
+  account_id INT UNSIGNED NOT NULL,
+  nonce_hi BIGINT UNSIGNED NOT NULL,
+  nonce_lo BIGINT UNSIGNED NOT NULL,
+  request_id BIGINT UNSIGNED NOT NULL,
+  char_id INT UNSIGNED NOT NULL,
+  bank_before BIGINT NOT NULL,
+  bank_after BIGINT NOT NULL,
+  collected INT UNSIGNED NOT NULL,
+  skipped INT UNSIGNED NOT NULL,
+  PRIMARY KEY(account_id,nonce_hi,nonce_lo,request_id)
+) ENGINE=InnoDB;
+
+-- Required before enabling paired trade/vending/buying persistence.
+-- Run during the stopped-server migration: all participants must roll back together.
+ALTER TABLE `char` ENGINE=InnoDB;
+ALTER TABLE `inventory` ENGINE=InnoDB;
+ALTER TABLE `acc_reg_num` ENGINE=InnoDB;
+ALTER TABLE `cart_inventory` ENGINE=InnoDB;
+ALTER TABLE `vendings` ENGINE=InnoDB;
+ALTER TABLE `vending_items` ENGINE=InnoDB;
+ALTER TABLE `buyingstores` ENGINE=InnoDB;
+ALTER TABLE `buyingstore_items` ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS `pn_pair_commits` (
+  `account_id` INT UNSIGNED NOT NULL,
+  `nonce_hi` BIGINT UNSIGNED NOT NULL,
+  `nonce_lo` BIGINT UNSIGNED NOT NULL,
+  `sequence` BIGINT UNSIGNED NOT NULL,
+  `payload` MEDIUMBLOB NOT NULL,
+  PRIMARY KEY (`account_id`,`nonce_hi`,`nonce_lo`,`sequence`)
+) ENGINE=InnoDB;

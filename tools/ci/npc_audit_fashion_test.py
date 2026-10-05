@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""Run actual Fashion NPCs in an isolated Linux script VM with network denied.
+
+Fresh script.cpp, allocator and driver; existing map objects satisfy other link
+dependencies. UI, registry persistence and inventory deletion are explicit test
+boundaries. No map-server startup, account database, or live player is used.
+"""
+import argparse
+from concurrent.futures import ThreadPoolExecutor
+import hashlib
+import os
+from pathlib import Path
+import re
+import subprocess
+import tempfile
+
+from biosphere_crown_transaction_test import WRAPPERS
+
+ROOT = Path(__file__).resolve().parents[2]
+NPC = ROOT / 'npc/custom/fashion_points/FashionPoints.txt'
+
+
+def run(build, source):
+    prefix = (ROOT / 'tools/ci/biosphere_crown_transaction_test.cpp').read_text()
+    prefix = prefix.split('extern "C" int __wrap_main(', 1)[0]
+    # The shared fixture stores registry values in a map. Fashion's actual
+    # FP_LoadBox uses transient arrays, so mirror array membership as well.
+    original = 'extern "C" bool setreg(map_session_data*,int64 key,int64 value){nums[key]=value;return true;}'
+    replacement = ('extern "C" bool setreg(map_session_data* sd,int64 key,int64 value){'
+                   'nums[key]=value;if(script_getvaridx(key))script_array_update(&sd->regs,key,value==0);return true;}')
+    if prefix.count(original) != 1:
+        raise AssertionError('Shared registry fixture changed; review array boundary')
+    # Report the real loop-limit failure immediately; the deliberately absent
+    # world/NPC lookup boundary cannot render a production source-location report.
+    error_tail='std::vfprintf(stderr,f,a);va_end(a);}'
+    assert prefix.count(error_tail)==1
+    prefix=prefix.replace(error_tail,'std::vfprintf(stderr,f,a);va_end(a);if(std::strstr(f,"infinity loop")){std::fprintf(stderr,"fashion case=%u stone25058=%d stone25206=%d coins=%d card4=%u points=%lld\\n",cases,count(25058),count(25206),count(50000),attached->inventory.u.items_inventory[0].card[3],(long long)nums[add_str("#FP_Fashion")]);std::exit(1);}}')
+    # Fashion costumes span several equipment positions. Keep the common VM
+    # boundaries but replace the crown-only equip doubles with costume-aware
+    # versions in this fixture, without changing the shared crown tests.
+    prefix=prefix[:prefix.index('extern "C" bool unequip(')]
+    driver = build / 'npc_audit_fashion_driver.cpp'
+    driver.write_text(prefix.replace(original, replacement) +
+                      (ROOT / 'tools/ci/npc_audit_fashion_test.cpp').read_text())
+    sanitize = ['-fsanitize=' + os.environ.get('NPC_FASHION_SANITIZERS', 'address,undefined'),
+                '-fno-sanitize-recover=all', '-fno-omit-frame-pointer']
+    flags = ['g++', '-std=c++17', '-O0', '-g', '-DPACKETVER=20260219', '-fno-strict-aliasing'] + sanitize
+    flags += ['-I' + p for p in ('src', '3rdparty/libconfig', '3rdparty/rapidyaml/src',
+              '3rdparty/rapidyaml/ext/c4core/src', '3rdparty/json/include', '/usr/include/mysql')]
+    sources = [ROOT / 'src/map/script.cpp', ROOT / 'src/common/malloc.cpp', driver]
+
+    def compile_one(path):
+        target = build / (path.stem + '.o')
+        stamp = target.with_suffix('.sha256')
+        dependencies = b''.join(p.read_bytes() for p in sorted((ROOT / 'src/custom').glob('*')) if p.is_file()) if path.name == 'script.cpp' else b''
+        fingerprint = hashlib.sha256(path.read_bytes() + dependencies + repr(flags).encode()).hexdigest()
+        if target.exists() and stamp.exists() and stamp.read_text() == fingerprint:
+            return target
+        print('Compiling ' + str(path) + ' SHA256=' + hashlib.sha256(path.read_bytes()).hexdigest(), flush=True)
+        subprocess.run(flags + ['-c', str(path), '-o', str(target)], cwd=ROOT, check=True)
+        stamp.write_text(fingerprint)
+        return target
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        objects = list(pool.map(compile_one, sources))
+    support = sorted(p for p in (ROOT / 'src/map/obj').rglob('*.o') if p.name != 'script.o')
+    libraries = [ROOT / p for p in ('src/common/obj/common.a', '3rdparty/libconfig/obj/libconfig.a',
+                                  '3rdparty/rapidyaml/obj/ryml.a')]
+    if not support or any(not path.is_file() for path in libraries):
+        raise SystemExit('Build local Linux map-server objects first')
+    wrappers = (*WRAPPERS, '_Z16clif_goldpc_infoR16map_session_data', '_Z14pc_setregistryP16map_session_datall',
+                '_Z10pc_delitemP16map_session_dataiiis15e_log_pick_type',
+                '_Z16clif_scriptinputR16map_session_dataj',
+                '_Z10pc_additemP16map_session_dataP4itemi15e_log_pick_typeb')
+    binary = build / 'npc_audit_fashion_test'
+    subprocess.run(['g++'] + sanitize + ['-o', str(binary)] +
+                   [str(p) for p in objects + support + libraries] +
+                   ['-Wl,--wrap=' + name for name in wrappers] +
+                   ['-lz', '-ldl', '-lmysqlclient', '-l:libzstd.so.1', '-lssl', '-lcrypto', '-lresolv', '-lm'],
+                   cwd=ROOT, check=True)
+    result = subprocess.run([str(binary), str(source)], cwd=ROOT, capture_output=True, text=True, timeout=60)
+    print(result.stdout, end=''); print(result.stderr, end='')
+    result.check_returncode()
+    output = re.sub(r'\x1b\[[0-9;]*m', '', result.stdout + result.stderr)
+    if not re.search(r'NPC_AUDIT_FASHION_OK cases=\d+ assertions=\d+', output):
+        raise AssertionError('Missing native case coverage marker')
+    if re.search(r'\[(?:Error|Warning)\]|AddressSanitizer|runtime error:|invalid.free', output, re.I):
+        raise AssertionError('Native diagnostics must be clean')
+    if 'Memory manager: No memory leaks found.' not in output:
+        raise AssertionError('Missing clean native allocator teardown')
+    # Reintroduce each audited defect independently. Execute the same real VM
+    # proof again, so coverage must reject all three broken production variants.
+    current = source.read_text()
+    mutations = [
+        ('gold-menu', 'Convert Gold Points to Fashion Points', 'Convert Gold Points 1:1',
+         'Gold menu exposes exactly the four routed actions'),
+        ('recovery-menu', '"Slot " + (.@slot+1) + " - "', '"Slot " + (.@slot+1) + ": "',
+         'exactly one enchant option per recoverable slot'),
+        ('costume-debit', 'if (!delitemidx(.@idx,.@amount))',
+         'if ((delitemidx(.@idx,.@amount) * 0))',
+         'Fashion Points require successful inventory debit'),
+        ('stone-scan-loop', re.search(r'return compare\([^\n]+',current)[0],
+         'for (.@box=0; .@box<21; ++.@box) { .@n=callfunc("FP_LoadBox",.@box); '
+         'for (.@i=0; .@i<.@n; ++.@i) if (@FP_BoxStone[.@i]==getarg(0)) return 1; } return 0;',
+         'infinity loop'),
+        ('recovery-extra-scan', '\tgetitem .@stone,1;\n',
+         '\tfor (.@i=0; .@i<@inventorylist_count; ++.@i)\n'
+         '\t\tif (@inventorylist_id[.@i]==.@stone)\n'
+         '\t\t\t.@amount_before_at[@inventorylist_idx[.@i]]=@inventorylist_amount[.@i];\n'
+         '\tgetitem .@stone,1;\n', 'infinity loop'),
+    ]
+    for name, needle, replacement, expected in mutations:
+        if current.count(needle) != 1:
+            raise AssertionError('Regression mutation anchor drift: ' + name)
+        altered = build / (name + '.txt')
+        altered.write_text(current.replace(needle, replacement))
+        failed = subprocess.run([str(binary), str(altered)], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        if failed.returncode == 0 or expected not in failed.stderr:
+            raise AssertionError('Regression sensitivity failed for ' + name + '\n' + failed.stdout + failed.stderr)
+        print('REGRESSION_REJECTED: ' + name, flush=True)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, default=NPC, help='Alternate NPC source for regression sensitivity checks')
+    parser.add_argument('--build-dir', type=Path, help='Retain objects for local diagnosis')
+    args = parser.parse_args()
+    if args.build_dir:
+        args.build_dir.mkdir(parents=True, exist_ok=True)
+        run(args.build_dir.resolve(), args.source.resolve())
+    else:
+        with tempfile.TemporaryDirectory(prefix='npc-audit-fashion-') as directory:
+            run(Path(directory), args.source.resolve())

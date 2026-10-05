@@ -1,0 +1,9 @@
+[Status]: Memory manager initialised: log/(null).leaks
+CRASH_READY
+[Info]: Saved Inventory (0) data to table inventory for char_id: 99001313
+CRASH_RETURN 0
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.
+[SQL]: DB error - Lost connection to MySQL server during query
+[SQL]: DB error - Lost connection to MySQL server during query
+WARNING: MYSQL_OPT_RECONNECT is deprecated and will be removed in a future version.

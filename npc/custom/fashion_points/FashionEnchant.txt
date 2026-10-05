@@ -11,14 +11,12 @@
 //===== rAthena Script =======================================
 //= Complete Fashion Stone application service
 //===== Provenance / compatibility ===========================
-//= Stone -> enchant mappings and slot families are the complete 366-pair set
-//= from revision 61305 of:
-//= The page does not publish an application chance. This service therefore
-//= applies one supported stone deterministically; a validation or mutation
-//= failure consumes nothing. This is a declared compatibility policy, not a
-//= claim about an unpublished reference server probability.
-//= The stock Malangdo NPC covers only 196 pairs. This service covers all 366
-//= pairs, including Druid/Karnos/Alitea with the integrated class skills.
+//= stone_catalogue.json records verified regional mappings and provenance.
+//= Original revision 61305 pairs are retained; official regional stones
+//= and fourth-slot cosmetic families are added by the September 2026 audit.
+//= PN applies a supported stone deterministically into an empty compatible slot.
+//= This local policy also applies to regional materials sold as chance-based.
+//= Validation or mutation failure consumes nothing.
 //= FP_EnchantSupported still validates every record's card/enchant type.
 //= The custom modifyequipitem command changes the enchant slot on the original
 //= inventory record. Unique ID, binding, expiry, favorite state, refine, grade,
@@ -34,8 +32,8 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 	mes "Application is guaranteed, and an invalid or interrupted validation consumes nothing.";
 	mes "The target enchant slot must be empty.";
 	next;
-	.@cat=select("Top stone:Middle stone:Lower stone:Garment first-slot stone:Garment second-slot stone:Leave")-1;
-	if (.@cat == 5) close;
+	.@cat=select("Top stone:Middle stone:Lower stone:Garment first-slot stone:Garment second-slot stone:Top visual effect:Middle visual effect:Lower visual effect:Garment footprint effect:Festa upper second-slot stone:Leave")-1;
+	if (.@cat == 10) close;
 	switch (.@cat) {
 	case 0:
 		.@first_box=0; .@last_box=4; .@part=EQI_COSTUME_HEAD_TOP;
@@ -56,6 +54,26 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 	case 4:
 		.@first_box=20; .@last_box=20; .@part=EQI_COSTUME_GARMENT;
 		.@mask=EQP_COSTUME_GARMENT; .@slot=1; .@part_name$="costume garment second slot";
+		break;
+	case 5:
+		.@first_box=21; .@last_box=21; .@part=EQI_COSTUME_HEAD_TOP;
+		.@mask=EQP_COSTUME_HEAD_TOP; .@slot=3; .@part_name$="upper costume visual effect";
+		break;
+	case 6:
+		.@first_box=22; .@last_box=22; .@part=EQI_COSTUME_HEAD_MID;
+		.@mask=EQP_COSTUME_HEAD_MID; .@slot=3; .@part_name$="middle costume visual effect";
+		break;
+	case 7:
+		.@first_box=23; .@last_box=23; .@part=EQI_COSTUME_HEAD_LOW;
+		.@mask=EQP_COSTUME_HEAD_LOW; .@slot=3; .@part_name$="lower costume visual effect";
+		break;
+	case 8:
+		.@first_box=24; .@last_box=24; .@part=EQI_COSTUME_GARMENT;
+		.@mask=EQP_COSTUME_GARMENT; .@slot=3; .@part_name$="costume garment footprint effect";
+		break;
+	case 9:
+		.@first_box=25; .@last_box=25; .@part=EQI_COSTUME_HEAD_TOP;
+		.@mask=EQP_COSTUME_HEAD_TOP; .@slot=1; .@part_name$="upper costume second slot";
 		break;
 	}
 
@@ -85,7 +103,7 @@ mal_in01,25,113,3	script	Complete Fashion Enchanter#FP	4_WHITETIGER,{
 		if (.@last>.@owned) .@last=.@owned;
 		.@menu$="";
 		for (.@i=.@from; .@i<.@last; ++.@i)
-			.@menu$+=getitemname(.@stone_id[.@i])+" ["+countitem(.@stone_id[.@i])+"]:";
+			.@menu$+=replacestr(getitemname(.@stone_id[.@i]),":"," -")+" ["+countitem(.@stone_id[.@i])+"]:";
 		.@shown=.@last-.@from;
 		if (.@last<.@owned) .@menu$+="Next page:";
 		if (.@page>0) .@menu$+="Previous page:";

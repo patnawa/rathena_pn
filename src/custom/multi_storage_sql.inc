@@ -36,8 +36,8 @@ bool personal_storage_tosql(const pn_storage_request& request, const item* sourc
     auto table = interServerDb.find(request.page);
     if (!request.account_id || !request.char_id || !request.sequence || (!request.nonce_hi && !request.nonce_lo) ||
         request.reserved || request.action < pn_storage::Inventory || request.action > pn_storage::Unlock || !table || !source ||
-        (!unlock && !page) || request.wallet_before < 0 || request.wallet_before > MAX_ZENY ||
-        request.wallet_after < 0 || request.wallet_after > MAX_ZENY ||
+        (!unlock && !page) || request.wallet_before < 0 || request.wallet_before > MAX_WALLET_ZENY ||
+        request.wallet_after < 0 || request.wallet_after > MAX_WALLET_ZENY ||
         (unlock && (!pn_storage::purchasable(request.page) || request.wallet_before < pn_storage::expansion_price ||
                     request.wallet_after < request.wallet_before-pn_storage::expansion_price)) ||
         !storage_engine_is_transactional(schema_config.char_db) ||

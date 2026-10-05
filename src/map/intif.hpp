@@ -121,8 +121,11 @@ int32 intif_clan_member_joined( int32 clan_id );
 int32 intif_clan_member_left( int32 clan_id );
 // ACHIEVEMENT SYSTEM
 void intif_request_achievements(uint32 char_id);
+int32 intif_achievement_save_snapshot(uint32 char_id, const struct achievement* rows, uint16 count);
+int32 intif_achievement_logout_save(uint32 account_id, uint32 char_id, uint64 generation,
+	const struct achievement* rows, uint16 count);
 int32 intif_achievement_save(map_session_data *sd);
-int32 intif_achievement_reward( const map_session_data* sd, struct s_achievement_db *adb );
+int32 intif_achievement_reward( map_session_data* sd, struct s_achievement_db *adb );
 
 int32 intif_request_accinfo( int32 u_fd, int32 aid, int32 group_lv, char* query );
 
@@ -133,6 +136,8 @@ bool intif_storage_page_load(map_session_data& sd);
 bool intif_storage_save( const map_session_data* sd, const s_storage* stor );
 void intif_reform_save( map_session_data& sd, uint16 index );
 void intif_bank_save( map_session_data& sd );
+void intif_mail_companion_save(map_session_data& sd);
+void intif_bank_sweep_save(map_session_data& sd);
 
 int32 CheckForCharServer(void);
 

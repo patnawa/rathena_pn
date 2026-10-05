@@ -16,18 +16,16 @@ end
 
 local descriptions = {
     [6024] = {
-        "A valuable diamond that can be exchanged at the Account Bank.",
-        "^0000FFBank buy price:^000000 501,000,000 zeny",
-        "^0000FFBank sell price:^000000 499,000,000 zeny",
-        "Use ^0000FF@bank^000000 or ^0000FFAlt+B^000000 to open the bank.",
-        "Favorite, bound, modified and rental items cannot be exchanged."
+        "Retired currency. Use direct Zeny instead.",
+        "Existing diamonds were converted to Bank Zeny during maintenance.",
+        "^0000FFConversion value:^000000 499,000,000 Zeny",
+        "Use ^0000FF@bank^000000 or ^0000FFCtrl+B^000000 to open Wallet & Bank."
     },
     [12781] = {
-        "A 1M Zeny Ticket item that can be exchanged at the Account Bank.",
-        "^0000FFBank buy price:^000000 1,002,000 zeny",
-        "^0000FFBank sell price:^000000 998,000 zeny",
-        "Use ^0000FF@bank^000000 or ^0000FFAlt+B^000000 to open the bank.",
-        "Favorite, bound, modified and rental items cannot be exchanged.",
+        "Retired currency. Use direct Zeny instead.",
+        "Existing tickets were converted to Bank Zeny during maintenance.",
+        "^0000FFConversion value:^000000 998,000 Zeny",
+        "Use ^0000FF@bank^000000 or ^0000FFCtrl+B^000000 to open Wallet & Bank.",
         "^0000CCWeight:^000000 0"
     }
 }

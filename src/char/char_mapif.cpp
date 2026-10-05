@@ -18,6 +18,8 @@
 
 #include "char.hpp"
 #include "char_logif.hpp"
+#include "int_storage.hpp"
+#include <common/logout_save.hpp>
 #include "inter.hpp"
 
 using namespace rathena;
@@ -1399,6 +1401,31 @@ void chmapif_connectack(int32 fd, uint8 errCode){
  * @param fd: file descriptor to parse, (link to map-serv)
  * @return 0=invalid server,marked for disconnection,unknow packet; 1=success
  */
+static int32 chmapif_parse_logout_barrier(int32 fd, int32 id) {
+	if (RFIFOREST(fd) < logout_save::packet_size)
+		return 0;
+	uint32 account_id, char_id;
+	uint64 generation;
+	memcpy(&account_id, RFIFOP(fd, 4), sizeof(account_id));
+	memcpy(&char_id, RFIFOP(fd, 8), sizeof(char_id));
+	memcpy(&generation, RFIFOP(fd, 16), sizeof(generation));
+	auto online = char_get_onlinedb().find(account_id);
+	if (RFIFOW(fd, 2) != logout_save::version || RFIFOL(fd, 12) != 0 || !generation ||
+		online == char_get_onlinedb().end() || !online->second ||
+		online->second->char_id != char_id || online->second->server != id) {
+		set_eof(fd);
+		return 0;
+	}
+	// Earlier packets on this stream have completed their synchronous handlers.
+	// The map retains ownership until it receives this exact generation token.
+	WFIFOHEAD(fd, logout_save::packet_size);
+	memcpy(WFIFOP(fd, 0), RFIFOP(fd, 0), logout_save::packet_size);
+	WFIFOW(fd, 0) = logout_save::response;
+	WFIFOSET(fd, logout_save::packet_size);
+	RFIFOSKIP(fd, logout_save::packet_size);
+	return 1;
+}
+
 int32 chmapif_parse(int32 fd){
 	int32 id; //mapserv id
 
@@ -1411,6 +1438,7 @@ int32 chmapif_parse(int32 fd){
 	}
 	if( session[fd]->flag.eof )
 	{
+		pn_shop_progression_disconnect(fd);
 		do_close(fd);
 		map_server[id].fd = -1;
 		chmapif_on_disconnect(id);
@@ -1448,6 +1476,7 @@ int32 chmapif_parse(int32 fd){
 			//case 0x2b2c: /*free*/; break;
 			case 0x2b2d: next=chmapif_bonus_script_get(fd); break; //Load data
 			case 0x2b2e: next=chmapif_bonus_script_save(fd); break;//Save data
+			case 0x2b30: next=chmapif_parse_logout_barrier(fd,id); break;
 			default:
 			{
 					// inter server - packet
@@ -1485,7 +1514,8 @@ void chmapif_server_init(int32 id) {
  * @param id: id of map-serv (should be >0, FIXME)
  */
 void chmapif_server_destroy(int32 id){
-	if( map_server[id].fd == -1 ){
+	if( map_server[id].fd != -1 ){
+		pn_shop_progression_disconnect(map_server[id].fd);
 		do_close(map_server[id].fd);
 		map_server[id].fd = -1;
 	}

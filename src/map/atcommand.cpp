@@ -1,3 +1,5 @@
+#include <common/runtime_identity.hpp>
+#include <custom/shop_state.hpp>
 // Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
@@ -5,6 +7,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <cerrno>
 #include <set>
 #include <sstream>
 #include <unordered_map>
@@ -1516,6 +1519,25 @@ ACMD_FUNC(item)
 		number = 1;
 	int32 get_count = number;
 
+	bool has_pet = false;
+	for (const auto& data : items)
+		if (data->type == IT_PETEGG || pet_db_search(data->nameid, PET_EGG)) has_pet = true;
+	if (has_pet) {
+		std::vector<pn_shop::Grant> grants;
+		for (const auto& data : items) {
+			pn_shop::Grant grant{};
+			grant.nameid = data->nameid; grant.amount = number;
+			grant.prototype.nameid = data->nameid; grant.prototype.identify = 1; grant.prototype.bound = bound;
+			grants.push_back(grant);
+		}
+		if (!pn_shop_begin(*sd, pn_shop_request(*sd, pn_shop::Asset), grants)) {
+			clif_displaymessage(fd, "The item grant could not start. No items were created.");
+			return -1;
+		}
+		clif_displaymessage(fd, "The item grant is being committed; pet rewards remain available through @petrewards.");
+		return 0;
+	}
+
 	// Produce items in list
 	for( const auto& item : items ){
 		t_itemid item_id = item->nameid;
@@ -1526,16 +1548,13 @@ ACMD_FUNC(item)
 		}
 
 		for( int32 i = 0; i < number; i += get_count ){
-			// if not pet egg
-			if (!pet_create_egg(sd, item_id)) {
-				struct item item_tmp = {};
+			struct item item_tmp = {};
 
-				item_tmp.nameid = item_id;
-				item_tmp.identify = 1;
-				item_tmp.bound = bound;
-				if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
-					clif_additem(sd, 0, 0, flag);
-			}
+			item_tmp.nameid = item_id;
+			item_tmp.identify = 1;
+			item_tmp.bound = bound;
+			if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
+				clif_additem(sd, 0, 0, flag);
 		}
 	}
 
@@ -1612,23 +1631,23 @@ ACMD_FUNC(item2)
 			refine = attr = 0;
 		}
 
+		struct item item_tmp = {};
+		item_tmp.nameid = item_data->nameid;
+		item_tmp.identify = identify;
+		item_tmp.refine = refine;
+		item_tmp.attribute = attr;
+		item_tmp.card[0] = c1; item_tmp.card[1] = c2;
+		item_tmp.card[2] = c3; item_tmp.card[3] = c4;
+		item_tmp.bound = bound;
+		const auto pet_result = pn_pet_grant(*sd, item_tmp, number);
+		if (pet_result != pn_pet_grant_result::NotPet) {
+			clif_displaymessage(fd, pet_result == pn_pet_grant_result::Pending ?
+				"Pet grant pending; unclaimed eggs remain available through @petrewards." : "The pet grant could not start.");
+			return pet_result == pn_pet_grant_result::Pending ? 0 : -1;
+		}
 		for (i = 0; i < loop; i++) {
-			// if not pet egg
-			if (!pet_create_egg(sd, item_data->nameid)) {
-				struct item item_tmp = {};
-
-				item_tmp.nameid = item_data->nameid;
-				item_tmp.identify = identify;
-				item_tmp.refine = refine;
-				item_tmp.attribute = attr;
-				item_tmp.card[0] = c1;
-				item_tmp.card[1] = c2;
-				item_tmp.card[2] = c3;
-				item_tmp.card[3] = c4;
-				item_tmp.bound = bound;
-				if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
-					clif_additem(sd, 0, 0, flag);
-			}
+			if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
+				clif_additem(sd, 0, 0, flag);
 		}
 
 		if (flag == 0)
@@ -3011,10 +3030,13 @@ ACMD_FUNC(skillpoint)
  *------------------------------------------*/
 ACMD_FUNC(zeny)
 {
-	int32 zeny=0, ret=-1;
+	int64 zeny=0;
+	int32 ret=-1;
+	char* end=nullptr;
+	errno=0;
 	nullpo_retr(-1, sd);
 
-	if (!message || !*message || (zeny = atoi(message)) == 0) {
+	if (!message || !*message || (zeny = strtoll(message, &end, 10)) == 0 || errno == ERANGE || *end != 0) {
 		clif_displaymessage(fd, msg_txt(sd,1012)); // Please enter an amount (usage: @zeny <amount>).
 		return -1;
 	}
@@ -3024,7 +3046,7 @@ ACMD_FUNC(zeny)
 		clif_displaymessage(fd, msg_txt(sd,149)); // Unable to increase the number/value.
 	}
 	else {
-	    if( sd->status.zeny < -zeny ) zeny = -sd->status.zeny;
+	    if( zeny < -sd->status.zeny ) zeny = -sd->status.zeny;
 	    if((ret=pc_payzeny(sd,-zeny,LOG_TYPE_COMMAND)) == 1)
 		clif_displaymessage(fd, msg_txt(sd,41)); // Unable to decrease the number/value.
 	}
@@ -3328,14 +3350,8 @@ ACMD_FUNC(makeegg) {
 
 	int32 res(-1);
 	if (pet != nullptr) {
-		std::shared_ptr<s_mob_db> mdb = mob_db.find(pet->class_);
-		if(mdb){
-			if(intif_create_pet(sd->status.account_id, sd->status.char_id, pet->class_, mdb->lv, pet->EggID, 0, pet->intimate, 100, 0, 1, mdb->jname.c_str())){
-				res = 0;
-			} else {
-				res = -2; //char server down
-			}
-		}
+		struct item egg{}; egg.nameid = pet->EggID; egg.identify = 1;
+		res = pn_pet_grant(*sd, egg, 1) == pn_pet_grant_result::Pending ? 0 : -2;
 	} 
 	
 	switch(res){
@@ -6459,7 +6475,6 @@ ACMD_FUNC(storeall)
 
 ACMD_FUNC(clearstorage)
 {
-	int32 i, j;
 	nullpo_retr(-1, sd);
 
 	if (sd->state.storage_flag == 1) {
@@ -6471,9 +6486,10 @@ ACMD_FUNC(clearstorage)
 		return -1;
 	}
 
-	j = sd->storage.amount;
-	for (i = 0; i < j; ++i) {
-		storage_delitem(sd, &sd->storage, i, sd->storage.u.items_storage[i].amount);
+	// Withdrawals leave holes; amount counts occupied slots, not the last index.
+	for (int32 i = 0; i < ARRAYLENGTH(sd->storage.u.items_storage); ++i) {
+		if (sd->storage.u.items_storage[i].nameid != 0)
+			storage_delitem(sd, &sd->storage, i, sd->storage.u.items_storage[i].amount);
 	}
 	sd->state.storage_flag = 1;
 	storage_storageclose(sd);
@@ -6484,7 +6500,6 @@ ACMD_FUNC(clearstorage)
 
 ACMD_FUNC(cleargstorage)
 {
-	int32 i, j;
 	struct s_storage *gstorage;
 	nullpo_retr(-1, sd);
 
@@ -6513,10 +6528,11 @@ ACMD_FUNC(cleargstorage)
 		return -1;
 	}
 
-	j = gstorage->amount;
 	gstorage->lock = true; // Lock @gstorage: do not allow any item to be retrieved or stored from any guild member
-	for (i = 0; i < j; ++i) {
-		storage_guild_delitem(sd, gstorage, i, gstorage->u.items_guild[i].amount);
+	// Include retained items beyond a reduced storage capacity as well as holes.
+	for (int32 i = 0; i < ARRAYLENGTH(gstorage->u.items_guild); ++i) {
+		if (gstorage->u.items_guild[i].nameid != 0)
+			storage_guild_delitem(sd, gstorage, i, gstorage->u.items_guild[i].amount);
 	}
 	storage_guild_storageclose(sd);
 	gstorage->lock = false; // Cleaning done, release lock
@@ -6930,6 +6946,10 @@ ACMD_FUNC(autotrade) {
 		return -1;
 	}
 
+	if (!sd->market.published) {
+		clif_displaymessage(fd, "Publish your Market draft before autotrade.");
+		return -1;
+	}
 	sd->state.autotrade = 1;
 	if (battle_config.autotrade_monsterignore)
 		sd->state.block_action |= PCBLOCK_IMMUNE;
@@ -12573,6 +12593,8 @@ bool is_atcommand(const int32 fd, map_session_data* sd, const char* message, int
 		}
 	}
 
+	// Reloads invalidate comparison identity even when a reload partly fails.
+	if(strstr(command,"reload") || strstr(command,"loadnpc") || strstr(command,"unloadnpc"))pn_runtime_identity::invalidate();
 	//Attempt to use the command
 	if ( (info->func(fd, ssd, command, params) != 0) )
 	{

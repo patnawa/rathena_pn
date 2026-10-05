@@ -13,6 +13,7 @@
 
 //fwd declaration
 class map_session_data;
+struct ChrifSaveBuffer;
 
 enum sd_state { ST_LOGIN, ST_LOGOUT, ST_MAPCHANGE };
 
@@ -32,6 +33,13 @@ struct auth_node {
 	time_t expiration_time; // # of seconds 1/1/1970 (timestamp): Validity limit of the account (0 = unlimited)
 	map_session_data *sd;	//Data from logged on char.
 	struct mmo_charstatus *char_dat;	//Data from char server.
+	struct achievement *achievement_snapshot; // Final monotonic snapshot retained through logout ACK.
+	struct mmo_charstatus *logout_status; // Final status retained after the live session is released.
+	ChrifSaveBuffer* logout_saves; // Replacement save packets retained through the stream barrier.
+	uint16 achievement_count;
+	uint64 achievement_generation;
+	bool achievement_pending;
+	bool final_save_pending;
 	t_tick node_created; //timestamp for node timeouts
 	enum sd_state state; //To track whether player was login in/out or changing maps.
 };
@@ -52,6 +60,7 @@ struct auth_node* chrif_search(uint32 account_id);
 struct auth_node* chrif_auth_check(uint32 account_id, uint32 char_id, enum sd_state state);
 bool chrif_auth_delete(uint32 account_id, uint32 char_id, enum sd_state state);
 bool chrif_auth_finished( const map_session_data* sd );
+bool chrif_auth_achievement_saved(uint32 account_id, uint32 char_id, uint64 generation, bool success);
 
 void chrif_authreq(map_session_data* sd, bool autotrade);
 void chrif_authok(int32 fd);

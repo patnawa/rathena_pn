@@ -106,6 +106,8 @@ dali02,40,134,5	script	Interdimensional Device#dk	PORTAL,{
 	}
 
 	.@md_name$ = "Ghost Palace";
+	.@reason$ = callfunc("PN_InstanceMissing",.@md_name$);
+	if (.@reason$ != "") { mes .@reason$; close; }
 	switch( instance_enter(.@md_name$) ) {
 	case IE_OTHER:
 		mes "An unknown error occurred.";

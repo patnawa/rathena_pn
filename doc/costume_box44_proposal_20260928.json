@@ -1,0 +1,702 @@
+{
+  "status": "PROPOSAL_REQUIRES_REVIEW",
+  "source_url": "http://ropatch.gnjoy.com/Patch/2026-09-07_live_client_3363_3364_1788764913.rgz",
+  "source_sha256": "7aa45e7efb2da56e2defb65c9927faab8f878ce9fdb53d26f226868a02692e5e",
+  "basis": "Matching Korean names and descriptions in official client tbl entries. Internal AegisName values are local proposal names, not claimed official names. All percentage and skill-dependent values translated from client descriptions.",
+  "physical_items": [
+    {
+      "Id": 1003053,
+      "AegisName": "aegis_1003053",
+      "Name": "Windhawk Stone II (Garment)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003054,
+      "AegisName": "aegis_1003054",
+      "Name": "Ranger Stone II (Upper)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003055,
+      "AegisName": "aegis_1003055",
+      "Name": "Ranger Stone II (Middle)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003056,
+      "AegisName": "aegis_1003056",
+      "Name": "Ranger Stone II (Lower)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003057,
+      "AegisName": "aegis_1003057",
+      "Name": "Elemental Master Stone II (Garment)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003058,
+      "AegisName": "aegis_1003058",
+      "Name": "Sorcerer Stone II (Upper)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003059,
+      "AegisName": "aegis_1003059",
+      "Name": "Sorcerer Stone II (Middle)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003060,
+      "AegisName": "aegis_1003060",
+      "Name": "Sorcerer Stone II (Lower)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003061,
+      "AegisName": "aegis_1003061",
+      "Name": "Shinkiro Stone II (Garment)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003062,
+      "AegisName": "aegis_1003062",
+      "Name": "Kagerou Stone II (Upper)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003063,
+      "AegisName": "aegis_1003063",
+      "Name": "Kagerou Stone II (Middle)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003064,
+      "AegisName": "aegis_1003064",
+      "Name": "Kagerou Stone II (Lower)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003065,
+      "AegisName": "aegis_1003065",
+      "Name": "Shiranui Stone II (Garment)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003066,
+      "AegisName": "aegis_1003066",
+      "Name": "Oboro Stone II (Upper)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003067,
+      "AegisName": "aegis_1003067",
+      "Name": "Oboro Stone II (Middle)",
+      "Type": "Etc",
+      "Weight": 100
+    },
+    {
+      "Id": 1003068,
+      "AegisName": "aegis_1003068",
+      "Name": "Oboro Stone II (Lower)",
+      "Type": "Etc",
+      "Weight": 100
+    }
+  ],
+  "enchant_items": [
+    {
+      "Id": 315324,
+      "AegisName": "aegis_315324",
+      "Name": "Windhawk Stone II (Garment)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"WH_FLAMETRAP\",10;\nbonus2 bSkillAtk,\"WH_SWIFTTRAP\",10;"
+    },
+    {
+      "Id": 315325,
+      "AegisName": "aegis_315325",
+      "Name": "Ranger Stone II (Upper)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus bDelayrate,-(getskilllv(\"RA_ARROWSTORM\")/2);"
+    },
+    {
+      "Id": 315326,
+      "AegisName": "aegis_315326",
+      "Name": "Ranger Stone II (Middle)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"RA_AIMEDBOLT\",5*getskilllv(\"RA_RESEARCHTRAP\");"
+    },
+    {
+      "Id": 315327,
+      "AegisName": "aegis_315327",
+      "Name": "Ranger Stone II (Lower)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bAddSize,Size_All,3*(getskilllv(\"RA_AIMEDBOLT\")/2);"
+    },
+    {
+      "Id": 315328,
+      "AegisName": "aegis_315328",
+      "Name": "Elemental Master Stone II (Garment)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"EM_DIAMOND_STORM\",15;"
+    },
+    {
+      "Id": 315329,
+      "AegisName": "aegis_315329",
+      "Name": "Sorcerer Stone II (Upper)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus bFixedCast,-100*getskilllv(\"SO_PSYCHIC_WAVE\");"
+    },
+    {
+      "Id": 315330,
+      "AegisName": "aegis_315330",
+      "Name": "Sorcerer Stone II (Middle)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus bVariableCastrate,-2*getskilllv(\"SO_POISON_BUSTER\");"
+    },
+    {
+      "Id": 315331,
+      "AegisName": "aegis_315331",
+      "Name": "Sorcerer Stone II (Lower)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bMagicAddSize,Size_All,3*getskilllv(\"SO_DIAMONDDUST\");"
+    },
+    {
+      "Id": 315332,
+      "AegisName": "aegis_315332",
+      "Name": "Shinkiro Stone II (Garment)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"SS_KAGENOMAI\",10;"
+    },
+    {
+      "Id": 315333,
+      "AegisName": "aegis_315333",
+      "Name": "Kagerou Stone II (Upper)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"KO_JYUMONJIKIRI\",5*getskilllv(\"KO_RIGHT\");"
+    },
+    {
+      "Id": 315334,
+      "AegisName": "aegis_315334",
+      "Name": "Kagerou Stone II (Middle)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"KO_HAPPOKUNAI\",3*getskilllv(\"KO_JYUMONJIKIRI\");"
+    },
+    {
+      "Id": 315335,
+      "AegisName": "aegis_315335",
+      "Name": "Kagerou Stone II (Lower)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"KO_HUUMARANKA\",5*getskilllv(\"KO_MEIKYOUSISUI\");"
+    },
+    {
+      "Id": 315336,
+      "AegisName": "aegis_315336",
+      "Name": "Shiranui Stone II (Garment)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"SS_ANTENPOU\",10;"
+    },
+    {
+      "Id": 315337,
+      "AegisName": "aegis_315337",
+      "Name": "Oboro Stone II (Upper)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\",7*getskilllv(\"KO_RIGHT\");\nbonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\",7*getskilllv(\"KO_RIGHT\");\nbonus2 bSkillAtk,\"NJ_KAMAITACHI\",7*getskilllv(\"KO_RIGHT\");"
+    },
+    {
+      "Id": 315338,
+      "AegisName": "aegis_315338",
+      "Name": "Oboro Stone II (Middle)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bMagicAtkEle,Ele_Fire,3*getskilllv(\"KO_MEIKYOUSISUI\");\nbonus2 bMagicAtkEle,Ele_Water,3*getskilllv(\"KO_MEIKYOUSISUI\");\nbonus2 bMagicAtkEle,Ele_Wind,3*getskilllv(\"KO_MEIKYOUSISUI\");"
+    },
+    {
+      "Id": 315339,
+      "AegisName": "aegis_315339",
+      "Name": "Oboro Stone II (Lower)",
+      "Type": "Card",
+      "SubType": "Enchant",
+      "Script": "bonus2 bSkillAtk,\"NJ_KOUENKA\",4*getskilllv(\"KO_IZAYOI\");\nbonus2 bSkillAtk,\"NJ_HYOUSENSOU\",4*getskilllv(\"KO_IZAYOI\");\nbonus2 bSkillAtk,\"NJ_HUUJIN\",4*getskilllv(\"KO_IZAYOI\");"
+    }
+  ],
+  "mappings": [
+    {
+      "stone_id": 1003053,
+      "enchant_id": 315324,
+      "category": "Garment",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Sniper_Figure"
+    },
+    {
+      "stone_id": 1003054,
+      "enchant_id": 315325,
+      "category": "Upper",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Sniper_Figure"
+    },
+    {
+      "stone_id": 1003055,
+      "enchant_id": 315326,
+      "category": "Middle",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Sniper_Figure"
+    },
+    {
+      "stone_id": 1003056,
+      "enchant_id": 315327,
+      "category": "Lower",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Sniper_Figure"
+    },
+    {
+      "stone_id": 1003057,
+      "enchant_id": 315328,
+      "category": "Garment",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Professor_Figure"
+    },
+    {
+      "stone_id": 1003058,
+      "enchant_id": 315329,
+      "category": "Upper",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Professor_Figure"
+    },
+    {
+      "stone_id": 1003059,
+      "enchant_id": 315330,
+      "category": "Middle",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Professor_Figure"
+    },
+    {
+      "stone_id": 1003060,
+      "enchant_id": 315331,
+      "category": "Lower",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Professor_Figure"
+    },
+    {
+      "stone_id": 1003061,
+      "enchant_id": 315332,
+      "category": "Garment",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Kagerou_Figure"
+    },
+    {
+      "stone_id": 1003062,
+      "enchant_id": 315333,
+      "category": "Upper",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "불의부적"
+    },
+    {
+      "stone_id": 1003063,
+      "enchant_id": 315334,
+      "category": "Middle",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "불의부적"
+    },
+    {
+      "stone_id": 1003064,
+      "enchant_id": 315335,
+      "category": "Lower",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "불의부적"
+    },
+    {
+      "stone_id": 1003065,
+      "enchant_id": 315336,
+      "category": "Garment",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "Oboro_Figure"
+    },
+    {
+      "stone_id": 1003066,
+      "enchant_id": 315337,
+      "category": "Upper",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "불의부적"
+    },
+    {
+      "stone_id": 1003067,
+      "enchant_id": 315338,
+      "category": "Middle",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "불의부적"
+    },
+    {
+      "stone_id": 1003068,
+      "enchant_id": 315339,
+      "category": "Lower",
+      "resource_physical": "영혼의조각",
+      "resource_enchant": "불의부적"
+    }
+  ],
+  "combos": [
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315324",
+            "aegis_315325"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"WH_HAWKRUSH\",15;\nbonus2 bSkillAtk,\"WH_HAWKBOOMERANG\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315324",
+            "aegis_315326"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"WH_SOLIDTRAP\",10;\nbonus2 bSkillAtk,\"WH_DEEPBLINDTRAP\",10;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315324",
+            "aegis_315327"
+          ]
+        }
+      ],
+      "Script": "bonus2 bAddEle,Ele_All,3*getskilllv(\"WH_NATUREFRIENDLY\");"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Ranger_Robe",
+            "aegis_315325"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"RA_ARROWSTORM\",20;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Ranger_Robe",
+            "aegis_315326"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"RA_ARROWSTORM\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Ranger_Robe",
+            "aegis_315327"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"RA_ARROWSTORM\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Ranger_Robe2",
+            "aegis_315325"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SN_SHARPSHOOTING\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Ranger_Robe2",
+            "aegis_315326"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SN_SHARPSHOOTING\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Ranger_Robe2",
+            "aegis_315327"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"RA_AIMEDBOLT\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315328",
+            "aegis_315329"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"EM_TERRA_DRIVE\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315328",
+            "aegis_315330"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"EM_LIGHTNING_LAND\",10;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315328",
+            "aegis_315331"
+          ]
+        }
+      ],
+      "Script": "bonus2 bMagicAtkEle,Ele_Earth,10;\nbonus2 bMagicAtkEle,Ele_Water,10;\nbonus2 bMagicAtkEle,Ele_Wind,10;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Sorcerer_Robe",
+            "aegis_315329"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SO_PSYCHIC_WAVE\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Sorcerer_Robe",
+            "aegis_315330"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SO_POISON_BUSTER\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Sorcerer_Robe",
+            "aegis_315331"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SO_PSYCHIC_WAVE\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Sorcerer_Robe2",
+            "aegis_315329"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SO_VARETYR_SPEAR\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Sorcerer_Robe2",
+            "aegis_315330"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SO_DIAMONDDUST\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Sorcerer_Robe2",
+            "aegis_315331"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SO_DIAMONDDUST\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315332",
+            "aegis_315333"
+          ]
+        }
+      ],
+      "Script": "bonus2 bAddEle,Ele_All,3*(getskilllv(\"SS_KAGEGARI\")/2);"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315332",
+            "aegis_315334"
+          ]
+        }
+      ],
+      "Script": "bonus bCRate,3;\nbonus2 bSkillAtk,\"SS_KAGEGISSEN\",10;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315332",
+            "aegis_315335"
+          ]
+        }
+      ],
+      "Script": "bonus bCritical,getskilllv(\"SS_KAGENOMAI\")/2;\nbonus bShortAtkRate,3*(getskilllv(\"SS_KAGENOMAI\")/2);"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Kagerou_Robe",
+            "aegis_315333"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"KO_HUUMARANKA\",25;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Kagerou_Robe",
+            "aegis_315334"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"KO_HUUMARANKA\",25;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Kagerou_Robe",
+            "aegis_315335"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"KO_JYUMONJIKIRI\",25;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315336",
+            "aegis_315337"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SS_KINRYUUHOU\",15;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315336",
+            "aegis_315338"
+          ]
+        }
+      ],
+      "Script": "bonus2 bMagicAddEle,Ele_All,3*(getskilllv(\"SS_SEKIENHOU\")/2);"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "aegis_315336",
+            "aegis_315339"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"SS_REIKETSUHOU\",10;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Oboro_Robe",
+            "aegis_315337"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"NJ_KOUENKA\",25;\nbonus2 bSkillAtk,\"NJ_HYOUSENSOU\",25;\nbonus2 bSkillAtk,\"NJ_HUUJIN\",25;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Oboro_Robe",
+            "aegis_315338"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\",30;\nbonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\",30;\nbonus2 bSkillAtk,\"NJ_KAMAITACHI\",30;"
+    },
+    {
+      "Combos": [
+        {
+          "Combo": [
+            "Oboro_Robe",
+            "aegis_315339"
+          ]
+        }
+      ],
+      "Script": "bonus2 bSkillAtk,\"NJ_BAKUENRYU\",25;\nbonus2 bSkillAtk,\"NJ_HYOUSYOURAKU\",25;\nbonus2 bSkillAtk,\"NJ_KAMAITACHI\",25;"
+    }
+  ],
+  "validation": {
+    "skill_count": 37,
+    "missing_skill_names": [],
+    "combo_count": 30,
+    "mapping_count": 16
+  }
+}

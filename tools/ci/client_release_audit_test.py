@@ -11,12 +11,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from client_release_audit import archive_audit, index, lua_audit
 
 
-def archive(name=b'data\\same.bmp', payload=b'original', alignment=0):
-    packed = zlib.compress(payload)
-    table = name + b'\0' + struct.pack('<IIIBI', len(packed), len(packed)+alignment, len(payload), 1, 0)
+def archive(name=b'data\\same.bmp', payload=b'original', alignment=0, version=0x200, stored=False):
+    packed = payload if stored else zlib.compress(payload)
+    layout = '<IIIBQ' if version == 0x300 else '<IIIBI'
+    table = name + b'\0' + struct.pack(layout, len(packed), len(packed)+alignment, len(payload), 1, 0)
     compressed = zlib.compress(table)
-    return (b'Master of Magic\0' + bytes(14) + struct.pack('<IIII', len(packed), 0, 8, 0x200)
-            + packed + struct.pack('<II', len(compressed), len(table)) + compressed)
+    if version == 0x300:
+        header = b'Event Horizon\0' + bytes(16) + struct.pack('<QII', len(packed) - 4, 1, version)
+    else:
+        header = b'Master of Magic\0' + bytes(14) + struct.pack('<IIII', len(packed), 0, 8, version)
+    return header + packed + struct.pack('<II', len(compressed), len(table)) + compressed
 
 
 class ArchiveAuditTests(unittest.TestCase):
@@ -49,6 +53,18 @@ class ArchiveAuditTests(unittest.TestCase):
         for raw in (archive()[:-1], archive()[:46] + b'bad' + archive()[49:]):
             result, _ = archive_audit(self.fixture({'a.grf': raw}))
             self.assertTrue(result['errors'])
+
+    def test_classic_payload_cannot_bypass_zlib_validation_with_equal_sizes(self):
+        result, _ = archive_audit(self.fixture({'a.grf': archive(stored=True)}))
+        self.assertTrue(result['errors'])
+        self.assertEqual(result['archives'][0]['verified_payloads'], 0)
+
+    def test_modern_stored_and_compressed_payloads_are_supported(self):
+        for stored in (False, True):
+            with self.subTest(stored=stored):
+                result, _ = archive_audit(self.fixture({'a.grf': archive(version=0x300, stored=stored)}))
+                self.assertFalse(result['errors'])
+                self.assertEqual(result['archives'][0]['verified_payloads'], 1)
 
     def test_header_and_index_bounds_fail(self):
         raw = bytearray(archive())
@@ -85,6 +101,12 @@ class LuaAuditTests(unittest.TestCase):
     def test_registration_failure_is_not_a_pass(self):
         with self.assertRaisesRegex(ValueError, 'registration failed'):
             self.run_loader("tbl={}; function main() return false end")
+
+    def test_duplicate_registration_cannot_hide_a_missing_item(self):
+        with self.assertRaisesRegex(ValueError, 'Registered duplicate item'):
+            self.run_loader("tbl={[0]={identifiedResourceName='',unidentifiedResourceName=''}, "
+                            "[1]={identifiedResourceName='fixture',unidentifiedResourceName='fixture'}}; "
+                            "function main() AddItem(0); AddItem(0); return true end")
 
 
 if __name__ == '__main__':
