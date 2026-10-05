@@ -10,44 +10,41 @@
 
 // PN Main Office: original service hub using existing server rules.
 // Map assets are aliases of the owner's standard client maps.
+function	script	PN_OfficeNavigate	{
+    callfunc "PN_OfficeIndex";
+    for (.@i=0;.@i<getarraysize(@PNDeskNames$);.@i++) {
+        if (compare(@PNDeskNames$[.@i],getarg(0))) {
+            navigateto "pn_office",@PNDeskX[.@i],@PNDeskY[.@i];
+            return;
+        }
+    }
+    mes "That service is unavailable. Please use the Directory.";
+    return;
+}
+function	script	PN_OfficeFind	{
+    callfunc "PN_OfficeIndex";
+    mes "[Office Directory]";
+    mes "One compact hall: Everyday at the entrance; Jobs and Pets on the left; Adventures in the middle; Equipment on the right; Fashion at the back.";
+    .@mode=select("Everyday:Jobs and Pets:Adventures:Equipment:Fashion:Search all NPCs:Back");
+    if (.@mode==7) return;
+    setarray .@groups$,"Everyday","Jobs and Pets","Adventures","Equipment","Fashion";
+    if (.@mode==6) { mes "Enter part of an NPC or service name."; input .@query$; if (.@query$=="") return; }
+    for (.@i=0;.@i<getarraysize(@PNDeskNames$);.@i++) {
+        if (.@mode<6 && @PNDeskGroup$[.@i]!=.@groups$[.@mode-1]) continue;
+        if (.@mode==6 && !compare(strtolower(@PNDeskNames$[.@i]),strtolower(.@query$))) continue;
+        .@choices[.@count++]=.@i; .@menu$+=@PNDeskNames$[.@i]+":";
+    }
+    if (!.@count) { mes "No matching service. Try a shorter name."; return; }
+    .@pick=select(.@menu$+"Back")-1;
+    if (.@pick>=.@count) return;
+    .@i=.@choices[.@pick];
+    mes @PNDeskNames$[.@i]+" at "+@PNDeskX[.@i]+","+@PNDeskY[.@i]+".";
+    navigateto "pn_office",@PNDeskX[.@i],@PNDeskY[.@i];
+    return;
+}
 -	script	PN Office Directory	-1,{
-	callfunc "PN_OfficeIndex";
-	mes "[PN Main Office]";
-	mes "Lobby: everyday services and progression.";
-	mes "Training: damage lab, repairs and equipment.";
-	mes "Upper floor: fashion, clans and lounge.";
-	switch(select("Browse all services:Search for a service:Lobby:Training and equipment:Fashion and lounge:Return to Prontera:Leave")) {
-	case 3: close2; warp "pn_office",100,40; end;
-	case 4: close2; warp "pn_train",50,35; end;
-	case 5: close2; warp "pn_style",140,140; end;
-	case 6: close2; warp "prontera",150,185; end;
-	case 7: close;
-	case 2:
-		mes "Enter part of a service name, for example card, shadow, fashion or storage.";
-		input .@query$;
-		if (.@query$ == "") close;
-	}
-	for (.@i=0; .@i<getarraysize(@PNDeskNames$); .@i++) {
-		if (.@query$ != "" && !compare(strtolower(@PNDeskNames$[.@i]),strtolower(.@query$))) continue;
-		.@choices[.@count++] = .@i;
-		.@menu$ += @PNDeskNames$[.@i]+":";
-	}
-	if (!.@count) { mes "No matching service. Try a shorter name."; close; }
-	.@pick=select(.@menu$+"Cancel")-1;
-	if (.@pick == .@count) close;
-	.@i=.@choices[.@pick];
-	mes "Go to "+@PNDeskNames$[.@i]+"?";
-	mes "Map: "+@PNDeskMaps$[.@i]+" ("+@PNDeskX[.@i]+","+@PNDeskY[.@i]+").";
-	if (select("Go to the desk:Cancel") == 2) close;
-	close2;
-	warp @PNDeskMaps$[.@i],@PNDeskX[.@i],@PNDeskY[.@i];
-	end;
-OnNaviGenerate:
-	naviregisterwarp("Directory > Lobby", "pn_office", 100, 40);
-	naviregisterwarp("Directory > Training and equipment", "pn_train", 50, 35);
-	naviregisterwarp("Directory > Fashion and lounge", "pn_style", 140, 140);
-	naviregisterwarp("Directory > Prontera", "prontera", 150, 185);
-	end;
+    callfunc "PN_OfficeFind";
+    close;
 }
 
 -	script	PN Office Access	-1,{
@@ -55,10 +52,10 @@ OnNaviGenerate:
 	mes "Visit our service hub: daily essentials, equipment, training and fashion.";
 	if(select("Enter Main Office:Leave") == 2) close;
 	close2;
-	warp "pn_office",100,40;
+	warp "pn_office",50,35;
 	end;
 OnNaviGenerate:
-	naviregisterwarp("Enter Main Office", "pn_office", 100, 40);
+	naviregisterwarp("Enter Main Office", "pn_office", 50, 35);
 	end;
 OnOffice:
 	.@map$=strcharinfo(3);
@@ -72,16 +69,16 @@ OnOffice:
 	}
 	.@command$=strtolower(.@atcmd_command$);
 	if (.@command$ == "@goldpoints" || .@command$ == "#goldpoints") {
-		warp "pn_style",136,129;
+		warp "pn_office",43,67;
 		dispbottom "Gold Point Manager: click the NPC beside you to exchange Gold Points for Fashion Points (1 for 1).";
 		end;
 	}
 	if (.@command$ == "@fashion" || .@command$ == "#fashion") {
-		warp "pn_style",140,140;
-		dispbottom "Fashion & Lounge: Gold Points, Designer, Recycler, Boxes and Enchants. @goldpoints goes straight to the exchange desk.";
+		warp "pn_office",49,67;
+		dispbottom "Fashion group: at the back of this hall. @goldpoints goes straight to the exchange desk.";
 		end;
 	}
-	warp "pn_office",100,40;
+	warp "pn_office",50,35;
 	end;
 OnInit:
 	bindatcmd "office",strnpcinfo(3)+"::OnOffice",0,99;
@@ -96,7 +93,7 @@ OnInit:
 	case 1: callfunc "PN_MultiStorageMenu"; end;
 	case 2:
 		mes "Save your respawn point in the Main Office lobby?";
-		if(select("Save here:Cancel") == 1) { savepoint "pn_office",100,40; mes "Respawn point saved."; }
+		if(select("Save here:Cancel") == 1) { savepoint "pn_office",50,35; mes "Respawn point saved."; }
 	}
 	close;
 }
@@ -178,10 +175,10 @@ OnInit:
 		break;
 	case 3:
 		switch(select("Refine and ores:Equipment enchants:Shadow enchants:Rune crowns:Biosphere materials:Flame Coins:Equipment wishlist and farming planner:Leave")) {
-		case 1: mes "Review success rates, fees and break risk with the Master Refiner. The Ore Dealer is across the training room."; navigateto "pn_train",32,49; break;
-		case 2: mes "The Equipment Enchanter lists compatible equipment and the exact materials for each supported recipe."; navigateto "pn_train",36,59; break;
-		case 3: mes "The Shadow Enchanter lists supported targets, materials and upgrade options. Check the target before paying."; navigateto "pn_train",64,59; break;
-		case 4: mes "The Rune Crown desk lists its equipment and enchant recipes. Use its material list to choose a hunt."; navigateto "pn_train",42,67; break;
+		case 1: mes "Review success rates, fees and break risk with the Master Refiner. Find the Ore Dealer in the Equipment group."; callfunc "PN_OfficeNavigate","Master Refiner"; break;
+		case 2: mes "The Equipment Enchanter lists compatible equipment and the exact materials for each supported recipe."; callfunc "PN_OfficeNavigate","Equipment Enchants"; break;
+		case 3: mes "The Shadow Enchanter lists supported targets, materials and upgrade options. Check the target before paying."; callfunc "PN_OfficeNavigate","Shadow Enchants"; break;
+		case 4: mes "The Rune Crown desk lists its equipment and enchant recipes. Use its material list to choose a hunt."; callfunc "PN_OfficeNavigate","Rune Crowns"; break;
 		case 5: mes "At Base Level 240, Research Admin Beta offers seven habitat hunts. Each awards 5 habitat runes and 2 essences. Omega exchanges fragments, runes and essences."; navigateto "ba_in01",252,353; break;
 		case 6: mes "Finish Chapter 2, then take Flame Branch missions. The Phantom clear awards 3 Flame Coins and has a four-hour timer after claiming."; navigateto "ch2safe4",86,146; break;
 		case 7: callfunc "PN_EquipmentPlanner"; break;
@@ -308,9 +305,10 @@ function	script	PN_GuideDailies	{
 -	script	PN Build Notes	-1,{
 	mes "[Build Notebook]";
 	mes "Keep three character-specific build notes for comparison. This notebook does not change stats, skills or equipment.";
-	.@section=select("Build notebooks:Saved lab runs:Leave");
+	.@section=select("Build notebooks:Saved lab runs:Share builds and lab challenges:Leave");
 	if (.@section == 2) { callfunc "PN_LabHistory"; close; }
-	if (.@section == 3) close;
+	if (.@section == 3) { callfunc "PN_BuildSharing"; close; }
+	if (.@section == 4) close;
 	.@slot=select("Notebook 1:Notebook 2:Notebook 3:Leave")-1;
 	if (.@slot == 3) close;
 	if (PNBuildNote$[.@slot] != "") {
@@ -342,15 +340,25 @@ pn_style	mapflag	loadevent
 pn_style	mapflag	town
 
 // Walk-through entrance beside the Main Office NPC in Prontera.
-prontera,160,189,0	warp	PNOfficeEntrance	1,1,pn_office,100,40
+prontera,160,189,0	warp	PNOfficeEntrance	1,1,pn_office,50,35
 
 // Return route from the office lobby; destinations do not overlap a warp cell.
-pn_office,100,36,0	warp	PNOfficeExit	1,1,prontera,163,184
+pn_office,50,27,0	warp	PNOfficeExit	1,1,prontera,163,184
 
 -	script	PN Office Welcome	-1,{
+OnPCLoginEvent:
+	.@save$=getsavepoint(0);
+	if (.@save$=="pn_office" || .@save$=="pn_train" || .@save$=="pn_style") {
+		if (.@save$!="pn_office" || getsavepoint(1)!=50 || getsavepoint(2)!=35) savepoint "pn_office",50,35;
+	}
+	if (strcharinfo(3)=="pn_train" || strcharinfo(3)=="pn_style") { warp "pn_office",50,35; end; }
+	if (strcharinfo(3)=="pn_office") {
+		getmapxy .@map$,.@x,.@y,BL_PC;
+		if (.@x<26 || .@x>74 || .@y<27 || .@y>74) warp "pn_office",50,35;
+	}
+	end;
 OnPCLoadMapEvent:
-	if (strcharinfo(3) == "pn_office") dispbottom "PN Main Office | Directory: search a service or change floors. @office returns to the lobby.";
-	if (strcharinfo(3) == "pn_train") dispbottom "Training & Equipment | Private damage lab, repairs and upgrade services. Use Directory for any desk.";
-	if (strcharinfo(3) == "pn_style") dispbottom "Fashion & Lounge | Costume services, clans, skill copying and cafe. Use Directory to change floors.";
+	if (strcharinfo(3) == "pn_office") dispbottom "PN Main Office | One hall, five groups. Click Directory to find an NPC. @adventure plans your session.";
+	if (strcharinfo(3) == "pn_train" || strcharinfo(3) == "pn_style") { warp "pn_office",50,35; end; }
 	end;
 }

@@ -48,4 +48,4 @@ izlude_a,137,150,4	duplicate(Skill Supplies)	Skill Supplies#iz_a	4_M_01
 izlude_b,137,150,4	duplicate(Skill Supplies)	Skill Supplies#iz_b	4_M_01
 izlude_c,137,150,4	duplicate(Skill Supplies)	Skill Supplies#iz_c	4_M_01
 izlude_d,137,150,4	duplicate(Skill Supplies)	Skill Supplies#iz_d	4_M_01
-grademk,42,180,4	duplicate(Skill Supplies)	Skill Supplies#grade	4_M_01
+grademk,40,175,4	duplicate(Skill Supplies)	Skill Supplies#grade	4_M_01

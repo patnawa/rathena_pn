@@ -1,0 +1,109 @@
+// Public snapshots are opt-in and bounded. One active share per character.
+// Server registry data is read directly; no SQL or private-character attachment.
+function	script	PN_BuildShareFind	{
+	.@code=getarg(0);
+	if (.@code<=0) return -1;
+	// Fixed-size registry scans can be called from another bounded menu scan.
+	// Preserve the caller's loop-check setting; never disable checks across UI.
+	.@free=freeloop(1); .@found=-1;
+	for (.@i=0; .@i<256; .@i++) if ($PNShareCode[.@i]==.@code && $PNShareOwner[.@i] && $PNShareUntil[.@i]>gettimetick(2)) { .@found=.@i; break; }
+	freeloop .@free;
+	return .@found;
+}
+function	script	PN_BuildSharePublish	{
+	.@book=getarg(0);
+	if (.@book<0 || .@book>2) return 0;
+	if (PNBuildNote$[.@book]=="" || getstrlen(PNBuildNote$[.@book])>120) return 0;
+	if ($PNShareSerial>=2147483647) return 0;
+	.@slot=-1; .@empty=-1;
+	.@free=freeloop(1);
+	for (.@i=0; .@i<256; .@i++) {
+		if ($PNShareOwner[.@i]==getcharid(0)) { .@slot=.@i; break; }
+		if ((!$PNShareOwner[.@i] || $PNShareUntil[.@i]<=gettimetick(2)) && .@empty<0) .@empty=.@i;
+	}
+	freeloop .@free;
+	if (.@slot<0) .@slot=.@empty;
+	if (.@slot<0) return 0;
+	// Single synchronous publication: invalidate before writing, commit code last.
+	$PNShareCode[.@slot]=0; $PNShareOwner[.@slot]=getcharid(0);
+	$PNShareName$[.@slot]=strcharinfo(0);
+	$PNShareNote$[.@slot]=PNBuildNote$[.@book];
+	$PNShareStats$[.@slot]=PNBuildStats$[.@book];
+	$PNShareClass[.@slot]=Class; $PNShareLevel[.@slot]=BaseLevel;
+	$PNShareTime[.@slot]=gettimetick(2);
+	$PNShareUntil[.@slot]=gettimetick(2)+2592000;
+	// Equipment is explicitly current gear, not a claim about the saved notebook.
+	for (.@i=0; .@i<21; .@i++) {
+		.@at=.@slot*21+.@i;
+		$PNShareEquip$[.@at]=""; $PNShareCards$[.@at]=""; $PNShareOpts$[.@at]="";
+		if (!getequipisequiped(.@i)) continue;
+		.@equip$=getequipname(.@i);
+		if (getstrlen(.@equip$)>80) .@equip$=substr(.@equip$,0,79);
+		$PNShareEquip$[.@at]="+"+getequiprefinerycnt(.@i)+" "+.@equip$+" [ID "+getequipid(.@i)+"]";
+		for (.@j=0; .@j<4; .@j++) if (getequipcardid(.@i,.@j)) $PNShareCards$[.@at]+=" slot "+(.@j+1)+"="+getequipcardid(.@i,.@j);
+		for (.@j=0; .@j<5; .@j++) if (getequiprandomoption(.@i,.@j,ROA_ID)) $PNShareOpts$[.@at]+=" "+getequiprandomoption(.@i,.@j,ROA_ID)+":"+getequiprandomoption(.@i,.@j,ROA_VALUE)+":"+getequiprandomoption(.@i,.@j,ROA_PARAM);
+	}
+	$PNShareSerial=max(100000,$PNShareSerial)+1;
+	$PNShareCode[.@slot]=$PNShareSerial;
+	return $PNShareCode[.@slot];
+}
+function	script	PN_BuildShareRemove	{
+	.@count=0;
+	.@free=freeloop(1);
+	for (.@i=0; .@i<256; .@i++) {
+		if ($PNShareOwner[.@i]!=getcharid(0)) continue;
+		$PNShareCode[.@i]=0; $PNShareOwner[.@i]=0; $PNShareUntil[.@i]=0;
+		$PNShareName$[.@i]=""; $PNShareNote$[.@i]=""; $PNShareStats$[.@i]="";
+		for (.@j=0; .@j<21; .@j++) {
+			$PNShareEquip$[.@i*21+.@j]=""; $PNShareCards$[.@i*21+.@j]=""; $PNShareOpts$[.@i*21+.@j]="";
+		}
+		.@count++;
+	}
+	freeloop .@free;
+	return .@count;
+}
+function	script	PN_BuildShareShow	{
+	.@slot=callfunc("PN_BuildShareFind",getarg(0));
+	if (.@slot<0) { mes "That share code is unavailable or has been unpublished."; return; }
+	mes "[Public Build "+$PNShareCode[.@slot]+"]";
+	mes "Author: "+$PNShareName$[.@slot]+" | "+jobname($PNShareClass[.@slot])+" | level "+$PNShareLevel[.@slot];
+	mes "Published epoch "+$PNShareTime[.@slot]+"; expires 30 days after publication. This is a snapshot; it does not apply another player's build.";
+	mes "Notebook: "+$PNShareNote$[.@slot];
+	mes "Notebook stats: "+$PNShareStats$[.@slot];
+	mes "Equipment at publication (may differ from notebook stats):";
+	setarray .@slots$,"Accessory L","Accessory R","Shoes","Garment","Lower head","Middle head","Upper head","Armor","Left hand","Right hand","Costume top","Costume middle","Costume lower","Costume garment","Ammo","Shadow armor","Shadow weapon","Shadow shield","Shadow shoes","Shadow accessory R","Shadow accessory L";
+	for (.@i=0; .@i<21; .@i++) {
+		.@at=.@slot*21+.@i;
+		if ($PNShareEquip$[.@at]=="") continue;
+		mes .@slots$[.@i]+": "+$PNShareEquip$[.@at];
+		if ($PNShareCards$[.@at]!="") mes "Cards / enchants:"+$PNShareCards$[.@at];
+		if ($PNShareOpts$[.@at]!="") mes "Options (ID:value:param):"+$PNShareOpts$[.@at];
+	}
+	return;
+}
+function	script	PN_BuildSharing	{
+	mes "[Build Sharing]";
+	.@action=select("Publish notebook and current equipment:View share code:My public snapshot:Unpublish my build:Lab personal bests:Leave");
+	if (.@action==6) return;
+	if (.@action==5) { callfunc "PN_LabBests"; return; }
+	if (.@action==4) {
+		if (select("Unpublish and remove snapshot:Cancel")==1) { callfunc "PN_BuildShareRemove"; mes "Your share codes are now unavailable."; }
+		return;
+	}
+	if (.@action==3) {
+		for (.@i=0; .@i<256; .@i++) if ($PNShareOwner[.@i]==getcharid(0) && $PNShareCode[.@i]) { callfunc "PN_BuildShareShow",$PNShareCode[.@i]; return; }
+		mes "You have no public build."; return;
+	}
+	if (.@action==2) { mes "Enter the numeric share code:"; input .@code,1,2147483647; callfunc "PN_BuildShareShow",.@code; return; }
+	.@book=select("Notebook 1:Notebook 2:Notebook 3:Cancel")-1;
+	if (.@book==3) return;
+	if (PNBuildNote$[.@book]=="") { mes "Save this notebook at Build Notes first."; return; }
+	mes PNBuildNote$[.@book]; mes PNBuildStats$[.@book];
+	mes "Publishing makes your character name, class, level, this note/stat snapshot and CURRENT equipped items/cards/options public to anyone with the code.";
+	mes "One active share per character, expiring in 30 days. Replacing it invalidates the old code. You can unpublish here at any time.";
+	if (select("Publish this snapshot publicly:Cancel")==2) return;
+	.@code=callfunc("PN_BuildSharePublish",.@book);
+	if (!.@code) mes "Publication failed: the notebook changed or all 256 share slots are occupied.";
+	else mes "Share code: "+.@code+". Give it to friends, who can open Build Sharing > View share code.";
+	return;
+}

@@ -8,8 +8,58 @@ function	script	PN_WeeklyReset	{
 		PNWeeklyLab = 0;
 		PNWeeklyBuild = 0;
 		PNWeeklyClaimed = 0;
+		PNWeeklyRegion = 0;
+		PNWeeklyExplore = 0;
+		PNWeeklyBoss = 0;
+		PNWeeklyParty = 0;
 	}
 	return;
+}
+function	script	PN_WeeklyRegionName	{
+	switch (PNWeeklyWeek % 3) {
+	case 0: return "Payon fields (pay_fild)";
+	case 1: return "Geffen fields (gef_fild)";
+	default: return "Morocc fields (moc_fild)";
+	}
+}
+function	script	PN_WeeklyExploreMaps	{
+	switch (PNWeeklyWeek % 3) {
+	case 0: setarray .@cities$[0],"payon","alberta","izlude"; break;
+	case 1: setarray .@cities$[0],"geffen","aldebaran","prontera"; break;
+	default: setarray .@cities$[0],"morocc","comodo","umbala"; break;
+	}
+	return .@cities$[getarg(0)];
+}
+function	script	PN_WeeklyExplore	{
+	if (!PNWeeklyActive) return;
+	callfunc "PN_WeeklyReset";
+	for (.@i=0; .@i<3; ++.@i)
+		if (getarg(0) == callfunc("PN_WeeklyExploreMaps",.@i)) PNWeeklyExplore |= (1 << .@i);
+	return;
+}
+function	script	PN_WeeklyHunt	{
+	if (!PNWeeklyActive || getarg(1,0)) return;
+	callfunc "PN_WeeklyReset";
+	.@map$ = getarg(0);
+	if (compare(.@map$,"guild_vs1") || compare(.@map$,"pn_")) return;
+	PNWeeklyKills = min(50,PNWeeklyKills+1);
+	switch (PNWeeklyWeek % 3) {
+	case 0: .@region$="pay_fild"; break;
+	case 1: .@region$="gef_fild"; break;
+	default: .@region$="moc_fild"; break;
+	}
+	if (substr(.@map$,0,7) == .@region$) PNWeeklyRegion = min(25,PNWeeklyRegion+1);
+	return;
+}
+function	script	PN_WeeklyBossComplete	{
+	if (!PNWeeklyActive) return;
+	callfunc "PN_WeeklyReset";
+	PNWeeklyBoss = 1;
+	if (getarg(0,0)) PNWeeklyParty = 1;
+	return;
+}
+function	script	PN_WeeklyObjectiveCount	{
+	return (PNWeeklyKills>=50) + (PNWeeklyLab>0) + (PNWeeklyBuild>0) + (PNWeeklyRegion>=25) + (PNWeeklyExplore==7) + (PNWeeklyBoss>0) + (PNWeeklyParty>0);
 }
 function	script	PN_WeeklyLabComplete	{
 	if (!PNWeeklyActive) return;
@@ -54,19 +104,27 @@ function	script	PN_WeeklyBoard	{
 		if (select("Start tracking practice:Back") == 2) return;
 		PNWeeklyActive = 1;
 	}
+	mes "Choose any THREE objectives. The original hunt + lab + build review still completes the week.";
 	mes "Field or dungeon kills: "+min(50,PNWeeklyKills)+" / 50.";
 	mes "One completed damage-lab measurement: "+PNWeeklyLab+" / 1.";
 	mes "Review a build priority with the guide: "+PNWeeklyBuild+" / 1.";
+	mes "Rotating hunt: "+callfunc("PN_WeeklyRegionName")+" - "+PNWeeklyRegion+" / 25 kills.";
+	for (.@i=0; .@i<3; ++.@i) mes "Explore "+callfunc("PN_WeeklyExploreMaps",.@i)+": "+((PNWeeklyExplore & (1<<.@i)) ? "visited":"visit this city")+".";
+	mes "Clear Alice's memory or EDDA Bioresearch Battle boss: "+PNWeeklyBoss+" / 1.";
+	mes "Clear either with at least two eligible challengers: "+PNWeeklyParty+" / 1.";
+	mes "Completed objectives: "+callfunc("PN_WeeklyObjectiveCount")+" / 3 required.";
 	mes "Lifetime practice stamps: "+PNWeeklyStamps+".";
+	if (PNWeeklyStamps>=20) mes "Recognition: Seasoned Adventurer (cosmetic).";
+	else if (PNWeeklyStamps>=5) mes "Recognition: Regular Adventurer (cosmetic).";
 	if (PNWeeklyClaimed) { mes "This week's stamp is already recorded."; return; }
-	if (PNWeeklyKills < 50 || !PNWeeklyLab || !PNWeeklyBuild) {
-		mes "Training dummies do not count as hunt kills. Return when all three objectives are complete.";
+	if (callfunc("PN_WeeklyObjectiveCount") < 3) {
+		mes "Training dummies and summoned slaves do not count as hunt kills. Return after any three objectives.";
 		return;
 	}
 	if (select("Record this week's stamp:Back") == 2) return;
 	// No dialog yield between duplicate guard and the two registry writes.
 	callfunc "PN_WeeklyReset";
-	if (PNWeeklyClaimed || PNWeeklyKills < 50 || !PNWeeklyLab || !PNWeeklyBuild) return;
+	if (PNWeeklyClaimed || callfunc("PN_WeeklyObjectiveCount") < 3) return;
 	PNWeeklyClaimed = 1;
 	PNWeeklyStamps = min(1000000,PNWeeklyStamps+1);
 	mes "Practice complete. Your stamp has been recorded. Try a different build or target next week.";
@@ -77,9 +135,23 @@ function	script	PN_WeeklyBoard	{
 	end;
 OnNPCKillEvent:
 	if (!PNWeeklyActive) end;
-	callfunc "PN_WeeklyReset";
-	if (PNWeeklyKills >= 50 || compare(strcharinfo(3),"guild_vs1") || compare(strcharinfo(3),"pn_")) end;
-	PNWeeklyKills++;
-	if (PNWeeklyKills == 50) dispbottom "Weekly practice: hunt complete. Check the Progression Guide at @office.";
+	// Queued death callbacks may outlive the mob. Fail closed for an absent unit.
+	if (!unitexists(killedgid)) end;
+	getunitdata killedgid,.@mob;
+	callfunc "PN_WeeklyHunt",strcharinfo(3),.@mob[UMOB_MASTERAID];
+	end;
+OnPCLoadMapEvent:
+	callfunc "PN_WeeklyExplore",strcharinfo(3);
 	end;
 }
+
+// Visit credit is a real map load, never a menu click or warp request.
+payon	mapflag	loadevent
+alberta	mapflag	loadevent
+izlude	mapflag	loadevent
+geffen	mapflag	loadevent
+aldebaran	mapflag	loadevent
+prontera	mapflag	loadevent
+morocc	mapflag	loadevent
+comodo	mapflag	loadevent
+umbala	mapflag	loadevent

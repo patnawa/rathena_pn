@@ -1,0 +1,183 @@
+{
+  "map": "grademk",
+  "arrivals": [
+    [
+      13,
+      172
+    ],
+    [
+      34,
+      184
+    ]
+  ],
+  "cache": "db/map_cache.dat",
+  "cache_sha256": "a33e721ba8076fc268c83b296b87515eddb15cc0a2ed1760810cf6d37ddbb3f1",
+  "services": [
+    {
+      "id": "Rayja#EnchantRepair",
+      "npc": [
+        22,
+        181
+      ],
+      "approach": [
+        22,
+        180
+      ],
+      "label": "Shadow books and materials",
+      "group": "Upgrades",
+      "file": "npc/custom/shadow_repair.txt"
+    },
+    {
+      "id": "Equipment Enchanter#grademk",
+      "npc": [
+        26,
+        181
+      ],
+      "approach": [
+        26,
+        180
+      ],
+      "label": "Equipment enchants",
+      "group": "Upgrades",
+      "file": "npc/custom/grademk_equipment_enchants.txt"
+    },
+    {
+      "id": "Sratos#sratos",
+      "npc": [
+        32,
+        181
+      ],
+      "approach": [
+        32,
+        180
+      ],
+      "label": "Grade enhancement",
+      "group": "Upgrades",
+      "file": "npc/re/merchants/enchantgrade.txt"
+    },
+    {
+      "id": "Master Refiner#grademk",
+      "npc": [
+        38,
+        181
+      ],
+      "approach": [
+        38,
+        180
+      ],
+      "label": "Refinement",
+      "group": "Upgrades",
+      "file": "npc/custom/grademk_services.txt"
+    },
+    {
+      "id": "Ore and Material Dealer#grademk",
+      "npc": [
+        42,
+        181
+      ],
+      "approach": [
+        42,
+        180
+      ],
+      "label": "Ore and materials",
+      "group": "Upgrades",
+      "file": "npc/custom/grademk_services.txt"
+    },
+    {
+      "id": "Healer#grademk",
+      "npc": [
+        20,
+        175
+      ],
+      "approach": [
+        20,
+        174
+      ],
+      "label": "Healing",
+      "group": "Support",
+      "file": "npc/custom/healer.txt"
+    },
+    {
+      "id": "Temporal Tina#grademk",
+      "npc": [
+        24,
+        175
+      ],
+      "approach": [
+        24,
+        174
+      ],
+      "label": "Episode progress",
+      "group": "Support",
+      "file": "npc/custom/episode_skip_tina.txt"
+    },
+    {
+      "id": "Skill Supplies#grade",
+      "npc": [
+        40,
+        175
+      ],
+      "approach": [
+        40,
+        174
+      ],
+      "label": "Skill supplies",
+      "group": "Support",
+      "file": "npc/custom/skill_supplies.txt"
+    },
+    {
+      "id": "Rune Stone#PNWorkshop",
+      "npc": [
+        44,
+        175
+      ],
+      "approach": [
+        44,
+        174
+      ],
+      "label": "Rune tablet",
+      "group": "Support",
+      "file": "npc/custom/rune_tablet/services.txt"
+    },
+    {
+      "id": "PN Services#grade",
+      "npc": [
+        44,
+        179
+      ],
+      "approach": [
+        44,
+        178
+      ],
+      "label": "Damage lab and builds",
+      "group": "Support",
+      "file": "npc/custom/quality_services.txt"
+    },
+    {
+      "id": "Main Office#gr",
+      "npc": [
+        20,
+        179
+      ],
+      "approach": [
+        20,
+        178
+      ],
+      "label": "Main Office",
+      "group": "Support"
+    },
+    {
+      "id": "Workshop Guide#grademk",
+      "npc": [
+        30,
+        175
+      ],
+      "approach": [
+        30,
+        174
+      ],
+      "label": "Workshop Guide",
+      "group": "Support"
+    }
+  ]
+}

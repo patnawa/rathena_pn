@@ -8,8 +8,8 @@ CASES={
  'map': {
   'obj/npc.o':('npc.cpp','../custom/shop_map.inc'),
   'obj-gen/npc.o':('npc.cpp','../custom/shop_map.inc'),
-  'obj/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc','../custom/player_guide.inc','../custom/equipment_planner.inc','../custom/planner_routes.inc','../custom/purchase_history_map.inc'),
-  'obj-gen/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc','../custom/player_guide.inc','../custom/equipment_planner.inc','../custom/planner_routes.inc','../custom/purchase_history_map.inc'),
+  'obj/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc','../custom/player_guide.inc','../custom/equipment_planner.inc','../custom/planner_routes.inc','../custom/purchase_history_map.inc','../custom/preparation_script.inc','../custom/preparation_policy.hpp'),
+  'obj-gen/script.o':('script.cpp','../custom/item_use_script.inc','../custom/lab_history.inc','../custom/player_guide.inc','../custom/equipment_planner.inc','../custom/planner_routes.inc','../custom/purchase_history_map.inc','../custom/preparation_script.inc','../custom/preparation_policy.hpp'),
   'obj/pc.o':('pc.cpp','../custom/item_use_map.inc','../custom/pet_floor.inc'),
   'obj-gen/pc.o':('pc.cpp','../custom/item_use_map.inc','../custom/pet_floor.inc'),
   'obj/intif.o':('intif.cpp','../custom/shop_inter.inc','../custom/registry_map.inc'),

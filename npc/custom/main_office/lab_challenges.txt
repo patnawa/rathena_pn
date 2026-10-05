@@ -1,0 +1,66 @@
+// Stable-buff bests are separate from the existing last-three-run history.
+// Compare only exact target, initial buff identity and verified server build.
+function	script	PN_LabBestSave	{
+	if (getarg(2)<60000 || getarg(1)<0 || getarg(1)>9223372036854775 || getarg(6)=="" || getarg(7)) return 0;
+	.@slot=-1; .@empty=-1; .@old=0;
+	for (.@i=0; .@i<12; .@i++) {
+		if (!PNBestValid[.@i] && .@empty<0) .@empty=.@i;
+		if (PNBestTime[.@i]<PNBestTime[.@old]) .@old=.@i;
+		if (PNBestValid[.@i] && PNBestSetup$[.@i]==getarg(3) && PNBestBuff$[.@i]==getarg(5) && PNBestBuild$[.@i]==getarg(6)) .@slot=.@i;
+	}
+	.@dps=getarg(1)*1000/getarg(2);
+	if (.@slot>=0) if (.@dps<=PNBestDps[.@slot]) return 0;
+	if (.@slot<0) .@slot=(.@empty>=0)?.@empty:.@old;
+	PNBestValid[.@slot]=0;
+	PNBestName$[.@slot]=getarg(0); PNBestSetup$[.@slot]=getarg(3);
+	PNBestGear$[.@slot]=getarg(4); PNBestBuff$[.@slot]=getarg(5); PNBestBuild$[.@slot]=getarg(6);
+	PNBestDamage[.@slot]=getarg(1); PNBestMs[.@slot]=getarg(2); PNBestDps[.@slot]=.@dps;
+	PNBestTime[.@slot]=gettimetick(2); PNBestValid[.@slot]=1;
+	dispbottom "PERSONAL BEST: "+.@dps+" DPS for this target, initial buffs and server build.";
+	return 1;
+}
+function	script	PN_LabBests	{
+	mes "[Damage Lab Personal Bests]";
+	mes "Up to 12 exact target/buff/server-build combinations survive relog. Higher DPS replaces only its matching best; a new combination replaces the oldest when full.";
+	mes "Different gear may improve the same best. Buff changes and incomplete runs never qualify. Rotation and timing remain player-controlled.";
+	.@count=0;
+	for (.@i=0; .@i<12; .@i++) {
+		if (!PNBestValid[.@i]) continue;
+		.@count++;
+		mes "Best "+(.@i+1)+": "+PNBestName$[.@i]+" | "+PNBestDps[.@i]+" DPS | saved epoch "+PNBestTime[.@i];
+		mes PNBestSetup$[.@i];
+		mes "Initial buffs: "+PNBestBuff$[.@i]+" | build: "+PNBestBuild$[.@i];
+		mes "Gear/stats/skills: "+PNBestGear$[.@i];
+		mes "Damage "+PNBestDamage[.@i]+" / "+PNBestMs[.@i]+" ms.";
+	}
+	if (!.@count) mes "Complete a 60-second run with stable buffs to record your first best.";
+	return;
+}
+function	script	PN_LabChallengeLoad	{
+	.@pick=getarg(0);
+	if (.@pick<0 || .@pick>2) return 0;
+	// Fixed v2 targets: same combat class/size/race/element/defenses on each run.
+	if (.@pick==0) setarray @PNLabTarget[0],0,1,0,0,1,0,0,0,0;
+	if (.@pick==1) setarray @PNLabTarget[0],1,2,6,0,1,300,200,100,100;
+	if (.@pick==2) setarray @PNLabTarget[0],1,1,7,3,4,500,300,150,200;
+	@PNLabChallenge=.@pick+1;
+	return callfunc("PN_LabTargetValid");
+}
+function	script	PN_LabChallengeMenu	{
+	mes "[60-second Challenge Targets]";
+	mes "Practice repeatable damage rotations on three fixed targets. These inert targets test damage only; no survival mechanics or rewards are simulated.";
+	.@pick=select("Training - neutral normal dummy:Armored - neutral demon boss:Elemental - fire-4 demi-human boss:Cancel")-1;
+	if (.@pick==3) return 0;
+	if (!callfunc("PN_LabChallengeLoad",.@pick)) return 0;
+	mes callfunc("PN_LabTargetIdentity");
+	mes "Set your personal DPS goal (0 records a practice run without a goal).";
+	input @PNLabGoal,0,2000000000;
+	mes "Use identical buffs for a comparable personal best. Equipment may change between runs, and remains fixed during each run.";
+	.@lab=instance_id(IM_CHAR);
+	if (!.@lab || instance_live_info(ILI_NAME,.@lab)!="PN Damage Lab" || strcharinfo(3)!=instance_mapname("guild_vs1",.@lab)) {
+		@PNLabPendingChallenge=@PNLabChallenge; @PNLabPendingGoal=@PNLabGoal;
+		mes "Your selected target and goal are queued for the next lab console conversation. Visit Damage Lab, enter your private room, then talk to its console to begin.";
+		callfunc "PN_OfficeNavigate","Damage Lab";
+	}
+	return 1;
+}

@@ -50,7 +50,7 @@ TESTS = (
     'episode_party_progression_test.py',
     'database_backup_test.py',
     'health_check_test.py',
-    'main_office_test.py',
+    'main_office_test.py', 'grade_workshop_test.py',
     'storage_sql_failure_test.py',
     'storage_native_audit_test.py',
     'mob_sql_schema_test.py',
@@ -73,6 +73,7 @@ TESTS = (
 )
 FULL_TESTS = (
     'item_use_metadata_native_test.py', 'item_use_pet_native_test.py',
+    'preparation_native_test.py', 'social_features_test.py', 'weekly_rewards_test.py',
     'point_shop_native_test.py', 'package_pet_native_test.py', 'pet_reward_script_test.py', 'lab_history_test.py', 'onboarding_readiness_test.py', 'player_tools_test.py',
     'npc_audit_fashion_test.py', 'card_removal_transaction_test.py',
     'armor_enchant_transaction_test.py', 'mayomayo_payment_test.py', 'shop_transaction_native_test.py',

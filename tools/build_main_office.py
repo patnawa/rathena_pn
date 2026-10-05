@@ -17,7 +17,7 @@ from pathlib import Path
 import struct
 import zlib
 
-MAPS = {'pn_office': 'iz_ac01', 'pn_train': 'guild_vs1', 'pn_style': 'iz_ac02'}
+MAPS = {'pn_office': 'guild_vs1', 'pn_train': 'guild_vs1', 'pn_style': 'iz_ac02'}
 
 def cache_records(path):
     data = Path(path).read_bytes()
@@ -89,11 +89,13 @@ def build(root, assets, output):
     (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print(json.dumps(manifest['maps']))
 
-def merge(cache, aliases):
+def merge(cache, aliases, reviewed_office_sha256=None):
     records=cache_records(cache)
     for name, raw in cache_records(aliases).items():
         assert name in MAPS, 'Unexpected alias'
-        assert name not in records or records[name] == raw, 'Existing alias differs: '+name
+        if name in records and records[name] != raw:
+            assert (name == 'pn_office' and reviewed_office_sha256 and
+                    hashlib.sha256(records[name]).hexdigest() == reviewed_office_sha256), 'Existing alias differs: '+name
         records[name]=raw
     write_cache(cache,records)
 
@@ -102,6 +104,7 @@ if __name__ == '__main__':
     sub=p.add_subparsers(dest='mode',required=True)
     b=sub.add_parser('build'); b.add_argument('root',type=Path);b.add_argument('assets',type=Path);b.add_argument('output',type=Path)
     m=sub.add_parser('merge-cache');m.add_argument('cache',type=Path);m.add_argument('aliases',type=Path)
+    m.add_argument('--reviewed-office-sha256', help='Exact old PN Office map record hash approved for the compact hall migration')
     a=p.parse_args()
     if a.mode=='build':build(a.root,a.assets,a.output)
-    else:merge(a.cache,a.aliases)
+    else:merge(a.cache,a.aliases,a.reviewed_office_sha256)

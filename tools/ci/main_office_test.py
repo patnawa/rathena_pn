@@ -73,17 +73,30 @@ def static():
         except AssertionError: pass
         else: raise AssertionError('Conflicting existing alias accepted')
         assert cache.read_bytes()==merged
+        # An intentional hall migration requires the exact reviewed old record.
+        old_hash=hashlib.sha256(cache_records(cache)[key]).hexdigest()
+        try: merge(cache,root/'drift.dat','0'*64)
+        except AssertionError: pass
+        else: raise AssertionError('Unreviewed Office migration accepted')
+        assert cache.read_bytes()==merged
+        merge(cache,root/'drift.dat',old_hash)
+        assert cache_records(cache)[key]==drift[key]
+        write_cache(cache,cache_records(output/'office-map-cache.dat') | records)
         gat=assets/(next(iter(MAPS.values()))+'.gat');damaged=bytearray(gat.read_bytes());damaged[30:34]=struct.pack('<I',1);gat.write_bytes(damaged)
         try: build(root,assets,root/'bad-output')
         except AssertionError: pass
         else: raise AssertionError('Client/server walkability mismatch accepted')
     layout=json.loads((ROOT/'npc/custom/main_office/layout.json').read_text());rows=layout['desks']
-    assert len(rows)==53 and len({r['unique_name'] for r in rows})==53
+    assert len(rows)==50 and len({r['unique_name'] for r in rows})==50
+    assert {r['map'] for r in rows}=={'pn_office'}
+    assert len(layout['groups'])==5
+    assert all(26<=r['npc'][0]<=74 and 27<=r['npc'][1]<=74 for r in rows)
     effective={}
     for path in ('db/import/map_cache.dat','db/re/map_cache.dat','db/map_cache.dat'):
         if (ROOT/path).exists():
             for name,record in cache_records(ROOT/path).items():effective.setdefault(name,record)
-    for floor,source in MAPS.items():
+    for floor in layout['entrances']:
+        source=MAPS[floor]
         record=effective[source];w,h=struct.unpack_from('<hh',record,12);cells=zlib.decompress(record[20:]);desks=[r for r in rows if r['map']==floor]
         blocked={tuple(r['npc']) for r in desks};assert len(blocked)==len(desks)
         reached=component(w,h,cells,tuple(layout['entrances'][floor]),blocked)
@@ -116,7 +129,7 @@ def static():
             else:old[key]=value
     for row in renewal_records(ROOT,'db/skill_db.yml'):overlay(skills.setdefault(row['Id'],{}),row)
     for id in ids: assert skills[id]['CopyFlags']['Skill']=={'Plagiarism':True,'Reproduce':True},id
-    print('OFFICE_STATIC_OK: GRF roundtrip, source preservation, collision/drift refusals, 53 reachable desks, active inherited templates, copy eligibility')
+    print('OFFICE_STATIC_OK: GRF roundtrip, source preservation, collision/drift refusals, 50 compact reachable desks, active inherited templates, copy eligibility')
     return skills,ids
 
 def native(builddir,skills,ids):

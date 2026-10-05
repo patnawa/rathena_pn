@@ -98,8 +98,8 @@ function	script	PN_PartyReadiness	{
 function	script	PN_GuideOnboarding	{
 	if (BaseLevel < 200) {
 		mes "Next objective: reach Base Level 200 for Chapter 1. First review your job and skills with the Job Master.";
-		mes "Destination: Main Office lobby 46,40. Training and equipment services are upstairs.";
-		navigateto "pn_office",46,39;
+		mes "Find the Job Master in the Jobs and Pets group at the compact Main Office.";
+		navigateto "pn_office",29,43;
 		return;
 	}
 	if (!isbegin_quest(18368)) {

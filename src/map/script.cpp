@@ -28886,6 +28886,7 @@ BUILDIN_FUNC(unitisforcewalk)
 }
 
 #include <custom/script.inc>
+#include <custom/preparation_script.inc>
 
 // declarations that were supposed to be exported from npc_chat.cpp
 #ifdef PCRE_SUPPORT
@@ -29683,6 +29684,12 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(unitisforcewalk, "i"),
 
 #include <custom/script_def.inc>
+    BUILDIN_DEF(pnpreppreset,"ii"),
+    BUILDIN_DEF(pnprepsupply,"iiii"),
+    BUILDIN_DEF(pnpreprestock,"ii"),
+    BUILDIN_DEF(pnprepjunk,"ii"),
+    BUILDIN_DEF(pnprepinventory,"ii"),
+    BUILDIN_DEF(pnprepstorage,"si"),
 
 	{nullptr,nullptr,nullptr},
 };

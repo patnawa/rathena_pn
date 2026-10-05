@@ -83,7 +83,11 @@ extern "C" void close_ui(const map_session_data& sd,uint32 npc) { check(&sd==att
 extern "C" void menu(map_session_data&,uint32,const char*) asm("__wrap__Z15clif_scriptmenuR16map_session_datajPKc");
 extern "C" void menu(map_session_data& sd,uint32 npc,const char* text) {
     check(&sd==attached && npc==NPC,"menu recipient");
-    check(std::strcmp(text,"Flush Einbech:Muqaddas:Furious weapons:Furious crowns:Sky Rune crowns:Cancel")==0,"exact five-family menu and Cancel"); ++menus;
+    const bool main=std::strncmp(text,"Episode 19 Equipment:Flush Weapons:Furious Equipment:",53)==0;
+    const bool furious=std::strcmp(text,"Weapons:Crowns:Boots:Back")==0;
+    const bool more=std::strcmp(text,"Equipment families:Mad Bunny-LT:Gambler's Seal help:Frontier Rune Crown:Varmundt Rune:Constellation:Shadow Gear:Lake of Fire:Cancel")==0;
+    const bool legacy=std::strcmp(text,"Flush Einbech:Muqaddas:Furious weapons:Furious crowns:Sky Rune crowns:Cancel")==0;
+    check(main||furious||more||legacy,"reviewed consolidated, nested or legacy menu"); ++menus;
 }
 extern "C" bool set_reg(map_session_data*,int64,int64) asm("__wrap__Z9pc_setregP16map_session_datall");
 extern "C" bool set_reg(map_session_data* sd,int64 key,int64 value) {
@@ -111,7 +115,15 @@ extern "C" int __wrap_main(int argc,char** argv) {
     const std::string source{std::istreambuf_iterator<char>(input),std::istreambuf_iterator<char>()};
     auto* code=parse_script(source.c_str(),"grademk_equipment_enchants.txt",1,0); boundary(code && errors==0,"actual complete NPC body parses");
     battle_config.atcommand_disable_npc=0;
-    for(int choice : {1,2,3,4,5,6,255}) {
+    struct Path { std::vector<int> answers; uint64 group; bool escape; };
+    const std::vector<Path> paths={
+        {{2},63,false},{{11},64,false},{{3,1},147,false},{{3,2},148,false},{{16},165,false},
+        {{25},0,false},{{255},0,true},
+        {{24,1,1},63,false},{{24,1,2},64,false},{{24,1,3},147,false},{{24,1,4},148,false},{{24,1,5},165,false},
+        {{24,1,6},0,false},{{24,1,255},0,true}};
+    unsigned case_id=0;
+    for(const auto& path : paths) {
+        ++case_id;
         closes=nexts=menus=payments=deletions=0; requests.clear(); selections.clear(); messages.clear();
         auto player=std::make_unique<map_session_data>(); attached=player.get();
         player->id=99000001; player->type=BL_PC; player->status.account_id=player->id; player->status.char_id=99000002;
@@ -127,27 +139,36 @@ extern "C" int __wrap_main(int argc,char** argv) {
         };
         run_script(code,0,player->id,NPC);
         boundary(player->st,"real Next suspension"); check(player->st->state==STOP && nexts==1 && messages.size()==3,"all introductory messages precede menu");
-        check(messages[1].find("custom workshop")!=std::string::npos,"service is clearly custom"); unchanged();
-        run_script_main(player->st); boundary(player->st,"real menu suspension");
-        check(player->st->state==RERUNLINE && menus==1 && player->state.menu_or_input && requests.empty(),"native select awaits client choice with no early window");
-        player->npc_menu=choice; run_script_main(player->st);
-        if(choice==255) {
-            check(!player->st && closes==0 && selections.empty(),"Escape ends real select without continuing or opening UI");
-        } else {
-            boundary(player->st,"close acknowledgement pending");
-            check(selections==std::vector<int64>{choice},"native select resolves exact choice");
-            check(closes==1 && requests.empty() && player->st->state==(choice==6 ? CLOSE : STOP),"Cancel closes; each Open suspends at close2 before any UI request");
-            unchanged(); player->st->state=choice==6 ? END : RUN; run_script_main(player->st);
-            check(!player->st,"native dialogue detaches after acknowledgement");
+        check(messages[2].find("materials and costs")!=std::string::npos,"native requirements and costs are explained"); unchanged();
+        unsigned answered=0, pauses=0;
+        while(player->st) {
+            boundary(++pauses<20,"bounded real dialogue suspensions");
+            auto* state=player->st;
+            if(state->state==RERUNLINE) {
+                boundary(answered<path.answers.size(),"actual menu has a supplied answer");
+                check(player->state.menu_or_input && requests.empty(),"menu awaits choice with no early enchant window");
+                player->npc_menu=path.answers[answered++];
+            } else if(state->state==CLOSE || (state->state==STOP && closes)) {
+                check(closes==1 && requests.empty(),"window waits for actual close acknowledgement");
+                check(state->state==(path.group?STOP:CLOSE),"Open uses close2 and Cancel uses close");
+                state->state=path.group?RUN:END;
+            } else {
+                check(state->state==STOP && requests.empty(),"Next suspension has no early window");
+            }
+            unchanged();run_script_main(state);
         }
-        const bool open=choice>=1 && choice<=5;
-        check(requests.size()==(open ? 1u : 0u),"only five Open choices request one enchant window");
-        if(open) check(requests[0]==GROUPS[choice-1],"exact existing backend group selected");
+        check(answered==path.answers.size(),"all menu path answers consumed exactly once");
+        std::vector<int64> expected;
+        for(int answer:path.answers) if(answer!=255) expected.push_back(answer);
+        check(selections==expected,"native select resolves exact nested choices");
+        if(path.escape)check(closes==0,"Escape ends select without close or UI");
+        check(requests.size()==(path.group ? 1u : 0u),"only successful Open paths request one enchant window");
+        if(path.group) check(requests[0]==path.group,"exact existing backend group selected");
         check(!player->state.menu_or_input && player->state.item_enchant_index==0,"menu cleared without faking transport activation");
         unchanged(); check(errors==0,"no native script errors");
-        std::printf("EQUIPMENT_SERVICE_CASE_PASS choice=%d\n",choice); attached=nullptr;
+        std::printf("EQUIPMENT_SERVICE_CASE_PASS case=%u\n",case_id); attached=nullptr;
     }
     script_free_code(code); item_enchant_db.clear(); do_final_script(); timer_final(); db_final(); malloc_final();
-    std::printf("EQUIPMENT_SERVICE_NATIVE_RESULT cases=7 assertions=%u failures=%u errors=%u\n",assertions,failures,errors);
+    std::printf("EQUIPMENT_SERVICE_NATIVE_RESULT cases=14 assertions=%u failures=%u errors=%u\n",assertions,failures,errors);
     return failures || errors ? 1 : 0;
 }

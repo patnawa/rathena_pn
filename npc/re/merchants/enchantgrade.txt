@@ -8,7 +8,7 @@
 //= 1.4 Translated paramarket NPC. [Lemongrass]
 //============================================================
 
-grademk,34,184,4	script	Sratos#sratos	4_JP_GARM_H,{
+grademk,32,181,4	script	Sratos#sratos	4_JP_GARM_H,{
 	mes "[Sratos]";
 	mes "Hello, dear customer who walked in, let's hope for a miracle today.";
 	mes "How can I help you?";

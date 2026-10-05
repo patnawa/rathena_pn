@@ -1,0 +1,78 @@
+// PN convenience tools. Native commands revalidate after every UI confirmation.
+function	script	PN_Preparation	{
+    while(1){
+        mes "[Adventure Preparation]";
+        mes "Keep Farming, Boss and Support gear, loot filters and supply targets.";
+        mes "Save and apply in town. Carry the exact saved gear; altered or missing gear refuses the switch. Normal equipment restrictions still apply.";
+        .@slot=select("Farming:Boss:Support:Leave")-1;
+        if(.@slot==3)return;
+        .@action=select("Apply saved equipment and loot filters:Save current equipment and loot filters:Edit supply target:Preview supply restock:Back");
+        if(.@action==1){
+            mes "Apply this equipment and loot preset?";
+            if(select("Apply:Cancel")==1){if(pnpreppreset(.@slot,0))mes "Equipment and loot filters applied.";else mes "Unable to apply. Stay in town, clear equipment-switch restrictions and check that every saved item is present and unchanged.";}
+        }else if(.@action==2){
+            mes "Replace this preset with your currently equipped items and loot filters? Supply targets are kept.";
+            if(select("Save:Cancel")==1){if(pnpreppreset(.@slot,1))mes "Preset saved for this character.";else mes "Unable to save. Equip your gear in town. Rental gear and identical gear without unique identities cannot be saved safely.";}
+        }else if(.@action==3){
+            mes "Choose one of eight supply rows (1 to 8). Target quantity 0 removes a row.";
+            mes "Retail supplies: Red Potion 501, Orange 502, Yellow 503, White 504, Blue 505, Green 506, Fly Wing 601, Butterfly Wing 602.";
+            for(.@i=0;.@i<8;.@i++)if(PNPrepSupplyId[.@slot*8+.@i])mes "Row "+(.@i+1)+": "+getitemname(PNPrepSupplyId[.@slot*8+.@i])+" x "+PNPrepQuantity[.@slot*8+.@i];
+            input .@row,1,8;input .@id,501,602;input .@quantity,0,1000;
+            if(pnprepsupply(.@slot,.@row-1,.@id,.@quantity))mes "Supply target saved.";else mes "That entry is unavailable or already occupies another row.";
+        }else if(.@action==4){
+            .@count=pnpreprestock(.@slot,0);
+            if(.@count<0)mes "Restock is unavailable. Close other transactions and stand in town.";
+            else if(!.@count)mes "Your supply targets are already met. Add supply targets to buy anything.";
+            else{
+                for(.@i=0;.@i<.@count;.@i++)mes getitemname(@PNPrepItem[.@i])+" x "+@PNPrepAmount[.@i]+": "+@PNPrepPrice[.@i]+" Zeny";
+                mes "Total: "+@PNPrepTotal+" Zeny. Uses the database retail price; no discount or free supplies.";
+                mes "Buys only the amount missing from your inventory.";
+                if(select("Buy this restock:Cancel")==1){if(pnpreprestock(.@slot,1)>0){mes "Restock submitted. Delivery follows the server confirmation.";}else mes "Restock changed or cannot fit / be paid for. Refresh the preview.";}
+            }
+        }
+        next;
+    }
+}
+
+function	script	PN_InventoryTools	{
+    while(1){
+        mes "[Inventory Tools]";
+        mes "Favorites, equipment, equipment-switch items, refined, carded, random-option, graded, bound, unique and rental items are protected.";
+        .@action=select("Preview safe batch deposit:Search personal storage:Edit junk allowlist:Preview junk sale:Open personal storage:Leave");
+        if(.@action==6)return;
+        if(.@action==5){close2;openstorage;end;}
+        if(.@action==2){
+            mes "Search by item name, Aegis name or exact item ID. Counts include every unlocked personal page.";
+            input .@query$;.@page=0;
+            while(1){
+                .@count=pnprepstorage(.@query$,.@page);
+                if(.@count<0){mes "Storage search is unavailable. Close other transactions and stand in town.";break;}
+                if(!.@count)mes "No stored matches on this search page.";
+                for(.@i=0;.@i<.@count;.@i++)mes getitemname(@PNPrepItem[.@i])+" ("+@PNPrepItem[.@i]+"): "+@PNPrepAmount[.@i];
+                if(!@PNPrepMore || select("Next results:Done")==2)break;
+                .@page++;next;
+            }
+        }else if(.@action==3){
+            mes "Only these explicitly chosen miscellaneous items may be sold. Choose row 1 to 20; item ID 0 clears it.";
+            for(.@i=0;.@i<20;.@i++)if(PNJunk[.@i])mes "Row "+(.@i+1)+": "+getitemname(PNJunk[.@i])+" ("+PNJunk[.@i]+")";
+            input .@row,1,20;input .@id,0,2147483647;
+            mes "Set row "+.@row+" to "+(.@id?getitemname(.@id):"empty")+"?";
+            if(select("Save:Cancel")==1){if(pnprepjunk(.@row-1,.@id))mes "Junk allowlist saved.";else mes "This item is not sellable miscellaneous loot, or the tools are unavailable here.";}
+        }else{
+            .@mode=(.@action==4?2:1);.@count=pnprepinventory(.@mode,0);
+            if(.@count<0)mes "Tools unavailable. Close other transactions and stand in town.";
+            else if(!.@count)mes "No eligible items. Junk sales require an explicit allowlist.";
+            else{
+                for(.@i=0;.@i<.@count;.@i++)mes getitemname(@PNPrepItem[.@i])+" x "+@PNPrepAmount[.@i]+(.@mode==2?" = "+@PNPrepPrice[.@i]+" Zeny":"");
+                if(.@mode==2)mes "Total sale: "+@PNPrepTotal+" Zeny.";
+                else mes "Deposit all listed items into your main account storage? The entire batch must fit.";
+                if(select((.@mode==2?"Sell listed junk":"Deposit listed items")+":Cancel")==1){
+                    .@result=pnprepinventory(.@mode,1);
+                    if(.@result>0)mes "Batch submitted. The server will confirm the saved transaction.";
+                    else mes "Items, price or space changed. Refresh the preview; no batch was submitted.";
+                }
+            }
+        }
+        next;
+    }
+}

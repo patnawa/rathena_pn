@@ -236,4 +236,4 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 	close;
 }
 
-grademk,30,184,4	duplicate(Temporal Tina#episode)	Temporal Tina#grademk	4_F_KAFRA6
+grademk,24,175,4	duplicate(Temporal Tina#episode)	Temporal Tina#grademk	4_F_KAFRA6

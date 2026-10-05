@@ -67,6 +67,8 @@ extern "C" int __wrap_main(int argc,char**argv){
  check(argc==3||argc==4,"source");const bool red=argc==4&&std::string(argv[3])=="red";const bool comparison=argc==4&&std::string(argv[3])=="comparison";deny_network();static char server[]="lab-history-audit";SERVER_NAME=server;
  malloc_init();db_init();do_init_database();timer_init();do_init_script();battle_set_defaults();
  const auto source=read(argv[1]);
+ const auto challenges=read("npc/custom/main_office/lab_challenges.txt");
+ strdb_put(script_get_userfunc_db(),"PN_LabBestSave",compile(body(challenges,"function\tscript\tPN_LabBestSave"),"PN_LabBestSave"));
  auto* console=compile(body(source,"\tscript\tPN Lab Console"),"complete lab console");script_free_code(console);
  for(auto name:{"PN_LabSave","PN_LabCompatible","PN_LabHistory"}) {
   strdb_put(script_get_userfunc_db(),name,compile(body(source,std::string("function\tscript\t")+name),name));

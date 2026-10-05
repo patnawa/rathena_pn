@@ -219,6 +219,7 @@ OnInit:
 	if (!checkweight2(.@items,.@amounts)) { mes "Make room for all rewards, then speak with me again."; close; }
 	'bio_claimed[.@cid] = 1;
 	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) getitem .@items[.@i],.@amounts[.@i];
+	callfunc "PN_RewardClearCredit",2;
 	.@quest = ('bio_mode == 1 ? 16399:16400);
 	if (isbegin_quest(.@quest) == 1) completequest .@quest;
 	if (!isbegin_quest(16392)) setquest 16392;

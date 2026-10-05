@@ -79,7 +79,7 @@ extern "C" int __wrap_main(int argc,char** argv){
         clean();guide_clock=0;
     }
     const int quests[]={0,0,18368,18369,18370,18371,24069,24070,24071,24072};
-    const char* expected[]={"pn_office:46,39","prt_fild05:353,252","ygg_edge:253,246","ygg_fruit:80,122","ygg_fruit:82,120","ygg_roots:334,138","ygg_roots:299,59","ygg_roots:186,117","ygg_roots:167,135","ygg_roots:166,135"};
+    const char* expected[]={"pn_office:29,43","prt_fild05:353,252","ygg_edge:253,246","ygg_fruit:80,122","ygg_fruit:82,120","ygg_roots:334,138","ygg_roots:299,59","ygg_roots:186,117","ygg_roots:167,135","ygg_roots:166,135"};
     for(int i=0;i<10;++i){auto sd=fresh();if(!i)sd->status.base_level=199;if(i>=2){seedquest(18368,i==2?1:2);if(i>2)seedquest(quests[i]);}Snapshot before;auto n=nums;auto count=sd->num_quests;
         invoke_guide("callfunc \"PN_GuideOnboarding\";");check(destination==expected[i],"exact native quest-state destination");check(nums==n&&sd->num_quests==count,"guidance never changes progression registry or quests");before.unchanged();clean();}
     // Every curated anchor is independently checked against the live NPC source

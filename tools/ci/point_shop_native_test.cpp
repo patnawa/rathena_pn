@@ -38,6 +38,23 @@ extern "C" int __wrap_main(int argc,char**argv) {
    else check(!strcmp(r.point.key,key)&&r.point.before==balance&&r.point.after==balance-100&&r.point.scope==(key[0]=='@'?pn_shop::SessionPoint:key[0]=='#'?(key[1]=='#'?pn_shop::GlobalPoint:pn_shop::AccountPoint):pn_shop::CharacterPoint),"exact 64-bit point descriptor");
   }else check(!durable_captured,"failed dispatch has no plan");
  }
+ // Certainty material outputs are ordinary items, never pets: receipt opt-in
+ // must still plan exact point debit and withhold all assets before the ACK.
+ for(const char* key:{"PNRewardAlicePoints","PNRewardBioPoints"})for(int mode=0;mode<4;++mode){
+  ++cases;nums.clear();durable_captured.reset();durable_allow=mode!=2;
+  auto sd=std::make_unique<map_session_data>();attached=sd.get();sd->type=BL_PC;sd->status.account_id=99001;sd->status.char_id=99000002;
+  sd->status.inventory_slots=1;sd->max_weight=1000000;for(auto& index:sd->equip_index)index=-1;
+  nums[add_str(key)]=mode==1?1:10;
+  if(mode==3)put(0,501,1);
+  npc_data nd{};nd.subtype=NPCTYPE_POINTSHOP;std::strcpy(nd.u.shop.pointshop_str,key);fixture_shop=&nd;
+  npc_item_list sale{};sale.nameid=502;sale.value=2;nd.u.shop.count=1;nd.u.shop.shop_item=&sale;
+  std::vector<s_npc_buy_list> cart={{1,502}};
+  auto before=nums[add_str(key)];auto result=audit_npc_cashshop_buylist(sd.get(),0,cart);
+  check(nums[add_str(key)]==before&&count(502)==0,"certainty purchase never mutates before ACK");
+  check(result==(mode==0?pn_shop::cash_pending:mode==1?ERROR_TYPE_MONEY:ERROR_TYPE_PURCHASE_FAIL),"certainty failure or pending result exact");
+  if(mode==0){const auto& r=*durable_captured;check(r.pet_count==0&&r.point.scope==pn_shop::CharacterPoint&&r.point.before==10&&r.point.after==8&&!strcmp(r.point.key,key),"nonpet guarantee uses durable character debit");check(r.items[0].nameid==502&&r.items[0].amount==1,"nonpet guarantee plans exact material");}
+  else check(!durable_captured,"capacity/balance/transport failure gives no certainty plan");
+ }
  ++cases;auto sd=std::make_unique<map_session_data>();attached=sd.get();sd->vars_ok=true;sd->regs.vars=i64db_alloc(DB_OPT_BASE);
  auto r=std::make_shared<pn_shop::Commit>();r->point.scope=pn_shop::SessionPoint;std::strcpy(r->point.key,"@Points");
  sd->shop_commit.request=r;sd->shop_commit.pending=true;auto id=add_str("@Points");

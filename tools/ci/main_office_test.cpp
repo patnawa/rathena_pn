@@ -17,7 +17,7 @@ extern "C" int16 office_map(const char*){return 0;}
 extern "C" uint16 office_index(const char*,const char*) asm("__wrap__Z17mapindex_name2idxPKcS0_");
 extern "C" uint16 office_index(const char* name,const char*){check(std::string(name)=="pn_office","warp destination is Main Office");return 77;}
 extern "C" e_setpos office_warp(map_session_data*,uint16,int32,int32,clr_type) asm("__wrap__Z9pc_setposP16map_session_datatii8clr_type");
-extern "C" e_setpos office_warp(map_session_data* sd,uint16 map,int32 x,int32 y,clr_type){check(sd==attached&&map==77&&x==100&&y==40,"exact lobby warp");++office_warps;return SETPOS_OK;}
+extern "C" e_setpos office_warp(map_session_data* sd,uint16 map,int32 x,int32 y,clr_type){check(sd==attached&&map==77&&x==50&&y==35,"exact lobby warp");++office_warps;return SETPOS_OK;}
 extern "C" void office_skill(const map_session_data&,uint16) asm("__wrap__Z13clif_addskillRK16map_session_datat");
 extern "C" void office_skill(const map_session_data&,uint16){++skill_packets;}
 extern "C" void office_delete(const map_session_data&,uint16,bool) asm("__wrap__Z16clif_deleteskillRK16map_session_datatb");

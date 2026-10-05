@@ -1,0 +1,63 @@
+// Earned certainty from real, eligible instance clears. Existing drops stay intact.
+// Spend via native PN pointshop receipts: point debit and inventory commit together.
+function	script	PN_RewardClearCredit	{
+	.@track=getarg(0);
+	.@cid=getcharid(0);
+	if (instance_id()<=0) return 0;
+	// Admission reset is 04:00 UTC. Alice Normal/Hard share one daily credit.
+	.@day=(gettimetick(2)-14400)/86400;
+	if (.@track==1) {
+		if (strcharinfo(3)!=instance_mapname("1@alice_mad") || !'alice_complete || !'alice_eligible[.@cid] || !'alice_claimed[.@cid] || getcharid(1)!='alice_party) return 0;
+		if ('pn_alice_credit[.@cid] || PNRewardAliceDay>=.@day) return 0;
+		'pn_alice_credit[.@cid]=1;
+		PNRewardAliceDay=.@day;
+		PNRewardAlicePoints=min(1000000,PNRewardAlicePoints+1);
+		PNRewardAliceClears=min(1000000,PNRewardAliceClears+1);
+		for (.@i=0; .@i<getarraysize('alice_roster); ++.@i) if ('alice_eligible['alice_roster[.@i]]) ++.@members;
+	} else if (.@track==2) {
+		if (strcharinfo(3)!=instance_mapname("1@gol2") || 'bio_mode!=2 || 'bio_zone!=9 || !'bio_boss_started || !'bio_eligible[.@cid] || !'bio_claimed[.@cid] || getcharid(1)!='bio_party) return 0;
+		if ('pn_bio_credit[.@cid] || PNRewardBioDay>=.@day) return 0;
+		'pn_bio_credit[.@cid]=1;
+		PNRewardBioDay=.@day;
+		PNRewardBioPoints=min(1000000,PNRewardBioPoints+1);
+		PNRewardBioClears=min(1000000,PNRewardBioClears+1);
+		for (.@i=0; .@i<getarraysize('bio_roster); ++.@i) if ('bio_eligible['bio_roster[.@i]]) ++.@members;
+	} else return 0;
+	callfunc "PN_WeeklyBossComplete",.@members>=2;
+	dispbottom "Boss certainty: one clear credit recorded. Choose a guaranteed material at @office > My Adventure > Boss reward progress.";
+	return 1;
+}
+function	script	PN_RewardProgress	{
+	mes "[Guaranteed boss materials]";
+	mes "Each eligible Alice Normal/Hard or EDDA Bioresearch BATTLE boss clear adds one credit to its own track. Each track allows one daily credit, reset 04:00 UTC (11:00 Bangkok).";
+	mes "Credits belong to this character and survive relog. Choose a material when ready; changing your goal costs nothing.";
+	mes "Alice: "+PNRewardAlicePoints+" available / "+PNRewardAliceClears+" recorded clears.";
+	mes "Bioresearch: "+PNRewardBioPoints+" available / "+PNRewardBioClears+" recorded clears.";
+	next;
+	switch(select("Alice materials:Bioresearch materials:How does it work?:Back")) {
+	case 1:
+		mes "[Alice material costs]";
+		mes "1 credit: one Small Sewing Kit or Maple Leaf. 5: one Heavy Chain. 10: one Monster's Stone.";
+		mes "These are actual Confused Boy recipe ingredients. Your chosen quantity is charged in clear credits; no Zeny.";
+		if (select("Open material exchange:Back")==2) return;
+		close2;
+		callshop "PN Alice Certainty",1;
+		end;
+	case 2:
+		mes "[Bioresearch material costs]";
+		mes "2 credits: one Somatology Experimental Fragment. 5: one Somatology Research Document.";
+		mes "These supplement the record's existing rewards. Your chosen quantity is charged in clear credits; no Zeny.";
+		if (select("Open material exchange:Back")==2) return;
+		close2;
+		callshop "PN Bio Certainty",1;
+		end;
+	case 3:
+		mes "Defeat the actual instance boss as an eligible challenger, then collect the existing clear reward. Summoned bosses, lab dummies, and ordinary field kills give no credits.";
+		mes "Repeat collection cannot award another credit. A full inventory blocks a purchase without spending your credits. Original random drops and clear rewards remain available.";
+		mes "The native receipt commits the selected items and debit together. After a delayed connection, check Purchase History before retrying.";
+		return;
+	default: return;
+	}
+}
+-	pointshop	PN Alice Certainty	-1,PNRewardAlicePoints:0,1001076:1,1001083:1,1001074:5,1001082:10
+-	pointshop	PN Bio Certainty	-1,PNRewardBioPoints:0,25787:2,25786:5

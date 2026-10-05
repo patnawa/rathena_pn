@@ -1,0 +1,97 @@
+// Recruitment is an advertisement, never an admission or teleport authority.
+// Listings intentionally expire across map-server restart/reload.
+function	script	PN_PartyListingValid	{
+	.@s=getarg(0);
+	if (.@s<0 || .@s>=40) return 0;
+	if (!$@PNPartyOwner[.@s]) return 0;
+	if ($@PNPartyUntil[.@s]<=gettimetick(2)
+	 || !isloggedin($@PNPartyAccount[.@s],$@PNPartyOwner[.@s])
+	 || getpartyleader($@PNPartyId[.@s],2)!=$@PNPartyOwner[.@s]
+	 || getpartyleader($@PNPartyId[.@s],1)!=$@PNPartyAccount[.@s]) {
+		$@PNPartyOwner[.@s]=0; return 0;
+	}
+	return 1;
+}
+function	script	PN_PartyActivity	{
+	setarray .@names$,"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress","Ominous Dark Whisper","Simulated Dark Whisper","Free hunting / exploration";
+	.@pick=getarg(0);
+	if (.@pick<0 || .@pick>7) return "";
+	return .@names$[.@pick];
+}
+function	script	PN_PartyPublish	{
+	.@activity=getarg(0); .@role=getarg(1); .@new=getarg(2); .@note$=getarg(3);
+	// Revalidate after every dialog, before touching a shared slot.
+	if (!getcharid(1) || !is_party_leader() || .@activity<0 || .@activity>7
+	 || .@role<0 || .@role>3 || .@new<0 || .@new>1 || getstrlen(.@note$)>80) return 0;
+	.@slot=-1; .@empty=-1;
+	for (.@i=0; .@i<40; .@i++) {
+		if (!callfunc("PN_PartyListingValid",.@i)) { if (.@empty<0) .@empty=.@i; continue; }
+		if ($@PNPartyOwner[.@i]==getcharid(0) || $@PNPartyId[.@i]==getcharid(1)) .@slot=.@i;
+	}
+	if (.@slot<0) .@slot=.@empty;
+	if (.@slot<0) return 0;
+	$@PNPartyOwner[.@slot]=0;
+	$@PNPartyId[.@slot]=getcharid(1); $@PNPartyAccount[.@slot]=getcharid(3);
+	$@PNPartyActivity[.@slot]=.@activity; $@PNPartyRole[.@slot]=.@role;
+	$@PNPartyNew[.@slot]=.@new; $@PNPartyNote$[.@slot]=.@note$;
+	$@PNPartyUntil[.@slot]=gettimetick(2)+1800;
+	$@PNPartySerial++;
+	$@PNPartyRevision[.@slot]=$@PNPartySerial;
+	$@PNPartyOwner[.@slot]=getcharid(0);
+	return 1;
+}
+function	script	PN_PartyBoard	{
+	mes "[Party Recruitment]";
+	mes "Leader advertisements last 30 minutes while the leader is online. Whisper the leader to ask for an invitation.";
+	.@action=select("Browse parties:Post / refresh my party:Remove my listing:My party readiness:Leave");
+	if (.@action==5) return;
+	if (.@action==4) { callfunc "PN_InstanceReadinessDesk"; return; }
+	if (.@action==3) {
+		for (.@i=0; .@i<40; .@i++) if ($@PNPartyOwner[.@i]==getcharid(0)) $@PNPartyOwner[.@i]=0;
+		mes "Your listing has been removed."; return;
+	}
+	if (.@action==2) {
+		if (!getcharid(1) || !is_party_leader()) { mes "Form a party and have its leader post the listing."; return; }
+		mes "Activity:";
+		.@activity=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Ominous Dark Whisper:Simulated Dark Whisper:Free hunting / exploration:Cancel")-1;
+		if (.@activity==8) return;
+		mes "Recruiting:"; .@role=select("Any role:Damage:Support / healer:Tank / frontline:Cancel")-1;
+		if (.@role==4) return;
+		.@new=select("Beginners welcome:Experienced group") == 1;
+		mes "Optional strategy or meeting note (0-80 characters)."; input .@note$;
+		if (getstrlen(.@note$)>80) { mes "Use at most 80 characters."; return; }
+		mes callfunc("PN_PartyActivity",.@activity)+" | "+.@note$;
+		if (select("Publish / refresh for 30 minutes:Cancel")==2) return;
+		if (callfunc("PN_PartyPublish",.@activity,.@role,.@new,.@note$)) mes "Published. Remove it here when your group is ready.";
+		else mes "Could not publish: leadership changed or the board is full. Try again shortly.";
+		return;
+	}
+	// Use fixed menu labels: player notes/names cannot inject menu separators.
+	.@menu$=""; .@n=0;
+	setarray .@roles$,"Any role","Damage","Support / healer","Tank / frontline";
+	for (.@i=0; .@i<40; .@i++) {
+		if (!callfunc("PN_PartyListingValid",.@i)) continue;
+		.@slots[.@n]=.@i; .@revisions[.@n]=$@PNPartyRevision[.@i]; .@n++;
+		mes "Listing "+.@n+": "+callfunc("PN_PartyActivity",$@PNPartyActivity[.@i])+" | "+.@roles$[$@PNPartyRole[.@i]];
+		mes "Leader: "+getpartyleader($@PNPartyId[.@i])+" | "+(($@PNPartyNew[.@i])?"Beginners welcome":"Experienced group");
+		.@menu$+="Listing "+.@n+":";
+	}
+	if (!.@n) { mes "No active listings. Form a party and post yours!"; return; }
+	.@pick=select(.@menu$+"Leave")-1;
+	if (.@pick<0 || .@pick>=.@n) return;
+	.@slot=.@slots[.@pick]; .@owner=$@PNPartyOwner[.@slot]; .@party=$@PNPartyId[.@slot];
+	if (!callfunc("PN_PartyListingValid",.@slot) || $@PNPartyRevision[.@slot]!=.@revisions[.@pick]) { mes "That listing expired or changed. Browse again."; return; }
+	mes "Whisper: "+getpartyleader(.@party)+" (type /w followed by this character name).";
+	mes "Party: "+getpartyname(.@party);
+	mes "Activity: "+callfunc("PN_PartyActivity",$@PNPartyActivity[.@slot]);
+	mes "Note: "+$@PNPartyNote$[.@slot];
+	mes "Expires in "+(($@PNPartyUntil[.@slot]-gettimetick(2)+59)/60)+" minutes.";
+	if ($@PNPartyActivity[.@slot]<7 && select("Check my readiness for this activity:Done")==1) {
+		if (!callfunc("PN_PartyListingValid",.@slot) || $@PNPartyRevision[.@slot]!=.@revisions[.@pick] || $@PNPartyOwner[.@slot]!=.@owner || $@PNPartyId[.@slot]!=.@party) { mes "The listing changed. Browse again."; return; }
+		.@name$=callfunc("PN_PartyActivity",$@PNPartyActivity[.@slot]);
+		.@reason$=callfunc("PN_InstanceMissing",.@name$);
+		mes (.@reason$=="")?"Your current party meets the checked requirements. The entrance checks again.":.@reason$;
+		if (getcharid(1)==.@party) callfunc "PN_PartyReadiness",.@name$;
+	}
+	return;
+}

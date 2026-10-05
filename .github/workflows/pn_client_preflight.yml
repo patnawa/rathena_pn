@@ -4,7 +4,7 @@ on:
   pull_request:
     paths: ['client-patch/client_usability/**', 'tools/ci/client_*', '.github/workflows/pn_client_preflight.yml']
   push:
-    branches: [main, 'codex/server-improvements-*', 'release/**']
+    branches: [main, 'improvements-*', 'server-improvements-*', 'release/**']
     paths: ['client-patch/client_usability/**', 'tools/ci/client_*', '.github/workflows/pn_client_preflight.yml']
 permissions:
   contents: read

@@ -3,7 +3,7 @@ name: PN release validation
 on:
   workflow_dispatch:
   push:
-    branches: [main, 'codex/server-improvements-*', 'release/**']
+    branches: [main, 'improvements-*', 'server-improvements-*', 'release/**']
     paths: ['src/**', 'db/**', 'npc/**', 'conf/**', 'sql-files/**', 'tools/**', 'client-patch/**', '.github/workflows/**']
   pull_request:
     paths: ['src/**', 'db/**', 'npc/**', 'conf/**', 'sql-files/**', 'tools/**', 'client-patch/**', '.github/workflows/**']

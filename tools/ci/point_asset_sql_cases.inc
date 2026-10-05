@@ -33,5 +33,24 @@ static int point_asset_cases(){
         newer();auto after=snapshot();require(pn_shop_tosql(r,false)==pn_shop::Committed,"departed owner resolves original point receipt");require(snapshot()==after,"retry cannot restore old state or debit twice");
         auto changed=r;changed.point.after--;require(pn_shop_tosql(changed,true)==pn_shop::Retry,"different debit under same identity rejected");require(snapshot()==after,"altered replay changes nothing");
     }
-    std::cout<<"POINT_ASSET_SQL_PASS "<<checks<<"; character/account/session point asset receipts and atomicity"<<std::endl;return 0;
+    // Actual material certainty keys use the same permanent character CAS,
+    // without any pet output. Prove point+inventory+receipt rollback and replay.
+    for(const char* key:{"PNRewardAlicePoints","PNRewardBioPoints"}){
+        seed();sql("DELETE FROM char_reg_num");sql("DELETE FROM pn_point_registry_keys");
+        sql(std::string("INSERT INTO char_reg_num(char_id,`key`,`index`,value) VALUES(99001313,'")+key+"',0,10)");
+        auto r=request(pn_shop::Asset);r.stock_count=0;for(auto& stock:r.stocks)stock={};
+        r.wallet_after=r.wallet_before;r.cash_after=r.cash_before;r.kafra_after=r.kafra_before;
+        r.point.scope=pn_shop::CharacterPoint;std::strcpy(r.point.key,key);r.point.before=10;r.point.after=8;
+        auto snapshot=[&](){return state()+result("SELECT * FROM char_reg_num ORDER BY char_id,`key`,`index`");};
+        auto initial=snapshot();require(r.pet_count==0&&pn_shop::valid(r),"nonpet certainty request validates");
+        for(const char* fault:{"BEFORE UPDATE ON char_reg_num","BEFORE INSERT ON inventory","BEFORE INSERT ON pn_shop_commits"}){
+            sql(std::string("CREATE TRIGGER point_asset_fault ")+fault+" FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='certainty fault'");
+            require(pn_shop_tosql(r,true)==pn_shop::Retry,"certainty write failure retryable");require(snapshot()==initial,"certainty point/material/receipt roll back together");sql("DROP TRIGGER point_asset_fault");
+        }
+        require(pn_shop_tosql(r,true)==pn_shop::Committed,"nonpet certainty purchase commits");
+        require(result(std::string("SELECT value FROM char_reg_num WHERE char_id=99001313 AND `key`='")+key+"'")=="8|\n","certainty debits exact credits");
+        require(result("SELECT nameid,amount FROM inventory WHERE nameid IN(501,502) ORDER BY nameid")=="501|1|\n502|1|\n","certainty output inventory committed");
+        auto after=snapshot();require(pn_shop_tosql(r,false)==pn_shop::Committed&&snapshot()==after,"certainty replay never debits or grants twice");
+    }
+    std::cout<<"POINT_ASSET_SQL_PASS "<<checks<<"; character/account/session and nonpet certainty receipts and atomicity"<<std::endl;return 0;
 }

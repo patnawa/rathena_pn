@@ -574,6 +574,7 @@ OnTouch:
 	if (!checkweight2(.@items,.@amounts)) { mes "Make room for the complete clear reward, then return."; close; }
 	'alice_claimed[getcharid(0)] = 1;
 	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) getitem .@items[.@i],.@amounts[.@i];
+	callfunc "PN_RewardClearCredit",1;
 	mes "Here is your Heavy Chain. Hard also grants one Monster's Stone, plus another for clearing within twenty minutes of reservation.";
 	close;
 }

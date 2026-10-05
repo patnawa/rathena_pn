@@ -22,10 +22,11 @@ import re
 import tempfile
 import episode21_encounter_flow_test as native
 from episode_party_progression_test import scan_to, npc_body
+import weekly_rewards_fixtures
 SOURCE=native.ROOT/'npc/custom/instances/BioresearchLaboratory.txt'
 
 def fixtures(build,pre_fix=False):
-    source=SOURCE.read_text(); rows=[]; digest=hashlib.sha256()
+    source=SOURCE.read_text(); rows=weekly_rewards_fixtures.functions(native.ROOT); digest=hashlib.sha256()
     for name in ('F_BioReady','F_BioMove','F_BioBarrier'):
         m=re.search(r'function\s+script\s+'+name+r'\s*\{',source); b=m.end()-1
         rows.append((name,source[b:scan_to(source,b,'{','}')+1],'function'))
@@ -71,6 +72,8 @@ WORLD=r"""
     else if (command == "instance_live_info") script_pushstrcopy(st,"Bioresearch Laboratory");
     else if (command == "instance_create") { owned=1;script_pushint(st,1); }
     else if (command == "instance_enter") { ++admissions;script_pushint(st,entry_result); }
+    else if (command == "gettimetick") script_pushint(st,1900000000);
+    else if (command == "strcharinfo") script_pushstrcopy(st,locations[st->rid].map.c_str());
     else if (command == "checkweight2") {
       auto* a=script_getdata(st,2);auto* b=script_getdata(st,3);auto* sd=bio_char(st->rid-99000010+100);
       int n=script_array_highest_key(st,sd,get_str(reference_getid(a)),reference_getref(a));
@@ -152,7 +155,7 @@ def main():
     prefix=prefix.replace('int32 world(script_state* st) {',EXTRA+'\nint32 world(script_state* st) {')
     prefix=prefix.replace('    if (command == "instance_mapname"',WORLD,1)
     prefix=prefix.replace('if (p->id == id) return p.get();','if (p->id == id && id!=offline) return p.get();')
-    names=['select','is_party_leader','instance_live_info','instance_create','instance_enter','checkweight2','groupranditem','getpartymember','getmapxy','mobcount','setcell','sc_start','sc_end','dispbottom','setnpctimer','initnpctimer','stopnpctimer']
+    names=['select','is_party_leader','instance_live_info','instance_create','instance_enter','gettimetick','strcharinfo','checkweight2','groupranditem','getpartymember','getmapxy','mobcount','setcell','sc_start','sc_end','dispbottom','setnpctimer','initnpctimer','stopnpctimer']
     prefix=prefix.replace('"getexp", "callfunc"};','"getexp",'+','.join(json.dumps(n) for n in names)+'};')
     native.CPP=prefix+MAIN;native.fixtures=fixtures;native.WRAPPERS+=('_Z13map_charid2sdi','_Z9map_id2bli','_Z11map_nick2sdPKcb')
     def run(d):

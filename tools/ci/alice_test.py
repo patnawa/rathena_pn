@@ -14,12 +14,13 @@ import argparse,hashlib,json,re,tempfile
 from pathlib import Path
 import episode21_encounter_flow_test as native
 import bioresearch_test as bio
+import weekly_rewards_fixtures
 from episode_party_progression_test import scan_to,npc_body
 SOURCE=native.ROOT/'npc/custom/instances/AliceTwistedMadness.txt'
 RECIPES=[{'output': 28902, 'zeny': 5000000, 'materials': {'1001074': 1, '1001076': 50, '1001083': 50}}, {'output': 410233, 'zeny': 5000000, 'materials': {'1001074': 5, '1001076': 150, '1001083': 150}}, {'output': 420210, 'zeny': 30000000, 'materials': {'1001082': 5, '1001074': 15, '1001079': 300, '1001076': 300, '1001083': 300}}, {'output': 420213, 'zeny': 30000000, 'materials': {'1001082': 5, '1001074': 15, '1001079': 300, '1001076': 300, '1001083': 300}}, {'output': 420220, 'zeny': 30000000, 'materials': {'1001082': 5, '1001074': 15, '1001079': 300, '1001076': 300, '1001083': 300}}, {'output': 420269, 'zeny': 30000000, 'materials': {'1001082': 5, '1001074': 15, '1001079': 300, '1001076': 300, '1001083': 300}}, {'output': 480297, 'zeny': 10000000, 'materials': {'1001074': 3, '1001076': 300}}, {'output': 480298, 'zeny': 10000000, 'materials': {'1001074': 3, '1001082': 2, '1001079': 300}}, {'output': 480310, 'zeny': 10000000, 'materials': {'1001074': 3, '1001083': 300}}]
 
 def fixtures(build,pre_fix=False):
- source=SOURCE.read_text();rows=[];digest=hashlib.sha256()
+ source=SOURCE.read_text();rows=weekly_rewards_fixtures.functions(native.ROOT);digest=hashlib.sha256()
  for name in ('F_AliceTravel','F_AliceMember','F_AliceCorridor','F_AliceLeadership'):
   m=re.search(r'function\s+script\s+'+name+r'\s*\{',source);b=m.end()-1;rows.append((name,source[b:scan_to(source,b,'{','}')+1],'function'))
  for name in re.findall(r'(?m)^\S+\tscript\t([^\t]+)\t',source):
@@ -61,6 +62,7 @@ WORLD=r"""
     else if(command=="instance_create"){owned=1;script_pushint(st,1);}
     else if(command=="instance_enter"){++admissions;script_pushint(st,entry_result);}
     else if(command=="gettimetick")script_pushint(st,clock_now);
+    else if(command=="strcharinfo")script_pushstrcopy(st,locations[st->rid].map.c_str());
     else if(command=="rand")script_pushint(st,script_hasdata(st,3)?script_getnum(st,2):script_getnum(st,2)==100?chance:0);
     else if(command=="getpartymember"){
       check(script_getnum(st,2)==17,"party enumeration uses owning party");for(int i=0;i<party_size;++i)av(st,4,i,script_getnum(st,3)==1?players[i]->status.char_id:players[i]->id);script_pushint(st,party_size);
@@ -132,7 +134,7 @@ def main():
  prefix=prefix.replace('int32 world(script_state* st) {',EXTRA+'\nint32 world(script_state* st) {')
  prefix=prefix.replace('    if (command == "instance_mapname"',WORLD,1)
  prefix=prefix.replace('if (p->id == id) return p.get();','if (p->id == id && id!=offline) return p.get();')
- names=['select','is_party_leader','party_changeleader','instance_live_info','instance_create','instance_enter','gettimetick','rand','getpartymember','getmapxy','mobcount','getunitdata','setunitdata','unitexists','killmonster','countitem','delitem','getitemname','checkweight2','dispbottom','setnpctimer','initnpctimer','stopnpctimer']
+ names=['select','is_party_leader','party_changeleader','instance_live_info','instance_create','instance_enter','gettimetick','strcharinfo','rand','getpartymember','getmapxy','mobcount','getunitdata','setunitdata','unitexists','killmonster','countitem','delitem','getitemname','checkweight2','dispbottom','setnpctimer','initnpctimer','stopnpctimer']
  prefix=prefix.replace('"getexp", "callfunc"};','"getexp",'+','.join(json.dumps(n) for n in names)+'};')
  native.CPP=prefix+MAIN;native.fixtures=fixtures;native.WRAPPERS+=('_Z13map_charid2sdi','_Z9map_id2bli','_Z11map_nick2sdPKcb','_Z11pc_setparamP16map_session_datall','_Z13mapreg_setregll','_Z14mapreg_readregl')
  def run(d):

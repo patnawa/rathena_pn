@@ -554,4 +554,4 @@ OnNativeAction:
     end;
 }
 
-grademk,46,178,4	duplicate(PN Rune Stone)	Rune Stone#PNWorkshop	4_M_SAGE_C
+grademk,44,175,4	duplicate(PN Rune Stone)	Rune Stone#PNWorkshop	4_M_SAGE_C

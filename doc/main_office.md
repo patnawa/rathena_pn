@@ -1,104 +1,81 @@
 # PN Main Office
 
-The Main Office brings 52 service desks into three connected service areas.
-Use `@office` or the Main Office attendant in Prontera, Izlude (including its
-configured variants), or the Grade Workshop. Each floor has a directory with
-case-insensitive search and transport to a reachable cell beside the selected
-desk. The directory also provides floor travel and a return to Prontera.
+The Office now has one compact hall with 50 clearly named service NPCs.
+Use `@office` to arrive at `pn_office,50,35`, or `@adventure` to plan a session
+from wherever you are. Click Directory to choose a category or search an NPC
+name; navigation marks the exact walkable cell beside that NPC.
 
-| Area | Entrance | Services |
+| Group | Position in the hall | Services |
 | --- | --- | --- |
-| Lobby | `pn_office,100,40` | Healing, storage/save point, stat/skill reset, card removal, job changes, Druid mentor, platinum skills, rentals, supplies, pets, travel and progression |
-| Training and equipment | `pn_train,50,35` | Private damage lab, Rune Tablet, repairs, equipment/shadow enchants, refining, ores, Frontier crowns, Varmundt runes, Constellation, build notes, reset and card removal |
-| Fashion and lounge | `pn_style,140,140` | Stylist, Fashion Points services, recycling, costume enchants, skill copying, four clans, cafe, healing and storage |
+| Everyday | Entrance / south | Healing, storage, reset, card removal, settings, preparation presets, inventory tools, dealer and cafe |
+| Jobs and Pets | Left / west | Job changes, Druid mentor, platinum skills, rentals, skill supplies, pet food/care/recovery |
+| Adventures | Center | My Adventure, progression, travel, Temporal Tina, instances, party board and boss rewards |
+| Equipment | Right / east | Damage Lab, Rune Tablet, repair, enchants, refining, ores, crowns, runes, Constellation, Build Notes and grading |
+| Fashion | Back / north | Stylist, Gold Points, designer, recycling, boxes, catalogue, enchants, copy skills and clans |
 
-The service concept is inspired by the reference server Main Office.
-This is an original PN arrangement using existing client academy and arena
-resources, with independent map names and town flags. The source arena's PvP
-flags do not apply to the training floor. It does not contain reference server's custom
-map artwork, economy, or every NPC from that server.
+All desks occupy a 49 by 48 cell area in the existing arena hall resource.
+The new `pn_office` map is 100 by 100 cells, replacing the old 220 by 200 lobby
+and eliminating floor travel for services. NPC collision and every approach
+are checked by flood fill. The old `pn_train` and `pn_style` maps remain
+registered for compatibility; entering them returns you to the new hall.
+Office save points and old outlying login positions migrate on login.
 
-## Behavior
+## Player conveniences
 
-Existing services retain their original fees, eligibility and consequences.
-In particular, the Wise Old Woman's card removal can destroy cards or gear on
-failure; moving the NPC does not change that system. Job Master, Stylist and
-Rental Service use hidden templates with visible office duplicates. Their
-former disabled town placements are not introduced on top of existing NPCs.
+See [Adventure services](adventure_services.md) for the full feature guide.
+My Adventure connects story progression, eight equipment wishlist goals,
+current instances and cooldowns, preparation, inventory tools, weekly choices,
+party recruitment, boss material progress, and public build snapshots.
 
-`@office`, `@fashion` and `@goldpoints` refuse dead characters, instances and maps restricting escape or
-participating in PvP, guild war or battlegrounds. The office Kafra can save the
-character's respawn point after confirmation. Build Notes stores three short
-notes and base-stat snapshots; it is a notebook, not a loadout switcher. Skill
-copying goes through the native copy eligibility rules and learned skill caps.
-The instance desk reports the current reservation and directs players to the
-real instance entrances for their individual requirements and cooldowns.
+Existing services retain their fees and eligibility. Card removal retains its
+normal risks. Refining and grading require an unequipped inventory item that
+is not in equipment switching. `@office`, `@fashion` and `@goldpoints` retain
+the existing death, instance, PvP/GvG/battleground and escape restrictions.
+The private Damage Lab returns you to the compact Office entrance.
 
-The damage lab retains its private instance and measurements. Leaving a lab
-created from the office returns to the originating lobby or training floor.
-See [PN Services](quality_services.md) for the Poring target and measurement limits.
-
-## Gold Points and fashion shortcuts
-
-Type these commands in game chat:
-
-| Command | Destination or result |
+| Command | Result |
 | --- | --- |
-| `@goldpoints` | `pn_style,136,129`, directly beside the Gold Point Manager |
-| `@fashion` | `pn_style,140,140`, the fashion and lounge entrance |
-| `@activity` | Gold/Fashion Point balances, earning rules and both access commands |
+| `@office` | Compact hall entrance, 50,35 |
+| `@adventure` | Session dashboard and all new convenience systems |
+| `@fashion` | Fashion group, 49,67 |
+| `@goldpoints` | Gold Point Manager, 43,67 |
+| `@settings` | Saved character/account login preferences |
+| `@activity` | Gold/Fashion balances and earning rules |
 
 Click the service NPC after arriving. Gold Points accrue at one per three minutes online and stop at 50. The manager exchanges them one-for-one for Fashion Points; exchanging below the cap resumes the earning timer. These are login-account balances, shared by that login's characters, not by separate login accounts.
 
 Fashion services include costume/stone trades, stone recovery, enchantment and stone boxes. Boxes 1–20 cost 50 Fashion Points; the garment second-slot box costs 300. The Fashion Catalogue now sells 41 supported costumes at the PN price of 150 Fashion Points each. Ordinary costume trade-ins award 15 points, Bio5/Tomb costumes award 1, and listed stones award 10 each. Favorite, bound and modified items cannot be traded in. See the [exchange audit and service guide](fashion_exchange_20260928.md) for the dialogue-loop repairs and verification.
 
-Both cap messages tell players how to reach the Gold Point Manager and the fashion services. The travel commands are available to ordinary players and use the existing Office escape restrictions.
+## Client assets and rollout
 
-The shortcuts and messages were deployed on 28 September 2026 through a graceful, idle map-only restart. NPC startup completed without errors, all seven production containers were healthy, and Zeny, Gold Point and Fashion Point balances were unchanged. The other six containers were unchanged. Existing PN office client assets are sufficient; this script update needs no additional client download. Layout validation passed for all 52 reachable desks. A live player interaction with the new shortcuts has not yet been recorded.
+Every client must update `pn_office.grf` before visiting the compact hall.
+Use the signed launcher's Check for updates. The server and client collision
+maps must change together; an old lobby client cannot render the new layout
+correctly. Retain the patch while any character is saved in an Office map.
 
-## Client installation
-
-The server cache includes the three alias maps. Every player's client also
-needs `pn_office.grf` before visiting the office. Full client assets are not
-distributed in this repository. Build the patch from the owner's extracted
-`iz_ac01`, `guild_vs1` and `iz_ac02` GAT/GND/RSW files:
+For a fresh build from the owner's original `guild_vs1` and `iz_ac02` assets:
 
 ```sh
-python3 tools/build_main_office.py build . /path/to/extracted/data /path/to/new-office-build
+python3 tools/build_main_office.py build . /path/to/data /path/to/new-build
 python3 tools/generate_main_office_layout.py
-python3 tools/install_main_office_client.py /path/to/client /path/to/new-office-build
 ```
 
-Close the game before installation. The installer verifies the build hash,
-preserves the relative order of existing archives, and saves `DATA.INI` plus
-a receipt under the client's `server-work/client-before-main-office-*` folder.
-Restore that `DATA.INI` to roll back client priority. Keep the patch installed
-while any character is saved or logged out in an office map.
+The builder checks dimensions and every walkable cell, changes only the two
+RSW alias filename fields, and emits nine GRF resources plus hash metadata.
+The source art is retained; the compact layout is original PN placement.
+The old three-map aliases remain so existing references do not lose maps.
 
-The builder validates dimensions and every walkable cell against the server
-cache, patches only the two alias filename fields in supported RSW 2.1 files,
-and writes an unencrypted nine-resource GRF with a hash manifest. The layout
-generator verifies desk spacing and flood-fill reachability after treating all
-NPC tiles as obstacles. Generated coordinates are in
-[`layout.json`](../npc/custom/main_office/layout.json).
+The fresh-client installer intentionally refuses to replace a different
+installed archive. Existing clients upgrade through the signed update and its
+rollback backup. For an import-cache migration, pass the exact reviewed old
+`pn_office` record SHA-256 to `tools/build_main_office.py merge-cache` with
+`--reviewed-office-sha256`; every other collision still refuses replacement.
+Unrelated server cache records are preserved.
 
-## Server rollout and checks
+The actual placement coordinates and grouping are generated in
+[`layout.json`](../npc/custom/main_office/layout.json). Load shared services,
+new feature scripts and Shadow Supplies before their visible duplicates.
+No new map index or SQL migration is required.
 
-Load Rune Tablet and office service definitions before their duplicates in
-`npc/scripts_custom.conf`. The aliases are registered in `conf/maps_athena.conf`
-and `db/map_index.txt`; their geometry is tracked in `db/map_cache.dat`.
-Servers with an overriding import cache should merge the generated alias cache
-with `tools/build_main_office.py merge-cache`, preserving other map records.
-
-Restart the character and map servers during a no-player maintenance window
-when adding map indexes. Check the native startup log, not just the process
-exit status. Isolated startup validation and cell connectivity do not prove
-rendered client appearance or a player's complete service transaction.
-
-## Equipment audit and command update ? 8 September 2026
-
-The lobby now includes Player Settings (also `@settings`), and Training includes
-Grade Enhancer, sharing Sratos' existing grading and Etel exchange service.
-The generated layout verifies all 52 desk approaches with NPC cells blocked.
-Native grading and refining require inventory targets: unequip the item and
-remove it from equipment switching before selecting it.
+Automated VM, collision and asset checks establish behavior and geometry;
+a current client session is still needed to judge appearance and usability.

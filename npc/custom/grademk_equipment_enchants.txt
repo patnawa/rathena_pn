@@ -14,7 +14,7 @@
 //=============================================================
 
 // All Grade MK gear enchant services share this counter.
-grademk,28,184,4	script	Equipment Enchanter#grademk	4_M_REPAIR,{
+grademk,26,181,4	script	Equipment Enchanter#grademk	4_M_REPAIR,{
 L_Main:
 	mes "[Equipment Enchanter]";
 	mes "Choose the equipment you want to enchant.";

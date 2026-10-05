@@ -1,6 +1,7 @@
 void weekly_cases(const std::string& dir){
  const std::vector<std::pair<std::string,std::string>> functions={
-  {"PN_WeeklyReset","reset"},{"PN_WeeklyLabComplete","lab"},{"PN_GuideMilestones","build"},{"PN_WeeklyBoard","board"}};
+  {"PN_WeeklyReset","reset"},{"PN_WeeklyLabComplete","lab"},{"PN_GuideMilestones","build"},{"PN_WeeklyBoard","board"},
+  {"PN_WeeklyRegionName","region"},{"PN_WeeklyExploreMaps","maps"},{"PN_WeeklyExplore","explore"},{"PN_WeeklyHunt","hunt"},{"PN_WeeklyBossComplete","boss"},{"PN_WeeklyObjectiveCount","count"}};
  for(auto& f:functions)strdb_put(script_get_userfunc_db(),f.first.c_str(),compile(read(dir+"/weekly-"+f.second+".script"),f.first.c_str()));
  auto* reset=compile("{ callfunc \"PN_WeeklyReset\"; end; }","weekly reset");
  auto* lab=compile("{ callfunc \"PN_WeeklyLabComplete\"; end; }","weekly lab");

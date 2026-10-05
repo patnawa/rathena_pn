@@ -13,7 +13,7 @@ old.validate=validate
 p=argparse.ArgumentParser();p.add_argument('--native-build-dir',type=Path,required=True);p.add_argument('--before',type=Path,required=True);a=p.parse_args()
 inputs=old.prepare(a.native_build_dir,a.before)
 weekly=(old.test.ROOT/'npc/custom/main_office/weekly_practice.txt').read_text()
-for name,label in [('PN_WeeklyReset','reset'),('PN_WeeklyLabComplete','lab'),('PN_GuideMilestones','build'),('PN_WeeklyBoard','board')]:
+for name,label in [('PN_WeeklyReset','reset'),('PN_WeeklyLabComplete','lab'),('PN_GuideMilestones','build'),('PN_WeeklyBoard','board'),('PN_WeeklyRegionName','region'),('PN_WeeklyExploreMaps','maps'),('PN_WeeklyExplore','explore'),('PN_WeeklyHunt','hunt'),('PN_WeeklyBossComplete','boss'),('PN_WeeklyObjectiveCount','count')]:
     (a.native_build_dir/f'weekly-{label}.script').write_text(old.test.gate.body(weekly,name))
 casefile=a.native_build_dir/'shop_cases.inc'
 cases=casefile.read_text().replace('void shop_cases(const std::string& dir){','void shop_cases(const std::string& dir){\n weekly_cases(dir);',1)

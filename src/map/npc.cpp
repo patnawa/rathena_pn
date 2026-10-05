@@ -2533,6 +2533,12 @@ int32 npc_cashshop_buylist( map_session_data *sd, int32 points, std::vector<s_np
 		return ERROR_TYPE_PURCHASE_FAIL;
 
 	bool durable_cart=false;
+	// Boss-clear certainty balances must commit their debit with the material
+	// inventory. Opt these permanent-character shops into the same receipt path
+	// used by paid pet carts, including non-pet outputs.
+	if(nd->subtype==NPCTYPE_POINTSHOP &&
+	   (!strcmp(nd->u.shop.pointshop_str,"PNRewardAlicePoints") ||
+	    !strcmp(nd->u.shop.pointshop_str,"PNRewardBioPoints")))durable_cart=true;
 	if(nd->subtype==NPCTYPE_CASHSHOP || nd->subtype==NPCTYPE_ITEMSHOP || nd->subtype==NPCTYPE_POINTSHOP) {
 		for(const auto& entry:item_list)for(int index=0;index<nd->u.shop.count;++index) {
 			const auto itemid=nd->u.shop.shop_item[index].nameid;

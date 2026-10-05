@@ -167,6 +167,7 @@ $(RAPIDYAML_AR):
 obj/pc.o obj-gen/pc.o: ../custom/item_use_map.inc ../custom/pet_floor.inc
 obj-gen/script.o: script.cpp ../custom/script_def.inc ../custom/script.inc ../custom/reserve_map.inc ../custom/lab_history.inc ../custom/item_use_script.inc
 obj/script.o obj-gen/script.o: ../custom/player_guide.inc ../custom/equipment_planner.inc ../custom/planner_routes.inc ../custom/purchase_history_map.inc
+obj/script.o obj-gen/script.o: ../custom/preparation_script.inc ../custom/preparation_policy.hpp
 obj/intif.o obj-gen/intif.o: ../custom/registry_map.inc
 obj-gen/atcommand.o: atcommand.cpp ../custom/atcommand_def.inc ../custom/atcommand.inc
 obj-gen/battle.o: battle.cpp ../custom/battle_config_init.inc

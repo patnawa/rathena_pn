@@ -78,7 +78,7 @@ izlude_a,140,146,4	duplicate(PN Services)	PN Services#iza	4_M_01
 izlude_b,140,146,4	duplicate(PN Services)	PN Services#izb	4_M_01
 izlude_c,140,146,4	duplicate(PN Services)	PN Services#izc	4_M_01
 izlude_d,140,146,4	duplicate(PN Services)	PN Services#izd	4_M_01
-grademk,46,180,4	duplicate(PN Services)	PN Services#grade	4_M_01
+grademk,44,179,4	duplicate(PN Services)	PN Services#grade	4_M_01
 
 guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	if (!instance_id()) { mes "Use PN Services to create your private lab."; close; }
@@ -91,7 +91,17 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	mes "[Private Damage Lab]";
 	mes "60-second HP-loss measurement. No rewards. Use identical gear, buffs, element and rotation for comparisons.";
 	mes "Targets cannot move or attack. Both resist knockback; boss targets also resist status effects. Normal targets can receive status effects.";
-	switch(select("Configure and run:Load target preset:Saved runs and comparison:Exit and destroy room")) {
+	@PNLabChallenge=0; @PNLabGoal=0;
+	if (@PNLabPendingChallenge) {
+		.@loaded=callfunc("PN_LabChallengeLoad",@PNLabPendingChallenge-1);
+		@PNLabGoal=@PNLabPendingGoal;
+		@PNLabPendingChallenge=0; @PNLabPendingGoal=0;
+		if (!.@loaded) { mes "The queued challenge is invalid. Choose a challenge again."; close; }
+	} else switch(select("Configure and run:Load target preset:Saved runs and comparison:Exit and destroy room:Challenge target:Personal bests")) {
+	case 5:
+		if (!callfunc("PN_LabChallengeMenu")) close;
+		.@loaded=1; break;
+	case 6: callfunc "PN_LabBests"; close;
 	case 2:
 		for (.@i=0; .@i<3; .@i++) mes "Preset "+(.@i+1)+": "+((PNLabPresetVersion[.@i]==2)?PNLabPresetName$[.@i]:"Empty");
 		.@slot=select("Preset 1:Preset 2:Preset 3:Cancel")-1;
@@ -104,8 +114,7 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 		close;
 	case 4:
 		.@id = instance_id();
-		if (@PNLabOffice == 2) warp "pn_train",50,35;
-		else if (@PNLabOffice == 1) warp "pn_office",100,40;
+		if (@PNLabOffice) warp "pn_office",50,35;
 		else warp "izlude",140,144;
 		instance_destroy .@id;
 		end;
@@ -177,6 +186,10 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	@PNLabDps = .@damage*1000/max(1,.@elapsed);
 	callfunc "PN_LabSave",.@label$,.@damage,.@elapsed,.@setup$,.@gear$,.@buff$,.@build$,.@buffchanged;
 	callfunc "PN_WeeklyLabComplete";
+	if (@PNLabChallenge && @PNLabGoal) {
+		if (.@buffchanged) dispbottom "Challenge unranked: your buff state changed. Repeat with stable buffs.";
+		else dispbottom ((@PNLabDps>=@PNLabGoal)?"CHALLENGE COMPLETE: ":"CHALLENGE PROGRESS: ")+@PNLabDps+" / "+@PNLabGoal+" DPS.";
+	}
 	dispbottom "RESULT " + .@label$ + ": damage=" + .@damage + " time_ms=" + .@elapsed + " DPS=" + @PNLabDps;
 	logmes "PNLAB label="+.@label$+" damage="+.@damage+" ms="+.@elapsed+" target="+.@setup$;
 	end;
@@ -248,7 +261,7 @@ function	script	PN_LabApplyTarget	{
 // Character registry arrays survive normal logout/relog. Only the completion
 // path above calls Save; no partial run becomes a saved result.
 function	script	PN_LabSave	{
- if (getarg(2)<60000 || getarg(1)<0 || getarg(6)=="") return;
+ if (getarg(2)<60000 || getarg(1)<0 || getarg(1)>9223372036854775 || getarg(6)=="") return;
  .@slot=PNLabNext%3;
  PNLabValid[.@slot]=0;
  PNLabName$[.@slot]=getarg(0);
@@ -263,6 +276,7 @@ function	script	PN_LabSave	{
  PNLabTime[.@slot]=gettimetick(2);
  PNLabValid[.@slot]=1;
  PNLabNext=(.@slot+1)%3;
+ callfunc "PN_LabBestSave",getarg(0),getarg(1),getarg(2),getarg(3),getarg(4),getarg(5),getarg(6),getarg(7);
  return;
 }
 function	script	PN_LabCompatible	{
