@@ -9,8 +9,69 @@
 // ============================================================================
 
 // Chapter 1 reward delivery safety.
-// Pending amounts are permanent character variables, so quest advancement or
-// material consumption can never discard these one-time rewards.
+// Pending amounts are permanent character variables. Keep earned rewards
+// claimable when inventory capacity prevents delivery after quest advancement.
+
+// Scoped to the three plain Chapter 1 materials. The native regression pins
+// their stackable, no-GUID, no-custom-stack-limit item definitions.
+function	script	F_CH1_InventoryState	{
+	// slots, occupied rows, first plain indices[3], first plain amounts[3].
+	// Keep this array name different from the caller's: native copyarray treats
+	// equal variable IDs/indices as a self-copy even across function scopes.
+	setarray .@snapshot[0],getinventoryslots(),0,-1,-1,-1,0,0,0;
+	getinventorylist;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		.@snapshot[1] += (@inventorylist_idx[.@i] < .@snapshot[0]);
+		.@j = @inventorylist_id[.@i] - 1001972;
+		if (.@j < 0 || .@j > 2)
+			continue;
+		if (.@snapshot[2 + .@j] >= 0)
+			continue;
+		if (@inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		.@snapshot[2 + .@j] = @inventorylist_idx[.@i];
+		.@snapshot[5 + .@j] = @inventorylist_amount[.@i];
+	}
+	copyarray getarg(0),.@snapshot[0],8;
+	return;
+}
+
+function	script	F_CH1_CanDeliver	{
+	.@item = getarg(0);
+	.@amount = getarg(1);
+	if (.@item < 1001972 || .@item > 1001974 || .@amount < 1 || .@amount > 30000)
+		return false;
+	.@unit_weight = getiteminfo(.@item,ITEMINFO_WEIGHT);
+	if (.@unit_weight < 0 || Weight + .@unit_weight * .@amount > MaxWeight)
+		return false;
+	if (getarg(2,0))
+		copyarray .@capacity[0],getarg(3),8;
+	else
+		callfunc "F_CH1_InventoryState",.@capacity[0];
+	if (.@capacity[0] < 1 || .@capacity[0] > MAX_INVENTORY)
+		return false;
+	.@j = .@item - 1001972;
+	// Native stops at the first compatible stack, even if full/out of quota.
+	if (.@capacity[2 + .@j] >= 0)
+		return .@capacity[2 + .@j] < .@capacity[0] && .@capacity[5 + .@j] + .@amount <= 30000;
+	return .@capacity[1] < .@capacity[0];
+}
+
+function	script	F_CH1_DeliverReward	{
+	.@item = getarg(0);
+	.@amount = min(getarg(1),30000);
+	if (getarg(2,0))
+		.@can_deliver = callfunc("F_CH1_CanDeliver",.@item,.@amount,1,getarg(3));
+	else
+		.@can_deliver = callfunc("F_CH1_CanDeliver",.@item,.@amount);
+	if (!.@can_deliver)
+		return 0;
+	.@before = countitem(.@item);
+	getitem .@item,.@amount;
+	// A failed getitem does not stop its caller. Retain every undelivered unit
+	// in the pending balance rather than relying on command success alone.
+	return max(0,min(.@amount,countitem(.@item) - .@before));
+}
 
 function	script	F_CH1_ClaimRewards	{
 	.@show_empty = getarg(0,0);
@@ -21,23 +82,33 @@ function	script	F_CH1_ClaimRewards	{
 		return 0;
 	}
 
-	if (CH1_Pending_Coin > 0 && checkweight(1001972,CH1_Pending_Coin)) {
-		.@amount = CH1_Pending_Coin;
-		getitem 1001972,.@amount;
-		CH1_Pending_Coin = 0;
-		++.@claimed_types;
+	// One shared snapshot keeps a full multi-material claim inside the normal
+	// VM jump budget. Account for each new plain row before checking the next
+	// type; delivery still verifies the actual inventory increase independently.
+	callfunc "F_CH1_InventoryState",.@state[0];
+	if (CH1_Pending_Coin > 0) {
+		.@delivered = callfunc("F_CH1_DeliverReward",1001972,CH1_Pending_Coin,1,.@state[0]);
+		CH1_Pending_Coin -= .@delivered;
+		if (.@delivered) {
+			++.@claimed_types;
+			.@state[1] += (.@state[2] < 0);
+		}
 	}
-	if (CH1_Pending_Amulet > 0 && checkweight(1001973,CH1_Pending_Amulet)) {
-		.@amount = CH1_Pending_Amulet;
-		getitem 1001973,.@amount;
-		CH1_Pending_Amulet = 0;
-		++.@claimed_types;
+	if (CH1_Pending_Amulet > 0) {
+		.@delivered = callfunc("F_CH1_DeliverReward",1001973,CH1_Pending_Amulet,1,.@state[0]);
+		CH1_Pending_Amulet -= .@delivered;
+		if (.@delivered) {
+			++.@claimed_types;
+			.@state[1] += (.@state[3] < 0);
+		}
 	}
-	if (CH1_Pending_Sample > 0 && checkweight(1001974,CH1_Pending_Sample)) {
-		.@amount = CH1_Pending_Sample;
-		getitem 1001974,.@amount;
-		CH1_Pending_Sample = 0;
-		++.@claimed_types;
+	if (CH1_Pending_Sample > 0) {
+		.@delivered = callfunc("F_CH1_DeliverReward",1001974,CH1_Pending_Sample,1,.@state[0]);
+		CH1_Pending_Sample -= .@delivered;
+		if (.@delivered) {
+			++.@claimed_types;
+			.@state[1] += (.@state[4] < 0);
+		}
 	}
 
 	if (.@claimed_types)
@@ -50,30 +121,33 @@ function	script	F_CH1_ClaimRewards	{
 function	script	F_CH1_GiveReward	{
 	.@item = getarg(0);
 	.@amount = getarg(1,1);
-	if (.@amount < 1)
+	if (.@amount < 1 || .@amount > 30000)
 		return 0;
 
-	if (checkweight(.@item,.@amount)) {
-		getitem .@item,.@amount;
-		return 1;
-	}
-
+	// Validate the output and record the earned balance before attempting
+	// delivery. Quest callers can advance without losing a failed grant.
 	switch (.@item) {
 	case 1001972:
 		CH1_Pending_Coin += .@amount;
+		.@pending$ = "CH1_Pending_Coin";
 		break;
 	case 1001973:
 		CH1_Pending_Amulet += .@amount;
+		.@pending$ = "CH1_Pending_Amulet";
 		break;
 	case 1001974:
 		CH1_Pending_Sample += .@amount;
+		.@pending$ = "CH1_Pending_Sample";
 		break;
 	default:
 		debugmes "F_CH1_GiveReward rejected unsupported item " + .@item + ".";
 		return 0;
 	}
 
-	dispbottom "Inventory full: " + .@amount + " " + getitemname(.@item) + " queued safely. Free space and use @ch1rewards.";
+	.@delivered = callfunc("F_CH1_DeliverReward",.@item,getd(.@pending$));
+	setd .@pending$,getd(.@pending$) - .@delivered;
+	if (getd(.@pending$) > 0)
+		dispbottom getitemname(.@item) + " rewards remain queued safely. Free space and use @ch1rewards.";
 	return 1;
 }
 

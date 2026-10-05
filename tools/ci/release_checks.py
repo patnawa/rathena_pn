@@ -83,7 +83,7 @@ FULL_TESTS = (
     'shop_progression_capture_test.py',
     'achievement_reward_inter_test.py',
     'combat_pipeline_native_test.py',
-    'chapter1_protection_test.py', 'instance_entry_native_test.py',
+    'chapter1_protection_test.py', 'chapter1_reward_claim_test.py', 'instance_entry_native_test.py',
     'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
     'mob_matk_range_test.py', 'immortal_instance_test.py',
     'instance_warper_test.py', 'airship_briefing_test.py',
