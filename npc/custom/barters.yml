@@ -51,3 +51,4 @@ Footer:
   - Path: npc/custom/chapter1/barters.yml
   - Path: npc/custom/episode19/barters.yml
   - Path: npc/custom/episode21/barters.yml
+  - Path: npc/custom/instances/alice_barters.yml

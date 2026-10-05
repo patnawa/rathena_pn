@@ -1,0 +1,144 @@
+# Confused Boy: preserve the nine existing equipment recipes and prices.
+# Unlimited native barter validates the whole inventory after consuming costs
+# and defers quest/achievement callbacks until payment and delivery settle.
+Header:
+  Type: BARTER_DB
+  Version: 2
+Body:
+- Name: barter_alice_equipment
+  Items:
+  - Index: 0
+    Item: Mad_Bunny_K_
+    Zeny: 5000000
+    RequiredItems:
+    - Index: 0
+      Item: Heavy_Chain
+      Amount: 1
+    - Index: 1
+      Item: Small_Sewing_Box
+      Amount: 50
+    - Index: 2
+      Item: Turn_Yellow_Leaf
+      Amount: 50
+  - Index: 1
+    Item: Gambler_Seal_KR_
+    Zeny: 5000000
+    RequiredItems:
+    - Index: 0
+      Item: Heavy_Chain
+      Amount: 5
+    - Index: 1
+      Item: Small_Sewing_Box
+      Amount: 150
+    - Index: 2
+      Item: Turn_Yellow_Leaf
+      Amount: 150
+  - Index: 2
+    Item: Heart_Ace_Melee
+    Zeny: 30000000
+    RequiredItems:
+    - Index: 0
+      Item: Reptile_Stone
+      Amount: 5
+    - Index: 1
+      Item: Heavy_Chain
+      Amount: 15
+    - Index: 2
+      Item: Weird_Tentacle
+      Amount: 300
+    - Index: 3
+      Item: Small_Sewing_Box
+      Amount: 300
+    - Index: 4
+      Item: Turn_Yellow_Leaf
+      Amount: 300
+  - Index: 3
+    Item: Spade_Ace_Melee
+    Zeny: 30000000
+    RequiredItems:
+    - Index: 0
+      Item: Reptile_Stone
+      Amount: 5
+    - Index: 1
+      Item: Heavy_Chain
+      Amount: 15
+    - Index: 2
+      Item: Weird_Tentacle
+      Amount: 300
+    - Index: 3
+      Item: Small_Sewing_Box
+      Amount: 300
+    - Index: 4
+      Item: Turn_Yellow_Leaf
+      Amount: 300
+  - Index: 4
+    Item: Diamond_Ace_Range
+    Zeny: 30000000
+    RequiredItems:
+    - Index: 0
+      Item: Reptile_Stone
+      Amount: 5
+    - Index: 1
+      Item: Heavy_Chain
+      Amount: 15
+    - Index: 2
+      Item: Weird_Tentacle
+      Amount: 300
+    - Index: 3
+      Item: Small_Sewing_Box
+      Amount: 300
+    - Index: 4
+      Item: Turn_Yellow_Leaf
+      Amount: 300
+  - Index: 5
+    Item: Clover_Ace_Defense
+    Zeny: 30000000
+    RequiredItems:
+    - Index: 0
+      Item: Reptile_Stone
+      Amount: 5
+    - Index: 1
+      Item: Heavy_Chain
+      Amount: 15
+    - Index: 2
+      Item: Weird_Tentacle
+      Amount: 300
+    - Index: 3
+      Item: Small_Sewing_Box
+      Amount: 300
+    - Index: 4
+      Item: Turn_Yellow_Leaf
+      Amount: 300
+  - Index: 6
+    Item: C_Lop_Bunny_Cloak
+    Zeny: 10000000
+    RequiredItems:
+    - Index: 0
+      Item: Heavy_Chain
+      Amount: 3
+    - Index: 1
+      Item: Small_Sewing_Box
+      Amount: 300
+  - Index: 7
+    Item: C_MCircle_Wonderland
+    Zeny: 10000000
+    RequiredItems:
+    - Index: 0
+      Item: Heavy_Chain
+      Amount: 3
+    - Index: 1
+      Item: Reptile_Stone
+      Amount: 2
+    - Index: 2
+      Item: Weird_Tentacle
+      Amount: 300
+  - Index: 8
+    Item: C_Giant_Mad_Bunny
+    Zeny: 10000000
+    RequiredItems:
+    - Index: 0
+      Item: Heavy_Chain
+      Amount: 3
+    - Index: 1
+      Item: Turn_Yellow_Leaf
+      Amount: 300

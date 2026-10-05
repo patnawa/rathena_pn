@@ -608,69 +608,12 @@ OnTouch:
 dali,70,100,4	script	Confused Boy#alice_exchange	4_M_KID1,{
 	mes "[Confused Boy]";
 	mes "I can sew the things you found in Alice's memory into something useful.";
-	.@choice = select("Mad Bunny:Gambler's Seal:Ace of Hearts:Ace of Spades:Ace of Diamonds:Ace of Clovers:Rabbit Cloak:Magic Wonderland:Giant Mad Bunny:Leave");
-	if (.@choice == 10) close;
-	switch (.@choice) {
-	case 1:
-		.@item = 28902; .@price = 5000000;
-		setarray .@materials[0],1001074,1001076,1001083;
-		setarray .@amounts[0],1,50,50;
-		break;
-	case 2:
-		.@item = 410233; .@price = 5000000;
-		setarray .@materials[0],1001074,1001076,1001083;
-		setarray .@amounts[0],5,150,150;
-		break;
-	case 3:
-		.@item = 420210; .@price = 30000000;
-		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
-		setarray .@amounts[0],5,15,300,300,300;
-		break;
-	case 4:
-		.@item = 420213; .@price = 30000000;
-		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
-		setarray .@amounts[0],5,15,300,300,300;
-		break;
-	case 5:
-		.@item = 420220; .@price = 30000000;
-		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
-		setarray .@amounts[0],5,15,300,300,300;
-		break;
-	case 6:
-		.@item = 420269; .@price = 30000000;
-		setarray .@materials[0],1001082,1001074,1001079,1001076,1001083;
-		setarray .@amounts[0],5,15,300,300,300;
-		break;
-	case 7:
-		.@item = 480297; .@price = 10000000;
-		setarray .@materials[0],1001074,1001076;
-		setarray .@amounts[0],3,300;
-		break;
-	case 8:
-		.@item = 480298; .@price = 10000000;
-		setarray .@materials[0],1001074,1001082,1001079;
-		setarray .@amounts[0],3,2,300;
-		break;
-	case 9:
-		.@item = 480310; .@price = 10000000;
-		setarray .@materials[0],1001074,1001083;
-		setarray .@amounts[0],3,300;
-		break;
-	}
-	mes getitemname(.@item)+": "+.@price+" zeny";
-	for (.@i = 0; .@i < getarraysize(.@materials); ++.@i) mes .@amounts[.@i]+" x "+getitemname(.@materials[.@i]);
-	if (select("Exchange.:Cancel.") == 2) close;
-	// No suspension after checking final costs: failed exchanges consume nothing.
-	if (Zeny < .@price) { mes "You do not have enough zeny."; close; }
-	for (.@i = 0; .@i < getarraysize(.@materials); ++.@i) {
-		if (countitem(.@materials[.@i]) < .@amounts[.@i]) { mes "You do not have all the required materials."; close; }
-	}
-	if (!checkweight(.@item,1)) { mes "Make room for the finished item before exchanging."; close; }
-	Zeny -= .@price;
-	for (.@i = 0; .@i < getarraysize(.@materials); ++.@i) delitem .@materials[.@i],.@amounts[.@i];
-	getitem .@item,1;
-	mes "Here you are. Look after it carefully.";
-	close;
+	mes "Choose equipment in the exchange window to see its Zeny and material costs.";
+	if (select("View equipment exchanges.:Leave.") != 1) close;
+	close2;
+	// Native barter checks post-consumption capacity and defers callbacks.
+	callshop "barter_alice_equipment";
+	end;
 }
 
 1@alice_mad,1,1,0	script	#AliceControl	-1,{

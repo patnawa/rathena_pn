@@ -86,7 +86,7 @@ def main():
  cleanup='for(auto& p:players){if(p->regs.arrays){p->regs.arrays->destroy(p->regs.arrays,script_free_array_db);p->regs.arrays=nullptr;}if(p->regs.vars){script_free_vars(p->regs.vars);p->regs.vars=nullptr;}}'
  alice.MAIN=alice.MAIN.replace(' check(errors==0,"no native script or quest errors")',EXTRA+'\n '+cleanup+'\n check(errors==0,"no native script or quest errors")',1)
  # Rendering is an explicit boundary, matching the existing cosmetic harness.
- alice.WORLD=alice.WORLD.replace('    if(command=="select")','    if(command=="specialeffect2") {}\n    else if(command=="callshop") {check(!strcmp(script_getstr(st,2),"PN Alice Certainty")||!strcmp(script_getstr(st,2),"PN Bio Certainty"),"only configured certainty shops open");}\n    else if(command=="select")',1)
+ alice.WORLD=alice.WORLD.replace('    if(command=="select")','    if(command=="specialeffect2") {}\n    else if(command=="callshop") {if(!strcmp(script_getstr(st,2),"barter_alice_equipment")){++exchange_windows;script_pushint(st,1);}else check(!strcmp(script_getstr(st,2),"PN Alice Certainty")||!strcmp(script_getstr(st,2),"PN Bio Certainty"),"only configured certainty shops open");}\n    else if(command=="select")',1)
  import sys
  args=[sys.argv[0]]
  if a.build_dir:args+=['--build-dir',str(a.build_dir)]

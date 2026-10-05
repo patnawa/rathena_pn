@@ -52,6 +52,7 @@ int64 clock_now=100000;
 int chance=50;int32 leader=99000010;
 std::vector<int> choices;
 std::vector<std::tuple<int,int,int64>> changes;
+unsigned exchange_windows=0;
 bool drain_wallet=false, steal_leader=false;int leadership_changes=0, expected_weight_output=0;
 extern "C" bool alice_setparam(map_session_data*,int64,int64) asm("__wrap__Z11pc_setparamP16map_session_datall");
 extern "C" bool alice_setparam(map_session_data* sd,int64 type,int64 value) { boundary(type==SP_ZENY,"only wallet parameter mutation doubled");sd->status.zeny=value;return true; }
@@ -79,6 +80,7 @@ WORLD=r"""
     else if(command=="setunitdata")changes.emplace_back(script_getnum(st,2),script_getnum(st,3),script_getnum64(st,4));
     else if(command=="unitexists")script_pushint(st,1);
     else if(command=="killmonster")live_mobs[script_getstr(st,3)]=0;
+    else if(command=="callshop"){check(std::string(script_getstr(st,2))=="barter_alice_equipment","exchange opens exact native catalog");++exchange_windows;script_pushint(st,1);}
     else if(command=="countitem")script_pushint(st,items[st->rid][script_getnum(st,2)]);
     else if(command=="delitem"){int id=script_getnum(st,2),n=script_getnum(st,3);boundary(items[st->rid][id]>=n,"exchange cannot overdraw materials");items[st->rid][id]-=n;}
     else if(command=="getitemname")script_pushstrcopy(st,"Item");
@@ -96,7 +98,7 @@ extern "C" int __wrap_main(int argc,char** argv){
  for(int i=0;i<3;++i){auto p=std::make_unique<map_session_data>();p->id=99000010+i;p->type=BL_PC;p->status.account_id=p->id;p->status.char_id=100+i;p->fd=0;p->state.ignoretimeout=true;p->npc_idle_timer=INVALID_TIMER;std::snprintf(p->status.name,NAME_LENGTH,"AlicePlayer%d",i);players.emplace_back(std::move(p));}
  auto qdb=std::make_shared<s_quest_db>();qdb->id=62090;qdb->time=14400;qdb->time_at=true;quest_db.put(62090,qdb);
  for(const auto& c:source_cases){std::ifstream f(fixture_dir+"/"+c.path);const std::string s{std::istreambuf_iterator<char>(f),std::istreambuf_iterator<char>()};auto* code=parse_script(s.c_str(),c.name,1,0);boundary(code!=nullptr,"actual Alice source parses");if(!std::strcmp(c.var,"function"))strdb_put(script_get_userfunc_db(),c.name,code);else codes[c.name]=code;}
- auto setup=[&](int mode){offline=0;reuse_on_select=false;reset();choices.clear();changes.clear();party_size=2;owned=1;entry_result=0;admissions=0;clock_now=100000;chance=50;leader=players[0]->id;drain_wallet=steal_leader=false;leadership_changes=0;expected_weight_output=0;live_mobs.clear();locations.clear();stage("'alice_party",17);stage("'alice_mode",mode);stage("'alice_created",clock_now);for(auto& p:players){p->status.party_id=17;p->status.base_level=175;p->status.zeny=0;p->battle_status.hp=1000;locations[p->id]={p->id,"1@alice_mad",110,110};}};
+ auto setup=[&](int mode){offline=0;reuse_on_select=false;reset();choices.clear();changes.clear();party_size=2;owned=1;entry_result=0;admissions=0;clock_now=100000;chance=50;leader=players[0]->id;drain_wallet=steal_leader=false;leadership_changes=0;expected_weight_output=0;exchange_windows=0;live_mobs.clear();locations.clear();stage("'alice_party",17);stage("'alice_mode",mode);stage("'alice_created",clock_now);for(auto& p:players){p->status.party_id=17;p->status.base_level=175;p->status.zeny=0;p->battle_status.hp=1000;locations[p->id]={p->id,"1@alice_mad",110,110};}};
  auto eventrun=[&](const std::string& e){current=e;attached=nullptr;run_script(codes.at(e),0,0,NPC);};
  auto drain=[&](){unsigned n=0;while(!events.empty()){boundary(++n<20,"bounded actual event queue");auto e=events.front();events.erase(events.begin());eventrun(e);}};
  auto admit=[&](){for(int i=0;i<party_size;++i)finish("Alice#mad_entry",i);};
@@ -118,15 +120,10 @@ extern "C" int __wrap_main(int argc,char** argv){
   check(stage("'alice_complete")==1,"all required phases finish encounter");capacity=false;finish("Alice#mad_reward");check(items[players[0]->id].empty(),"full inventory blocks entire clear reward");capacity=true;finish("Alice#mad_reward");check(items[players[0]->id][1001074]==1,"clear grants exactly one chain");if(mode==2)check(items[players[0]->id][1001082]==2,"fast Hard gives regular plus timed stone");auto loot=items;quest_delete(players[0].get(),62090);clock_now+=86400;finish("Alice#mad_reward");check(items==loot,"daily reset cannot repeat clear reward");
  }
  setup(2);stage("'alice_boss_phase",3);stage("'alice_boss_alive",1);clock_now+=1201;eventrun("#AliceControl::OnTimer1000");check(stage("'alice_bonus_expired")==1,"twenty-minute warning follows reservation time");eventrun("#AliceControl::OnBossDead3");check(!stage("'alice_fast_clear"),"late clear cannot receive timed bonus");iv("'alice_eligible",100,1);finish("Alice#mad_reward");check(items[players[0]->id][1001082]==1,"late Hard still receives regular one-stone reward");finish("Alice#mad_reward",1);check(items[players[1]->id].empty(),"nonparticipant cannot claim clear rewards");
- for(unsigned r=0;r<sizeof(recipes)/sizeof(recipes[0]);++r){auto recipe=recipes[r];
-  auto stock=[&](){setup(1);for(const auto& cost:recipe.costs)items[players[0]->id][cost.first]=cost.second;players[0]->status.zeny=recipe.zeny;expected_weight_output=recipe.output;choices={int(r)+1,1};};
-  stock();capacity=false;auto before=items;finish("Confused Boy#alice_exchange");check(items==before&&players[0]->status.zeny==recipe.zeny,"full inventory exchange consumes nothing");
-  for(const auto& cost:recipe.costs){stock();--items[players[0]->id][cost.first];before=items;finish("Confused Boy#alice_exchange");check(items==before&&players[0]->status.zeny==recipe.zeny,"missing each material rejects atomically");}
-  stock();players[0]->status.zeny=recipe.zeny-1;before=items;finish("Confused Boy#alice_exchange");check(items==before&&players[0]->status.zeny==recipe.zeny-1,"insufficient zeny rejects atomically");
-  stock();choices={int(r)+1,2};before=items;finish("Confused Boy#alice_exchange");check(items==before&&players[0]->status.zeny==recipe.zeny,"cancel preserves all exchange costs");
-  stock();drain_wallet=true;before=items;finish("Confused Boy#alice_exchange");check(items==before&&players[0]->status.zeny==0,"wallet rechecked after final confirmation");
-  stock();finish("Confused Boy#alice_exchange");check(items[players[0]->id][recipe.output]==1&&players[0]->status.zeny==0,"recipe grants exact output and charges exact zeny");for(const auto& cost:recipe.costs)check(items[players[0]->id][cost.first]==0,"recipe consumes exact material amount");
- }
+ // Economic exchange cases now execute native inventory/payment in
+ // alice_exchange_transaction_test; this encounter suite covers the handoff.
+ setup(1);auto before=items;choices={2};finish("Confused Boy#alice_exchange");check(items==before&&exchange_windows==0,"leaving exchange preserves inventory");
+ setup(1);before=items;choices={1};finish("Confused Boy#alice_exchange");check(items==before&&exchange_windows==1&&players[0]->status.zeny==0,"opening exchange only opens catalog");
  check(errors==0,"no native script or quest errors");for(auto& c:codes)script_free_code(c.second);codes.clear();offline=0;reset();script_free_vars(instances.at(1)->regs.vars);instances.clear();quest_db.clear();players.clear();attached=nullptr;do_final_script();timer_final();db_final();std::printf("ALICE_RESULT checks=%u failures=%u errors=%u\n",checks,failures,errors);malloc_final();return failures||errors?1:0;
 }
 """
@@ -137,7 +134,7 @@ def main():
  prefix=prefix.replace('int32 world(script_state* st) {',EXTRA+'\nint32 world(script_state* st) {')
  prefix=prefix.replace('    if (command == "instance_mapname"',WORLD,1)
  prefix=prefix.replace('if (p->id == id) return p.get();','if (p->id == id && id!=offline) return p.get();')
- names=['select','is_party_leader','party_changeleader','instance_live_info','instance_create','instance_enter','gettimetick','strcharinfo','rand','getpartymember','getmapxy','mobcount','getunitdata','setunitdata','unitexists','killmonster','countitem','delitem','getitemname','checkweight2','dispbottom','setnpctimer','initnpctimer','stopnpctimer']
+ names=['callshop','select','is_party_leader','party_changeleader','instance_live_info','instance_create','instance_enter','gettimetick','strcharinfo','rand','getpartymember','getmapxy','mobcount','getunitdata','setunitdata','unitexists','killmonster','countitem','delitem','getitemname','checkweight2','dispbottom','setnpctimer','initnpctimer','stopnpctimer']
  prefix=prefix.replace('"getexp", "callfunc"};','"getexp",'+','.join(json.dumps(n) for n in names)+'};')
  native.CPP=prefix+MAIN;native.fixtures=fixtures;native.WRAPPERS+=('_Z13map_charid2sdi','_Z9map_id2bli','_Z11map_nick2sdPKcb','_Z11pc_setparamP16map_session_datall','_Z13mapreg_setregll','_Z14mapreg_readregl')
  def run(d):
