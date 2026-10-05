@@ -245,8 +245,10 @@ L_Service5:
 
 L_UpgradeStarSpell:
 	getinventorylist;
-	.@menu$ = "";
 	.@count = 0;
+	// This scan is bounded by the native inventory size and two enchant slots.
+	// Restore normal execution limits before any dialogue can yield.
+	freeloop(1);
 	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
 		if (@inventorylist_id[.@i] != 490136 || @inventorylist_equip[.@i] != 0 || @inventorylist_expire[.@i] != 0)
 			continue;
@@ -263,18 +265,49 @@ L_UpgradeStarSpell:
 			.@card3[.@count] = @inventorylist_card4[.@i];
 			.@slots[.@count] = .@slot;
 			.@levels[.@count] = .@enchant - 310706;
-			.@menu$ += sprintf("Star of Spell Lv%d -> Lv%d (enchant slot %d):", .@levels[.@count], .@levels[.@count] + 1, .@slot);
+			.@refines[.@count] = @inventorylist_refine[.@i];
 			++.@count;
 		}
 	}
+	freeloop(0);
 	if (.@count == 0) {
 		mes "[Constellation Enchanter]";
 		mes "I could not find an unequipped Star Signet containing Star of Spell Lv3 or Lv4.";
 		close;
 	}
-	.@pick = select(.@menu$ + "Cancel") - 1;
-	if (.@pick == .@count)
+	.@page = 0;
+L_StarSpellPage:
+	// Ten entries keep both the menu text and choice indices within client limits.
+	.@menu$ = "";
+	.@last = min(.@page + 10, .@count);
+	for (.@row = .@page; .@row < .@last; ++.@row)
+		.@menu$ += sprintf("#%d +%d Star of Spell Lv%d -> Lv%d (slot %d):",
+			.@invpos[.@row] + 1, .@refines[.@row], .@levels[.@row], .@levels[.@row] + 1, .@slots[.@row]);
+	.@controls = .@last - .@page;
+	.@next = 0;
+	.@previous = 0;
+	if (.@last < .@count) {
+		.@next = ++.@controls;
+		.@menu$ += "Next page:";
+	}
+	if (.@page > 0) {
+		.@previous = ++.@controls;
+		.@menu$ += "Previous page:";
+	}
+	.@choice = select(.@menu$ + "Cancel");
+	if (.@choice == .@controls + 1)
 		close;
+	if (.@next && .@choice == .@next) {
+		.@page += 10;
+		goto L_StarSpellPage;
+	}
+	if (.@previous && .@choice == .@previous) {
+		.@page -= 10;
+		goto L_StarSpellPage;
+	}
+	if (.@choice < 1 || .@choice > .@last - .@page)
+		close;
+	.@pick = .@page + .@choice - 1;
 	.@index = .@invpos[.@pick];
 	.@slot = .@slots[.@pick];
 	.@level = .@levels[.@pick];

@@ -76,7 +76,7 @@ FULL_TESTS = (
     'preparation_native_test.py', 'social_features_test.py', 'weekly_rewards_test.py',
     'point_shop_native_test.py', 'package_pet_native_test.py', 'pet_reward_script_test.py', 'lab_history_test.py', 'onboarding_readiness_test.py', 'player_tools_test.py',
     'npc_audit_fashion_test.py', 'card_removal_transaction_test.py',
-    'armor_enchant_transaction_test.py', 'mayomayo_payment_test.py', 'shop_transaction_native_test.py',
+    'armor_enchant_transaction_test.py', 'workshop_enchant_audit_test.py', 'mayomayo_payment_test.py', 'shop_transaction_native_test.py',
     'socket_transaction_test.py',
     'shop_delivery_native_test.py',
     'shop_progression_wire_test.py',
