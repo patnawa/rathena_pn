@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs><linearGradient id="bg" x2=".7" y2="1"><stop stop-color="#663f97"/><stop offset="1" stop-color="#271f4a"/></linearGradient><linearGradient id="gold" x2="0" y2="1"><stop stop-color="#ffedad"/><stop offset="1" stop-color="#eea046"/></linearGradient></defs>
+<rect x="12" y="12" width="232" height="232" rx="44" fill="url(#bg)" stroke="#ceb1f5" stroke-opacity=".53" stroke-width="2.5"/>
+<path d="M36 75 40 85 50 89 40 93 36 103 32 93 22 89 32 85Z M219 172 222 180 230 183 222 186 219 194 216 186 208 183 216 180Z" fill="#eee0ff" opacity=".75"/>
+<path d="M86 115 35 87 46 128 61 149 96 181 87 158 70 139 102 161Z M170 115 221 87 210 128 195 149 160 181 169 158 186 139 154 161Z" fill="url(#gold)"/>
+<path d="M48 112 67 143 94 171 88 154 68 134Z M208 112 189 143 162 171 168 154 188 134Z" fill="#b67438"/>
+<path d="M65 91 53 49 94 74 128 29 162 74 203 49 191 91 177 109H79Z" fill="url(#gold)" stroke="#bf7930" stroke-width="3" stroke-linejoin="round"/>
+<path d="M128 76 170 119 151 190 128 219 105 190 86 119Z" fill="url(#gold)"/>
+<path d="M128 86 160 121 143 186 128 204 113 186 96 121Z" fill="#35acd8"/>
+<path d="M128 86V139L96 121Z" fill="#b7fdfe"/><path d="M128 86 160 121 128 139Z" fill="#64eaf3"/>
+<path d="M128 139 160 121 143 186 128 204Z" fill="#266aaf"/><path d="M96 121 128 139V204L113 186Z" fill="#5fdded"/>
+<path d="M128 49 138 63 128 76 118 63Z" fill="#c0fff8"/>
+</svg>

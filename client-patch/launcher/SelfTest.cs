@@ -10,6 +10,22 @@ static class SelfTest {
         string root=Path.Combine(Path.GetTempPath(),"pn-launcher-test-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
         try {
             var e=new Engine(root,(m,p)=>{});string work=Path.Combine(root,".pn-updater");Directory.CreateDirectory(Path.Combine(work,"recovery"));
+            File.WriteAllText(Path.Combine(root,"Setup.exe"),"original setup");
+            Assert(GameSettings.Tool(root)=="Setup.exe","original settings fallback");
+            File.WriteAllText(Path.Combine(root,"PNOpenSetup.exe"),"Lua setup");
+            Assert(GameSettings.Tool(root)=="PNOpenSetup.exe","OpenSetup preferred over original setup");
+            Directory.CreateDirectory(Path.Combine(root,"savedata"));
+            string settings=Path.Combine(root,"savedata","OptionInfo.lua");
+            string original="OptionInfoList[\"WIDTH\"] = 1920\nOptionInfoList[\"HEIGHT\"] = 1080\nOptionInfoList[\"RENDERSYSTEM\"] = 2\nOptionInfoList[\"ISFULLSCREENMODE\"] = 0\n";
+            File.WriteAllText(settings,original);File.WriteAllText(Path.Combine(root,"PN-Turbo.ini"),"personal Turbo");
+            string snapshot=GameSettings.Backup(e);
+            Assert(File.ReadAllText(Path.Combine(snapshot,"savedata","OptionInfo.lua"))==original&&File.ReadAllText(settings)==original,"settings snapshot preserves source and Lua content");
+            Assert(File.ReadAllText(Path.Combine(snapshot,"PN-Turbo.ini"))=="personal Turbo","settings snapshot preserves Turbo preferences");
+            Assert(GameSettings.Summary(root).Contains("1920 × 1080")&&GameSettings.Summary(root).Contains("DirectX 9"),"reads current Lua display settings");
+            string prefs=Path.Combine(work,"launcher-settings.json");File.WriteAllText(prefs,"{\"autoRefresh\":false,\"minimizeOnPlay\":false}");
+            Assert(!LauncherPreferences.Load(prefs).autoRefresh&&!LauncherPreferences.Load(prefs).minimizeOnPlay,"launcher preferences persist independently of game settings");
+            File.WriteAllText(prefs,"damaged");Assert(LauncherPreferences.Load(prefs).autoRefresh,"damaged preferences use safe defaults");
+            Console.WriteLine("PASS: OpenSetup selection and original fallback, Lua display summary, settings snapshots and independent launcher preferences");
             File.WriteAllText(Path.Combine(root,"existing.txt"),"new");File.WriteAllText(Path.Combine(root,"added.txt"),"new");
             File.WriteAllText(Path.Combine(work,"recovery","existing.txt"),"old");
             var t=new Transaction{phase="applying",previousManifest=false,changes=new[]{new Change{path="existing.txt",existed=true,sha256=Engine.Hash(Path.Combine(root,"existing.txt"))},new Change{path="added.txt",existed=false,sha256=Engine.Hash(Path.Combine(root,"added.txt"))}}};
@@ -72,6 +88,35 @@ static class SelfTest {
             }
             using(var file=new FileStream(large,FileMode.Open,FileAccess.Write))file.WriteByte(2);
             Assert(true,"disposing verification cache releases locks");
+            // Cancelling before a check never requests a feed or touches installed files.
+            string cancelledRoot=Path.Combine(root,"cancelled");Directory.CreateDirectory(cancelledRoot);
+            File.WriteAllText(Path.Combine(cancelledRoot,"Ragexe.exe"),"unchanged client");
+            using(var cancelled=new Engine(cancelledRoot,(m,p)=>{}))using(var token=new System.Threading.CancellationTokenSource()){
+                token.Cancel();cancelled.Cancellation=token.Token;bool stopped=false;
+                try{cancelled.Update();}catch(OperationCanceledException){stopped=true;}
+                Assert(stopped,"cancelled check stops before network or recovery");
+                Assert(File.ReadAllText(Path.Combine(cancelledRoot,"Ragexe.exe"))=="unchanged client"&&!File.Exists(Path.Combine(cancelled.Work,"transaction.json")),"cancellation preserves client and creates no transaction");
+            }
+            Assert(MainForm.FormatBytes(1024L*1024*1024)=="1.0 GiB","download metrics use binary units");
+            // Stop a real loopback HTTP download after receiving bytes. The staged
+            // partial file must never replace the installed file or create a journal.
+            var listener=new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback,0);listener.Start();
+            int port=((System.Net.IPEndPoint)listener.LocalEndpoint).Port;
+            var server=new System.Threading.Thread(()=>{
+                try{using(var socket=listener.AcceptTcpClient())using(var stream=socket.GetStream()){
+                    byte[] request=new byte[4096];stream.Read(request,0,request.Length);
+                    byte[] header=System.Text.Encoding.ASCII.GetBytes("HTTP/1.1 200 OK\r\nContent-Length: 2097152\r\nConnection: close\r\n\r\n");stream.Write(header,0,header.Length);
+                    byte[] payload=new byte[65536];for(int i=0;i<32;i++){stream.Write(payload,0,payload.Length);stream.Flush();}
+                }}catch(System.IO.IOException){}catch(System.Net.Sockets.SocketException){}
+            });server.IsBackground=true;server.Start();
+            try{using(var cancelled=new Engine(cancelledRoot,(m,p)=>{}))using(var token=new System.Threading.CancellationTokenSource()){
+                string stage=Path.Combine(cancelled.Work,"stage");Directory.CreateDirectory(stage);
+                cancelled.Cancellation=token.Token;long received=0;cancelled.TransferProgress=(bytes,total,speed)=>{received=bytes;token.Cancel();};
+                bool stopped=false;try{cancelled.Download(new Entry{path="Ragexe.exe",bytes=2097152,sha256=new string('0',64)},stage,"http://127.0.0.1:"+port+"/");}catch(OperationCanceledException){stopped=true;}
+                Assert(stopped&&received>0,"in-flight download cancellation reports received bytes and stops");
+                Assert(File.ReadAllText(Path.Combine(cancelledRoot,"Ragexe.exe"))=="unchanged client"&&!File.Exists(Path.Combine(cancelled.Work,"transaction.json")),"cancelled transfer never activates partial download");
+            }}finally{listener.Stop();Assert(server.Join(5000),"loopback transfer server exits");}
+            Console.WriteLine("PASS: cancellation before network and during HTTP transfer, preserved installed client, no partial activation, and download byte formatting");
             Console.WriteLine("PASS: immutable large-file verification cache, repeated check, locked-content protection, concurrent game read, activation invalidation, replacement and disposal");
             Console.WriteLine("PASS: release path restrictions, signature rejection, interrupted update recovery, idempotent recovery and pre-apply crash");
             Console.WriteLine("PASS: versioned self-delete/self-replace rollback preflight, no partial file or journal changes, and preserved-launcher recovery");

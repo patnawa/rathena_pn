@@ -27,6 +27,10 @@ class Engine : IDisposable {
     readonly Action<string,int> progress;
     readonly string currentExecutable;
     internal readonly VerifiedFileCache verifiedFiles=new VerifiedFileCache();
+    public CancellationToken Cancellation { get; set; }
+    public Action<long,long,double> TransferProgress { get; set; }
+    long transferred,totalDownload;
+    Stopwatch transferClock;
     public void Dispose(){verifiedFiles.Dispose();}
     static string PublicKey { get { using(var s=typeof(Engine).Assembly.GetManifestResourceStream("trusted-public-key.xml"))using(var r=new StreamReader(s))return r.ReadToEnd(); } }
     public Engine(string root,Action<string,int> report) : this(root,report,typeof(Engine).Assembly.Location) {}
@@ -122,19 +126,24 @@ class Engine : IDisposable {
         }else ClearDirectory(recovery);
         ClearDirectory(Path.Combine(Work,"stage"));File.Delete(Path.Combine(Work,"transaction.json"));
     }
-    internal void Download(Entry f,string stage) {
+    internal void Download(Entry f,string stage) {Download(f,stage,Feed+"objects/"+f.sha256);}
+    // Explicit address overload is used by loopback transfer tests only.
+    internal void Download(Entry f,string stage,string url) {
+        Cancellation.ThrowIfCancellationRequested();
         string path=SafePath(stage,f.path);Directory.CreateDirectory(Path.GetDirectoryName(path));
-        using(var response=(HttpWebResponse)Request(Feed+"objects/"+f.sha256).GetResponse()) {
+        using(var response=(HttpWebResponse)Request(url).GetResponse()) {
             if(response.StatusCode!=HttpStatusCode.OK||response.ContentLength!=f.bytes)throw new IOException("Download length is wrong: "+f.path);
             using(var input=response.GetResponseStream())using(var output=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.None)){
                 byte[] buffer=new byte[1024*1024];long total=0;int n;
-                while((n=input.Read(buffer,0,buffer.Length))>0){total+=n;if(total>f.bytes)throw new IOException("Download exceeds expected size.");output.Write(buffer,0,n);if(f.bytes>100000000)progress("Downloading "+f.path+"  "+(total/1048576)+" / "+(f.bytes/1048576)+" MB",-1);}
+                while((n=input.Read(buffer,0,buffer.Length))>0){Cancellation.ThrowIfCancellationRequested();total+=n;if(total>f.bytes)throw new IOException("Download exceeds expected size.");output.Write(buffer,0,n);transferred+=n;
+                    if(TransferProgress!=null)TransferProgress(transferred,totalDownload,transferred/Math.Max(0.001,transferClock==null?0.001:transferClock.Elapsed.TotalSeconds));}
                 output.Flush(true);if(total!=f.bytes)throw new IOException("Incomplete download: "+f.path);
             }
         }
         if(Hash(path)!=f.sha256)throw new IOException("Downloaded file failed verification: "+f.path);
     }
     public string Update(bool fullVerification=false) {
+        Cancellation.ThrowIfCancellationRequested();
         if(fullVerification)verifiedFiles.Clear();
         CheckStopped();Recover();progress("Checking signed release...",0);
         string wrapper=Text(Feed+"release.json");Manifest manifest=Verify(wrapper);
@@ -142,16 +151,23 @@ class Engine : IDisposable {
         if(manifest.sequence<highest)throw new IOException("An older release was rejected. Use Rollback for the saved local version.");
         var changes=new List<Entry>();int checkedCount=0;
         foreach(var f in manifest.files){string path=SafePath(Root,f.path);bool exists=File.Exists(path);
+            Cancellation.ThrowIfCancellationRequested();
+            if(f.bytes>=8L*1024*1024)progress("Verifying "+f.path,checkedCount*45/manifest.files.Length);
             if(!(f.preserve&&exists) && !(exists&&new FileInfo(path).Length==f.bytes&&verifiedFiles.Hash(path)==f.sha256))changes.Add(f);
             checkedCount++;if(checkedCount%20==0)progress("Checking client files: "+checkedCount+" / "+manifest.files.Length,checkedCount*45/manifest.files.Length);
         }
+        Cancellation.ThrowIfCancellationRequested();
         if(changes.Count==0){Write(Path.Combine(Work,"installed.json"),wrapper);Write(highPath,Math.Max(highest,manifest.sequence).ToString());return manifest.release+" is verified and up to date.";}
         long bytes=changes.Sum(f=>f.bytes);var disk=new DriveInfo(Path.GetPathRoot(Root));
+        transferred=0;totalDownload=bytes;transferClock=Stopwatch.StartNew();
         if(disk.AvailableFreeSpace<bytes+256L*1024*1024)throw new IOException("Not enough free disk space for this update.");
         string stage=Path.Combine(Work,"stage"),previous=Path.Combine(Work,"recovery"),journal=Path.Combine(Work,"transaction.json");
         ClearDirectory(stage);Directory.CreateDirectory(stage);int count=0;
-        foreach(var f in changes){progress("Downloading "+f.path,45+count*45/changes.Count);Download(f,stage);count++;}
-        CheckStopped();verifiedFiles.Clear();NoLinks(journal);if(File.Exists(journal))File.Delete(journal);
+        try{
+            foreach(var f in changes){progress("Downloading "+f.path,45+count*45/changes.Count);Download(f,stage);count++;}
+            Cancellation.ThrowIfCancellationRequested();
+        }catch(OperationCanceledException){ClearDirectory(stage);throw;}
+        CheckStopped();progress("Installing verified files...",90);verifiedFiles.Clear();NoLinks(journal);if(File.Exists(journal))File.Delete(journal);
         ClearDirectory(previous);Directory.CreateDirectory(previous);
         string installed=Path.Combine(Work,"installed.json");NoLinks(installed);
         bool previousManifest=File.Exists(installed);bool newVersion=previousManifest && Verify(File.ReadAllText(installed)).sequence!=manifest.sequence;
@@ -177,50 +193,34 @@ class Engine : IDisposable {
     }
 }
 
-class MainForm:Form {
-    Label release=new Label(),status=new Label(),message=new Label();ProgressBar bar=new ProgressBar();
-    Button play=new Button(),update=new Button(),repair=new Button(),rollback=new Button(),web=new Button();Engine engine;bool busy;
-    public MainForm() {
-        Text="PN Ragnarok";ClientSize=new Size(660,430);MinimumSize=Size;MaximumSize=Size;StartPosition=FormStartPosition.CenterScreen;
-        BackColor=Color.FromArgb(18,25,35);ForeColor=Color.FromArgb(230,237,245);Font=new Font("Segoe UI",10);FormBorderStyle=FormBorderStyle.FixedSingle;MaximizeBox=false;
-        var eyebrow=new Label{Text="PN  /  PRIVATE LAN",Location=new Point(30,28),Size=new Size(570,25),ForeColor=Color.FromArgb(140,178,216)};
-        var title=new Label{Text="Ragnarok",Font=new Font("Segoe UI",28,FontStyle.Bold),Location=new Point(26,58),Size=new Size(580,60)};
-        release.Location=new Point(30,130);release.Size=new Size(600,25);status.Location=new Point(30,166);status.Size=new Size(600,25);status.Text="Server: checking 192.168.10.18...";
-        message.Location=new Point(30,290);message.Size=new Size(600,64);message.Text="Updates download only changed files. Repair verifies the full client. Your saved settings and screenshots are kept.";
-        bar.Location=new Point(30,365);bar.Size=new Size(600,8);bar.Maximum=100;
-        Button[] buttons={play,update,repair,rollback,web};string[] titles={"Play","Update","Repair","Rollback","Status page"};
-        for(int i=0;i<buttons.Length;i++){var b=buttons[i];b.Text=titles[i];b.Location=new Point(30+i*121,220);b.Size=new Size(114,42);b.FlatStyle=FlatStyle.Flat;b.FlatAppearance.BorderColor=Color.FromArgb(74,95,119);b.BackColor=i==0?Color.FromArgb(179,216,255):Color.FromArgb(30,43,60);b.ForeColor=i==0?Color.FromArgb(20,39,63):ForeColor;Controls.Add(b);}
-        Controls.AddRange(new Control[]{eyebrow,title,release,status,message,bar});
-        var turbo=new Button{Text="Turbo Setup",Location=new Point(30,390),Size=new Size(150,28),FlatStyle=FlatStyle.Flat,BackColor=Color.FromArgb(30,43,60)};
-        turbo.Click+=(s,e)=>{try{string path=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"PNTurboConfig.exe");Engine.NoLinks(path);if(!File.Exists(path))throw new IOException("Update the client first to install Turbo Setup.");Process.Start(new ProcessStartInfo(path){WorkingDirectory=AppDomain.CurrentDomain.BaseDirectory});}catch(Exception ex){MessageBox.Show(this,ex.Message,"Turbo Setup");}};Controls.Add(turbo);
-        engine=new Engine(AppDomain.CurrentDomain.BaseDirectory,Report);release.Text=engine.Installed();
-        play.Click+=(s,e)=>Run(()=>engine.Update(),true);update.Click+=(s,e)=>Run(()=>engine.Update(),false);repair.Click+=(s,e)=>Run(()=>engine.Update(true),false);
-        rollback.Click+=(s,e)=>Run(()=>engine.Rollback(),false);web.Click+=(s,e)=>Process.Start(Engine.Feed);
-        Shown+=(s,e)=>{Run(()=>{engine.Recover();return "Ready.";},false);RefreshStatus();};
-        var timer=new System.Windows.Forms.Timer{Interval=30000};timer.Tick+=(s,e)=>RefreshStatus();timer.Start();
-        FormClosed+=(s,e)=>engine.Dispose();
-        FormClosing+=(s,e)=>{if(busy){e.Cancel=true;message.Text="Please wait for the current update to finish.";}};
-    }
-    void RefreshStatus(){ThreadPool.QueueUserWorkItem(_=>{string text;bool online=false;try{var s=engine.Json.Deserialize<Dictionary<string,object>>(Engine.Text(Engine.Feed+"status.json"));online=s.ContainsKey("game_online")&&(bool)s["game_online"];text=online?"Server online  ·  192.168.10.18":"Server offline or starting  ·  192.168.10.18";}catch{text="Cannot reach LAN status  ·  192.168.10.18";}if(!IsDisposed&&IsHandleCreated)BeginInvoke((Action)(()=>{status.Text=text;status.ForeColor=online?Color.FromArgb(132,224,176):Color.FromArgb(255,192,140);}));});}
-    void Report(string text,int percent){if(!IsDisposed&&IsHandleCreated)BeginInvoke((Action)(()=>{message.Text=text;if(percent>=0)bar.Value=Math.Max(0,Math.Min(100,percent));}));}
-    void Run(Func<string> action,bool start){if(busy)return;busy=true;foreach(var b in new[]{play,update,repair,rollback})b.Enabled=false;
-        var worker=new BackgroundWorker();worker.DoWork+=(s,e)=>e.Result=action();worker.RunWorkerCompleted+=(s,e)=>{busy=false;foreach(var b in new[]{play,update,repair,rollback})b.Enabled=true;release.Text=engine.Installed();
-            if(e.Error!=null){message.Text=e.Error.Message;bar.Value=0;}else{message.Text=(string)e.Result;bar.Value=100;if(start){var p=new ProcessStartInfo(Path.Combine(engine.Root,"Ragexe.exe")){WorkingDirectory=engine.Root,UseShellExecute=true};Process.Start(p);}}
-        };worker.RunWorkerAsync();}
-}
 static class Program {
     [STAThread] static int Main(string[] args) {
-        try {using(var mutex=new Mutex(false,"Local\\PNLauncher-"+AppDomain.CurrentDomain.BaseDirectory.ToLowerInvariant().GetHashCode())){
+        try {Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
+          using(var mutex=new Mutex(false,"Local\\PNLauncher-"+AppDomain.CurrentDomain.BaseDirectory.ToLowerInvariant().GetHashCode())){
             if(!mutex.WaitOne(0,false))throw new IOException("PN Launcher is already running for this folder.");
-            if(args.Length>0){var e=new Engine(AppDomain.CurrentDomain.BaseDirectory,(m,p)=>Console.WriteLine(m));
+            if(args.Length>0){using(var e=new Engine(AppDomain.CurrentDomain.BaseDirectory,(m,p)=>Console.WriteLine(m))){
                 if(args[0]=="--verify-manifest"){Console.WriteLine(e.Verify(File.ReadAllText(args[1])).release);return 0;}
                 if(args[0]=="--update"){Console.WriteLine(e.Update());return 0;}
                 if(args[0]=="--rollback"){Console.WriteLine(e.Rollback());return 0;}
                 if(args[0]=="--self-test"){SelfTest.Run();return 0;}
-                if(args[0]=="--render-preview"){using(var form=new MainForm()){form.CreateControl();using(var bitmap=new Bitmap(form.ClientSize.Width,form.ClientSize.Height)){using(var g=Graphics.FromImage(bitmap))g.Clear(form.BackColor);foreach(Control c in form.Controls){IntPtr handle=c.Handle;c.DrawToBitmap(bitmap,c.Bounds);}bitmap.Save(args[1],System.Drawing.Imaging.ImageFormat.Png);}}return 0;}
+                if(args[0]=="--render-preview"){
+                    string root=args.Length>2?args[2]:AppDomain.CurrentDomain.BaseDirectory;
+                    using(var form=new MainForm(root,true)){
+                        form.ShowInTaskbar=false;form.StartPosition=FormStartPosition.Manual;form.Location=new Point(-32000,-32000);
+                        form.Show();Application.DoEvents();
+                        form.PreviewState(args.Length>3?args[3]:"ready");
+                        if(args.Length>4){float scale=Single.Parse(args[4],System.Globalization.CultureInfo.InvariantCulture);if(scale<1||scale>2)throw new ArgumentException("Preview scale must be between 1 and 2.");form.ScalePreview(scale);}
+                        IntPtr handle=form.Handle;form.PerformLayout();
+                        using(var bitmap=new Bitmap(form.Width,form.Height)){
+                            form.DrawToBitmap(bitmap,new Rectangle(Point.Empty,form.Size));
+                            Point offset=form.PointToScreen(Point.Empty);offset.Offset(-form.Left,-form.Top);
+                            using(var client=bitmap.Clone(new Rectangle(offset,form.ClientSize),System.Drawing.Imaging.PixelFormat.Format32bppArgb))client.Save(args[1],System.Drawing.Imaging.ImageFormat.Png);
+                        }
+                    }return 0;
+                }
                 throw new ArgumentException("Unknown command.");
-            }
-            Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);Application.Run(new MainForm());return 0;
+            }}
+            Application.Run(new MainForm());return 0;
         }}catch(Exception e){if(args.Length>0)Console.Error.WriteLine(e.Message);else MessageBox.Show(e.Message,"PN Launcher");return 1;}
     }
 }

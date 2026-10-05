@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs><linearGradient id="bg" x2=".7" y2="1"><stop stop-color="#263e51"/><stop offset="1" stop-color="#0d1725"/></linearGradient><linearGradient id="gold" x2=".3" y2="1"><stop stop-color="#ffe6b2"/><stop offset="1" stop-color="#c58e42"/></linearGradient></defs>
+  <rect x="7" y="7" width="242" height="242" rx="54" fill="url(#bg)"/>
+  <rect x="19" y="19" width="218" height="218" rx="43" fill="none" stroke="#e7c17e" stroke-opacity=".65" stroke-width="3"/>
+  <path d="M128 39 202 66V128C202 167 168 196 128 219 88 196 54 167 54 128V66Z" fill="#132b3a" stroke="url(#gold)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M128 56 184 77V127C184 156 161 180 128 201 95 180 72 156 72 127V77Z" fill="none" stroke="#385160" stroke-width="3"/>
+  <path d="M128 60 145 89 135 148H121L111 89Z" fill="#e4eef0"/>
+  <path d="M128 60 145 89 135 148H128Z" fill="#9bb5c5"/>
+  <path d="M89 143 104 138 116 147H140L152 138 167 143 164 158 146 156H110L92 158Z" fill="url(#gold)"/>
+  <path d="M121 156H135V185H121Z" fill="#d6a35a"/>
+  <path d="M128 180 139 191 128 202 117 191Z" fill="url(#gold)"/>
+</svg>

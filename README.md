@@ -4,13 +4,17 @@
 
 A customized [rAthena](https://github.com/rathena/rathena) server with fourth-job and Druid integration, expanded equipment services, and coordinated Windows client updates. This repository contains server source, custom content, client companion sources, and validation tools.
 
-**[Client releases](https://github.com/patnawa/rathena_pn/releases)** · [Latest server release](doc/shop_purchase_recovery_deployment_20260929.md) · [Native HUD fix](doc/native_zeny_hud_followup_20260928.md) · [Player services](#player-services) · [Server setup](#server-setup) · [Documentation](#documentation)
+**[Download Midgard client](https://github.com/patnawa/rathena_pn/releases/tag/client-2026-10-05-midgard)** · [Launcher & settings](client-patch/launcher/README.md) · [Latest server release](doc/shop_purchase_recovery_deployment_20260929.md) · [Player services](#player-services) · [Server setup](#server-setup) · [Documentation](#documentation)
+
+![PN Ragnarok Midgard launcher with fantasy artwork, Play, updates and quick settings.](doc/images/midgard-launcher-20261005.png)
+
+*Native dashboard preview; the online state is illustrative. Live availability is checked inside the launcher.*
 
 | Client and server | Current state |
 | --- | --- |
 | Live server release | **29 September 2026 — durable market, barter and sale purchase recovery** |
-| Live client update | **28 September 2026 — full native Zeny display and PN branding** |
-| Signed updater release | `client-20260928-native-zeny`, sequence `2026092803` |
+| Client download | **5 October 2026 — Midgard launcher, refined icons and OpenSetup integration** |
+| Signed updater release | `client-20261003-chapter1-quests-clock`, sequence `2026092906` |
 | Game rules | Customized Renewal with fourth jobs and Druid → Karnos → Alitea |
 | Client/server packets | `20260219` |
 | Wallet and account bank | Each supports **9,223,372,036,854,775,807 Zeny** |
@@ -31,9 +35,23 @@ See the [implementation and scope](doc/shop_purchase_recovery_20260929.md), [dat
 
 ## Play
 
-For the installed PN client, close the game and run **`Launch PN.cmd`**. The launcher receives the signed update from the PN LAN feed. Restart the game after updating. This client update is published to the LAN updater; it is not a newly uploaded full GitHub client archive.
+Get the [5 October Midgard release](https://github.com/patnawa/rathena_pn/releases/tag/client-2026-10-05-midgard). For a fresh installation, download **all three `PN-Client-20261005-Midgard.7z` volumes**, put them in one folder and extract `.001` once with [7-Zip](https://www.7-zip.org/). Open `PN-Client` and run **`Install PN Launcher.cmd`** to create local shortcuts and install the official settings tool. Then open **`PN Launcher.lnk`** or **`Launch PN Dashboard.cmd`**, check for updates and Play. The full client contains 5,666 files; allow at least 12 GiB for downloads and extraction. See the [installation and verification guide](doc/releases/client-2026-10-05-midgard.md).
 
-Full client archives are distributed through [GitHub Releases](https://github.com/patnawa/rathena_pn/releases), separately from source and updater deltas. When using an older archive, follow its installation notes and obtain the matching current PN launcher and update before connecting. Historical Bank v2.2/v2.3 packages do not provide the current wide-wallet system.
+For an existing PN client, extract **`PN-Launcher-20261005.zip`** into its folder, close the game and launcher, then run **`PN-Launcher-20261005/Install Launcher.cmd`**. This installs the dashboard, icons and settings integration. Signed game files are updated separately through the dashboard. The original `Launch PN.cmd` still selects the previous signed launcher; use the new shortcut for the Midgard interface.
+
+Open **Settings → Open game settings** for resolution, window mode, graphics, music and effects. The installer fetches [OpenSetup 3.5.0.692, Lua edition](https://nn.ai4rei.net/dev/opensetup/#download) directly from its author and verifies the pinned archive. Internet access is needed for this step; offline archive and dashboard-only installation options are documented. Personal game settings remain intact, and the original Setup is available separately. Settings also offers Turbo controls, settings backups and launcher preferences.
+
+![PN launcher Settings with display and sound, Turbo, backups and launcher preferences.](doc/images/midgard-settings-20261005.png)
+
+| PN Launcher | Ragnarok game shortcut |
+| --- | --- |
+| ![Gold PN crest with Valkyrie ornaments.](client-patch/launcher/assets/midgard/pn-launcher-256.png) | ![Ivory Valkyrie wings surrounding the Ragnarok R crest.](client-patch/launcher/assets/midgard/ragexe-256.png) |
+
+The matching [LAN status page](http://192.168.10.18:8082/) shows login, character, world and game web availability, client download details and maintenance health. A backup warning is displayed independently of whether the game is online.
+
+![Responsive PN Ragnarok LAN status page.](doc/images/midgard-status-20261005.png)
+
+Full client archives are distributed through [GitHub Releases](https://github.com/patnawa/rathena_pn/releases), separately from source and updater deltas. The Midgard archive uses the existing signed 3 October game baseline plus dashboard additions; packaging does not change the signed feed or server binaries. Historical Bank v2.2/v2.3 packages do not provide the current wide-wallet system.
 
 You need access to the PN LAN to log in and use its update feed. Keep the supplied `DATA.INI` order and companion/font DLLs together. The updater verifies signed file hashes and retains replaced files for rollback. Do not restore old financial binaries against a database that has received wide-wallet activity.
 
