@@ -166,6 +166,11 @@ are retained. Recovery never automatically restores a stale database backup.
 
 ## Remaining limits
 
+The October 5 [maintenance follow-up](maintenance_completion_20261005.md)
+records the published full Midgard client, additional verified cleanup and
+the repaired database backup startup/retry behavior. Production currently has
+approximately 231.6 GiB free. The disk figures below describe earlier receipts.
+
 The host filesystem had approximately 2.1 GiB free before the incremental
 follow-up build and about 0.97 GiB after retaining its build and rollback files.
 Four inactive build roots were subsequently archived off-host and removed,

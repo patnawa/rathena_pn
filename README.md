@@ -12,7 +12,7 @@ A customized [rAthena](https://github.com/rathena/rathena) server with fourth-jo
 
 | Client and server | Current state |
 | --- | --- |
-| Live server release | **29 September 2026 — durable market, barter and sale purchase recovery** |
+| Live server release | **5 October 2026 — planner holdings/dialog and login roster recovery** |
 | Client download | **5 October 2026 — Midgard launcher, refined icons and OpenSetup integration** |
 | Signed updater release | `client-20261003-chapter1-quests-clock`, sequence `2026092906` |
 | Game rules | Customized Renewal with fourth jobs and Druid → Karnos → Alitea |
@@ -23,13 +23,32 @@ A customized [rAthena](https://github.com/rathena/rathena) server with fourth-jo
 
 ## Latest server release
 
+**Deployed 5 October 2026.** The Equipment Planner counts character storage
+and account storage using their correct owners, clears old dialog pages and
+preserves recipe context. Login roster decoding and offline cleanup now avoid
+phantom online accounts. All seven production containers are healthy. See the
+[implementation, validation and deployment record](doc/planner_login_followup_20261005.md).
+
+The backup service now waits for database readiness after a reboot and retries
+failed runs. A fresh backup restored successfully in an isolated database;
+all **149 tables** checked and the restored SQL hash matched the original.
+The live status page reports maintenance and backup health separately from
+game availability. [Maintenance and cleanup record](doc/maintenance_completion_20261005.md).
+
+### Shop purchase recovery
+
 ![PN Ragnarok shop recovery: plan the cart, commit stock and player assets with a receipt, then confirm delivery.](doc/images/shop-recovery-20260929.svg)
 
 **Deployed 29 September 2026 at 19:23 Bangkok.** Market carts with limited stock, limited-stock barter carts and cash-sale carts now save inventory, payment, stock and a purchase receipt together. Failed database writes leave the purchase pending for recovery; repeated replies cannot charge or grant twice. An exhausted sale stays at zero stock.
 
 Deployment verification recorded **seven healthy services** and **41 unchanged existing financial/storage groups**. These are dated verification results, not a live status feed. This server release does not require a new client update.
 
-The new stock-backed path rejects pet outputs and pet payment materials before charging. Durable pet delivery is the next repair; ordinary unlimited and script-controlled shops retain their existing paths. Earlier card-removal, enchanting and client audit candidates are not part of this live release.
+The September 29 stock-backed path rejected pet outputs and pet payment
+materials before charging. Later October improvements added durable pet
+delivery and purchase history; see the
+[October improvement release](doc/improvements_20261002.md) for its scope and
+acceptance limits. Ordinary unlimited and script-controlled shops retain their
+existing paths.
 
 See the [implementation and scope](doc/shop_purchase_recovery_20260929.md), [database recovery tests](doc/shop_recovery_sql_test_20260929.md), and [live deployment, backup and rollback receipt](doc/shop_purchase_recovery_deployment_20260929.md).
 

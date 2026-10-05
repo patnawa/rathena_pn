@@ -37,6 +37,26 @@ def db_command(container, program, args):
             'db-backup', program, '-uroot', *args]
 
 
+def wait_database(container, timeout=120):
+    """Docker may be ready before the database can authenticate after a boot."""
+    deadline = time.monotonic() + timeout
+    while (remaining := deadline - time.monotonic()) > 0:
+        try:
+            result = subprocess.run(db_command(container, 'mariadb', [
+                '--connect-timeout=5', '-N', '-e', 'SELECT 1']),
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=min(10, remaining))
+            if result.returncode == 0:
+                return
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            break
+        time.sleep(min(2, remaining))
+    raise RuntimeError('Database did not become ready; no backup was attempted')
+
+
 def dump(container, database, target):
     # A single transaction does not cover MyISAM. Lock all tables for the dump.
     command = db_command(container, 'mariadb-dump', [
@@ -133,18 +153,24 @@ def main():
         partial = target.with_suffix(target.suffix + '.partial')
         report = {'created_utc': stamp, 'database': args.database,
                   'consistency': 'lock-all-tables', 'restore': {'performed': False}}
+        stage = 'database-readiness'
         try:
+            wait_database(args.container)
+            stage = 'dump'
             report['sql_sha256'] = dump(args.container, args.database, partial)
             partial.rename(target)
             report['archive_sha256'] = hashlib.sha256(target.read_bytes()).hexdigest()
             report['archive_bytes'] = target.stat().st_size
             if args.check_restore:
+                stage = 'restore-verification'
                 image = run(['docker', 'inspect', '--format', '{{.Image}}', args.container], text=True).strip()
                 report['restore'] = restore_check(target, args.database, image, report['sql_sha256'])
             report['passed'] = True
-        except BaseException:
+        except BaseException as error:
             partial.unlink(missing_ok=True)
             report['passed'] = False
+            report['failure_stage'] = stage
+            report['error_type'] = type(error).__name__
             raise
         finally:
             target.with_suffix('.json').write_text(json.dumps(report, indent=2) + '\n')

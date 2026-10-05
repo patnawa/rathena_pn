@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "release_id": 403441747,
+  "assets": [
+    {
+      "name": "INSTALL.txt",
+      "size": 2949,
+      "digest": "sha256:d55b27faffbb482faa8a0d452d23e0ece2b67f17822d364fbb915858f990ebba",
+      "state": "uploaded"
+    },
+    {
+      "name": "PN-Client-20261005-Midgard.7z.001",
+      "size": 1887436800,
+      "digest": "sha256:9317cc2f6a6b9d7658f44d9ca4c0cde49ba4ed5235d09308fe5e413b6afa4c62",
+      "state": "uploaded"
+    },
+    {
+      "name": "PN-Client-20261005-Midgard.7z.002",
+      "size": 1887436800,
+      "digest": "sha256:64abbc62dfa674dca75f1ad35e6df8f3072f09bd1932d6a936c11b9b359e4e30",
+      "state": "uploaded"
+    },
+    {
+      "name": "PN-Client-20261005-Midgard.7z.003",
+      "size": 1595180520,
+      "digest": "sha256:aeaaec8d036bb8381fda4842a5db945b761abe5014310434ef50cf84a36c8623",
+      "state": "uploaded"
+    },
+    {
+      "name": "pn-download-manifest.json",
+      "size": 1052894,
+      "digest": "sha256:203e4ef7d2cee10da3f0af5b1a618929192f62fcc32beb40a0e6d6b37dfafcda",
+      "state": "uploaded"
+    },
+    {
+      "name": "PN-Launcher-20261005.zip",
+      "size": 1645324,
+      "digest": "sha256:7b2af8e6e8f37e998a6f733b9af7e7fe65459f237f18c69901d0a1ce67293e86",
+      "state": "uploaded"
+    },
+    {
+      "name": "PNLauncher.exe",
+      "size": 1266688,
+      "digest": "sha256:86a9d97b0b31bc1dc2fcca5c5d0323c7934524f525d81880f4e7ebb59c8b5a0b",
+      "state": "uploaded"
+    },
+    {
+      "name": "SHA256SUMS.txt",
+      "size": 740,
+      "digest": "sha256:afd5daca40570fc2d3c49208cfbe75109bffa3a2771c25ba2cfc875e485df7b2",
+      "state": "uploaded"
+    },
+    {
+      "name": "signed-client-feed.json",
+      "size": 1238717,
+      "digest": "sha256:ae72d5a98c921159b1302fac8077cdb16da67dd9d09f74c1f8e21b8c8f4e3fd0",
+      "state": "uploaded"
+    }
+  ],
+  "url": "https://github.com/patnawa/rathena_pn/releases/tag/client-2026-10-05-midgard",
+  "source_commit": "9de9e396eb999a09e4b3911375ee53d6870b9d90",
+  "full_client_extracted_files": 5666,
+  "full_client_extracted_bytes": 5369994499,
+  "all_extracted_hashes_verified": true,
+  "public_launcher_zip_download_verified": true,
+  "offline_installer_verified": true
+}
