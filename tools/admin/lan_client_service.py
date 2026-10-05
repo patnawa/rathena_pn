@@ -53,7 +53,9 @@ def status(root):
     if not isinstance(disk,dict):disk={}
     if not isinstance(backup,dict):backup={}
     free=disk.get('free_gib')
-    if not fresh or type(free) not in (int,float) or not math.isfinite(free) or free<0:free=None
+    try:valid_free=type(free) in (int,float) and math.isfinite(free) and free>=0
+    except OverflowError:valid_free=False
+    if not fresh or not valid_free:free=None
     return {'checked_utc':now.isoformat(),'game_online':all(services[n] for n in ('Login','Character','Map')),
             'services':services,'health_fresh':fresh,'health_passed':fresh and health.get('passed') is True,
             'health_checked_utc':health_stamp,'free_gib':free,

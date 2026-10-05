@@ -33,6 +33,12 @@ class StatusTests(unittest.TestCase):
     def test_malformed_reports_and_disk(self):
         for value in ([],None,{'checked_utc':'bad','checks':[]},{'checked_utc':datetime.now(timezone.utc).isoformat(),'checks':{'disk':{'free_gib':float('nan')},'backup':[]}}):
             (self.root/'health.json').write_text(json.dumps(value));self.assertIsNone(self.status()['free_gib'])
+    def test_unrepresentable_disk_size_is_hidden(self):
+        self.health(checks={'disk':{'free_gib':10**400},'backup':{'passed':True}})
+        value=self.status()
+        self.assertIsNone(value['free_gib'])
+        self.assertTrue(value['game_online'])
+        self.assertTrue(value['backup_passed'])
     def test_release_metadata_is_allowlisted(self):
         payload={'release':'client-20261005-test','files':[{'path':'private/path','bytes':123,'sha256':'secret'}],'private':'secret'}
         (self.root/'release.json').write_text(json.dumps({'payload':base64.b64encode(json.dumps(payload).encode()).decode(),'signature':'not displayed'}))

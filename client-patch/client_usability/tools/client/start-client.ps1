@@ -84,8 +84,12 @@ try {
             $null = Require-ClientFile $import
         }
         $imports = [regex]::Match($loader, '(?s)ImportFiles\s*=\s*\{(.*?)\}')
-        foreach ($match in [regex]::Matches($imports.Groups[1].Value, '(?m)^\s*["'']([^"'']+)["'']')) {
-            $null = Require-ClientFile ('SystemEN/' + $match.Groups[1].Value)
+        # Scan every literal, including multiple entries on one line. Consume
+        # Lua comments separately so quoted examples are not treated as files.
+        foreach ($match in [regex]::Matches($imports.Groups[1].Value, '(?s)--\[(=*)\[.*?\]\1\]|--[^\r\n]*|["''](?<name>[^"'']+)["'']')) {
+            if ($match.Groups['name'].Success) {
+                $null = Require-ClientFile ('SystemEN/' + $match.Groups['name'].Value)
+            }
         }
     }
     if (Test-Path -LiteralPath (Join-Path $gameRoot 'FontScale.ini')) {

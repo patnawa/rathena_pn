@@ -39,6 +39,10 @@ class ClientPreflightTests(unittest.TestCase):
     def test_setup_executable_does_not_replace_game(self):
         self.assertTrue(self.check('[Data]\n0=data.grf\n', executable='Setup.exe'))
 
+    def test_oversized_archive_priority_reports_issue(self):
+        issues = self.check('[Data]\n' + '9' * 5000 + '=data.grf\n')
+        self.assertTrue(any('priority' in issue.lower() for issue in issues))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -37,13 +37,18 @@ def inspect(root, expected_packetver, hash_archives=False):
             if not re.fullmatch(r'[0-9]+', key):
                 issues.append('Invalid archive priority: ' + key)
                 continue
-            entries.append((key, name))
-        entries.sort(key=lambda row: int(row[0]))
+            try:
+                priority = int(key.lstrip('0') or '0')
+            except ValueError:
+                issues.append('Invalid archive priority: ' + key)
+                continue
+            entries.append((priority, name))
+        entries.sort(key=lambda row: row[0])
         if not entries:
             issues.append('DATA.INI has no archives in its [Data] section')
-        if len(entries) > 10 or any(int(key) > 9 for key, _ in entries):
+        if len(entries) > 10 or any(key > 9 for key, _ in entries):
             issues.append('Client archive limit exceeded: DATA.INI supports only slots 0 through 9')
-        if [int(k) for k, _ in entries] != list(range(len(entries))):
+        if [k for k, _ in entries] != list(range(len(entries))):
             issues.append('GRF priorities must be contiguous from zero')
         seen = set()
         for priority, name in entries:
@@ -54,7 +59,7 @@ def inspect(root, expected_packetver, hash_archives=False):
             if not path.is_relative_to(root):
                 issues.append('Archive escapes client directory: ' + name)
                 continue
-            record = {'priority': int(priority), 'file': name}
+            record = {'priority': priority, 'file': name}
             if name.lower() in seen:
                 issues.append('Duplicate archive: ' + name)
             seen.add(name.lower())

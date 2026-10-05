@@ -42,6 +42,34 @@ static class SelfTest {
             t.phase="complete";t.keepRollback=true;e.Write(Path.Combine(work,"transaction.json"),e.Json.Serialize(t));e.Recover();
             Assert(File.ReadAllText(Path.Combine(work,"previous","existing.txt"))=="new prior version","completed update promotes rollback");
             bool rejected=false;try{e.Verify("{\"payload\":\"e30=\",\"signature\":\"AAAA\"}");}catch{rejected=true;}Assert(rejected,"unsigned/forged manifest rejected");
+            // A refusal must be detected before rolling back any other file.
+            foreach(bool missingManifest in new[]{false,true}) {
+                string refusedRoot=Path.Combine(root,"refused-"+missingManifest);
+                using(var refused=new Engine(refusedRoot,(m,p)=>{})) {
+                    string previous=Path.Combine(refused.Work,"previous");Directory.CreateDirectory(previous);
+                    string existing=Path.Combine(refusedRoot,"existing.txt"),added=Path.Combine(refusedRoot,"added.txt");
+                    File.WriteAllText(existing,"current");File.WriteAllText(added,"user changed");
+                    File.WriteAllText(Path.Combine(previous,"existing.txt"),"previous");
+                    File.WriteAllText(Path.Combine(refused.Work,"installed.json"),"current manifest");
+                    var pending=new Transaction{phase="complete",backupFolder="previous",previousManifest=missingManifest,changes=new[]{
+                        new Change{path="added.txt",existed=false,sha256=new string('0',64)},
+                        new Change{path="existing.txt",existed=true,sha256=Engine.Hash(existing)}}};
+                    if(missingManifest)pending.changes=pending.changes.Skip(1).ToArray();
+                    string rollback=Path.Combine(refused.Work,"rollback.json");refused.Write(rollback,refused.Json.Serialize(pending));
+                    string originalRollback=File.ReadAllText(rollback);
+                    rejected=false;try{refused.Rollback();}catch(IOException){rejected=true;}
+                    Assert(rejected,"invalid rollback prerequisites refused");
+                    Assert(File.ReadAllText(existing)=="current"&&File.ReadAllText(Path.Combine(previous,"existing.txt"))=="previous", "rollback refusal preserves all installed files and backups");
+                    Assert(!File.Exists(Path.Combine(refused.Work,"transaction.json")),"rollback refusal creates no recovery journal");
+                    Assert(File.ReadAllText(added)=="user changed"&&File.ReadAllText(Path.Combine(refused.Work,"installed.json"))=="current manifest"&&File.ReadAllText(rollback)==originalRollback,"rollback refusal preserves user changes and metadata");
+                    pending.phase="applying";string journal=Path.Combine(refused.Work,"transaction.json");refused.Write(journal,refused.Json.Serialize(pending));
+                    string originalJournal=File.ReadAllText(journal);
+                    rejected=false;try{refused.Recover();}catch(IOException){rejected=true;}
+                    Assert(rejected&&File.ReadAllText(existing)=="current"&&File.ReadAllText(Path.Combine(previous,"existing.txt"))=="previous", "recovery refusal preserves all installed files and backups");
+                    Assert(File.ReadAllText(journal)==originalJournal&&File.ReadAllText(Path.Combine(refused.Work,"installed.json"))=="current manifest","recovery refusal preserves journal and installed metadata");
+                }
+            }
+            Console.WriteLine("PASS: changed-file and missing-manifest rollback/recovery refusals preserve files, backups, journals and installed metadata");
             // Reverse rollback order would restore data.txt before deleting or
             // replacing the running versioned updater. Refuse the whole set.
             string rollbackRoot=Path.Combine(root,"rollback-test");Directory.CreateDirectory(rollbackRoot);

@@ -107,6 +107,9 @@ class Engine : IDisposable {
     internal void PreflightRecovery(Transaction t) {
         if(t==null||t.changes==null||!(t.phase=="applying"||t.phase=="complete")||!(t.backupFolder=="recovery"||t.backupFolder=="previous"))throw new IOException("Invalid update recovery journal.");
         if(t.phase=="complete")return;
+        string old=Path.Combine(Work,t.backupFolder+"-manifest.json");
+        NoLinks(old);NoLinks(Path.Combine(Work,"installed.json"));
+        if(t.previousManifest&&!File.Exists(old))throw new IOException("Previous manifest is missing.");
         // Check every target before restoring even the first file. Versioned
         // launchers may themselves be newly added files in the rollback set.
         foreach(var c in t.changes) {
@@ -115,6 +118,8 @@ class Engine : IDisposable {
             if(String.Equals(target,currentExecutable,StringComparison.OrdinalIgnoreCase) &&
                 (File.Exists(previous)||(!c.existed&&File.Exists(target))))
                 throw new IOException("This rollback would change the running launcher. Close this versioned launcher and run the preserved PNLauncher.exe to roll back.");
+            if(!File.Exists(previous)&&!c.existed&&File.Exists(target)&&Hash(target)!=c.sha256)
+                throw new IOException("A new file changed during recovery: "+c.path);
         }
     }
     internal void Finish(Transaction t) {
