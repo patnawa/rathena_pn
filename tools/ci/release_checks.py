@@ -87,7 +87,7 @@ FULL_TESTS = (
     'episode21_finale_flow_test.py', 'episode21_checkpoint_test.py',
     'mob_matk_range_test.py', 'immortal_instance_test.py',
     'instance_warper_test.py', 'airship_briefing_test.py',
-    'bioresearch_test.py', 'alice_test.py',
+    'bioresearch_test.py', 'alice_test.py', 'instance_reward_claim_test.py',
 )
 
 

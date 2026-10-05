@@ -21,6 +21,9 @@ RECIPES=[{'output': 28902, 'zeny': 5000000, 'materials': {'1001074': 1, '1001076
 
 def fixtures(build,pre_fix=False):
  source=SOURCE.read_text();rows=weekly_rewards_fixtures.functions(native.ROOT);digest=hashlib.sha256()
+ # Inventory is intentionally doubled in this encounter harness; the focused
+ # instance_reward_claim_test separately executes the real capacity helper.
+ rows.append(('PN_ClearRewardCapacity','{ return checkweight2(getarg(0),getarg(1)); }','function'))
  for name in ('F_AliceTravel','F_AliceMember','F_AliceCorridor','F_AliceLeadership'):
   m=re.search(r'function\s+script\s+'+name+r'\s*\{',source);b=m.end()-1;rows.append((name,source[b:scan_to(source,b,'{','}')+1],'function'))
  for name in re.findall(r'(?m)^\S+\tscript\t([^\t]+)\t',source):

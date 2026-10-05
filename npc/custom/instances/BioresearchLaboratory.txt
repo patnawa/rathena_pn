@@ -207,6 +207,8 @@ OnInit:
 1@gol2,50,49,4	script	Sierra#bio_reward	4_F_SCIENCE,{
 	if ('bio_zone != 9 || getcharid(1) != 'bio_party || !'bio_eligible[getcharid(0)]) end;
 	.@cid = getcharid(0);
+	// A synchronous callback must not open another dialogue over this grant.
+	if ('bio_claiming[.@cid]) end;
 	mes "[Sierra]";
 	if ('bio_claimed[.@cid]) { mes "You already received this record's reward."; close; }
 	if ('bio_mode == 1) {
@@ -216,9 +218,27 @@ OnInit:
 		setarray .@items[0],25786,25787,102571,'bio_weapon[.@cid];
 		setarray .@amounts[0],9,15,1,1;
 	}
-	if (!checkweight2(.@items,.@amounts)) { mes "Make room for all rewards, then speak with me again."; close; }
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) {
+		.@ledger$[.@i] = "'bio_reward_" + .@i + "[" + .@cid + "]";
+		.@remaining[.@i] = .@amounts[.@i] - getd(.@ledger$[.@i]);
+	}
+	if (!callfunc("PN_ClearRewardCapacity",.@items[0],.@remaining[0],getarraysize(.@items))) { mes "Make room for all remaining rewards, then speak with me again."; close; }
+	'bio_claiming[.@cid] = 1;
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) {
+		if (!.@remaining[.@i]) continue;
+		.@before = countitem(.@items[.@i]);
+		getitem .@items[.@i],.@remaining[.@i];
+		// Force a scalar: min(array reference,...) scans the remaining array.
+		.@delivered = max(0,min(.@remaining[.@i] + 0,countitem(.@items[.@i]) - .@before));
+		setd .@ledger$[.@i],getd(.@ledger$[.@i]) + .@delivered;
+		if (.@delivered != .@remaining[.@i]) {
+			'bio_claiming[.@cid] = 0;
+			mes "Delivery stopped. Your remaining rewards are still available from me during this instance. Free space and speak to me again.";
+			close;
+		}
+	}
+	'bio_claiming[.@cid] = 0;
 	'bio_claimed[.@cid] = 1;
-	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) getitem .@items[.@i],.@amounts[.@i];
 	callfunc "PN_RewardClearCredit",2;
 	.@quest = ('bio_mode == 1 ? 16399:16400);
 	if (isbegin_quest(.@quest) == 1) completequest .@quest;

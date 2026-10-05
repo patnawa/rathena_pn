@@ -563,17 +563,38 @@ OnTouch:
 
 1@alice_mad,354,320,4	script	Alice#mad_reward	4_ALICE,{
 	if (!'alice_complete || !'alice_eligible[getcharid(0)] || getcharid(1) != 'alice_party) end;
+	.@cid = getcharid(0);
+	// A synchronous callback must not open another dialogue over this grant.
+	if ('alice_claiming[.@cid]) end;
 	mes "[Alice]";
-	if ('alice_claimed[getcharid(0)]) { mes "You already received this memory's clear reward."; close; }
+	if ('alice_claimed[.@cid]) { mes "You already received this memory's clear reward."; close; }
 	setarray .@items[0],1001074;
 	setarray .@amounts[0],1;
 	if ('alice_mode == 2) {
 		.@items[1] = 1001082;
 		.@amounts[1] = 1 + 'alice_fast_clear;
 	}
-	if (!checkweight2(.@items,.@amounts)) { mes "Make room for the complete clear reward, then return."; close; }
-	'alice_claimed[getcharid(0)] = 1;
-	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) getitem .@items[.@i],.@amounts[.@i];
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) {
+		.@ledger$[.@i] = "'alice_reward_" + .@i + "[" + .@cid + "]";
+		.@remaining[.@i] = .@amounts[.@i] - getd(.@ledger$[.@i]);
+	}
+	if (!callfunc("PN_ClearRewardCapacity",.@items[0],.@remaining[0],getarraysize(.@items))) { mes "Make room for all remaining clear rewards, then return."; close; }
+	'alice_claiming[.@cid] = 1;
+	for (.@i = 0; .@i < getarraysize(.@items); ++.@i) {
+		if (!.@remaining[.@i]) continue;
+		.@before = countitem(.@items[.@i]);
+		getitem .@items[.@i],.@remaining[.@i];
+		// Force a scalar: min(array reference,...) scans the remaining array.
+		.@delivered = max(0,min(.@remaining[.@i] + 0,countitem(.@items[.@i]) - .@before));
+		setd .@ledger$[.@i],getd(.@ledger$[.@i]) + .@delivered;
+		if (.@delivered != .@remaining[.@i]) {
+			'alice_claiming[.@cid] = 0;
+			mes "Delivery stopped. Your remaining rewards are still available from me during this instance. Free space and speak to me again.";
+			close;
+		}
+	}
+	'alice_claiming[.@cid] = 0;
+	'alice_claimed[.@cid] = 1;
 	callfunc "PN_RewardClearCredit",1;
 	mes "Here is your Heavy Chain. Hard also grants one Monster's Stone, plus another for clearing within twenty minutes of reservation.";
 	close;

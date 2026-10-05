@@ -1,0 +1,69 @@
+// GPL-3.0-or-later. Exact capacity for Alice/Bioresearch clear rewards only.
+// Native regression pins all five stackable outputs and 39 weapon definitions:
+// no GUID/custom stack cap/autoequip. Weapons each require their own free row.
+function	script	PN_ClearRewardCapacity	{
+	.@count = getarg(2);
+	if (.@count < 0 || .@count > 4)
+		return false;
+	if (!.@count)
+		return true;
+	// Different local names avoid native copyarray's cross-scope self-copy test.
+	copyarray .@batch_ids[0],getarg(0),.@count;
+	copyarray .@batch_amounts[0],getarg(1),.@count;
+	setarray .@weapons[0],21051,21052,32023,32350,32024,32025,1333,16092,28138,32351,16093,16094,28765,28766,28042,28044,28767,28768,26158,2055,2056,28633,26159,26160,26161,2057,16095,1865,1866,16096,18185,18187,18186,18188,32107,32108,26212,26213,18184;
+	for (.@i = 0; .@i < .@count; ++.@i) {
+		.@id = .@batch_ids[.@i];
+		.@amount = .@batch_amounts[.@i];
+		if (.@amount < 0 || .@amount > 30000)
+			return false;
+		// A retry can contain outputs already delivered in an earlier attempt.
+		if (!.@amount)
+			continue;
+		.@weapon = inarray(.@weapons,.@id) >= 0;
+		if (!.@weapon && .@id != 1001074 && .@id != 1001082 && .@id != 25786 && .@id != 25787 && .@id != 102571)
+			return false;
+		.@j = inarray(.@ids,.@id);
+		if (.@j < 0) {
+			.@j = .@unique;
+			.@ids[.@unique] = .@id;
+			.@weapon_output[.@unique] = .@weapon;
+			++.@unique;
+		}
+		.@totals[.@j] += .@amount;
+		if (.@totals[.@j] > 30000 || (.@weapon && .@totals[.@j] != 1))
+			return false;
+	}
+	if (!.@unique)
+		return true;
+	for (.@i = 0; .@i < .@unique; ++.@i) {
+		.@unit_weight = getiteminfo(.@ids[.@i],ITEMINFO_WEIGHT);
+		if (.@unit_weight < 0)
+			return false;
+		.@weight += .@unit_weight * .@totals[.@i];
+	}
+	if (Weight + .@weight > MaxWeight)
+		return false;
+	.@slots = getinventoryslots();
+	if (.@slots < 1 || .@slots > MAX_INVENTORY)
+		return false;
+	getinventorylist;
+	// One ascending pass covers the complete batch within normal VM limits.
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		.@occupied += (@inventorylist_idx[.@i] < .@slots);
+		.@j = inarray(.@ids,@inventorylist_id[.@i]);
+		if (.@j < 0)
+			continue;
+		if (.@weapon_output[.@j] || .@matched[.@j])
+			continue;
+		if (@inventorylist_bound[.@i] != 0 || @inventorylist_expire[.@i] != 0 || @inventorylist_uniqueid$[.@i] != "0" || @inventorylist_card1[.@i] != 0 || @inventorylist_card2[.@i] != 0 || @inventorylist_card3[.@i] != 0 || @inventorylist_card4[.@i] != 0)
+			continue;
+		// The first compatible native stack is terminal, including overflow.
+		if (@inventorylist_idx[.@i] >= .@slots || @inventorylist_amount[.@i] + .@totals[.@j] > 30000)
+			return false;
+		.@matched[.@j] = true;
+	}
+	for (.@i = 0; .@i < .@unique; ++.@i)
+		if (.@weapon_output[.@i] || !.@matched[.@i])
+			++.@occupied;
+	return .@occupied <= .@slots;
+}
