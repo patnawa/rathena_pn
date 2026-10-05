@@ -116,7 +116,7 @@ def run(build,prepare_only=False):
         compiled.append(target)
     executable = build/'grademk_equipment_service_test'
     command = ['g++']+sanitizer+['-o',str(executable)]+[str(p) for p in compiled+objects+libraries]
-    command += ['-Wl,--wrap='+name for name in WRAPPERS]+['-lz','-ldl','-lmysqlclient','-lzstd','-lssl','-lcrypto','-lresolv','-lm']
+    command += ['-Wl,--wrap='+name for name in (*WRAPPERS,'_Z13mapreg_setregll','_Z14mapreg_readregl')]+['-lz','-ldl','-lmysqlclient','-lzstd','-lssl','-lcrypto','-lresolv','-lm']
     subprocess.run(command,cwd=ROOT,check=True)
     result = subprocess.run([str(executable),str(build/'body.script')],cwd=ROOT,capture_output=True,text=True,timeout=60)
     print(result.stdout,end='',flush=True)

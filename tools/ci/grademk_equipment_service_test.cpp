@@ -19,6 +19,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 #include <linux/filter.h>
 #include <linux/seccomp.h>
 #include <sys/prctl.h>
@@ -102,6 +103,17 @@ extern "C" char pay(map_session_data*,int32,e_log_pick_type,uint32) asm("__wrap_
 extern "C" char pay(map_session_data*,int32,e_log_pick_type,uint32) { ++payments; return 1; }
 extern "C" char del(map_session_data*,int32,int32,int32,int16,e_log_pick_type) asm("__wrap__Z10pc_delitemP16map_session_dataiiis15e_log_pick_type");
 extern "C" char del(map_session_data*,int32,int32,int32,int16,e_log_pick_type) { ++deletions; return 1; }
+// Explicit persistence boundary: only compiler-generated temporary switch variables.
+static std::map<int64,int64> compiler_switch;
+static void switch_name(int64 key) {
+    const std::string name=get_str(script_getvarid(key));
+    check(name.rfind("$@__SW",0)==0 && name.size()>=4 && name.substr(name.size()-4)=="_VAL",
+          "only parser-generated transient switch register persistence");
+}
+extern "C" bool grade_mapset(int64,int64) asm("__wrap__Z13mapreg_setregll");
+extern "C" bool grade_mapset(int64 key,int64 value) {switch_name(key);compiler_switch[key]=value;return true;}
+extern "C" int64 grade_mapread(int64) asm("__wrap__Z14mapreg_readregl");
+extern "C" int64 grade_mapread(int64 key) {switch_name(key);return compiler_switch[key];}
 extern "C" void error_message(const char*,...) asm("__wrap__Z9ShowErrorPKcz");
 extern "C" void error_message(const char* format,...) { ++errors; va_list args; va_start(args,format); std::vfprintf(stderr,format,args); va_end(args); }
 extern "C" int __wrap_main(int argc,char** argv) {
