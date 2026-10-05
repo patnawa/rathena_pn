@@ -27,6 +27,7 @@ def run(build,hd_source):
         (build/f'rate{i}.txt').write_text('{ .@part=EQI_HEAD_TOP; @answer='+expression+'; end; }')
     (build/'scales.txt').write_text(' '.join(x[1] for x in rates))
     (build/'shadow.txt').write_bytes((ROOT/'npc/re/merchants/shadow_refiner.txt').read_bytes())
+    (build/'master.txt').write_bytes((ROOT/'npc/custom/grademk_services.txt').read_bytes())
     prefix=(ROOT/'tools/ci/biosphere_crown_transaction_test.cpp').read_text().split('extern "C" int __wrap_main(',1)[0]
     driver=build/'refine_recipe_driver.cpp'
     driver.write_text(prefix+(ROOT/'tools/ci/refine_recipe_native_test.cpp').read_text())

@@ -41,6 +41,14 @@ grademk,38,181,4	script	Master Refiner#grademk	4_M_DWARF,{
 	case 3:
 		close;
 	}
+	mes "[Master Refiner]";
+	mes "Unequip the item and remove it from equipment switching before using the refine window.";
+	mes "^FF0000Level 5 weapons and level 2 armor can be destroyed beyond +10, even with HD ore.^000000";
+	mes "For weapons and armor targeting +8 through +14, select Blacksmith Blessing to prevent destruction and downgrades.";
+	mes "Blessings do not improve success chance and cannot protect attempts targeting +15 or higher.";
+	next;
+	if (select("Open refine window:Cancel") == 2)
+		close;
 	close2;
 	refineui();
 	end;

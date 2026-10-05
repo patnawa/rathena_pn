@@ -22827,7 +22827,7 @@ void clif_parse_refineui_refine( int32 fd, map_session_data* sd ){
 		return;
 	}
 
-	int16 blacksmith_index = -1;
+	std::vector<std::pair<int16, uint16>> blacksmith_stacks;
 	uint16 blacksmith_amount = 0;
 
 	// Check if the player has enough blacksmith blessings
@@ -22839,13 +22839,20 @@ void clif_parse_refineui_refine( int32 fd, map_session_data* sd ){
 			return;
 		}
 
-		// Check if the player has blacksmith blessings
-		if( ( blacksmith_index = pc_search_inventory( sd, ITEMID_BLACKSMITH_BLESSING ) ) < 0 ){
-			return;
+		// Bound and unbound blessings may occupy separate inventory stacks.
+		// Plan the full deduction before paying or consuming any materials.
+		uint16 remaining = blacksmith_amount;
+		for( int16 k = 0; k < MAX_INVENTORY && remaining > 0; k++ ){
+			const struct item& blessing = sd->inventory.u.items_inventory[k];
+			if( blessing.nameid != ITEMID_BLACKSMITH_BLESSING || blessing.amount <= 0 || sd->inventory_data[k] == nullptr ){
+				continue;
+			}
+			uint16 amount = std::min<uint16>( remaining, blessing.amount );
+			blacksmith_stacks.emplace_back( k, amount );
+			remaining -= amount;
 		}
-
-		// Check if the player has enough blacksmith blessings
-		if( sd->inventory.u.items_inventory[blacksmith_index].amount < blacksmith_amount ){
+		if( remaining > 0 ){
+			clif_displaymessage( sd->fd, "You do not have enough Blacksmith Blessings for this refinement." );
 			return;
 		}
 	}
@@ -22876,8 +22883,10 @@ void clif_parse_refineui_refine( int32 fd, map_session_data* sd ){
 	}
 
 	// Delete the required blacksmith blessings
-	if( blacksmith_amount > 0 && pc_delitem( sd, blacksmith_index, blacksmith_amount, 0, 0, LOG_TYPE_CONSUME ) ){
-		return;
+	for( const auto& stack : blacksmith_stacks ){
+		if( pc_delitem( sd, stack.first, stack.second, 0, 0, LOG_TYPE_CONSUME ) ){
+			return;
+		}
 	}
 
 	// Try to refine the item

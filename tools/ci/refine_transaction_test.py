@@ -59,6 +59,7 @@ prefix = r'''
 #include <algorithm>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 #include <iostream>
 using int32=int; using int16=short; using uint16=unsigned short; using t_itemid=unsigned;
 #define PACKETVER 20260219
@@ -110,6 +111,35 @@ map_session_data fresh() {
 }
 void unchanged(map_session_data& sd) { assert(sd.zeny==1000 && payments==0 && draws==0);assert(sd.inventory.u.items_inventory[0].refine==5);assert(sd.inventory.u.items_inventory[1].amount==10);assert(sd.inventory.u.items_inventory[2].amount==10); }
 int main(){
+ // Blessings can occupy separate stacks (for example bound and unbound).
+ // Their inventory order must not hide a sufficient later stack or total.
+ for(int first: {1,2,4}) {
+  auto sd=fresh();packet.blacksmithBlessing=1;info->blessing_amount=4;
+  sd.inventory.u.items_inventory[2].amount=first;
+  sd.inventory.u.items_inventory[3]={6635,5-first};sd.inventory_data[3]=&data;
+  clif_parse_refineui_refine(0,&sd);
+  assert(sd.zeny==900 && payments==1 && draws==1);
+  assert(sd.inventory.u.items_inventory[0].refine==6);
+  assert(sd.inventory.u.items_inventory[2].amount+sd.inventory.u.items_inventory[3].amount==1);
+ }
+ {auto sd=fresh();packet.blacksmithBlessing=1;info->blessing_amount=4;
+  sd.inventory.u.items_inventory[2].amount=1;
+  sd.inventory.u.items_inventory[3]={6635,2};sd.inventory_data[3]=&data;
+  clif_parse_refineui_refine(0,&sd);
+  assert(sd.zeny==1000 && payments==0 && draws==0);
+  assert(sd.inventory.u.items_inventory[0].refine==5);
+  assert(sd.inventory.u.items_inventory[1].amount==10);
+  assert(sd.inventory.u.items_inventory[2].amount==1 && sd.inventory.u.items_inventory[3].amount==2);
+ }
+ {auto sd=fresh();packet.blacksmithBlessing=1;info->blessing_amount=4;
+  info->costs[0]->chance=0;info->costs[0]->breaking_rate=10000;
+  sd.inventory.u.items_inventory[2].amount=2;
+  sd.inventory.u.items_inventory[3]={6635,2};sd.inventory_data[3]=&data;
+  clif_parse_refineui_refine(0,&sd);
+  assert(sd.zeny==900 && payments==1 && draws==1);
+  assert(sd.inventory.u.items_inventory[0].amount==1 && sd.inventory.u.items_inventory[0].refine==5);
+  assert(sd.inventory.u.items_inventory[2].amount==0 && sd.inventory.u.items_inventory[3].amount==0);
+ }
  // Exhaust every possible RNG result for endpoints and representative live rates.
  for(int chance: {0,1,100,500,1500,3500,5000,6000,9000,9999,10000}) {
   int successes=0;
@@ -126,7 +156,7 @@ int main(){
  {auto sd=fresh();info->costs[0]->chance=0;info->costs[0]->breaking_rate=10000;clif_parse_refineui_refine(0,&sd);assert(sd.inventory.u.items_inventory[0].amount==0);}
  {auto sd=fresh();info->costs[0]->chance=0;info->costs[0]->breaking_rate=10000;packet.blacksmithBlessing=1;clif_parse_refineui_refine(0,&sd);assert(sd.inventory.u.items_inventory[0].amount==1&&sd.inventory.u.items_inventory[0].refine==5&&sd.inventory.u.items_inventory[2].amount==9);}
  {auto sd=fresh();info->costs[0]->chance=0;info->costs[0]->downgrade_amount=3;clif_parse_refineui_refine(0,&sd);assert(sd.inventory.u.items_inventory[0].refine==2);}
- std::cout << "PASS: 110000 RNG outcomes, 13 pre-payment guards, funds/max-refine, break/protection/downgrade\n";
+ std::cout << "PASS: 110000 RNG outcomes, 13 pre-payment guards, funds/max-refine, break/protection/downgrade, 5 split-blessing cases\n";
 }
 '''
 with tempfile.TemporaryDirectory(prefix='pn-refine-test-') as temp:
