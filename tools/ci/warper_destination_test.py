@@ -2,6 +2,7 @@
 """Audit literal and generated Warper routes against map geometry and configuration."""
 from pathlib import Path
 import re, struct, zlib, json
+from episode_party_progression_test import scan_to
 root = Path(__file__).resolve().parents[2]
 s = (root / 'npc/custom/warper.txt').read_text()
 cells = {}
@@ -18,9 +19,15 @@ for rel in ('db/import/map_cache.dat', 'db/re/map_cache.dat', 'db/map_cache.dat'
         cells.setdefault(name, (w, h, zlib.decompress(data[pos:pos + size])))
         pos += size
 routes = []
-labels = list(re.finditer('(?m)^\\s*([A-Za-z_][\\w]*):', s))
+route_source = re.sub(r'//[^\n]*', '', s)
+# Main/Cancel labels precede local helpers. Helper bodies and documentation
+# are not destination blocks, even when they mention Pick or Go.
+while (match := re.search(r'function\s+\w+\s*\{', route_source)):
+    end = scan_to(route_source, match.end()-1, '{', '}')+1
+    route_source = route_source[:match.start()] + route_source[end:]
+labels = list(re.finditer('(?m)^\\s*([A-Za-z_][\\w]*):', route_source))
 for i, l in enumerate(labels):
-    block = s[l.end():labels[i + 1].start() if i + 1 < len(labels) else len(s)]
+    block = route_source[l.end():labels[i + 1].start() if i + 1 < len(labels) else len(route_source)]
     for m in re.finditer('Go\\("([^"]+)",\\s*(\\d+),\\s*(\\d+)\\)', block):
         routes.append((l[1], m[1], int(m[2]), int(m[3])))
     pick = re.search('Pick\\(([^;]+)\\)', block)
@@ -83,7 +90,7 @@ def maps(path):
 maps(root / 'conf/maps_athena.conf')
 for label, name, x, y in routes:
     if name not in loaded:
-        block = next((s[l.end():labels[i + 1].start() if i + 1 < len(labels) else len(s)] for i, l in enumerate(labels) if l[1] == label))
+        block = next((route_source[l.end():labels[i + 1].start() if i + 1 < len(labels) else len(route_source)] for i, l in enumerate(labels) if l[1] == label))
         assert 'Restrict("Pre-RE"' in block, ('unloaded destination', label, name)
 nav = set(((m, int(x), int(y)) for m, x, y in re.findall('naviregisterwarp\\("[^"\\n]*",\\s*"([^"\\n]+)",\\s*(\\d+),\\s*(\\d+)\\)', s)))
 missing_nav = [(label, name, x, y) for label, name, x, y in routes if (name, x, y) not in nav]
@@ -101,3 +108,18 @@ for menu in re.findall(r'\bmenu\s+(.*?);', s, re.S):
         assert ':' not in title, ('split menu title', title)
         assert label in {match[1] for match in labels}, ('missing menu label', label)
 print('PASS: all named access helpers and menu targets are loaded')
+
+# Coordinate-specific entrance checks must follow every instance route when
+# an NPC moves, or saved travel could silently lose the route's prerequisites.
+match = re.search(r'function ValidateEntrance\s*\{', s)
+entrances = s[match.end():scan_to(s, match.end()-1, '{', '}')]
+canonical = {}
+for match in re.finditer(r'if \(\.@map\$ == "([^"]+)"\) \{', entrances):
+    block = entrances[match.end():scan_to(entrances, match.end()-1, '{', '}')]
+    for x, y, route in re.findall(r'if \(\.@x == (\d+) && \.@y == (\d+)\) \{ // (I\d+)\b', block):
+        assert route not in canonical, ('duplicate canonical entrance', route)
+        canonical[route] = (match[1], int(x), int(y))
+instance_routes = {label:(name,x,y) for label,name,x,y in routes if re.fullmatch(r'I\d+',label)}
+assert canonical == instance_routes, 'Instance menu and saved-route validators differ'
+assert len(set(canonical.values())) == len(canonical), 'Ambiguous instance entrance'
+print('PASS: '+str(len(canonical))+' canonical instance entrances keep saved travel gated')
