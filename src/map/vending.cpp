@@ -24,6 +24,7 @@
 #include "path.hpp"
 #include "pc.hpp"
 #include "pc_groups.hpp"
+#include "storage.hpp" // compare_item: complete delivery identity
 
 static uint32 vending_nextid = 0; ///Vending_id counter
 static DBMap *vending_db; ///DB holder the vender : charid -> map_session_data
@@ -93,7 +94,7 @@ void vending_vendinglistreq(map_session_data* sd, int32 id)
 	}
 
 	sd->market.last_target = vsd->status.account_id;
-	if (!vsd->market.published || std::any_of(vsd->vending, vsd->vending + vsd->vend_num, [](const s_vending& item) {return item.value > MAX_ZENY;})) {
+	if (!vsd->market.published || vsd->vend_num < 1 || vsd->vend_num > MAX_VENDING || std::any_of(vsd->vending, vsd->vending + vsd->vend_num, [](const s_vending& item) {return item.value > MAX_ZENY;})) {
 		clif_displaymessage(sd->fd, "Open Market in the Wallet64 panel to view this shop.");
 		return;
 	}
@@ -130,7 +131,7 @@ int64 vending_calc_tax(map_session_data *sd, int64 zeny)
  */
 void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8* data, int32 count, bool market_request)
 {
-	int32 i, j, cursor, new_ = 0, blank, vend_list[MAX_VENDING];
+	int32 i, j, cursor, vend_list[MAX_VENDING];
 	int64 z, w;
 	struct s_vending vending[MAX_VENDING]; // against duplicate packets
 	map_session_data* vsd = map_id2sd(aid);
@@ -149,10 +150,13 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 
 	searchstore_clearremote(*sd);
 
-	if( count < 1 || count > MAX_VENDING || count > vsd->vend_num )
+	if( !data || vsd->vend_num < 1 || vsd->vend_num > MAX_VENDING || count < 1 || count > MAX_VENDING || count > vsd->vend_num )
 		return; // invalid amount of purchased items
 
-	blank = pc_inventoryblank(sd); //number of free cells in the buyer's inventory
+	if (sd->status.zeny < 0 || vsd->bank_vault < 0 || vsd->bank_vault > MAX_BANK_ZENY ||
+        vsd->cart_num <= 0 || vsd->cart_num > MAX_CART || vsd->cart_weight < 0) return;
+    // Packet fields may be unaligned (including the companion's byte buffer).
+    const auto word = [data](int offset) { uint16 value; memcpy(&value, data + offset, sizeof(value)); return value; };
 
 	// duplicate item in vending to check hacker with multiple packets
 	memcpy(&vending, &vsd->vending, sizeof(vsd->vending)); // copy vending list
@@ -161,8 +165,8 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 	z = 0; // zeny counter
 	w = 0;  // weight counter
 	for( i = 0; i < count; i++ ) {
-		int16 amount = *(uint16*)(data + 4*i + 0);
-		int16 idx    = *(uint16*)(data + 4*i + 2);
+		int16 amount = word(4*i);
+		int16 idx    = word(4*i + 2);
 		idx -= 2;
 
 		if( amount <= 0 )
@@ -190,7 +194,11 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 			return;
 
 		}
-		w += static_cast<int64>(itemdb_weight(vsd->cart.u.items_cart[idx].nameid)) * amount;
+        const auto& source = vsd->cart.u.items_cart[idx];
+        const auto info = item_db.find(source.nameid);
+        if (!info || pn_tokens::retired(source.nameid) || source.amount <= 0 || source.amount > MAX_AMOUNT) return;
+        w += static_cast<int64>(info->weight) * amount;
+        if (w > vsd->cart_weight) return;
 		if( w + sd->weight > sd->max_weight ) {
 			clif_buyvending( *sd, idx, amount, PURCHASEMC_OVERWEIGHT );
 			return;
@@ -210,17 +218,7 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 
 		vending[j].amount -= amount;
 
-		switch( pc_checkadditem(sd, vsd->cart.u.items_cart[idx].nameid, amount) ) {
-		case CHKADDITEM_EXIST:
-			break;	//We'd add this item to the existing one (in buyers inventory)
-		case CHKADDITEM_NEW:
-			new_++;
-			if (new_ > blank)
-				return; //Buyer has no space in his inventory
-			break;
-		case CHKADDITEM_OVERAMOUNT:
-			return; //too many items
-		}
+
 	}
 
 	// Validate cumulative stack additions against the same identity used by
@@ -229,17 +227,16 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 	item projected[MAX_INVENTORY];
 	memcpy(projected, sd->inventory.u.items_inventory, sizeof(projected));
 	for (i = 0; i < count; ++i) {
-		const uint16 amount = *(uint16*)(data + 4*i);
-		const int16 index = *(uint16*)(data + 4*i + 2) - 2;
+		const uint16 amount = word(4*i);
+		const int16 index = word(4*i + 2) - 2;
 		const auto& source = vsd->cart.u.items_cart[index];
-		auto* info = itemdb_search(source.nameid);
+		auto* info = item_db.find(source.nameid).get();
 		if (pn_tokens::retired(source.nameid)) return;
 		int slot = MAX_INVENTORY;
 		if (itemdb_isstackable2(info) && !source.expire_time && !(info->flag.guid && !source.unique_id)) {
 			for (int k = 0; k < MAX_INVENTORY; ++k) {
 				const auto& current = projected[k];
-				if (current.nameid == source.nameid && current.bound == source.bound && !current.expire_time &&
-					current.unique_id == source.unique_id && !memcmp(current.card, source.card, sizeof(source.card))) {
+				if (compare_item(&projected[k], const_cast<item*>(&source))) {
 					slot = k; break;
 				}
 			}
@@ -256,29 +253,35 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 
 	const int64 net = vending_calc_tax(sd, z);
 	if (!pn_pair_begin(*sd, *vsd, pn_pair::Vending, z - net)) return;
+    {
+    PcItemDeliveryScope delivery_buyer(*sd), delivery_seller(*vsd);
 	// Preflight above is authoritative and runs in this same map-thread turn.
 	if (pc_payzeny(sd, z, LOG_TYPE_VENDING, vsd->status.char_id)) {
-		pn_pair_abort(*sd, *vsd); return;
+		delivery_buyer.cancel(); delivery_seller.cancel(); pn_pair_abort(*sd, *vsd); return;
 	}
 	vsd->market.revision = pn_market_revision();
 	vsd->market.sold_count = 0;
-	achievement_update_objective(sd, AG_SPEND_ZENY, 1, static_cast<int32>(std::min<int64>(z, MAX_ZENY)));
+	const int64 spent = z;
 	pc_setparam(vsd, SP_BANK_VAULT, vsd->bank_vault + net);
 
 	for( i = 0; i < count; i++ ) {
-		int16 amount = *(uint16*)(data + 4*i + 0);
-		int16 idx    = *(uint16*)(data + 4*i + 2);
+		int16 amount = word(4*i);
+		int16 idx    = word(4*i + 2);
 		idx -= 2;
 		z = 0; // zeny counter
 
 		// vending item
 		if (pc_additem(sd, &vsd->cart.u.items_cart[idx], amount, LOG_TYPE_VENDING) != ADDITEM_SUCCESS) {
-			pn_pair_abort(*sd, *vsd); return;
+			delivery_buyer.cancel(); delivery_seller.cancel(); pn_pair_abort(*sd, *vsd); return;
 		}
 		vsd->vending[vend_list[i]].amount -= amount;
 		z += (static_cast<int64>(vsd->vending[vend_list[i]].value) * amount);
 
-		pc_cart_delitem(vsd, idx, amount, 0, LOG_TYPE_VENDING);
+        const int before = vsd->cart.u.items_cart[idx].amount;
+        pc_cart_delitem(vsd, idx, amount, 0, LOG_TYPE_VENDING);
+        if (vsd->cart.u.items_cart[idx].amount != before - amount) {
+            delivery_buyer.cancel(); delivery_seller.cancel(); pn_pair_abort(*sd, *vsd); return;
+        }
 		z = vending_calc_tax(sd, z);
 		static_assert(MAX_VENDING <= 20, "Increase deferred vending report capacity");
 		auto& report = vsd->market.sold[vsd->market.sold_count++];
@@ -300,7 +303,8 @@ void vending_purchasereq(map_session_data* sd, int32 aid, int32 uid, const uint8
 	}
 
 	vsd->vend_num = cursor;
-
+	achievement_update_objective(sd, AG_SPEND_ZENY, 1, static_cast<int32>(std::min<int64>(spent, MAX_ZENY)));
+    } // Flush callbacks after both actors, listings and money settle.
 	pn_pair_submit(*sd, *vsd);
 }
 

@@ -21,6 +21,7 @@
 #include "log.hpp"  // log_pick_pc, log_zeny
 #include "npc.hpp"
 #include "pc.hpp"  // map_session_data
+#include "storage.hpp" // compare_item: complete delivery identity
 
 //Autotrader
 static DBMap *buyingstore_autotrader_db; /// Holds autotrader info: char_id -> struct s_autotrader
@@ -316,7 +317,7 @@ void buyingstore_open(map_session_data* sd, uint32 account_id)
 	}
 
 	sd->market.last_target=pl_sd->status.account_id;
-	if (!pl_sd->market.published || std::any_of(pl_sd->buyingstore.items, pl_sd->buyingstore.items+pl_sd->buyingstore.slots, [](const s_buyingstore_item& row){return row.price>MAX_ZENY;})) {
+	if (!pl_sd->market.published || pl_sd->buyingstore.slots < 1 || pl_sd->buyingstore.slots > MAX_BUYINGSTORE_SLOTS || std::any_of(pl_sd->buyingstore.items, pl_sd->buyingstore.items+pl_sd->buyingstore.slots, [](const s_buyingstore_item& row){return row.price>MAX_ZENY;})) {
 		clif_displaymessage(sd->fd, "Open Market in the Wallet64 panel to view this shop.");
 		return;
 	}
@@ -338,7 +339,7 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 
 	nullpo_retv(sd);
 
-	if( count == 0 || count > MAX_BUYINGSTORE_SLOTS )
+	if( !itemlist || count == 0 || count > MAX_BUYINGSTORE_SLOTS )
 	{// nothing to do
 		return;
 	}
@@ -370,10 +371,13 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 
 	searchstore_clearremote(*sd);
 
-	// buyer lost zeny in the mean time? fix the limit
-	if( pl_sd->status.zeny < pl_sd->buyingstore.zenylimit ){
-		pl_sd->buyingstore.zenylimit = pl_sd->status.zeny;
-	}
+    // Reject reservations before touching the live purchase order. Preflight
+    // clamps a private budget; only a successful pair apply publishes it.
+    if (pc_transaction_locked(sd) || pc_transaction_locked(pl_sd) ||
+        pl_sd->buyingstore.slots < 1 || pl_sd->buyingstore.slots > MAX_BUYINGSTORE_SLOTS ||
+        pl_sd->status.zeny < 0 || pl_sd->buyingstore.zenylimit < 0 ||
+        sd->status.zeny < 0 || sd->mail.pending_zeny < 0 || sd->mail.pending_zeny > MAX_WALLET_ZENY - sd->status.zeny) return;
+    const int64 budget = std::min(pl_sd->status.zeny, pl_sd->buyingstore.zenylimit);
 	weight = pl_sd->weight;
 	s_buyingstore demand = pl_sd->buyingstore;
 	item projected[MAX_INVENTORY];
@@ -428,12 +432,12 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		// item. pc_checkadditem alone cannot reserve cumulative space or demand.
 		const auto& source = sd->inventory.u.items_inventory[index];
 		auto* data = sd->inventory_data[index];
+        if (item_db.find(source.nameid).get() != data || source.amount <= 0 || source.amount > MAX_AMOUNT) return;
 		int slot = MAX_INVENTORY;
 		if (itemdb_isstackable2(data) && !(data->flag.guid && !source.unique_id)) {
 			for (int k = 0; k < MAX_INVENTORY; ++k) {
 				const auto& current = projected[k];
-				if (current.nameid == source.nameid && current.bound == source.bound && !current.expire_time &&
-					current.unique_id == source.unique_id && !memcmp(current.card, source.card, sizeof(source.card))) {
+				if (compare_item(&projected[k], const_cast<struct item*>(&source))) {
 					slot = k; break;
 				}
 			}
@@ -460,7 +464,7 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		if (unit_price <= 0 || (!market_request && unit_price > MAX_ZENY) || item->amount > (MAX_WALLET_ZENY-zeny) / unit_price) return;
 
 		// buyer does not have enough zeny
-		if( static_cast<int64>(item->amount) * pl_sd->buyingstore.items[listidx].price > pl_sd->buyingstore.zenylimit - zeny ){
+		if( static_cast<int64>(item->amount) * pl_sd->buyingstore.items[listidx].price > budget - zeny ){
 			clif_buyingstore_trade_failed_seller( sd, BUYINGSTORE_TRADE_SELLER_ZENY, item->itemId );
 			return;
 		}
@@ -475,6 +479,9 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 	}
 
 	if (!pn_pair_begin(*sd, *pl_sd, pn_pair::Buying, 0)) return;
+    {
+    PcItemDeliveryScope delivery_seller(*sd), delivery_buyer(*pl_sd);
+    pl_sd->buyingstore.zenylimit = budget;
 	pl_sd->market.revision = pn_market_revision();
 	pl_sd->market.bought_count = 0;
 	// process item list
@@ -489,17 +496,17 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 
 		// move item
 		if (pc_additem(pl_sd, &sd->inventory.u.items_inventory[index], item->amount, LOG_TYPE_BUYING_STORE) != ADDITEM_SUCCESS) {
-			pn_pair_abort(*sd, *pl_sd); return;
+			delivery_seller.cancel(); delivery_buyer.cancel(); pn_pair_abort(*sd, *pl_sd); return;
 		}
 		if (pc_delitem(sd, index, item->amount, 1, 0, LOG_TYPE_BUYING_STORE)) {
-			pn_pair_abort(*sd, *pl_sd); return;
+			delivery_seller.cancel(); delivery_buyer.cancel(); pn_pair_abort(*sd, *pl_sd); return;
 		}
 		pl_sd->buyingstore.items[listidx].amount -= item->amount;
 
 		// pay up
 		if (pc_payzeny(pl_sd, zeny, LOG_TYPE_BUYING_STORE, sd->status.char_id) ||
 			pc_getzeny(sd, zeny, LOG_TYPE_BUYING_STORE, pl_sd->status.char_id)) {
-			pn_pair_abort(*sd, *pl_sd); return;
+			delivery_seller.cancel(); delivery_buyer.cancel(); pn_pair_abort(*sd, *pl_sd); return;
 		}
 		pl_sd->buyingstore.zenylimit-= zeny;
 
@@ -509,6 +516,7 @@ void buyingstore_trade( map_session_data* sd, uint32 account_id, uint32 buyer_id
 		report.index = index; report.amount = item->amount; report.item_id = item->itemId;
 		report.price = pl_sd->buyingstore.items[listidx].price; report.total = zeny;
 	}
+    } // Flush callbacks after the complete stock, order and wallet apply.
 	pn_pair_submit(*sd, *pl_sd);
 }
 
