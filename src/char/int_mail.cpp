@@ -248,7 +248,7 @@ bool mail_loadmessage(int32 mail_id, struct mail_message* msg)
 
 int32 mail_timer_sub( int32 limit, enum mail_inbox_type type ){
 	// Server is configured to never delete or return mails
-	if( limit == 0 ){
+	if( limit <= 0 ){
 		return 0;
 	}
 
@@ -446,8 +446,9 @@ void mapif_parse_Mail_getattach(int32 fd)
 bool mapif_Mail_delete( int32 fd, uint32 char_id, int32 mail_id, uint32 account_id ){
 	bool failed = false;
 
-	// The Foreign Key will automatically delete all attachments
-	if( SQL_ERROR == Sql_Query( sql_handle, "DELETE FROM `%s` WHERE `id` = '%d'", schema_config.mail_db, mail_id ) ){
+	// Recheck ownership and attachments against authoritative SQL, not inbox cache.
+	// Only the character-server expiry timer may discard unclaimed assets.
+	if( SQL_ERROR == Sql_Query( sql_handle, "DELETE FROM `%s` WHERE `id` = '%d' AND `dest_id` = '%u' AND (%d OR (`zeny` = 0 AND NOT EXISTS (SELECT 1 FROM `%s` a WHERE a.id = '%d')))", schema_config.mail_db, mail_id, char_id, fd <= 0, schema_config.mail_attachment_db, mail_id ) ){
 		Sql_ShowDebug( sql_handle );
 
 		// We do not want to trigger failure messages, if the map server did not send a request
@@ -457,6 +458,7 @@ bool mapif_Mail_delete( int32 fd, uint32 char_id, int32 mail_id, uint32 account_
 
 		failed = true;
 	}
+	else if(Sql_NumRowsAffected(sql_handle)!=1)failed=true;
 
 	// If the char server triggered this, check if we have to notify a map server
 	if( fd <= 0 ){
@@ -509,75 +511,54 @@ void mapif_Mail_new(struct mail_message *msg)
  * Return Mail
  *------------------------------------------*/
 void mapif_Mail_return( int32 fd, uint32 char_id, int32 mail_id, uint32 account_id_receiver, uint32 account_id_sender ){
-	struct mail_message msg;
-
-	if( !mail_loadmessage( mail_id, &msg ) ){
-		return;
-	}
-
-	if( msg.dest_id != char_id ){
-		return;
-	}
-
-	if( !mapif_Mail_delete( 0, char_id, mail_id, account_id_receiver ) ){
-		// Stop processing to not duplicate the mail
-		return;
-	}
-
-	// If it was sent by the server we do not want to return the mail
-	if( msg.send_id == 0 ){
-		return;
-	}
-
-	// If we do not want to return mails without any attachments and the request was not sent by a user
-	if( fd <= 0 && !charserv_config.mail_return_empty ){
-		int32 i;
-
-		ARR_FIND( 0, MAIL_MAX_ITEM, i, msg.item[i].nameid > 0 );
-
-		if( i == MAIL_MAX_ITEM && msg.zeny == 0 ){
-			return;
-		}
-	}
-
-	char temp_[MAIL_TITLE_LENGTH + 3];
-
-	// swap sender and receiver
-	std::swap( msg.send_id, msg.dest_id );
-	safestrncpy( temp_, msg.send_name, NAME_LENGTH );
-	safestrncpy( msg.send_name, msg.dest_name, NAME_LENGTH );
-	safestrncpy( msg.dest_name, temp_, NAME_LENGTH );
-
-	// set reply message title
-	snprintf( temp_, sizeof( temp_ ), "RE:%s", msg.title );
-	safestrncpy( msg.title, temp_, sizeof( temp_ ) );
-
-	msg.status = MAIL_NEW;
-	msg.type = MAIL_INBOX_RETURNED;
-	msg.timestamp = time( nullptr );
-
-	int32 new_mail = mail_savemessage( &msg );
-	mapif_Mail_new( &msg );
-
-	// If the char server triggered this, check if we have to notify a map server
-	if( fd <= 0 ){
-		std::shared_ptr<struct online_char_data> character = util::umap_find( char_get_onlinedb(), account_id_sender );
-
-		// Check for online players
-		if( character != nullptr && character->server >= 0 ){
-			fd = map_server[character->server].fd;
-		}else{
-			// The request was triggered inside the character server or the player is offline now
-			return;
-		}
-	}
-
-	WFIFOHEAD(fd,11);
-	WFIFOW(fd,0) = 0x384c;
-	WFIFOL(fd,2) = char_id;
-	WFIFOL(fd,6) = mail_id;
-	WFIFOB(fd,10) = (new_mail == 0);
-	WFIFOSET(fd,11);
+    mail_message msg{};
+    bool committed=false,empty=false,transactional=true;
+    for(const char* table:{schema_config.mail_db,schema_config.mail_attachment_db}) {
+        if(Sql_Query(sql_handle,"SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='%s'",table)!=SQL_SUCCESS){transactional=false;break;}
+        char* engine=nullptr;
+        transactional=Sql_NextRow(sql_handle)==SQL_SUCCESS && Sql_GetData(sql_handle,0,&engine,nullptr)==SQL_SUCCESS && engine && !strcmpi(engine,"InnoDB");
+        Sql_FreeResult(sql_handle);if(!transactional)break;
+    }
+    if(transactional && Sql_BeginTransaction(sql_handle)==SQL_SUCCESS) {
+        do {
+            // Serialize returns with claims and other lifecycle operations.
+            if(Sql_Query(sql_handle,"SELECT id FROM `%s` WHERE id=%d AND dest_id=%u FOR UPDATE",schema_config.mail_db,mail_id,char_id)!=SQL_SUCCESS)break;
+            const bool found=Sql_NextRow(sql_handle)==SQL_SUCCESS;Sql_FreeResult(sql_handle);
+            if(!found || !mail_loadmessage(mail_id,&msg) || msg.dest_id!=char_id || !msg.send_id || msg.type!=MAIL_INBOX_NORMAL)break;
+            if(Sql_Query(sql_handle,"SELECT char_id FROM `%s` WHERE char_id=%u",schema_config.char_db,msg.send_id)!=SQL_SUCCESS)break;
+            const bool sender_exists=Sql_NextRow(sql_handle)==SQL_SUCCESS;Sql_FreeResult(sql_handle);
+            if(!sender_exists)break; // Retain assets when no return destination exists.
+            empty=fd<=0 && !charserv_config.mail_return_empty && msg.zeny==0;
+            for(const auto& it:msg.item)if(it.nameid)empty=false;
+            if(!empty) {
+                std::swap(msg.send_id,msg.dest_id);
+                char sender[NAME_LENGTH];safestrncpy(sender,msg.send_name,sizeof(sender));
+                safestrncpy(msg.send_name,msg.dest_name,sizeof(msg.send_name));
+                safestrncpy(msg.dest_name,sender,sizeof(msg.dest_name));
+                char title[MAIL_TITLE_LENGTH+3];snprintf(title,sizeof(title),"RE:%s",msg.title);
+                safestrncpy(msg.title,title,sizeof(msg.title));
+                msg.status=MAIL_NEW;msg.type=MAIL_INBOX_RETURNED;msg.timestamp=time(nullptr);
+                if(!mail_savemessage_locked(&msg))break;
+            }
+            if(Sql_Query(sql_handle,"DELETE FROM `%s` WHERE id=%d AND dest_id=%u",schema_config.mail_db,mail_id,char_id)!=SQL_SUCCESS || Sql_NumRowsAffected(sql_handle)!=1)break;
+            committed=true;
+        }while(false);
+        if(Sql_EndTransaction(sql_handle,committed)!=SQL_SUCCESS)committed=false;
+    }
+    // Notifications follow COMMIT. Retrying an old mail ID cannot create a
+    // second return, even when the first COMMIT acknowledgement was lost.
+    if(committed && !empty)mapif_Mail_new(&msg);
+    if(fd<=0) {
+        auto character=util::umap_find(char_get_onlinedb(),account_id_receiver);
+        if(character!=nullptr && character->server>=0)fd=map_server[character->server].fd;
+        else return;
+    }
+    WFIFOHEAD(fd,11);
+    WFIFOW(fd,0)=0x384c;
+    WFIFOL(fd,2)=char_id;
+    WFIFOL(fd,6)=mail_id;
+    WFIFOB(fd,10)=!committed;
+    WFIFOSET(fd,11);
 }
 
 void mapif_parse_Mail_return(int32 fd)

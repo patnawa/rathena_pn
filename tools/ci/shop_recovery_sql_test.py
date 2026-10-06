@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--evidence', type=Path, required=True)
     parser.add_argument('--image', default='pn-bank-validation:20260929')
     parser.add_argument('--database-image', default='mariadb:noble')
+    parser.add_argument('--mode',choices=['lifecycle','lifecycle-return','lifecycle-owner','lifecycle-disabled'])
     args = parser.parse_args()
     candidate, evidence = args.candidate.resolve(), args.evidence.resolve()
     if evidence == candidate or candidate in evidence.parents:
@@ -74,6 +75,7 @@ def main():
         paths = {candidate / 'tools/ci/shop_recovery_sql_test.py',
                  candidate / 'tools/ci/pet_entitlement_sql_cases.inc',
                  candidate / 'tools/ci/pet_mail_sql_cases.inc',
+                 candidate / 'tools/ci/mail_lifecycle_sql_cases.inc',
                  candidate / 'tools/ci/pet_floor_sql_cases.inc',
                  candidate / 'tools/ci/point_asset_sql_cases.inc',
                  candidate / 'tools/ci/point_global_sql_cases.inc',
@@ -146,6 +148,11 @@ def main():
             if built.returncode:
                 raise RuntimeError('Compile failed: ' + built.stderr[-5000:])
         build_probe(compiler, 'char')
+        if args.mode:
+            report['mail_lifecycle']=runtime(args.mode).strip()
+            report['passed']=True
+            print(report['mail_lifecycle'])
+            return
         login_compiler = [arg for arg in compiler if '/src/char/obj/' not in arg]
         login_compiler = [arg.replace('shop_recovery_sql_runtime.cpp', 'point_login_sql_runtime.cpp').replace('/evidence/shop-sql-probe', '/evidence/point-login-sql-probe') for arg in login_compiler]
         archive = login_compiler.index('/rathena/src/common/obj/common.a')
@@ -215,6 +222,14 @@ def main():
         report['point_global_restart'] = '\n'.join(global_restarts)
         report['pet_retirement'] = runtime('pet-retirement').strip()
         report['pet_mail_asset'] = runtime('pet-mail').strip()
+        report['mail_lifecycle'] = runtime('lifecycle').strip()
+        runtime('lifecycle-race-seed')
+        returning=[subprocess.Popen(runtime_command('lifecycle-race-return'),text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT) for _ in range(2)]
+        for index,process in enumerate(returning):
+            output,_=process.communicate(timeout=60)
+            (evidence/('mail-race-'+str(index)+'.log')).write_text(output)
+            assert process.returncode==0,output
+        report['mail_return_race']=runtime('lifecycle-race-verify').strip()
         report['pet_floor_asset'] = runtime('floor-pets').strip()
         runtime('floor-pet-seed')
         run(['docker', 'restart', db], capture_output=True, timeout=30)

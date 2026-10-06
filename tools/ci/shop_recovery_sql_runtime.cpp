@@ -111,6 +111,7 @@ static void newer(){
 }
 #include "pet_entitlement_sql_cases.inc"
 #include "pet_mail_sql_cases.inc"
+#include "mail_lifecycle_sql_cases.inc"
 #include "pet_floor_sql_cases.inc"
 #include "point_asset_sql_cases.inc"
 #include "point_global_sql_cases.inc"
@@ -119,6 +120,7 @@ static void newer(){
 extern "C" int __wrap_main(int argc,char** argv){
     malloc_init();timer_init();connect_db();const std::string mode=argc>1?argv[1]:"normal";
     auto r=request();
+    if(mode.rfind("lifecycle",0)==0)return mail_lifecycle_cases(mode);
     if(mode.rfind("global-",0)==0)return global_point_cases(mode);
     if(mode.rfind("floor-pet",0)==0)return pet_floor_sql_cases(mode);
     if(mode=="point-assets")return point_asset_cases();
