@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `auction` (
   `unique_id` bigint(20) unsigned NOT NULL default '0',
   `enchantgrade` tinyint unsigned NOT NULL default '0',
   PRIMARY KEY  (`auction_id`)
-) ENGINE=MyISAM;
+) ENGINE=InnoDB;
 
 --
 -- Table `barter` for barter shop persistency

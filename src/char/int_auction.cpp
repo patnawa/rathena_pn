@@ -8,6 +8,7 @@
 #include <cstring>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include <common/malloc.hpp>
 #include <common/mmo.hpp>
@@ -46,13 +47,13 @@ int32 auction_count(uint32 char_id, bool buy)
 	return i;
 }
 
-void auction_save( std::shared_ptr<struct auction_data> auction ){
+bool auction_save( std::shared_ptr<struct auction_data> auction ){
 	int32 j;
 	StringBuf buf;
 	SqlStmt stmt{ *sql_handle };
 
 	if( !auction )
-		return;
+		return false;
 
 	StringBuf_Init(&buf);
 	StringBuf_Printf(&buf, "UPDATE `%s` SET `seller_id` = '%d', `seller_name` = ?, `buyer_id` = '%d', `buyer_name` = ?, `price` = '%d', `buynow` = '%d', `hours` = '%d', `timestamp` = '%lu', `nameid` = '%u', `item_name` = ?, `type` = '%d', `refine` = '%d', `attribute` = '%d', `enchantgrade` ='%d'",
@@ -73,7 +74,9 @@ void auction_save( std::shared_ptr<struct auction_data> auction ){
 	||  SQL_SUCCESS != stmt.Execute() )
 	{
 		SqlStmt_ShowDebug(stmt);
+		return false;
 	}
+	return true;
 }
 
 uint32 auction_create( std::shared_ptr<struct auction_data> auction ){
@@ -133,6 +136,8 @@ uint32 auction_create( std::shared_ptr<struct auction_data> auction ){
 	return auction->auction_id;
 }
 
+#include <custom/auction_settlement.inc>
+
 void mapif_Auction_message(uint32 char_id, unsigned char result)
 {
 	unsigned char buf[74];
@@ -147,19 +152,10 @@ TIMER_FUNC(auction_end_timer){
 	std::shared_ptr<struct auction_data> auction = util::umap_find( auction_db, static_cast<uint32>( id ) );
 
 	if( auction != nullptr ){
-		if( auction->buyer_id )
-		{
-			mail_sendmail(0, msg_txt(200), auction->buyer_id, auction->buyer_name, msg_txt(201), msg_txt(202), 0, &auction->item, 1);
-			mapif_Auction_message(auction->buyer_id, 6); // You have won the auction
-			mail_sendmail(0, msg_txt(200), auction->seller_id, auction->seller_name, msg_txt(201), msg_txt(203), auction->price, nullptr, 0);
-		}
-		else
-			mail_sendmail(0, msg_txt(200), auction->seller_id, auction->seller_name, msg_txt(201), msg_txt(204), 0, &auction->item, 1);
-
-		ShowInfo("Auction End: id %u.\n", auction->auction_id);
-
 		auction->auction_end_timer = INVALID_TIMER;
-		auction_delete(auction);
+		if(auction_settle(auction,auction->buyer_id?202:204,203)){
+			if(auction->buyer_id)mapif_Auction_message(auction->buyer_id,6);
+		}else auction->auction_end_timer=add_timer(gettick()+10000,auction_end_timer,auction->auction_id,0);
 	}
 
 	return 0;
@@ -167,9 +163,6 @@ TIMER_FUNC(auction_end_timer){
 
 void auction_delete( std::shared_ptr<struct auction_data> auction ){
 	uint32 auction_id = auction->auction_id;
-
-	if( SQL_ERROR == Sql_Query(sql_handle, "DELETE FROM `%s` WHERE `auction_id` = '%d'", schema_config.auction_db, auction_id) )
-		Sql_ShowDebug(sql_handle);
 
 	if( auction->auction_end_timer != INVALID_TIMER )
 		delete_timer(auction->auction_end_timer, auction_end_timer);
@@ -375,8 +368,7 @@ void mapif_parse_Auction_cancel(int32 fd)
 		return;
 	}
 
-	mail_sendmail(0, msg_txt(200), auction->seller_id, auction->seller_name, msg_txt(201), msg_txt(205), 0, &auction->item, 1);
-	auction_delete(auction);
+	if(!auction_settle(auction,205,203)){mapif_Auction_cancel(fd,char_id,2);return;}
 
 	mapif_Auction_cancel(fd, char_id, 0); // The auction has been canceled
 }
@@ -412,12 +404,8 @@ void mapif_parse_Auction_close(int32 fd)
 		return;
 	}
 
-	// Send Money to Seller
-	mail_sendmail(0, msg_txt(200), auction->seller_id, auction->seller_name, msg_txt(201), msg_txt(206), auction->price, nullptr, 0);
-	// Send Item to Buyer
-	mail_sendmail(0, msg_txt(200), auction->buyer_id, auction->buyer_name, msg_txt(201), msg_txt(207), 0, &auction->item, 1);
+	if(!auction_settle(auction,207,206)){mapif_Auction_close(fd,char_id,1);return;}
 	mapif_Auction_message(auction->buyer_id, 6); // You have won the auction
-	auction_delete(auction);
 
 	mapif_Auction_close(fd, char_id, 0); // You have ended the auction
 }
@@ -449,36 +437,31 @@ void mapif_parse_Auction_bid(int32 fd)
 		return;
 	}
 
-	if( auction->buyer_id > 0 )
-	{ // Send Money back to the previous Buyer
-		if( auction->buyer_id != char_id )
-		{
-			mail_sendmail(0, msg_txt(200), auction->buyer_id, auction->buyer_name, msg_txt(201), msg_txt(208), auction->price, nullptr, 0);
-			mapif_Auction_message(auction->buyer_id, 7); // You have failed to win the auction
-		}
-		else
-			mail_sendmail(0, msg_txt(200), auction->buyer_id, auction->buyer_name, msg_txt(201), msg_txt(209), auction->price, nullptr, 0);
+	// Refund mail and the replacement bid belong to the same SQL transaction.
+	// Do not advance cache state or notify success before its COMMIT.
+	auto next=std::make_shared<auction_data>(*auction);
+	next->buyer_id=char_id;next->price=bid;
+	safestrncpy(next->buyer_name,RFIFOCP(fd,16),NAME_LENGTH);
+	std::vector<mail_message> mails;
+	if(auction->buyer_id)mails.push_back(auction_mail(auction->buyer_id,auction->buyer_name,auction->buyer_id==char_id?209:208,auction->price));
+	const bool buyout=bid>=auction->buynow;
+	if(buyout){
+		mails.push_back(auction_mail(char_id,next->buyer_name,210,0,&auction->item));
+		mails.push_back(auction_mail(auction->seller_id,auction->seller_name,211,auction->buynow));
+		if(bid>auction->buynow)mails.push_back(auction_mail(char_id,next->buyer_name,209,bid-auction->buynow));
 	}
-
-	auction->buyer_id = char_id;
-	safestrncpy(auction->buyer_name, RFIFOCP(fd,16), NAME_LENGTH);
-	auction->price = bid;
-
-	if( bid >= auction->buynow )
-	{ // Automatic won the auction
-		mapif_Auction_bid(fd, char_id, bid - auction->buynow, 1); // You have successfully bid in the auction
-
-		mail_sendmail(0, msg_txt(200), auction->buyer_id, auction->buyer_name, msg_txt(201), msg_txt(210), 0, &auction->item, 1);
-		mapif_Auction_message(char_id, 6); // You have won the auction
-		mail_sendmail(0, msg_txt(200), auction->seller_id, auction->seller_name, msg_txt(201), msg_txt(211), auction->buynow, nullptr, 0);
-
-		auction_delete(auction);
+	const auto written=auction_write(*auction,buyout?nullptr:next,mails);
+	if(written==AuctionWrite::Failed){mapif_Auction_bid(fd,char_id,bid,0);return;}
+	if(written!=AuctionWrite::Committed){
+		// The legacy bid protocol has no durable map debit identity. Never invent
+		// a refund when COMMIT is indeterminate; enabling requires handoff recovery.
+		ShowError("Auction %u bid outcome requires reconciliation for character %u.\n",auction_id,char_id);
 		return;
 	}
-
-	auction_save(auction);
-
-	mapif_Auction_bid(fd, char_id, 0, 1); // You have successfully bid in the auction
+	if(auction->buyer_id && auction->buyer_id!=char_id)mapif_Auction_message(auction->buyer_id,7);
+	if(buyout){auction_delete(auction);mapif_Auction_message(char_id,6);}
+	else *auction=*next;
+	mapif_Auction_bid(fd,char_id,0,1);
 }
 
 /*==========================================
