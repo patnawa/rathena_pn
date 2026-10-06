@@ -17493,8 +17493,10 @@ void clif_cashshop_list( map_session_data& sd ){
 }
 
 void clif_parse_cashshop_list_request( int32 fd, map_session_data* sd ){
+	// The client can discard its catalogue while the login session remains active.
+	// Every explicit refresh request must receive the current catalogue.
+	clif_cashshop_list( *sd );
 	if( !sd->status.cashshop_sent ) {
-		clif_cashshop_list( *sd );
 #if PACKETVER_SUPPORTS_SALES
 		sale_notify_login(sd);
 #endif

@@ -32,7 +32,7 @@ Header:
   Type: ITEM_CASH_DB
   Version: 1
 
-# Audited usable supplies, 2026-09-29. See doc/consumable_audit_20260929.md.
+# Supplies and costumes expanded 2026-10-06. See doc/cash_shop_expansion_20261006.md.
 Body:
   - Tab: New
     Items:
@@ -176,6 +176,38 @@ Body:
         Price: 16000
       - Item: HE_Bubble_Gum_Box # 16268
         Price: 10000
+      - Item: ASPD_Potion # 12684
+        Price: 500
+      - Item: Red_Booster # 12796
+        Price: 250
+      - Item: Small_Mana_Potion # 23203
+        Price: 500
+      - Item: M_DEFScroll # 23204
+        Price: 84
+      - Item: Infinity_Drink # 23475
+        Price: 250
+      - Item: Limit_Power_Booster # 14766
+        Price: 250
+      - Item: Almighty # 12883
+        Price: 250
+      - Item: Force_Booster # 102803
+        Price: 250
+      - Item: Speed_Booster # 102985
+        Price: 250
+      - Item: Battle_Manual # 12208
+        Price: 800
+      - Item: Job_Manual25 # 14606
+        Price: 500
+      - Item: Insurance # 12209
+        Price: 120
+      - Item: Bubble_Gum # 12210
+        Price: 500
+      - Item: Assumptio_5_Scroll # 12218
+        Price: 15
+      - Item: Wind_Walk_10_Scroll # 12219
+        Price: 15
+      - Item: Adrenaline_Scroll # 12220
+        Price: 10
   - Tab: Other
     Items:
       - Item: Inventory_Ex_10Box # 200001
@@ -234,3 +266,115 @@ Body:
         Price: 3200
       - Item: C_Disguise_Croll_Box10 # 16849
         Price: 3200
+      - Item: Token_Of_Siegfried # 7621
+        Price: 360
+      - Item: Repair_Scroll_ # 14587
+        Price: 100
+      - Item: Siege_Teleport_Scroll # 14591
+        Price: 87
+      - Item: Siege_Teleport_Scroll2 # 12415
+        Price: 87
+      - Item: Convex_Mirror # 12214
+        Price: 200
+      - Item: Megaphone_ # 12221
+        Price: 200
+      - Item: Neuralizer # 12213
+        Price: 14700
+      - Item: Alice_Scroll # 12278
+        Price: 430
+      - Item: Mimic_Scroll # 12276
+        Price: 320
+      - Item: Disguise_Scroll # 12277
+        Price: 320
+      - Item: HD_Carnium # 6225
+        Price: 1060
+      - Item: HD_Bradium # 6226
+        Price: 1060
+      - Item: HD_Elunium # 6241
+        Price: 1060
+      - Item: HD_Oridecon # 6240
+        Price: 1060
+      - Item: Enriched_Elunium # 7619
+        Price: 300
+      - Item: Enriched_Oridecon # 7620
+        Price: 300
+      - Item: Inventory_Ex # 25793
+        Price: 2500
+      - Item: Max_Weight_Up_Scroll # 7776
+        Price: 2300
+      - Item: Nyangvine_Fruit # 6909
+        Price: 250
+      - Item: Kafra_Card # 12211
+        Price: 100
+  - Tab: Permanent
+    Items:
+      - Item: C_Clutch_Bouquet # 480177
+        Price: 5000
+      - Item: C_Cosmic_Connection # 420271
+        Price: 2500
+      - Item: C_Diabolic_Friend # 480235
+        Price: 5000
+      - Item: C_Headgear_Of_Queen # 20454
+        Price: 2500
+      - Item: C_EvilEye_of_FalseGods # 410286
+        Price: 2500
+      - Item: C_Exploding_Wave_Sca_V # 20532
+        Price: 5000
+      - Item: C_Elec_Guitar_Of_Phen # 480117
+        Price: 5000
+      - Item: C_Fox_Bamboo_Hat # 400343
+        Price: 2500
+      - Item: C_Lolita_Two_Side_UpK # 31495
+        Price: 2500
+      - Item: C_Guildsman_Recruiter # 19740
+        Price: 2500
+      - Item: C_Long_Wave_BD # 420034
+        Price: 2500
+      - Item: C_Lovely_Heart_Cap # 31531
+        Price: 2500
+      - Item: C_Magical_Feather # 31040
+        Price: 2500
+      - Item: C_VIP_Hair_Male # 400057
+        Price: 2500
+      - Item: C_Nut_Cracker # 21206
+        Price: 2500
+      - Item: C_Ragdoll # 410277
+        Price: 2500
+      - Item: C_Romance_Rose_TW # 400073
+        Price: 2500
+      - Item: C_Volume_Low_Twin # 31383
+        Price: 2500
+      - Item: C_Stall_Of_Angel # 31315
+        Price: 2500
+      - Item: C_Valkyrie_Circlet # 5909
+        Price: 2500
+      - Item: C_Tent # 420165
+        Price: 2500
+      - Item: C_VIP_Hair_Female # 400056
+        Price: 2500
+      - Item: C_Black_Thunder # 400149
+        Price: 2500
+      - Item: C_Ninetail_Tail_WH # 480362
+        Price: 5000
+      - Item: C_Traveller_Bag # 480207
+        Price: 5000
+      - Item: C_Released_Ground # 410081
+        Price: 2500
+      - Item: C_Tiger_BL # 410132
+        Price: 2500
+      - Item: C_Twinkle_Twin # 420107
+        Price: 2500
+      - Item: C_H_Knight_Cloak # 420047
+        Price: 2500
+      - Item: C_Faith_Of_Yggdrasil # 400214
+        Price: 2500
+      - Item: C_Many_Flowers_Prayer # 400272
+        Price: 2500
+      - Item: C_Gang_Scarf # 19605
+        Price: 2500
+      - Item: C_HwaHoJumJung # 436008
+        Price: 2500
+      - Item: C_Ep19_Rgan # 436006
+        Price: 2500
+      - Item: C_Bear_Head # 440010
+        Price: 2500

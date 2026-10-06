@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "scope": "71 cash shop additions and explicit catalogue refresh response fix",
+  "rendered_client_checked": false,
+  "expansion": {
+    "installed": true,
+    "activated": true,
+    "passed": true,
+    "paths": [
+      "db/import/item_cash.yml",
+      "conf/import/pn_runtime_identity"
+    ],
+    "backup": "/app/pn-cashshop-20261006/production-backup-retry2",
+    "started_utc": "2026-10-06T15:22:01.632741+00:00",
+    "shutdown": {
+      "exit_code": 0,
+      "oom_killed": false,
+      "log_sha256": "056b5ec67eedd91abfa68aa116a1380376b423437d787f3607f75c469c5a278b",
+      "restart_policy_before": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "restart_policy_now": "no"
+    },
+    "health_passed": true,
+    "catalogue_items": 168,
+    "added_items": 71,
+    "added_supplies": 36,
+    "added_costumes": 35,
+    "catalogue_sha256": "1589451780ca34b2a2f685b1aa1e8799f6270869403a1c0637147bb870963bad",
+    "runtime_identity_sha256": "ecc934dfeacb568f814926d62c4a77ec0a758d7c9025c516580f6be9cf5baacf",
+    "other_services_unchanged": true,
+    "ingress_restored": true,
+    "finished_utc": "2026-10-06T15:22:12.108230+00:00"
+  },
+  "refresh": {
+    "passed": true,
+    "activated": true,
+    "backup": "/app/pn-cashshop-20261006/refresh-production-cutover/backup",
+    "started_utc": "2026-10-06T15:42:39.849282+00:00",
+    "shutdown": {
+      "exit_code": 0,
+      "oom_killed": false,
+      "log_sha256": "056b5ec67eedd91abfa68aa116a1380376b423437d787f3607f75c469c5a278b",
+      "restart_policy_before": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "restart_policy_now": "no"
+    },
+    "map_sha256": "aeb0610bd9b30f987e8cc31d05ac22202db2b28ba229c61685b9feb9d14baea6",
+    "catalogue_items": 168,
+    "health_passed": true,
+    "source_after": "831887a300c51e26382fe567716707862fc251a61e1e9fe9bed929a8e98272b1",
+    "paths": [
+      "src/map/clif.cpp",
+      "tools/ci/cashshop_refresh_live_client.py",
+      "map-server",
+      "conf/import/pn_runtime_identity"
+    ],
+    "other_services_unchanged": true,
+    "ingress_restored": true,
+    "finished_utc": "2026-10-06T15:42:53.644230+00:00"
+  },
+  "refresh_before": {
+    "passed": false,
+    "expected_items": 168,
+    "cases": [
+      {
+        "phase": "first request",
+        "items": 168,
+        "passed": true
+      },
+      {
+        "phase": "second request in same session",
+        "items": 0,
+        "passed": false
+      },
+      {
+        "phase": "request after close and reopen",
+        "items": 0,
+        "passed": false
+      }
+    ],
+    "production_database_accessed": false
+  },
+  "refresh_fixed": {
+    "passed": true,
+    "expected_items": 168,
+    "cases": [
+      {
+        "phase": "first request",
+        "items": 168,
+        "passed": true
+      },
+      {
+        "phase": "second request in same session",
+        "items": 168,
+        "passed": true
+      },
+      {
+        "phase": "request after close and reopen",
+        "items": 168,
+        "passed": true
+      }
+    ],
+    "production_database_accessed": false
+  },
+  "refresh_fixture": {
+    "passed": true,
+    "production_database_accessed": false,
+    "binary_sha256": {
+      "login-server": "ef1bb877d8e57ea354b0aa515fb35dbf9fbb8b611e86f8b3e31bd4c8847bc27d",
+      "char-server": "b1bfed7693a75f3ad398f2432f9e447d1c50a11b5ea34364ad74102caa55fd05",
+      "map-server": "aeb0610bd9b30f987e8cc31d05ac22202db2b28ba229c61685b9feb9d14baea6"
+    },
+    "fixed_binary": true,
+    "refresh_regression": true
+  },
+  "purchase_fixture": {
+    "passed": true,
+    "production_database_accessed": false,
+    "binary_sha256": {
+      "login-server": "ef1bb877d8e57ea354b0aa515fb35dbf9fbb8b611e86f8b3e31bd4c8847bc27d",
+      "char-server": "b1bfed7693a75f3ad398f2432f9e447d1c50a11b5ea34364ad74102caa55fd05",
+      "map-server": "aeb0610bd9b30f987e8cc31d05ac22202db2b28ba229c61685b9feb9d14baea6"
+    },
+    "fixed_binary": true,
+    "refresh_regression": false
+  },
+  "purchase_and_equipment": {
+    "passed": true,
+    "catalogue_items": 168,
+    "packets": [
+      {
+        "tab": 4,
+        "count": 35,
+        "stride": 14
+      },
+      {
+        "tab": 7,
+        "count": 48,
+        "stride": 14
+      },
+      {
+        "tab": 6,
+        "count": 59,
+        "stride": 14
+      },
+      {
+        "tab": 0,
+        "count": 26,
+        "stride": 14
+      }
+    ],
+    "purchased_additions": 71,
+    "supply_additions": 36,
+    "costume_additions": 35,
+    "cash_charged": 133838,
+    "cash_remaining": 866162,
+    "costume_slots_equipped": [
+      20454,
+      410286,
+      420034,
+      480177
+    ],
+    "wrong_tab_purchase_rejected": true,
+    "production_database_accessed": false
+  },
+  "build": {
+    "passed": true,
+    "production_written": false,
+    "before_map_sha256": "c755b50fe7e783a276bf60184b1d6fe68eba6312eaa10968f58bb57f9f3ce04e",
+    "baseline_translation_units": [
+      "clif.cpp"
+    ],
+    "baseline_rebuilt_map_sha256": "c755b50fe7e783a276bf60184b1d6fe68eba6312eaa10968f58bb57f9f3ce04e",
+    "fixed_translation_units": [
+      "clif.cpp"
+    ],
+    "candidate_map_sha256": "aeb0610bd9b30f987e8cc31d05ac22202db2b28ba229c61685b9feb9d14baea6",
+    "clif_before_sha256": "fd90f1a99fe31661c8752ef2c781aed8986482a0471f5f06cc3d618dddcd1411",
+    "clif_after_sha256": "d82a465d66f6c9245e6e6f4cd3a59b037d127f83c857fd1037759caa50efdb32",
+    "baseline_binary_reproduced": true,
+    "unrelated_objects_unchanged": true,
+    "candidate_binary": "/app/pn-cashshop-20261006/refresh-build4/source/map-server",
+    "source_delta": [
+      "src/map/clif.cpp"
+    ],
+    "baseline_cache": "/app/pn-auction-handoff-20261006/candidate",
+    "existing_live_source_differences": [
+      "src/char/int_storage.hpp",
+      "src/char/int_achievement.hpp",
+      "src/map/achievement.hpp",
+      "src/char/int_storage.cpp",
+      "src/char/int_achievement.cpp",
+      "src/custom/item_use_map.inc",
+      "src/map/achievement.cpp",
+      "src/map/pet.cpp",
+      "src/custom/global_point.hpp",
+      "src/custom/item_use.hpp"
+    ]
+  },
+  "client_assets": {
+    "passed": true,
+    "validated_distinct_files": 2127
+  },
+  "production_player_database_used_for_fixture": false
+}
