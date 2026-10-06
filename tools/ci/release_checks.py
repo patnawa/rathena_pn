@@ -24,6 +24,7 @@ from release_bundle import binding
 
 ROOT = Path(__file__).resolve().parents[2]
 TESTS = (
+    'auction_admission_test.py',
     'market_restore_test.py',
     'durable_schema_test.py',
     'achievement_persistence_test.py',

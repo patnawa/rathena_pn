@@ -17254,6 +17254,7 @@ void clif_parse_Auction_register( int32 fd, map_session_data* sd ){
 /// Cancels an auction (CZ_AUCTION_ADD_CANCEL).
 /// 024e <auction id>.L
 void clif_parse_Auction_cancel(int32 fd, map_session_data *sd){
+	if(!battle_config.feature_auction || pc_transaction_pending(sd))return;
 	uint32 auction_id = RFIFOL(fd,packet_db[RFIFOW(fd,0)].pos[0]);
 	intif_Auction_cancel(sd->status.char_id, auction_id);
 }
@@ -17262,6 +17263,7 @@ void clif_parse_Auction_cancel(int32 fd, map_session_data *sd){
 /// Closes an auction (CZ_AUCTION_REQ_MY_SELL_STOP).
 /// 025d <auction id>.L
 void clif_parse_Auction_close(int32 fd, map_session_data *sd){
+	if(!battle_config.feature_auction || pc_transaction_pending(sd))return;
 	uint32 auction_id = RFIFOL(fd,packet_db[RFIFOW(fd,0)].pos[0]);
 	intif_Auction_close(sd->status.char_id, auction_id);
 }
@@ -17270,6 +17272,7 @@ void clif_parse_Auction_close(int32 fd, map_session_data *sd){
 /// Places a bid on an auction.
 /// 024f <auction id>.L <money>.L (CZ_AUCTION_BUY)
 void clif_parse_Auction_bid( int32 fd, map_session_data* sd ){
+	if(!battle_config.feature_auction || pc_transaction_pending(sd))return;
 #if PACKETVER >= 20050718
 	const PACKET_CZ_AUCTION_BUY* p = reinterpret_cast<PACKET_CZ_AUCTION_BUY*>( RFIFOP( fd, 0 ) );
 
