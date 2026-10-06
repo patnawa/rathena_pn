@@ -311,57 +311,63 @@ bool mail_setattachment(map_session_data *sd, struct mail_message *msg)
 
 // Runs before legacy attachment deletion or pending-capacity reservations.
 bool pn_mail_getattachment_atomic(map_session_data& sd,mail_message& msg,int32 type) {
-    if(!(type&MAIL_ATT_ITEM))return false;
+    if(!(type&MAIL_ATT_ALL))return false;
     // Every item extraction uses this path, including ordinary items and
     // existing encoded eggs. Catalog reload cannot reopen the legacy raw-egg
     // window between attachment deletion and map delivery.
     bool any=false;
     for(const auto& attachment:msg.item)if(attachment.nameid && attachment.amount>0)any=true;
-    if(!any)return true;
+    const bool take_items=(type&MAIL_ATT_ITEM) && any;
+    const bool take_zeny=(type&MAIL_ATT_ZENY) && msg.zeny>0;
+    if(!take_items && !take_zeny)return true;
     auto request=pn_shop_request(sd,pn_shop::Asset);
     request->mail_id=msg.id;
-    memcpy(request->mail_items,msg.item,sizeof(request->mail_items));
-    if(type&MAIL_ATT_ZENY) {
+    if(take_items)memcpy(request->mail_items,msg.item,sizeof(request->mail_items));
+    if(take_zeny) {
         if(msg.zeny<0 || sd.status.zeny<0 || msg.zeny>MAX_WALLET_ZENY-sd.status.zeny){clif_mail_getattachment(&sd,&msg,1,MAIL_ATT_ZENY);return true;}
         request->mail_zeny=msg.zeny;
         request->wallet_after+=msg.zeny;
     }
     std::vector<pn_shop::Grant> grants;
-    for(const auto& attachment:msg.item)if(attachment.nameid && attachment.amount>0) {
+    for(const auto& attachment:request->mail_items)if(attachment.nameid && attachment.amount>0) {
         pn_shop::Grant grant{};grant.nameid=attachment.nameid;grant.amount=attachment.amount;grant.prototype=attachment;
         grants.push_back(grant);
     }
-    if(!pn_shop_begin(sd,request,grants))clif_mail_getattachment(&sd,&msg,2,MAIL_ATT_ITEM);
+    if(!pn_shop_begin(sd,request,grants)) {
+        if(take_items)clif_mail_getattachment(&sd,&msg,2,MAIL_ATT_ITEM);
+        if(take_zeny)clif_mail_getattachment(&sd,&msg,1,MAIL_ATT_ZENY);
+    }
     return true;
 }
 
 void pn_mail_asset_result(map_session_data& sd,const pn_shop::Commit& request,bool committed) {
+    if(request.kind==pn_shop::MailSend) {
+        if(committed) {
+            mail_clear(&sd);
+            sd.state.mail_writing=false;
+            if(battle_config.mail_daily_count) {
+                mail_refresh_remaining_amount(&sd);
+                auto* count=sd.sc.getSCE(SC_DAILYSENDMAILCNT);
+                if(count)sc_start2(&sd,&sd,SC_DAILYSENDMAILCNT,100,date_get_dayofyear(),count->val2+1,INFINITE_TICK);
+            }
+        }
+        clif_Mail_send(&sd,committed?WRITE_MAIL_SUCCESS:WRITE_MAIL_FAILED);
+        return;
+    }
     if(!request.mail_id)return;
+    const bool items=std::any_of(std::begin(request.mail_items),std::end(request.mail_items),[](const item& it){return it.nameid!=0;});
     for(auto& msg:sd.mail.inbox.msg)if(msg.id==request.mail_id) {
-        if(committed){memset(msg.item,0,sizeof(msg.item));if(request.mail_zeny)msg.zeny=0;}
-        clif_mail_getattachment(&sd,&msg,committed?0:2,MAIL_ATT_ITEM);
+        if(committed){if(items)memset(msg.item,0,sizeof(msg.item));if(request.mail_zeny)msg.zeny=0;}
+        if(items)clif_mail_getattachment(&sd,&msg,committed?0:2,MAIL_ATT_ITEM);
         if(request.mail_zeny)clif_mail_getattachment(&sd,&msg,committed?0:1,MAIL_ATT_ZENY);
         break;
     }
 }
 
 void mail_getattachment(map_session_data* sd, struct mail_message* msg, int64 zeny, struct item* item){
-	// The old extraction packet is retained for zeny only. Item transactions
-	// are acknowledged by pn_mail_asset_result; drain old requests at rollout.
-	for(int i=0;i<MAIL_MAX_ITEM;++i)if(item[i].nameid || item[i].amount) {
-		ShowError("mail_getattachment: unexpected legacy item reply for char %u mail %d; coordinated upgrade/drain required.\n",sd->status.char_id,msg->id);
-		return;
-	}
-
-	// Zeny receive
-	if( zeny > 0 ){
-		// Reduce the pending zeny
-		sd->mail.pending_zeny -= zeny;
-
-		// Add the zeny
-		pc_getzeny(sd, zeny, LOG_TYPE_MAIL, msg->send_id);
-		clif_mail_getattachment( sd, msg, 0, MAIL_ATT_ZENY );
-	}
+    // All current claims use immutable Asset receipts. A stale legacy reply
+    // cannot identify the session that owned it and must not credit this one.
+    return;
 }
 
 int32 mail_openmail( const map_session_data* sd )
@@ -377,27 +383,10 @@ int32 mail_openmail( const map_session_data* sd )
 }
 
 void mail_deliveryfail(map_session_data *sd, struct mail_message *msg){
-	int32 i;
-	int64 zeny = 0;
-
 	nullpo_retv(sd);
 	nullpo_retv(msg);
-
-	for( i = 0; i < MAIL_MAX_ITEM; i++ ){
-		if( msg->item[i].amount > 0 ){
-			// Item receive (due to failure)
-			pc_additem(sd, &msg->item[i], msg->item[i].amount, LOG_TYPE_MAIL);
-			zeny += battle_config.mail_attachment_price;
-		}
-	}
-
-	if( msg->zeny > 0 ){
-		std::int64_t refund;
-		if (pn_zeny::fee_total(msg->zeny, battle_config.mail_zeny_fee, zeny, refund))
-			pc_getzeny(sd,refund,LOG_TYPE_MAIL); // Return the exact checked debit.
-		else ShowError("Invalid mail refund for character %u.\n",sd->status.char_id);
-	}
-
+	// Player sends now settle through MailSend receipts. Legacy/system mail
+	// acknowledgements never own a debit on the currently connected session.
 	clif_Mail_send(sd, WRITE_MAIL_FAILED);
 }
 
@@ -437,67 +426,47 @@ bool mail_invalid_operation( const map_session_data* sd )
 * @param body_len Message's length
 */
 void mail_send(map_session_data *sd, const char *dest_name, const char *title, const char *body_msg, int32 body_len) {
-	struct mail_message msg;
-
 	nullpo_retv(sd);
-
-	if( sd->state.trading )
-		return;
-
-	if( DIFF_TICK(sd->cansendmail_tick, gettick()) > 0 ) {
-		clif_displaymessage(sd->fd,msg_txt(sd,675)); //"Cannot send mails too fast!!."
-		clif_Mail_send(sd, WRITE_MAIL_FAILED); // fail
-		return;
-	}
-
-	if( battle_config.mail_daily_count ){
-		mail_refresh_remaining_amount(sd);
-
-		// After calling mail_refresh_remaining_amount the status should always be there
-		if( sd->sc.getSCE(SC_DAILYSENDMAILCNT) == nullptr || sd->sc.getSCE(SC_DAILYSENDMAILCNT)->val2 >= battle_config.mail_daily_count ){
-			clif_Mail_send(sd, WRITE_MAIL_FAILED_CNT);
-			return;
-		}else{
-			sc_start2(sd, sd, SC_DAILYSENDMAILCNT, 100, date_get_dayofyear(), sd->sc.getSCE(SC_DAILYSENDMAILCNT)->val2 + 1, INFINITE_TICK);
-		}
-	}
-
-	if( body_len > MAIL_BODY_LENGTH )
-		body_len = MAIL_BODY_LENGTH;
-
-	if( !mail_setattachment(sd, &msg) ) { // Invalid Append condition
-		int32 i;
-
-		clif_Mail_send(sd, WRITE_MAIL_FAILED); // fail
-		for( i = 0; i < MAIL_MAX_ITEM; i++ ){
-			mail_removeitem(sd,0,sd->mail.item[i].index + 2, sd->mail.item[i].amount);
-		}
-		mail_removezeny(sd,false);
-		return;
-	}
-
-	msg.id = 0; // id will be assigned by charserver
-	msg.send_id = sd->status.char_id;
-	msg.dest_id = 0; // will attempt to resolve name
-	safestrncpy(msg.send_name, sd->status.name, NAME_LENGTH);
-	safestrncpy(msg.dest_name, (char*)dest_name, NAME_LENGTH);
-	safestrncpy(msg.title, (char*)title, MAIL_TITLE_LENGTH);
-	msg.type = MAIL_INBOX_NORMAL;
-
-	if (msg.title[0] == '\0') {
-		return; // Message has no length and somehow client verification was skipped.
-	}
-
-	if (body_len)
-		safestrncpy(msg.body, (char*)body_msg, min(body_len + 1, MAIL_BODY_LENGTH));
-	else
-		memset(msg.body, 0x00, MAIL_BODY_LENGTH);
-
-	msg.timestamp = time(nullptr);
-	if( !intif_Mail_send(sd->status.account_id, &msg) )
-		mail_deliveryfail(sd, &msg);
-
-	sd->cansendmail_tick = gettick() + battle_config.mail_delay; // Flood Protection
+    if(mail_invalid_operation(sd))return;
+    auto fail=[&](){clif_Mail_send(sd,WRITE_MAIL_FAILED);};
+    if(!dest_name || !*dest_name || !title || !*title || body_len<0 ||
+       (body_len && !body_msg) || !pc_can_give_items(sd) || DIFF_TICK(sd->cansendmail_tick,gettick())>0) {fail();return;}
+    if(battle_config.mail_daily_count) {
+        mail_refresh_remaining_amount(sd);
+        auto* count=sd->sc.getSCE(SC_DAILYSENDMAILCNT);
+        if(!count || count->val2>=battle_config.mail_daily_count){clif_Mail_send(sd,WRITE_MAIL_FAILED_CNT);return;}
+    }
+    auto request=pn_shop_request(*sd,pn_shop::MailSend);
+    auto& envelope=*new(&request->outgoing) pn_shop::MailEnvelope{};
+    safestrncpy(envelope.recipient,dest_name,sizeof(envelope.recipient));
+    safestrncpy(envelope.title,title,sizeof(envelope.title));
+    if(body_len)safestrncpy(envelope.body,body_msg,std::min<size_t>(static_cast<size_t>(body_len)+1,sizeof(envelope.body)));
+    envelope.zeny=sd->mail.zeny;
+    envelope.fee_percent=battle_config.mail_zeny_fee;
+    envelope.attachment_price=battle_config.mail_attachment_price;
+    uint32 required[MAX_INVENTORY]{};uint32 count=0;
+    for(int i=0;i<MAIL_MAX_ITEM;++i) {
+        const auto& selected=sd->mail.item[i];
+        if(!selected.nameid && !selected.amount)continue;
+        const int index=selected.index;
+        if(index<0 || index>=sd->status.inventory_slots || index>=MAX_INVENTORY ||
+           selected.amount<=0 || selected.amount>MAX_AMOUNT || required[index]){fail();return;}
+        const auto& source=sd->inventory.u.items_inventory[index];
+        auto info=item_db.find(source.nameid);
+        if(!info || info.get()!=sd->inventory_data[index] || source.nameid!=selected.nameid ||
+           source.amount<selected.amount || source.equip || source.equipSwitch || source.expire_time ||
+           itemdb_ishatched_egg(&source) || !itemdb_available(source.nameid) || !itemdb_canmail(&source,pc_get_group_level(sd)) ||
+           (source.bound && !pc_can_give_bounded_items(sd))){fail();return;}
+        auto& output=envelope.attachments[i];output=source;output.id=0;output.amount=selected.amount;
+        required[index]=selected.amount;++count;
+    }
+    int64 total=0;
+    if(!pn_zeny::fee_total(envelope.zeny,envelope.fee_percent,static_cast<int64>(count)*envelope.attachment_price,total) || total>sd->status.zeny){fail();return;}
+    request->wallet_after-=total;
+    // Keep the inventory and wallet intact until the mail header, attachments,
+    // debit and receipt have committed together. Rejection needs no refund.
+    if(!pn_shop_begin(*sd,request,{},required)){fail();return;}
+    sd->cansendmail_tick=gettick()+battle_config.mail_delay;
 }
 
 void mail_refresh_remaining_amount( map_session_data* sd ){

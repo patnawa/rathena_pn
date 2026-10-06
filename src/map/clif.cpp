@@ -2429,6 +2429,7 @@ void clif_npc_market_purchase_ack( map_session_data& sd, e_purchase_result res, 
 // Durable results use the immutable plan, never a reloaded/closed NPC pointer.
 void clif_shop_commit_result(map_session_data& sd,const pn_shop::Commit& request,
 	const std::vector<pn_shop::Event>& events,bool committed) {
+    if(request.kind==pn_shop::MailSend || request.mail_id)return; // RODEX owns its acknowledgements.
 	if(((request.kind==pn_shop::Asset || request.kind==pn_shop::ItemUse) && request.response==pn_shop::Automatic) || request.kind==pn_shop::PetClaim) {
 		clif_displaymessage(sd.fd,committed?(request.kind==pn_shop::PetClaim?
 			"Pet rewards recovered.":"Rewards secured."):"Reward transaction rejected; no payment was taken.");
@@ -16967,13 +16968,13 @@ void clif_parse_Mail_send(int32 fd, map_session_data *sd){
 	uint16 realTitleLength = min(titleLength, MAIL_TITLE_LENGTH);
 	uint16 realTextLength = min(textLength, MAIL_BODY_LENGTH);
 
-	char title[MAIL_TITLE_LENGTH];
-	char text[MAIL_BODY_LENGTH];
+	char title[MAIL_TITLE_LENGTH]{};
+	char text[MAIL_BODY_LENGTH]{};
 
 	safestrncpy(title, RFIFOCP(fd, headerLength), realTitleLength);
 	safestrncpy(text, RFIFOCP(fd, headerLength + titleLength), realTextLength);
 
-	if( zeny > 0 ){
+	{ // Zero explicitly clears an earlier composer amount too.
 		if( zeny > static_cast<uint64>(MAX_WALLET_ZENY) || mail_setitem(sd,0,static_cast<int64>(zeny)) != MAIL_ATTACH_SUCCESS ){
 			clif_Mail_send(sd,WRITE_MAIL_FAILED);
 			return;

@@ -4,6 +4,7 @@
 #include <custom/shop_receipt_codec.hpp>
 #include <custom/shop_progression.hpp>
 #include <common/socket.hpp>
+#include <char/int_mail.hpp>
 #include <algorithm>
 #include <cerrno>
 #include <map>
@@ -19,8 +20,8 @@ static bool pn_shop_tables(const pn_shop::Commit& r) {
     if(r.point.scope==pn_shop::CharacterPoint)tables.push_back(schema_config.char_reg_num_table);
     if(r.point.scope==pn_shop::CharacterPoint || r.point.scope==pn_shop::AccountPoint)tables.push_back("pn_point_registry_keys");
     if(r.point.scope==pn_shop::GlobalPoint)tables.push_back("pn_global_point_barriers");
-    if(r.mail_id){tables.push_back(schema_config.mail_db);tables.push_back(schema_config.mail_attachment_db);}
-    if(r.pet_count || r.pet_retire_count || r.mail_id){tables.push_back(schema_config.pet_db);tables.push_back("pn_pet_entitlements");}
+    if(r.mail_id || r.kind==pn_shop::MailSend){tables.push_back(schema_config.mail_db);tables.push_back(schema_config.mail_attachment_db);}
+    if(r.pet_count || r.pet_retire_count || r.mail_id || r.kind==pn_shop::MailSend){tables.push_back(schema_config.pet_db);tables.push_back("pn_pet_entitlements");}
     if(r.progression_size)tables.push_back(schema_config.achievement_table);
     for(const char* table:tables) {
         if(Sql_Query(sql_handle,"SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='%s'",table)!=SQL_SUCCESS)return false;
@@ -73,6 +74,7 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
     const auto identity=pn_shop_receipt_identity(r,progression);
     uint32 outcome=pn_shop::Retry;
     bool transaction_complete=false,new_commit=false;
+    mail_message mail_notification{};
     do {
         // A retry may be from a departed session. Existing receipts are safe to
         // read, but must never reapply their old inventory or currency snapshot.
@@ -181,12 +183,17 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
         // Pet creation/claim belongs to this same payment + inventory + stock
         // transaction. A conflict must undo earlier outputs before recording a
         // durable rejection; SQL failure remains an indeterminate retry.
-        if(r.pet_count || r.pet_retire_count || r.mail_id) {
+        if(r.pet_count || r.pet_retire_count || r.mail_id || r.kind==pn_shop::MailSend) {
             if(Sql_Query(sql_handle,"SAVEPOINT pn_pet_outputs")!=SQL_SUCCESS)break;
             bool conflict=false;
             const auto mail_result=pn_mail_asset_take(r);
             if(mail_result==pn_mail_asset_result::Error)break;
             conflict=mail_result==pn_mail_asset_result::Conflict;
+            if(!conflict) {
+                const auto sent=pn_mail_asset_send(r,mail_notification);
+                if(sent==pn_mail_asset_result::Error)break;
+                conflict=sent==pn_mail_asset_result::Conflict;
+            }
             for(uint16_t i=0;i<r.pet_count && !conflict;++i) {
                 const auto& change=r.pets[i];pn_pet::Result result;
                 if(change.claim_id)result=pn_pet::claim_locked(r.account_id,r.char_id,change.claim_id,change.output.egg);
@@ -261,6 +268,7 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
     if(ended!=SQL_SUCCESS)return pn_shop::Retry;
     if(!transaction_complete)return pn_shop::Retry;
     if(new_commit) {
+        if(r.kind==pn_shop::MailSend && mail_notification.id)mapif_Mail_new(&mail_notification);
         auto found=char_get_chardb().find(static_cast<uint32>(r.char_id));
         if(found!=char_get_chardb().end() && found->second) {
             found->second->zeny=r.wallet_after;

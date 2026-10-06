@@ -20,7 +20,8 @@ bool pn_shop_plan_inventory(const map_session_data& sd,pn_shop::Commit& request,
     const std::vector<pn_shop::Grant>& grants,const uint32_t* requiredItems,
     std::vector<pn_shop::Event>& events,uint32_t& final_weight) {
     auto* r=&request;
-    if((grants.empty() && request.kind!=pn_shop::ItemUse) || grants.size()>MAX_INVENTORY ||
+    if((grants.empty() && request.kind!=pn_shop::ItemUse && request.kind!=pn_shop::MailSend &&
+        !(request.kind==pn_shop::Asset && request.mail_id && request.mail_zeny>0)) || grants.size()>MAX_INVENTORY ||
        sd.status.inventory_slots<1 || sd.status.inventory_slots>MAX_INVENTORY)return false;
     events.clear();
     r->pet_count=0;
@@ -33,7 +34,7 @@ bool pn_shop_plan_inventory(const map_session_data& sd,pn_shop::Commit& request,
     if(requiredItems)for(int i=0;i<MAX_INVENTORY;++i)if(requiredItems[i]) {
         auto& it=r->items[i];auto data=item_db.find(it.nameid);
         if(!data || i>=sd.status.inventory_slots || it.amount<=0 || static_cast<uint32_t>(it.amount)<requiredItems[i] || it.equip || it.equipSwitch)return false;
-        if(it.card[0]==CARD0_PET) {
+        if(it.card[0]==CARD0_PET && r->kind!=pn_shop::MailSend) {
             if((data->type!=IT_PETEGG && !pet_db_search(it.nameid,PET_EGG)) || it.amount!=1 || requiredItems[i]!=1 ||
                it.card[1]>UINT16_MAX || it.card[2]>INT16_MAX || !(it.card[1]|it.card[2]) || r->kind==pn_shop::PetClaim)return false;
             auto& retired=r->retired_pets[r->pet_retire_count++];

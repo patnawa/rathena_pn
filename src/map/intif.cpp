@@ -2394,7 +2394,7 @@ int32 intif_Mail_read(int32 mail_id)
  * @return 0=error, 1=msg sent
  */
 bool intif_mail_getattach( map_session_data* sd, struct mail_message *msg, enum mail_attachment_type type){
-	if(type&MAIL_ATT_ITEM)return false; // Items require the atomic Asset protocol.
+	if(type&MAIL_ATT_ALL)return false; // All player claims require the atomic Asset protocol.
 	if (CheckForCharServer())
 		return false;
 

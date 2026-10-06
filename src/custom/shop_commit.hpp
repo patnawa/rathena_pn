@@ -4,11 +4,12 @@
 #include <common/mmo.hpp>
 #include <custom/pet_entitlement.hpp>
 #include <custom/shop_progression.hpp>
+#include <custom/zeny_arithmetic.hpp>
 #include <cstdint>
 #include <cstring>
 #include <limits>
 namespace pn_shop {
-enum Kind : uint32_t { Market=1, Barter=2, Sale=3, Asset=4, PetClaim=5, ItemUse=6 };
+enum Kind : uint32_t { Market=1, Barter=2, Sale=3, Asset=4, PetClaim=5, ItemUse=6, MailSend=7 };
 constexpr uint16_t protocol_version=3;
 enum Outcome : uint32_t { Retry=0, Committed=1, Rejected=2, ProgressionStale=3 };
 enum Response : uint16_t { Automatic=0, BarterResponse=1, ShopResponse=2, MarketResponse=3, CashNpcResponse=4, CashButtonResponse=5 };
@@ -32,6 +33,15 @@ struct PetChange {
 struct PetRetirement { uint32_t pet_id=0,egg_id=0; };
 enum PointScope : uint8_t { NoPoint=0, CharacterPoint=1, AccountPoint=2, SessionPoint=3, GlobalPoint=4 };
 struct PointDebit { uint8_t scope=NoPoint; char key[32]{}; int64_t before=0,after=0; };
+// MailSend has no NPC stock rows. Its tagged envelope occupies the same wire
+// region, preserving historical receipt bytes and the v3 Commit frame size.
+struct MailEnvelope {
+    char recipient[NAME_LENGTH]{}, title[MAIL_TITLE_LENGTH]{}, body[MAIL_BODY_LENGTH]{};
+    int64_t zeny=0;
+    uint32_t fee_percent=0,attachment_price=0;
+    item attachments[MAIL_MAX_ITEM]{};
+};
+static_assert(sizeof(MailEnvelope)<=sizeof(Stock)*stock_capacity,"Mail envelope exceeds stock region");
 struct Commit {
     uint16_t packet=0x3098,length=0;
     uint32_t kind=Market,account_id=0,char_id=0;
@@ -42,7 +52,7 @@ struct Commit {
     uint32_t stock_count=0;
     uint16_t version=protocol_version,pet_count=0,response=Automatic,pet_retire_count=0;
     item items[MAX_INVENTORY]{};
-    Stock stocks[stock_capacity]{};
+    union { Stock stocks[stock_capacity]{}; MailEnvelope outgoing; };
     PetChange pets[MAX_INVENTORY]{};
     PetRetirement retired_pets[MAX_INVENTORY]{};
     PointDebit point{};
@@ -62,7 +72,7 @@ static_assert(sizeof(Commit)<65536,"NPC stock purchase exceeds inter-server fram
 static_assert(sizeof(Commit)==59958,"Update durable shop payload migrations when Commit changes");
 static_assert(sizeof(Ack)==38,"NPC stock acknowledgement ABI");
 inline bool valid(const Commit& r) {
-    if(r.packet!=0x3098 || r.length!=sizeof(r) || r.version!=protocol_version || r.kind<Market || r.kind>ItemUse ||
+    if(r.packet!=0x3098 || r.length!=sizeof(r) || r.version!=protocol_version || r.kind<Market || r.kind>MailSend ||
        !r.account_id || !r.char_id || !(r.nonce_hi|r.nonce_lo) || !r.sequence ||
        (r.kind<=Sale && !r.stock_count) || r.stock_count>stock_capacity || r.counter_after<r.counter_before ||
        r.pet_count>MAX_INVENTORY || r.pet_retire_count>MAX_INVENTORY || r.response>CashButtonResponse ||
@@ -93,10 +103,26 @@ inline bool valid(const Commit& r) {
             if(it.nameid) {if(it.amount<1 || it.amount>MAX_AMOUNT || it.id || it.equip || it.equipSwitch || it.expire_time)return false;any=true;}
             else if(it.amount)return false;
         }
-        if(!any)return false;
+        if(!any && !r.mail_zeny)return false;
     }else{
         if(r.mail_zeny)return false;
         for(const auto& it:r.mail_items)if(it.nameid || it.amount)return false;
+    }
+    if(r.kind==MailSend) {
+        const auto& m=r.outgoing;
+        if(r.mail_id || r.pet_count || r.pet_retire_count || r.point.scope || r.response ||
+           r.counter_after!=r.counter_before || !m.recipient[0] || !m.title[0] ||
+           !std::memchr(m.recipient,0,sizeof(m.recipient)) || !std::memchr(m.title,0,sizeof(m.title)) ||
+           !std::memchr(m.body,0,sizeof(m.body)))return false;
+        uint32_t count=0;
+        for(const auto& it:m.attachments) {
+            if(!it.nameid){if(it.amount)return false;continue;}
+            if(it.amount<1 || it.amount>MAX_AMOUNT || it.id || it.equip || it.equipSwitch || it.expire_time)return false;
+            ++count;
+        }
+        int64_t total=0;
+        if(!pn_zeny::fee_total(m.zeny,m.fee_percent,static_cast<int64_t>(count)*m.attachment_price,total) ||
+           total>r.wallet_before || r.wallet_after!=r.wallet_before-total)return false;
     }
     if(r.kind!=Sale && r.kind!=Asset && r.kind!=ItemUse && (r.cash_after!=r.cash_before || r.kafra_after!=r.kafra_before))return false;
     if(r.kind==Sale && r.wallet_after!=r.wallet_before)return false;

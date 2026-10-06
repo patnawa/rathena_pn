@@ -207,7 +207,7 @@ static void pn_shop_resolve(const pn_shop::Ack& reply,bool unsent) {
     auto deferred=std::move(sd->shop_commit.deferred_achievements);
     bool progression_applied=true;
     if (reply.outcome == pn_shop::Committed) {
-        auto logtype = request->kind == pn_shop::Sale ? LOG_TYPE_CASH :
+        auto logtype = request->kind == pn_shop::MailSend || request->mail_id ? LOG_TYPE_MAIL : request->kind == pn_shop::Sale ? LOG_TYPE_CASH :
             request->kind == pn_shop::Barter || request->response==pn_shop::BarterResponse ? LOG_TYPE_BARTER : LOG_TYPE_NPC;
         // Record the consumed part before replacing the immutable inventory.
         for (int i = 0; i < MAX_INVENTORY; ++i) {

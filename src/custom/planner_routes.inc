@@ -24,6 +24,7 @@
 {"barter_EP17_2_EP","Spiera#ep172_soapstone"},
 {"barter_Ep_17_2_C_Admin_Acc","Child Manager \251\254#ep172_pet"},
 {"barter_Teleport_Ep17_02","Butterfly Merchant#ba_in01"},
+{"barter_alice_equipment","Confused Boy#alice_exchange"},
 {"barter_costume_1","Mysterious Cookie Shop#stone"},
 {"barter_costume_2","Mysterious Cookie Shop#stone"},
 {"barter_ein_dun03","Site manager Elmen#extdq0"},

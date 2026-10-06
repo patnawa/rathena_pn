@@ -34,7 +34,7 @@ with tempfile.TemporaryDirectory(prefix='pn-package-pet-') as temp:
  pet=(ROOT/'src/map/pet.cpp').read_text()
  pet=pet[pet.index('pn_pet_grant_result pn_pet_grant('):pet.index('/**\n * Make pet drop target.')]
  pet=pet.replace('pn_pet_grant(', 'fixture_pet_grant(',1).replace('pn_shop_begin(', 'fixture_begin(')
- driver='#include <custom/item_use.hpp>\n'+prefix+(ROOT/'tools/ci/package_pet_native_test.cpp').read_text().replace('// PRODUCTION',planner+'\n'+source+'\n'+mail+'\n'+pet+'\n'+admin)
+ driver='#include <custom/item_use.hpp>\n#include <map/date.hpp>\n#include <map/mail.hpp>\n'+prefix+(ROOT/'tools/ci/package_pet_native_test.cpp').read_text().replace('// PRODUCTION',planner+'\n'+source+'\n'+mail+'\n'+pet+'\n'+admin)
  cpp=out/'test.cpp';cpp.write_text(driver)
  flags=['g++','-std=c++17','-O0','-fsanitize=undefined','-fno-sanitize-recover=all','-DPACKETVER=20260219']
  flags+=['-I'+str(ROOT/p) for p in ('src','3rdparty/libconfig','3rdparty/rapidyaml/src','3rdparty/rapidyaml/ext/c4core/src','3rdparty/json/include')]+['-I/usr/include/mysql']

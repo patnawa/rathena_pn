@@ -72,6 +72,77 @@ static int pet_mail_cases(){
         require(result("SELECT COUNT(*) FROM pn_pet_entitlements")=="0|\n","existing mail identity never creates a second entitlement");
         if(encoded)require(result("SELECT card1,unique_id FROM inventory WHERE nameid=9001")=="77|12345|\n","existing mailed egg keeps pet and item identities");
     }
+    // Zeny-only claim leaves the independently claimable item rows untouched.
+    pet_seed();sql("DELETE FROM mail_attachments");sql("DELETE FROM mail");
+    sql("INSERT INTO mail(id,dest_id,status,zeny) VALUES(703,99001313,2,75)");
+    sql("INSERT INTO mail_attachments(id,`index`,nameid,amount,identify) VALUES(703,0,501,2,1)");
+    auto money=request(pn_shop::Asset);money.stock_count=0;for(auto& stock:money.stocks)stock={};
+    money.mail_id=703;money.mail_zeny=75;money.wallet_after=1075;money.counter_after=money.counter_before;
+    money.items[2]={};money.items[3]={};
+    require(pn_shop::valid(money),"Zeny-only receipt retains original protocol frame size and validates");
+    auto initial_money=mailstate();
+    for(const std::string& fault:{"BEFORE UPDATE ON mail","BEFORE UPDATE ON `char`","BEFORE INSERT ON pn_shop_commits"}) {
+        sql("CREATE TRIGGER mail_money_fault "+fault+" FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='mail money fault'");
+        require(pn_shop_tosql(money,true)==pn_shop::Retry,"Zeny claim failure retries");
+        require(mailstate()==initial_money,"Zeny claim rolls back wallet, mail and receipt together");
+        sql("DROP TRIGGER mail_money_fault");
+    }
+    require(pn_shop_tosql(money,true)==pn_shop::Committed,"Zeny-only claim commits");
+    require(result("SELECT zeny FROM mail WHERE id=703")=="0|\n" && result("SELECT zeny FROM `char` WHERE char_id=99001313")=="1075|\n","exact Zeny transfer");
+    require(result("SELECT amount FROM mail_attachments WHERE id=703")=="2|\n","Zeny claim preserves items");
+    auto settled_money=mailstate();require(pn_shop_tosql(money,false)==pn_shop::Committed && mailstate()==settled_money,"lost Zeny ACK replays exactly once after departure");
+
+    // Outgoing attachments and fees share the same transaction/receipt as the
+    // recipient mail. Rejection has no removed assets to refund.
+    pet_seed();sql("DELETE FROM mail_attachments");sql("DELETE FROM mail");
+    auto send=request(pn_shop::MailSend);send.stock_count=0;for(auto& stock:send.stocks)stock={};
+    auto& envelope=*new(&send.outgoing) pn_shop::MailEnvelope{};
+    std::strcpy(envelope.recipient,"Other fixture");std::strcpy(envelope.title,"Durable send");std::strcpy(envelope.body,"Real SQL mail test");
+    envelope.zeny=100;envelope.attachment_price=25;
+    envelope.attachments[0]=send.items[1];envelope.attachments[0].id=0;envelope.attachments[0].amount=3;
+    send.items[1].amount=17;send.items[2]={};send.items[3]={};send.wallet_after=875;send.counter_after=send.counter_before;
+    require(pn_shop::valid(send),"outgoing envelope validates without changing packed frame size");
+    auto initial_send=mailstate();
+    for(const std::string& fault:{"BEFORE INSERT ON mail","BEFORE INSERT ON mail_attachments","BEFORE UPDATE ON inventory","BEFORE UPDATE ON `char`","BEFORE INSERT ON pn_shop_commits"}) {
+        sql("CREATE TRIGGER mail_send_fault "+fault+" FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='mail send fault'");
+        require(pn_shop_tosql(send,true)==pn_shop::Retry,"outgoing SQL failure retries");
+        require(mailstate()==initial_send,"outgoing mail, inventory, wallet and receipt roll back together");
+        sql("DROP TRIGGER mail_send_fault");
+    }
+    auto missing=send;missing.sequence=99;std::strcpy(missing.outgoing.recipient,"Missing fixture");
+    auto before_missing=mailstate(false);
+    require(pn_shop_tosql(missing,true)==pn_shop::Rejected && mailstate(false)==before_missing,"missing recipient rejects without debit or inventory loss");
+    require(pn_shop_tosql(send,true)==pn_shop::Committed,"outgoing attachments and fees commit");
+    require(result("SELECT dest_id,zeny FROM mail")=="99001314|100|\n","recipient receives exact mail amount");
+    require(result("SELECT nameid,amount FROM mail_attachments")=="503|3|\n","recipient receives exact attachment");
+    require(result("SELECT amount FROM inventory WHERE id=2")=="17|\n" && result("SELECT zeny FROM `char` WHERE char_id=99001313")=="875|\n","sender inventory and exact fee debit commit");
+    auto settled_send=mailstate();require(pn_shop_tosql(send,false)==pn_shop::Committed && mailstate()==settled_send,"outgoing lost ACK cannot send or charge twice");
+    // Existing eggs move their identity; they must never be retired or minted.
+    pet_seed();sql("DELETE FROM mail_attachments");sql("DELETE FROM mail");
+    sql("INSERT INTO pet(pet_id,class,name,egg_id,incubate,account_id,char_id) VALUES(77,1002,'Outgoing egg',9001,1,990013,99001313)");
+    sql("INSERT INTO inventory(id,char_id,nameid,amount,identify,card0,card1,unique_id) VALUES(9,99001313,9001,1,1,256,77,12345)");
+    auto eggsend=send;eggsend.outgoing.attachments[0]={};auto& egg=eggsend.outgoing.attachments[0];
+    egg.nameid=9001;egg.amount=1;egg.identify=1;egg.card[0]=pn_pet::egg_marker;egg.card[1]=77;egg.unique_id=12345;
+    eggsend.items[1].amount=20;
+    auto original_egg=mailstate();
+    sql("CREATE TRIGGER outgoing_pet_fault BEFORE UPDATE ON pet FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='outgoing pet fault'");
+    require(pn_shop_tosql(eggsend,true)==pn_shop::Retry && mailstate()==original_egg,"pet detach failure preserves mail and sender egg");
+    sql("DROP TRIGGER outgoing_pet_fault");
+    auto active=eggsend;active.sequence=100;sql("UPDATE pet SET incubate=0 WHERE pet_id=77");auto active_before=mailstate(false);
+    require(pn_shop_tosql(active,true)==pn_shop::Rejected && mailstate(false)==active_before,"active pet cannot be mailed");
+    sql("UPDATE pet SET incubate=1 WHERE pet_id=77");
+    require(pn_shop_tosql(eggsend,true)==pn_shop::Committed,"existing pet transfers with outgoing mail");
+    require(result("SELECT account_id,char_id,incubate FROM pet WHERE pet_id=77")=="0|0|1|\n","mailed pet is detached and incubated");
+    require(result("SELECT card0,card1,unique_id FROM mail_attachments")=="256|77|12345|\n" && result("SELECT COUNT(*) FROM inventory WHERE nameid=9001")=="0|\n","same pet identity moves out of sender inventory");
+    require(result("SELECT COUNT(*) FROM pn_pet_entitlements")=="0|\n","moving pet never creates an entitlement");
+    for(int text_only=0;text_only<2;++text_only){
+        pet_seed();sql("DELETE FROM mail_attachments");sql("DELETE FROM mail");
+        auto plain=send;plain.items[1].amount=20;plain.outgoing.attachments[0]={};plain.outgoing.zeny=text_only?0:100;
+        plain.wallet_after=text_only?1000:900;
+        require(pn_shop_tosql(plain,true)==pn_shop::Committed,"text or Zeny-only outgoing mail commits");
+        require(result("SELECT COUNT(*) FROM mail")=="1|\n" && result("SELECT COUNT(*) FROM mail_attachments")=="0|\n","attachment-free message is persisted once");
+    }
+    std::cout<<"RODEX_DURABLE_SQL_PASS zeny_claim outgoing_send rollback retry metadata pet_transfer text_only"<<std::endl;
     std::cout<<"PET_MAIL_ASSET_PASS "<<checks<<"; production SQL mail consumption and entitlement atomicity"<<std::endl;
     return 0;
 }

@@ -13,6 +13,8 @@ static pn_mail_asset_result pn_mail_asset_take(const pn_shop::Commit& r) {
     if(!valid)return pn_mail_asset_result::Error;
     if(owner!=r.char_id || (status<MAIL_NEW || status>MAIL_READ) || (charserv_config.mail_retrieve==0 && status!=MAIL_READ) ||
        (r.mail_zeny && zeny!=r.mail_zeny))return pn_mail_asset_result::Conflict;
+    const bool take_items=std::any_of(std::begin(r.mail_items),std::end(r.mail_items),[](const item& it){return it.nameid!=0;});
+    if(take_items) {
     std::string query="SELECT amount,nameid,refine,attribute,identify,unique_id,bound,enchantgrade";
     for(int j=0;j<MAX_SLOTS;++j)query+=",card"+std::to_string(j);
     for(int j=0;j<MAX_ITEM_RDM_OPT;++j)query+=",option_id"+std::to_string(j)+",option_val"+std::to_string(j)+",option_parm"+std::to_string(j);
@@ -58,7 +60,44 @@ static pn_mail_asset_result pn_mail_asset_take(const pn_shop::Commit& r) {
     }
     if(Sql_Query(sql_handle,"DELETE FROM `%s` WHERE id=%u",schema_config.mail_attachment_db,r.mail_id)!=SQL_SUCCESS)
         return pn_mail_asset_result::Error;
+    }
     if(r.mail_zeny && (Sql_Query(sql_handle,"UPDATE `%s` SET zeny=0 WHERE id=%u AND zeny=%" PRId64,schema_config.mail_db,r.mail_id,r.mail_zeny)!=SQL_SUCCESS || Sql_NumRowsAffected(sql_handle)!=1))
         return pn_mail_asset_result::Error;
     return pn_mail_asset_result::Ready;
+}
+
+// The caller's transaction also persists the sender's final inventory/wallet
+// and replay receipt. A missing recipient is a durable rejection, SQL errors retry.
+static pn_mail_asset_result pn_mail_asset_send(const pn_shop::Commit& r,mail_message& msg) {
+    if(r.kind!=pn_shop::MailSend)return pn_mail_asset_result::Ready;
+    if(!Sql_InTransaction(sql_handle))return pn_mail_asset_result::Error;
+    const auto& m=r.outgoing;char escaped[NAME_LENGTH*2+1];Sql_EscapeString(sql_handle,escaped,m.recipient);
+    if(Sql_Query(sql_handle,"SELECT char_id,name FROM `%s` WHERE name='%s' LIMIT 1",schema_config.char_db,escaped)!=SQL_SUCCESS)return pn_mail_asset_result::Error;
+    int row=Sql_NextRow(sql_handle);int64 recipient=0;char* name=nullptr;
+    bool valid=row==SQL_SUCCESS && pn_shop_number(0,recipient) && recipient>0 && recipient<=UINT32_MAX &&
+        Sql_GetData(sql_handle,1,&name,nullptr)==SQL_SUCCESS && name;
+    if(valid){msg.dest_id=static_cast<uint32>(recipient);safestrncpy(msg.dest_name,name,sizeof(msg.dest_name));}
+    Sql_FreeResult(sql_handle);
+    if(row==SQL_NO_DATA)return pn_mail_asset_result::Conflict;
+    if(!valid)return pn_mail_asset_result::Error;
+    if(Sql_Query(sql_handle,"SELECT name FROM `%s` WHERE char_id=%u AND account_id=%u",schema_config.char_db,r.char_id,r.account_id)!=SQL_SUCCESS)return pn_mail_asset_result::Error;
+    valid=Sql_NextRow(sql_handle)==SQL_SUCCESS && Sql_GetData(sql_handle,0,&name,nullptr)==SQL_SUCCESS && name;
+    if(valid)safestrncpy(msg.send_name,name,sizeof(msg.send_name));
+    Sql_FreeResult(sql_handle);if(!valid)return pn_mail_asset_result::Error;
+    msg.send_id=r.char_id;msg.zeny=m.zeny;msg.type=MAIL_INBOX_NORMAL;msg.status=MAIL_NEW;msg.timestamp=time(nullptr);
+    safestrncpy(msg.title,m.title,sizeof(msg.title));safestrncpy(msg.body,m.body,sizeof(msg.body));
+    memcpy(msg.item,m.attachments,sizeof(msg.item));
+    for(const auto& it:m.attachments)if(it.nameid && it.card[0]==pn_pet::egg_marker) {
+        if(it.amount!=1 || !(it.card[1]|it.card[2]) || it.card[1]>UINT16_MAX || it.card[2]>INT16_MAX)return pn_mail_asset_result::Conflict;
+        const uint32 id=it.card[1]|(it.card[2]<<16);
+        if(Sql_Query(sql_handle,"SELECT egg_id,incubate,account_id,char_id FROM `%s` WHERE pet_id=%u FOR UPDATE",schema_config.pet_db,id)!=SQL_SUCCESS)return pn_mail_asset_result::Error;
+        int64 egg=0,incubate=0,account=0,character=0;row=Sql_NextRow(sql_handle);
+        valid=row==SQL_SUCCESS && pn_shop_number(0,egg) && pn_shop_number(1,incubate) && pn_shop_number(2,account) && pn_shop_number(3,character);
+        Sql_FreeResult(sql_handle);
+        if(row==SQL_NO_DATA)return pn_mail_asset_result::Conflict;
+        if(!valid)return pn_mail_asset_result::Error;
+        if(egg!=it.nameid || incubate!=1 || !((!account && !character) || (account==r.account_id && character==r.char_id)))return pn_mail_asset_result::Conflict;
+        if(Sql_Query(sql_handle,"UPDATE `%s` SET account_id=0,char_id=0 WHERE pet_id=%u",schema_config.pet_db,id)!=SQL_SUCCESS)return pn_mail_asset_result::Error;
+    }
+    return mail_savemessage_locked(&msg)>0?pn_mail_asset_result::Ready:pn_mail_asset_result::Error;
 }
