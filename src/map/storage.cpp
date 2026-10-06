@@ -584,6 +584,28 @@ void storage_guild_delete(int32 guild_id)
 	guild_storage_db.erase(guild_id);
 }
 
+// A member's role can change while the storage window remains open.
+static bool storage_guild_access(const map_session_data& sd) {
+	if (!sd.guild || sd.status.guild_id <= 0 || sd.guild->guild.guild_id != sd.status.guild_id)
+		return false;
+	const int32 position = guild_getposition(sd);
+	if (position < 0 || position >= MAX_GUILDPOSITION)
+		return false;
+#if PACKETVER >= 20140205
+	if (!(sd.guild->guild.position[position].mode & GUILD_PERM_STORAGE))
+		return false;
+#endif
+	return true;
+}
+
+static bool storage_guild_transfer_ready(const map_session_data& sd, const s_storage& stor) {
+	return storage_guild_access(sd) && sd.state.storage_flag == 2 &&
+		stor.type == TABLE_GUILD_STORAGE && stor.id == sd.status.guild_id &&
+		stor.status && !stor.lock && stor.max_amount > 0 && stor.max_amount <= MAX_GUILD_STORAGE &&
+		stor.amount <= stor.max_amount && !pc_transaction_pending(&sd) &&
+		!sd.multi_storage.loading && chrif_isconnected() && pc_can_give_items(&sd);
+}
+
 /**
  * Attempt to open guild storage for player
  * @param sd : player
@@ -597,6 +619,10 @@ char storage_guild_storageopen(map_session_data* sd)
 
 	if(sd->status.guild_id <= 0)
 		return GSTORAGE_NO_GUILD;
+	if (!storage_guild_access(*sd))
+		return GSTORAGE_NO_PERMISSION;
+	if (pc_transaction_pending(sd) || sd->multi_storage.loading || !chrif_isconnected())
+		return GSTORAGE_STORAGE_ALREADY_OPEN;
 
 #ifdef OFFICIAL_GUILD_STORAGE
 	uint16 level = guild_checkskill(sd->guild->guild, GD_GUILD_STORAGE);
@@ -611,13 +637,6 @@ char storage_guild_storageopen(map_session_data* sd)
 		return GSTORAGE_ALREADY_OPEN; // Guild storage already open.
 	else if (sd->state.storage_flag || sd->state.mail_writing)
 		return GSTORAGE_STORAGE_ALREADY_OPEN; // Can't open both storages at a time.
-
-#if PACKETVER >= 20140205
-	int32 pos;
-
-	if ((pos = guild_getposition(*sd)) < 0 || !(sd->guild->guild.position[pos].mode&GUILD_PERM_STORAGE))
-		return GSTORAGE_NO_PERMISSION; // Guild member doesn't have permission
-#endif
 
 	if( !pc_can_give_items(sd) ) { //check is this GM level can open guild storage and store items [Lupus]
 		clif_displaymessage( sd->fd, msg_txt( sd, 246 ) ); // Your GM level doesn't authorize you to perform this action.
@@ -662,8 +681,8 @@ void storage_guild_log( map_session_data* sd, struct item* item, int16 amount ){
 		StringBuf_Printf(&buf, ", `option_val%d`", i);
 		StringBuf_Printf(&buf, ", `option_parm%d`", i);
 	}
-	StringBuf_Printf(&buf, ") VALUES(NOW(),'%u','%u', '%s', '%u', '%d','%d','%d','%d','%" PRIu64 "','%d','%d'",
-		sd->status.guild_id, sd->status.char_id, sd->status.name, item->nameid, amount, item->identify, item->refine,item->attribute, item->unique_id, item->bound, item->enchantgrade);
+	StringBuf_Printf(&buf, ") VALUES(NOW(),'%u','%u', ?, '%u', '%d','%d','%d','%d','%" PRIu64 "','%d','%d'",
+		sd->status.guild_id, sd->status.char_id, item->nameid, amount, item->identify, item->refine,item->attribute, item->unique_id, item->bound, item->enchantgrade);
 
 	for (i = 0; i < MAX_SLOTS; i++)
 		StringBuf_Printf(&buf, ",'%u'", item->card[i]);
@@ -671,7 +690,9 @@ void storage_guild_log( map_session_data* sd, struct item* item, int16 amount ){
 		StringBuf_Printf(&buf, ",'%d','%d','%d'", item->option[i].id, item->option[i].value, item->option[i].param);
 	StringBuf_Printf(&buf, ")");
 
-	if (SQL_SUCCESS != stmt.PrepareStr(StringBuf_Value(&buf)) || SQL_SUCCESS != stmt.Execute())
+	if (SQL_SUCCESS != stmt.PrepareStr(StringBuf_Value(&buf)) ||
+		SQL_SUCCESS != stmt.BindParam(0, SQLDT_STRING, sd->status.name, strnlen(sd->status.name, NAME_LENGTH)) ||
+		SQL_SUCCESS != stmt.Execute())
 		SqlStmt_ShowDebug(stmt);
 }
 
@@ -702,7 +723,7 @@ enum e_guild_storage_log storage_guild_log_read_sub( map_session_data* sd, std::
 		return GUILDSTORAGE_LOG_FAILED;
 	}
 
-	struct guild_log_entry entry;
+	struct guild_log_entry entry{};
 
 	// General data
 	stmt.BindColumn(0, SQLDT_UINT32, &entry.id);
@@ -716,7 +737,7 @@ enum e_guild_storage_log storage_guild_log_read_sub( map_session_data* sd, std::
 	stmt.BindColumn(6, SQLDT_CHAR, &entry.item.refine);
 	stmt.BindColumn(7, SQLDT_CHAR, &entry.item.attribute);
 	stmt.BindColumn(8, SQLDT_UINT32, &entry.item.expire_time);
-	stmt.BindColumn(9, SQLDT_UINT32, &entry.item.bound);
+	stmt.BindColumn(9, SQLDT_CHAR, &entry.item.bound);
 	stmt.BindColumn(10, SQLDT_UINT64, &entry.item.unique_id);
 	stmt.BindColumn(11, SQLDT_INT8, &entry.item.enchantgrade);
 	for( j = 0; j < MAX_SLOTS; ++j )
@@ -772,7 +793,9 @@ bool storage_guild_additem(map_session_data* sd, struct s_storage* stor, struct 
 	if(item_data->nameid == 0 || amount <= 0)
 		return false;
 
-	id = itemdb_search(item_data->nameid);
+	const auto metadata = item_db.find(item_data->nameid);
+	if (!metadata) return false;
+	id = metadata.get();
 
 	if( id->stack.guild_storage && amount > id->stack.amount ) // item stack limitation
 		return false;
@@ -912,7 +935,7 @@ void storage_guild_storageadd(map_session_data* sd, int32 index, int32 amount)
 	nullpo_retv(sd);
 	nullpo_retv(stor = guild2storage2(sd->status.guild_id));
 
-	if( !stor->status || stor->amount > stor->max_amount )
+	if (!storage_guild_transfer_ready(*sd, *stor))
 		return;
 
 	if( index < 0 || index >= MAX_INVENTORY )
@@ -926,12 +949,10 @@ void storage_guild_storageadd(map_session_data* sd, int32 index, int32 amount)
 
 	if (itemdb_ishatched_egg(&sd->inventory.u.items_inventory[index]))
 		return;
-
-	if( stor->lock ) {
-		storage_guild_storageclose(sd);
+	if (!sd->inventory_data[index] || sd->inventory_data[index] != item_db.find(sd->inventory.u.items_inventory[index].nameid).get())
 		return;
-	}
 
+	PcItemDeliveryScope delivery(*sd);
 	if(storage_guild_additem(sd,stor,&sd->inventory.u.items_inventory[index],amount))
 		pc_delitem(sd,index,amount,0,4,LOG_TYPE_GSTORAGE);
 	else {
@@ -955,7 +976,7 @@ void storage_guild_storageget(map_session_data* sd, int32 index, int32 amount, b
 	nullpo_retv(sd);
 	nullpo_retv(stor = guild2storage2(sd->status.guild_id));
 
-	if(!stor->status)
+	if (!storage_guild_transfer_ready(*sd, *stor))
 		return;
 
 	if(index < 0 || index >= stor->max_amount)
@@ -963,15 +984,14 @@ void storage_guild_storageget(map_session_data* sd, int32 index, int32 amount, b
 
 	if(stor->u.items_guild[index].nameid == 0)
 		return;
+	if (!item_db.find(stor->u.items_guild[index].nameid))
+		return;
 
 	if(amount < 1 || amount > stor->u.items_guild[index].amount)
 		return;
 
-	if( stor->lock ) {
-		storage_guild_storageclose(sd);
-		return;
-	}
-
+	// Grant callbacks must follow removal from the shared guild source.
+	PcItemDeliveryScope delivery(*sd);
 	if((flag = pc_additem(sd,&stor->u.items_guild[index],amount,LOG_TYPE_GSTORAGE,favorite)) == 0)
 		storage_guild_delitem(sd,stor,index,amount);
 	else { // inform fail
@@ -993,7 +1013,7 @@ void storage_guild_storageaddfromcart(map_session_data* sd, int32 index, int32 a
 	nullpo_retv(sd);
 	nullpo_retv(stor = guild2storage2(sd->status.guild_id));
 
-	if( !stor->status || stor->amount > stor->max_amount )
+	if (!storage_guild_transfer_ready(*sd, *stor))
 		return;
 
 	if( index < 0 || index >= MAX_CART )
@@ -1028,13 +1048,15 @@ void storage_guild_storagegettocart(map_session_data* sd, int32 index, int32 amo
 	nullpo_retv(sd);
 	nullpo_retv(stor = guild2storage2(sd->status.guild_id));
 
-	if(!stor->status)
+	if (!storage_guild_transfer_ready(*sd, *stor))
 		return;
 
 	if(index < 0 || index >= stor->max_amount)
 		return;
 
 	if(stor->u.items_guild[index].nameid == 0)
+		return;
+	if (!item_db.find(stor->u.items_guild[index].nameid))
 		return;
 
 	if(amount < 1 || amount > stor->u.items_guild[index].amount)

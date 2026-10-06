@@ -6775,11 +6775,8 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 	if( itemdb_isstackable2(data) && !item->expire_time )
 	{
 		for (i = 0; i < MAX_CART; i++) {
-			if (sd->cart.u.items_cart[i].nameid == item->nameid
-				&& sd->cart.u.items_cart[i].bound == item->bound
-				&& sd->cart.u.items_cart[i].unique_id == item->unique_id
-				&& memcmp(sd->cart.u.items_cart[i].card, item->card, sizeof(item->card)) == 0
-				)
+			// Preserve the same complete stack identity as personal/guild storage.
+			if (compare_item(&sd->cart.u.items_cart[i], item))
 				break;
 		}
 	}
