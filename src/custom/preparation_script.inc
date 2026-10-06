@@ -154,6 +154,9 @@ BUILDIN_FUNC(pnprepinventory){
                 if(target<0 || it.amount>MAX_AMOUNT-simulated->u.items_storage[target].amount || (data->stack.storage && it.amount>data->stack.amount-simulated->u.items_storage[target].amount))goto done;
                 simulated->u.items_storage[target].amount+=it.amount;
             }
+            // Native transfers share this scope: none of their callbacks may
+            // change a later previewed item before the batch commit is sent.
+            PcItemDeliveryScope delivery(*sd);
             const bool put=storage.state.put;storage.state.put=1;
             storage_batch_begin(*sd);for(int i:indices)storage_storageadd(sd,&storage,i,sd->inventory.u.items_inventory[i].amount);storage_batch_end(*sd,storage);storage.state.put=put;result=count;
         }

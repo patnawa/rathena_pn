@@ -6454,6 +6454,8 @@ ACMD_FUNC(storeall)
 		}
 	}
 
+	// Keep native transfer callbacks outside the complete @storeall batch.
+	PcItemDeliveryScope delivery(*sd);
 	storage_batch_begin(*sd);
 	for (i = 0; i < MAX_INVENTORY; i++) {
 		if (sd->inventory.u.items_inventory[i].amount) {

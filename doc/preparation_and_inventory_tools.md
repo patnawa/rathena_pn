@@ -30,6 +30,11 @@ armor, shadow and ammunition categories are excluded. Before the first transfer,
 the entire batch must pass exact inventory snapshots, native storage trade
 restrictions, canonical item metadata, storage ownership and all capacity/stack
 checks. It uses normal native storage transfers under one storage batch commit.
+Quest and item-grant callbacks run after the source removals and the commit
+request. Native individual personal-storage transfers use the same ordering;
+`@storeall` holds callbacks until its complete batch has finished. Its existing
+behavior still includes equipment and favorites, unlike the protected deposit
+tool. The existing pending-save fence prevents another transfer until its ACK.
 No script deletes an item and creates a substitute.
 
 Junk selling requires the player's explicit character allowlist (20 rows);
@@ -56,3 +61,14 @@ disconnects, ambiguous identities, failed equipment restoration, paid restock,
 explicit junk sales and whole-batch capacity refusal. Existing shop and storage
 SQL/recovery suites exercise durable acknowledgments; this suite does not claim
 a SQL roundtrip or a rendered gameplay receipt.
+
+Run `python3 tools/ci/preparation_storage_native_test.py` in the same Linux
+environment for actual native personal-storage add/get, batch submission,
+inventory mutation and quest-condition VM coverage with ASan/UBSan. It also
+compiles the exact `@storeall` command body. This suite checks callback ordering,
+every protected metadata field, stale confirmations, capacity/stack limits,
+pending fences, invalid transfers and equipment metadata roundtrips. World,
+packet, locale, logging, achievement-objective notification and interserver
+commit/ACK boundaries are explicit doubles; quest conditions execute in the
+actual script VM. Network access is denied by the fixture. This is separate from
+SQL durability/recovery and rendered client acceptance.

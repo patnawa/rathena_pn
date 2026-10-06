@@ -359,9 +359,13 @@ void storage_storageadd(map_session_data* sd, struct s_storage *stor, int32 inde
 	// pc_delitem requires this metadata. Reject before changing the destination.
 	if (!sd->inventory_data[index]) return;
 	else if (result == STORAGE_ADD_OK) {
+		// Quest scripts must not observe the destination before source removal,
+		// or re-enter a caller's batch between its preflighted transfers.
+		PcItemDeliveryScope delivery(*sd);
 		switch( storage_additem(sd, stor, &sd->inventory.u.items_inventory[index], amount) ){
 			case 0:
-				pc_delitem(sd,index,amount,0,4,LOG_TYPE_STORAGE);
+				delivery.refresh_questinfo();
+				pc_delitem(sd,index,amount,8,4,LOG_TYPE_STORAGE);
 				storage_commit_transfer(*sd, *stor, false);
 				return;
 			case 1:
@@ -395,6 +399,8 @@ void storage_storageget(map_session_data *sd, struct s_storage *stor, int32 inde
 	if (result != STORAGE_ADD_OK)
 		return;
 
+	// Native grant callbacks follow source removal and the pending save fence.
+	PcItemDeliveryScope delivery(*sd);
 	if ((flag = pc_additem(sd,&stor->u.items_storage[index],amount,LOG_TYPE_STORAGE, favorite)) == ADDITEM_SUCCESS)
 	{
 		storage_delitem(sd,stor,index,amount);
