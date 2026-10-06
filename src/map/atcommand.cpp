@@ -6383,6 +6383,7 @@ ACMD_FUNC(dropall)
 ACMD_FUNC(stockall)
 {
 	nullpo_retr(-1, sd);
+	if (pc_cant_act2(sd) || pn_item_use_active(sd) || map_getmapflag(sd->m, MF_NOUSECART)) return -1;
 	
 	if (!pc_iscarton(sd)) {
 		clif_displaymessage(fd, msg_txt(sd,1533)); // You do not have a cart.
@@ -6412,6 +6413,7 @@ ACMD_FUNC(stockall)
 		}
 	}
 
+	PcItemDeliveryScope delivery(*sd);
 	int32 count = 0, count2 = 0;
 	for ( uint16 i = 0; i < MAX_CART; i++ ) {
 		if ( sd->cart.u.items_cart[i].amount > 0 ) {

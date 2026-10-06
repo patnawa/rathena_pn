@@ -6739,19 +6739,22 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int32 amount,e_log_pick_type log_type)
 {
 	struct item_data *data;
-	int32 i,w;
+	int32 i;
 
 	nullpo_retr(ADDITEM_INVALID, sd);
-	if (sd->pair_commit.pending && !sd->pair_commit.applying) return ADDITEM_INVALID;
+	if (pc_transaction_locked(sd)) return ADDITEM_INVALID;
 	nullpo_retr(ADDITEM_INVALID, item);
 
-	if(item->nameid == 0 || amount <= 0)
+	if(item->nameid == 0 || amount <= 0 || pn_tokens::retired(item->nameid))
 		return ADDITEM_INVALID;
+	if (amount > MAX_AMOUNT) return ADDITEM_OVERAMOUNT;
 
 	if (itemdb_ishatched_egg(item))
 		return ADDITEM_INVALID;
 
-	data = itemdb_search(item->nameid);
+	const auto metadata = item_db.find(item->nameid);
+	if (!metadata) return ADDITEM_INVALID;
+	data = metadata.get();
 
 	if( data->stack.cart && amount > data->stack.amount )
 	{// item stack limitation
@@ -6764,7 +6767,10 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 		return ADDITEM_INVALID;
 	}
 
-	if( (w = data->weight*amount) + sd->cart_weight > sd->cart_weight_max )
+	const uint64 w = static_cast<uint64>(data->weight) * amount;
+	if (sd->cart_weight < 0 || sd->cart_num < 0 || sd->cart_num > MAX_CART)
+		return ADDITEM_INVALID;
+	if( sd->cart_weight_max < 0 || static_cast<uint64>(sd->cart_weight) + w > static_cast<uint64>(sd->cart_weight_max) )
 		return ADDITEM_OVERWEIGHT;
 
 	i = MAX_CART;
@@ -6779,6 +6785,7 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 
 	if( i < MAX_CART )
 	{// item already in cart, stack it
+		if (sd->cart_num == 0 || sd->cart.u.items_cart[i].amount <= 0) return ADDITEM_INVALID;
 		if( amount > MAX_AMOUNT - sd->cart.u.items_cart[i].amount || ( data->stack.cart && amount > data->stack.amount - sd->cart.u.items_cart[i].amount ) )
 			return ADDITEM_OVERAMOUNT; // no slot
 
@@ -6787,12 +6794,14 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 	}
 	else
 	{// item not stackable or not present, add it
+		if (sd->cart_num == MAX_CART) return ADDITEM_OVERAMOUNT;
 		ARR_FIND( 0, MAX_CART, i, sd->cart.u.items_cart[i].nameid == 0 );
 		if( i == MAX_CART )
 			return ADDITEM_OVERAMOUNT; // no slot
 
 		memcpy(&sd->cart.u.items_cart[i],item,sizeof(sd->cart.u.items_cart[0]));
 		sd->cart.u.items_cart[i].id = 0;
+		sd->cart.u.items_cart[i].equip = 0;
 		sd->cart.u.items_cart[i].amount = amount;
 		sd->cart_num++;
 		clif_cart_additem(sd,i,amount);
@@ -6801,7 +6810,7 @@ enum e_additem_result pc_cart_additem(map_session_data *sd,struct item *item,int
 	sd->cart.u.items_cart[i].equipSwitch = 0;
 	log_pick_pc(sd, log_type, amount, &sd->cart.u.items_cart[i]);
 
-	sd->cart_weight += w;
+	sd->cart_weight += static_cast<int32>(w);
 	clif_updatestatus(*sd,SP_CARTINFO);
 
 	return ADDITEM_SUCCESS;
@@ -6815,14 +6824,21 @@ void pc_cart_delitem(map_session_data *sd,int32 n,int32 amount,int32 type,e_log_
 	nullpo_retv(sd);
 	if (pc_transaction_locked(sd)) return;
 
-	if(sd->cart.u.items_cart[n].nameid == 0 ||
+	if(n < 0 || n >= MAX_CART || amount <= 0 ||
+		sd->cart.u.items_cart[n].nameid == 0 ||
 		sd->cart.u.items_cart[n].amount < amount)
 		return;
+	const auto data = item_db.find(sd->cart.u.items_cart[n].nameid);
+	if (sd->cart_num <= 0 || sd->cart_num > MAX_CART || sd->cart_weight < 0) return;
+	// Login/item cleanup must still remove unknown IDs, whose loaded weight is
+	// zero, and legacy oversized stacks. Only additions enforce MAX_AMOUNT.
+	const uint64 weight = data ? static_cast<uint64>(data->weight) * amount : 0;
+	if (weight > static_cast<uint64>(sd->cart_weight)) return;
 
 	log_pick_pc(sd, log_type, -amount, &sd->cart.u.items_cart[n]);
 
 	sd->cart.u.items_cart[n].amount -= amount;
-	sd->cart_weight -= itemdb_weight(sd->cart.u.items_cart[n].nameid) * amount;
+	sd->cart_weight -= static_cast<int32>(weight);
 	if(sd->cart.u.items_cart[n].amount <= 0) {
 		memset(&sd->cart.u.items_cart[n],0,sizeof(sd->cart.u.items_cart[0]));
 		sd->cart_num--;
@@ -6833,12 +6849,20 @@ void pc_cart_delitem(map_session_data *sd,int32 n,int32 amount,int32 type,e_log_
 	}
 }
 
+// User transfers must share the packet path's activity/reservation fences.
+// Core cart add/delete still permit the owning transaction's apply phase.
+static bool pc_cart_transfer_ready(map_session_data* sd) {
+	return sd && pc_iscarton(sd) && !pc_cant_act2(sd) && !pn_item_use_active(sd) &&
+		!map_getmapflag(sd->m, MF_NOUSECART);
+}
+
 /*==========================================
  * Transfer item from inventory to cart.
  *------------------------------------------*/
 void pc_putitemtocart(map_session_data *sd,int32 idx,int32 amount)
 {
 	nullpo_retv(sd);
+	if (!pc_cart_transfer_ready(sd)) return;
 
 	if (idx < 0 || idx >= MAX_INVENTORY) //Invalid index check [Skotlex]
 		return;
@@ -6847,16 +6871,27 @@ void pc_putitemtocart(map_session_data *sd,int32 idx,int32 amount)
 
 	if( item_data->nameid == 0 || amount < 1 || item_data->amount < amount || sd->state.vending || sd->state.prevend )
 		return;
+	const auto data = item_db.find(item_data->nameid);
+	if (!data || sd->inventory_data[idx] != data.get() ||
+		static_cast<uint64>(data->weight) * amount > sd->weight) return;
 
 	if( item_data->equipSwitch ){
 		clif_msg( *sd, MSI_SWAP_EQUIPITEM_UNREGISTER_FIRST );
 		return;
 	}
 
+	PcItemDeliveryScope delivery(*sd);
+	const auto cart_before = sd->cart;
+	const auto weight_before = sd->cart_weight, count_before = sd->cart_num;
 	enum e_additem_result flag = pc_cart_additem(sd,item_data,amount,LOG_TYPE_NONE);
 
-	if (flag == ADDITEM_SUCCESS)
-		pc_delitem(sd,idx,amount,0,5,LOG_TYPE_NONE);
+	if (flag == ADDITEM_SUCCESS) {
+		if (pc_delitem(sd,idx,amount,0,5,LOG_TYPE_NONE)) {
+			delivery.cancel();sd->cart = cart_before;
+			sd->cart_weight = weight_before;sd->cart_num = count_before;
+			clif_cartlist(sd);clif_updatestatus(*sd,SP_CARTINFO);
+		}
+	}
 	else {
 		if (flag == ADDITEM_OVERAMOUNT)
 			clif_cart_additem_ack( *sd, ADDITEM_TO_CART_FAIL_COUNT );
@@ -6876,11 +6911,12 @@ void pc_putitemtocart(map_session_data *sd,int32 idx,int32 amount)
 int32 pc_cartitem_amount(map_session_data* sd, int32 idx, int32 amount)
 {
 	struct item* item_data;
+	if (!sd || idx < 0 || idx >= MAX_CART || amount <= 0 || amount > MAX_AMOUNT) return -1;
 
 	nullpo_retr(-1, sd);
 
 	item_data = &sd->cart.u.items_cart[idx];
-	if( item_data->nameid == 0 || item_data->amount == 0 )
+	if( item_data->nameid == 0 || item_data->amount < amount || !item_db.find(item_data->nameid) )
 		return -1;
 
 	return item_data->amount - amount;
@@ -6891,7 +6927,8 @@ int32 pc_cartitem_amount(map_session_data* sd, int32 idx, int32 amount)
  *------------------------------------------*/
 bool pc_getitemfromcart(map_session_data *sd,int32 idx,int32 amount)
 {
-	nullpo_retr(1, sd);
+	nullpo_retr(false, sd);
+	if (!pc_cart_transfer_ready(sd)) return false;
 
 	if (idx < 0 || idx >= MAX_CART) //Invalid index check [Skotlex]
 		return false;
@@ -6900,7 +6937,11 @@ bool pc_getitemfromcart(map_session_data *sd,int32 idx,int32 amount)
 
 	if (item_data->nameid == 0 || amount < 1 || item_data->amount < amount || sd->state.vending || sd->state.prevend)
 		return false;
+	const auto data = item_db.find(item_data->nameid);
+	if (!data || amount > MAX_AMOUNT || sd->cart_num <= 0 || sd->cart_num > MAX_CART ||
+		sd->cart_weight < 0 || static_cast<uint64>(data->weight) * amount > static_cast<uint64>(sd->cart_weight)) return false;
 
+	PcItemDeliveryScope delivery(*sd);
 	enum e_additem_result flag = pc_additem(sd, item_data, amount, LOG_TYPE_NONE);
 
 	if (flag == ADDITEM_SUCCESS)
@@ -6909,6 +6950,7 @@ bool pc_getitemfromcart(map_session_data *sd,int32 idx,int32 amount)
 		clif_cart_delitem( *sd, idx, amount );
 		clif_additem(sd, idx, amount, flag);
 		clif_cart_additem(sd, idx, amount);
+		return false;
 	}
 	return true;
 }
