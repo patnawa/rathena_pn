@@ -2,6 +2,7 @@
 #include <cassert>
 #include <vector>
 #include <iostream>
+#include <psapi.h>
 namespace fixture {std::vector<pn_market::Request> requests;}
 bool bank_session_snapshot(BankSession& session){session.account=100;session.generation=7;return true;}
 bool bank_current_generation(LONG generation,bool){return generation==7;}
@@ -47,6 +48,8 @@ int main() {
     SendMessage(window,WM_COMMAND,purchase_id,0);assert(fixture::requests.size()==2);
     reply.owner_account=100;reply.flags=pn_market::Draft;receive(reply);choose();
     assert(IsWindowEnabled(GetDlgItem(window,publish_id))&&!IsWindowEnabled(GetDlgItem(window,purchase_id)));
+    SetWindowTextW(price,L"9,223,372,036,854,775,808");
+    SendMessage(window,WM_COMMAND,set_price_id,0);assert(fixture::requests.size()==2);
     SetWindowTextW(price,L"9,223,372,036,854,775,807");confirm=[](HWND,LPCWSTR,LPCWSTR,UINT)->int{return IDYES;};
     SendMessage(window,WM_COMMAND,set_price_id,0);assert(fixture::requests.back().budget==INT64_MAX&&fixture::requests.back().action==pn_market::SetPrice);
     receive(reply);choose();SendMessage(window,WM_COMMAND,publish_id,0);assert(fixture::requests.back().action==pn_market::Publish);
@@ -71,6 +74,34 @@ int main() {
     receive(reply);SendMessage(window,WM_TIMER,1,0);assert(fixture::requests.size()==sent+2&&fixture::requests.back().action==pn_market::ListShop);
     reply.result=pn_market::Ok;receive(reply);choose();assert(!awaiting_save&&IsWindowEnabled(GetDlgItem(window,purchase_id)));
     SendMessage(window,WM_TIMER,1,0);assert(fixture::requests.size()==sent+2);
+    reply.entries[0].price=INT64_MAX;reply.entries[0].quantity=1;receive(reply);choose();
+    SetWindowTextW(quantity,L"1");
+    confirm=[](HWND,LPCWSTR text,LPCWSTR,UINT)->int{
+        assert(std::wcsstr(text,L"Total: 9,223,372,036,854,775,807z"));return IDYES;
+    };
+    SendMessage(window,WM_COMMAND,purchase_id,0);
+    assert(fixture::requests.size()==sent+3&&fixture::requests.back().expected_price==INT64_MAX&&fixture::requests.back().quantity==1);
+    // Exercise maximum-length prices and full pages repeatedly in the real
+    // Win32 controls. Warm up their caches before checking resource growth.
+    reply.count=pn_market::page_size;
+    for(auto& entry:reply.entries){entry=row;entry.price=INT64_MAX;entry.quantity=1;}
+    auto refresh_page=[&](){receive(reply);choose();};
+    for(int i=0;i<100;++i)refresh_page();
+    PROCESS_MEMORY_COUNTERS_EX before{};before.cb=sizeof(before);
+    assert(GetProcessMemoryInfo(GetCurrentProcess(),reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&before),sizeof(before)));
+    const auto gdi=GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS);
+    const auto user=GetGuiResources(GetCurrentProcess(),GR_USEROBJECTS);
+    for(int i=0;i<2000;++i)refresh_page();
+    PROCESS_MEMORY_COUNTERS_EX after{};after.cb=sizeof(after);
+    assert(GetProcessMemoryInfo(GetCurrentProcess(),reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&after),sizeof(after)));
+    assert(GetGuiResources(GetCurrentProcess(),GR_GDIOBJECTS)==gdi);
+    assert(GetGuiResources(GetCurrentProcess(),GR_USEROBJECTS)==user);
+    assert(after.PrivateUsage<=before.PrivateUsage+2*1024*1024);
+    wchar_t displayed[64]{};LVITEMW cell{};cell.iSubItem=2;cell.pszText=displayed;cell.cchTextMax=64;
+    SendMessageW(listing,LVM_GETITEMTEXTW,0,reinterpret_cast<LPARAM>(&cell));
+    assert(std::wstring(displayed)==L"9,223,372,036,854,775,807");
+    std::cout<<"PASS: 2000 full-page maximum-price refreshes; stable GDI/USER resources; private-byte delta="
+             <<static_cast<int64_t>(after.PrivateUsage)-static_cast<int64_t>(before.PrivateUsage)<<"\n";
     save_preview(window);DestroyWindow(window);
     std::cout<<"PASS: real market controls, exact full-width quote/total, explicit draft publication, changed-quote rejection, duplicate suppression and search filters\n";
 }

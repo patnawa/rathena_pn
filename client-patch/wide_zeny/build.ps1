@@ -27,7 +27,7 @@ if($LASTEXITCODE){throw 'Economy turbo compatibility build failed'}
 & $cxx @flags (Join-Path $PSScriptRoot '../../tools/ci/wide_zeny_loader_test.cpp') -o (Join-Path $out 'wide_zeny_loader_test.exe') -luser32 -lgdi32 -lwinpthread
 if($LASTEXITCODE){throw 'Economy loader test build failed'}
 foreach($name in @('wide_zeny_client_ui_test','wide_zeny_client_transport_test','wide_market_ui_test','wide_market_transport_test','wide_market_numbers_test','wide_mail_ui_test','wide_mail_transport_test')) {
-    & $cxx @flags (Join-Path $PSScriptRoot "../../tools/ci/$name.cpp") @objects -o (Join-Path $out "$name.exe") @libs
+    & $cxx @flags (Join-Path $PSScriptRoot "../../tools/ci/$name.cpp") @objects -o (Join-Path $out "$name.exe") @libs -lpsapi
     if($LASTEXITCODE){throw "Test build failed: $name"}
 }
 & $cxx @flags -municode (Join-Path $PSScriptRoot '../../tools/ci/native_zeny_cache_test.cpp') @objects -o (Join-Path $out 'native_zeny_cache_test.exe') @libs
