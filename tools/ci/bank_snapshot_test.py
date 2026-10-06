@@ -25,6 +25,7 @@ struct Bank:Pending {uint64_t nonce_hi=123,nonce_lo=456,request_id=789,trade_id=
 struct map_session_data {
  struct {uint32_t char_id=10,account_id=20;int64_t zeny=9007199254740993LL;char name[24]="fixture";}status;
  Bank bank_ui;Pending pair_commit,multi_storage,mail_companion,shop_commit;bool capture_waiting=false;
+ struct{uint32_t reward_pending_id=0;}achievement_data;
  int64_t bank_vault=100000000000LL;int m=0;
  struct{uint32_t id=0;}trade_partner;
  struct{bool trading=false;uint32_t deal_locked=0;}state;
@@ -46,10 +47,12 @@ int main(){
  size_t cases=0;
  for(unsigned availability=0;availability<8;++availability){
   battle_config.feature_banking=(availability&1)!=0;no_bank=(availability&2)!=0;connected=(availability&4)!=0;
-  for(unsigned flags=0;flags<16;++flags){
+  for(unsigned flags=0;flags<128;++flags){
    map_session_data sd;
    sd.bank_ui.pending=(flags&1)!=0;sd.pair_commit.pending=(flags&2)!=0;
    sd.mail_companion.pending=(flags&4)!=0;sd.multi_storage.pending=(flags&8)!=0;
+   sd.shop_commit.pending=(flags&16)!=0;sd.achievement_data.reward_pending_id=(flags&32)?42:0;
+   sd.capture_waiting=(flags&64)!=0;
    const auto reply=pn_bank_snapshot(sd);
    const auto expected=flags?pn_bank::Saving:((!battle_config.feature_banking||no_bank||!connected)?pn_bank::Unavailable:pn_bank::SaveFailed);
    assert(reply.result==expected);

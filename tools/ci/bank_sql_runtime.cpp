@@ -37,6 +37,10 @@ static void connect_db() {
     sql_handle=Sql_Malloc();
     assert(Sql_Connect(sql_handle,"root","disposable-fixture-only","pn-zeny-migration-db",3306,"bank_probe")==SQL_SUCCESS);
     assert(result("SELECT DATABASE()") == "bank_probe|\n");
+    // The ordinary saver also locks these transactional character tables.
+    strcpy(schema_config.memo_db,"memo"); strcpy(schema_config.skill_db,"skill");
+    strcpy(schema_config.friend_db,"friends"); strcpy(schema_config.hotkey_db,"hotkey");
+    strcpy(schema_config.mercenary_owner_db,"mercenary_owner");
     strcpy(schema_config.inventory_db,"inventory"); strcpy(schema_config.char_db,"char"); strcpy(schema_config.acc_reg_num_table,"acc_reg_num");
 }
 extern "C" int __wrap_main(int argc,char** argv) {

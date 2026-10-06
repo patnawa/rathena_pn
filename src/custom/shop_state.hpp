@@ -40,6 +40,8 @@ struct pn_shop_state {
     uint32_t final_weight=0;
 };
 std::shared_ptr<pn_shop::Commit> pn_shop_request(const map_session_data& sd,uint32_t kind);
+bool pn_auction_bid(map_session_data* sd,uint32_t auction_id,int32_t bid);
+bool pn_auction_register(map_session_data* sd,const auction_data& listing);
 bool pn_shop_plan_inventory(const map_session_data& sd,pn_shop::Commit& request,
     const std::vector<pn_shop::Grant>& grants,const uint32_t* requiredItems,
     std::vector<pn_shop::Event>& events,uint32_t& final_weight);

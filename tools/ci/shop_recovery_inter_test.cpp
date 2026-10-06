@@ -195,6 +195,21 @@ int main(){cash_log_tests();}
 #elif !defined(PN_TEST_SHOP_QUEUE)
 int main(){
  cash_log_tests();
+ for(auto kind:{pn_shop::AuctionRegister,pn_shop::AuctionBid})for(bool committed:{false,true}){
+  reset();auto r=request(kind);r->stock_count=0;memcpy(r->items,player.inventory.u.items_inventory,sizeof(r->items));
+  auto& envelope=*new(&r->auction) pn_shop::AuctionEnvelope{};
+  if(kind==pn_shop::AuctionBid){envelope.auction_id=77;envelope.bid=10;}
+  else {auction_data listing{};listing.seller_id=22;listing.price=1;listing.buynow=20;listing.hours=1;listing.type=IT_ETC;
+   listing.item=player.inventory.u.items_inventory[0];listing.item.identify=1;envelope.set_listing(listing);envelope.fee=10;r->items[0]={};}
+  assert(pn_shop_submit(player,r,{},0));unchanged();auto frozen=frames[0];
+  pn_shop_retry(0,1000,11,player.shop_commit.request->sequence);assert(frames.size()==2 && frames[1]==frozen);unchanged();
+  connected=false;pn_shop_retry(0,2000,11,player.shop_commit.request->sequence);assert(frames.size()==2);connected=true;
+  auto reply=ack(committed?pn_shop::Committed:pn_shop::Rejected);auto wrong=reply;wrong.nonce_lo++;receive(wrong);unchanged();
+  receive(reply);assert(!player.shop_commit.pending && results==1 && player.status.zeny==(committed?90:100));
+  assert(player.inventory.u.items_inventory[0].amount==(committed && kind==pn_shop::AuctionRegister?0:1));
+  player.status.zeny=76;receive(reply);assert(player.status.zeny==76 && results==1);
+ }
+ std::cout<<"AUCTION_HANDOFF_INTER_PASS cases=4 immutable_retries=true duplicate_ack=true\n";
  item_use_collecting=true;reset();assert(!pn_shop_submit(player,request(),{},0));assert(saves==0 && frames.empty());item_use_collecting=false;
  for(auto kind:{pn_shop::Market,pn_shop::Barter,pn_shop::Sale}){
   reset();auto r=request(kind);assert(pn_shop_submit(player,r,{{0,1,501}},10));unchanged();assert(player.shop_commit.pending && pn_shop_inflight);assert(pn_shop_stock_busy());assert(order==std::vector<std::string>({"save","send"}));auto frozen=frames[0];r->wallet_after=0;r->items[0].amount=99;

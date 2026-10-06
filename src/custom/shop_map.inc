@@ -20,7 +20,7 @@ bool pn_shop_plan_inventory(const map_session_data& sd,pn_shop::Commit& request,
     const std::vector<pn_shop::Grant>& grants,const uint32_t* requiredItems,
     std::vector<pn_shop::Event>& events,uint32_t& final_weight) {
     auto* r=&request;
-    if((grants.empty() && request.kind!=pn_shop::ItemUse && request.kind!=pn_shop::MailSend &&
+    if((grants.empty() && request.kind!=pn_shop::ItemUse && request.kind!=pn_shop::MailSend && !pn_shop::auction_kind(request.kind) &&
         !(request.kind==pn_shop::Asset && request.mail_id && request.mail_zeny>0)) || grants.size()>MAX_INVENTORY ||
        sd.status.inventory_slots<1 || sd.status.inventory_slots>MAX_INVENTORY)return false;
     events.clear();
@@ -140,6 +140,31 @@ bool pn_shop_begin(map_session_data& sd,std::shared_ptr<pn_shop::Commit> r,
     uint32_t weight=0;
     if(!pn_shop_plan_inventory(sd,*r,grants,requiredItems,events,weight))return false;
     return pn_shop_submit(sd,std::move(r),std::move(events),weight);
+}
+
+bool pn_auction_bid(map_session_data* sd,uint32_t auction_id,int32_t bid) {
+    if(!sd || !battle_config.feature_auction || !auction_id || bid<1 || bid>sd->status.zeny || !pc_can_give_items(sd))return false;
+    auto request=pn_shop_request(*sd,pn_shop::AuctionBid);
+    auto& envelope=*new(&request->auction) pn_shop::AuctionEnvelope{};
+    envelope.auction_id=auction_id;envelope.bid=bid;request->wallet_after-=bid;
+    return pn_shop_begin(*sd,request,{},nullptr);
+}
+
+bool pn_auction_register(map_session_data* sd,const auction_data& listing) {
+    if(!sd || !battle_config.feature_auction || !pc_can_give_items(sd))return false;
+    const int index=sd->auction.index;
+    if(index<0 || index>=MAX_INVENTORY || index>=sd->status.inventory_slots || sd->auction.amount!=1)return false;
+    const auto& source=sd->inventory.u.items_inventory[index];
+    if(!source.nameid || source.amount<1 || source.bound || source.equip || source.equipSwitch || source.expire_time ||
+       !source.identify || !itemdb_available(source.nameid) || !itemdb_canauction(&source,pc_get_group_level(sd)))return false;
+    auto request=pn_shop_request(*sd,pn_shop::AuctionRegister);
+    auto& envelope=*new(&request->auction) pn_shop::AuctionEnvelope{};
+    auto output=listing;output.item=source;output.item.id=0;output.item.amount=1;envelope.set_listing(output);
+    envelope.fee=static_cast<int64>(listing.hours)*battle_config.auction_feeperhour;
+    if(envelope.fee<0 || envelope.fee>request->wallet_before)return false;
+    request->wallet_after-=envelope.fee;
+    uint32 required[MAX_INVENTORY]{};required[index]=1;
+    return pn_shop_begin(*sd,request,{},required);
 }
 
 // Called once, before the first send of a queued immutable purchase. The SQL

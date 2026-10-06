@@ -9,6 +9,8 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
+#include <custom/shop_commit.hpp>
 
 #include <common/malloc.hpp>
 #include <common/mmo.hpp>
@@ -79,7 +81,7 @@ bool auction_save( std::shared_ptr<struct auction_data> auction ){
 	return true;
 }
 
-uint32 auction_create( std::shared_ptr<struct auction_data> auction ){
+static uint32 auction_insert( std::shared_ptr<struct auction_data> auction ){
 	int32 j;
 	StringBuf buf;
 	SqlStmt stmt{ *sql_handle };
@@ -120,20 +122,22 @@ uint32 auction_create( std::shared_ptr<struct auction_data> auction ){
 	}
 	else
 	{
-		t_tick tick = auction->hours * 3600000;
-
 		auction->item.amount = 1;
 		auction->item.identify = 1;
 		auction->item.expire_time = 0;
 
 		auction->auction_id = (uint32)stmt.LastInsertId();
-		auction->auction_end_timer = add_timer( gettick() + tick , auction_end_timer, auction->auction_id, 0);
-		ShowInfo("New Auction %u | time left %" PRtf " ms | By %s.\n", auction->auction_id, tick, auction->seller_name);
-
-		auction_db[auction->auction_id] = auction;
 	}
 
 	return auction->auction_id;
+}
+
+uint32 auction_create(std::shared_ptr<auction_data> auction){
+    if(auction_insert(auction)){
+        auction->auction_end_timer=add_timer(gettick()+auction->hours*3600000,auction_end_timer,auction->auction_id,0);
+        auction_db[auction->auction_id]=auction;
+    }
+    return auction->auction_id;
 }
 
 #include <custom/auction_settlement.inc>
@@ -170,13 +174,13 @@ void auction_delete( std::shared_ptr<struct auction_data> auction ){
 	auction_db.erase( auction_id );
 }
 
-void inter_auctions_fromsql(void)
+bool pn_auction_reload()
 {
 	int32 i;
 	char *data;
 	StringBuf buf;
-	t_tick tick = gettick(), endtick;
 	time_t now = time(nullptr);
+    decltype(auction_db) fresh;
 
 	StringBuf_Init(&buf);
 	StringBuf_AppendStr(&buf, "SELECT `auction_id`,`seller_id`,`seller_name`,`buyer_id`,`buyer_name`,"
@@ -190,10 +194,12 @@ void inter_auctions_fromsql(void)
 	}
 	StringBuf_Printf(&buf, " FROM `%s` ORDER BY `auction_id` DESC", schema_config.auction_db);
 
-	if( SQL_ERROR == Sql_Query(sql_handle, StringBuf_Value(&buf)) )
-		Sql_ShowDebug(sql_handle);
+	if( SQL_ERROR == Sql_Query(sql_handle, StringBuf_Value(&buf)) ){
+		Sql_ShowDebug(sql_handle);return false;
+    }
 
-	while( SQL_SUCCESS == Sql_NextRow(sql_handle) )
+    int fetched;
+	while( SQL_SUCCESS == (fetched=Sql_NextRow(sql_handle)) )
 	{
 		struct item *item;
 		std::shared_ptr<struct auction_data> auction = std::make_shared<struct auction_data>();
@@ -237,18 +243,19 @@ void inter_auctions_fromsql(void)
 			item->option[i].param = atoi(data);
 		}
 
-		if( auction->timestamp > now )
-			endtick = ((uint32)(auction->timestamp - now) * 1000) + tick;
-		else
-			endtick = tick + 10000; // 10 Second's to process ended auctions
-
-		auction->auction_end_timer = add_timer(endtick, auction_end_timer, auction->auction_id, 0);
-
-		auction_db[auction->auction_id] = auction;
+		auction->auction_end_timer=INVALID_TIMER;
+		fresh[auction->auction_id] = auction;
 	}
 
 	Sql_FreeResult(sql_handle);
+    if(fetched!=SQL_NO_DATA)return false;
+    for(auto& pair:auction_db)if(pair.second->auction_end_timer!=INVALID_TIMER)delete_timer(pair.second->auction_end_timer,auction_end_timer);
+    auction_db=std::move(fresh);
+    for(auto& pair:auction_db){auto& a=pair.second;a->auction_end_timer=add_timer(gettick()+std::max<time_t>(10,a->timestamp-now)*1000,auction_end_timer,a->auction_id,0);}
+    return true;
 }
+
+#include <custom/auction_handoff_sql.inc>
 
 void mapif_Auction_sendlist(int32 fd, uint32 char_id, int16 count, int16 pages, unsigned char *buf)
 {
@@ -472,10 +479,10 @@ int32 inter_auction_parse_frommap(int32 fd)
 	switch(RFIFOW(fd,0))
 	{
 		case 0x3050: mapif_parse_Auction_requestlist(fd); break;
-		case 0x3051: mapif_parse_Auction_register(fd); break;
+		case 0x3051: break; // Retired unreceipted registration protocol.
 		case 0x3052: mapif_parse_Auction_cancel(fd); break;
 		case 0x3053: mapif_parse_Auction_close(fd); break;
-		case 0x3055: mapif_parse_Auction_bid(fd); break;
+		case 0x3055: break; // Retired unreceipted bid protocol.
 		default:
 			return 0;
 	}
@@ -484,7 +491,7 @@ int32 inter_auction_parse_frommap(int32 fd)
 
 int32 inter_auction_sql_init(void)
 {
-	inter_auctions_fromsql();
+	pn_auction_reload();
 
 	return 0;
 }

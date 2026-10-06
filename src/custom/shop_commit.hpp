@@ -9,7 +9,8 @@
 #include <cstring>
 #include <limits>
 namespace pn_shop {
-enum Kind : uint32_t { Market=1, Barter=2, Sale=3, Asset=4, PetClaim=5, ItemUse=6, MailSend=7 };
+enum Kind : uint32_t { Market=1, Barter=2, Sale=3, Asset=4, PetClaim=5, ItemUse=6, MailSend=7, AuctionRegister=8, AuctionBid=9 };
+inline bool auction_kind(uint32_t kind){return kind==AuctionRegister || kind==AuctionBid;}
 constexpr uint16_t protocol_version=3;
 enum Outcome : uint32_t { Retry=0, Committed=1, Rejected=2, ProgressionStale=3 };
 enum Response : uint16_t { Automatic=0, BarterResponse=1, ShopResponse=2, MarketResponse=3, CashNpcResponse=4, CashButtonResponse=5 };
@@ -42,6 +43,15 @@ struct MailEnvelope {
     item attachments[MAIL_MAX_ITEM]{};
 };
 static_assert(sizeof(MailEnvelope)<=sizeof(Stock)*stock_capacity,"Mail envelope exceeds stock region");
+struct AuctionEnvelope {
+    uint8_t listing_bytes[sizeof(auction_data)]{};
+    uint32_t auction_id=0;
+    int32_t bid=0;
+    int64_t fee=0;
+    auction_data listing() const {auction_data value{};std::memcpy(&value,listing_bytes,sizeof(value));return value;}
+    void set_listing(const auction_data& value){std::memcpy(listing_bytes,&value,sizeof(value));}
+};
+static_assert(sizeof(AuctionEnvelope)<=sizeof(Stock)*stock_capacity,"Auction envelope exceeds stock region");
 struct Commit {
     uint16_t packet=0x3098,length=0;
     uint32_t kind=Market,account_id=0,char_id=0;
@@ -52,7 +62,7 @@ struct Commit {
     uint32_t stock_count=0;
     uint16_t version=protocol_version,pet_count=0,response=Automatic,pet_retire_count=0;
     item items[MAX_INVENTORY]{};
-    union { Stock stocks[stock_capacity]{}; MailEnvelope outgoing; };
+    union { Stock stocks[stock_capacity]{}; MailEnvelope outgoing; AuctionEnvelope auction; };
     PetChange pets[MAX_INVENTORY]{};
     PetRetirement retired_pets[MAX_INVENTORY]{};
     PointDebit point{};
@@ -72,7 +82,7 @@ static_assert(sizeof(Commit)<65536,"NPC stock purchase exceeds inter-server fram
 static_assert(sizeof(Commit)==59958,"Update durable shop payload migrations when Commit changes");
 static_assert(sizeof(Ack)==38,"NPC stock acknowledgement ABI");
 inline bool valid(const Commit& r) {
-    if(r.packet!=0x3098 || r.length!=sizeof(r) || r.version!=protocol_version || r.kind<Market || r.kind>MailSend ||
+    if(r.packet!=0x3098 || r.length!=sizeof(r) || r.version!=protocol_version || r.kind<Market || r.kind>AuctionBid ||
        !r.account_id || !r.char_id || !(r.nonce_hi|r.nonce_lo) || !r.sequence ||
        (r.kind<=Sale && !r.stock_count) || r.stock_count>stock_capacity || r.counter_after<r.counter_before ||
        r.pet_count>MAX_INVENTORY || r.pet_retire_count>MAX_INVENTORY || r.response>CashButtonResponse ||
@@ -123,6 +133,21 @@ inline bool valid(const Commit& r) {
         int64_t total=0;
         if(!pn_zeny::fee_total(m.zeny,m.fee_percent,static_cast<int64_t>(count)*m.attachment_price,total) ||
            total>r.wallet_before || r.wallet_after!=r.wallet_before-total)return false;
+    }
+    if(auction_kind(r.kind)) {
+        const auto& a=r.auction;const auto l=a.listing();const auto& it=l.item;
+        if(r.mail_id || r.pet_count || r.pet_retire_count || r.point.scope || r.response || r.progression_size ||
+           r.counter_after!=r.counter_before)return false;
+        if(r.kind==AuctionBid) {
+            if(!a.auction_id || a.bid<1 || a.fee || r.wallet_before<a.bid || r.wallet_after!=r.wallet_before-a.bid)return false;
+        }else{
+            if(a.auction_id || a.bid || a.fee<0 || a.fee>r.wallet_before || r.wallet_after!=r.wallet_before-a.fee ||
+               l.auction_id || l.seller_id!=r.char_id || l.buyer_id || l.hours<1 || l.hours>48 || l.price<1 || l.buynow<=l.price ||
+               !std::memchr(l.seller_name,0,sizeof(l.seller_name)) || !std::memchr(l.item_name,0,sizeof(l.item_name)) ||
+               !it.nameid || it.amount!=1 || !it.identify || it.id || it.equip || it.equipSwitch || it.expire_time || it.bound ||
+               it.card[0]==pn_pet::egg_marker)return false;
+            if(l.type!=IT_WEAPON && l.type!=IT_ARMOR && l.type!=IT_PETARMOR && l.type!=IT_CARD && l.type!=IT_ETC && l.type!=IT_SHADOWGEAR)return false;
+        }
     }
     if(r.kind!=Sale && r.kind!=Asset && r.kind!=ItemUse && (r.cash_after!=r.cash_before || r.kafra_after!=r.kafra_before))return false;
     if(r.kind==Sale && r.wallet_after!=r.wallet_before)return false;

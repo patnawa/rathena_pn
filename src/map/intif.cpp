@@ -3892,11 +3892,11 @@ int32 intif_parse(int32 fd)
 
 	// Auction System
 	case 0x3850:	intif_parse_Auction_results(fd); break;
-	case 0x3851:	intif_parse_Auction_register(fd); break;
+	case 0x3851: break; // Legacy replies cannot credit items or currency.
 	case 0x3852:	intif_parse_Auction_cancel(fd); break;
 	case 0x3853:	intif_parse_Auction_close(fd); break;
 	case 0x3854:	intif_parse_Auction_message(fd); break;
-	case 0x3855:	intif_parse_Auction_bid(fd); break;
+	case 0x3855: break; // Durable shop receipts own auction results.
 
 	//Bound items
 #ifdef BOUND_ITEMS

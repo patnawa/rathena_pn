@@ -27,6 +27,11 @@ def check(role, obj, includes, missing=None):
                'src/custom/mail_protocol.hpp','src/custom/zeny_arithmetic.hpp',
                'src/custom/pair_inter.inc','src/custom/pair_sql.inc','src/custom/pair_commit.hpp',
                'src/custom/bank_sweep_inter.inc','src/custom/bank_sweep_sql.inc','src/custom/bank_sweep.hpp']
+        # Other transaction modules share these objects. Supply every current
+        # custom prerequisite so unrelated additions cannot break this fixture
+        # before its bank/reserve dependency assertions run.
+        names += [str(path.relative_to(ROOT)).replace('\\', '/')
+                  for path in (ROOT/'src/custom').iterdir() if path.is_file()]
         for name in names:
             path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.touch()
             os.utime(path,(1000,1000))

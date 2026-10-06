@@ -35,7 +35,8 @@ struct map_session_data {struct{uint32_t account_id=1,char_id=2,uniqueitem_count
 namespace pn_pet {struct Output{item egg{};};}
 bool pn_pet_describe_egg(const item& egg,pn_pet::Output& output){if(egg.nameid!=5 || egg.card[0])return false;output.egg=egg;return true;}
 namespace pn_shop {
-constexpr uint32_t Asset=4,PetClaim=5,ItemUse=6,MailSend=7;
+constexpr uint32_t Asset=4,PetClaim=5,ItemUse=6,MailSend=7,AuctionRegister=8,AuctionBid=9;
+bool auction_kind(uint32_t kind){return kind==AuctionRegister || kind==AuctionBid;}
 struct PetRetirement{uint32_t pet_id=0,egg_id=0;};
 struct PetChange{uint64_t claim_id=0;int16_t inventory_index=-1;pn_pet::Output output{};};
 struct Commit {uint16_t length=0;uint32_t kind=0,account_id=0,char_id=0,counter_before=0,counter_after=0;int64_t wallet_before=0,wallet_after=0,cash_before=0,cash_after=0,kafra_before=0,kafra_after=0;item items[MAX_INVENTORY]{};uint16_t pet_count=0,pet_retire_count=0;PetChange pets[MAX_INVENTORY]{};PetRetirement retired_pets[MAX_INVENTORY]{};uint32_t mail_id=0;int64_t mail_zeny=0;item mail_items[MAIL_MAX_ITEM]{};};

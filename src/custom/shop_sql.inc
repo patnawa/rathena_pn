@@ -5,6 +5,7 @@
 #include <custom/shop_progression.hpp>
 #include <common/socket.hpp>
 #include <char/int_mail.hpp>
+#include <char/int_auction.hpp>
 #include <algorithm>
 #include <cerrno>
 #include <map>
@@ -17,6 +18,7 @@ static bool pn_shop_tables(const pn_shop::Commit& r) {
     std::vector<const char*> tables = {schema_config.char_db,schema_config.inventory_db,
         schema_config.acc_reg_num_table,"pn_shop_commits","pn_purchase_history"};
     if(r.stock_count)tables.push_back(stock);
+    if(pn_shop::auction_kind(r.kind)){tables.push_back(schema_config.auction_db);tables.push_back(schema_config.mail_db);tables.push_back(schema_config.mail_attachment_db);}
     if(r.point.scope==pn_shop::CharacterPoint)tables.push_back(schema_config.char_reg_num_table);
     if(r.point.scope==pn_shop::CharacterPoint || r.point.scope==pn_shop::AccountPoint)tables.push_back("pn_point_registry_keys");
     if(r.point.scope==pn_shop::GlobalPoint)tables.push_back("pn_global_point_barriers");
@@ -75,6 +77,7 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
     uint32 outcome=pn_shop::Retry;
     bool transaction_complete=false,new_commit=false;
     mail_message mail_notification{};
+    std::vector<mail_message> auction_notifications;
     do {
         // A retry may be from a departed session. Existing receipts are safe to
         // read, but must never reapply their old inventory or currency snapshot.
@@ -179,6 +182,16 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
         // divergent achievement baseline must roll all of it back before its
         // terminal stale receipt is recorded.
         if(progression && Sql_Query(sql_handle,"SAVEPOINT pn_shop_outputs")!=SQL_SUCCESS)break;
+        if(pn_shop::auction_kind(r.kind)) {
+            if(Sql_Query(sql_handle,"SAVEPOINT pn_auction_outputs")!=SQL_SUCCESS)break;
+            const int applied=pn_auction_apply_locked(r,auction_notifications);
+            if(applied<0)break;
+            if(!applied){
+                if(Sql_Query(sql_handle,"ROLLBACK TO SAVEPOINT pn_auction_outputs")!=SQL_SUCCESS ||
+                   !pn_shop_receipt(r,pn_shop::Rejected,progression))break;
+                outcome=pn_shop::Rejected;transaction_complete=true;break;
+            }
+        }
 
         // Pet creation/claim belongs to this same payment + inventory + stock
         // transaction. A conflict must undo earlier outputs before recording a
@@ -266,8 +279,10 @@ static uint32 pn_shop_tosql(const pn_shop::Commit& r,bool current_owner,const pn
     if((new_commit && ended!=SQL_SUCCESS) || (transaction_complete && outcome==pn_shop::Committed && !new_commit))
         char_get_chardb().erase(static_cast<uint32>(r.char_id));
     if(ended!=SQL_SUCCESS)return pn_shop::Retry;
-    if(!transaction_complete)return pn_shop::Retry;
+    if(!transaction_complete){if(pn_shop::auction_kind(r.kind))pn_auction_reload();return pn_shop::Retry;}
+    if(pn_shop::auction_kind(r.kind) && outcome==pn_shop::Committed && !pn_auction_reload())return pn_shop::Retry;
     if(new_commit) {
+        for(auto& msg:auction_notifications)mapif_Mail_new(&msg);
         if(r.kind==pn_shop::MailSend && mail_notification.id)mapif_Mail_new(&mail_notification);
         auto found=char_get_chardb().find(static_cast<uint32>(r.char_id));
         if(found!=char_get_chardb().end() && found->second) {

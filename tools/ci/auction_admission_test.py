@@ -26,6 +26,7 @@ bool CheckForCharServer(){return offline;}
 void clif_Auction_message(int,int){}
 int pc_payzeny(map_session_data*,int32,int){++debits;return 0;}
 void intif_Auction_bid(uint32,const char*,uint32,int32){++sends;}
+bool pn_auction_bid(map_session_data*,uint32,int32){++sends;return true;}
 void intif_Auction_cancel(uint32,uint32){++sends;}
 void intif_Auction_close(uint32,uint32){++sends;}
 '''
@@ -35,7 +36,7 @@ main=r'''
 int main(){int failures=0,cases=0;map_session_data sd;
 for(auto handler:{clif_parse_Auction_bid,clif_parse_Auction_cancel,clif_parse_Auction_close}){
   for(int state=0;state<3;++state){battle_config.feature_auction=state!=0;sd.pending=state==1;sends=debits=0;
-    handler(1,&sd);bool ok=state==2?sends==1:(sends==0&&debits==0);
+    handler(1,&sd);bool ok=state==2?(sends==1&&debits==0):(sends==0&&debits==0);
     std::printf("AUCTION_GATE state=%d sends=%d debits=%d %s\n",state,sends,debits,ok?"PASS":"FAIL");failures+=!ok;++cases;
   }
 }

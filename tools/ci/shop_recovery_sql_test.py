@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--evidence', type=Path, required=True)
     parser.add_argument('--image', default='pn-bank-validation:20260929')
     parser.add_argument('--database-image', default='mariadb:noble')
-    parser.add_argument('--mode',choices=['auction-settlement','lifecycle','lifecycle-return','lifecycle-owner','lifecycle-disabled'])
+    parser.add_argument('--mode',choices=['auction-handoff','auction-settlement','lifecycle','lifecycle-return','lifecycle-owner','lifecycle-disabled'])
     args = parser.parse_args()
     candidate, evidence = args.candidate.resolve(), args.evidence.resolve()
     if evidence == candidate or candidate in evidence.parents:
@@ -77,6 +77,7 @@ def main():
                  candidate / 'tools/ci/pet_mail_sql_cases.inc',
                  candidate / 'tools/ci/mail_lifecycle_sql_cases.inc',
                  candidate / 'tools/ci/auction_settlement_sql_cases.inc',
+                 candidate / 'tools/ci/auction_handoff_sql_cases.inc',
                  candidate / 'tools/ci/pet_floor_sql_cases.inc',
                  candidate / 'tools/ci/point_asset_sql_cases.inc',
                  candidate / 'tools/ci/point_global_sql_cases.inc',
@@ -225,6 +226,10 @@ def main():
         report['pet_mail_asset'] = runtime('pet-mail').strip()
         report['mail_lifecycle'] = runtime('lifecycle').strip()
         report['auction_settlement'] = runtime('auction-settlement').strip()
+        report['auction_handoff'] = runtime('auction-handoff').strip()
+        run(['docker','restart',db],capture_output=True,timeout=30)
+        ready()
+        report['auction_handoff_restart'] = runtime('auction-handoff-replay').strip()
         runtime('lifecycle-race-seed')
         returning=[subprocess.Popen(runtime_command('lifecycle-race-return'),text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT) for _ in range(2)]
         for index,process in enumerate(returning):

@@ -2429,6 +2429,13 @@ void clif_npc_market_purchase_ack( map_session_data& sd, e_purchase_result res, 
 // Durable results use the immutable plan, never a reloaded/closed NPC pointer.
 void clif_shop_commit_result(map_session_data& sd,const pn_shop::Commit& request,
 	const std::vector<pn_shop::Event>& events,bool committed) {
+    if(pn_shop::auction_kind(request.kind)) {
+        sd.auction.amount=0;
+        if(!committed)clif_inventorylist(&sd);
+        clif_Auction_message(sd.fd,committed?1:(request.kind==pn_shop::AuctionRegister?4:0));
+        if(committed)intif_Auction_requestlist(sd.status.char_id,request.kind==pn_shop::AuctionRegister?6:7,0,"",1);
+        return;
+    }
     if(request.kind==pn_shop::MailSend || request.mail_id)return; // RODEX owns its acknowledgements.
 	if(((request.kind==pn_shop::Asset || request.kind==pn_shop::ItemUse) && request.response==pn_shop::Automatic) || request.kind==pn_shop::PetClaim) {
 		clif_displaymessage(sd.fd,committed?(request.kind==pn_shop::PetClaim?
@@ -17017,7 +17024,7 @@ void clif_Auction_openwindow( const map_session_data* sd )
 void clif_Auction_results( const map_session_data* sd, int16 count, int16 pages, uint8* buf )
 {
 	int32 i, fd = sd->fd, len = sizeof(struct auction_data);
-	struct auction_data auction;
+	struct auction_data auction{};
 
 	WFIFOHEAD(fd,12 + (count * 83));
 	WFIFOW(fd,0) = 0x252;
@@ -17177,6 +17184,7 @@ void clif_parse_Auction_register( int32 fd, map_session_data* sd ){
 	auction.buynow = p->max_money;
 	auction.hours = p->hours;
 
+	if(pc_transaction_pending(sd) || sd->auction.index<0 || sd->auction.index>=MAX_INVENTORY || sd->auction.amount!=1)return;
 	// Invalid Situations...
 	if( sd->auction.amount < 1 ) {
 		ShowWarning("Character %s trying to register auction without item.\n", sd->status.name);
@@ -17199,7 +17207,7 @@ void clif_parse_Auction_register( int32 fd, map_session_data* sd ){
 		clif_Auction_message(fd, 2); // The auction has been canceled
 		return;
 	}
-	if( sd->status.zeny < (auction.hours * battle_config.auction_feeperhour) ) {
+	if( sd->status.zeny < (static_cast<int64>(auction.hours) * battle_config.auction_feeperhour) ) {
 		clif_Auction_message(fd, 5); // You do not have enough zeny to pay the Auction Fee.
 		return;
 	}
@@ -17236,17 +17244,8 @@ void clif_parse_Auction_register( int32 fd, map_session_data* sd ){
 	auction.item.amount = 1;
 	auction.timestamp = 0;
 
-	if( !intif_Auction_register(&auction) )
+	if( !pn_auction_register(sd,auction) )
 		clif_Auction_message(fd, 4); // No Char Server? lets say something to the client
-	else
-	{
-		int32 zeny = auction.hours*battle_config.auction_feeperhour;
-
-		pc_delitem(sd, sd->auction.index, sd->auction.amount, 1, 6, LOG_TYPE_AUCTION);
-		sd->auction.amount = 0;
-
-		pc_payzeny(sd, zeny, LOG_TYPE_AUCTION);
-	}
 #endif
 }
 
@@ -17287,12 +17286,11 @@ void clif_parse_Auction_bid( int32 fd, map_session_data* sd ){
 		return;
 	}
 
-	if( pc_payzeny( sd, p->money, LOG_TYPE_AUCTION ) != 0 ){
+	if( !pn_auction_bid(sd,p->auction_id,p->money) ){
 		clif_Auction_message( fd, 8 ); // You do not have enough zeny
 		return;
 	}
 
-	intif_Auction_bid( sd->status.char_id, sd->status.name, p->auction_id, p->money );
 #endif
 }
 

@@ -42,11 +42,13 @@ int main(){
  emit(&sd,request,reply,false,false);emit(nullptr,request,reply,true,false);
  for(uint32 action=pn_bank::Deposit;action<=pn_bank::CollectOffline;++action){request.action=action;emit(&sd,request,reply,true,false);}
  request.action=pn_bank::Refresh;
- for(unsigned flags=1;flags<16;++flags){
+ for(unsigned flags=1;flags<128;++flags){
   sd.bank_ui.pending=flags&1;sd.pair_commit.pending=flags&2;sd.mail_companion.pending=flags&4;sd.multi_storage.pending=flags&8;
+  sd.shop_commit.pending=flags&16;sd.achievement_data.reward_pending_id=(flags&32)?42:0;sd.capture_waiting=flags&64;
   emit(&sd,request,reply,true,false); // Even a stale terminal reply cannot bypass live pending state.
  }
  sd.bank_ui.pending=sd.pair_commit.pending=sd.mail_companion.pending=sd.multi_storage.pending=false;
+ sd.shop_commit.pending=sd.capture_waiting=false;sd.achievement_data.reward_pending_id=0;
  auto invalid=reply;invalid.char_id++;emit(&sd,request,invalid,true,false);
  invalid=reply;invalid.nonce_hi++;emit(&sd,request,invalid,true,false);
  invalid=reply;invalid.nonce_lo++;emit(&sd,request,invalid,true,false);
