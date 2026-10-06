@@ -6138,11 +6138,7 @@ enum e_additem_result pc_additem(map_session_data *sd,struct item *item,int32 am
 	// Stackable | Non Rental
 	if( itemdb_isstackable2(id) && item->expire_time == 0 ) {
 		for( i = 0; i < MAX_INVENTORY; i++ ) {
-			if( sd->inventory.u.items_inventory[i].nameid == item->nameid &&
-				sd->inventory.u.items_inventory[i].bound == item->bound &&
-				sd->inventory.u.items_inventory[i].expire_time == 0 &&
-				sd->inventory.u.items_inventory[i].unique_id == item->unique_id &&
-				memcmp(&sd->inventory.u.items_inventory[i].card, &item->card, sizeof(item->card)) == 0 ) {
+			if( compare_item(&sd->inventory.u.items_inventory[i], item) ) {
 				if( amount > MAX_AMOUNT - sd->inventory.u.items_inventory[i].amount || ( id->stack.inventory && amount > id->stack.amount - sd->inventory.u.items_inventory[i].amount ) )
 					return ADDITEM_OVERAMOUNT;
 				// If the item is in the inventory already, but the player is not allowed to use that many slots anymore

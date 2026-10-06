@@ -32,6 +32,15 @@ static void trade_revision(map_session_data& sd, map_session_data& other, bool o
         sd.state.deal_locked = other.state.deal_locked = 0;
     }
 }
+// A stale actor must never edit or cancel another actor's newer trade.
+static bool trade_reciprocal(const map_session_data& a, const map_session_data& b) {
+    return &a != &b && a.trade_partner.id == b.status.account_id &&
+        b.trade_partner.id == a.status.account_id &&
+        (a.state.trading == b.state.trading) &&
+        (!a.state.trading || (a.bank_ui.trade_id &&
+            a.bank_ui.trade_id == b.bank_ui.trade_id));
+}
+
 static bool trade_wide_required(const map_session_data& sd, const map_session_data& other) {
     return sd.deal.zeny > MAX_ZENY || other.deal.zeny > MAX_ZENY;
 }
@@ -53,7 +62,7 @@ void trade_traderequest(map_session_data *sd, map_session_data *target_sd)
 		return; //Can't trade in notrade mapflag maps.
 	}
 
-	if (target_sd == nullptr || sd == target_sd || pc_transaction_pending(sd) || pc_transaction_pending(target_sd)) {
+	if (target_sd == nullptr || sd == target_sd || sd->state.trading || pc_transaction_pending(sd) || pc_transaction_pending(target_sd)) {
 		clif_traderesponse(*sd, TRADE_ACK_CHARNOTEXIST);
 		return;
 	}
@@ -71,14 +80,8 @@ void trade_traderequest(map_session_data *sd, map_session_data *target_sd)
 	}
 
 	if ( sd->trade_partner.id != 0 ) { // If a character tries to trade to another one then cancel the previous one
-		map_session_data *previous_sd = map_id2sd(sd->trade_partner.id);
-
-		if( previous_sd != nullptr ){
-			previous_sd->trade_partner = {0,0};
-			clif_tradecancelled( *previous_sd );
-		} // Once cancelled then continue to the new one.
-		sd->trade_partner = {0,0};
-		clif_tradecancelled( *sd );
+        trade_tradecancel(sd);
+        if (sd->trade_partner.id) return;
 	}
 
 	if (target_sd->trade_partner.id != 0) {
@@ -229,6 +232,9 @@ int32 impossible_trade_check(map_session_data *sd)
 			continue;
 
 		index = sd->deal.item[i].index;
+        if (index < 0 || index >= MAX_INVENTORY || sd->deal.item[i].amount < 0 ||
+            !inventory[index].nameid || !sd->inventory_data[index] ||
+            sd->inventory_data[index]->nameid != inventory[index].nameid) return 1;
 
 		if (inventory[index].amount < sd->deal.item[i].amount) { // if more than the player have -> hack
 			sprintf(message_to_gm, msg_txt(sd,538), sd->status.name, sd->status.account_id); // Hack on trade: character '%s' (account: %d) try to trade more items that he has.
@@ -266,102 +272,49 @@ int32 impossible_trade_check(map_session_data *sd)
  * @param tsd : player 2 trading
  * @return 0:error, 1:success
  */
+// Mirror the actual alternating delivery order using complete stack identity,
+// configured stack caps and each character's usable inventory slots.
 int32 trade_check(map_session_data *sd, map_session_data *tsd)
 {
-	struct item inventory[MAX_INVENTORY];
-	struct item inventory2[MAX_INVENTORY];
-	struct item_data *data;
-	int32 trade_i, i, n;
-
-	// check zeny value against hackers (Zeny was already checked on time of adding, but you never know when you lost some zeny since then.
-	if(sd->deal.zeny < 0 || sd->deal.zeny > sd->status.zeny || !pn_zeny::room(tsd->status.zeny, tsd->mail.pending_zeny, sd->deal.zeny))
-		return 0;
-	if(tsd->deal.zeny < 0 || tsd->deal.zeny > tsd->status.zeny || !pn_zeny::room(sd->status.zeny, sd->mail.pending_zeny, tsd->deal.zeny))
-		return 0;
-
-	// get inventory of player
-	memcpy(&inventory, &sd->inventory.u.items_inventory, sizeof(struct item) * MAX_INVENTORY);
-	memcpy(&inventory2, &tsd->inventory.u.items_inventory, sizeof(struct item) * MAX_INVENTORY);
-
-	// check free slot in both inventory
-	for(trade_i = 0; trade_i < 10; trade_i++) {
-		int16 amount;
-
-		amount = sd->deal.item[trade_i].amount;
-
-		if (amount) {
-			n = sd->deal.item[trade_i].index;
-
-			if (amount > inventory[n].amount)
-				return 0; // Quantity Exploit?
-
-			data = itemdb_search(inventory[n].nameid);
-			i = MAX_INVENTORY;
-			if (itemdb_isstackable2(data)) { // Stackable item.
-				for(i = 0; i < MAX_INVENTORY; i++)
-					if (inventory2[i].nameid == inventory[n].nameid &&
-						inventory2[i].card[0] == inventory[n].card[0] && inventory2[i].card[1] == inventory[n].card[1] &&
-						inventory2[i].card[2] == inventory[n].card[2] && inventory2[i].card[3] == inventory[n].card[3]) {
-						if (inventory2[i].amount + amount > MAX_AMOUNT)
-							return 0;
-
-						inventory2[i].amount += amount;
-						inventory[n].amount -= amount;
-						break;
-					}
-			}
-
-			if (i == MAX_INVENTORY) { // look for an empty slot.
-				for(i = 0; i < MAX_INVENTORY && inventory2[i].nameid; i++);
-				if (i == MAX_INVENTORY)
-					return 0;
-
-				memcpy(&inventory2[i], &inventory[n], sizeof(struct item));
-				inventory2[i].amount = amount;
-				inventory[n].amount -= amount;
-			}
-		}
-
-		amount = tsd->deal.item[trade_i].amount;
-
-		if (!amount)
-			continue;
-
-		n = tsd->deal.item[trade_i].index;
-
-		if (amount > inventory2[n].amount)
-			return 0;
-
-		// search if it's possible to add item (for full inventory)
-		data = itemdb_search(inventory2[n].nameid);
-		i = MAX_INVENTORY;
-
-		if (itemdb_isstackable2(data)) {
-			for(i = 0; i < MAX_INVENTORY; i++)
-				if (inventory[i].nameid == inventory2[n].nameid &&
-					inventory[i].card[0] == inventory2[n].card[0] && inventory[i].card[1] == inventory2[n].card[1] &&
-					inventory[i].card[2] == inventory2[n].card[2] && inventory[i].card[3] == inventory2[n].card[3]) {
-					if (inventory[i].amount + amount > MAX_AMOUNT)
-						return 0;
-
-					inventory[i].amount += amount;
-					inventory2[n].amount -= amount;
-					break;
-				}
-		}
-
-		if (i == MAX_INVENTORY) {
-			for(i = 0; i < MAX_INVENTORY && inventory[i].nameid; i++);
-			if (i == MAX_INVENTORY)
-				return 0;
-
-			memcpy(&inventory[i], &inventory2[n], sizeof(struct item));
-			inventory[i].amount = amount;
-			inventory2[n].amount -= amount;
-		}
-	}
-
-	return 1;
+    if (!sd || !tsd || sd == tsd || sd->status.inventory_slots > MAX_INVENTORY ||
+        tsd->status.inventory_slots > MAX_INVENTORY) return 0;
+    if(sd->deal.zeny < 0 || sd->deal.zeny > sd->status.zeny || !pn_zeny::room(tsd->status.zeny, tsd->mail.pending_zeny, sd->deal.zeny) ||
+       tsd->deal.zeny < 0 || tsd->deal.zeny > tsd->status.zeny || !pn_zeny::room(sd->status.zeny, sd->mail.pending_zeny, tsd->deal.zeny)) return 0;
+    item inventories[2][MAX_INVENTORY];
+    memcpy(inventories[0],sd->inventory.u.items_inventory,sizeof(inventories[0]));
+    memcpy(inventories[1],tsd->inventory.u.items_inventory,sizeof(inventories[1]));
+    map_session_data* players[]={sd,tsd};
+    uint64 weights[]={sd->weight,tsd->weight};
+    for (int row=0;row<10;++row) for (int side=0;side<2;++side) {
+        const auto& offer=players[side]->deal.item[row];
+        if (!offer.amount) continue;
+        const int n=offer.index,amount=offer.amount,other=1-side;
+        if (n<0 || n>=MAX_INVENTORY || amount<0 || amount>MAX_AMOUNT) return 0;
+        auto& source=inventories[side][n];
+        const auto data=item_db.find(source.nameid);
+        if (!data || !players[side]->inventory_data[n] || players[side]->inventory_data[n]!=data.get() ||
+            amount>source.amount || (data->stack.inventory && amount>data->stack.amount)) return 0;
+        const uint64 weight=static_cast<uint64>(data->weight)*amount;
+        if (weights[other]+weight>players[other]->max_weight || weights[side]<weight) return 0;
+        int slot=MAX_INVENTORY;
+        if (itemdb_isstackable2(data.get()) && !source.expire_time && (!data->flag.guid || source.unique_id)) {
+            for (int i=0;i<MAX_INVENTORY;++i) if (compare_item(&inventories[other][i],&source)) {
+                if (i>=players[other]->status.inventory_slots || amount>MAX_AMOUNT-inventories[other][i].amount ||
+                    (data->stack.inventory && amount>data->stack.amount-inventories[other][i].amount)) return 0;
+                slot=i;break;
+            }
+        }
+        if (slot==MAX_INVENTORY) {
+            for (int i=0;i<players[other]->status.inventory_slots;++i) if (!inventories[other][i].nameid) {slot=i;break;}
+            if (slot==MAX_INVENTORY) return 0;
+            inventories[other][slot]=source;inventories[other][slot].amount=0;
+            inventories[other][slot].equip=inventories[other][slot].equipSwitch=0;
+        }
+        inventories[other][slot].amount+=amount;
+        source.amount-=amount;if (!source.amount) source={};
+        weights[side]-=weight;weights[other]+=weight;
+    }
+    return 1;
 }
 
 /**
@@ -374,11 +327,12 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
 {
 	map_session_data *target_sd;
 	struct item *item;
-	int32 trade_i, trade_weight;
+	int32 trade_i;
 	int32 src_lv, dst_lv;
 
 	nullpo_retv(sd);
 
+    if (pc_transaction_pending(sd)) return;
 	if( !sd->state.trading || sd->state.deal_locked > 0 )
 		return; // Can't add stuff.
 
@@ -398,7 +352,10 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
 	if( amount < 0 || amount > sd->inventory.u.items_inventory[index].amount )
 		return;
 
+    if (!trade_reciprocal(*sd,*target_sd) || pc_transaction_pending(target_sd)) return;
 	item = &sd->inventory.u.items_inventory[index];
+    const auto data=item_db.find(item->nameid);
+    if (!data || sd->inventory_data[index]!=data.get()) return;
 	src_lv = pc_get_group_level(sd);
 	dst_lv = pc_get_group_level(target_sd);
 
@@ -429,9 +386,6 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
 		return;
 	}
 
-	if (item->bound)
-		sd->state.isBoundTrading |= (1<<item->bound);
-
 	// Locate a trade position
 	ARR_FIND( 0, 10, trade_i, sd->deal.item[trade_i].index == index || sd->deal.item[trade_i].amount == 0 );
 	if( trade_i == 10 ) { // No space left
@@ -439,45 +393,33 @@ void trade_tradeadditem(map_session_data *sd, int16 index, int16 amount)
 		return;
 	}
 
-	char add_item = pc_checkadditem(target_sd, item->nameid, amount);
-	// Fail to add the item if is stackable and adding the traded amount will exceed the maximum
-	if (add_item == CHKADDITEM_OVERAMOUNT) {
-		clif_tradeitemok(*sd, index, EXITEM_ADD_FAILED_EACHITEM_OVERCOUNT);
-		return;
-	}
-
-	// Determines whether the item should be counted when checking for inventory space.
-	// If the 'trade_count_stackable' config is enabled, the item will be counted separately even if the recipient already has it.
-	bool count_stackable = (battle_config.trade_count_stackable == 1) || (add_item != CHKADDITEM_EXIST);
-
-	// Fail to add the item if the inventory will be full
-	if (count_stackable && pc_inventoryblank(target_sd) < sd->deal.inventory_space + 1) {
-		clif_tradeitemok(*sd, index, EXITEM_ADD_FAILED_OVERCOUNT);
-		return;
-	}
-
-	trade_weight = sd->inventory_data[index]->weight * amount;
-	if( target_sd->weight + sd->deal.weight + trade_weight > target_sd->max_weight ) { // fail to add item -- the player was over weighted.
-		clif_tradeitemok(*sd, index, EXITEM_ADD_FAILED_OVERWEIGHT);
-		return;
-	}
-
-	if( sd->deal.item[trade_i].index == index ) { // The same item as before is being readjusted.
-		if( sd->deal.item[trade_i].amount + amount > sd->inventory.u.items_inventory[index].amount ) { // packet deal exploit check
-			amount = sd->inventory.u.items_inventory[index].amount - sd->deal.item[trade_i].amount;
-			trade_weight = sd->inventory_data[index]->weight * amount;
-		}
-
-		sd->deal.item[trade_i].amount += amount;
-	} else { // New deal item
-		sd->deal.item[trade_i].index = index;
-		sd->deal.item[trade_i].amount = amount;
-	}
-
-	sd->deal.weight += trade_weight;
-
-	if (count_stackable)
-		sd->deal.inventory_space++;
+    const bool existing=sd->deal.item[trade_i].amount>0;
+    const int offered=existing?sd->deal.item[trade_i].amount:0;
+    amount=std::min<int32>(amount,item->amount-offered);
+    if (amount<=0) return;
+    // Preserve the configured conservative slot policy. Adjusting one offer
+    // row never reserves a second slot.
+    bool needs_slot=battle_config.trade_count_stackable==1 || !itemdb_isstackable2(data.get());
+    if (!needs_slot) {
+        needs_slot=true;
+        for (auto& received:target_sd->inventory.u.items_inventory)
+            if (!item->expire_time && compare_item(&received,item)) {needs_slot=false;break;}
+    }
+    if (!existing && needs_slot && pc_inventoryblank(target_sd)<sd->deal.inventory_space+1) {
+        clif_tradeitemok(*sd,index,EXITEM_ADD_FAILED_OVERCOUNT);return;
+    }
+    const uint64 weight=static_cast<uint64>(data->weight)*amount;
+    if (static_cast<uint64>(target_sd->weight)+sd->deal.weight+weight>target_sd->max_weight) {
+        clif_tradeitemok(*sd,index,EXITEM_ADD_FAILED_OVERWEIGHT);return;
+    }
+    const auto before=sd->deal;
+    sd->deal.item[trade_i].index=index;sd->deal.item[trade_i].amount=offered+amount;
+    if (!trade_check(sd,target_sd)) {
+        sd->deal=before;clif_tradeitemok(*sd,index,EXITEM_ADD_FAILED_OVERCOUNT);return;
+    }
+    sd->deal.weight+=weight;
+    if (!existing && needs_slot) sd->deal.inventory_space++;
+    if (item->bound) sd->state.isBoundTrading |= (1<<item->bound);
 
 	clif_tradeitemok(*sd, index, EXITEM_ADD_SUCCEED); // Return the index as it was received
 	trade_revision(*sd, *target_sd, true);
@@ -497,6 +439,7 @@ void trade_tradeaddzeny(map_session_data* sd, int64 amount)
 
 	nullpo_retv(sd);
 
+    if (pc_transaction_pending(sd)) return;
 	if( !sd->state.trading || sd->state.deal_locked > 0 )
 		return; //Can't add stuff.
 
@@ -504,6 +447,8 @@ void trade_tradeaddzeny(map_session_data* sd, int64 amount)
 		trade_tradecancel(sd);
 		return;
 	}
+
+    if (!trade_reciprocal(*sd,*target_sd) || pc_transaction_pending(target_sd)) return;
 
 	if( amount < 0 || amount > sd->status.zeny || !pn_zeny::room(target_sd->status.zeny, target_sd->mail.pending_zeny, amount) ) { // invalid values, no appropriate packet for it => abort
 		trade_tradecancel(sd);
@@ -531,6 +476,8 @@ void trade_tradeok(map_session_data *sd, bool wide)
 {
 	map_session_data *target_sd;
 
+    nullpo_retv(sd);
+    if (pc_transaction_pending(sd)) return;
 	if(sd->state.deal_locked || !sd->state.trading)
 		return;
 
@@ -539,6 +486,7 @@ void trade_tradeok(map_session_data *sd, bool wide)
 		return;
 	}
 
+    if (!trade_reciprocal(*sd,*target_sd) || pc_transaction_pending(target_sd)) return;
     if (!wide && trade_wide_required(*sd, *target_sd)) {
         clif_displaymessage(sd->fd, "Confirm this Zeny offer in Wallet & Bank."); return;
     }
@@ -555,66 +503,21 @@ void trade_tradeok(map_session_data *sd, bool wide)
  */
 void trade_tradecancel(map_session_data *sd)
 {
-	map_session_data *target_sd;
-	int32 trade_i;
-
-	nullpo_retv(sd);
-	if (sd->pair_commit.pending) return; // A durable decision cannot be canceled mid-save.
-
-	target_sd = map_id2sd(sd->trade_partner.id);
-	trade_clear_epoch(*sd);
-	if (target_sd) trade_clear_epoch(*target_sd);
-	sd->state.isBoundTrading = 0;
-
-	if(!sd->state.trading) { // Not trade accepted
-		if( target_sd != nullptr ) {
-			target_sd->trade_partner = {0,0};
-			clif_tradecancelled( *target_sd );
-		}
-		sd->trade_partner = {0,0};
-		clif_tradecancelled( *sd );
-		return;
-	}
-
-	for(trade_i = 0; trade_i < 10; trade_i++) { // give items back (only virtual)
-		if (!sd->deal.item[trade_i].amount)
-			continue;
-
-		clif_additem(sd, sd->deal.item[trade_i].index, sd->deal.item[trade_i].amount, 0);
-		sd->deal.item[trade_i].index = 0;
-		sd->deal.item[trade_i].amount = 0;
-	}
-
-	if (sd->deal.zeny) {
-		clif_updatestatus(*sd, SP_ZENY);
-		sd->deal.zeny = 0;
-	}
-
-	sd->state.deal_locked = 0;
-	sd->state.trading = 0;
-	sd->trade_partner = {0,0};
-	clif_tradecancelled( *sd );
-
-	if (!target_sd)
-		return;
-
-	for(trade_i = 0; trade_i < 10; trade_i++) { // give items back (only virtual)
-		if (!target_sd->deal.item[trade_i].amount)
-			continue;
-		clif_additem(target_sd, target_sd->deal.item[trade_i].index, target_sd->deal.item[trade_i].amount, 0);
-		target_sd->deal.item[trade_i].index = 0;
-		target_sd->deal.item[trade_i].amount = 0;
-	}
-
-	if (target_sd->deal.zeny) {
-		clif_updatestatus(*target_sd, SP_ZENY);
-		target_sd->deal.zeny = 0;
-	}
-
-	target_sd->state.deal_locked = 0;
-	target_sd->trade_partner = {0,0};
-	target_sd->state.trading = 0;
-	clif_tradecancelled( *target_sd );
+    nullpo_retv(sd);
+    if (sd->pair_commit.pending) return;
+    auto* other=map_id2sd(sd->trade_partner.id);
+    if (other && !trade_reciprocal(*sd,*other)) other=nullptr;
+    if (other && other->pair_commit.pending) return;
+    for (auto* actor:{sd,other}) {
+        if (!actor) continue;
+        if (actor->state.trading) for (const auto& offer:actor->deal.item)
+            if (offer.amount>0 && offer.index>=0 && offer.index<MAX_INVENTORY)
+                clif_additem(actor,offer.index,offer.amount,0);
+        if (actor->deal.zeny) clif_updatestatus(*actor,SP_ZENY);
+        actor->state.isBoundTrading=actor->state.deal_locked=actor->state.trading=0;
+        actor->trade_partner={0,0};memset(&actor->deal,0,sizeof(actor->deal));
+        trade_clear_epoch(*actor);clif_tradecancelled(*actor);
+    }
 }
 
 /**
@@ -638,6 +541,9 @@ void trade_tradecommit(map_session_data *sd, bool wide)
 		return;
 	}
 
+    if (!trade_reciprocal(*sd,*tsd) || pc_transaction_pending(tsd)) {
+        trade_tradecancel(sd);return;
+    }
     if (!wide && trade_wide_required(*sd, *tsd)) {
         clif_displaymessage(sd->fd, "Confirm this Zeny offer in Wallet & Bank."); return;
     }
@@ -668,6 +574,8 @@ void trade_tradecommit(map_session_data *sd, bool wide)
 
 	// Lock both actors before any mutation; persistence owns the whole pair.
 	if (!pn_pair_begin(*sd,*tsd,pn_pair::Trade)) { trade_tradecancel(sd); return; }
+    {
+    PcItemDeliveryScope delivery_a(*sd),delivery_b(*tsd);
 	// trade is accepted and correct.
 	for( trade_i = 0; trade_i < 10; trade_i++ ) {
 		int32 n;
@@ -677,9 +585,9 @@ void trade_tradecommit(map_session_data *sd, bool wide)
 			n = sd->deal.item[trade_i].index;
 
 			flag = pc_additem(tsd, &sd->inventory.u.items_inventory[n], sd->deal.item[trade_i].amount,LOG_TYPE_TRADE);
-			if (flag == 0)
-				pc_delitem(sd, n, sd->deal.item[trade_i].amount, 1, 6, LOG_TYPE_TRADE);
-			else { pn_pair_abort(*sd,*tsd);trade_tradecancel(sd);return; }
+            if (flag != ADDITEM_SUCCESS || pc_delitem(sd,n,sd->deal.item[trade_i].amount,1,6,LOG_TYPE_TRADE)) {
+                delivery_a.cancel();delivery_b.cancel();pn_pair_abort(*sd,*tsd);trade_tradecancel(sd);return;
+            }
 			sd->deal.item[trade_i].index = 0;
 			sd->deal.item[trade_i].amount = 0;
 		}
@@ -688,9 +596,9 @@ void trade_tradecommit(map_session_data *sd, bool wide)
 			n = tsd->deal.item[trade_i].index;
 
 			flag = pc_additem(sd, &tsd->inventory.u.items_inventory[n], tsd->deal.item[trade_i].amount,LOG_TYPE_TRADE);
-			if (flag == 0)
-				pc_delitem(tsd, n, tsd->deal.item[trade_i].amount, 1, 6, LOG_TYPE_TRADE);
-			else { pn_pair_abort(*sd,*tsd);trade_tradecancel(sd);return; }
+            if (flag != ADDITEM_SUCCESS || pc_delitem(tsd,n,tsd->deal.item[trade_i].amount,1,6,LOG_TYPE_TRADE)) {
+                delivery_a.cancel();delivery_b.cancel();pn_pair_abort(*sd,*tsd);trade_tradecancel(sd);return;
+            }
 			tsd->deal.item[trade_i].index = 0;
 			tsd->deal.item[trade_i].amount = 0;
 		}
@@ -709,6 +617,7 @@ void trade_tradecommit(map_session_data *sd, bool wide)
 
 	}
 
+    } // Flush grant/quest callbacks only after both inventories and wallets settle.
     pn_pair_submit(*sd,*tsd);
 }
 
