@@ -71,6 +71,38 @@ void cart_invalid(){
     std::printf("MARKET_CART_PROBE source=%d delivered=%d\n",p.seller->cart.u.items_cart[0].amount,p.buyer->inventory.u.items_inventory[0].amount);std::fflush(stdout);
     check(p.seller->cart.u.items_cart[0].amount==10&&!p.buyer->inventory.u.items_inventory[0].nameid&&p.buyer->status.zeny==7654321,"invalid cart counters cannot duplicate stock");
 }
+void wide_prices(){
+    const int64 prices[]={3000000000LL,9007199254740993LL,INT64_MAX};
+    for(int64 price:prices){
+        Pair p;p.cart(0,1);p.seller->vending[0].amount=1;p.seller->vending[0].value=price;p.buyer->status.zeny=price;
+        p.purchase(1);
+        check(p.buyer->pair_commit.pending&&p.seller->pair_commit.pending,"wide purchase submits one durable pair");
+        check(p.buyer->status.zeny==0 && p.seller->bank_vault==price,"wide debit and seller bank credit remain exact");
+        check(p.buyer->inventory.u.items_inventory[0].amount==1 && !p.seller->cart.u.items_cart[0].nameid,"wide purchase transfers one item");
+        check(pn_pair::conserved(*p.buyer->pair_commit.request),"wide purchase receipt conserves money");
+    }
+    {
+        Pair p;p.cart(0,1);p.seller->vending[0].amount=1;p.seller->vending[0].value=3000000000LL;
+        p.buyer->status.zeny=3000000000LL;p.seller->bank_vault=MAX_BANK_ZENY-3000000000LL;p.purchase(1);
+        check(p.buyer->pair_commit.pending && p.seller->bank_vault==MAX_BANK_ZENY,"seller may reach the exact bank limit");
+    }
+    for(int boundary=0;boundary<3;++boundary){
+        Pair p;p.cart(0,2);p.seller->vending[0].amount=2;p.seller->vending[0].value=INT64_MAX;p.buyer->status.zeny=INT64_MAX;
+        if(boundary==0)p.seller->bank_vault=1;
+        if(boundary==1)--p.buyer->status.zeny;
+        const int64 wallet=p.buyer->status.zeny,bank=p.seller->bank_vault;
+        p.purchase(boundary==2?2:1);
+        check(!p.buyer->pair_commit.pending && !p.seller->pair_commit.pending,"overflow or insufficient wallet never begins payment");
+        check(p.buyer->status.zeny==wallet && p.seller->bank_vault==bank && p.seller->cart.u.items_cart[0].amount==2 && !p.buyer->inventory.u.items_inventory[0].nameid,"refused wide purchase leaves assets unchanged");
+    }
+    {
+        Pair p;p.cart(0,1);p.seller->vending[0].amount=1;p.seller->vending[0].value=INT64_MAX;p.buyer->status.zeny=INT64_MAX;
+        battle_config.vending_tax=500;p.purchase(1);battle_config.vending_tax=0;
+        check(p.buyer->pair_commit.pending && p.buyer->status.zeny==0 && p.seller->bank_vault==8762203435012037016LL,"maximum-price sale applies five percent tax without overflow");
+        check(pn_pair::conserved(*p.buyer->pair_commit.request),"maximum-price taxed receipt conserves money");
+    }
+    std::printf("MARKET_WIDE_PRICE_PASS cases=8 max=%lld\n",static_cast<long long>(INT64_MAX));
+}
 }
 extern "C" int __wrap_main(int argc,char** argv){
     check(argc==2||argc==3,"artifact input");deny_network();static char name[]="market-test";SERVER_NAME=name;
@@ -82,6 +114,7 @@ extern "C" int __wrap_main(int argc,char** argv){
     if(argc==2||!strcmp(argv[2],"capacity"))capacity();
     if(argc==2||!strcmp(argv[2],"busy"))busy();
     if(argc==2||!strcmp(argv[2],"cart"))cart_invalid();
+    if(argc==2||!strcmp(argv[2],"wide"))wide_prices();
     check(!errors,"no script errors");attached=nullptr;item_db.clear();do_final_script();ers_destroy(num_reg_ers);ers_destroy(str_reg_ers);num_reg_ers=str_reg_ers=nullptr;timer_final();db_final();malloc_final();
     std::printf("MARKET_PURCHASE_NATIVE_OK cases=%u assertions=%u\n",cases,assertions);return 0;
 }

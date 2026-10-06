@@ -4,7 +4,8 @@
 int main() {
     using namespace pn_market_ui;
     int64_t parsed=0,result=0;
-    for(auto amount:{2147483648LL,4294967296LL,9007199254740993LL,INT64_MAX}) {
+    const int64_t amounts[]={2147483648LL,4294967296LL,9007199254740993LL,INT64_MAX};
+    for(auto amount:amounts) {
         assert(parse_amount(format_amount(amount),parsed)&&parsed==amount);
         assert(total(amount,1,result)&&result==amount);
     }

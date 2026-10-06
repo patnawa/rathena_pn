@@ -4,6 +4,11 @@ Built into PNWallet64.dll and opened by its Market button. Native vending and
 buying-store setup selects inventory/cart items; the matching server creates an
 unpublished draft. Inspect own shop, set exact prices and buying budget, review
 all rows, then explicitly publish. Published prices cannot be edited in place.
+For prices above the native vending window's limit, open **Market → My shop**,
+select the draft item, enter its price, choose **Set price**, then **Publish**.
+The exact Zeny limit is **9,223,372,036,854,775,807**. The total listing value and
+seller's remaining bank capacity must also fit; sale proceeds go to the account
+bank after the configured vending tax. The legacy 1M ticket remains retired.
 The native shop selection supplies the current target for Open selected shop.
 
 Search accepts exact minimum/maximum prices and an optional item ID. Next shop

@@ -63,5 +63,5 @@ def run(build,case=None):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--build-dir',type=Path,default=Path('/tmp/pn-trade-native-test'))
-    p.add_argument('--case',choices=['callback','buying','capacity','busy','cart'])
+    p.add_argument('--case',choices=['callback','buying','capacity','busy','cart','wide'])
     a=p.parse_args();run(a.build_dir,a.case)
