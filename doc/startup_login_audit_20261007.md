@@ -34,6 +34,16 @@ Rendered Play-to-login, character selection, entering a map, duplicate game
 launches, and reconnect timing have not been certified by this audit. No new
 game-loading timing claim is made. The Windows Computer Use plugin is enabled,
 its local runtime exists, and its native named pipe is present, but this chat's
-tool catalog exposes no `node_repl`/Computer Use action. Reconnect the plugin and
-resume visual acceptance before closing these coverage gaps. Existing CLI tests
-and offscreen WinForms tests do not replace this evidence.
+tool catalog initially exposed no `node_repl`/Computer Use action. Existing CLI
+tests and offscreen WinForms tests do not replace rendered acceptance.
+
+The app logs subsequently established the startup failure: both `node_repl` and
+`cua_repl` failed with Windows error 267 because this chat's original
+`Downloads/Compressed/Data2026/Client-Packages` working directory had been removed.
+The same runtime failed to start from that missing directory. Restoring the empty
+directory made the runtime start successfully. Both configured MCP servers then
+passed standard initialization and tool discovery, exposing `js` and `js_reset`.
+No desktop action, app permission change, or helper IPC bypass was used for this
+diagnostic. The receipt is retained in
+`OPS/startup-audit-20261007/computer-use-repair.json`. The chat still needs to load
+the repaired servers before rendered acceptance can resume.
