@@ -39,10 +39,11 @@ class Engine : IDisposable {
         currentExecutable=Path.GetFullPath(executablePath);
         NoLinks(Root);Directory.CreateDirectory(Work);NoLinks(Work);
     }
-    internal static string Hash(string path) { using(var s=File.OpenRead(path))using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(s)).Replace("-","").ToLowerInvariant(); }
+    internal static string Hash(string path) {return Checksum.File(path,CancellationToken.None);}
     internal static void NoLinks(string path) {
         for(string p=path;!String.IsNullOrEmpty(p);p=Path.GetDirectoryName(p))
-            if((File.Exists(p)||Directory.Exists(p)) && (File.GetAttributes(p)&FileAttributes.ReparsePoint)!=0)throw new IOException("Linked folders are not supported: "+p);
+            try{if((File.GetAttributes(p)&FileAttributes.ReparsePoint)!=0)throw new IOException("Linked folders are not supported: "+p);}
+            catch(FileNotFoundException){}catch(DirectoryNotFoundException){}
     }
     internal static void ValidName(string name) {
         if(String.IsNullOrWhiteSpace(name)||name.Length>220||name.IndexOf('\\')>=0||name.StartsWith("/")||name.IndexOf(':')>=0||name.Any(c=>c<32||"<>\"|?*".Contains(c)))throw new IOException("Invalid release path.");
@@ -74,10 +75,13 @@ class Engine : IDisposable {
         var r=(HttpWebRequest)WebRequest.Create(url);r.Proxy=null;r.AllowAutoRedirect=false;r.Timeout=15000;r.ReadWriteTimeout=30000;r.UserAgent="PNLauncher/1";return r;
     }
     internal static string Text(string url) {
-        using(var r=(HttpWebResponse)Request(url).GetResponse()){
+        return Text(url,CancellationToken.None);
+    }
+    internal static string Text(string url,CancellationToken cancellation,int timeout=15000,int attempts=3) {
+        return Network.Fetch(url,cancellation,r=>{
             if(r.StatusCode!=HttpStatusCode.OK||r.ContentLength>8000000)throw new IOException("Invalid server response.");
-            using(var s=r.GetResponseStream())using(var m=new MemoryStream()){byte[] b=new byte[65536];int n;while((n=s.Read(b,0,b.Length))>0){m.Write(b,0,n);if(m.Length>8000000)throw new IOException("Server response too large.");}return Encoding.UTF8.GetString(m.ToArray());}
-        }
+            using(var s=r.GetResponseStream())using(var m=new MemoryStream()){byte[] b=new byte[65536];int n;while((n=Network.Read(s,b,cancellation))>0){cancellation.ThrowIfCancellationRequested();m.Write(b,0,n);if(m.Length>8000000)throw new IOException("Server response too large.");}if(r.ContentLength>=0&&m.Length!=r.ContentLength)throw new EndOfStreamException("Incomplete server response.");return Encoding.UTF8.GetString(m.ToArray());}
+        },timeout,attempts);
     }
     internal void CheckStopped() { if(Process.GetProcessesByName("Ragexe").Length>0)throw new IOException("Close Ragnarok before updating or rolling back."); }
     internal void ClearDirectory(string p) {
@@ -136,31 +140,31 @@ class Engine : IDisposable {
     internal void Download(Entry f,string stage,string url) {
         Cancellation.ThrowIfCancellationRequested();
         string path=SafePath(stage,f.path);Directory.CreateDirectory(Path.GetDirectoryName(path));
-        using(var response=(HttpWebResponse)Request(url).GetResponse()) {
+        if(File.Exists(path))throw new IOException("A staged file already exists: "+f.path);
+        bool owned=false;long started=transferred;
+        Action cleanup=()=>{if(owned&&File.Exists(path)){NoLinks(path);File.Delete(path);}owned=false;transferred=started;};
+        try{Network.Fetch(url,Cancellation,response=>{
             if(response.StatusCode!=HttpStatusCode.OK||response.ContentLength!=f.bytes)throw new IOException("Download length is wrong: "+f.path);
             using(var input=response.GetResponseStream())using(var output=new FileStream(path,FileMode.CreateNew,FileAccess.Write,FileShare.None)){
+                owned=true;
                 byte[] buffer=new byte[1024*1024];long total=0;int n;
-                while((n=input.Read(buffer,0,buffer.Length))>0){Cancellation.ThrowIfCancellationRequested();total+=n;if(total>f.bytes)throw new IOException("Download exceeds expected size.");output.Write(buffer,0,n);transferred+=n;
+                while((n=Network.Read(input,buffer,Cancellation))>0){Cancellation.ThrowIfCancellationRequested();total+=n;if(total>f.bytes)throw new IOException("Download exceeds expected size.");output.Write(buffer,0,n);transferred+=n;
                     if(TransferProgress!=null)TransferProgress(transferred,totalDownload,transferred/Math.Max(0.001,transferClock==null?0.001:transferClock.Elapsed.TotalSeconds));}
-                output.Flush(true);if(total!=f.bytes)throw new IOException("Incomplete download: "+f.path);
+                output.Flush(true);if(total!=f.bytes)throw new EndOfStreamException("Incomplete download: "+f.path);
             }
-        }
-        if(Hash(path)!=f.sha256)throw new IOException("Downloaded file failed verification: "+f.path);
+            if(Checksum.File(path,Cancellation)!=f.sha256)throw new IOException("Downloaded file failed verification: "+f.path);
+            return true;
+        },15000,3,attempt=>{cleanup();progress("Retrying "+f.path+" ("+attempt+" / 2)",-1);});}
+        catch{cleanup();throw;}
     }
     public string Update(bool fullVerification=false) {
         Cancellation.ThrowIfCancellationRequested();
         if(fullVerification)verifiedFiles.Clear();
         CheckStopped();Recover();progress("Checking signed release...",0);
-        string wrapper=Text(Feed+"release.json");Manifest manifest=Verify(wrapper);
+        string wrapper=Text(Feed+"release.json",Cancellation);Manifest manifest=Verify(wrapper);
         string highPath=Path.Combine(Work,"highest-sequence.txt");NoLinks(highPath);long highest=File.Exists(highPath)?Int64.Parse(File.ReadAllText(highPath)):0;
         if(manifest.sequence<highest)throw new IOException("An older release was rejected. Use Rollback for the saved local version.");
-        var changes=new List<Entry>();int checkedCount=0;
-        foreach(var f in manifest.files){string path=SafePath(Root,f.path);bool exists=File.Exists(path);
-            Cancellation.ThrowIfCancellationRequested();
-            if(f.bytes>=8L*1024*1024)progress("Verifying "+f.path,checkedCount*45/manifest.files.Length);
-            if(!(f.preserve&&exists) && !(exists&&new FileInfo(path).Length==f.bytes&&verifiedFiles.Hash(path)==f.sha256))changes.Add(f);
-            checkedCount++;if(checkedCount%20==0)progress("Checking client files: "+checkedCount+" / "+manifest.files.Length,checkedCount*45/manifest.files.Length);
-        }
+        var changes=CheckFiles(manifest);
         Cancellation.ThrowIfCancellationRequested();
         if(changes.Count==0){Write(Path.Combine(Work,"installed.json"),wrapper);Write(highPath,Math.Max(highest,manifest.sequence).ToString());return manifest.release+" is verified and up to date.";}
         long bytes=changes.Sum(f=>f.bytes);var disk=new DriveInfo(Path.GetPathRoot(Root));
@@ -171,7 +175,7 @@ class Engine : IDisposable {
         try{
             foreach(var f in changes){progress("Downloading "+f.path,45+count*45/changes.Count);Download(f,stage);count++;}
             Cancellation.ThrowIfCancellationRequested();
-        }catch(OperationCanceledException){ClearDirectory(stage);throw;}
+        }catch{ClearDirectory(stage);throw;}
         CheckStopped();progress("Installing verified files...",90);verifiedFiles.Clear();NoLinks(journal);if(File.Exists(journal))File.Delete(journal);
         ClearDirectory(previous);Directory.CreateDirectory(previous);
         string installed=Path.Combine(Work,"installed.json");NoLinks(installed);
@@ -187,6 +191,25 @@ class Engine : IDisposable {
         }catch{Recover();throw;}
         progress("Update verified and installed.",100);return manifest.release+": "+changes.Count+" files updated ("+(bytes/1048576.0).ToString("0.0")+" MB downloaded).";
     }
+    internal List<Entry> CheckFiles(Manifest manifest){
+        var changes=new List<Entry>();int checkedCount=0;
+        foreach(var f in manifest.files){string path=SafePath(Root,f.path);bool exists=File.Exists(path);
+            Cancellation.ThrowIfCancellationRequested();
+            if(f.bytes>=8L*1024*1024)progress("Verifying "+f.path,checkedCount*45/manifest.files.Length);
+            if(!(f.preserve&&exists) && !(exists&&new FileInfo(path).Length==f.bytes&&verifiedFiles.Hash(path,Cancellation)==f.sha256))changes.Add(f);
+            checkedCount++;if(checkedCount%20==0)progress("Checking client files: "+checkedCount+" / "+manifest.files.Length,checkedCount*45/manifest.files.Length);
+        }
+        return changes;
+    }
+    public string VerifyInstalled(){
+        Cancellation.ThrowIfCancellationRequested();CheckStopped();Recover();
+        string path=Path.Combine(Work,"installed.json");NoLinks(path);
+        if(!File.Exists(path))throw new IOException("Check for updates once before playing the installed client.");
+        Manifest manifest=Verify(File.ReadAllText(path));progress("Verifying installed client...",0);
+        var changes=CheckFiles(manifest);Cancellation.ThrowIfCancellationRequested();
+        if(changes.Count>0)throw new IOException("Client files need repair: "+String.Join(", ",changes.Take(3).Select(f=>f.path))+". Choose Verify & repair when the patch server is available.");
+        progress("Installed client verified.",100);return manifest.release+" local files verified. Patch server was not contacted.";
+    }
     public string Rollback() {
         verifiedFiles.Clear();CheckStopped();Recover();string rollback=Path.Combine(Work,"rollback.json");NoLinks(rollback);if(!File.Exists(rollback))return "No previous version is stored. Repair does not replace a saved rollback.";
         var t=Json.Deserialize<Transaction>(File.ReadAllText(rollback));
@@ -201,11 +224,14 @@ class Engine : IDisposable {
 static class Program {
     [STAThread] static int Main(string[] args) {
         try {Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
-          using(var mutex=new Mutex(false,"Local\\PNLauncher-"+AppDomain.CurrentDomain.BaseDirectory.ToLowerInvariant().GetHashCode())){
+          string operationRoot=args.Length>1&&(args[0]=="--update"||args[0]=="--rollback"||args[0]=="--verify-installed")?Path.GetFullPath(args[1]):AppDomain.CurrentDomain.BaseDirectory;
+          string mutexRoot=operationRoot.TrimEnd(Path.DirectorySeparatorChar)+Path.DirectorySeparatorChar;
+          using(var mutex=new Mutex(false,"Local\\PNLauncher-"+mutexRoot.ToLowerInvariant().GetHashCode())){
             if(!mutex.WaitOne(0,false))throw new IOException("PN Launcher is already running for this folder.");
-            if(args.Length>0){using(var e=new Engine(AppDomain.CurrentDomain.BaseDirectory,(m,p)=>Console.WriteLine(m))){
+            if(args.Length>0){using(var e=new Engine(operationRoot,(m,p)=>Console.WriteLine(m))){
                 if(args[0]=="--verify-manifest"){Console.WriteLine(e.Verify(File.ReadAllText(args[1])).release);return 0;}
                 if(args[0]=="--update"){Console.WriteLine(e.Update());return 0;}
+                if(args[0]=="--verify-installed"){Console.WriteLine(e.VerifyInstalled());return 0;}
                 if(args[0]=="--rollback"){Console.WriteLine(e.Rollback());return 0;}
                 if(args[0]=="--self-test"){SelfTest.Run();return 0;}
                 if(args[0]=="--render-preview"){

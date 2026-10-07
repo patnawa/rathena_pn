@@ -4,6 +4,8 @@ using System.Linq;
 static class SelfTest {
     static void Assert(bool result,string name){if(!result)throw new Exception("FAIL: "+name);}
     public static void Run(){
+        ReliabilityTest.Run();
+        StartupTest.Run();
         foreach(string bad in new[]{"../outside","/absolute","C:/file","a\\b","a//b","a/../b","a./b","CON.txt","a/LPT1.exe","savedata/x","ScreenShot/x",".pn-updater/transaction.json","PNLauncher.exe","a:b","x\n.exe"}){
             bool refused=false;try{Engine.ValidName(bad);}catch(IOException){refused=true;}Assert(refused,"path rejected: "+bad);
         }

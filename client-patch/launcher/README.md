@@ -9,20 +9,31 @@ provides the full client in three 7-Zip volumes, `PN-Launcher-20261005.zip`
 for existing clients, and the standalone bootstrap. See the
 [release installation guide](../../doc/releases/client-2026-10-05-midgard.md).
 
-The 2.1 dashboard uses a navy-and-gold Midgard illustration, a prominent Play
+The 2.2 dashboard checks for updates in the background as soon as an installed
+client's launcher opens. Click Play during this check to queue one launch after
+successful verification. Settings can disable the startup check. The window stays
+responsive while checking and downloading. Closing during a cancellable operation
+stops it safely and then closes; journaled installation still finishes first.
+
+**Play installed client** verifies the saved signed release and local files without
+contacting the patch server. Missing or corrupt files block launch and need repair.
+This option still connects the game to the normal PN server. Downloads retry transient
+connection errors up to twice; signature and checksum errors remain failures. Cancel
+aborts blocked HTTP requests and checksums stop between 1 MiB read blocks.
+
+The dashboard uses a navy-and-gold Midgard illustration, a prominent Play
 button, live LAN status, installed-release notes and available disk space.
 Game settings, Turbo Setup, screenshots and the client folder are one click
 away. Activity is kept in `.pn-updater/launcher.log` (the latest 160 entries);
 Copy Diagnostics includes the installed release, folder, connection, free
 space and recent results. Enter plays from Overview; F5 checks for updates;
 Escape cancels a check or download. Cancellation cleans the staging folder
-and is disabled once journaled installation starts. A checksum already in
-progress finishes before cancellation takes effect. Download progress shows
+and is disabled once journaled installation starts. Download progress shows
 received bytes, average speed and an approximate remaining time.
 
 Build the dashboard with `build.ps1 -Output ABSOLUTE_DIRECTORY`, then use
 `install-dashboard.ps1 -Build ABSOLUTE_BUILD_DIRECTORY -ClientRoot ABSOLUTE_PN_CLIENT_DIRECTORY`.
-The installer adds `PNLauncher-20261005.exe`, `Launch PN Dashboard.cmd`,
+The installer adds `PNLauncher-20261007.exe`, `Launch PN Dashboard.cmd`,
 `PN Launcher.lnk`, `PN Ragnarok.lnk` and `PN-Branding/`. The launcher has an
 embedded Midgard PN icon, also shown in the sidebar; the game shortcut uses
 the matching ivory Valkyrie-wing Ragnarok crest and
@@ -112,7 +123,14 @@ server; the executable does not silently replace itself. A launcher upgrade can
 ship under a new versioned filename, with Launch PN.cmd selecting that version
 on its next run while preserving PNLauncher.exe.
 
-Updates hash the installed release and fetch only changed files. Within one launcher session, checksums for files of at least 8 MiB are reused while read-only Windows handles prevent changes. Each lookup verifies the current file identity. Repair forces new hashes; update activation and rollback release these handles before replacing files. Closing the launcher releases all handles. An interrupted
+Updates hash the installed release and fetch only changed files. Within one launcher
+session, checksums for managed files are reused while read-only Windows handles
+prevent changes. INI files remain editable and are rehashed; preserved personal files
+are excluded from managed-file verification. Each lookup verifies the current file
+identity. Repair forces new hashes; activation and rollback release these handles
+before replacing files. Closing the launcher releases all handles. Checksums are never
+persisted between launches. Sequential reads and fewer redundant filesystem calls
+reduce verification work without accepting timestamp-only shortcuts. An interrupted
 installation restores its journaled originals on the next run. A completed
 version update keeps one previous version for Rollback; same-version Repair
 does not erase that backup. First installation has no previous version. A

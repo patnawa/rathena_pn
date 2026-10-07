@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 class LauncherPreferences {
     public bool autoRefresh=true;
     public bool minimizeOnPlay=true;
+    public bool checkOnOpen=true;
     internal static LauncherPreferences Load(string path) {
         try { Engine.NoLinks(path);if(File.Exists(path))return new JavaScriptSerializer().Deserialize<LauncherPreferences>(File.ReadAllText(path))??new LauncherPreferences(); }
         catch { /* A damaged preference file must not block the launcher. */ }

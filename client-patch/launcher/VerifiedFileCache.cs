@@ -1,4 +1,4 @@
-// Reuse large-file hashes only while Windows guarantees the same immutable file.
+// Reuse signed-file hashes only while Windows guarantees the same immutable file.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using Microsoft.Win32.SafeHandles;
 
 sealed class VerifiedFileCache : IDisposable {
-    const long MinimumBytes=8L*1024*1024;
     [StructLayout(LayoutKind.Sequential)] struct FileIdentity {
         public uint attributes, creationLow, creationHigh, accessLow, accessHigh,
             writeLow, writeHigh, volume, sizeHigh, sizeLow, links, indexHigh, indexLow;
@@ -32,12 +31,14 @@ sealed class VerifiedFileCache : IDisposable {
         return a.volume==b.volume && a.indexHigh==b.indexHigh && a.indexLow==b.indexLow &&
             a.sizeHigh==b.sizeHigh && a.sizeLow==b.sizeLow;
     }
-    public string Hash(string path) {
+    public string Hash(string path) {return Hash(path,System.Threading.CancellationToken.None);}
+    public string Hash(string path,System.Threading.CancellationToken cancellation) {
+        cancellation.ThrowIfCancellationRequested();
         path=Path.GetFullPath(path);Engine.NoLinks(path);
         // FileShare.Read denies writes and deletion until cache invalidation.
         // Open the current path on every lookup: directory replacement cannot
         // cause us to accept a hash from a different file at the same path.
-        FileStream stream=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.Read);
+        FileStream stream=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.Read,65536,FileOptions.SequentialScan);
         try {
             var identity=Identity(stream);Cached cached;
             if(files.TryGetValue(path,out cached)) {
@@ -45,9 +46,10 @@ sealed class VerifiedFileCache : IDisposable {
                 files.Remove(path);cached.Dispose();
             }
             string hash;
-            using(var algorithm=SHA256.Create())hash=BitConverter.ToString(algorithm.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
+            hash=Checksum.Stream(stream,cancellation);
             HashReads++;
-            if(stream.Length>=MinimumBytes) {
+            // Settings tools may write INI files while the launcher is open.
+            if(!String.Equals(Path.GetExtension(path),".ini",StringComparison.OrdinalIgnoreCase)){
                 files.Add(path,new Cached{stream=stream,identity=identity,hash=hash});stream=null;
             }
             return hash;

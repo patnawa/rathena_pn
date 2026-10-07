@@ -15,9 +15,9 @@ if(-not $SkipOpenSetup){
 $branding=Join-Path $clientPath 'PN-Branding/Midgard'
 New-Item -ItemType Directory -Force -Path $branding | Out-Null
 foreach($name in @('pn-launcher.ico','ragexe.ico')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot "assets/midgard/$name") -Destination (Join-Path $branding $name) -Force}
-$launcher=Join-Path $clientPath 'PNLauncher-20261005.exe'
+$launcher=Join-Path $clientPath 'PNLauncher-20261007.exe'
 Copy-Item -LiteralPath $binary -Destination $launcher -Force
-$command="@echo off`r`ncd /d `"%~dp0`"`r`nstart `"`" `"%~dp0PNLauncher-20261005.exe`"`r`n"
+$command="@echo off`r`ncd /d `"%~dp0`"`r`nstart `"`" `"%~dp0PNLauncher-20261007.exe`"`r`n"
 [IO.File]::WriteAllText((Join-Path $clientPath 'Launch PN Dashboard.cmd'),$command,[Text.Encoding]::ASCII)
 $shell=New-Object -ComObject WScript.Shell
 try{

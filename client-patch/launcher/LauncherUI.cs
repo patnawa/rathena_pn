@@ -103,8 +103,10 @@ class MainForm:Form {
     string preferencesPath {get{return Path.Combine(engine.Work,"launcher-settings.json");}}
     readonly TextBox notes,history;
     readonly bool preview;
+    internal Action<string> StartClient=path=>Process.Start(new ProcessStartInfo(path){WorkingDirectory=Path.GetDirectoryName(path),UseShellExecute=true});
     CancellationTokenSource cancellation;
-    bool busy,closing,canCancel;
+    readonly CancellationTokenSource statusCancellation=new CancellationTokenSource();
+    bool busy,closing,canCancel,startupCheck,playAfterCheck,closeAfterCancel;
     int statusPending;
     string pendingText;
     int pendingPercent=-1;
@@ -147,7 +149,7 @@ class MainForm:Form {
         LabelAt(sidebar,"PRIVATE LAN",27,630,150,20,8,Palette.Muted,true);
         sidebarStatus=LabelAt(sidebar,"●  Checking server",27,658,166,23,9,Palette.Gold);
         LabelAt(sidebar,"192.168.10.18",27,684,150,22,9,Palette.Muted);
-        LabelAt(sidebar,"PN LAUNCHER  /  2.1",27,719,160,18,7.5f,Palette.Muted);
+        LabelAt(sidebar,"PN LAUNCHER  /  2.2",27,719,160,18,7.5f,Palette.Muted);
 
         heading=LabelAt(this,"Welcome, adventurer.",234,24,620,37,20,Palette.Text,true);
         subheading=LabelAt(this,"A little preparation. A whole world to explore.",235,65,780,25,10,Palette.Muted);
@@ -156,7 +158,7 @@ class MainForm:Form {
         LabelAt(hero,"PN RAGNAROK  /  A WORLD OF ADVENTURE",25,24,430,20,8,Palette.Gold,true);
         LabelAt(hero,"Return to Midgard",22,57,505,54,27,Palette.Text,true);
         LabelAt(hero,"Gather your party. Rediscover your world.",25,119,410,26,10.5f,Color.FromArgb(192,204,211));
-        play=ButtonAt(hero,"Play Ragnarok  →",25,169,202,46,()=>Run(()=>engine.Update(),true,"Preparing your adventure",true),true);
+        play=ButtonAt(hero,"Play Ragnarok  →",25,169,202,46,Play,true);
         play.Font=new Font("Segoe UI",11,FontStyle.Bold);operationButtons.Add(play);
         LabelAt(hero,"Checks for updates before launch",241,184,288,20,8.5f,Palette.Muted);
         tips.SetToolTip(play,"Verify the signed release, download changed files, then start Ragnarok. Enter also plays.");
@@ -181,12 +183,14 @@ class MainForm:Form {
         detail=LabelAt(patch,"Play or check for updates to verify your client.",18,47,760,22,9,Palette.Muted);
         bar=new PatchBar{Bounds=new Rectangle(18,79,762,6)};patch.Controls.Add(bar);
         transfer=LabelAt(patch,"Only changed files are downloaded.",18,99,491,27,8.5f,Palette.Muted);
-        cancel=ButtonAt(patch,"Cancel",685,96,95,31,()=>{if(canCancel&&cancellation!=null){cancellation.Cancel();cancel.Enabled=false;detail.Text="Stopping safely after the current file operation…";}});cancel.Visible=false;
+        cancel=ButtonAt(patch,"Cancel",685,96,95,31,()=>{if(canCancel&&cancellation!=null){cancellation.Cancel();cancel.Enabled=false;detail.Text="Stopping safely…";}});cancel.Visible=false;
         tips.SetToolTip(cancel,"Stop checking or downloading. Installation finishes once it has started.");
 
         var update=ButtonAt(overview,"Check for updates",0,526,174,39,()=>Run(()=>engine.Update(),false,"Checking for updates",true));operationButtons.Add(update);
         var repair=ButtonAt(overview,"Verify & repair",186,526,163,39,()=>Run(()=>engine.Update(true),false,"Verifying your client",true));operationButtons.Add(repair);
         rollback=ButtonAt(overview,"Restore previous",361,526,163,39,()=>Run(()=>engine.Rollback(),false,"Restoring previous version",false));operationButtons.Add(rollback);
+        var localPlay=ButtonAt(overview,"Play installed client",536,526,262,39,()=>Run(()=>engine.VerifyInstalled(),true,"Checking your installed client",true));operationButtons.Add(localPlay);
+        tips.SetToolTip(localPlay,"Start your installed version when the patch server is unavailable. Local game files are checked first.");
         tips.SetToolTip(update,"Check every signed client file and install only missing or changed files. F5 also checks.");
         tips.SetToolTip(repair,"Read all client checksums again and repair missing or changed files. Personal settings are preserved.");
         tips.SetToolTip(rollback,"Restore the previous version saved by an update. Repair keeps this backup.");
@@ -233,9 +237,10 @@ class MainForm:Form {
         LabelAt(prefs,"LAUNCHER PREFERENCES",24,16,700,20,8,Palette.Gold,true);
         var auto=new CheckBox{Text="Refresh server status automatically (every 30 seconds)",Bounds=new Rectangle(24,49,740,26),ForeColor=Palette.Text,BackColor=Palette.Card,Checked=preferences.autoRefresh};prefs.Controls.Add(auto);
         auto.CheckedChanged+=(s,e)=>{preferences.autoRefresh=auto.Checked;if(!preview){if(auto.Checked){statusTimer.Start();RefreshStatus();}else statusTimer.Stop();SavePreferences();}};
-        var minimize=new CheckBox{Text="Minimize the launcher when Ragnarok starts",Bounds=new Rectangle(24,83,740,26),ForeColor=Palette.Text,BackColor=Palette.Card,Checked=preferences.minimizeOnPlay};prefs.Controls.Add(minimize);
+        var minimize=new CheckBox{Text="Minimize the launcher when Ragnarok starts",Bounds=new Rectangle(24,78,740,26),ForeColor=Palette.Text,BackColor=Palette.Card,Checked=preferences.minimizeOnPlay};prefs.Controls.Add(minimize);
         minimize.CheckedChanged+=(s,e)=>{preferences.minimizeOnPlay=minimize.Checked;SavePreferences();};
-        LabelAt(prefs,"Close the game before applying display changes. OpenSetup saves with OK / Apply.",24,118,745,22,8.5f,Palette.Muted);
+        var checkOnOpen=new CheckBox{Text="Check for updates when the launcher opens",Bounds=new Rectangle(24,107,740,26),ForeColor=Palette.Text,BackColor=Palette.Card,Checked=preferences.checkOnOpen};prefs.Controls.Add(checkOnOpen);
+        checkOnOpen.CheckedChanged+=(s,e)=>{preferences.checkOnOpen=checkOnOpen.Checked;SavePreferences();};
         ButtonAt(settingsPage,"Saved game files  ↗",0,556,200,32,()=>OpenFolder("savedata"));
         ButtonAt(settingsPage,"Screenshots  ↗",212,556,176,32,()=>OpenFolder("ScreenShot"));
         ButtonAt(settingsPage,"Replays  ↗",400,556,166,32,()=>OpenFolder("Replay"));
@@ -244,11 +249,15 @@ class MainForm:Form {
         ReadActivity();LoadInstalled();Navigate(0);RefreshControls();
         uiTimer.Tick+=(s,e)=>FlushProgress();uiTimer.Start();
         statusTimer.Tick+=(s,e)=>RefreshStatus();
-        Shown+=(s,e)=>{if(preview)return;FitScreen();Run(()=>{engine.Recover();return "Choose Play to verify your client and start Ragnarok.";},false,"Getting ready",false);RefreshStatus();if(preferences.autoRefresh)statusTimer.Start();};
+        Shown+=(s,e)=>{if(preview)return;FitScreen();
+            if(preferences.checkOnOpen&&File.Exists(Path.Combine(engine.Work,"installed.json"))&&Process.GetProcessesByName("Ragexe").Length==0)BeginStartupCheck(()=>engine.Update());
+            else Run(()=>{engine.Recover();return "Choose Play to update, or Play installed client to use your local version.";},false,"Getting ready",false);
+            RefreshStatus();if(preferences.autoRefresh)statusTimer.Start();};
         KeyDown+=(s,e)=>{if(e.KeyCode==Keys.F5){if(!busy)Run(()=>engine.Update(),false,"Checking for updates",true);e.Handled=true;}
             if(e.KeyCode==Keys.Escape&&canCancel&&cancellation!=null){cancellation.Cancel();cancel.Enabled=false;e.Handled=true;}};
         AcceptButton=play;
-        FormClosing+=(s,e)=>{if(busy){e.Cancel=true;Navigate(0);detail.Text=canCancel?"Use Cancel to stop safely, then close the launcher.":"Finishing the file operation. You can close the launcher when it completes.";}else closing=true;};
+        FormClosing+=(s,e)=>{if(busy){e.Cancel=true;Navigate(0);if(canCancel&&cancellation!=null){closeAfterCancel=true;cancellation.Cancel();detail.Text="Stopping safely before closing…";}
+            else detail.Text="Finishing the file operation. You can close the launcher when it completes.";}else closing=true;};
     }
 
     TextBox TextArea(Control parent,int x,int y,int width,int height){var text=new TextBox{Bounds=new Rectangle(x,y,width,height),ReadOnly=true,Multiline=true,BorderStyle=BorderStyle.None,
@@ -280,6 +289,7 @@ class MainForm:Form {
         notes.Text=text.ToString();try{diskValue.Text=FormatBytes(new DriveInfo(Path.GetPathRoot(engine.Root)).AvailableFreeSpace)+" free";}catch{diskValue.Text="Unavailable";}
     }
     void RefreshControls(){foreach(var b in operationButtons)b.Enabled=!busy;foreach(var b in toolButtons)b.Enabled=!busy;
+        play.Enabled=!busy||(startupCheck&&!playAfterCheck&&!closeAfterCancel);
         bool saved=File.Exists(Path.Combine(engine.Work,"rollback.json"));rollback.Enabled=!busy&&saved;
         tips.SetToolTip(rollback,saved?"Restore the version saved before your last update.":"No previous version is stored yet. A completed version update saves one.");
         cancel.Visible=busy&&canCancel;cancel.Enabled=canCancel&&cancellation!=null&&!cancellation.IsCancellationRequested;
@@ -287,7 +297,7 @@ class MainForm:Form {
     void Post(Action action){if(closing||IsDisposed||!IsHandleCreated)return;try{BeginInvoke((Action)(()=>{if(!closing&&!IsDisposed)action();}));}catch(InvalidOperationException){}}
     void RefreshStatus(){if(preview||Interlocked.CompareExchange(ref statusPending,1,0)!=0)return;refresh.Enabled=false;
         ThreadPool.QueueUserWorkItem(_=>{bool online=false;string value,info;Color color;
-            try{var json=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(Engine.Text(Engine.Feed+"status.json"));object raw;
+            try{var json=new JavaScriptSerializer().Deserialize<Dictionary<string,object>>(Engine.Text(Engine.Feed+"status.json",statusCancellation.Token,2500,1));object raw;
                 online=json.TryGetValue("game_online",out raw)&&raw is bool&&(bool)raw;
                 value=online?"●  Online":"●  Services offline";color=online?Palette.Green:Palette.Gold;
                 info="Checked "+DateTime.Now.ToString("HH:mm")+"  ·  PN LAN";
@@ -309,19 +319,23 @@ class MainForm:Form {
             transfer.Text=FormatBytes(bytes)+" / "+FormatBytes(total)+"  ·  "+FormatBytes((long)speed)+"/s"+(seconds>1?"  ·  about "+(seconds<60?Math.Ceiling(seconds)+" sec":Math.Ceiling(seconds/60)+" min")+" left":"");}
     }
     internal static string FormatBytes(long value){double n=Math.Max(0,value);string[] units={"B","KiB","MiB","GiB","TiB"};int unit=0;while(n>=1024&&unit<units.Length-1){n/=1024;unit++;}return n.ToString(unit==0?"0":"0.0")+" "+units[unit];}
+    void Play(){if(busy){if(startupCheck){playAfterCheck=true;play.Enabled=false;phase.Text="Preparing to start Ragnarok";detail.Text="Ragnarok will start when this check finishes.";}return;}
+        Run(()=>engine.Update(),true,"Preparing your adventure",true);}
+    internal void BeginStartupCheck(Func<string> check){startupCheck=true;Run(check,false,"Checking and preparing your client",true);}
     void Run(Func<string> action,bool start,string title,bool cancellable){if(busy)return;Navigate(0);busy=true;canCancel=cancellable;
         cancellation=new CancellationTokenSource();engine.Cancellation=cancellation.Token;phase.Text=title;phase.ForeColor=Palette.Text;detail.Text="Preparing…";bar.Value=0;percent.Text="0%";
         transfer.Text=cancellable?"Your settings, screenshots and replays are kept.":"Preparing the local client.";RefreshControls();AppendActivity(title+".");
         var worker=new BackgroundWorker();worker.DoWork+=(s,e)=>e.Result=action();worker.RunWorkerCompleted+=(s,e)=>{
+            bool launch=start||playAfterCheck;startupCheck=false;playAfterCheck=false;
             FlushProgress();busy=false;canCancel=false;engine.Cancellation=CancellationToken.None;cancellation.Dispose();cancellation=null;cancel.Visible=false;
             if(e.Error is OperationCanceledException){phase.Text="Check cancelled";phase.ForeColor=Palette.Gold;detail.Text="No update was installed. Check again whenever you're ready.";transfer.Text="Existing client files are unchanged.";bar.Value=0;percent.Text="";lastResult="Cancelled before installation.";}
             else if(e.Error!=null){phase.Text="Let's get you back on track";phase.ForeColor=Palette.Red;detail.Text=e.Error.Message;transfer.Text="Retry after checking your connection, free space and that the game is closed.";bar.Value=0;percent.Text="";lastResult=e.Error.Message;tips.SetToolTip(detail,e.Error.Message);}
-            else{phase.Text=start?"Your adventure is ready":"Ready when you are";phase.ForeColor=Palette.Green;detail.Text=(string)e.Result;lastResult=detail.Text;tips.SetToolTip(detail,detail.Text);bar.Value=100;percent.Text="100%";
+            else{phase.Text=launch?"Your adventure is ready":"Ready when you are";phase.ForeColor=Palette.Green;detail.Text=(string)e.Result;lastResult=detail.Text;tips.SetToolTip(detail,detail.Text);bar.Value=100;percent.Text="100%";
                 transfer.Text=cancellable?"Signed release verified. Your personal files are preserved.":"Local client ready.";if(cancellable)lastCheck=DateTime.Now;
-                if(start)try{string path=Path.Combine(engine.Root,"Ragexe.exe");Engine.NoLinks(path);Process.Start(new ProcessStartInfo(path){WorkingDirectory=engine.Root,UseShellExecute=true});phase.Text="Ragnarok launched";if(preferences.minimizeOnPlay)WindowState=FormWindowState.Minimized;}
+                if(launch&&!closeAfterCancel)try{string path=Path.Combine(engine.Root,"Ragexe.exe");Engine.NoLinks(path);StartClient(path);phase.Text="Ragnarok launched";if(preferences.minimizeOnPlay)WindowState=FormWindowState.Minimized;}
                     catch(Exception ex){phase.Text="Could not start Ragnarok";phase.ForeColor=Palette.Red;detail.Text=ex.Message;lastResult=ex.Message;}
             }
-            AppendActivity(lastResult);LoadInstalled();RefreshControls();worker.Dispose();
+            AppendActivity(lastResult);LoadInstalled();RefreshControls();worker.Dispose();if(closeAfterCancel)Close();
         };worker.RunWorkerAsync();
     }
     void SavePreferences(){if(preview)return;try{engine.Write(preferencesPath,new JavaScriptSerializer().Serialize(preferences));settingsNotice.Text="Launcher preferences saved.";}catch(Exception ex){ShowActionError("Save preferences",ex);}}
@@ -337,7 +351,7 @@ class MainForm:Form {
         Process.Start(new ProcessStartInfo("explorer.exe","\""+path+"\""){UseShellExecute=true});}catch(Exception ex){ShowActionError("Open folder",ex);}}
     void ShowActionError(string title,Exception ex){AppendActivity(title+": "+ex.Message);MessageBox.Show(this,ex.Message,title,MessageBoxButtons.OK,MessageBoxIcon.Information);}
     void CopyText(string text,string result){try{Clipboard.SetText(String.IsNullOrEmpty(text)?"No launcher activity yet.":text);AppendActivity(result);}catch(Exception ex){ShowActionError("Clipboard",ex);}}
-    void CopyDiagnostics(){CopyText("PN Ragnarok launcher 2.1"+Environment.NewLine+"Client: "+installedRelease+Environment.NewLine+"Folder: "+engine.Root+Environment.NewLine+
+    void CopyDiagnostics(){CopyText("PN Ragnarok launcher 2.2"+Environment.NewLine+"Client: "+installedRelease+Environment.NewLine+"Folder: "+engine.Root+Environment.NewLine+
         "Server: "+connection+Environment.NewLine+"Status: "+Engine.Feed+Environment.NewLine+"Free space: "+diskValue.Text+Environment.NewLine+"Last result: "+lastResult+Environment.NewLine+
         "Saved rollback: "+File.Exists(Path.Combine(engine.Work,"rollback.json"))+Environment.NewLine+Environment.NewLine+history.Text,"Diagnostics copied to clipboard.");}
     string LogPath{get{return Path.Combine(engine.Work,"launcher.log");}}
@@ -358,7 +372,7 @@ class MainForm:Form {
         foreach(var item in fonts)item.Key.Font=new Font(item.Value.FontFamily,item.Value.Size*scale,item.Value.Style);
     }
     void CaptureFonts(Control parent,Dictionary<Control,Font> fonts){fonts[parent]=parent.Font;foreach(Control child in parent.Controls)CaptureFonts(child,fonts);}
-    protected override void Dispose(bool disposing){if(disposing){statusTimer.Dispose();uiTimer.Dispose();tips.Dispose();engine.Dispose();if(cancellation!=null)cancellation.Dispose();if(brandMark.Image!=null){brandMark.Image.Dispose();brandMark.Image=null;}}base.Dispose(disposing);}
+    protected override void Dispose(bool disposing){if(disposing){statusCancellation.Cancel();statusTimer.Dispose();uiTimer.Dispose();tips.Dispose();engine.Dispose();if(cancellation!=null)cancellation.Dispose();if(brandMark.Image!=null){brandMark.Image.Dispose();brandMark.Image=null;}}base.Dispose(disposing);}
 }
 
 static class EnumerableCompatibility {

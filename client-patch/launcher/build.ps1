@@ -3,7 +3,7 @@ $ErrorActionPreference='Stop'
 $out=[IO.Path]::GetFullPath($Output)
 New-Item -ItemType Directory -Force -Path $out | Out-Null
 $compiler=Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
-$sources=@((Join-Path $PSScriptRoot 'Launcher.cs'),(Join-Path $PSScriptRoot 'LauncherUI.cs'),(Join-Path $PSScriptRoot 'GameSettings.cs'),(Join-Path $PSScriptRoot 'SelfTest.cs'),(Join-Path $PSScriptRoot 'VerifiedFileCache.cs'))
+$sources=@((Join-Path $PSScriptRoot 'Launcher.cs'),(Join-Path $PSScriptRoot 'LauncherUI.cs'),(Join-Path $PSScriptRoot 'GameSettings.cs'),(Join-Path $PSScriptRoot 'SelfTest.cs'),(Join-Path $PSScriptRoot 'VerifiedFileCache.cs'),(Join-Path $PSScriptRoot 'ReliabilityTest.cs'),(Join-Path $PSScriptRoot 'Checksum.cs'),(Join-Path $PSScriptRoot 'Network.cs'),(Join-Path $PSScriptRoot 'StartupTest.cs'))
 $key=Join-Path $PSScriptRoot 'trusted-public-key.xml'
 $manifest=Join-Path $PSScriptRoot 'launcher.manifest'
 $icon=Join-Path $PSScriptRoot 'assets/midgard/pn-launcher.ico'
