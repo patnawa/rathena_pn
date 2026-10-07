@@ -1,0 +1,178 @@
+// GPL-3.0-or-later. A private five-wave pilot with cosmetic records only.
+// Native instance ownership, exact spawned GIDs and kill callbacks own clears.
+function	script	PN_ExpeditionWeek	{
+	return (gettimetick(2)-345600)/604800;
+}
+function	script	PN_ExpeditionModifier	{
+	switch (getarg(0)%3) {
+	case 0: return "Relentless: extra enemies in each wave";
+	case 1: return "Element Shift: enemy element changes each wave";
+	default: return "Danger Zones: move out of the announced half before the four-second warning ends";
+	}
+}
+function	script	PN_ExpeditionRecord	{
+	.@id=instance_id(IM_CHAR);
+	if (!.@id || instance_live_info(ILI_NAME,.@id)!="PN Weekly Expedition") return 0;
+	if (strcharinfo(3)!=instance_mapname("guild_vs1",.@id) || Hp<=0
+	 || 'PXOwner!=getcharid(0) || 'PXAccount!=getcharid(3) || 'PXStage!=2
+	 || 'PXWave!=5 || 'PXRemaining || 'PXWeek!=callfunc("PN_ExpeditionWeek")
+	 || 'PXRecorded || 'PXSeconds<1 || 'PXSeconds>600 || 'PXMistakes>=3
+	 || 'PXMode<0 || 'PXMode>1) return 0;
+	if (PNExpeditionWeek!='PXWeek) {
+		PNExpeditionWeek='PXWeek;
+		deletearray PNExpeditionClaimed[0],2;
+		deletearray PNExpeditionBest[0],2;
+	}
+	'PXRecorded=1;
+	if (!PNExpeditionClaimed['PXMode]) {
+		PNExpeditionClaimed['PXMode]=1; PNExpeditionStamps++;
+	}
+	if (!PNExpeditionBest['PXMode] || 'PXSeconds<PNExpeditionBest['PXMode]) PNExpeditionBest['PXMode]='PXSeconds;
+	return 1;
+}
+function	script	PN_WeeklyExpedition	{
+	mes "[Weekly Expedition]";
+	.@week=callfunc("PN_ExpeditionWeek");
+	mes callfunc("PN_ExpeditionModifier",.@week)+".";
+	mes "Five enemy waves, ten-minute limit. Casual and Challenge have separate weekly records. Retry freely.";
+	mes "One cosmetic stamp per difficulty each week. No item, Zeny or experience rewards.";
+	mes "Lifetime stamps: "+PNExpeditionStamps+". Resets Monday 07:00 Bangkok.";
+	if (PNExpeditionWeek==.@week) for (.@i=0;.@i<2;.@i++) {
+		if (PNExpeditionBest[.@i]) mes (.@i?"Challenge":"Casual")+" best: "+PNExpeditionBest[.@i]+" seconds.";
+	}
+	.@action=select("Enter / resume my expedition:How to play:Leave");
+	if (.@action==3) return;
+	if (.@action==2) {
+		mes "Talk to the Expedition Console to choose difficulty and start. Clear all five waves, then record completion at the console.";
+		mes "Danger Zones warns WEST (x < 50) or EAST (x >= 50). Cross the center line before the warning ends. Three mistakes fail the run.";
+		mes "Leaving, dying or disconnecting during a run fails it. Return to the console for a fresh attempt."; return;
+	}
+	if (Hp<=0 || BaseLevel<100) { mes "Reach Base Level 100 and revive before entering."; return; }
+	if (!getmapflag(strcharinfo(3),mf_town) || getmapflag(strcharinfo(3),mf_pvp)
+	 || getmapflag(strcharinfo(3),mf_gvg) || getmapflag(strcharinfo(3),mf_gvg_te)
+	 || getmapflag(strcharinfo(3),mf_battleground) || getmapflag(strcharinfo(3),mf_nowarp)) {
+		mes "Enter from an unrestricted town after finishing combat."; return;
+	}
+	.@id=instance_id(IM_CHAR);
+	if (.@id && instance_live_info(ILI_NAME,.@id)!="PN Weekly Expedition") { mes "Finish your other personal instance first."; return; }
+	if (!.@id) .@id=instance_create("PN Weekly Expedition",IM_CHAR,getcharid(0));
+	if (.@id<=0) { mes "The expedition could not be created. Try again shortly."; return; }
+	.@result=instance_enter("PN Weekly Expedition",-1,-1,getcharid(0),.@id);
+	if (.@result!=IE_OK) mes "The room is preparing or cannot be entered. Try again shortly.";
+	return;
+}
+
+guild_vs1,54,43,4	script	PN Expedition Console	4_M_01,{
+	.@id=instance_id(IM_CHAR);
+	if (!.@id || instance_live_info(ILI_NAME,.@id)!="PN Weekly Expedition") { mes "Use @challenge to open your expedition."; close; }
+	if ('PXStage==1) { mes "The expedition is running. Clear the enemies and follow the warnings."; close; }
+	mes "[Expedition Console]";
+	if ('PXStage==2) {
+		mes "Cleared in "+'PXSeconds+" seconds. Danger-zone mistakes: "+'PXMistakes+".";
+		if (select("Record completion:Leave room")==1) {
+			if (callfunc("PN_ExpeditionRecord")) mes "Completion recorded. Lifetime cosmetic stamps: "+PNExpeditionStamps+".";
+			else mes "Already recorded or the weekly rotation changed. Start a new run to set another record.";
+			close;
+		}
+		warp "pn_office",50,35; instance_destroy .@id; end;
+	}
+	if ('PXStage==3) mes "The last attempt ended. You can retry.";
+	.@mode=select("Start Casual:Start Challenge:Leave room")-1;
+	if (.@mode==2) { warp "pn_office",50,35; instance_destroy .@id; end; }
+	if (Hp<=0 || BaseLevel<100) { mes "Revive and reach Base Level 100 before starting."; close; }
+	mes callfunc("PN_ExpeditionModifier",callfunc("PN_ExpeditionWeek"))+".";
+	mes "Five waves. Finish within ten minutes. No rewards except cosmetic records.";
+	if (select("Start:Cancel")==2) close;
+	if (Hp<=0 || 'PXStage==1) close;
+	killmonsterall instance_mapname("guild_vs1");
+	'PXOwner=getcharid(0); 'PXAccount=getcharid(3); 'PXName$=strcharinfo(0);
+	'PXWeek=callfunc("PN_ExpeditionWeek"); 'PXMode=.@mode;
+	'PXStage=1; 'PXWave=0; 'PXRemaining=0; 'PXMistakes=0; 'PXRecorded=0;
+	'PXStarted=gettimetick(2); 'PXSeconds=0; 'PXTick=0; 'PXWarning=0;
+	'PXLevel=BaseLevel;
+	close2;
+	donpcevent instance_npcname("PN Expedition Console")+"::OnWave";
+	initnpctimer;
+	end;
+OnWave:
+	if ('PXStage!=1 || 'PXRemaining) end;
+	if ('PXWave>=5) {
+		'PXStage=2; 'PXSeconds=max(1,gettimetick(2)-'PXStarted); stopnpctimer;
+		mapannounce instance_mapname("guild_vs1"),"Expedition cleared! Record your completion at the console.",bc_map;
+		end;
+	}
+	'PXWave++;
+	'PXRemaining=('PXWeek%3==0)?6:4;
+	.@map$=instance_mapname("guild_vs1");
+	mapannounce .@map$,"Wave "+'PXWave+" / 5",bc_map;
+	setarray .@elements,Ele_Water,Ele_Earth,Ele_Fire,Ele_Wind,Ele_Neutral;
+	for (.@i=0;.@i<'PXRemaining;.@i++) {
+		monster .@map$,50,50,"Expedition Guardian",1031,1,instance_npcname("PN Expedition Console")+"::OnMobDead";
+		'PXMobs[.@i]=$@mobid[0];
+		if (!unitexists('PXMobs[.@i])) { 'PXStage=3; killmonsterall .@map$; stopnpctimer; end; }
+		.@hp='PXLevel*1000*('PXMode?4:1)*'PXWave;
+		setunitdata 'PXMobs[.@i],UMOB_MAXHP,.@hp;
+		setunitdata 'PXMobs[.@i],UMOB_HP,.@hp;
+		setunitdata 'PXMobs[.@i],UMOB_LEVEL,'PXLevel;
+		setunitdata 'PXMobs[.@i],UMOB_MODE,MD_CANMOVE|MD_CANATTACK|MD_AGGRESSIVE;
+		setunitdata 'PXMobs[.@i],UMOB_ATKMIN,('PXMode?600:120)*'PXWave;
+		setunitdata 'PXMobs[.@i],UMOB_ATKMAX,('PXMode?900:200)*'PXWave;
+		if ('PXWeek%3==1) {
+			setunitdata 'PXMobs[.@i],UMOB_ELETYPE,.@elements['PXWave-1];
+			setunitdata 'PXMobs[.@i],UMOB_ELELEVEL,1;
+		}
+	}
+	end;
+OnMobDead:
+	if ('PXStage!=1 || getcharid(0)!='PXOwner || getcharid(3)!='PXAccount) end;
+	.@found=-1;
+	for (.@i=0;.@i<6;.@i++) if ('PXMobs[.@i]==killedgid && killedgid>0) .@found=.@i;
+	if (.@found<0 || 'PXRemaining<=0) end;
+	'PXMobs[.@found]=0; 'PXRemaining--;
+	if (!'PXRemaining) donpcevent instance_npcname("PN Expedition Console")+"::OnWave";
+	end;
+OnTimer1000:
+	if ('PXStage!=1) { stopnpctimer; end; }
+	.@map$=instance_mapname("guild_vs1");
+	.@failed=!isloggedin('PXAccount,'PXOwner);
+	if (!.@failed) {
+		if (getmapxy(.@where$,.@x,.@y,BL_PC,'PXName$)!=0 || .@where$!=.@map$ || readparam(Hp,'PXOwner)<=0) .@failed=1;
+	}
+	if (gettimetick(2)-'PXStarted>=600) .@failed=1;
+	if (.@failed) goto L_Fail;
+	'PXTick++;
+	if ('PXWeek%3==2) {
+		if ('PXWarning>0) {
+			'PXWarning--;
+			if (!'PXWarning && ((!'PXSide && .@x<50) || ('PXSide && .@x>=50))) {
+				'PXMistakes++;
+				mapannounce .@map$,"Danger-zone mistake "+'PXMistakes+" / 3.",bc_map;
+				if ('PXMistakes>=3) goto L_Fail;
+			}
+		} else if ('PXTick%15==0) {
+			'PXSide=('PXTick/15)%2; 'PXWarning=4;
+			mapannounce .@map$,('PXSide?"EAST (x >= 50)":"WEST (x < 50)")+" becomes unsafe in FOUR seconds. Cross the center line!",bc_map;
+		}
+	}
+	setnpctimer 0;
+	end;
+L_Fail:
+	'PXStage=3; stopnpctimer; killmonsterall .@map$;
+	mapannounce .@map$,"Attempt ended: death, leaving, disconnection, three danger mistakes or the time limit. Return to the console to retry.",bc_map;
+	end;
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id())!="PN Weekly Expedition") end;
+	'PXStage=0;
+	.@map$=instance_mapname("guild_vs1");
+	setmapflag .@map$,mf_nomemo;
+	setmapflag .@map$,mf_noteleport;
+	setmapflag .@map$,mf_nobranch;
+	setmapflag .@map$,mf_nowarpto;
+	setmapflag .@map$,mf_partylock;
+	setmapflag .@map$,mf_noexp;
+	setmapflag .@map$,mf_nomobloot;
+	setmapflag .@map$,mf_nomvploot;
+	setmapflag .@map$,mf_nopenalty;
+	setmapflagnosave .@map$,"pn_office",50,35;
+	end;
+}

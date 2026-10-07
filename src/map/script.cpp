@@ -29690,6 +29690,7 @@ struct script_function buildin_func[] = {
     BUILDIN_DEF(pnprepjunk,"ii"),
     BUILDIN_DEF(pnprepinventory,"ii"),
     BUILDIN_DEF(pnprepstorage,"si"),
+    BUILDIN_DEF(pnpartyinvite,"i"),
 
 	{nullptr,nullptr,nullptr},
 };

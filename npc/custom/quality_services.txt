@@ -81,7 +81,7 @@ izlude_d,140,146,4	duplicate(PN Services)	PN Services#izd	4_M_01
 grademk,44,179,4	duplicate(PN Services)	PN Services#grade	4_M_01
 
 guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
-	if (!instance_id()) { mes "Use PN Services to create your private lab."; close; }
+	if (!instance_id() || instance_live_info(ILI_NAME,instance_id())!="PN Damage Lab") { mes "Use PN Services to create your private lab."; close; }
 	// Attached scripts stop on logout. Expire their lock and clean up on re-entry.
 	if ('Running && gettimetick(2) >= 'Until) {
 		killmonsterall instance_mapname("guild_vs1");
@@ -194,6 +194,7 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 	logmes "PNLAB label="+.@label$+" damage="+.@damage+" ms="+.@elapsed+" target="+.@setup$;
 	end;
 OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id())!="PN Damage Lab") end;
 	'Running = 0;
 	setmapflag instance_mapname("guild_vs1"),mf_nobranch;
 	setmapflag instance_mapname("guild_vs1"),mf_nomemo;

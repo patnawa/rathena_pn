@@ -4,6 +4,12 @@ Start with `@adventure`, or click My Adventure in the center of `@office`.
 The Office is now one compact hall, with five NPC groups and a searchable
 Directory. Update your client before visiting the new hall.
 
+The [October 7 player experience update](player_experience_20261007.md) adds
+`@goal` for a pinned live equipment plan, `@prepare` for combined preparation,
+`@partyboard` for join requests and leader approval, and `@challenge` for the
+rotating Weekly Expedition pilot. These features require the matching server
+release; source implementation alone does not make them available in production.
+
 | Feature | How to use it |
 | --- | --- |
 | Session dashboard | Choose a short activity, next story objective, equipment goal, or instance/cooldown check. Existing entrance requirements still apply. |

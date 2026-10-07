@@ -42,9 +42,14 @@ function	script	PN_PartyPublish	{
 }
 function	script	PN_PartyBoard	{
 	mes "[Party Recruitment]";
-	mes "Leader advertisements last 30 minutes while the leader is online. Whisper the leader to ask for an invitation.";
-	.@action=select("Browse parties:Post / refresh my party:Remove my listing:My party readiness:Leave");
+	mes "Listings last 30 minutes. Request to join; the leader can approve a normal invitation. Requests last five minutes.";
+	.@action=select("Browse parties:Post / refresh my party:Remove my listing:My party readiness:Leave:Review join requests:Cancel my join request");
 	if (.@action==5) return;
+	if (.@action==6) { callfunc "PN_PartyRequests"; return; }
+	if (.@action==7) {
+		for (.@i=0;.@i<80;.@i++) if ($@PNJoinChar[.@i]==getcharid(0)) $@PNJoinChar[.@i]=0;
+		mes "Your pending join request is canceled."; return;
+	}
 	if (.@action==4) { callfunc "PN_InstanceReadinessDesk"; return; }
 	if (.@action==3) {
 		for (.@i=0; .@i<40; .@i++) if ($@PNPartyOwner[.@i]==getcharid(0)) $@PNPartyOwner[.@i]=0;
@@ -86,12 +91,90 @@ function	script	PN_PartyBoard	{
 	mes "Activity: "+callfunc("PN_PartyActivity",$@PNPartyActivity[.@slot]);
 	mes "Note: "+$@PNPartyNote$[.@slot];
 	mes "Expires in "+(($@PNPartyUntil[.@slot]-gettimetick(2)+59)/60)+" minutes.";
-	if ($@PNPartyActivity[.@slot]<7 && select("Check my readiness for this activity:Done")==1) {
+	.@action=select("Request to join:Check my readiness for this activity:Done");
+	if (!callfunc("PN_PartyListingValid",.@slot) || $@PNPartyRevision[.@slot]!=.@revisions[.@pick]) { mes "The listing changed. Browse again."; return; }
+	if (.@action==1) {
+		mes "Your name, job and level will be shown to this party leader.";
+		.@role=select("Damage:Support / healer:Tank / frontline:Any role:Cancel")-1;
+		if (.@role==4 || select("Send join request:Cancel")==2) return;
+		if (callfunc("PN_PartyRequest",.@slot,.@revisions[.@pick],.@role)) mes "Request sent. The leader reviews it in Party Recruitment. Accept the invitation when it arrives.";
+		else mes "Unable to request. Leave your current party, wait 30 seconds between requests, and check that the listing is still active.";
+	} else if (.@action==2 && $@PNPartyActivity[.@slot]<7) {
 		if (!callfunc("PN_PartyListingValid",.@slot) || $@PNPartyRevision[.@slot]!=.@revisions[.@pick] || $@PNPartyOwner[.@slot]!=.@owner || $@PNPartyId[.@slot]!=.@party) { mes "The listing changed. Browse again."; return; }
 		.@name$=callfunc("PN_PartyActivity",$@PNPartyActivity[.@slot]);
 		.@reason$=callfunc("PN_InstanceMissing",.@name$);
 		mes (.@reason$=="")?"Your current party meets the checked requirements. The entrance checks again.":.@reason$;
 		if (getcharid(1)==.@party) callfunc "PN_PartyReadiness",.@name$;
 	}
+	return;
+}
+
+function	script	PN_PartyRequestValid	{
+	.@row=getarg(0);
+	if (.@row<0 || .@row>=80) return 0;
+	if (!$@PNJoinChar[.@row]) return 0;
+	.@slot=$@PNJoinListing[.@row];
+	if (!callfunc("PN_PartyListingValid",.@slot)
+	 || $@PNJoinUntil[.@row]<=gettimetick(2)
+	 || !isloggedin($@PNJoinAccount[.@row],$@PNJoinChar[.@row])) { $@PNJoinChar[.@row]=0; return 0; }
+	if ($@PNJoinRevision[.@row]!=$@PNPartyRevision[.@slot]
+	 || getcharid(1,$@PNJoinName$[.@row])) { $@PNJoinChar[.@row]=0; return 0; }
+	return 1;
+}
+function	script	PN_PartyRequest	{
+	.@slot=getarg(0); .@revision=getarg(1); .@role=getarg(2);
+	if (getcharid(1) || .@role<0 || .@role>3 || @PNPartyRequestAfter>gettimetick(2)) return 0;
+	if (!callfunc("PN_PartyListingValid",.@slot)) return 0;
+	if ($@PNPartyRevision[.@slot]!=.@revision) return 0;
+	.@empty=-1; .@mine=-1;
+	for (.@i=0;.@i<80;.@i++) {
+		if ($@PNJoinChar[.@i]==getcharid(0)) .@mine=.@i;
+		if (!callfunc("PN_PartyRequestValid",.@i) && .@empty<0) .@empty=.@i;
+	}
+	.@row=(.@mine>=0)?.@mine:.@empty;
+	if (.@row<0) return 0;
+	$@PNJoinChar[.@row]=0;
+	$@PNJoinListing[.@row]=.@slot; $@PNJoinRevision[.@row]=.@revision;
+	$@PNJoinAccount[.@row]=getcharid(3); $@PNJoinName$[.@row]=strcharinfo(0);
+	$@PNJoinLevel[.@row]=BaseLevel; $@PNJoinJob$[.@row]=jobname(Class); $@PNJoinRole[.@row]=.@role;
+	$@PNJoinUntil[.@row]=gettimetick(2)+300;
+	$@PNJoinChar[.@row]=getcharid(0); @PNPartyRequestAfter=gettimetick(2)+30;
+	dispbottom "Party join request from "+strcharinfo(0)+". Use @partyboard to review it.",0x99CCFF,$@PNPartyOwner[.@slot];
+	return 1;
+}
+function	script	PN_PartyApprove	{
+	.@row=getarg(0); .@char=getarg(1); .@revision=getarg(2);
+	if (!getcharid(1) || !is_party_leader() || !callfunc("PN_PartyRequestValid",.@row)) return 0;
+	.@slot=$@PNJoinListing[.@row];
+	if ($@PNPartyOwner[.@slot]!=getcharid(0) || $@PNPartyId[.@slot]!=getcharid(1)
+	 || $@PNJoinChar[.@row]!=.@char || $@PNJoinRevision[.@row]!=.@revision) return 0;
+	if (!pnpartyinvite(.@char)) return 0;
+	$@PNJoinChar[.@row]=0;
+	return 1;
+}
+function	script	PN_PartyRequests	{
+	if (!getcharid(1) || !is_party_leader()) { mes "Only the current party leader can review requests."; return; }
+	.@count=0; .@menu$="";
+	setarray .@roles$,"Damage","Support / healer","Tank / frontline","Any role";
+	for (.@i=0;.@i<80;.@i++) {
+		if (!callfunc("PN_PartyRequestValid",.@i)) continue;
+		.@s=$@PNJoinListing[.@i];
+		if ($@PNPartyOwner[.@s]!=getcharid(0) || $@PNPartyId[.@s]!=getcharid(1)) continue;
+		.@rows[.@count]=.@i; .@chars[.@count]=$@PNJoinChar[.@i]; .@revisions[.@count]=$@PNJoinRevision[.@i]; .@count++;
+		mes "Request "+.@count+": "+$@PNJoinName$[.@i]+" | "+$@PNJoinJob$[.@i]+" Lv "+$@PNJoinLevel[.@i]+" | "+.@roles$[$@PNJoinRole[.@i]];
+		.@menu$+="Request "+.@count+":";
+	}
+	if (!.@count) { mes "No active join requests for your listing."; return; }
+	.@pick=select(.@menu$+"Leave")-1;
+	if (.@pick<0 || .@pick>=.@count) return;
+	.@row=.@rows[.@pick];
+	.@action=select("Approve and invite:Decline:Back");
+	if (!callfunc("PN_PartyRequestValid",.@row) || $@PNJoinChar[.@row]!=.@chars[.@pick] || $@PNJoinRevision[.@row]!=.@revisions[.@pick]) { mes "That request changed or expired."; return; }
+	.@s=$@PNJoinListing[.@row];
+	if (!is_party_leader() || $@PNPartyOwner[.@s]!=getcharid(0) || $@PNPartyId[.@s]!=getcharid(1)) { mes "Party leadership changed."; return; }
+	if (.@action==1) {
+		if (callfunc("PN_PartyApprove",.@row,.@chars[.@pick],.@revisions[.@pick])) mes "Invitation sent. The applicant must accept it.";
+		else mes "Unable to invite. The party may be full, reserved or locked; the applicant may be busy or declining invitations.";
+	} else if (.@action==2) { $@PNJoinChar[.@row]=0; mes "Request declined."; }
 	return;
 }

@@ -74,6 +74,7 @@ TESTS = (
 )
 FULL_TESTS = (
     'mail_delivery_native_test.py',
+    'weekly_expedition_test.py',
     'item_use_metadata_native_test.py', 'item_use_pet_native_test.py',
     'preparation_native_test.py', 'preparation_storage_native_test.py', 'guild_storage_native_test.py', 'trade_native_test.py', 'cart_transfer_native_test.py', 'market_purchase_native_test.py', 'social_features_test.py', 'weekly_rewards_test.py',
     'point_shop_native_test.py', 'package_pet_native_test.py', 'pet_reward_script_test.py', 'lab_history_test.py', 'onboarding_readiness_test.py', 'player_tools_test.py',

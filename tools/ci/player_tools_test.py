@@ -49,8 +49,8 @@ def main():
         objects=list((ROOT/'src/map/obj').rglob('*.o'));assert objects,'Build current map objects first'
         libs=[ROOT/x for x in ('src/common/obj/common.a','3rdparty/libconfig/obj/libconfig.a','3rdparty/rapidyaml/obj/ryml.a')]
         includes=['src','3rdparty/libconfig','3rdparty/rapidyaml/src','3rdparty/rapidyaml/ext/c4core/src','3rdparty/json/include','/usr/include/mysql']
-        wrappers=(*WRAPPERS,'_Z14pc_setregistryP16map_session_datall','_Z15clif_navigateToPK16map_session_dataPKctthbt','_Z18map_mapindex2mapidt','_Z16clif_scriptclearRK16map_session_datai')
-        cmd=['g++','-std=c++17','-O0','-g','-fsanitize=undefined','-fno-sanitize-recover=all','-DPACKETVER=20260219']+['-I'+x for x in includes]+[str(driver)]+[str(x) for x in objects+libs]+['-Wl,--wrap='+x for x in wrappers]+['-lz','-ldl','-lmysqlclient','-l:libzstd.so.1','-lssl','-lcrypto','-lresolv','-lm','-o',str(binary)]
+        wrappers=(*WRAPPERS,'_Z14pc_setregistryP16map_session_datall','_Z18pc_setregistry_strP16map_session_datalPKc','_Z19pc_readregistry_strPK16map_session_datal','_Z15clif_navigateToPK16map_session_dataPKctthbt','_Z18map_mapindex2mapidt','_Z16clif_scriptclearRK16map_session_datai')
+        cmd=['g++','-std=c++17','-O0','-g','-fsanitize=address,undefined','-fno-sanitize-recover=all','-DPACKETVER=20260219']+['-I'+x for x in includes]+[str(driver)]+[str(x) for x in objects+libs]+['-Wl,--wrap='+x for x in wrappers]+['-lz','-ldl','-lmysqlclient','-l:libzstd.so.1','-lssl','-lcrypto','-lresolv','-lm','-o',str(binary)]
         subprocess.run(cmd,cwd=ROOT,check=True)
         result=subprocess.run([str(binary),str(work)]+(['sql'] if args.sql else []),cwd=ROOT,text=True,capture_output=True)
         output=result.stdout+result.stderr;print(output,end='')

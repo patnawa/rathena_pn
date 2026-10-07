@@ -11,6 +11,7 @@ import subprocess
 from biosphere_crown_transaction_test import WRAPPERS
 ROOT=Path(__file__).resolve().parents[2]
 EXTRA=(
+ '_Z16clif_scriptclearRK16map_session_datai',
  '_Z9map_id2bli','_Z17chrif_isconnectedv','_Z18map_getmapflag_subs9e_mapflagP14u_mapflag_args',
  '_Z17pc_can_give_itemsPK16map_session_data','_Z18pc_get_group_levelPK16map_session_data',
  '_Z22storage_page_availableR16map_session_datai','_Z19storage_batch_beginR16map_session_data',

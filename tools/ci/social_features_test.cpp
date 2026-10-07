@@ -3,6 +3,15 @@
 #include "common/mapindex.hpp"
 #include <regex>
 static party_data social_party{};
+static unsigned social_invites;static bool social_invite_ok=true;
+extern "C" bool social_leader(const map_session_data*) asm("__wrap__Z14party_isleaderPK16map_session_data");
+extern "C" bool social_leader(const map_session_data* sd){return social_party.data[0].sd==sd&&social_party.party.member[0].leader;}
+extern "C" map_session_data* social_nick(const char*,bool) asm("__wrap__Z11map_nick2sdPKcb");
+extern "C" map_session_data* social_nick(const char* name,bool){for(auto* p:{attached,social_other})if(p&&std::strcmp(p->status.name,name)==0)return p;return nullptr;}
+extern "C" map_session_data* social_char(int32) asm("__wrap__Z13map_charid2sdi");
+extern "C" map_session_data* social_char(int32 id){for(auto* p:{attached,social_other})if(p&&p->status.char_id==id)return p;return nullptr;}
+extern "C" bool social_invite(map_session_data&,map_session_data*) asm("__wrap__Z12party_inviteR16map_session_dataPS_");
+extern "C" bool social_invite(map_session_data& leader,map_session_data* applicant){check(leader.status.party_id==7&&applicant&&applicant->status.party_id==0,"approval delegates to ordinary invitation");if(social_invite_ok)++social_invites;return social_invite_ok;}
 static std::string office_destination;static unsigned office_warps;
 extern DBMap* mapindex_db;
 extern "C" int16 social_map(uint16) asm("__wrap__Z18map_mapindex2mapidt");
@@ -56,6 +65,19 @@ extern "C" int __wrap_main(int argc,char**){
  ++cases;exec_social("callfunc \"PN_PartyPublish\",0,0,1,\"Test\"; $@PNPartyUntil[0]=0; Result=callfunc(\"PN_PartyListingValid\",0);");check(!n("Result"),"expiry clears listing");
  exec_social("callfunc \"PN_PartyPublish\",0,0,1,\"Test\"; $@PNPartyOwner[0]=999; Result=callfunc(\"PN_PartyListingValid\",0);");check(!n("Result"),"offline or different character is never advertised");
  ++cases;exec_social("Result=callfunc(\"PN_PartyPublish\",8,0,0,\"Test\");");check(!n("Result"),"invalid activity cannot be published");
+ ++cases;exec_social("callfunc \"PN_PartyPublish\",7,0,1,\"Request test\";");
+ auto applicant=std::make_unique<map_session_data>();applicant->id=applicant->status.account_id=99000010;applicant->status.char_id=99000011;applicant->type=BL_PC;applicant->status.class_=JOB_NOVICE;applicant->status.base_level=100;applicant->status.zeny=7654321;applicant->state.ignoretimeout=true;applicant->npc_idle_timer=INVALID_TIMER;std::strcpy(applicant->status.name,"Applicant");
+ social_other=sd.get();attached=applicant.get();exec_social("Result=callfunc(\"PN_PartyRequest\",0,$@PNPartyRevision[0],0);");
+ check(n("Result")==1&&n("$@PNJoinChar")==applicant->status.char_id,"partyless applicant creates a revision-bound request");
+ exec_social("Result=callfunc(\"PN_PartyRequest\",0,$@PNPartyRevision[0],0);");check(!n("Result")&&!n("$@PNJoinChar",1),"rapid repeat requests are throttled without duplicate slots");
+ attached=sd.get();social_other=applicant.get();exec_social("Result=callfunc(\"PN_PartyApprove\",0,$@PNJoinChar[0]+1,$@PNJoinRevision[0]);");check(!n("Result")&&!social_invites,"stale applicant identity cannot invite a different character");
+ social_invite_ok=false;exec_social("Result=callfunc(\"PN_PartyApprove\",0,$@PNJoinChar[0],$@PNJoinRevision[0]);");check(!n("Result")&&n("$@PNJoinChar"),"failed native invitation keeps the request available");social_invite_ok=true;
+ exec_social("Result=callfunc(\"PN_PartyApprove\",0,$@PNJoinChar[0],$@PNJoinRevision[0]);");check(n("Result")==1&&social_invites==1&&!n("$@PNJoinChar")&&!applicant->status.party_id,"approval sends exactly one invitation and never forces party membership");
+ social_other=sd.get();attached=applicant.get();exec_social("@PNPartyRequestAfter=0;Result=callfunc(\"PN_PartyRequest\",0,$@PNPartyRevision[0],2);");check(n("Result"),"request can be replaced after cooldown");
+ attached=sd.get();social_other=applicant.get();exec_social("callfunc \"PN_PartyPublish\",7,0,1,\"Refreshed\";Result=callfunc(\"PN_PartyRequestValid\",0);");check(!n("Result"),"listing revision change expires pending requests");
+ social_other=sd.get();attached=applicant.get();exec_social("@PNPartyRequestAfter=0;callfunc \"PN_PartyRequest\",0,$@PNPartyRevision[0],2;$@PNJoinUntil[0]=0;Result=callfunc(\"PN_PartyRequestValid\",0);");check(!n("Result"),"expired request is refused");
+ applicant->status.party_id=8;exec_social("@PNPartyRequestAfter=0;Result=callfunc(\"PN_PartyRequest\",0,$@PNPartyRevision[0],2);");check(!n("Result"),"existing party membership refuses a join request");
+ attached=sd.get();social_other=nullptr;if(applicant->regs.arrays)applicant->regs.arrays->destroy(applicant->regs.arrays,script_free_array_db);applicant->regs.arrays=nullptr;applicant.reset();
  ++cases;exec_social("PNBuildNote$[0]=\"Rotation: use skills carefully\"; PNBuildStats$[0]=\"STR 10 AGI 20\"; callfunc \"PN_BuildSharing\";",{1,1,2});check(!n("$PNShareOwner"),"canceling public consent publishes nothing");
  exec_social("Share=callfunc(\"PN_BuildSharePublish\",0);");const auto first=n("Share");check(first>100000&&n("$PNShareOwner")==sd->status.char_id&&s("$PNShareNote$")==s("PNBuildNote$"),"explicit publication creates public persistent snapshot");
  std::printf("EQUIP_SNAPSHOT %s | %s | %s\n",s("$PNShareEquip$",EQI_HEAD_TOP).c_str(),s("$PNShareCards$",EQI_HEAD_TOP).c_str(),s("$PNShareOpts$",EQI_HEAD_TOP).c_str());
@@ -93,12 +115,13 @@ extern "C" int __wrap_main(int argc,char**){
  sd->m=0;sd->x=50;sd->y=35;office_warps=0;walk(login,{});check(!office_warps,"existing compact entrance login does not warp again");script_free_code(login);
  auto adventure=read("npc/custom/main_office/adventure.txt");
  for(auto name:{"PN Adventure Desk","PN Preparation Desk","PN Inventory Desk","PN Party Desk","PN Reward Desk"}){auto* c=compile(body(adventure,std::string("\tscript\t")+name),name);script_free_code(c);}
- const std::vector<std::string> routes={"PN_GuideNext","PN_PartyBoard","PN_GuideNext","PN_EquipmentPlanner","PN_InstanceReadinessDesk","PN_Preparation","PN_InventoryTools","PN_WeeklyBoard","PN_RewardProgress","PN_BuildSharing","PN_OfficeFind"};
+ const std::vector<std::string> routes={"PN_GuideNext","PN_PartyBoard","PN_GuideNext","PN_EquipmentPlanner","PN_InstanceReadinessDesk","PN_Preparation","PN_InventoryTools","PN_WeeklyBoard","PN_RewardProgress","PN_BuildSharing","PN_OfficeFind","PN_GoalDesk","PN_WeeklyExpedition"};
  for(auto& target:routes){auto* c=compile("{ Route$=\""+target+"\"; return;}",target.c_str());auto* old=static_cast<script_code*>(strdb_get(script_get_userfunc_db(),target.c_str()));if(old)script_free_code(old);strdb_put(script_get_userfunc_db(),target.c_str(),c);}
  for(const char* target:{"PN_LabChallengeMenu"}){auto* c=compile("{ Route$=\""+std::string(target)+"\"; return;}",target);auto* old=static_cast<script_code*>(strdb_get(script_get_userfunc_db(),target));if(old)script_free_code(old);strdb_put(script_get_userfunc_db(),target,c);}
- for(int action=1;action<=11;++action){++cases;exec_social("Route$=\"\"; callfunc \"PN_Adventure\";",action==1?std::vector<int>{1,1,12}:std::vector<int>{action,12});check(s("Route$")==routes[action-1],"each dashboard menu action reaches its documented interface");}
- for(int option=1;option<=5;++option){++cases;exec_social("Route$=\"\"; callfunc \"PN_Adventure\";",{1,option,12});const std::vector<std::string> expected={"PN_GuideNext","PN_LabChallengeMenu","PN_WeeklyBoard","PN_EquipmentPlanner",""};check(s("Route$")==expected[option-1],"all short-session choices including Back route correctly");}
- exec_social("Route$=\"\"; callfunc \"PN_Adventure\";",{12});check(s("Route$").empty(),"leaving dashboard invokes no service");
+ strdb_put(script_get_userfunc_db(),"PN_GoalSummary",compile("{return;}","summary routing seam"));
+ for(int action=1;action<=13;++action){++cases;exec_social("Route$=\"\"; callfunc \"PN_Adventure\";",action==1?std::vector<int>{1,1,14}:std::vector<int>{action,14});check(s("Route$")==routes[action-1],"each dashboard menu action reaches its documented interface");}
+ for(int option=1;option<=6;++option){++cases;exec_social("Route$=\"\"; callfunc \"PN_Adventure\";",{1,option,14});const std::vector<std::string> expected={"PN_GuideNext","PN_LabChallengeMenu","PN_WeeklyBoard","PN_EquipmentPlanner","PN_WeeklyExpedition",""};check(s("Route$")==expected[option-1],"all short-session choices including Back route correctly");}
+ exec_social("Route$=\"\"; callfunc \"PN_Adventure\";",{14});check(s("Route$").empty(),"leaving dashboard invokes no service");
  assets.unchanged();check(!unequips&&!equips,"social features never equip or mutate inventory");
  if(sd->regs.arrays)sd->regs.arrays->destroy(sd->regs.arrays,script_free_array_db);sd->regs.arrays=nullptr;attached=nullptr;sd.reset();nums.clear();strings.clear();item_db.clear();
  if(::regs.arrays)::regs.arrays->destroy(::regs.arrays,script_free_array_db);::regs.arrays=nullptr;

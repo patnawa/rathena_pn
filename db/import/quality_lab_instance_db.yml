@@ -11,3 +11,12 @@ Body:
       Map: guild_vs1
       X: 50
       Y: 45
+  - Id: 1001
+    Name: PN Weekly Expedition
+    TimeLimit: 900
+    IdleTimeOut: 120
+    NoMapFlag: true
+    Enter:
+      Map: guild_vs1
+      X: 50
+      Y: 45

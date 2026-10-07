@@ -5,7 +5,7 @@ function	script	PN_EquipmentPlanner	{
 		clear;
 		mes "[Equipment Wishlist]";
 		mes "Plan an equipment exchange and save up to eight goals for this character.";
-		mes "Recipes cover loaded barter exchanges. Other crafting and reform services keep their own recipes.";
+		mes "Recipes cover loaded barter crafting exchanges and item reforms. Pin a recipe to track it in @adventure or @goal.";
 		.@action=select("Search equipment exchanges:My wishlist:Leave");
 		if (.@action==3) return;
 		if (.@action==2) {
@@ -83,8 +83,9 @@ L_RefreshRecipe:
 	if(.@count<0) { mes "That recipe is unavailable. Refresh the equipment search."; return; }
 	.@map$=@PNPlanMap$; .@x=@PNPlanX; .@y=@PNPlanY;
 	copyarray .@materials[0],@PNMaterial[0],.@count;
+	.@output=@PNPlanOutput;
 	mes "[Exchange Plan]";
-	mes "Output: 1 x "+getitemname(@PNPlanOutput)+" (refine +"+@PNPlanRefine+").";
+	mes "Output: 1 x "+getitemname(@PNPlanOutput)+(@PNPlanReform?" (item reform).":" (refine +"+@PNPlanRefine+").");
 	mes "Exchange: "+callfunc("PN_PlanDisplayLabel",@PNPlanNpc$)+".";
 	if(.@map$!="") mes "Destination: "+.@map$+" ("+.@x+","+.@y+").";
 	mes "Zeny: "+@PNPlanZeny+"; wallet: "+Zeny+"; missing: "+max(0,@PNPlanZeny-Zeny)+".";
@@ -101,11 +102,49 @@ L_RefreshRecipe:
 	while(1) {
 		.@menu$="Navigate to exchange:";
 		for(.@i=0;.@i<.@count;.@i++) .@menu$+="Find "+getitemname(.@materials[.@i])+":";
-		.@pick=select(.@menu$+"Back")-1;
+		.@pick=select(.@menu$+"Back:Pin this recipe as my next upgrade")-1;
 		if(.@pick==0) { if(.@map$!="") navigateto .@map$,.@x,.@y; else mes "This exchange has no verified public destination in the planner."; }
 		else if(.@pick<=.@count) { callfunc "PN_PlanSources",.@materials[.@pick-1]; goto L_RefreshRecipe; }
-		else return;
+		else if(.@pick==.@count+2) {
+			if (callfunc("PN_GoalPin",.@output,getarg(0),getarg(1))) mes "Next upgrade pinned. Use @goal or @adventure to check progress.";
+			else mes "That recipe changed. Refresh the plan before pinning.";
+			return;
+		} else return;
 	}
+}
+
+// Store recipe identity, never prices, quantities or a fabricated eligibility.
+function	script	PN_GoalPin	{
+	.@count=pnplanrecipe(getarg(1),getarg(2));
+	if (.@count<0 || @PNPlanOutput!=getarg(0)) return 0;
+	PNGoalItem=getarg(0); PNGoalShop$=getarg(1); PNGoalIndex=getarg(2);
+	return 1;
+}
+function	script	PN_GoalSummary	{
+	if (!PNGoalItem) { mes "Next upgrade: pin a recipe in Equipment goals and materials."; return; }
+	mes "Next upgrade: "+getitemname(PNGoalItem)+".";
+	.@count=pnplanrecipe(PNGoalShop$,PNGoalIndex);
+	if (.@count<0 || @PNPlanOutput!=PNGoalItem) { mes "The pinned recipe changed or is unavailable. Choose it again in Equipment goals."; return; }
+	if (!@PNPlanKnown) { mes "Progress unavailable while storage or a transaction is busy. Check again shortly."; return; }
+	.@missing=0;
+	for (.@i=0;.@i<.@count;.@i++) {
+		.@held=@PNInventory[.@i]+@PNStorage[.@i];
+		if (.@held<@PNRequired[.@i]) .@missing++;
+		if (.@i<4) mes getitemname(@PNMaterial[.@i])+": "+min(.@held,@PNRequired[.@i])+" / "+@PNRequired[.@i]+" (inventory + storage).";
+	}
+	if (.@count>4) mes "Use @goal for all "+.@count+" materials.";
+	mes "Zeny: "+min(Zeny,@PNPlanZeny)+" / "+@PNPlanZeny+".";
+	mes (.@missing || Zeny<@PNPlanZeny)?"Keep collecting: "+.@missing+" material types still missing.":"Material totals met. Check equipment conditions and withdraw stored materials before upgrading.";
+	return;
+}
+function	script	PN_GoalDesk	{
+	clear; mes "[My Next Upgrade]"; callfunc "PN_GoalSummary";
+	if (!PNGoalItem) { callfunc "PN_EquipmentPlanner"; return; }
+	.@pick=select("View full recipe and find materials:Choose another equipment goal:Unpin this goal:Leave");
+	if (.@pick==1) callfunc "PN_PlanRecipe",PNGoalShop$,PNGoalIndex;
+	else if (.@pick==2) callfunc "PN_EquipmentPlanner";
+	else if (.@pick==3 && select("Unpin:Keep goal")==1) { PNGoalItem=0; PNGoalShop$=""; PNGoalIndex=0; mes "Goal unpinned. Your wishlist is kept."; }
+	return;
 }
 
 // Only displayed text loses the hidden NPC suffix. Loaded shop IDs and source
@@ -123,6 +162,19 @@ function	script	PN_PlanSources	{
 	while(1) {
 		clear;
 		mes "[Find "+getitemname(.@id)+"]";
+		if (.@page==0 && .@selected$=="") {
+			.@boss=0;
+			if (.@id==1001076 || .@id==1001083 || .@id==1001074 || .@id==1001082) .@boss=1;
+			else if (.@id==25786 || .@id==25787) .@boss=2;
+			if (.@boss) {
+				mes (.@boss==1)?"Boss activity: Alice Normal or Hard. Entrance: Dali 66,98.":"Boss activity: Bioresearch Battle. Entrance: Yuno 216,345. Story mode does not earn credits.";
+				mes "Eligible clears earn one credit per character per daily reset. Exchange saved credits for this ingredient. Entry requirements still apply.";
+				.@choice=select("Browse drops and exchanges:Boss reward progress and exchange:Navigate to boss entrance:Back");
+				if (.@choice==4) return;
+				if (.@choice==2) { callfunc "PN_RewardProgress"; return; }
+				if (.@choice==3) { if (.@boss==1) navigateto "dali",66,98; else navigateto "yuno",216,345; return; }
+			}
+		}
 		mes "These destinations come from loaded exchanges and monsters with normal map spawns. Quest, instance and event rewards may offer other sources.";
 		if (.@selected$!="") {
 			mes .@selected$+".";

@@ -46,14 +46,14 @@ function	script	PN_InstanceMissing	{
 	return "";
 }
 
-function	script	PN_InstanceReadinessDesk	{
+function	script	PN_AdventureDestination	{
 	setarray .@names$,"Crossroads of Tangled Mana","Nyrholt","Phantom of Nyrholt","Ghost Palace","Charleston in Distress","Ominous Dark Whisper","Simulated Dark Whisper";
 	setarray .@maps$,"veledor","ragsruth","ch2safe4","dali02","verus04","hem_dun01","hem_dun01";
 	setarray .@x,140,88,86,43,81,209,205;
 	setarray .@y,65,58,146,129,112,248,248;
 	setarray .@tags$,"Flame Coins (story)","Flame Coins (story)","Flame Coins (story/daily)","Gray Shards / Thanatos equipment","Charleston Components","Chapter 1 story finale","Chapter 1 repeatable simulation";
-	.@pick=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Ominous Dark Whisper:Simulated Dark Whisper:Leave")-1;
-	if (.@pick == 7) return;
+	.@pick=getarg(0);
+	if (.@pick<0 || .@pick>6) return;
 	mes .@names$[.@pick]+" | Materials: "+.@tags$[.@pick];
 	.@reason$=callfunc("PN_InstanceMissing",.@names$[.@pick]);
 	if (.@reason$ != "") mes .@reason$;
@@ -61,7 +61,13 @@ function	script	PN_InstanceReadinessDesk	{
 	else mes "Ready: visit the entrance to reserve and enter.";
 	mes "Entrance: "+.@maps$[.@pick]+" "+.@x[.@pick]+","+.@y[.@pick]+". The entrance rechecks your state.";
 	navigateto .@maps$[.@pick],.@x[.@pick],.@y[.@pick];
-	if (getcharid(1) && select("Check every party member:Done")==1) callfunc "PN_PartyReadiness",.@names$[.@pick];
+	return;
+}
+function	script	PN_InstanceReadinessDesk	{
+	.@pick=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Ominous Dark Whisper:Simulated Dark Whisper:Leave")-1;
+	if (.@pick==7) return;
+	callfunc "PN_AdventureDestination",.@pick;
+	if (getcharid(1) && select("Check every party member:Done")==1) callfunc "PN_PartyReadiness",callfunc("PN_PartyActivity",.@pick);
 	return;
 }
 

@@ -6,20 +6,22 @@ function	script	PN_Preparation	{
         mes "Save and apply in town. Carry the exact saved gear; altered or missing gear refuses the switch. Normal equipment restrictions still apply.";
         .@slot=select("Farming:Boss:Support:Leave")-1;
         if(.@slot==3)return;
-        .@action=select("Apply saved equipment and loot filters:Save current equipment and loot filters:Edit supply target:Preview supply restock:Back");
+        .@action=select("Prepare for an adventure:Apply saved equipment and loot filters:Save current equipment and loot filters:Edit supply target:Preview supply restock:Back");
         if(.@action==1){
+            callfunc "PN_PrepareAdventure",.@slot;
+        }else if(.@action==2){
             mes "Apply this equipment and loot preset?";
             if(select("Apply:Cancel")==1){if(pnpreppreset(.@slot,0))mes "Equipment and loot filters applied.";else mes "Unable to apply. Stay in town, clear equipment-switch restrictions and check that every saved item is present and unchanged.";}
-        }else if(.@action==2){
+        }else if(.@action==3){
             mes "Replace this preset with your currently equipped items and loot filters? Supply targets are kept.";
             if(select("Save:Cancel")==1){if(pnpreppreset(.@slot,1))mes "Preset saved for this character.";else mes "Unable to save. Equip your gear in town. Rental gear and identical gear without unique identities cannot be saved safely.";}
-        }else if(.@action==3){
+        }else if(.@action==4){
             mes "Choose one of eight supply rows (1 to 8). Target quantity 0 removes a row.";
             mes "Retail supplies: Red Potion 501, Orange 502, Yellow 503, White 504, Blue 505, Green 506, Fly Wing 601, Butterfly Wing 602.";
             for(.@i=0;.@i<8;.@i++)if(PNPrepSupplyId[.@slot*8+.@i])mes "Row "+(.@i+1)+": "+getitemname(PNPrepSupplyId[.@slot*8+.@i])+" x "+PNPrepQuantity[.@slot*8+.@i];
             input .@row,1,8;input .@id,501,602;input .@quantity,0,1000;
             if(pnprepsupply(.@slot,.@row-1,.@id,.@quantity))mes "Supply target saved.";else mes "That entry is unavailable or already occupies another row.";
-        }else if(.@action==4){
+        }else if(.@action==5){
             .@count=pnpreprestock(.@slot,0);
             if(.@count<0)mes "Restock is unavailable. Close other transactions and stand in town.";
             else if(!.@count)mes "Your supply targets are already met. Add supply targets to buy anything.";
@@ -32,6 +34,44 @@ function	script	PN_Preparation	{
         }
         next;
     }
+}
+
+function	script	PN_PrepareAdventure	{
+    .@slot=getarg(0);
+    clear; mes "[Ready for an Adventure]";
+    .@broken=getbrokenid(1);
+    if (.@broken) {
+        mes "Repair needed: "+getitemname(.@broken)+". Visit Repair, then prepare again.";
+        navigateto "pn_office",71,44;
+        return;
+    }
+    .@gear=pnpreppreset(.@slot,2);
+    if (!.@gear) { mes "Save a preset first, then bring its unchanged equipment to town. Check equip restrictions and repairs."; return; }
+    mes "Equipment and loot filters: saved preset.";
+    for (.@i=0;.@i<@PNPrepGearCount;.@i++) mes @PNPrepGearName$[.@i];
+    .@count=pnpreprestock(.@slot,0);
+    if (.@count<0) { mes "Supplies unavailable. Finish other transactions and remain in town."; return; }
+    for (.@i=0;.@i<.@count;.@i++) mes getitemname(@PNPrepItem[.@i])+" x "+@PNPrepAmount[.@i]+" = "+@PNPrepPrice[.@i]+" Zeny.";
+    .@cost=@PNPrepTotal;
+    .@restock$=@PNPrepRestock$;
+    mes "Supply total: "+.@cost+" Zeny. Wallet: "+Zeny+".";
+    mes "Choose your destination:";
+    .@destination=select("Crossroads of Tangled Mana:Nyrholt:Phantom of Nyrholt:Ghost Palace:Charleston in Distress:Ominous Dark Whisper:Simulated Dark Whisper:Weekly Expedition:Stay in town:Cancel")-1;
+    if (.@destination==9) return;
+    if (.@cost>Zeny) { mes "You need "+(.@cost-Zeny)+" more Zeny for these supplies."; return; }
+    mes "Apply this preset"+(.@count?" and buy the missing supplies for "+.@cost+" Zeny?":"? Supplies are already met.");
+    if (select("Prepare:Cancel")==2) return;
+    // The invitation/entrance remains separate from a submitted purchase.
+    // Revalidate both previews before applying or paying after the menus.
+    .@confirmed=pnpreprestock(.@slot,0);
+    if (.@confirmed!=.@count || @PNPrepTotal!=.@cost || @PNPrepRestock$!=.@restock$ || !pnpreppreset(.@slot,2)) { mes "Preparation changed. Open a fresh preview."; return; }
+    if (!pnpreppreset(.@slot,0)) { mes "Equipment changed or cannot be equipped. Check the preset and try again."; return; }
+    if (.@count && pnpreprestock(.@slot,1)<1) { mes "Preset applied; supplies could not be submitted. Check your funds and inventory space, then restock again."; return; }
+    if (.@count) { mes "Preset applied; supply purchase submitted. Wait for delivery before entering."; }
+    else mes "Equipment, loot filters and supplies are ready.";
+    if (.@destination<7) callfunc "PN_AdventureDestination",.@destination;
+    else if (.@destination==7) { mes "Weekly Expedition: use @challenge after supplies arrive."; navigateto "pn_office",50,50; }
+    return;
 }
 
 function	script	PN_InventoryTools	{

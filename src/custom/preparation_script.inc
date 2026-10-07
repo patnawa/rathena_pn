@@ -28,11 +28,11 @@ static void clear_preview(map_session_data& sd){set(sd,"@PNPrepCount",0,0);set(s
 static std::string exact(const item& it){static const char hex[]="0123456789abcdef";std::string out;const auto* b=reinterpret_cast<const unsigned char*>(&it);for(size_t i=0;i<sizeof(it);++i){out+=hex[b[i]>>4];out+=hex[b[i]&15];}return out;}
 }
 
-// save=0 applies, save=1 records the current equipped items and all loot filters.
+// action 0 applies, 1 saves, 2 previews eligibility without changing equipment.
 BUILDIN_FUNC(pnpreppreset){
     map_session_data* sd=nullptr;int result=0;const int slot=script_getnum(st,2),save=script_getnum(st,3);
-    if(!script_rid2sd(sd) || slot<0 || slot>=3 || (save!=0 && save!=1) || !pn_preparation::ready(*sd))goto done;
-    if(save){
+    if(!script_rid2sd(sd) || slot<0 || slot>=3 || save<0 || save>2 || !pn_preparation::ready(*sd))goto done;
+    if(save==1){
         std::vector<std::pair<std::string,uint32>> gear;
         for(int i=0;i<MAX_INVENTORY;++i){const auto& it=sd->inventory.u.items_inventory[i];if(it.nameid && it.equip){
             if(it.expire_time || it.equipSwitch || gear.size()>=EQI_MAX)goto done;
@@ -58,6 +58,14 @@ BUILDIN_FUNC(pnpreppreset){
             occupied|=mask;target.emplace_back(found,mask);
         }
         if(target.empty())goto done;
+        if(save==2){
+            pn_preparation::set(*sd,"@PNPrepGearCount",0,target.size());
+            for(size_t i=0;i<target.size();++i){
+                const auto& it=sd->inventory.u.items_inventory[target[i].first];
+                pn_preparation::put(*sd,"@PNPrepGearName$",i,"+"+std::to_string(it.refine)+" "+sd->inventory_data[target[i].first]->ename);
+            }
+            result=1;goto done;
+        }
         for(int i=0;i<MAX_INVENTORY;++i)if(sd->inventory.u.items_inventory[i].equip)original.emplace_back(i,static_cast<uint32>(sd->inventory.u.items_inventory[i].equip));
         auto order=[&](const auto& a,const auto& b){auto rank=[&](int i){return sd->inventory_data[i]->type==IT_WEAPON?0:sd->inventory_data[i]->type==IT_AMMO?2:1;};return rank(a.first)<rank(b.first);};
         std::stable_sort(target.begin(),target.end(),order);std::stable_sort(original.begin(),original.end(),order);
@@ -72,6 +80,16 @@ BUILDIN_FUNC(pnpreppreset){
         result=1;
     }
 done:script_pushint(st,result);return SCRIPT_CMD_SUCCESS;
+}
+
+// Leader approval creates the ordinary invitation; the applicant must accept.
+BUILDIN_FUNC(pnpartyinvite){
+    map_session_data* sd=nullptr;bool accepted=false;
+    if(script_rid2sd(sd) && party_isleader(sd)){
+        auto* applicant=map_charid2sd(script_getnum(st,2));
+        if(applicant && applicant!=sd)accepted=party_invite(*sd,applicant);
+    }
+    script_pushint(st,accepted);return SCRIPT_CMD_SUCCESS;
 }
 
 // Set a target quantity for one ordinary retail supply; 0 removes the entry.

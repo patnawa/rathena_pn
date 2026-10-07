@@ -13,6 +13,10 @@ extern "C" int16 planner_map(uint16) asm("__wrap__Z18map_mapindex2mapidt");
 extern "C" int16 planner_map(uint16 index){return index==1?0:-1;}
 extern "C" bool planner_set(map_session_data*,int64,int64) asm("__wrap__Z14pc_setregistryP16map_session_datall");
 extern "C" bool planner_set(map_session_data* sd,int64 key,int64 value){nums[key]=value;script_array_update(&sd->regs,key,value==0);return true;}
+extern "C" bool planner_str(map_session_data*,int64,const char*) asm("__wrap__Z18pc_setregistry_strP16map_session_datalPKc");
+extern "C" bool planner_str(map_session_data* sd,int64 key,const char* value){strings[key]=value;script_array_update(&sd->regs,key,!value||!*value);return true;}
+extern "C" char* planner_readstr(const map_session_data*,int64) asm("__wrap__Z19pc_readregistry_strPK16map_session_datal");
+extern "C" char* planner_readstr(const map_session_data*,int64 key){return strings[key].data();}
 extern "C" void planner_nav(const map_session_data*,const char*,uint16,uint16,uint8,bool,uint16) asm("__wrap__Z15clif_navigateToPK16map_session_dataPKctthbt");
 extern "C" void planner_nav(const map_session_data*,const char* map,uint16 x,uint16 y,uint8,bool,uint16){planner_destination=std::string(map)+":"+std::to_string(x)+","+std::to_string(y);}
 static void functions(const std::string& source){std::regex pattern("function[\\t ]+script[\\t ]+([A-Za-z0-9_]+)[\\t ]+\\{");for(std::sregex_iterator it(source.begin(),source.end(),pattern),end;it!=end;++it){std::string name=(*it)[1];strdb_put(script_get_userfunc_db(),name.c_str(),compile(body(source,(*it).str()),name.c_str()));}}
@@ -46,6 +50,20 @@ extern "C" int __wrap_main(int argc,char** argv){
     invoke("@result=pnplanrecipes("+std::to_string(gear)+");");check(num("@result")==1,"actual recipe loaded");
     const std::string recipe="@result=pnplanrecipe(\"barter_ep21_gaebolg_equipment\",0);";
     invoke(recipe);check(num("@result")==1 && num("@PNRequired")==100 && num("@PNInventory")==25 && num("@PNStorage")==70 && num("@PNPlanKnown")==1,"owned live account/character pages counted once; locked pages excluded");
+    invoke("@result=callfunc(\"PN_GoalPin\","+std::to_string(gear)+",\"barter_ep21_gaebolg_equipment\",0);");
+    check(num("@result")==1 && num("PNGoalItem")==gear,"pinned goal stores the live recipe identity");
+    messages.clear();invoke("callfunc \"PN_GoalSummary\";");check(said("95 / 100")&&said("1 material types still missing"),"dashboard summarizes current inventory plus owned storage");
+    sd->storage.u.items_storage[0].amount=65;messages.clear();invoke("callfunc \"PN_GoalSummary\";");check(said("100 / 100")&&said("Material totals met"),"pinned progress refreshes without a saved quantity snapshot");sd->storage.u.items_storage[0].amount=60;
+    invoke("@result=callfunc(\"PN_GoalPin\",1,\"barter_ep21_gaebolg_equipment\",0);");check(!num("@result")&&num("PNGoalItem")==gear,"changed output refuses to overwrite pinned goal");
+    sd->multi_storage.loading=true;messages.clear();invoke("callfunc \"PN_GoalSummary\";");check(said("Progress unavailable")&&!said("Keep collecting"),"busy holdings never fabricate goal progress");sd->multi_storage.loading=false;
+    auto reform=std::make_shared<s_item_reform>();reform->item_id=material;
+    auto base=std::make_shared<s_item_reform_base>();base->item_id=gear;base->resultItemId=gear;base->minimumRefine=9;base->maximumRefine=20;base->requiredRandomOptions=2;base->materials[material]=3;base->refineChange=-2;base->clearSlots=true;base->removeEnchantgrade=true;
+    reform->base_items[gear]=base;item_reform_db.put(material,reform);
+    invoke("@result=pnplanrecipes("+std::to_string(gear)+");");check(num("@result")==2&&str("@PNRecipeShop$",1)=="@reform/"+std::to_string(material),"live reform recipe appears beside the existing barter recipe");
+    invoke("@result=pnplanrecipe(\"@reform/"+std::to_string(material)+"\","+std::to_string(gear)+");");
+    check(num("@result")==2&&num("@PNPlanReform")==1&&num("@PNPlanOutput")==gear&&str("@PNPlanRules$").find("Grade is removed")!=std::string::npos,"reform preview includes base item, materials and metadata warnings");
+    invoke("@result=pnplanrecipe(\"@reform/invalid\",1);");check(num("@result")==-1,"malformed reform identity is rejected");
+    item_reform_db.clear();invoke(recipe);
     check(str("@PNPlanMap$")=="prontera" && num("@PNPlanX")==150,"loaded NPC is authoritative navigation destination");
     for(int kind=0;kind<3;++kind){if(!kind)sd->multi_storage.loading=true;if(kind==1)sd->multi_storage.pending=true;if(kind==2)sd->state.storage_flag=1;invoke(recipe);check(!num("@PNPlanKnown") && num("@PNStorage")==-1,"busy holdings are unknown, not zero");sd->multi_storage.loading=sd->multi_storage.pending=false;sd->state.storage_flag=0;}
     invoke("callfunc \"PN_PlanGoal\","+std::to_string(gear)+";",{2,4});check(num("PNWishItem")==gear,"wishlist persists character item ID");

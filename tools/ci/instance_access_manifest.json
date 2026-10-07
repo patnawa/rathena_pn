@@ -7921,6 +7921,41 @@
         }
       },
       "warper_status": "not_listed"
+    },
+    {
+      "id": 1001,
+      "name": "PN Weekly Expedition",
+      "maps": [
+        "guild_vs1"
+      ],
+      "name_references": [
+        "npc/custom/main_office/weekly_expedition.txt"
+      ],
+      "entry_npc_candidates": [],
+      "warper_labels": [],
+      "client_maps": {
+        "guild_vs1": {
+          "gat": {
+            "direct": true,
+            "resolved": "guild_vs1.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "guild_vs1.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "guild_vs1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
     }
   ],
   "required_warper_labels": [

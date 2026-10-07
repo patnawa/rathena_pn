@@ -5,6 +5,7 @@ function	script	PN_Adventure	{
 		clear;
 		mes "[My Adventure]";
 		mes "Level "+BaseLevel+" / "+JobLevel+" | Choose a goal for today's session.";
+		callfunc "PN_GoalSummary";
 		.@goals=0;
 		for (.@i=0;.@i<8;.@i++) if (PNWishItem[.@i]>0) {
 			mes "Gear goal: "+getitemname(PNWishItem[.@i])+".";
@@ -14,15 +15,16 @@ function	script	PN_Adventure	{
 		.@solo=instance_id(IM_CHAR); .@party=instance_id(IM_PARTY);
 		if (.@solo) mes "Personal instance: "+instance_live_info(ILI_NAME,.@solo)+".";
 		if (.@party) mes "Party instance: "+instance_live_info(ILI_NAME,.@party)+".";
-		switch(select("I have 20 minutes:Play with friends:Next story objective:Equipment goals and materials:Instances and cooldowns:Preparation presets:Inventory and storage:Weekly adventures:Boss reward progress:Share builds and lab challenges:Find an Office NPC:Leave")) {
+		switch(select("I have 20 minutes:Play with friends:Next story objective:Equipment goals and materials:Instances and cooldowns:Preparation presets:Inventory and storage:Weekly adventures:Boss reward progress:Share builds and lab challenges:Find an Office NPC:My pinned upgrade:Weekly Expedition:Leave")) {
 		case 1:
 			clear; mes "[A short adventure]";
 			mes "Pick a manageable objective; travel and your build determine the time needed.";
-			switch(select("Progress one story step:Practice a build in the lab:Work on a weekly objective:Find a material for my gear:Back")) {
+			switch(select("Progress one story step:Practice a build in the lab:Work on a weekly objective:Find a material for my gear:Weekly Expedition:Back")) {
 			case 1: callfunc "PN_GuideNext"; break;
 			case 2: callfunc "PN_LabChallengeMenu"; break;
 			case 3: callfunc "PN_WeeklyBoard"; break;
 			case 4: callfunc "PN_EquipmentPlanner"; break;
+			case 5: callfunc "PN_WeeklyExpedition"; break;
 			}
 			break;
 		case 2: callfunc "PN_PartyBoard"; break;
@@ -35,7 +37,9 @@ function	script	PN_Adventure	{
 		case 9: callfunc "PN_RewardProgress"; break;
 		case 10: callfunc "PN_BuildSharing"; break;
 		case 11: callfunc "PN_OfficeFind"; break;
-		case 12: return;
+		case 12: callfunc "PN_GoalDesk"; break;
+		case 13: callfunc "PN_WeeklyExpedition"; break;
+		case 14: return;
 		}
 		next;
 	}
@@ -47,8 +51,20 @@ function	script	PN_Adventure	{
 OnAdventure:
 	callfunc "PN_Adventure";
 	close;
+OnGoal:
+	callfunc "PN_GoalDesk"; close;
+OnPrepare:
+	callfunc "PN_Preparation"; close;
+OnParty:
+	callfunc "PN_PartyBoard"; close;
+OnChallenge:
+	callfunc "PN_WeeklyExpedition"; close;
 OnInit:
 	bindatcmd "adventure",strnpcinfo(3)+"::OnAdventure",0,99;
+	bindatcmd "goal",strnpcinfo(3)+"::OnGoal",0,99;
+	bindatcmd "prepare",strnpcinfo(3)+"::OnPrepare",0,99;
+	bindatcmd "partyboard",strnpcinfo(3)+"::OnParty",0,99;
+	bindatcmd "challenge",strnpcinfo(3)+"::OnChallenge",0,99;
 	end;
 }
 

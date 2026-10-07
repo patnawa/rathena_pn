@@ -7,6 +7,8 @@
 #include <map/map.hpp>
 #include <map/skill.hpp>
 namespace {bool town=true,connected=true;unsigned submitted=0,batches=0;std::shared_ptr<pn_shop::Commit> captured;std::vector<pn_shop::Grant> captured_grants;}
+extern "C" void prep_clear(const map_session_data&,int32) asm("__wrap__Z16clif_scriptclearRK16map_session_datai");
+extern "C" void prep_clear(const map_session_data&,int32){}
 extern "C" int32 prep_connected() asm("__wrap__Z17chrif_isconnectedv");
 extern "C" int32 prep_connected(){return connected;}
 extern "C" int32 prep_flags(int16,e_mapflag,u_mapflag_args*) asm("__wrap__Z18map_getmapflag_subs9e_mapflagP14u_mapflag_args");
@@ -70,5 +72,16 @@ extern "C" int __wrap_main(int argc,char**){
         sd->premiumStorage.type=TABLE_STORAGE;sd->premiumStorage.id=sd->status.account_id;sd->premiumStorage.stor_id=100;sd->premiumStorage.u.items_storage[0].nameid=909;sd->premiumStorage.u.items_storage[0].amount=7;
         command("pnprepstorage(\"909\",0)");check(temporary("@PNResult")==1&&temporary("@PNPrepItem")==909&&temporary("@PNPrepAmount")==20,"search sums owned loaded pages including unsaved state without SQL");
         sd->premiumStorage.id=sd->status.account_id+1;command("pnprepstorage(\"909\",0)");check(temporary("@PNResult")==-1,"foreign loaded page never supplies another player's holdings");storage_db.clear();}
+    {auto sd=prep_player();put(0,400999,1,true);command("pnpreppreset(0,1)");Snapshot before;command("pnpreppreset(0,2)");check(temporary("@PNResult")==1&&temporary("@PNPrepGearCount")==1&&!unequips&&!equips,"preview validates the saved equipment without changing it");before.unchanged();
+        auto* c=compile("{mes \"[fixture]\";callfunc \"PN_PrepareAdventure\",0;end;}","combined preparation cancel");walk(c,{9,2});script_free_code(c);check(!submitted&&!unequips&&!equips,"canceling combined preparation has no charge or equipment change");}
+    {auto sd=prep_player();put(0,400999,1,true);command("pnpreppreset(0,1)");sd->inventory.u.items_inventory[0].unique_id++;command("pnpreppreset(0,2)");check(!temporary("@PNResult")&&!unequips,"preview refuses missing exact gear before any mutation");}
+    for(int mode=0;mode<4;++mode){auto sd=prep_player();put(0,400999,1,true);command("pnpreppreset(0,1)");
+        if(mode!=0)command("pnprepsupply(0,0,501,20)");
+        auto* c=compile("{mes \"[fixture]\";callfunc \"PN_PrepareAdventure\",0;end;}","combined preparation confirmation");
+        walk(c,{9,1},[&](int,int chosen){if(chosen==1&&mode==2)sd->inventory.u.items_inventory[0].unique_id++;if(chosen==1&&mode==3)put(1,501,1);});script_free_code(c);
+        if(mode==0)check(!submitted&&equips==1,"preparation with fulfilled supplies applies gear without a purchase");
+        if(mode==1)check(submitted==1&&equips==1&&captured->wallet_after==captured->wallet_before-1000&&captured_grants[0].amount==20,"confirmed preparation applies gear and submits exact missing supplies once");
+        if(mode>=2)check(!submitted&&!unequips&&!equips,"changed gear or supplies after destination menu refuses preparation before mutation");
+    }
     attached=nullptr;item_db.clear();do_final_script();ers_destroy(num_reg_ers);ers_destroy(str_reg_ers);num_reg_ers=str_reg_ers=nullptr;timer_final();db_final();malloc_final();std::printf("PREPARATION_NATIVE_OK cases=%u assertions=%u\n",cases,assertions);return 0;
 }
