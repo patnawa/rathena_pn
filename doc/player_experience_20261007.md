@@ -107,7 +107,10 @@ all 60 source checks and clean NPC startup against a disposable database.
 Focused native results: planner 31 cases / 296 assertions; preparation 42 / 441;
 social tools 44 / 1,353; expedition 9 cases / 51 checks. Existing readiness
 (270 / 2,372), Damage Lab (19 / 551) and weekly reward regressions also passed.
-These are focused implementation checks; the complete release gate and rendered
-client playtest have not been performed for this candidate. Production has not
-been updated. Evidence and packaging tools are in
-`OPS/player-experience-20261007` in the parent PN-Ragnarok workspace.
+The final committed payload subsequently passed all 104 full native release
+checks and was deployed to production on October 7, 2026. All seven services
+passed health verification and gameplay ingress is open. Rendered client
+playtesting remains pending for the pilot. See the
+[production deployment record](player_experience_deployment_20261007.md) and
+[receipt](evidence/player_experience_deployment_20261007.json). Evidence and
+packaging tools are in `OPS/player-experience-20261007` in the parent workspace.
