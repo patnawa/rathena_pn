@@ -326,9 +326,11 @@ class MainForm:Form {
         cancellation=new CancellationTokenSource();engine.Cancellation=cancellation.Token;phase.Text=title;phase.ForeColor=Palette.Text;detail.Text="Preparing…";bar.Value=0;percent.Text="0%";
         transfer.Text=cancellable?"Your settings, screenshots and replays are kept.":"Preparing the local client.";RefreshControls();AppendActivity(title+".");
         var worker=new BackgroundWorker();worker.DoWork+=(s,e)=>e.Result=action();worker.RunWorkerCompleted+=(s,e)=>{
-            bool launch=start||playAfterCheck;startupCheck=false;playAfterCheck=false;
+            bool launch=start||playAfterCheck;
+            bool cancelled=e.Error is OperationCanceledException||(e.Error==null&&cancellation.IsCancellationRequested);
+            startupCheck=false;playAfterCheck=false;
             FlushProgress();busy=false;canCancel=false;engine.Cancellation=CancellationToken.None;cancellation.Dispose();cancellation=null;cancel.Visible=false;
-            if(e.Error is OperationCanceledException){phase.Text="Check cancelled";phase.ForeColor=Palette.Gold;detail.Text="No update was installed. Check again whenever you're ready.";transfer.Text="Existing client files are unchanged.";bar.Value=0;percent.Text="";lastResult="Cancelled before installation.";}
+            if(cancelled){phase.Text="Check cancelled";phase.ForeColor=Palette.Gold;detail.Text="Ragnarok was not started. Check again whenever you're ready.";transfer.Text="Review the installed release before retrying.";bar.Value=0;percent.Text="";lastResult="Cancelled; Ragnarok was not started.";}
             else if(e.Error!=null){phase.Text="Let's get you back on track";phase.ForeColor=Palette.Red;detail.Text=e.Error.Message;transfer.Text="Retry after checking your connection, free space and that the game is closed.";bar.Value=0;percent.Text="";lastResult=e.Error.Message;tips.SetToolTip(detail,e.Error.Message);}
             else{phase.Text=launch?"Your adventure is ready":"Ready when you are";phase.ForeColor=Palette.Green;detail.Text=(string)e.Result;lastResult=detail.Text;tips.SetToolTip(detail,detail.Text);bar.Value=100;percent.Text="100%";
                 transfer.Text=cancellable?"Signed release verified. Your personal files are preserved.":"Local client ready.";if(cancellable)lastCheck=DateTime.Now;
