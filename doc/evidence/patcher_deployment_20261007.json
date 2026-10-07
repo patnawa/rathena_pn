@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "release": "client-20261007-patcher",
+  "sequence": 2026092909,
+  "source_revision": "6198b1b46d2403504fb8faf12f6f8f8c0091a3ea",
+  "publication": {
+    "passed": true,
+    "published": true,
+    "release": "client-20261007-patcher",
+    "sequence": 2026092909,
+    "backup": "/app/pn-patcher-20261007/production-backup",
+    "started_utc": "2026-10-07T10:31:58.430723+00:00",
+    "game_services_healthy": true,
+    "game_services_unchanged": true,
+    "source_revision": "6198b1b46d2403504fb8faf12f6f8f8c0091a3ea",
+    "source_after": "b6ef3381f4b4c7a7a0d2473943495d0bf3cafbf2b9b74b8dab4530f0cbcf375b",
+    "feed_sha256": "4a6266bfe1778e83f5090692167336d8f4c0c50f342e5314c13cca0d63a0a2c5",
+    "bootstrap_sha256": "c214234da9a7b31809d3c7a36add034c57f6c87e96128877fb632193eb3aec5b",
+    "finished_utc": "2026-10-07T10:31:59.659571+00:00"
+  },
+  "signed_fixture": {
+    "passed": true,
+    "release": "client-20261007-patcher",
+    "sequence": 2026092909,
+    "native_signed_upgrade": true,
+    "native_local_verification": true,
+    "native_rollback_exact": true,
+    "older_feed_refused": true,
+    "native_reupgrade": true,
+    "downloaded_only_launcher_objects": true,
+    "personal_client_modified": false,
+    "game_launched": false,
+    "test_source_difference": "Only the feed constant points to the private loopback server."
+  },
+  "installed_client": {
+    "native_update_passed": true,
+    "native_local_verification_passed": true,
+    "installed_signed_envelope_matches_public_feed": true,
+    "highest_sequence_matches": true,
+    "changed_files": [
+      {
+        "path": "PNLauncher-20261007.exe",
+        "bytes": 1288192,
+        "sha256": "c214234da9a7b31809d3c7a36add034c57f6c87e96128877fb632193eb3aec5b",
+        "preserve": false
+      },
+      {
+        "path": "Launch PN.cmd",
+        "bytes": 67,
+        "sha256": "23125684a4ca63fdf86fb8f6b7e0c0733c8342dcbc206e50ae5827bcd38b059b",
+        "preserve": false
+      },
+      {
+        "path": "Launch PN Dashboard.cmd",
+        "bytes": 67,
+        "sha256": "23125684a4ca63fdf86fb8f6b7e0c0733c8342dcbc206e50ae5827bcd38b059b",
+        "preserve": false
+      },
+      {
+        "path": "RELEASE.json",
+        "bytes": 13889,
+        "sha256": "b9adc06072bf084de9ca05e89382fac437b957fab3bae411cd4551c3cd8a582a",
+        "preserve": false
+      }
+    ],
+    "launcher_shortcut_target": "PNLauncher-20261007.exe",
+    "downloaded_files": 4,
+    "downloaded_display_mb": 1.2,
+    "update_log_sha256": "9c9ce514105d36b8f3964828afc3b643201653a37736660df63b2968c8998ece",
+    "local_verification_log_sha256": "327913a88025678a5f5ba1f6f993d6c31a4b14dcbc10aa27c9d8f2fdece7cfed"
+  },
+  "build_self_tests": {
+    "passed_groups": 15,
+    "log_sha256": "3e1aff983df3bc784b6fa7fb448048b8344868db270a6b7e9f9d31db79091b79"
+  },
+  "measurements": {
+    "files": 5650,
+    "bytes": 5365150782,
+    "checksum_mismatches": 0,
+    "warm_filesystem_initial_verification_ms": {
+      "original": 6953,
+      "repaired": 3234
+    },
+    "same_engine_repeat_verification_ms": {
+      "original": 4002,
+      "repaired": 1428
+    },
+    "first_frame_including_process_and_png_ms": [
+      151,
+      146,
+      147
+    ],
+    "stalled_http_cancellation_ms": 159,
+    "scope": "Measured on this PC; game launch/login time is not measured."
+  }
+}
