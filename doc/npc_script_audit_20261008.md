@@ -139,6 +139,10 @@ The only Hall Key record is a single administrative grant. No player data needed
 - `gimli_checkpoint_reentry_test.py` pins a `GimliInfiltration.txt` hash that already differs at HEAD. It isn't in the release gate.
 - Several hash-pinned tests fail only in a Windows checkout with CRLF working copies; the Linux release gate is authoritative.
 
-## Deployment notes
+## Deployment
 
-The release rebuilds the map server (`clif.cpp`, `pc.cpp` and `script.cpp` changed) and installs the committed NPC, database and test sources. It goes through the existing map-only guarded cutover after the full native release gate passes in an isolated candidate. Final Battle and Sticky Sea runs that are in progress when the map server restarts end with it; new runs record rosters.
+Deployed to production on October 8, 2026, as commit `f63cd9ee0`. The rebuilt
+map server and the committed NPC, database and test sources went through the
+guarded map-only cutover. This followed all 105 full native release checks in
+an isolated candidate and happened with zero players online. See the
+[deployment record](npc_script_audit_deployment_20261008.md).
