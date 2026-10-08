@@ -30,6 +30,9 @@ from episode_party_progression_test import scan_to
 ROOT = Path(__file__).resolve().parents[2]
 FILES = ('GimliInfiltration.txt', 'MysteriousGhostShip.txt', 'BlackHairedBeast.txt')
 REPAIRED_CHECKPOINT = '51c8195170e9d7018e3b2d10315c2dd8ab3e6c31'
+# Later reviewed releases changed BlackHairedBeast.txt declarations after the
+# checkpoint above; protected declarations are compared with this reviewed tree.
+PROTECTED_BASELINE = 'b91ee17c0a4aad74e7f23df12865362db7964171'
 PRE_FIX_HASHES = {
     'GimliInfiltration.txt': '04ebc9fcc713b20ebaa778f47c1840182525cf6fd97505ca9d04c6386f221edf',
     'MysteriousGhostShip.txt': '32036b3d303e75f6b3f34474ed9c5fa416387b5a6687f7d73bd43e8e7a788e0a',
@@ -472,8 +475,11 @@ def fixtures(build, pre_fix=False):
         original = before_fix(filename, checkpoint)
         # Prove this pass did not change encounter composition, movements, entry
         # policy calls, or the numerical reward/capacity commands.
+        reviewed = subprocess.check_output(
+            ['git', 'show', PROTECTED_BASELINE + ':' + path.relative_to(ROOT).as_posix()],
+            cwd=ROOT).decode('utf-8').replace('\r\n', '\n')
         protected = r'(?m)^\s*(?:monster|areamonster|warp|instance_warpall|instance_create|instance_enter|getitem|getexp|callfunc "EP21_AddReputation"|if \(!checkweight)[^\n]*'
-        if [line.strip() for line in re.findall(protected, without_gimli_entry(source))] != [line.strip() for line in re.findall(protected, without_gimli_entry(original))]:
+        if [line.strip() for line in re.findall(protected, without_gimli_entry(source))] != [line.strip() for line in re.findall(protected, without_gimli_entry(reviewed))]:
             raise AssertionError('Existing spawn, travel, entry, or reward declarations changed: ' + filename)
         sources[filename] = hashlib.sha256(path.read_bytes()).hexdigest()
         if pre_fix:
