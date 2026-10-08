@@ -53,7 +53,7 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 		.@episode$ = "Episode 14";
 		.@level = 160;
 		.@price = 1000000;
-		.@ticket = 1000284;
+		.@ticket = 1000284; // Item name reads "Eps 13 Clear Ticket"; kept for tickets already sold.
 		.@done = (ep14_3_newerabs >= 24 && ep14_3_fall_bless >= 13);
 		break;
 	case 2:
@@ -74,7 +74,7 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 		.@episode$ = "Episode 17.1";
 		.@level = 110;
 		.@price = 2000000;
-		.@ticket = 1000285;
+		.@ticket = 1000285; // Item name reads "Eps 14 Clear Ticket"; kept for tickets already sold.
 		.@done = (isbegin_quest(16360) == 2);
 		.@blocked = (terra_gloria_main < 26);
 		.@required$ = "Complete or skip Episode 16 first.";
@@ -142,8 +142,8 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 		set Zeny, Zeny - .@price;
 		getitem .@ticket,1;
 		mes "[Temporal Tina]";
-		mes "You received ^4D4DFF" + getitemname(.@ticket) + "^000000.";
-		mes "It is now stored in the ^4D4DFFUsable Items^000000 inventory tab.";
+		mes "You received ^4D4DFF" + getitemname(.@ticket) + "^000000, the ticket I accept for " + .@episode$ + ".";
+		mes "It is now stored in the ^4D4DFFEtc^000000 inventory tab.";
 		close;
 	}
 
@@ -168,7 +168,7 @@ prontera,140,174,4	script	Temporal Tina#episode	4_F_KAFRA6,{
 	}
 	if (countitem(.@ticket) < 1) {
 		mes "[Temporal Tina]";
-		mes "You do not have ^FF0000" + getitemname(.@ticket) + "^000000.";
+		mes "You do not have ^FF0000" + getitemname(.@ticket) + "^000000, the ticket I accept for " + .@episode$ + ".";
 		mes "Choose ^4D4DFFBuy an Episode Clear Ticket^000000 first.";
 		close;
 	}

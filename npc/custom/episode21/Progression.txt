@@ -477,7 +477,9 @@ jor_mbase,233,277,4	script	Ivan#ep21_cult	22311,{
 	mes "[Ivan]";
 	if (!EP21_Alberta_Complete && !callfunc("EP21_QuestInRange",17752,17769)) { mes "Finish helping Old Alberta first."; close; }
 	if (callfunc("EP21_CultComplete")) { mes "Nadoyo's Gimli operation is ready."; close; }
-	if (!isbegin_quest(17752)) {
+	// changequest removes each step's predecessor, so test the whole chain:
+	// restarting 17752 after 17757 lets Maristella pay again.
+	if (!callfunc("EP21_QuestInRange",17752,17763)) {
 		mes "We need information from inside the Jormungandr temple. Speak with Lehar and Lyriq, then examine Wigner records in Alberta.";
 		setquest 17752;
 		EP21_CultStep = 1;
@@ -499,7 +501,7 @@ jor_mbase,233,277,4	script	Ivan#ep21_cult	22311,{
 	end;
 
 OnInit:
-	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_Alberta_Complete && !isbegin_quest(17752) && !EP21_CultComplete()";
+	questinfo QTYPE_QUEST,QMARK_YELLOW,"EP21_Alberta_Complete && !EP21_QuestInRange(17752,17763) && !EP21_CultComplete()";
 	end;
 }
 

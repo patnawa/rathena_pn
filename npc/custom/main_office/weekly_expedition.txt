@@ -65,7 +65,8 @@ function	script	PN_WeeklyExpedition	{
 guild_vs1,54,43,4	script	PN Expedition Console	4_M_01,{
 	.@id=instance_id(IM_CHAR);
 	if (!.@id || instance_live_info(ILI_NAME,.@id)!="PN Weekly Expedition") { mes "Use @challenge to open your expedition."; close; }
-	if ('PXStage==1) { mes "The expedition is running. Clear the enemies and follow the warnings."; close; }
+	// No dialog during a run: an open dialog queues (and can drop) kill callbacks.
+	if ('PXStage==1) { dispbottom "The expedition is running. Clear the enemies and follow the warnings."; end; }
 	mes "[Expedition Console]";
 	if ('PXStage==2) {
 		mes "Cleared in "+'PXSeconds+" seconds. Danger-zone mistakes: "+'PXMistakes+".";
@@ -79,6 +80,12 @@ guild_vs1,54,43,4	script	PN Expedition Console	4_M_01,{
 	if ('PXStage==3) mes "The last attempt ended. You can retry.";
 	.@mode=select("Start Casual:Start Challenge:Leave room")-1;
 	if (.@mode==2) { warp "pn_office",50,35; instance_destroy .@id; end; }
+	// The room's TimeLimit runs from creation: keep 600 s for the attempt plus time to record it.
+	if ('PXCloses && 'PXCloses-gettimetick(2)<630) {
+		mes "This room closes before a full ten-minute attempt can finish and be recorded.";
+		mes "Choose Leave room, then use @challenge again for a fresh room.";
+		close;
+	}
 	if (Hp<=0 || BaseLevel<100) { mes "Revive and reach Base Level 100 before starting."; close; }
 	mes callfunc("PN_ExpeditionModifier",callfunc("PN_ExpeditionWeek"))+".";
 	mes "Five waves. Finish within ten minutes. No rewards except cosmetic records.";
@@ -106,6 +113,8 @@ OnWave:
 	.@map$=instance_mapname("guild_vs1");
 	mapannounce .@map$,"Wave "+'PXWave+" / 5",bc_map;
 	setarray .@elements,Ele_Water,Ele_Earth,Ele_Fire,Ele_Wind,Ele_Neutral;
+	// The sweep treats any non-zero entry as a live guardian; drop stale GIDs.
+	for (.@i=0;.@i<6;.@i++) 'PXMobs[.@i]=0;
 	for (.@i=0;.@i<'PXRemaining;.@i++) {
 		monster .@map$,50,50,"Expedition Guardian",1031,1,instance_npcname("PN Expedition Console")+"::OnMobDead";
 		'PXMobs[.@i]=$@mobid[0];
@@ -125,11 +134,7 @@ OnWave:
 	end;
 OnMobDead:
 	if ('PXStage!=1 || getcharid(0)!='PXOwner || getcharid(3)!='PXAccount) end;
-	.@found=-1;
-	for (.@i=0;.@i<6;.@i++) if ('PXMobs[.@i]==killedgid && killedgid>0) .@found=.@i;
-	if (.@found<0 || 'PXRemaining<=0) end;
-	'PXMobs[.@found]=0; 'PXRemaining--;
-	if (!'PXRemaining) donpcevent instance_npcname("PN Expedition Console")+"::OnWave";
+	callsub L_Sweep,killedgid;
 	end;
 OnTimer1000:
 	if ('PXStage!=1) { stopnpctimer; end; }
@@ -155,14 +160,29 @@ OnTimer1000:
 		}
 	}
 	setnpctimer 0;
+	callsub L_Sweep,0;
 	end;
 L_Fail:
 	'PXStage=3; stopnpctimer; killmonsterall .@map$;
 	mapannounce .@map$,"Attempt ended: death, leaving, disconnection, three danger mistakes or the time limit. Return to the console to retry.",bc_map;
 	end;
+L_Sweep:
+	// Queued kill events read the newest killedgid and extras are dropped while the
+	// owner has a dialog open: clear every tracked guardian that matches or is gone.
+	if ('PXStage!=1 || 'PXRemaining<=0) return;
+	.@cleared=0;
+	for (.@i=0;.@i<6;.@i++) {
+		if (!'PXMobs[.@i] || 'PXRemaining<=0) continue;
+		if ('PXMobs[.@i]==getarg(0) || !unitexists('PXMobs[.@i])) {
+			'PXMobs[.@i]=0; 'PXRemaining--; .@cleared=1;
+		}
+	}
+	if (.@cleared && !'PXRemaining) donpcevent instance_npcname("PN Expedition Console")+"::OnWave";
+	return;
 OnInstanceInit:
 	if (instance_live_info(ILI_NAME,instance_id())!="PN Weekly Expedition") end;
 	'PXStage=0;
+	'PXCloses=gettimetick(2)+instance_info("PN Weekly Expedition",IIT_TIME_LIMIT);
 	.@map$=instance_mapname("guild_vs1");
 	setmapflag .@map$,mf_nomemo;
 	setmapflag .@map$,mf_noteleport;

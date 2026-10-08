@@ -626,6 +626,13 @@ kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
 		if(.@r==9) { .@z=75; .@s=75; .@b=10; .@red=0; .@y=0; }
 		if(.@r==10) { .@z=100; .@s=100; .@b=10; .@red=20; .@y=0; }
 		if(.@r==11) { .@z=150; .@s=150; .@b=10; .@red=20; .@y=30; }
+		// Name the auto-selected equipped item, then require the same copy after the menu pause.
+		.@id=@inventorylist_id[.@idx]; .@inv=@inventorylist_idx[.@idx];
+		mes "[Cardron]"; mes "This will refine your equipped +"+.@r+" "+getitemname(.@id)+" to +"+(.@r+1)+".";
+		if(select("Refine it:Cancel")==2) close;
+		getinventorylist; .@idx=-1;
+		for(.@i=0;.@i<@inventorylist_count;.@i++) if(@inventorylist_idx[.@i]==.@inv && @inventorylist_id[.@i]==.@id && @inventorylist_equip[.@i]==.@mask && @inventorylist_refine[.@i]==.@r) { .@idx=.@i; break; }
+		if(.@idx<0) { mes "Your equipment changed. Nothing was used."; close; }
 		if(countitem(25731)<.@z||countitem(25729)<.@s||countitem(1002751)<.@b||countitem(1002752)<.@red||countitem(1002753)<.@y) { mes "Missing Zelunium, Shadowdecon or Kindle Hals for this guaranteed refinement."; close; }
 		delitem 25731,.@z; delitem 25729,.@s; delitem 1002751,.@b; if(.@red)delitem 1002752,.@red; if(.@y)delitem 1002753,.@y;
 		if (!callfunc("CH2_ModifyItem",.@idx,@inventorylist_id[.@idx],.@r+1,.@part)) {
@@ -654,6 +661,13 @@ kin_in01,123,215,4	script	Cardron#ch2craft	4_M_03,{
 		else if(.@mask & EQP_ACC_R) .@part=EQI_ACC_R;
 		if(.@part<0) { mes "The equipped item is in an unsupported slot."; close; }
 		.@coin=(.@access?250:125); .@ring=(.@access?150:75); .@hal=(.@access?25:15);
+		// Name the auto-selected equipped item, then require the same copy after the menu pause.
+		.@id=@inventorylist_id[.@idx]; .@inv=@inventorylist_idx[.@idx]; .@r=@inventorylist_refine[.@idx];
+		mes "[Cardron]"; mes "This will reform your equipped +"+.@r+" "+getitemname(.@id)+" into a +"+(.@r-(.@access?0:2))+" "+getitemname(.@new)+".";
+		if(select("Reform it:Cancel")==2) close;
+		getinventorylist; .@idx=-1;
+		for(.@i=0;.@i<@inventorylist_count;.@i++) if(@inventorylist_idx[.@i]==.@inv && @inventorylist_id[.@i]==.@id && @inventorylist_equip[.@i]==.@mask && @inventorylist_refine[.@i]==.@r) { .@idx=.@i; break; }
+		if(.@idx<0) { mes "Your equipment changed. Nothing was used."; close; }
 		if(countitem(1002700)<.@coin||countitem(1001996)<.@ring||countitem(1002751)<.@hal||countitem(1002752)<.@hal||countitem(1002753)<.@hal) { mes "Missing Flame Coins, Mana Rings or Kindle Hals."; close; }
 		delitem 1002700,.@coin; delitem 1001996,.@ring; delitem 1002751,.@hal; delitem 1002752,.@hal; delitem 1002753,.@hal;
 		.@newref=@inventorylist_refine[.@idx]-(.@access?0:2);

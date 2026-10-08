@@ -71,7 +71,16 @@ thana_step,154,367,3	script	Lumin#mot	4_M_AC_RUMIN,{
 				mes "Please make room and speak to me again before I close the investigation.";
 				close3;
 			}
+			// getitem can fail without stopping the script; keep the entitlement
+			// and leave the report open unless the antiquity actually arrived.
+			.@had = countitem(102572);
 			getitem 102572,1; // Thanatos_Antiquity
+			if(countitem(102572) <= .@had){
+				cutin "lumin_ac_03",0;
+				mes "[ Lumin ]";
+				mes "I could not hand you the antiquity just now. Please make room and speak to me again.";
+				close3;
+			}
 			mot_antiquity_pending = 0;
 		}
 		cutin "lumin_ac_03",0;
@@ -431,7 +440,14 @@ end;
 			mes "I cannot hand you the antiquity while your inventory is too full or heavy. Make room and speak to me again.";
 			close;
 		} else {
+			// Clear the entitlement only if the antiquity actually arrived.
+			.@had = countitem(102572);
 			getitem 102572,1; // Thanatos_Antiquity
+			if(countitem(102572) <= .@had){
+				mes "[ Lucille ]";
+				mes "I could not hand you the antiquity just now. Make room and speak to me again.";
+				close;
+			}
 			mot_antiquity_pending = 0;
 			set_instance_var(.@reward$,2);
 			mes "[ Lucille ]";
@@ -893,34 +909,37 @@ end;
 
 OnBossSkill:
 	.@map$ = instance_mapname("8@thts");
-	.@gid = get_instance_var("gid");
 	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnSkillDead";
-	while(unitexists(.@gid)){
+	// Broken Thanatos replaces the original boss, so reread the current GID.
+	while(unitexists(get_instance_var("gid"))){
 		sleep 6900;
+		.@gid = get_instance_var("gid");
 		if(!unitexists(.@gid)) end;
 		getunitdata .@gid,.@data;
 		.@x = .@data[UMOB_X];
 		.@y = .@data[UMOB_Y];
 		monster .@map$,.@x,.@y,"",20562,1,.@event$;
-		setunitdata $@mobid[0],UMOB_DMGIMMUNE,true;
+		// $@mobid is server-wide and the sleeps below let other scripts spawn.
+		.@d = $@mobid[0];
+		setunitdata .@d,UMOB_DMGIMMUNE,true;
 		sleep 200;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x + 5,.@y,-10000;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x - 5,.@y,-10000;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x,.@y - 5,-10000;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x,.@y + 5,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x + 5,.@y,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x - 5,.@y,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x,.@y - 5,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x,.@y + 5,-10000;
 		sleep 200;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x + 5,.@y + 5,-10000;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x - 5,.@y + 5,-10000;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x - 5,.@y - 5,-10000;
-		unitskillusepos $@mobid[0],"NPC_GROUNDDRIVE",5,.@x + 5,.@y - 5,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x + 5,.@y,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x - 5,.@y,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x,.@y - 5,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x,.@y + 5,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x + 5,.@y + 5,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x - 5,.@y + 5,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x - 5,.@y - 5,-10000;
-		unitskillusepos $@mobid[0],"MG_THUNDERSTORM",5,.@x + 5,.@y - 5,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x + 5,.@y + 5,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x - 5,.@y + 5,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x - 5,.@y - 5,-10000;
+		unitskillusepos .@d,"NPC_GROUNDDRIVE",5,.@x + 5,.@y - 5,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x + 5,.@y,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x - 5,.@y,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x,.@y - 5,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x,.@y + 5,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x + 5,.@y + 5,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x - 5,.@y + 5,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x - 5,.@y - 5,-10000;
+		unitskillusepos .@d,"MG_THUNDERSTORM",5,.@x + 5,.@y - 5,-10000;
 		sleep 100;
 		monster .@map$,.@x + 10,.@y,"",20562,1,.@event$;
 		setunitdata $@mobid[0],UMOB_DMGIMMUNE,true;
@@ -1216,7 +1235,9 @@ OnFire:
 		sleep 100;
 	}
 	sleep 5000;
-	instance_event(strnpcinfo(0),"OnFire2",false);
+	// Each handler starts the next; stop the cycle once the floor is clear.
+	if(mobcount(.@map$,.@event$))
+		instance_event(strnpcinfo(0),"OnFire2",false);
 	sleep 1000;
 	killmonster .@map$,.@event2$;
 OnFireDead:
@@ -1235,7 +1256,8 @@ OnFire2:
 		sleep 100;
 	}
 	sleep 5000;
-	instance_event(strnpcinfo(0),"OnFire3",false);
+	if(mobcount(.@map$,.@event$))
+		instance_event(strnpcinfo(0),"OnFire3",false);
 	sleep 1000;
 	killmonster .@map$,.@event2$;
 OnFireDead2:
@@ -1254,7 +1276,8 @@ OnFire3:
 		sleep 100;
 	}
 	sleep 5000;
-	instance_event(strnpcinfo(0),"OnFire4",false);
+	if(mobcount(.@map$,.@event$))
+		instance_event(strnpcinfo(0),"OnFire4",false);
 	sleep 1000;
 	killmonster .@map$,.@event2$;
 OnFireDead3:
@@ -1272,7 +1295,8 @@ OnFire4:
 		sleep 100;
 	}
 	sleep 5000;
-	instance_event(strnpcinfo(0),"OnFire",false);
+	if(mobcount(.@map$,.@event$))
+		instance_event(strnpcinfo(0),"OnFire",false);
 	sleep 1000;
 	killmonster .@map$,.@event2$;
 OnFireDead4:

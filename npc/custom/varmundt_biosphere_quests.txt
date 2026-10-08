@@ -280,13 +280,33 @@ ba_in01,359,53,4	script	Ellie#biosphere_equipment	4_EP17_ELYUMINA,{
 		mes "You do not have every required item and enough Zeny.";
 		close;
 	}
+	// ID-only delitem can fall back to a worn/refined/carded copy; consume only an exact plain copy.
+	getinventorylist;
+	.@input_idx = -1;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_id[.@i] != .@input || @inventorylist_equip[.@i] || @inventorylist_refine[.@i] || @inventorylist_enchantgrade[.@i] || @inventorylist_bound[.@i] || @inventorylist_expire[.@i] || @inventorylist_card1[.@i] || @inventorylist_card2[.@i] || @inventorylist_card3[.@i] || @inventorylist_card4[.@i])
+			continue;
+		if (@inventorylist_option_id1[.@i] || @inventorylist_option_id2[.@i] || @inventorylist_option_id3[.@i] || @inventorylist_option_id4[.@i] || @inventorylist_option_id5[.@i])
+			continue;
+		.@input_idx = @inventorylist_idx[.@i];
+		break;
+	}
+	if (.@input_idx < 0) {
+		mes "[Ellie]";
+		mes "I can only imprint an unequipped +0 " + getitemname(.@input) + " without cards, grade, random options, binding or a time limit.";
+		close;
+	}
 	if (!checkweight(.@output,1)) {
 		mes "Make room for the imprinted equipment first.";
 		close;
 	}
-	Zeny -= .@price;
-	delitem .@input,1;
+	// No pause since the checks above; nothing is charged if the exact copy cannot be removed.
+	if (!delitemidx(.@input_idx,1)) {
+		mes "The equipment could not be removed. Nothing was charged.";
+		close;
+	}
 	delitem .@rune_id,.@rune_count;
+	Zeny -= .@price;
 	getitem .@output,1;
 	mes "[Ellie]";
 	mes "The rune imprint is complete.";

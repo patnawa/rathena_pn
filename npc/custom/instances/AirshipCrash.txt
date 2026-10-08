@@ -145,6 +145,10 @@ function	script	F_AirshipCrashRescueCredit	{
 		detachrid;
 		if (!isloggedin(.@aid[.@i],.@cid[.@i]) || !attachrid(.@aid[.@i]))
 			continue;
+		// Credit only members inside this instance, as with offline members.
+		// Ferlock's all-present cavity transition re-runs this after a full rescue.
+		if (strcharinfo(3) != 'crash_map$ && strcharinfo(3) != 'cave_map$)
+			continue;
 		if (checkquest(5915) == -1)
 			setquest 5915;
 		if (checkquest(5915) != 2) {

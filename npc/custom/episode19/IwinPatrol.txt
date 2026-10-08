@@ -480,9 +480,9 @@ OnInstanceInit:
 	'event$[1] = instance_npcname("iwp_mobs_respawn") + "::OnMobDead1";	// EP19_ICE_GANGU
 	'event$[2] = instance_npcname("iwp_mobs_respawn") + "::OnMobDead2";	// EP19_ICE_STRAW
 
-	monster 'map_iwp$,0,0,"--ja--",21524,1, .@event$[0];
-	monster 'map_iwp$,0,0,"--ja--",21525,1, .@event$[1];
-	monster 'map_iwp$,0,0,"--ja--",21523,1, .@event$[2];
+	monster 'map_iwp$,0,0,"--ja--",21524,1, 'event$[0];
+	monster 'map_iwp$,0,0,"--ja--",21525,1, 'event$[1];
+	monster 'map_iwp$,0,0,"--ja--",21523,1, 'event$[2];
 	end;
 
 OnMobDead0: callsub( S_Spawn, 0 );
@@ -1180,6 +1180,7 @@ OnTouch:
 			next;
 			mes "[Captain of Patrol]";
 			mes "By the way, where are you going? I'll take you back to the Ice Castle.";
+			break;
 		case 2:
 			end;
 		}

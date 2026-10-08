@@ -139,6 +139,9 @@ function	script	EP20_Reward	{
 
 function	script	EP20_DailyWhiskers	{
 	.@amount = getarg(0);
+	// Callers pass 0 for dailies that award no whiskers; no tier bonus applies.
+	if (.@amount <= 0)
+		return 0;
 	.@tier = get_reputation_points(4) / 1000;
 	if (.@tier > 3) .@tier = 3;
 	return .@amount + (.@tier * 2);
@@ -597,6 +600,8 @@ jor_sanct,257,115,4	script	Pamoshgand#ep20_trust	4_M_SCIENCE,{
 	if (EP20_Step < 6) { mes "Silence is devotion."; close; }
 	if (isbegin_quest(8845) == 1) {
 		if (countitem(1001244) < 20) { mes "Bring 20 Large Gray Feathers for today's Example of Silent Answer."; close; }
+		// Check reward capacity before consuming the feathers.
+		if (!callfunc("EP20_CheckReward",callfunc("EP20_DailyWhiskers",0))) close;
 		delitem 1001244,20;
 		// Current public guides document EXP but not its exact amount. Preserve
 		// the material/reset behavior without inventing a reward value.
@@ -745,6 +750,7 @@ icecastle,141,212,4	script	Diving Iwin#ep20_sea	4_EP19_IWIN_DIVER,{
 	mes "I can return expedition members to the Icy Zone.";
 	next;
 	if (select("Travel to Icy Zone.:Stay.") == 2) close;
+	if (!callfunc("EP20_WarperAccess","jor_twice")) close;
 	close2;
 	warp "jor_twice",235,111;
 	end;
@@ -1236,59 +1242,97 @@ icas_in,170,63,4	script	Pipiring#ep20_union	22006,{
 	}
 }
 
-// Physical return paths remain available; forward paths use the same gates as
-// the warper helper so portal and menu access cannot disagree.
+// Every portal uses the same gate as the warper helper so portal and menu
+// access cannot disagree. Return paths are gated too: the required steps are
+// not monotonic (jor_maze needs more than jor_root1), and an ungated chain of
+// returns would carry any arrival in a deeper map past earlier gates.
 jor_back4,215,200,0	script	#ep20_back4_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_back5")) end;
 	warp "jor_back5",353,73;
 	end;
 }
-jor_back5,345,73,0	script	#ep20_back5_return	CLEAR_NPC,0,0,{ warp "jor_back4",205,200; end; }
+jor_back5,345,73,0	script	#ep20_back5_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_back4")) end;
+	warp "jor_back4",205,200;
+	end;
+}
 jor_back5,360,73,0	script	#ep20_back5_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_back6")) end;
 	warp "jor_back6",200,200;
 	end;
 }
-jor_back6,188,200,0	script	#ep20_back6_return	CLEAR_NPC,0,0,{ warp "jor_back5",353,73; end; }
+jor_back6,188,200,0	script	#ep20_back6_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_back5")) end;
+	warp "jor_back5",353,73;
+	end;
+}
 jor_back6,215,200,0	script	#ep20_back6_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_maze")) end;
 	warp "jor_maze",142,73;
 	end;
 }
-jor_maze,135,73,0	script	#ep20_maze_return	CLEAR_NPC,0,0,{ warp "jor_back6",200,200; end; }
+jor_maze,135,73,0	script	#ep20_maze_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_back6")) end;
+	warp "jor_back6",200,200;
+	end;
+}
 jor_maze,149,73,0	script	#ep20_maze_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_root1")) end;
 	warp "jor_root1",32,34;
 	end;
 }
-jor_root1,26,34,0	script	#ep20_root1_return	CLEAR_NPC,0,0,{ warp "jor_maze",142,73; end; }
+jor_root1,26,34,0	script	#ep20_root1_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_maze")) end;
+	warp "jor_maze",142,73;
+	end;
+}
 jor_root1,38,34,0	script	#ep20_root1_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_root2")) end;
 	warp "jor_root2",239,243;
 	end;
 }
-jor_root2,232,243,0	script	#ep20_root2_return	CLEAR_NPC,0,0,{ warp "jor_root1",32,34; end; }
+jor_root2,232,243,0	script	#ep20_root2_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_root1")) end;
+	warp "jor_root1",32,34;
+	end;
+}
 jor_root2,246,243,0	script	#ep20_root2_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_sanct")) end;
 	warp "jor_sanct",155,85;
 	end;
 }
-jor_sanct,148,85,0	script	#ep20_sanct_return	CLEAR_NPC,0,0,{ warp "jor_root2",239,243; end; }
+jor_sanct,148,85,0	script	#ep20_sanct_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_root2")) end;
+	warp "jor_root2",239,243;
+	end;
+}
 jor_sanct,162,85,0	script	#ep20_sanct_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_twice")) end;
 	warp "jor_twice",235,111;
 	end;
 }
-jor_twice,228,111,0	script	#ep20_twice_return	CLEAR_NPC,0,0,{ warp "jor_sanct",155,85; end; }
+jor_twice,228,111,0	script	#ep20_twice_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_sanct")) end;
+	warp "jor_sanct",155,85;
+	end;
+}
 jor_twice,242,111,0	script	#ep20_twice_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_twig")) end;
 	warp "jor_twig",187,198;
 	end;
 }
-jor_twig,180,198,0	script	#ep20_twig_return	CLEAR_NPC,0,0,{ warp "jor_twice",235,111; end; }
+jor_twig,180,198,0	script	#ep20_twig_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_twice")) end;
+	warp "jor_twice",235,111;
+	end;
+}
 jor_twig,194,198,0	script	#ep20_twig_forward	CLEAR_NPC,0,0,{
 	if (!callfunc("EP20_WarperAccess","jor_root3")) end;
 	warp "jor_root3",200,200;
 	end;
 }
-jor_root3,193,200,0	script	#ep20_root3_return	CLEAR_NPC,0,0,{ warp "jor_twig",187,198; end; }
+jor_root3,193,200,0	script	#ep20_root3_return	CLEAR_NPC,0,0,{
+	if (!callfunc("EP20_WarperAccess","jor_twig")) end;
+	warp "jor_twig",187,198;
+	end;
+}

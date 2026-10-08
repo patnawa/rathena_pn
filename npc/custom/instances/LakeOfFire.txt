@@ -404,7 +404,10 @@ OnTimer3600000:
 		}
 		close;
 	}
-	.@full = (#PNLake_FullRewardToken != 'run_token);
+	// Server-local YYYYMMDD of the account's last full reward: one per account
+	// per daily (midnight) period, whichever character or run claims it.
+	.@full_day = #PNLake_FullRewardToken;
+	.@full = (.@full_day != gettime(DT_YYYYMMDD));
 	if (.@full) {
 		setarray .@item[0],1001415,1001414,'energy_item;
 		setarray .@amount[0],1,30,15;
@@ -424,7 +427,8 @@ OnTimer3600000:
 		close;
 	// The confirmation yields. Revalidate this run and the complete reward before granting.
 	if ('stage != 3 || PNLake_ActiveInstance != instance_id() || PNLake_ActiveToken != 'run_token
-		|| PNLake_ClaimToken == 'run_token || .@full != (#PNLake_FullRewardToken != 'run_token)) {
+		|| PNLake_ClaimToken == 'run_token || #PNLake_FullRewardToken != .@full_day
+		|| .@full != (.@full_day != gettime(DT_YYYYMMDD))) {
 		mes "Your reward eligibility changed. Reopen the passage to check your current reward.";
 		close;
 	}
@@ -432,10 +436,10 @@ OnTimer3600000:
 		mes "Make room for every reward, then try again. Your claim is still available.";
 		close;
 	}
+	if (.@full)
+		#PNLake_FullRewardToken = gettime(DT_YYYYMMDD);
 	for (.@i = 0; .@i < getarraysize(.@item); ++.@i)
 		getitem .@item[.@i],.@amount[.@i];
-	if (.@full)
-		#PNLake_FullRewardToken = 'run_token;
 	PNLake_ClaimToken = 'run_token;
 	if (isbegin_quest('boss_quest) == 1)
 		completequest 'boss_quest;

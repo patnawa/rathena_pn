@@ -14282,6 +14282,13 @@ void clif_parse_VendingListReq(int32 fd, map_session_data* sd)
 void clif_parse_PurchaseReq(int32 fd, map_session_data* sd){
 	const PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC* p = reinterpret_cast<PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC*>( RFIFOP( fd, 0 ) );
 
+	// A list opened before an NPC dialog must not spend Zeny or start a pending
+	// save while that dialog is paused between its checks and its charges.
+	if( sd->npc_id ){
+		sd->vended_id = 0;
+		return;
+	}
+
 	vending_purchasereq( sd, p->AID, sd->vended_id, (uint8*)p->list, ( p->packetLength - sizeof( *p ) ) / sizeof( p->list[0] ) );
 
 	// whether it fails or not, the buy window is closed
@@ -14294,6 +14301,11 @@ void clif_parse_PurchaseReq(int32 fd, map_session_data* sd){
 void clif_parse_PurchaseReq2(int32 fd, map_session_data* sd){
 #if PACKETVER >= 20100105
 	const PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC2* p = reinterpret_cast<PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC2*>( RFIFOP( fd, 0 ) );
+
+	if( sd->npc_id ){ // see clif_parse_PurchaseReq
+		sd->vended_id = 0;
+		return;
+	}
 
 	vending_purchasereq( sd, p->AID, p->UniqueID, (uint8*)p->list, ( p->packetLength - sizeof( *p ) ) / sizeof( p->list[0] ) );
 
@@ -19404,6 +19416,10 @@ static void clif_parse_ReqClickBuyingStore(int32 fd, map_session_data* sd)
 	// TODO: shuffle packet
 	account_id = RFIFOL(fd,packet_db[RFIFOW(fd,0)].pos[0]);
 
+	if( sd->npc_id ){ // using an NPC, as for clif_parse_VendingListReq
+		return;
+	}
+
 	buyingstore_open(sd, account_id);
 }
 
@@ -19452,6 +19468,12 @@ static void clif_parse_ReqTradeBuyingStore( int32 fd, map_session_data* sd ){
 
 	if( packet_len % sizeof( p->items[0] ) ){
 		ShowError( "clif_parse_ReqTradeBuyingStore: Unexpected item list size %u (account_id=%d, buyer_id=%d, block size=%" PRIdPTR ")\n", packet_len, sd->id, p->AID, sizeof( p->items[0] ) );
+		return;
+	}
+
+	// Selling removes inventory items; never while an NPC dialog is paused.
+	if( sd->npc_id ){
+		clif_buyingstore_trade_failed_seller( sd, 5, 0 ); // BUYINGSTORE_TRADE_SELLER_FAILED (buyingstore.cpp)
 		return;
 	}
 

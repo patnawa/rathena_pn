@@ -149,6 +149,13 @@ function	Job_Options	{
 
 // Begin of the NPC
 	mes .NPCName$;
+	// The Druid line has its own level gates (Karnos -> Alitea needs 200/70);
+	// the generic third-class branch below would offer Alitea at 99/50.
+	.@line = eaclass()&EAJ_UPPERMASK;
+	if (.@line == EAJ_DRUID || .@line == EAJ_KARNOS) {
+		mes "The Druid, Karnos and Alitea path is guided by the Druid Mentor in Prontera.";
+		close;
+	}
 	Check_Riding();
 	Check_SkillPoints();
 

@@ -6,7 +6,8 @@ jalbe_in,65,130,0	warp	ep21_door_18533	1,1,jor_albe,87,216
 jalbe_in,73,141,0	warp	ep21_door_18535	1,1,jor_albe,96,237
 jalbe_in,65,153,0	warp	ep21_door_18536	1,1,jalbe_in,65,173
 jalbe_in,65,170,0	warp	ep21_door_18537	1,1,jalbe_in,65,150
-jalbe_in,79,43,0	warp	ep21_door_18539	1,1,jor_albe,118,145
+// 18539/18557 land just outside the #EP21_AlbertaOfficeIn/#EP21_CentralBarrackIn triggers (GimliInfiltration.txt).
+jalbe_in,79,43,0	warp	ep21_door_18539	1,1,jor_albe,118,142
 jalbe_in,63,57,0	warp	ep21_door_18540	1,1,jalbe_in,23,57
 jalbe_in,23,54,0	warp	ep21_door_18541	1,1,jalbe_in,63,54
 jalbe_in,63,30,0	warp	ep21_door_18542	1,1,jalbe_in,65,110
@@ -68,7 +69,7 @@ OnTouch:
 	warp "jalbe_in",117,98;
 	end;
 }
-mbase_in,89,98,0	warp	ep21_door_18557	1,1,jor_mbase,204,192
+mbase_in,89,98,0	warp	ep21_door_18557	1,1,jor_mbase,204,186
 mbase_in,111,128,0	warp	ep21_door_18558	1,1,mbase_in,165,169
 mbase_in,162,169,0	warp	ep21_door_18559	1,1,mbase_in,108,127
 mbase_in,66,114,0	warp	ep21_door_18560	1,1,mbase_in,22,79

@@ -56,11 +56,35 @@ function	script	GNA_Exchange	{
 		mes "You do not have all required materials.";
 		return 0;
 	}
+	// delitem by ID can fall back to a worn or upgraded copy. An equipment base
+	// must be an unequipped, unrefined copy without cards, options or grade.
+	.@base_idx = -1;
+	if (.@base && getiteminfo(.@base,ITEMINFO_TYPE) != IT_CARD) {
+		getinventorylist;
+		for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+			if (@inventorylist_id[.@i] != .@base || @inventorylist_equip[.@i] || @inventorylist_refine[.@i] || @inventorylist_enchantgrade[.@i])
+				continue;
+			if (@inventorylist_card1[.@i] || @inventorylist_card2[.@i] || @inventorylist_card3[.@i] || @inventorylist_card4[.@i])
+				continue;
+			if (@inventorylist_option_id1[.@i] || @inventorylist_option_id2[.@i] || @inventorylist_option_id3[.@i] || @inventorylist_option_id4[.@i] || @inventorylist_option_id5[.@i])
+				continue;
+			.@base_idx = @inventorylist_idx[.@i];
+			break;
+		}
+		if (.@base_idx < 0 || .@base_count != 1) {
+			mes "Bring an unequipped, unrefined "+getitemname(.@base)+" without cards or random options.";
+			return 0;
+		}
+		if (!delitemidx(.@base_idx,1)) {
+			mes "The base equipment could not be taken. Nothing was exchanged.";
+			return 0;
+		}
+	}
 	Zeny -= .@zeny;
 	if (.@coin) delitem 1000316,.@coin;
 	if (.@cert) delitem 1000317,.@cert;
 	if (.@champ) delitem 1000366,.@champ;
-	if (.@base) delitem .@base,.@base_count;
+	if (.@base && .@base_idx < 0) delitem .@base,.@base_count;
 	getitem .@result,1;
 	mes "You received ^3366FF"+getitemname(.@result)+"^000000.";
 	return 1;
@@ -116,7 +140,11 @@ dali02,79,60,4	script	Geffen Night Arena Gate#gna	4_M_GEF_SOLDIER,{
 		close;
 	}
 	.@now = gettimetick(2);
-	.@returning = (.@iid > 0 && GNA_ActiveInstance == .@iid && GNA_ActiveUntil > .@now);
+	// Instance IDs restart after a map-server restart; returning also needs
+	// this live instance's own admission record, not just the saved number.
+	.@returning = 0;
+	if (.@iid > 0 && GNA_ActiveInstance == .@iid && GNA_ActiveUntil > .@now)
+		.@returning = getinstancevar('gna_entered[getcharid(0)],.@iid);
 	if (!.@returning && GNA_Next > .@now) {
 		mes "You may challenge the arena again after the third 04:00 reset.";
 		mes "Remaining: "+((GNA_Next-.@now+59)/60)+" minute(s).";
@@ -168,6 +196,7 @@ dali02,79,60,4	script	Geffen Night Arena Gate#gna	4_M_GEF_SOLDIER,{
 		close;
 	}
 	if (!.@returning) {
+		setinstancevar 'gna_entered[getcharid(0)],1,.@iid;
 		GNA_Next = callfunc("GNA_NextReset");
 		GNA_ActiveInstance = .@iid;
 		GNA_ActiveUntil = .@now + 3600;
@@ -199,7 +228,7 @@ dali02,85,68,4	script	Geffen Arena Quartermaster#gna	4_M_GEF_SOLDIER,{
 			.@menu$ += getitemname(.@result[.@i])+" (base + "+.@cost[.@i]+" coins):";
 		.@pick = select(.@menu$)-1;
 		mes "[Arena Quartermaster]";
-		mes "This consumes one "+getitemname(.@base[.@pick])+". Refine, cards and random options on that copy are not transferred.";
+		mes "This consumes one unequipped, unrefined "+getitemname(.@base[.@pick])+" without cards or random options.";
 		next;
 		if (select("Exchange.:Cancel.") == 2) close;
 		callfunc "GNA_Exchange",.@result[.@pick],0,.@cost[.@pick],0,0,.@base[.@pick],1;

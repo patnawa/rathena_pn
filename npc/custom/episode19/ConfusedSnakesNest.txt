@@ -70,7 +70,7 @@ jor_que,32,37,5	script	Lehar#i19ms21	EP19_RGAN_D,5,5,{
 		mes "[Aurelie]";
 		mes "If you make good use of this... you can put them in one place and process them all at once.";
 		next;
-		cloakoffnpcself( "Horr#i19ms21" );
+		cloakoffnpcself( "Horuru#i19ms21" );
 		mes "[Horr]";
 		mes "That's why I called support.";
 		next;
@@ -111,9 +111,9 @@ jor_que,32,37,5	script	Lehar#i19ms21	EP19_RGAN_D,5,5,{
 		next;
 		mes "[Lehar]";
 		mes "Are you ready? Come in now.";
-		npctalk "Let's see from the inside.", "Horr#i19ms21", bc_self;
+		npctalk "Let's see from the inside.", "Horuru#i19ms21", bc_self;
 		next;
-		cloakonnpcself( "Horr#i19ms21" );
+		cloakonnpcself( "Horuru#i19ms21" );
 		sleep2 500;
 		cloakonnpcself( "Iwin#i19ms21" );
 		cloakonnpcself( "Iwin#i19ms22" );

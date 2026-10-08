@@ -16549,11 +16549,13 @@ prt_pri00,61,136,3	script	Dylan#pa0829	4_CAT_SAILOR5,{
 			close;
 		}
 		mes "[Dylan]";
-		.@success = (rand(1,100) < 80);
-		if (!.@success && !checkweight(6920,15)) {
+		// Check room for the failure outcome before rolling: a check that only
+		// runs on failure lets a full bag cancel every failed attempt for free.
+		if (!checkweight(6920,15)) {
 			mes "Make room for the possible Rune Magic Powder before attempting this reset.";
 			close;
 		}
+		.@success = (rand(1,100) < 80);
 		delitem 6919,10;
 		if (.@success) {
 			if (!resetequipenchants(EQI_ACC_L,28356,

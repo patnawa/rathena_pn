@@ -114,7 +114,10 @@ jor_mbase,310,110,4	script	Nyar#ep21_storage	22006,{
 	.@pick = select("Storage 1.:Storage 2.:Storage 3.:Leave.");
 	if (.@pick == 4) close;
 	close2;
-	openstorage2 .@pick - 1,STOR_MODE_GET|STOR_MODE_PUT;
+	// Storage I-III are pages 0/100/101 in conf/pn_storage.yml; IDs 1 and 2 are undefined.
+	setarray .@storage[1],0,100,101;
+	if (!openstorage2(.@storage[.@pick],STOR_MODE_GET|STOR_MODE_PUT))
+		dispbottom "Storage is busy or unavailable. Close other services and try again.";
 	end;
 }
 

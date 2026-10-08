@@ -61,6 +61,11 @@ function	script	PN_LabChallengeMenu	{
 		@PNLabPendingChallenge=@PNLabChallenge; @PNLabPendingGoal=@PNLabGoal;
 		mes "Your selected target and goal are queued for the next lab console conversation. Visit Damage Lab, enter your private room, then talk to its console to begin.";
 		callfunc "PN_OfficeNavigate","Damage Lab";
+	} else if (!getarg(0,0)) {
+		// Chosen outside the console (e.g. @adventure) while in the room: the console
+		// resets unqueued choices, so queue this one for its next conversation.
+		@PNLabPendingChallenge=@PNLabChallenge; @PNLabPendingGoal=@PNLabGoal;
+		mes "Your selected target and goal are queued. Talk to the lab console in this room to begin.";
 	}
 	return 1;
 }

@@ -11,7 +11,7 @@ Body:
     Flags:
       NoConsume: true
     Script: |
-      callfunc "F_PNInfiniteCatalystBox";
+      addtimer 1,"PN Catalyst Box::OnOpen";
   - Id: 50151
     AegisName: PN_Infinite_Soul_Talisman
     Name: Infinite Soul Talisman (30 Days)

@@ -14506,6 +14506,10 @@ end;
 
 ygg_roots,148,122,5	script	Investigator#ch01_dq1	4_M_REPAIR,{
 	if ( isbegin_quest(24104) == 1 ) {
+		// Per-player 60s hide: a global disablenpc let one click hide it from everyone.
+		if ( isnpccloaked(strnpcinfo(3), getcharid(0)) ) {
+			end;
+		}
 		if ( rand(1,100) > 10 ) {
 			mes "[Investigator]";
 			mes "My investigation is going smoothly.";
@@ -14520,15 +14524,14 @@ ygg_roots,148,122,5	script	Investigator#ch01_dq1	4_M_REPAIR,{
 			mes "- You've found an injured person.";
 			mes "Let's escort them back to the village. -";
 		}
-		disablenpc;
-		initnpctimer;
+		cloaknpc(strnpcinfo(3), true, getcharid(0));
+		addtimer 60000, strnpcinfo(3) + "::OnUncloak";
 		close;
 	}
 	end;
-	
-OnTimer60000:
-	stopnpctimer;
-	enablenpc;
+
+OnUncloak:
+	cloaknpc(strnpcinfo(3), false, getcharid(0));
 end;
 
 OnInit:
@@ -15037,6 +15040,8 @@ ygg_fruit,167,119,3	script	Kafra Employee#ch1	4_F_KAFRA4,{
 				close3;
 			}
 			setcart;
+			if ( checkcart() == true )
+				Zeny -= 700;
 			mes "[Kafra Employee]";
 			mes "Thank you for using the Kafra Services.";
 			close3;
@@ -15412,14 +15417,22 @@ ch1_gef_in,69,175,1	script	Grumbling Patient#rch1_01	4_M_DIEMAN,{
 //= Verus
 hem_dun01,61,197,5	script	Verus Believer#c01ms40	4_M_BELIEVER01,3,3,{
 	if ( isbegin_quest(17926) == 1 ) {
+		// Jeon's task is to hand out the amulets; the hand-in requires one.
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pctalk "I don't have a Purification Amulet to hand out.";
+			end;
+		}
 		pcblock(true);
 		pctalk "I bring good news. This is a holy relic infused with the energy of a new human.";
 		sleep2 500;
 		npctalk "Is there such a thing? Thank you so much.", "", BC_SELF;
 		sleep2 500;
 		pctalk "Be sure to keep it with you at all times. I heard it's very effective.";
-		if ( countitem("Ch1_Purifi_Amulet") )
-			delitem "Ch1_Purifi_Amulet", 1;
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pcblock(false);
+			end;
+		}
+		delitem "Ch1_Purifi_Amulet", 1;
 		erasequest 17926;
 		pcblock(false);
 		CH1_Daily_Jeon_Check();
@@ -15435,17 +15448,25 @@ end;
 
 hem_dun01,139,134,7	script	Verus Believer#c01ms41	4_F_BELIEVER01,{
 	if ( isbegin_quest(17927) == 1 ) {
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pctalk "I don't have a Purification Amulet to hand out.";
+			end;
+		}
 		pcblock(true);
 		pctalk "Have you heard? If you have this with you, you'll receive the blessings of rebirth!";
 		sleep2 500;
 		npctalk "Oooh! Give me one of that!", "", BC_SELF;
 		sleep2 500;
 		pctalk "Here, I hope you receive the blessing!!";
-		if ( countitem("Ch1_Purifi_Amulet") )
-			delitem "Ch1_Purifi_Amulet", 1;
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pcblock(false);
+			end;
+		}
+		delitem "Ch1_Purifi_Amulet", 1;
 		erasequest 17927;
 		pcblock(false);
 		CH1_Daily_Jeon_Check();
+		end;
 	}
 	npctalk "Somehow, I feel today is going to be good.", "", BC_SELF;
 	end;
@@ -15457,14 +15478,21 @@ end;
 
 hem_dun01,76,120,3	script	Verus Believer#c01ms42	4_M_BELIEVER02,{
 	if ( isbegin_quest(17928) == 1 ) {
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pctalk "I don't have a Purification Amulet to hand out.";
+			end;
+		}
 		pcblock(true);
 		pctalk "Have you already got one of these? They say it's a new relic, I got plenty of it. Here, take one.";
 		sleep2 500;
 		npctalk "I'm grateful! Thank you.", "", BC_SELF;
 		sleep2 500;
 		pctalk "Don't mention it. Be sure to keep it with you. Got it?";
-		if ( countitem("Ch1_Purifi_Amulet") )
-			delitem "Ch1_Purifi_Amulet", 1;
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pcblock(false);
+			end;
+		}
+		delitem "Ch1_Purifi_Amulet", 1;
 		erasequest 17928;
 		pcblock(false);
 		CH1_Daily_Jeon_Check();
@@ -15480,14 +15508,21 @@ end;
 
 hem_dun01,151,247,3	script	Verus Believer#c01ms43	4_M_BELIEVER01,{
 	if ( isbegin_quest(17929) == 1 ) {
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pctalk "I don't have a Purification Amulet to hand out.";
+			end;
+		}
 		pcblock(true);
 		pctalk "Have you seen this sacred looking relic? They say new humans used to carry  it.";
 		sleep2 500;
 		npctalk "Give me one! Give me!!!", "", BC_SELF;
 		sleep2 500;
 		pctalk "Okay, here you go. Then, have a nice day.";
-		if ( countitem("Ch1_Purifi_Amulet") )
-			delitem "Ch1_Purifi_Amulet", 1;
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pcblock(false);
+			end;
+		}
+		delitem "Ch1_Purifi_Amulet", 1;
 		erasequest 17929;
 		pcblock(false);
 		CH1_Daily_Jeon_Check();
@@ -15503,14 +15538,21 @@ end;
 
 hem_dun01,215,202,5	script	Verus Believer#c01ms44	4_F_BELIEVER01,{
 	if ( isbegin_quest(17930) == 1 ) {
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pctalk "I don't have a Purification Amulet to hand out.";
+			end;
+		}
 		pcblock(true);
 		pctalk "Take this. It's a holy relic that they're distributing over there.";
 		sleep2 500;
 		npctalk "They're distributing this out? How did I not hear about it?", "", BC_SELF;
 		sleep2 500;
 		pctalk "They only started handing out them today. Then, I'll be off...";
-		if ( countitem("Ch1_Purifi_Amulet") )
-			delitem "Ch1_Purifi_Amulet", 1;
+		if ( countitem("Ch1_Purifi_Amulet") < 1 ) {
+			pcblock(false);
+			end;
+		}
+		delitem "Ch1_Purifi_Amulet", 1;
 		erasequest 17930;
 		pcblock(false);
 		CH1_Daily_Jeon_Check();
@@ -16031,6 +16073,8 @@ ch1_vrgef2,120,62,0	script	Kafra Employee#Ch1Fountain	4_F_KAFRA3,{
 				close3;
 			}
 			setcart;
+			if ( checkcart() == true )
+				Zeny -= 700;
 			mes "[Kafra Employee]";
 			mes "Thank you for using the Kafra Services.";
 			close3;
@@ -17582,13 +17626,10 @@ ch1_vrgef1,138,146,0	script	eventtrigger#EG03	HIDDEN_WARP_NPC,1,1,{
 	end;
 	
 OnInit:
-	.active = false;
+	.active = 0;
 end;
-	
+
 OnTouch:
-	if ( .active ) {
-		end;
-	}
 	if ( isbegin_quest(19240) == 1 ) {
 		pcblock(true);
 		pctalk "Let's leave the Illusion Book.";
@@ -17597,7 +17638,17 @@ OnTouch:
 		pctalk "Is there anything else to see in this room?";
 		end;
 	}
-	.active = true;
+	// Progress the toucher before the shared cutscene, which another player
+	// may already be running or may have abandoned by disconnecting.
+	if ( isbegin_quest(19239) == 1 ) {
+		erasequest 19239;
+		setquest 19240;
+	}
+	// .active holds the cutscene start time; the full scene takes about 62 seconds.
+	if ( .active && gettimetick(2) - .active < 90 ) {
+		end;
+	}
+	.active = gettimetick(2);
 	pcblock(true);
 	sleep2 2000;
 	emotion ET_SURPRISE, getcharid(3);
@@ -17609,10 +17660,6 @@ OnTouch:
 	disablenpc "Doctor#EG03_1";
 	enablenpc "???#EG03";
 	specialeffect EF_MAGICCRASHER2, AREA, "???#EG03";
-	if ( isbegin_quest(19239) == 1 ) {
-		erasequest 19239;
-		setquest 19240;
-	}
 	sleep2 2000;
 	npctalk "???: Grrrr-", "???#EG03";
 	pctalk "A human turned into a monster?! That's terrifying..";
@@ -17664,7 +17711,7 @@ OnTouch:
 	disablenpc "Doctor#EG03_2";
 	disablenpc "Geffen Guard#EG03";
 	sleep 7000;
-	.active = false;
+	.active = 0;
 	enablenpc "Doctor#EG03_1";
 end;
 }

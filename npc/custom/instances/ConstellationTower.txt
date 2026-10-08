@@ -54,6 +54,23 @@ function	script	F_CTScore	{
 	return getarg(0) * 15 + getarg(1) * 20 + getarg(2) * 30 + getarg(3) * 50 + getarg(4) * 85;
 }
 
+// Inventory index of an unequipped, unrefined copy of getarg(0) without cards,
+// random options or enchant grade, or -1. delitem by ID can fall back to a
+// worn or upgraded copy, so base-equipment exchanges delete exactly this one.
+function	script	F_CTower_PlainBase	{
+	getinventorylist;
+	for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
+		if (@inventorylist_id[.@i] != getarg(0) || @inventorylist_equip[.@i] || @inventorylist_refine[.@i] || @inventorylist_enchantgrade[.@i])
+			continue;
+		if (@inventorylist_card1[.@i] || @inventorylist_card2[.@i] || @inventorylist_card3[.@i] || @inventorylist_card4[.@i])
+			continue;
+		if (@inventorylist_option_id1[.@i] || @inventorylist_option_id2[.@i] || @inventorylist_option_id3[.@i] || @inventorylist_option_id4[.@i] || @inventorylist_option_id5[.@i])
+			continue;
+		return @inventorylist_idx[.@i];
+	}
+	return -1;
+}
+
 // The existing GPL Endless Tower Captain Janssen at Alberta 214,77 already
 // charges the official 10,000 Zeny fare and transports players to Misty Island.
 e_tower,83,105,4	script	Oscar#ct_gate	4_ED_OSCAR,{
@@ -212,22 +229,26 @@ e_tower,78,112,4	script	OSC0007#ct_shop	4_ENERGY_BLUE,{
 		if (.@i == 6) close;
 		setarray .@item[0],450169,450170,450171,450172,450173,450174;
 		setarray .@base[0],450168,450168,450167,450167,450166,450166;
-		if (countitem(1000373) < 50 || countitem(1000398 + .@i) < 30 || countitem(1000397) < 10 || countitem(.@base[.@i]) < 1 || !checkweight(.@item[.@i],1)) {
+		.@idx = callfunc("F_CTower_PlainBase",.@base[.@i]);
+		if (countitem(1000373) < 50 || countitem(1000398 + .@i) < 30 || countitem(1000397) < 10 || .@idx < 0 || !checkweight(.@item[.@i],1)) {
 			mes "[OSC0007]";
-			mes "Required: base Faint armor, 50 Fragments, 30 matching Powder, and 10 Betelgeuse Souls.";
+			mes "Required: an unequipped, unrefined base Faint armor without cards or options, 50 Fragments, 30 matching Powder, and 10 Betelgeuse Souls.";
 			close;
 		}
-		delitem .@base[.@i],1; delitem 1000373,50; delitem 1000398 + .@i,30; delitem 1000397,10; getitem .@item[.@i],1; close;
+		if (!delitemidx(.@idx,1)) close;
+		delitem 1000373,50; delitem 1000398 + .@i,30; delitem 1000397,10; getitem .@item[.@i],1; close;
 	case 3:
 		.@i = select("Power.:Stamina.:Concentration.:Creative.:Spell.:Wisdom.:Back.") - 1;
 		if (.@i == 6) close;
 		setarray .@item[0],490132,490133,490134,490135,490136,490137;
-		if (countitem(1000373) < 250 || countitem(1000398 + .@i) < 50 || countitem(1000397) < 20 || countitem(490131) < 1 || !checkweight(.@item[.@i],1)) {
+		.@idx = callfunc("F_CTower_PlainBase",490131);
+		if (countitem(1000373) < 250 || countitem(1000398 + .@i) < 50 || countitem(1000397) < 20 || .@idx < 0 || !checkweight(.@item[.@i],1)) {
 			mes "[OSC0007]";
-			mes "Required: Signet of Star, 250 Fragments, 50 matching Powder, and 20 Betelgeuse Souls.";
+			mes "Required: an unequipped, unrefined Signet of Star without cards or options, 250 Fragments, 50 matching Powder, and 20 Betelgeuse Souls.";
 			close;
 		}
-		delitem 490131,1; delitem 1000373,250; delitem 1000398 + .@i,50; delitem 1000397,20; getitem .@item[.@i],1; close;
+		if (!delitemidx(.@idx,1)) close;
+		delitem 1000373,250; delitem 1000398 + .@i,50; delitem 1000397,20; getitem .@item[.@i],1; close;
 	default:
 		close;
 	}

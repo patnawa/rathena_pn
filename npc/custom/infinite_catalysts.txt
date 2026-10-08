@@ -1,5 +1,17 @@
 // Independently implemented #243 Infinite Catalyst Box 3.
 // Acquisition is deliberately left to existing reward/admin grant systems.
+
+// Item script states are freed as soon as the item script returns, so a menu
+// there can never be answered. The box's item script only schedules this
+// floating NPC event, which runs the dialog as an ordinary NPC conversation.
+-	script	PN Catalyst Box	-1,{
+	end;
+OnOpen:
+	if (!countitem(50150)) end;
+	callfunc "F_PNInfiniteCatalystBox";
+	end;
+}
+
 function	script	F_PNInfiniteCatalystBox	{
 	mes "[Infinite Catalyst Box 3]";
 	mes "Choose one catalyst rental. It lasts 30 days, including time offline.";

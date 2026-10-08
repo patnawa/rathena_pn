@@ -298,9 +298,16 @@ OnStickyDead:
 	mes "[Koko]";
 	mes "Drive away the hostile slugs and rescue the Copos caught in the sticky current.";
 	close2;
+	// Another member may have started the rescue while this dialogue was open.
+	if ('ep20_sticky_stage != 0) end;
 	'ep20_sticky_stage = 1;
 	disablenpc;
 	.@map$ = instance_mapname("1@slug");
+	// Only characters inside when the rescue starts may claim the daily reward;
+	// the roster is keyed by character ID so deaths and re-entry keep eligibility.
+	.@n = getmapunits(BL_PC,.@map$,.@players);
+	for (.@i = 0; .@i < .@n; ++.@i)
+		'ep20_sticky_roster[.@i] = getcharid(0,rid2name(.@players[.@i]));
 	.@event$ = instance_npcname("#EP20_Sticky_Control")+"::OnStickyDead";
 	monster .@map$,0,0,"Melibe Iceslug",21970,6,.@event$;
 	monster .@map$,0,0,"Icebear",21971,6,.@event$;
@@ -318,6 +325,12 @@ OnStickyDead:
 		end;
 	}
 	if (isbegin_quest(11949) == 1 || isbegin_quest(11951) == 1) {
+		if (inarray('ep20_sticky_roster,getcharid(0)) < 0) {
+			mes "Only adventurers present when the rescue began can claim today's Escargo reward.";
+			close2;
+			warp "icecastle",70,213;
+			end;
+		}
 		.@reward = callfunc("EP20_DailyWhiskers",3);
 		if (!callfunc("EP20_CheckReward",.@reward,102566,1)) close;
 		if (isbegin_quest(11949) == 1) completequest 11949;

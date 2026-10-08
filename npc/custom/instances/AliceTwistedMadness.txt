@@ -645,7 +645,9 @@ OnBoss:
 	.@phase = 'alice_boss_phase;
 	.@mob = (.@phase == 1 ? 30239:30250);
 	.@name$ = ('alice_mode == 1 ? "Nightmare Keyholder":(.@phase == 1 ? "Nightmare Keyholder - Melee":(.@phase == 2 ? "Jabberwocky - Magic":"Jabberwocky - Ranged")));
-	'alice_boss_gid = monster(instance_mapname("1@alice_mad"),350,360,.@name$,.@mob,1,instance_npcname("#AliceControl")+"::OnBossDead"+.@phase);
+	// monster returns nothing; read the server-wide $@mobid before anything else spawns.
+	monster instance_mapname("1@alice_mad"),350,360,.@name$,.@mob,1,instance_npcname("#AliceControl")+"::OnBossDead"+.@phase;
+	'alice_boss_gid = $@mobid[0];
 	getunitdata 'alice_boss_gid,.@unit;
 	.@mode = .@unit[UMOB_MODE] & ~(MD_IGNOREMELEE|MD_IGNOREMAGIC|MD_IGNORERANGED|MD_IGNOREMISC);
 	if ('alice_mode == 2) {

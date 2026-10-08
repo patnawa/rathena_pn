@@ -71,6 +71,7 @@ TESTS = (
     'alice_database_test.py',
     'kro_285_progression_test.py',
     'instance_combat_rules_test.py',
+    'npc_audit_20261008_test.py',
 )
 FULL_TESTS = (
     'mail_delivery_native_test.py',

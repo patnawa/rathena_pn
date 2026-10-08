@@ -42,6 +42,10 @@ function	script	PN_WeeklyHunt	{
 	callfunc "PN_WeeklyReset";
 	.@map$ = getarg(0);
 	if (compare(.@map$,"guild_vs1") || compare(.@map$,"pn_")) return;
+	// Instance copies are named "NNNN#NNNN", so also exclude the owner's private
+	// guild_vs1 room (Damage Lab or Weekly Expedition).
+	.@room = instance_id(IM_CHAR);
+	if (.@room > 0 && .@map$ == instance_mapname("guild_vs1",.@room)) return;
 	PNWeeklyKills = min(50,PNWeeklyKills+1);
 	switch (PNWeeklyWeek % 3) {
 	case 0: .@region$="pay_fild"; break;

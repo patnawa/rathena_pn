@@ -152,6 +152,11 @@ OnStoryBossDead:
 OnRepeatStart:
 	if ('fb_stage != 10) end;
 	.@map$ = instance_mapname("1@ep21b");
+	// Only characters inside when the battle starts may claim its rewards;
+	// the roster is keyed by character ID so deaths and re-entry keep eligibility.
+	.@n = getmapunits(BL_PC,.@map$,.@players);
+	for (.@i = 0; .@i < .@n; ++.@i)
+		'fb_roster[.@i] = getcharid(0,rid2name(.@players[.@i]));
 	.@event$ = instance_npcname(strnpcinfo(0)) + "::OnRepeatBossDead";
 	.@mob = ('fb_kind == 3) ? 22410 : 22373;
 	monster .@map$,168,170,"Encroached Tan",.@mob,1,.@event$;
@@ -324,6 +329,9 @@ OnRepeatBossDead:
 
 1@ep21b,164,170,4	script(DISABLED)	Giant Serpent Crystal#ep21_fb	22374,{
 	if ('fb_stage != 20) end;
+	if (inarray('fb_roster,getcharid(0)) < 0) {
+		mes "[Giant Serpent Crystal]"; mes "Only challengers present when the battle began can extract this crystal."; close;
+	}
 	.@key = callfunc("EP21_DailyKey");
 	if (EP21_FB_Crystal_Daily == .@key) {
 		mes "[Giant Serpent Crystal]"; mes "You already extracted this crystal's loot."; close;
@@ -388,6 +396,9 @@ OnRepeatBossDead:
 
 1@ep21b,164,170,4	script(DISABLED)	Giant Serpent Crystal#ep21_fb_hard	22411,{
 	if ('fb_stage != 20) end;
+	if (inarray('fb_roster,getcharid(0)) < 0) {
+		mes "[Giant Serpent Crystal]"; mes "Only challengers present when the battle began can extract this crystal."; close;
+	}
 	.@key = callfunc("EP21_DailyKey");
 	if (EP21_FB_Crystal_Daily == .@key) {
 		mes "[Giant Serpent Crystal]"; mes "You already extracted this crystal's loot."; close;
@@ -454,6 +465,12 @@ OnRepeatBossDead:
 1@ep21b,172,170,4	script(DISABLED)	Nyar#ep21_fb_reward	22006,{
 	if ('fb_stage != 20) end;
 	mes "[Nyar]";
+	if (inarray('fb_roster,getcharid(0)) < 0) {
+		mes "Only challengers present when the battle began can claim this memory's reward.";
+		close2;
+		enablenpc instance_npcname("#EP21_FB_DailyExit");
+		end;
+	}
 	.@key = callfunc("EP21_DailyKey");
 	if (EP21_FinalBattle_Daily == .@key) {
 		mes "You already claimed today's completion reward.";

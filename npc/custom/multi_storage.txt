@@ -39,8 +39,11 @@ function	script	PN_StorageUnlock	{
 	if (Zeny<pnstorageprice()) { mes "You need 50,000,000 zeny in your character wallet.";next;return; }
 	if (!pnstorageunlock(.@id)) { mes "The page could not be unlocked. Check your funds and close other services.";next;return; }
 	mes "Saving your expansion. Please wait.";
-	while (pnstoragepending()) sleep2 100;
+	// Wait about 10 seconds at most. The native commit keeps retrying and holds
+	// the transaction lock, so leaving the dialog does not abandon the save.
+	for (.@wait=0; .@wait<100 && pnstoragepending(); .@wait++) sleep2 100;
 	if (pnstorageavailable(.@id)) mes "Your storage page is now unlocked.";
+	else if (pnstoragepending()) mes "The server is still confirming your expansion. The page unlocks automatically once it is saved; check again shortly.";
 	else mes "The page is still locked. Please try again.";
 	next;
 	return;

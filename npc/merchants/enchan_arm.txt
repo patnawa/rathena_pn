@@ -125,8 +125,13 @@ S_EnchantArmor:
 			mes "This service cannot accept bound, rental, favorite, damaged, graded or random-option equipment.";
 			close;
 		}
+		// Delete the validated record itself; delitem by ID may pick another copy.
+		if (!delitemidx(.@index,1)) {
+			mes "[Apprentice Craftsman]";
+			mes "Nothing was charged. Please bring one unequipped, identified armor and 400,000 Zeny.";
+			close;
+		}
 		set Zeny, Zeny-400000;
-		delitem .@itemid,1;
 		switch (rand(1,.@failrate)) {
 			case 1: set .@addpart,4702;break;
 			case 2: set .@addpart,4712;break;

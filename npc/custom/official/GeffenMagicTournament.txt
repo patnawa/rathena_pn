@@ -1467,6 +1467,11 @@ OnInstanceInit:
 				"Geffen Festivities.";
 				close2;
 				cutin "",255;
+				// Recheck after the dialogue pauses; getitem fails silently when full.
+				if (!checkweight(6671,.@reward_amount)) {
+					dispbottom "Please make room in your inventory, then talk to the Tournament Guide again to receive your tournament coins.";
+					end;
+				}
 				getitem 6671,.@reward_amount;
 				GMTRewardClaimed = 1;
 				warp instance_mapname("1@gef"), 120,35;
@@ -1503,6 +1508,11 @@ OnInstanceInit:
 					mes .@n$;
 					mes "The "+callfunc("F_GetNumSuffix",('GMT_1QUE-9))+" match of Group A is about to begin!";
 					close2;
+					// Recheck after the dialogue pauses; getitem fails silently when full.
+					if (!checkweight(6671,.@reward_amount)) {
+						dispbottom "Please make room in your inventory, then talk to the Tournament Guide again to start the next match.";
+						end;
+					}
 					getitem 6671,.@reward_amount;
 					hideonnpc instance_npcname("Tournament Healer#1");
 					
@@ -2130,7 +2140,7 @@ OnTimeout2:
 	setcell instance_mapname("1@ge_st"), 50, 50, 50, 50, cell_walkable, 1;
 	if (unitexists('BossID))
 		unitwarp 'BossID, instance_mapname("1@ge_st"), 50, 50;
-	killmonster instance_mapname("1@ge_st"), instance_npcname("#GMTcontroller")+"::OnTimeout";
+	killmonster instance_mapname("1@ge_st"), instance_npcname("#GMTcontroller")+"::OnMobDead";
 	'BossID = 0;
 	
 	if ('HomID) {
@@ -4440,12 +4450,12 @@ OnMobKilled:
 		specialeffect EF_POTION_BERSERK, AREA, instance_npcname("Geffen Bully#2");
 		specialeffect EF_POTION_BERSERK, AREA, instance_npcname("Geffen Bully#3");
 		
-		$gmt_timer_evt2 = -1;
-		
-		while($gmt_timer_evt2 < 50) {
-			$gmt_timer_evt2++;
-			
-			switch($gmt_timer_evt2) {
+		.@gmt_timer_evt2 = -1;
+
+		while(.@gmt_timer_evt2 < 50) {
+			.@gmt_timer_evt2++;
+
+			switch(.@gmt_timer_evt2) {
 				case 0:
 					npctalk "Geffen Bully : He has surprisingly good skills.", instance_npcname("Geffen Bully#1");
 					npctalk "Geffen Bully : This isn't good...", instance_npcname("Geffen Bully#2");
@@ -4599,9 +4609,9 @@ OnMobKilled:
 					sleep2 1000;
 					hideonnpc instance_npcname("Magic Academy Student#11");
 					sleep2 3000;
-					unittalk $gmt_account_id, "It was fun meeting Fenrir.";
+					unittalk 'gmt_account_id, "It was fun meeting Fenrir.";
 					sleep2 2000;
-					unittalk $gmt_account_id, "I should register for the Magic Tournament.";
+					unittalk 'gmt_account_id, "I should register for the Magic Tournament.";
 					end;
 			}
 			

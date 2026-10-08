@@ -561,7 +561,7 @@ end;
 		}
 		erasequest 12664;
 		setquest 12665;
-		getitem 1001972,20;
+		callfunc "F_CH1_GiveReward",1001972,20;
 		getexp 326523723, 12000000;
 		open_quest_ui 12665;
 		close3;
@@ -1057,19 +1057,27 @@ end;
 			mes "Make room for the complete reward before I record this clearance.";
 			close;
 		}
-		if ( CH1_RDW < 4 ) {
-			next;
+		// No pause from the capacity check through the grants. The clear is only
+		// recorded once the box arrived; Root Coins are queued if delivery fails.
+		if ( .@reward_item[1] ) {
+			.@before = countitem(.@reward_item[1]);
+			getitem .@reward_item[1], 1;
+			if ( countitem(.@reward_item[1]) <= .@before ) {
+				next;
+				mes "[Wizard Professor]";
+				mes "Make room for the complete reward before I record this clearance.";
+				close;
+			}
+		}
+		callfunc "F_CH1_GiveReward",1001972,10;
+		erasequest 12662;
+		// Level N is selectable once CH1_RDW >= N - 1; only a clear at or above
+		// the highest unlocked level unlocks the next one.
+		if ( CH1_RDW < 4 && .@level > CH1_RDW ) {
 			CH1_RDW++;
+			next;
 			mes "[Wizard Professor]";
 			mes "It seems like a good time to move on to the next level now. I have unlocked ^0000cdlevel " + (CH1_RDW + 1) + "^000000 for you.";
-		}
-		erasequest 12662;
-		getitem "Ch1_Root_Coin", 10;
-		switch ( .@level ) {
-			case 2: getitem "Ch1_MD_Reward_1", 1; break;
-			case 3: getitem "Ch1_MD_Reward_2", 1; break;
-			case 4: getitem "Ch1_MD_Reward_3", 1; break;
-			case 5: getitem "Ch1_MD_Reward_4", 1; break;
 		}
 		close;
 	}
@@ -1114,10 +1122,8 @@ OnTimer1000:
 	}
 	.@map$ = get_instance_var("map$");
 	.@count = get_instance_var("player_count");
-	if ( getmapusers(.@map$) != .@count ) {
-		instance_event(strnpcinfo(0), "OnCount", false);
-		end;
-	}
+	// A user-count mismatch used to jump to a missing OnCount label and stop
+	// all fail checks; the per-member loop below handles absent members.
 	if ( !boss_exist() ) {
 		end;
 	}
@@ -1125,7 +1131,8 @@ OnTimer1000:
 		while ( !attachrid(get_instance_var("aid_" + .@i)) ) {
 			instance_announce instance_id(), "A player died/left the dungeon, the attack will fail in " + get_instance_var("fail_tick") + " turn.", BC_MAP;
 			set_instance_var("fail_tick", get_instance_var("fail_tick") - 1);
-			sleep2 1000;
+			// sleep2 needs an attached unit; an offline member has none to keep.
+			sleep 1000;
 			if ( !boss_exist() ) {
 				end;
 			}

@@ -50,18 +50,30 @@ alberta,214,74,4	script	Leticia#sunken_tower	4_4JOB_LETICIA,{
 	if (.@iid && instance_live_info(ILI_NAME, .@iid) == .@instance$) {
 		switch(select("Enter the reserved tower.:Review the rules.:Cancel.")) {
 		case 1:
-			if (.@rank < 0) {
+			// A registered member may rejoin a started run after levelling out
+			// of its rank band; the advance gate waits for every registered member.
+			.@returning = false;
+			if (getinstancevar('started, .@iid) && SunkenTower_ActiveInstance == .@iid) {
+				.@members = getinstancevar('member_count, .@iid);
+				for (.@i = 0; .@i < .@members; ++.@i) {
+					if (getinstancevar('member_cid[.@i], .@iid) == getcharid(0)) {
+						.@returning = true;
+						break;
+					}
+				}
+			}
+			if (!.@returning && .@rank < 0) {
 				mes "[Leticia]";
 				mes "The tower accepts only adventurers from base level 40 through 249.";
 				close;
 			}
-			if (.@rank != getinstancevar('rank, .@iid)) {
+			if (!.@returning && .@rank != getinstancevar('rank, .@iid)) {
 				mes "[Leticia]";
 				mes "Your current level no longer matches this reservation's rank.";
 				close;
 			}
 			if (getinstancevar('started, .@iid)) {
-				if (SunkenTower_ActiveInstance != .@iid) {
+				if (!.@returning) {
 					mes "[Leticia]";
 					mes "The expedition has already begun. Only its registered members may re-enter.";
 					close;

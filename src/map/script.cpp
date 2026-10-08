@@ -8655,6 +8655,11 @@ static bool buildin_delitem_search(map_session_data* sd, struct item* it, uint8 
 		}
 		else
 		{// get rid of the items now
+			// pc_delitem/pc_cart_delitem silently refuse while a transaction
+			// save is pending; report failure instead of a deletion that never
+			// happened, so the caller ends the script before granting anything.
+			if( ( loc == TABLE_INVENTORY || loc == TABLE_CART ) && pc_transaction_locked(sd) )
+				return false;
 			delete_items = true;
 		}
 	}
@@ -24319,9 +24324,16 @@ BUILDIN_FUNC(consumeitem)
 
 	// Set the item id to the item id of the script that will be executed (needed for announcement of group containers for example)
 	sd->itemid = item_data->nameid;
+	const bool menu_pending = sd->state.menu_or_input;
 	run_script( item_data->script, 0, sd->id, 0 );
 
 	if( sd->st != nullptr ){
+		// As in pc_useitem: a menu/input opened by the freed item script must not
+		// answer the caller's next select or input.
+		if( !menu_pending ){
+			sd->state.menu_or_input = 0;
+			sd->npc_menu = 0;
+		}
 		script_free_state( sd->st );
 		sd->st = nullptr;
 	}

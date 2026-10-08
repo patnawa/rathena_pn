@@ -229,6 +229,10 @@ mbase_in,120,186,4	script	Reinhardt#ep21gimli_report	22304,{
 	}
 	mes "The cult changed its sea route because a ghostly Walter vessel kept sinking its ships. Maristella must hear this in Alberta.";
 	changequest 17768,17769;
+	if (isbegin_quest(17768) || isbegin_quest(17769) != 1) {
+		mes "Your report could not be recorded. Please try again.";
+		close;
+	}
 	getitem 1001618,30;
 	callfunc "EP21_AddReputation",30;
 	getexp 547793770,239980220;
@@ -244,11 +248,21 @@ OnInit:
 jalbe_in,68,46,4	script	Maristella Walter#ep21gimli_report	22306,{
 	mes "[Maristella Walter]";
 	if (isbegin_quest(17756) == 1) {
+		if (isbegin_quest(17757)) {
+			// A restarted chain cannot report the manifest twice.
+			erasequest 17756;
+			mes "You already delivered this manifest. Report to Ivan.";
+			close;
+		}
 		if (!checkweight(1001618,10)) {
 			mes "Make room for ten Wigner vouchers first.";
 			close;
 		}
 		changequest 17756,17757;
+		if (isbegin_quest(17756) || isbegin_quest(17757) != 1) {
+			mes "Your report could not be recorded. Please try again.";
+			close;
+		}
 		getitem 1001618,10;
 		callfunc "EP21_AddReputation",5;
 		mes "This manifest proves the cult fears a Walter ghost ship. Reward: 10 vouchers and 5 reputation. Report to Ivan.";

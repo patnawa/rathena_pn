@@ -74,7 +74,7 @@ WORLD=r"""
       auto* p=bio_nick(script_getstr(st,6),false);boundary(p!=nullptr,"map lookup only online member");auto loc=locations[p->id];auto* d=script_getdata(st,2);set_reg_str(st,nullptr,reference_getuid(d),get_str(reference_getid(d)),loc.map.c_str(),reference_getref(d));av(st,3,0,loc.x);av(st,4,0,loc.y);script_pushint(st,0);
     } else if(command=="warp"){
       int cid=script_hasdata(st,5)?script_getnum(st,5):0;auto* p=cid?bio_char(cid):bio_char(st->rid-99000010+100);boundary(p!=nullptr,"warp targets online character");Move m{p->id,script_getstr(st,2),script_getnum(st,3),script_getnum(st,4)};moves.push_back(m);locations[p->id]=m;
-    } else if(command=="monster"){spawned+=script_getnum(st,7);live_mobs[script_getstr(st,8)]+=script_getnum(st,7);script_pushint(st,90000000+spawned);}
+    } else if(command=="monster"){/* Like the native command: no return value; each GID goes to server-wide $@mobid[i]. */int n=script_getnum(st,7);for(int i=0;i<n;++i)server_registers[reference_uid(add_str("$@mobid"),i)]=90000001+spawned+i;spawned+=n;live_mobs[script_getstr(st,8)]+=n;}
     else if(command=="mobcount")script_pushint(st,live_mobs[script_getstr(st,3)]);
     else if(command=="getunitdata")av(st,3,UMOB_MODE,MD_CANMOVE|MD_CANATTACK|MD_AGGRESSIVE);
     else if(command=="setunitdata")changes.emplace_back(script_getnum(st,2),script_getnum(st,3),script_getnum64(st,4));

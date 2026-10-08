@@ -129,16 +129,21 @@ OnPCLoginEvent:
 	.@name$ = instance_live_info(ILI_NAME,.@iid);
 	// rAthena evaluates both sides of logical operators. Validate the live
 	// instance before getinstancevar so a stale ID can never reach that command.
-	if (.@name$ != "Wave Mode - Forest" && .@name$ != "Wave Mode - Sky") {
-		callfunc "F_WaveModeReturn";
-		end;
-	}
-	if (instance_live_info(ILI_OWNER,.@iid) != getcharid(1)) {
-		callfunc "F_WaveModeReturn";
-		end;
-	}
+	if (.@name$ != "Wave Mode - Forest" && .@name$ != "Wave Mode - Sky")
+		goto L_Stale;
+	if (instance_live_info(ILI_OWNER,.@iid) != getcharid(1))
+		goto L_Stale;
 	if (getinstancevar('run_token,.@iid) == WaveMode_ActiveToken)
 		end;
+L_Stale:
+	// Never move a jailed character (or one on a no-warp map); only drop the record.
+	if (getstatus(SC_JAILED) || getmapflag(strcharinfo(3),MF_NOWARP)) {
+		wave_mode_map$ = "";
+		wave_mode_x = wave_mode_y = 0;
+		WaveMode_ActiveInstance = 0;
+		WaveMode_ActiveToken = 0;
+		end;
+	}
 	callfunc "F_WaveModeReturn";
 	end;
 }

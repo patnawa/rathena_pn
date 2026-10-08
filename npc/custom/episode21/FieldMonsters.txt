@@ -13,6 +13,8 @@
 //===== Description: =========================================
 //= The class-to-map roster, population counts and instant respawn behavior
 //= follow the current kRO map data. Drop rates remain controlled by mob_db.
+//= The five floor MVPs carry MVP drop tables, so they use an explicit
+//= 120 +/- 10 minute respawn instead of the 5-second spawn-line default.
 //============================================================
 
 // Northern Rising Land
@@ -30,7 +32,7 @@ jor_raise2,0,0	monster	Seawind	22313,100
 jor_raise2,0,0	monster	Ice Seahorse	22318,130
 jor_raise2,0,0	monster	Skipskipper	22319,130
 jor_raise2,0,0	monster	Cliolima	22320,100
-jor_raise2,0,0	boss_monster	Icehorn	22362,1
+jor_raise2,0,0	boss_monster	Icehorn	22362,1,7200000,600000
 
 // Jornville
 jor_base,0,0	monster	Seawind	22313,50
@@ -50,7 +52,7 @@ jor_tmple1,0,0	monster	Yormi Missionary	22354,75
 jor_tmple1,0,0	monster	Yordos Investigator	22355,20
 jor_tmple1,0,0	monster	Yordos Judge	22356,20
 jor_tmple1,0,0	monster	Yordos Executor	22357,20
-jor_tmple1,0,0	boss_monster	Yortus Arbiter	22363,1
+jor_tmple1,0,0	boss_monster	Yortus Arbiter	22363,1,7200000,600000
 
 // Jormungandr Church Temple, second floor
 jor_tmple2,0,0	monster	Yordos Investigator	22355,80
@@ -60,7 +62,7 @@ jor_tmple2,0,0	monster	Yoscopus Guardian	22358,70
 jor_tmple2,0,0	monster	Yoscopus Sorcerer	22359,70
 jor_tmple2,0,0	monster	Yortus Bishop	22360,60
 jor_tmple2,0,0	monster	Yortus Conjurator	22361,60
-jor_tmple2,0,0	boss_monster	Yortus Bailiff	22364,1
+jor_tmple2,0,0	boss_monster	Yortus Bailiff	22364,1,7200000,600000
 
 // Yorscalp annex
 // The current kRO map data exposes exact populations and immediate respawns:
@@ -76,7 +78,7 @@ jor_sklf1,0,0	monster	Awakened Jordos Judge	22415,100
 jor_sklf1,0,0	monster	Awakened J. Executioner	22414,100
 jor_sklf1,0,0	monster	Awaked Jormi	22417,100
 jor_sklf1,0,0	monster	Awaked Jormi Evangelist	22418,100
-jor_sklf1,0,0	boss_monster	Jortus Judge	22421,1
+jor_sklf1,0,0	boss_monster	Jortus Judge	22421,1,7200000,600000
 
 // Yorscalp second floor (recommended level 250)
 jor_sklf2,0,0	monster	Awakened J. Guardian	22419,100
@@ -86,4 +88,4 @@ jor_sklf2,0,0	monster	Awakened Jortus Warlock	22413,100
 jor_sklf2,0,0	monster	Awakened J. Executioner	22414,35
 jor_sklf2,0,0	monster	Awakened Jordos Judge	22415,35
 jor_sklf2,0,0	monster	Awakened J. Inquisitor	22416,35
-jor_sklf2,0,0	boss_monster	Jortus Executioner	22422,1
+jor_sklf2,0,0	boss_monster	Jortus Executioner	22422,1,7200000,600000

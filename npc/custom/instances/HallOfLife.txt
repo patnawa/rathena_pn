@@ -256,15 +256,23 @@ t_garden,172,235,2	script	Hall of Life#pn_hol	GATE_SKYBLUE,{
 	if (select("Use one Hall Key and reserve.:Cancel.") == 2)
 		close;
 
+	// Cart transfers remain possible while the menu is open: recheck, then
+	// consume the key before the reservation exists and refund a failed one.
+	if (countitem(1001415) < 1) {
+		mes "[Hall of Life]";
+		mes "The party leader needs one " + mesitemlink(1001415) + ".";
+		close;
+	}
+	delitem 1001415, 1;
 	.@created = instance_create(.@instance$);
 	if (.@created < 1) {
+		getitem 1001415, 1;
 		mes "[Hall of Life]";
-		mes "Reservation failed (code " + .@created + ").";
+		mes "Reservation failed (code " + .@created + "). Your Hall Key was returned.";
 		close;
 	}
 	setinstancevar 'party_id, getcharid(1), .@created;
 	setinstancevar 'leader_aid, getcharid(3), .@created;
-	delitem 1001415, 1;
 	mes "[Hall of Life]";
 	mes "The Hall is reserved for 60 minutes. Speak to the gate again to enter.";
 	close;

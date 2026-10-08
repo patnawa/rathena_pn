@@ -1172,7 +1172,6 @@ aldeba_in,79,161,7	script	Kafra Employee#reserve1	4_F_KAFRA3,{
 					mes "a number from 1 to 5.";
 					next;
 				}
-				.@choose_prize = rand(1,20);
 				while( .@input != .@random_while ) {
 					.@sound_word = rand(1,3);
 					if (.@sound_word == 1) {
@@ -1192,18 +1191,30 @@ aldeba_in,79,161,7	script	Kafra Employee#reserve1	4_F_KAFRA3,{
 				}
 				// Deliver before the reveal dialog. A disconnect during any later
 				// pause cannot consume points without delivering the prize.
+				// A failed grant spends nothing, so every prize must fit before the
+				// roll, and nothing may pause between the roll and the grant.
 				if (.@choose_sub_select == 0) {
-					if (.@choose_prize <= 10) { .@prize_id = 516; .@prize_amount = 100; }
-					else if (.@choose_prize <= 15) { .@prize_id = 602; .@prize_amount = 4; }
-					else if (.@choose_prize <= 19) { .@prize_id = 2403; .@prize_amount = 1; }
-					else { .@prize_id = 2328; .@prize_amount = 1; }
+					setarray .@table_id[0],516,602,2403,2328;
+					setarray .@table_amount[0],100,4,1,1;
 				}
 				else {
-					if (.@choose_prize <= 10) { .@prize_id = 501; .@prize_amount = 100; }
-					else if (.@choose_prize <= 16) { .@prize_id = 2201; .@prize_amount = 1; }
-					else if (.@choose_prize <= 19) { .@prize_id = 2226; .@prize_amount = 1; }
-					else { .@prize_id = 505; .@prize_amount = 3; }
+					setarray .@table_id[0],501,2201,2226,505;
+					setarray .@table_amount[0],100,1,1,3;
 				}
+				for (.@k = 0; .@k < 4; ++.@k) {
+					if (!callfunc("F_ReserveLotteryGrant",.@select_price[.@index_points],.@table_id[.@k],.@table_amount[.@k],0,0,1)) {
+						mes "[Kafra Employee]";
+						mes "Please make room in your inventory for every possible prize, then try again. No points were spent.";
+						close;
+					}
+				}
+				.@choose_prize = rand(1,20);
+				if (.@choose_sub_select == 0)
+					.@k = (.@choose_prize <= 10 ? 0 : (.@choose_prize <= 15 ? 1 : (.@choose_prize <= 19 ? 2 : 3)));
+				else
+					.@k = (.@choose_prize <= 10 ? 0 : (.@choose_prize <= 16 ? 1 : (.@choose_prize <= 19 ? 2 : 3)));
+				.@prize_id = .@table_id[.@k];
+				.@prize_amount = .@table_amount[.@k];
 				if (!callfunc("F_ReserveLotteryGrant",.@select_price[.@index_points],.@prize_id,.@prize_amount)) {
 					mes "Your points or inventory changed. No points were spent; please make room and try again.";
 					close;
@@ -1391,27 +1402,39 @@ aldeba_in,88,161,3	script	Kafra Employee#reserve2	4_F_KAFRA3,{
 			mes "^FF0000Oh, my goodness! It's!!^000000";
 			next;
 			mes "[Kafra Employee]";
-			.@choose_prize = rand(1,20);
-			.@prize_id2 = 0;
-			.@prize_amount2 = 0;
+			// Prize table for the 4th, 3rd, 2nd and 1st prizes of the chosen chance.
 			if (.@s == 1) {
-				if (.@choose_prize < 15) { .@prize_id = 501; .@prize_amount = 150; }
-				else if (.@choose_prize < 18) { .@prize_id = 645; .@prize_amount = 15; }
-				else if (.@choose_prize < 20) { .@prize_id = 505; .@prize_amount = 3; }
-				else { .@prize_id = 608; .@prize_amount = 1; }
+				setarray .@table_id[0],501,645,505,608;
+				setarray .@table_amount[0],150,15,3,1;
+				setarray .@table_id2[0],0,0,0,0;
+				setarray .@table_amount2[0],0,0,0,0;
 			}
 			else if (.@s == 2) {
-				if (.@choose_prize < 15) { .@prize_id = 504; .@prize_amount = 10; }
-				else if (.@choose_prize < 18) { .@prize_id = 656; .@prize_amount = 15; }
-				else if (.@choose_prize < 20) { .@prize_id = 657; .@prize_amount = 10; }
-				else { .@prize_id = 608; .@prize_amount = 1; .@prize_id2 = 607; .@prize_amount2 = 1; }
+				setarray .@table_id[0],504,656,657,608;
+				setarray .@table_amount[0],10,15,10,1;
+				setarray .@table_id2[0],0,0,0,607;
+				setarray .@table_amount2[0],0,0,0,1;
 			}
 			else {
-				if (.@choose_prize < 15) { .@prize_id = 504; .@prize_amount = 30; }
-				else if (.@choose_prize < 18) { .@prize_id = 505; .@prize_amount = 10; }
-				else if (.@choose_prize < 20) { .@prize_id = 608; .@prize_amount = 1; .@prize_id2 = 526; .@prize_amount2 = 10; }
-				else { .@prize_id = 607; .@prize_amount = 3; .@prize_id2 = 608; .@prize_amount2 = 2; }
+				setarray .@table_id[0],504,505,608,607;
+				setarray .@table_amount[0],30,10,1,3;
+				setarray .@table_id2[0],0,0,526,608;
+				setarray .@table_amount2[0],0,0,10,2;
 			}
+			// A failed grant spends nothing, so a prize that does not fit must be
+			// refused before the roll; otherwise a full bag rerolls for free.
+			for (.@k = 0; .@k < 4; ++.@k) {
+				if (!callfunc("F_ReserveLotteryGrant",.@points[.@s],.@table_id[.@k],.@table_amount[.@k],.@table_id2[.@k],.@table_amount2[.@k],1)) {
+					mes "Please make room in your inventory for every possible prize, then try again. No points were spent.";
+					close;
+				}
+			}
+			.@choose_prize = rand(1,20);
+			.@k = (.@choose_prize < 15 ? 0 : (.@choose_prize < 18 ? 1 : (.@choose_prize < 20 ? 2 : 3)));
+			.@prize_id = .@table_id[.@k];
+			.@prize_amount = .@table_amount[.@k];
+			.@prize_id2 = .@table_id2[.@k];
+			.@prize_amount2 = .@table_amount2[.@k];
 			if (!callfunc("F_ReserveLotteryGrant",.@points[.@s],.@prize_id,.@prize_amount,.@prize_id2,.@prize_amount2)) {
 				mes "Your points or inventory changed. No points were spent; please make room and try again.";
 				close;
@@ -1537,12 +1560,14 @@ aldeba_in,88,161,3	script	Kafra Employee#reserve2	4_F_KAFRA3,{
 
 // Preflight the complete reward, then wait for the durable inventory/point commit.
 // No confirmation or success message is shown until the character server ACKs.
+// With a true sixth argument, only the preflight runs and nothing is purchased.
 function	script	F_ReserveLotteryGrant	{
 	.@price = getarg(0);
 	.@id1 = getarg(1);
 	.@amount1 = getarg(2);
 	.@id2 = getarg(3,0);
 	.@amount2 = getarg(4,0);
+	.@check_only = getarg(5,0);
 	if (.@price < 1 || RESRVPTS < .@price || .@amount1 < 1 || .@amount1 > 30000)
 		return false;
 	if ((.@id2 == 0) != (.@amount2 == 0) || .@amount2 < 0 || .@amount2 > 30000 || .@id1 == .@id2)
@@ -1590,6 +1615,8 @@ function	script	F_ReserveLotteryGrant	{
 	}
 	if (Weight + .@total_weight > MaxWeight || .@occupied + .@needed > .@slots)
 		return false;
+	if (.@check_only)
+		return true;
 	if (!reservepurchase(.@price,.@id1,.@amount1,.@id2,.@amount2)) return false;
 	// The character server commits points, both rewards and the receipt together.
 	// The existing save lock also survives disconnects and retries the same ID.

@@ -141,6 +141,8 @@ OnInit:
 	mes "Level "+.@level+" multiplies every monster's attack, raises boss HP and regeneration, and improves all rewards.";
 	next;
 	if (select("Begin level "+.@level+".:Reconsider.") == 2) close;
+	// Another member may have started, or leadership changed, during the menus.
+	if ('ogh_stage || (getcharid(1) && !is_party_leader())) close;
 	'ogh_level = .@level;
 	'ogh_stage = 1;
 	'ogh_left_kills = 0; 'ogh_right_kills = 0;
@@ -435,8 +437,13 @@ L_SpawnSlaves:
 
 1@gl_he,160,282,4	script(DISABLED)	Oscar#oghcm_reward	4_ED_OSCAR,{
 	if ('ogh_stage != 4) end;
-	if (#OGHCM_OscarToken$ == 'ogh_token$) {
+	// The account token holds one value, so two characters alternating between
+	// their own instances could reset it. Record claims inside the instance too.
+	if (#OGHCM_OscarToken$ == 'ogh_token$ || 'ogh_oscar_claimed[getcharid(3)]) {
 		mes "[Oscar]"; mes "This account already recorded the result of this distortion."; close;
+	}
+	if (!'ogh_entered[getcharid(0)]) {
+		mes "[Oscar]"; mes "Only adventurers admitted through the distortion can record its result."; close;
 	}
 	setarray .@min_a[1],1,1,1,1,2,2,2,3,3,3;
 	setarray .@max_a[1],1,2,3,4,5,6,7,8,9,10;
@@ -457,6 +464,7 @@ L_SpawnSlaves:
 	if (!checkweight2(.@reward_item,.@reward_amount)) {
 		mes "[Oscar]"; mes "Make room for your performance rewards first."; close;
 	}
+	'ogh_oscar_claimed[getcharid(3)] = 1;
 	#OGHCM_OscarToken$ = 'ogh_token$;
 	#OGHCM_Points += 'ogh_level;
 	getitem 25864,.@sealed;
@@ -688,7 +696,12 @@ glast_01,137,291,4	script	OSC0005#oghcm	4_ED_OSCAR,{
 		.@old_enchant = .@card[1];
 		.@card[1] = .@special[select(.@menu$)-1];
 		if (getequipid(EQI_HEAD_TOP) != .@item) close;
-		Zeny -= 5000000; delitem 25866,40;
+		// The menu yields: recheck the fee, and stop if the charge did not apply.
+		if (countitem(25866) < 40 || Zeny < 5000000) { mes "This requires 5,000,000 zeny and 40 Temporal Spells."; close; }
+		.@zeny_before = Zeny;
+		Zeny -= 5000000;
+		if (Zeny != .@zeny_before - 5000000) close;
+		delitem 25866,40;
 		if (!modifyequipitem(EQI_HEAD_TOP,.@item,0,-1,1,.@old_enchant,.@card[1])) {
 			Zeny += 5000000; getitem 25866,40;
 			mes "The equipped circlet changed. Your fee was refunded."; close;

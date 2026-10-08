@@ -42,8 +42,12 @@ prontera,225,330,4	script	Missionary Rosetta#PNMemo	4_F_SISTER,{
 	} else {
 		if (PN_MissionDone == 0)
 			.@region = select("Umbala:Einbroch:Not now");
-		else
+		else {
 			.@region = (PN_MissionDone == 1) ? 2 : 1;
+			mes "Your next mission is in " + ((.@region == 1) ? "Umbala. Speak with Tita." : "Einbroch. Speak with Suan.");
+			if (select("Accept and travel:Not now") == 2)
+				close;
+		}
 		if (.@region == 3)
 			close;
 		if (!callfunc("F_PNMemoEligible") || PN_MissionStage != 1 || PN_MissionRegion)
@@ -53,6 +57,11 @@ prontera,225,330,4	script	Missionary Rosetta#PNMemo	4_F_SISTER,{
 		PN_MissionStage = 2;
 		setquest 16586 + .@region;
 	}
+	// Scripts cannot read memo slots, so ask before replacing the fourth one.
+	if (PN_MissionDone) {
+		mes "I can also record the town in your fourth memo slot when you arrive. This replaces anything saved there.";
+		.@memo = (select("Keep my memo slots:Record the town in memo slot 4") == 2);
+	}
 	if (!callfunc("F_PNMemoEligible") || PN_MissionRegion != .@region)
 		close;
 	close2;
@@ -60,8 +69,8 @@ prontera,225,330,4	script	Missionary Rosetta#PNMemo	4_F_SISTER,{
 		warp "umbala",127,138;
 	else
 		warp "einbroch",178,146;
-	// The second assignment automatically records its town in slot four.
-	if (PN_MissionDone)
+	// The second assignment records its town in slot four only when the player agreed.
+	if (.@memo)
 		atcommand "@memo 3";
 	end;
 }

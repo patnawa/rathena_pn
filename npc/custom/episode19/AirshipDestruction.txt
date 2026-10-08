@@ -91,25 +91,29 @@ jor_nest,22,255,6	script	Rope#whl	4_ROPEPILE,{
 		completequest 17637;
 		end;
 	}
-	switch( checkquest(12560,PLAYTIME) ) {
-	case -1:
-		break;
-	case 0:
-	case 1:
-		mes "^0000ffIt seems that there is still time left for the aircraft to recover and move. Let's aim for when the aircraft moves^000000";
-		close;
-	case 2:
-		erasequest 12560;
-		mes "^0000ffThe Airship appears to have started operating. Let's break it down again.^000000";
-		close;
+
+	//.@md_name$ = "Aircraft Destruction";
+	.@md_name$ = "Airship Destruction";
+
+	// The cooldown only gates creating a run; members may re-enter the party's live run.
+	if (instance_live_info(ILI_NAME, instance_id(IM_PARTY)) != .@md_name$) {
+		switch( checkquest(12560,PLAYTIME) ) {
+		case -1:
+			break;
+		case 0:
+		case 1:
+			mes "^0000ffIt seems that there is still time left for the aircraft to recover and move. Let's aim for when the aircraft moves^000000";
+			close;
+		case 2:
+			erasequest 12560;
+			mes "^0000ffThe Airship appears to have started operating. Let's break it down again.^000000";
+			close;
+		}
 	}
 	if (getcharid(1) < 1) {
 		mes "^0000ffPlease form a party with at least one person and proceed.^000000";
 		close;
 	}
-
-	//.@md_name$ = "Aircraft Destruction";
-	.@md_name$ = "Airship Destruction";
 
 	if (instance_live_info(ILI_NAME, instance_id(IM_PARTY)) == .@md_name$) {	// Instance created, display "enter" menu
 		mes "It seems that the penetration rope is taut in the airship.";
@@ -125,9 +129,15 @@ jor_nest,22,255,6	script	Rope#whl	4_ROPEPILE,{
 		case IE_NOMEMBER:
 			end;
 		case IE_OK:
-			if (isbegin_quest(12561) == 0)
-				setquest 12561;
-			setquest 12560;
+			.@cooldown = checkquest(12560,PLAYTIME);
+			if (.@cooldown == 2)
+				erasequest 12560;
+			// Start a daily run only without a running cooldown, so re-entry can't re-grant 12561 after the reward.
+			if (.@cooldown == -1 || .@cooldown == 2) {
+				if (isbegin_quest(12561) == 0)
+					setquest 12561;
+				setquest 12560;
+			}
 			// warp "1@whl",32,53;
 			end;
 		}

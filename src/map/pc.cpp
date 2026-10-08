@@ -6706,11 +6706,22 @@ int32 pc_useitem(map_session_data *sd,int32 n)
 		script_detach_rid( previous_st );
 	}
 
+	const bool menu_pending = sd->state.menu_or_input;
+
 	run_script( script, 0, sd->id, fake_nd->id );
 
 	if(durable_item_use && sd->st != nullptr)pn_item_use_world_allowed(sd); // No suspended VM may escape its cost scope.
 
 	if( sd->st != nullptr ){
+		// A suspended item dialog cannot resume once freed. Close it and drop a
+		// menu/input it opened, or the next NPC's first select or input would
+		// silently reuse that answer.
+		if( sd->st->mes_active || ( !menu_pending && sd->state.menu_or_input ) )
+			clif_scriptclose( *sd, fake_nd->id );
+		if( !menu_pending ){
+			sd->state.menu_or_input = 0;
+			sd->npc_menu = 0;
+		}
 		script_free_state( sd->st );
 		sd->st = nullptr;
 	}

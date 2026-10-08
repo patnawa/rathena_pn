@@ -294,6 +294,12 @@ que_ng,75,20,3	script	Artisan Tene#ko	762,{
 		if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 			close;
 
+		// Recheck after the pauses so the charge (and any refund) is real.
+		if (Zeny < 100000) {
+			mes "[Artisan Tene]";
+			mes "I'm sorry, but you don't have enough Zeny!";
+			close;
+		}
 		set Zeny, Zeny - 100000;
 		if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
 			.@card[0],.@card[1],.@card[2],.@card[3],
@@ -542,6 +548,12 @@ que_ng,75,20,3	script	Artisan Tene#ko	762,{
 	if (callfunc("F_IsEquipIDHack", .@part, .@equip_id) || callfunc("F_IsEquipCardHack", .@part, .@card[0], .@card[1], .@card[2], .@card[3]) || callfunc("F_IsEquipRefineHack", .@part, .@equip_refine))
 		close;
 
+	// Recheck after the pauses so the charge (and any refund) is real.
+	if (Zeny < 100000) {
+		mes "[Artisan Tene]";
+		mes "I'm sorry, but you don't have enough Zeny!";
+		close;
+	}
 	set Zeny, Zeny - 100000;
 	if (!modifyequipenchantstate(.@part,.@equip_id,.@equip_refine,
 		.@card[0],.@card[1],.@card[2],.@card[3],

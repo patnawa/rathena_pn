@@ -5,7 +5,8 @@ function	script	PN_BuildShareFind	{
 	if (.@code<=0) return -1;
 	// Fixed-size registry scans can be called from another bounded menu scan.
 	// Preserve the caller's loop-check setting; never disable checks across UI.
-	.@free=freeloop(1); .@found=-1;
+	// freeloop(1) returns the new state, so read the current one first.
+	.@free=freeloop(); freeloop(1); .@found=-1;
 	for (.@i=0; .@i<256; .@i++) if ($PNShareCode[.@i]==.@code && $PNShareOwner[.@i] && $PNShareUntil[.@i]>gettimetick(2)) { .@found=.@i; break; }
 	freeloop .@free;
 	return .@found;
@@ -16,7 +17,7 @@ function	script	PN_BuildSharePublish	{
 	if (PNBuildNote$[.@book]=="" || getstrlen(PNBuildNote$[.@book])>120) return 0;
 	if ($PNShareSerial>=2147483647) return 0;
 	.@slot=-1; .@empty=-1;
-	.@free=freeloop(1);
+	.@free=freeloop(); freeloop(1);
 	for (.@i=0; .@i<256; .@i++) {
 		if ($PNShareOwner[.@i]==getcharid(0)) { .@slot=.@i; break; }
 		if ((!$PNShareOwner[.@i] || $PNShareUntil[.@i]<=gettimetick(2)) && .@empty<0) .@empty=.@i;
@@ -49,7 +50,7 @@ function	script	PN_BuildSharePublish	{
 }
 function	script	PN_BuildShareRemove	{
 	.@count=0;
-	.@free=freeloop(1);
+	.@free=freeloop(); freeloop(1);
 	for (.@i=0; .@i<256; .@i++) {
 		if ($PNShareOwner[.@i]!=getcharid(0)) continue;
 		$PNShareCode[.@i]=0; $PNShareOwner[.@i]=0; $PNShareUntil[.@i]=0;

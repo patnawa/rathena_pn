@@ -73,8 +73,9 @@ def quest_map_cases():
     add('lhz_dun04',False,'MISC_QUEST',512)
     add('lhz_dun04',True,'MISC_QUEST',512,'lght_duk01',6)
     add('lhz_dun04',True,'MISC_QUEST',512,'lhz_curse',31)
+    # Tomb of the Fallen is paid entry at Ohno Tohiro; the Warper never enters it.
     add('lhz_dun_n',False,'MISC_QUEST',512,level=99)
-    add('lhz_dun_n',True,'MISC_QUEST',512,level=100)
+    add('lhz_dun_n',False,'MISC_QUEST',512,level=100)
     add('kh_dun01',False,'KielHyreQuest',106)
     add('kh_dun01',True,'KielHyreQuest',106,item=7509)
     add('kh_dun02',False,'KielHyreQuest',108)

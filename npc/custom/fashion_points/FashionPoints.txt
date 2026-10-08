@@ -219,6 +219,8 @@ OnPCLoginEvent:
 	end;
 
 OnGoldTick:
+	// A superseded clock's tick (S_ResumeClock re-armed) arrives well before the current due time.
+	if (gettimetick(2) < @FP_GoldNextAt - 60) end;
 	@FP_TimerRunning = 0;
 	if (#FP_Gold < 50) ++#FP_Gold;
 	if (#FP_Gold >= 50) {
@@ -262,6 +264,7 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 		next;
 		mes "[Gold Point Manager]";
 		mes "Each dye costs 1 Gold Point.";
+		mes "Exchanged dyes are bound to your account: they cannot be sold or traded.";
 		.@dye=select("Scarlet Dyestuffs:Lemon Dyestuffs:Cobaltblue Dyestuffs:Darkgreen Dyestuffs:Orange Dyestuffs:Violet Dyestuffs:White Dyestuffs:Black Dyestuffs:Cancel");
 		if (.@dye == 9) close;
 		setarray .@items[0],975,976,978,979,980,981,982,983;
@@ -274,7 +277,8 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 			close;
 		}
 		.@before=countitem(.@item);
-		getitem .@item,1;
+		// Bound items cannot be sold to NPCs (allow_bound_sell: 0), so idle Gold is not a Zeny faucet.
+		getitembound .@item,1,BOUND_ACCOUNT;
 		if (countitem(.@item) != .@before+1) {
 			mes "The item could not be delivered. No points were spent.";
 			close;
@@ -309,7 +313,8 @@ mal_in01,24,123,4	script	Gold Point Manager#FP	4_M_MAYOR,{
 	close;
 
 S_ResumeClock:
-	if (!@FP_TimerRunning) {
+	// A tick dropped from a full event queue leaves the flag set; re-arm once two intervals late.
+	if (!@FP_TimerRunning || (@FP_GoldNextAt && gettimetick(2) > @FP_GoldNextAt + 180)) {
 		@FP_TimerRunning = 1;
 		@FP_GoldNextAt = gettimetick(2) + 180;
 		addtimer 180000,"FashionPointClock::OnGoldTick";

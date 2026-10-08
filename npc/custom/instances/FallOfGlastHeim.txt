@@ -502,6 +502,7 @@ OnInstanceInit:
 	'fogh_survivor_mask = 0;
 	'fogh_retry = 0;
 	'fogh_room_kills = 0;
+	'fogh_spawned = 0;
 	'fogh_boss_gid = 0;
 	'fogh_flame_pattern = 0;
 
@@ -899,6 +900,8 @@ OnTouch:
 		}
 		if (select("Begin purification.:Wait.") == 2)
 			close;
+		if ('fogh_stage)
+			close;
 		'fogh_stage = 1;
 		donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnRoom0";
 		mes "The old kitchen is ahead. Free every Fallen Maid from the curse.";
@@ -927,6 +930,9 @@ OnTouch:
 	mes "[Oscar]";
 	mes "The kitchen is stable. The next chamber held knights resting after duty; the curse took them before they could evacuate.";
 	next;
+	// Several members can hold this dialogue open; only the first may advance.
+	if ('fogh_stage != 2)
+		close;
 	mes "Put every Mad Knight and Dark Knight to rest.";
 	'fogh_stage = 3;
 	disablenpc instance_npcname(strnpcinfo(0));
@@ -940,6 +946,8 @@ OnTouch:
 	mes "[Oscar]";
 	mes "This guest area was contaminated through food touched by the curse. The White Knights here are only memory fragments now.";
 	next;
+	if ('fogh_stage != 4)
+		close;
 	mes "Purify the entire chamber.";
 	'fogh_stage = 5;
 	disablenpc instance_npcname(strnpcinfo(0));
@@ -953,6 +961,8 @@ OnTouch:
 	mes "[Oscar]";
 	mes "The archive was guarded by the strongest commanders. Their memories retained far more of the curse.";
 	next;
+	if ('fogh_stage != 6)
+		close;
 	mes "Clear the last chamber, then we can approach the king.";
 	'fogh_stage = 7;
 	disablenpc instance_npcname(strnpcinfo(0));
@@ -968,6 +978,8 @@ OnTouch:
 	next;
 	if (select("Confront Cursed King Schmidt.:Prepare longer.") == 2)
 		close;
+	if ('fogh_stage != 8)
+		close;
 	'fogh_stage = 9;
 	disablenpc instance_npcname(strnpcinfo(0));
 	donpcevent instance_npcname("#FOGH_Purification")+"::OnSpawnBoss";
@@ -977,7 +989,11 @@ OnTouch:
 1@gl_prq,1,1,0	script	#FOGH_Purification	HIDDEN_NPC,{
 	end;
 
+// Each population spawns at most once per instance.
 OnSpawnRoom0:
+	if ('fogh_spawned & 1)
+		end;
+	'fogh_spawned |= 1;
 	'fogh_room_kills = 0;
 	callsub L_SpawnHazards,0;
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom0Dead";
@@ -1004,6 +1020,9 @@ OnRoom0Dead:
 	end;
 
 OnSpawnRoom1:
+	if ('fogh_spawned & 2)
+		end;
+	'fogh_spawned |= 2;
 	'fogh_room_kills = 0;
 	callsub L_SpawnHazards,1;
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom1Dead";
@@ -1032,6 +1051,9 @@ OnRoom1Dead:
 	end;
 
 OnSpawnRoom2:
+	if ('fogh_spawned & 4)
+		end;
+	'fogh_spawned |= 4;
 	'fogh_room_kills = 0;
 	callsub L_SpawnHazards,2;
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom2Dead";
@@ -1062,6 +1084,9 @@ OnRoom2Dead:
 	end;
 
 OnSpawnRoom3:
+	if ('fogh_spawned & 8)
+		end;
+	'fogh_spawned |= 8;
 	'fogh_room_kills = 0;
 	callsub L_SpawnHazards,3;
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnRoom3Dead";
@@ -1088,6 +1113,9 @@ OnRoom3Dead:
 	end;
 
 OnSpawnBoss:
+	if ('fogh_spawned & 16)
+		end;
+	'fogh_spawned |= 16;
 	.@event$ = instance_npcname(strnpcinfo(0))+"::OnBossDead";
 	monster 'fogh_map$,52,277,'fogh_advanced ? "Cursed King Schmidt H" : "Cursed King Schmidt",'fogh_boss,1,.@event$;
 	'fogh_boss_gid = $@mobid[0];

@@ -99,7 +99,7 @@ guild_vs1,50,43,4	script	PN Lab Console	4_M_01,{
 		if (!.@loaded) { mes "The queued challenge is invalid. Choose a challenge again."; close; }
 	} else switch(select("Configure and run:Load target preset:Saved runs and comparison:Exit and destroy room:Challenge target:Personal bests")) {
 	case 5:
-		if (!callfunc("PN_LabChallengeMenu")) close;
+		if (!callfunc("PN_LabChallengeMenu",1)) close;
 		.@loaded=1; break;
 	case 6: callfunc "PN_LabBests"; close;
 	case 2:
