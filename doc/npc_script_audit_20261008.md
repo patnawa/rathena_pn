@@ -151,8 +151,11 @@ The only Hall Key record is a single administrative grant. No player data needed
 
 ## Deployment
 
-Deployed to production on October 8, 2026, as commit `f63cd9ee0`. The rebuilt
-map server and the committed NPC, database and test sources went through the
-guarded map-only cutover. This followed all 105 full native release checks in
-an isolated candidate and happened with zero players online. See the
-[deployment record](npc_script_audit_deployment_20261008.md).
+Both releases are live and pushed to `improvements-20261002`. Each passed all
+105 full native release checks in an isolated candidate, then went through the
+guarded map-only cutover with zero players online.
+
+- The critical, high, medium and low repairs went live as `f1eacde18`. See the
+  [deployment record](npc_script_audit_deployment_20261008.md).
+- The follow-up repairs went live as `957f42ea2`. See the
+  [follow-up record](npc_script_audit_followup_deployment_20261008.md).

@@ -2,8 +2,11 @@
 
 The NPC audit repairs are live. Production verification completed at 12:46
 Bangkok time on October 8, 2026. The deployed implementation is
-`f63cd9ee05350e7b96d6993cf82a14bb1664a5d1` on `improvements-20261002`. It is
-committed locally and has not been pushed to origin.
+`f1eacde1805a0e808d0b98d4c0f8ddef151f1be8` on `improvements-20261002`, pushed
+to origin. Server-side journals for this cutover record the same tree under its
+pre-publication commit ID `f63cd9ee05350e7b96d6993cf82a14bb1664a5d1`. A
+[follow-up release](npc_script_audit_followup_deployment_20261008.md) went live
+the same afternoon.
 
 The repairs are described in the [audit record](npc_script_audit_20261008.md).
 

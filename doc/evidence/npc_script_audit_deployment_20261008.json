@@ -1,9 +1,9 @@
 {
   "passed": true,
   "verified_utc": "2026-10-08T05:46:55.377370+00:00",
-  "deployed_source_commit": "f63cd9ee05350e7b96d6993cf82a14bb1664a5d1",
+  "deployed_source_commit": "f1eacde1805a0e808d0b98d4c0f8ddef151f1be8",
   "git_branch": "improvements-20261002",
-  "source_commit_pushed": false,
+  "source_commit_pushed": true,
   "map_binary_sha256": "273301913978cdb0528f3064090b0f0ad030d20a2f16fdb1e5045c6a5422be8e",
   "candidate_binding": {
     "source_sha256": "f1cd60efd728ed5ed9f33e782e9d8933c9475aaf02e4bab5f45a03f67254aeac",
@@ -98,5 +98,7 @@
   "sql_schema_changed": false,
   "online_characters_at_cutover": 0,
   "rendered_playtest_performed": false,
-  "full_controller_pass_claimed": false
+  "full_controller_pass_claimed": false,
+  "server_journal_source_commit": "f63cd9ee05350e7b96d6993cf82a14bb1664a5d1",
+  "server_journal_commit_tree_identical": true
 }

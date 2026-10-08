@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "verified_utc": "2026-10-08T06:21:13.054097+00:00",
+  "deployed_source_commit": "957f42ea2dcb42a0a4564aef415ec2026a5d6a11",
+  "git_branch": "improvements-20261002",
+  "source_commit_pushed": true,
+  "map_binary_sha256": "273301913978cdb0528f3064090b0f0ad030d20a2f16fdb1e5045c6a5422be8e",
+  "candidate_binding": {
+    "source_sha256": "cec035e564c673567b20d412612c3bf5b360627fa6485ff137d04bbec1fdab6d",
+    "binaries": {
+      "map-server": "273301913978cdb0528f3064090b0f0ad030d20a2f16fdb1e5045c6a5422be8e",
+      "char-server": "b1bfed7693a75f3ad398f2432f9e447d1c50a11b5ea34364ad74102caa55fd05",
+      "login-server": "ef1bb877d8e57ea354b0aa515fb35dbf9fbb8b611e86f8b3e31bd4c8847bc27d",
+      "web-server": "80ab2e858d69b163d7ce9eb3bdb62034433e761d98356756c13f034c094e3d64"
+    }
+  },
+  "runtime_source_sha256": "43e69ab60af50482cb5f7412e32433ec17f07e0af52a8aecc1bd31de1214723c",
+  "runtime_manifest_sha256": "d52ede7737d798ddbeccd18a816c152fab2a204a5563cf1264b027a213ffadcb",
+  "full_native_release_checks": 105,
+  "full_gate_report_sha256": "ab492f5267a06a94c8e793879bcabce7910f44dcbec7e86d95ae53e66216123c",
+  "isolated_startup_passed": true,
+  "production_startup_passed": true,
+  "installed_files": [
+    "doc/evidence/npc_script_audit_deployment_20261008.json",
+    "doc/npc_script_audit_20261008.md",
+    "doc/npc_script_audit_deployment_20261008.md",
+    "npc/custom/chapter1/CH1.c",
+    "npc/custom/chapter1/Dark_Whisper.c",
+    "npc/custom/dynamic_reward_catalog.json",
+    "npc/custom/episode20/Instances.txt",
+    "npc/custom/episode21/FinalBattle.txt",
+    "npc/custom/episode21/MysteriousGhostShip.txt",
+    "npc/custom/official/GeffenMagicTournament.txt",
+    "npc/custom/varmundt_biosphere_quests.txt",
+    "npc/merchants/enchan_arm.txt",
+    "npc/re/instances/TwilightGarden.txt",
+    "tools/ci/episode21_encounter_flow_test.py",
+    "tools/ci/ghost_ship_report_claim_test.py",
+    "tools/ci/immortal_instance_test.py",
+    "map-server",
+    "conf/import/pn_runtime_identity"
+  ],
+  "backups_verified": true,
+  "map_only_restart": true,
+  "services": {
+    "rathena-login": "healthy",
+    "rathena-char": "healthy",
+    "rathena-map": "healthy",
+    "rathena-web": "healthy",
+    "rathena-fluxcp": "healthy",
+    "rathena-db": "healthy",
+    "npm": "healthy"
+  },
+  "game_online": true,
+  "ingress_restored": true,
+  "client_feed_changed": false,
+  "client_feed_sha256": "4a6266bfe1778e83f5090692167336d8f4c0c50f342e5314c13cca0d63a0a2c5",
+  "client_signature_verified": true,
+  "sql_schema_changed": false,
+  "online_characters_at_cutover": 0,
+  "rendered_playtest_performed": false,
+  "full_controller_pass_claimed": false
+}
