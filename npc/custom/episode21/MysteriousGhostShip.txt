@@ -228,6 +228,12 @@ OnInstanceInit:
 
 OnUpper1:
 	if ('stage != 1) end;
+	.@map$ = instance_mapname("1@wtgs");
+	// Only characters aboard when the voyage starts may report it; the roster
+	// is keyed by character ID so deaths and re-entry keep eligibility.
+	.@n = getmapunits(BL_PC,.@map$,.@players);
+	for (.@i = 0; .@i < .@n; ++.@i)
+		'gs_roster[.@i] = getcharid(0,rid2name(.@players[.@i]));
 	areamonster instance_mapname("1@wtgs"),63,308,69,314,"Ghost Ship Sailor",22369,5,instance_npcname(strnpcinfo(0))+"::OnUpper1Dead";
 	mapannounce instance_mapname("1@wtgs"),"Restless sailors gather beside the port railing.",bc_map,0xBBDDFF;
 	end;
@@ -480,6 +486,8 @@ OnBossDead:
 	if (inarray('gs_reported,.@character) >= 0) {
 		mes "You have already reported this voyage. Another investigation needs a new expedition.";
 		mes "Leave through the portal. Once everyone has reported, the owner can close this cleared instance and start another.";
+	} else if (inarray('gs_roster,.@character) < 0) {
+		mes "Only adventurers aboard when this voyage began can report it. Your orders stay open for a new expedition; leave through the portal.";
 	} else if (isbegin_quest(16816) == 1) {
 		mes "The Walter can disappear without regret now. We should report everything to Megas before the last memories fade.";
 		changequest 16816,16817;

@@ -4445,7 +4445,10 @@ OnMobKilled:
 		//setquest 9286;
 		//completequest 9286;
 		//setquest 9287;
-		sleep2 500;
+		// Run the cutscene detached (sleep, not sleep2): a killer who logs out
+		// must not end it. 'gmt_account_id is attached only for the dialog.
+		detachrid;
+		sleep 500;
 		specialeffect EF_POTION_BERSERK, AREA, instance_npcname("Geffen Bully#1");
 		specialeffect EF_POTION_BERSERK, AREA, instance_npcname("Geffen Bully#2");
 		specialeffect EF_POTION_BERSERK, AREA, instance_npcname("Geffen Bully#3");
@@ -4464,7 +4467,7 @@ OnMobKilled:
 				case 3:
 					hideonnpc instance_npcname("Magic Academy Student#22");
 					hideoffnpc instance_npcname("Magic Academy Student#11");
-					sleep2 500;
+					sleep 500;
 					npctalk "Magic Academy Student : I'm scared~! Help me...", instance_npcname("Magic Academy Student#11");
 					break;
 				case 6: hideoffnpc instance_npcname("Fenrir#1"); break;
@@ -4491,16 +4494,16 @@ OnMobKilled:
 					break;
 				case 25:
 					hideoffnpc instance_npcname("Loki#1");
-					sleep2 500;
+					sleep 500;
 					specialeffect EF_POISONREACT, AREA, instance_npcname("Loki#1");
-					sleep2 1500;
+					sleep 1500;
 					specialeffect EF_SONICBLOW, AREA, instance_npcname("Loki#1");
 					npctalk "Loki : Hmph!", instance_npcname("Loki#1");
-					sleep2 500;
+					sleep 500;
 					specialeffect EF_VENOMDUST, AREA, instance_npcname("Loki#1");
 					specialeffect EF_SONICBLOWHIT, AREA, instance_npcname("Geffen Bully#33");
 					specialeffect EF_SONICBLOW2, AREA, instance_npcname("Geffen Bully#33");
-					sleep2 330;
+					sleep 330;
 					specialeffect EF_NAPALMBEAT, AREA, instance_npcname("Geffen Bully#33");
 					hideonnpc instance_npcname("Geffen Bully#33");
 					hideoffnpc instance_npcname("Geffen Bully#3");
@@ -4509,13 +4512,13 @@ OnMobKilled:
 				case 27:
 					hideonnpc instance_npcname("Loki#1");
 					hideoffnpc instance_npcname("Loki#2");
-					sleep2 750;
+					sleep 750;
 					npctalk "Loki : Take this.", instance_npcname("Loki#2");
-					sleep2 500;
+					sleep 500;
 					specialeffect EF_STRIPARMOR, AREA, instance_npcname("Geffen Bully#22");
 					specialeffect EF_SONICBLOWHIT, AREA, instance_npcname("Geffen Bully#22");
 					specialeffect EF_SONICBLOW2, AREA, instance_npcname("Geffen Bully#22");
-					sleep2 330;
+					sleep 330;
 					specialeffect EF_NAPALMBEAT, AREA, instance_npcname("Geffen Bully#22");
 					hideonnpc instance_npcname("Geffen Bully#22");
 					hideoffnpc instance_npcname("Geffen Bully#2");
@@ -4524,13 +4527,13 @@ OnMobKilled:
 					npctalk "Geffen Bully : Ugh, uuurgh! What the?!", instance_npcname("Geffen Bully#2");
 					hideonnpc instance_npcname("Loki#2");
 					hideoffnpc instance_npcname("Loki#3");
-					sleep2 750;
+					sleep 750;
 					npctalk "Loki : Change your mind yet?", instance_npcname("Loki#3");
-					sleep2 500;
+					sleep 500;
 					specialeffect EF_STRIPSHIELD, AREA, instance_npcname("Geffen Bully#11");
 					specialeffect EF_SONICBLOWHIT, AREA, instance_npcname("Geffen Bully#11");
 					specialeffect EF_SONICBLOW2, AREA, instance_npcname("Geffen Bully#11");
-					sleep2 330;
+					sleep 330;
 					specialeffect EF_NAPALMBEAT, AREA, instance_npcname("Geffen Bully#11");
 					hideonnpc instance_npcname("Geffen Bully#11");
 					hideoffnpc instance_npcname("Geffen Bully#1");
@@ -4548,17 +4551,17 @@ OnMobKilled:
 				case 43:
 					specialeffect EF_SLOWPOISON, AREA, instance_npcname("Loki#3");
 					npctalk "Loki : 10... 9...", instance_npcname("Loki#3");
-					sleep2 500;
+					sleep 500;
 					specialeffect EF_STRIPWEAPON, AREA, instance_npcname("Loki#3");
 					specialeffect EF_POISONREACT, AREA, instance_npcname("Loki#3");
 					specialeffect EF_POISONREACT2, AREA, instance_npcname("Loki#3");
 					break;
 				case 45:
 					specialeffect EF_ENCHANTPOISON, AREA, instance_npcname("Loki#3");
-					sleep2 500;
+					sleep 500;
 					emotion ET_KIK, getnpcid(0, instance_npcname("Loki#3"));
 					npctalk "Loki : 3... 2...", instance_npcname("Loki#3");
-					sleep2 500;
+					sleep 500;
 					npctalk "Geffen Bully : What?! You went from from 9 to 3 seconds!!", instance_npcname("Geffen Bully#1");
 					npctalk "Geffen Bully : Screw this, let's run~!!!!!!!!!", instance_npcname("Geffen Bully#2");
 					npctalk "Geffen Bully : I will have my revenge~!!", instance_npcname("Geffen Bully#3");
@@ -4567,7 +4570,7 @@ OnMobKilled:
 					specialeffect EF_SOULBREAKER, AREA, instance_npcname("Loki#3");
 					specialeffect EF_VENOMDUST, AREA, instance_npcname("Loki#3");
 					npctalk "Loki : 1...", instance_npcname("Loki#3");
-					sleep2 330;
+					sleep 330;
 					hideonnpc instance_npcname("Geffen Bully#1");
 					hideonnpc instance_npcname("Geffen Bully#2");
 					hideonnpc instance_npcname("Geffen Bully#3");
@@ -4577,45 +4580,47 @@ OnMobKilled:
 					hideoffnpc instance_npcname("Loki#1");
 					break;
 				case 49:
-					attachrid('gmt_account_id);
-					cutin "fenrir_a.bmp", 2;
-					mes "[Fenrir]", "Are you okay?", "Where are all these punks coming from anyways?"; next;
-					cutin "", 255;
-					mes "[Magic Academy Student]", "Thanks for helping me.", "Who are you?"; next;
-					cutin "fenrir_a.bmp", 2;
-					mes "[Fenrir]", "I am Fenris Fenrir."; next;
-					mes "[Fenrir]", "Thank " + strcharinfo(0) + ".", "It would have been much worse if "+('sex?"he":"she")+" hadn't shown up."; next;
-					cutin "", 255;
-					mes "[Magic Academy Student]", "Thank you so much " + strcharinfo(0) + ".", "You saved me."; next;
-					cutin "fenrir_a.bmp", 2;
-					mes "[Fenrir]", "You don't meet many people like " + strcharinfo(0) + " these days.", "You're a good person."; next;
-					mes "[Fenrir]", "I was on the way to register for the Geffen Magic Tournament with Loki."; next;
-					mes "[Fenrir]", "I have a feeling that you will register too " + strcharinfo(0) + ".", "I hope to meet you in the finals of the Tournament."; next;
-					cutin "ep14_roki01.bmp", 2;
-					mes "[Loki]", "Oh yeah?", "" + strcharinfo(0) + " is going to register?", "That's interesting."; next;
-					mes "[Loki]", "I have a spare magic buff scroll.", "I will give it to you as a present.";
-					sc_start4 SC_GEFFEN_MAGIC2, 3600000, 5, 0, 0, 0, 10000, 1;
-					atcommand "@effect 220";
-					next;
-					mes "[Loki]", "I doubt that you can beat Fenrir at the Tournament.", "Her fighting prowess is unmatched."; next;
-					mes "[Loki]", "Fenrir, it's time to register.", "Let's hurry."; next;
-					cutin "fenrir_a.bmp", 2;
-					mes "[Fenrir]", "Yes~! I almost forgot.", "It was nice meeting you " + strcharinfo(0) + "~!"; next;
-					mes "[Fenrir]", "I hope to meet you in combat soon.";
-					close2;
-					cutin "", 255;
+					// Offline: skip the dialog and buff, but still close the scene.
+					if (attachrid('gmt_account_id)) {
+						cutin "fenrir_a.bmp", 2;
+						mes "[Fenrir]", "Are you okay?", "Where are all these punks coming from anyways?"; next;
+						cutin "", 255;
+						mes "[Magic Academy Student]", "Thanks for helping me.", "Who are you?"; next;
+						cutin "fenrir_a.bmp", 2;
+						mes "[Fenrir]", "I am Fenris Fenrir."; next;
+						mes "[Fenrir]", "Thank " + strcharinfo(0) + ".", "It would have been much worse if "+('sex?"he":"she")+" hadn't shown up."; next;
+						cutin "", 255;
+						mes "[Magic Academy Student]", "Thank you so much " + strcharinfo(0) + ".", "You saved me."; next;
+						cutin "fenrir_a.bmp", 2;
+						mes "[Fenrir]", "You don't meet many people like " + strcharinfo(0) + " these days.", "You're a good person."; next;
+						mes "[Fenrir]", "I was on the way to register for the Geffen Magic Tournament with Loki."; next;
+						mes "[Fenrir]", "I have a feeling that you will register too " + strcharinfo(0) + ".", "I hope to meet you in the finals of the Tournament."; next;
+						cutin "ep14_roki01.bmp", 2;
+						mes "[Loki]", "Oh yeah?", "" + strcharinfo(0) + " is going to register?", "That's interesting."; next;
+						mes "[Loki]", "I have a spare magic buff scroll.", "I will give it to you as a present.";
+						sc_start4 SC_GEFFEN_MAGIC2, 3600000, 5, 0, 0, 0, 10000, 1;
+						atcommand "@effect 220";
+						next;
+						mes "[Loki]", "I doubt that you can beat Fenrir at the Tournament.", "Her fighting prowess is unmatched."; next;
+						mes "[Loki]", "Fenrir, it's time to register.", "Let's hurry."; next;
+						cutin "fenrir_a.bmp", 2;
+						mes "[Fenrir]", "Yes~! I almost forgot.", "It was nice meeting you " + strcharinfo(0) + "~!"; next;
+						mes "[Fenrir]", "I hope to meet you in combat soon.";
+						close2;
+						cutin "", 255;
+					}
 					hideonnpc instance_npcname("Fenrir#1");
 					hideonnpc instance_npcname("Loki#1");
-					sleep2 1000;
+					sleep 1000;
 					hideonnpc instance_npcname("Magic Academy Student#11");
-					sleep2 3000;
+					sleep 3000;
 					unittalk 'gmt_account_id, "It was fun meeting Fenrir.";
-					sleep2 2000;
+					sleep 2000;
 					unittalk 'gmt_account_id, "I should register for the Magic Tournament.";
 					end;
 			}
-			
-			sleep2 1000;
+
+			sleep 1000;
 		}
 	}
 	

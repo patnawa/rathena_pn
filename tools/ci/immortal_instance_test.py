@@ -38,6 +38,11 @@ std::vector<int> cast_delays;
 std::vector<int64> armor_divisors;
 bool present[4]={true,true,false,false};
 std::vector<std::tuple<int,int,int64>> unit_changes;
+std::map<int64,int64> server_registers;
+extern "C" bool immortal_mapset(int64,int64) asm("__wrap__Z13mapreg_setregll");
+extern "C" bool immortal_mapset(int64 id,int64 value){server_registers[id]=value;return true;}
+extern "C" int64 immortal_mapread(int64) asm("__wrap__Z14mapreg_readregl");
+extern "C" int64 immortal_mapread(int64 id){return server_registers[id];}
 void array_value(script_state* st, int argument, int index, int64 value) {
     auto* data=script_getdata(st,argument);
     boundary(data_isreference(data),"world array argument is a real reference");
@@ -67,7 +72,7 @@ WORLD = r'''
         array_value(st,3,UMOB_Y,93);
         script_pushint(st,0);
     } else if (command == "setunitdata") unit_changes.emplace_back(script_getnum(st,2),script_getnum(st,3),script_getnum64(st,4));
-    else if (command == "monster") { spawned+=script_getnum(st,7); script_pushint(st,90000000+spawned); }
+    else if (command == "monster") { /* Like the native command: no return value; each GID goes to server-wide $@mobid[i]. */ int n=script_getnum(st,7); for (int i=0;i<n;++i) server_registers[reference_uid(add_str("$@mobid"),i)]=90000001+spawned+i; spawned+=n; }
     else if (command == "unitexists") script_pushint(st,1);
     else if (command == "mobcount") script_pushint(st,0);
     else if (command == "setnpctimer" || command == "initnpctimer" || command == "stopnpctimer") { ++timer_calls; }
@@ -245,7 +250,7 @@ def main():
         else if (function == "EP21_GhostShipUnlocked")''',1)
     names=['gettimetick','select','instance_live_info','getmapunits','rand','checkweight2','getunitdata','setunitdata','unitexists','mobcount','setnpctimer','initnpctimer','stopnpctimer','sc_start','sc_start4','sc_end','killmonster','unitskilluseid','unitskillusepos','getmapxy','unittalk']
     prefix=prefix.replace('"getexp", "callfunc"};','"getexp", "callfunc",'+','.join(json.dumps(x) for x in names)+'};',1)
-    native.WRAPPERS += ('_Z13map_charid2sdi','_Z9map_id2bli','_Z11map_nick2sdPKcb')
+    native.WRAPPERS += ('_Z13map_charid2sdi','_Z9map_id2bli','_Z11map_nick2sdPKcb','_Z13mapreg_setregll','_Z14mapreg_readregl')
     prefix=prefix.replace('if (p->id == id) return p.get();','if (p->id == id && p->id != offline_id) return p.get();')
     native.CPP=prefix+MAIN; native.fixtures=fixtures
     def run(directory):

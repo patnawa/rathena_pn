@@ -149,6 +149,16 @@ OnStoryBossDead:
 	mapannounce instance_mapname("1@ep21b"),"The serpent and Tan fall together. Speak with Nyar.",bc_map,0xFFDD88;
 	end;
 
+OnStoryStart:
+	if ('fb_stage != 1) end;
+	.@map$ = instance_mapname("1@ep21b");
+	// Only characters inside when the story battle starts may claim its reward;
+	// the roster is keyed by character ID so deaths and re-entry keep eligibility.
+	.@n = getmapunits(BL_PC,.@map$,.@players);
+	for (.@i = 0; .@i < .@n; ++.@i)
+		'fb_story_roster[.@i] = getcharid(0,rid2name(.@players[.@i]));
+	end;
+
 OnRepeatStart:
 	if ('fb_stage != 10) end;
 	.@map$ = instance_mapname("1@ep21b");
@@ -220,6 +230,7 @@ OnRepeatBossDead:
 		enablenpc instance_npcname("Nadoyo#ep21_fb_channel");
 		enablenpc instance_npcname("Heine#ep21_fb_channel");
 		instance_warpall "1@ep21b",168,30,instance_id();
+		donpcevent instance_npcname("#EP21_FinalBattle_Control") + "::OnStoryStart";
 		end;
 	}
 	if (!callfunc("EP21_MainComplete")) {
@@ -308,6 +319,12 @@ OnRepeatBossDead:
 1@ep21b,172,30,4	script(DISABLED)	Nyar#ep21_fb_story_end	22006,{
 	if ('fb_stage != 4) end;
 	mes "[Nyar]";
+	if (inarray('fb_story_roster,getcharid(0)) < 0) {
+		mes "Only challengers present when the battle began can claim this memory's reward.";
+		close2;
+		enablenpc instance_npcname("#EP21_FB_StoryExit");
+		end;
+	}
 	if (isbegin_quest(18348) == 1) {
 		if (!checkweight(1001618,90)) {
 			mes "Make room for ninety Wigner vouchers first.";

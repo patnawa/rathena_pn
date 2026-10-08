@@ -272,17 +272,14 @@ OnMobDead:
 		unittalk getcharid(3), "" + strcharinfo(0) + " : Tracker : Pyo-o-o-o-o! There!!";
 		setpcblock PCBLOCK_NPC, true;
 		navigateto("1@bamn",242,206);
+		// The ambush runs as an NPC event so it still starts if the leader disconnects during the pause.
+		donpcevent instance_npcname("Almond#amond01") + "::OnAmbush";
 		sleep2 2000;
 		npctalk "Ahahaha, it's noisy.";
 		sleep2 2000;
 		npctalk "I'm curious, should we go quickly?";
 		sleep2 2000;
-		npctalk "Guest, there is an intruder!";
-		donpcevent instance_npcname("twilight_story_mob_3") + "::OnStart";
 		setpcblock PCBLOCK_NPC, false;
-		sleep 200;
-		npcspeed 80;
-		unitwalk 'guide,245,229, instance_npcname("Almond#amond01") + "::OnEvent02";
 		end;
 	}
 	if ('twilight_story == 9) {
@@ -419,6 +416,16 @@ OnEvent01:
 	sleep 2000;
 	npctalk "Huh? What are you carrying right now? Take it out and show it to me.";
 	'twilight_story = 8;
+	end;
+OnAmbush:
+	sleep 6000;
+	if ('twilight_story != 9)
+		end;
+	npctalk "Guest, there is an intruder!";
+	donpcevent instance_npcname("twilight_story_mob_3") + "::OnStart";
+	sleep 200;
+	npcspeed 80;
+	unitwalk 'guide,245,229, instance_npcname("Almond#amond01") + "::OnEvent02";
 	end;
 
 OnEvent02:

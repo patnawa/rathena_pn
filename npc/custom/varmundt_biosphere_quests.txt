@@ -271,7 +271,7 @@ ba_in01,359,53,4	script	Ellie#biosphere_equipment	4_EP17_ELYUMINA,{
 		close;
 	}
 	mes "[Ellie]";
-	mes "This exchange consumes item ^3366FF" + .@input + "^000000, " + .@rune_count + " runes, and " + .@price + "z.";
+	mes "This exchange consumes ^3366FF" + getitemname(.@input) + "^000000, " + .@rune_count + " runes, and " + .@price + "z.";
 	next;
 	if (select("Exchange.:Cancel.") == 2)
 		close;

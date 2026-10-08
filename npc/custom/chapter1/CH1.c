@@ -3165,13 +3165,13 @@ ch1_geffen,117,117,5	script(CLOAKED)	Ascetic Jeon#c01ms12	4_EXJOB_MASTER_J,{
 		callfunc "F_CH1_GiveReward",1001972,5;
 		close3;
 	}
-	if ( 
-		isbegin_quest(17925) == 2 &&
+	if (
+		isbegin_quest(17925) == 2 && (
 		isbegin_quest(17926) > 0 ||
 		isbegin_quest(17927) > 0 ||
 		isbegin_quest(17928) > 0 ||
 		isbegin_quest(17929) > 0 ||
-		isbegin_quest(17930) > 0
+		isbegin_quest(17930) > 0 )
 	) {
 		cutin "ex_sa_masterj01.png",0;
 		mes "[Ascetic Jeon]";
@@ -14507,7 +14507,8 @@ end;
 ygg_roots,148,122,5	script	Investigator#ch01_dq1	4_M_REPAIR,{
 	if ( isbegin_quest(24104) == 1 ) {
 		// Per-player 60s hide: a global disablenpc let one click hide it from everyone.
-		if ( isnpccloaked(strnpcinfo(3), getcharid(0)) ) {
+		// A map change clears the cloak, so the timestamp holds the cooldown.
+		if ( isnpccloaked(strnpcinfo(3), getcharid(0)) || getd("@ch1_dq_hide_" + strnpcinfo(2)) > gettimetick(2) ) {
 			end;
 		}
 		if ( rand(1,100) > 10 ) {
@@ -14524,6 +14525,7 @@ ygg_roots,148,122,5	script	Investigator#ch01_dq1	4_M_REPAIR,{
 			mes "- You've found an injured person.";
 			mes "Let's escort them back to the village. -";
 		}
+		setd "@ch1_dq_hide_" + strnpcinfo(2), gettimetick(2) + 60;
 		cloaknpc(strnpcinfo(3), true, getcharid(0));
 		addtimer 60000, strnpcinfo(3) + "::OnUncloak";
 		close;

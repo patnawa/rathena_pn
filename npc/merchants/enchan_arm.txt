@@ -72,11 +72,15 @@ S_EnchantArmor:
 	mes "[Apprentice Craftsman]";
 	if (countitem(.@itemid) == 1) {
 		// Keep the selected record's identity across confirmation and progress.
+		// countitem ignores rentals, so pick the one non-rental copy it counted
+		// (the last match could be a rental and fail the validation below).
 		getinventorylist;
+		.@index = -1;
 		for (.@i = 0; .@i < @inventorylist_count; ++.@i) {
-			if (@inventorylist_id[.@i] != .@itemid) continue;
+			if (@inventorylist_id[.@i] != .@itemid || @inventorylist_expire[.@i]) continue;
 			.@index = @inventorylist_idx[.@i];
 			.@unique_id$ = @inventorylist_uniqueid$[.@i];
+			break;
 		}
 		mes "Socket enchant will cost you 400,000 zeny. And there will be a random option enchanted. Of course, there is a chance of breaking your armor.";
 		next;

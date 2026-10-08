@@ -42,6 +42,8 @@ void inspect_claims(unsigned expected) {
     finish("@inspect");
     check(stage("'test_claim_count") == expected, "native getarraysize gives exact claim roster length");
 }
+// Both test characters boarded when the voyage began (Maristella's start).
+void board() { finish("@board"); }
 void new_run() {
     // Same register teardown used by instance_destroy, without maps/NPCs/timers.
     auto old = instances.at(1);
@@ -52,7 +54,7 @@ void new_run() {
     instances[1] = std::make_shared<s_instance_data>();
     instances.at(1)->state = INSTANCE_BUSY;
     instances.at(1)->regs.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
-    stage("'stage",22);
+    stage("'stage",22); board();
 }
 }
 extern "C" int __wrap_main(int argc, char** argv) {
@@ -79,14 +81,21 @@ extern "C" int __wrap_main(int argc, char** argv) {
     }
     codes["@inspect"]=parse_script("{ 'test_claim_count = getarraysize('gs_reported); end; }","read-only roster inspection fixture",1,0);
     boundary(codes["@inspect"] && !errors,"native roster inspector parses");
+    codes["@board"]=parse_script("{ setarray 'gs_roster[0],98000010,98000011; end; }","voyage roster fixture",1,0);
+    boundary(codes["@board"] && !errors,"native voyage roster fixture parses");
     for (int state=0;state<22;++state) {
-        reset(); stage("'stage",state); seed_quest(0,16816); seed_quest(1,16821);
+        reset(); stage("'stage",state); board(); seed_quest(0,16816); seed_quest(1,16821);
         finish(finish_npc,0); finish(finish_npc,1);
         check(q(0,16816)==Q_ACTIVE && q(0,16817)==-1,"story cannot complete before final stage");
         check(q(1,16821)==Q_ACTIVE && q(1,16822)==-1,"daily cannot complete before final stage");
         inspect_claims(0);
     }
-    reset(); stage("'stage",22);
+    // A character who boarded after the voyage began is refused, keeps its
+    // orders for a new expedition, and can still leave.
+    reset(); stage("'stage",22); seed_quest(0,16816); finish(finish_npc); inspect_claims(0);
+    check(q(0,16816)==Q_ACTIVE && q(0,16817)==-1,"late joiner outside the voyage roster cannot report");
+    check(enabled.count("#EP21_GS_FinalExit"),"refused late joiner can still leave");
+    reset(); stage("'stage",22); board();
     finish(finish_npc); inspect_claims(0);
     check(enabled.count("#EP21_GS_FinalExit"),"unquested visitor can leave without consuming a claim");
     seed_quest(0,16816); finish(finish_npc); inspect_claims(1);
@@ -124,7 +133,7 @@ extern "C" int __wrap_main(int argc, char** argv) {
     check(before_rewards==std::make_tuple(items,experience,reputation),"reset-boundary repeat finish gives no extra rewards");
     check(enabled.count("#EP21_GS_FinalExit") && !disabled.count(finish_npc),"repeat claimant can exit and cannot hide finish from other members");
     // Concurrent open dialogues for separate characters each record before close2.
-    reset(); stage("'stage",22); seed_quest(0,16821); seed_quest(1,16821);
+    reset(); stage("'stage",22); board(); seed_quest(0,16821); seed_quest(1,16821);
     invoke(finish_npc,0); to_close2(0); invoke(finish_npc,1); to_close2(1);
     check(q(0,16822)==Q_ACTIVE && q(1,16822)==Q_ACTIVE,"both native quest mutations complete before either close acknowledgement");
     acknowledge(1); acknowledge(0); inspect_claims(2);

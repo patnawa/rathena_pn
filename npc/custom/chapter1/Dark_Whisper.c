@@ -1112,12 +1112,10 @@ end;
 
 OnTimer1000:
 	function boss_exist;
+	function member_ok;
 	stopnpctimer;
 	.@gid = get_instance_var("gid");
 	if ( get_instance_var("boss_dead") || !.@gid ) {
-		end;
-	}
-	if ( get_instance_var("counter_started") ) {
 		end;
 	}
 	.@map$ = get_instance_var("map$");
@@ -1128,64 +1126,23 @@ OnTimer1000:
 		end;
 	}
 	for ( .@i = 0; .@i < .@count; .@i++ ) {
-		while ( !attachrid(get_instance_var("aid_" + .@i)) ) {
+		// Wait detached (sleep) and re-attach after each tick: sleep2 would end
+		// this timer script, and every later fail check, if the member logged out.
+		while ( !member_ok(.@i, .@map$) ) {
 			instance_announce instance_id(), "A player died/left the dungeon, the attack will fail in " + get_instance_var("fail_tick") + " turn.", BC_MAP;
 			set_instance_var("fail_tick", get_instance_var("fail_tick") - 1);
-			// sleep2 needs an attached unit; an offline member has none to keep.
 			sleep 1000;
 			if ( !boss_exist() ) {
 				end;
 			}
-			if ( attachrid(get_instance_var("aid_" + .@i)) ) {
+			if ( member_ok(.@i, .@map$) ) {
 				break;
 			}
 			if ( get_instance_var("fail_tick") == 0 ) {
 				instance_event("ch1_rdw_control", "OnFail", false);
 				end;
 			}
-			if ( !boss_exist() ) {
-				end;
-			}
 		}
-		if ( !boss_exist() ) {
-			end;
-		}
-		while ( strcharinfo(3) != .@map$ ) {
-			instance_announce instance_id(), "A player died/left the dungeon, the attack will fail in " + get_instance_var("fail_tick") + " turn.", BC_MAP;
-			set_instance_var("fail_tick", get_instance_var("fail_tick") - 1);
-			sleep2 1000;
-			if ( !boss_exist() ) {
-				end;
-			}
-			if ( strcharinfo(3) == .@map$ ) {
-				break;
-			}
-			if ( get_instance_var("fail_tick") == 0 ) {
-				instance_event("ch1_rdw_control", "OnFail", false);
-				end;
-			}
-			if ( !boss_exist() ) {
-				end;
-			}
-		}
-		while ( Hp < 1 ) {
-			instance_announce instance_id(), "A player died/left the dungeon, the attack will fail in " + get_instance_var("fail_tick") + " turn.", BC_MAP;
-			set_instance_var("fail_tick", get_instance_var("fail_tick") - 1);
-			sleep2 1000;
-			if ( !boss_exist() ) {
-				end;
-			}
-			if ( Hp > 0 ) {
-				break;
-			}
-			if ( get_instance_var("fail_tick") == 0 ) {
-				instance_event("ch1_rdw_control", "OnFail", false);
-				end;
-			}
-			if ( !boss_exist() ) {
-				end;
-			}
-		}	
 	}
 	if ( get_instance_var("fail_tick") < 10 ) {
 		inc_instance_var("fail_tick");
@@ -1197,6 +1154,14 @@ end;
 
 function	boss_exist	{
 	return unitexists( get_instance_var("gid") );
+}
+
+// Attaches member getarg(0); true when online, on the instance map and alive.
+function	member_ok	{
+	if ( !attachrid(get_instance_var("aid_" + getarg(0))) ) {
+		return false;
+	}
+	return strcharinfo(3) == getarg(1) && Hp > 0;
 }
 
 }

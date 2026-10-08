@@ -107,17 +107,27 @@ assertions only, and don't replace native startup or play testing.
   - Multi-storage waits at most about 10 seconds.
   - Tina's ticket text is corrected.
 
-## Deferred (decision or runtime evidence needed)
+## Follow-up release (same day)
 
-- **Ghost Ship late-joiner reports**: recorded as an owner policy choice in `episode21_reentry_claims_deployment_20260906.md`.
-- **Episode 20 multi-choice daily cooldowns**: client quest data gives each option its own daily, so a shared cooldown isn't clearly intended.
-- **The `dic_dun` gate**: the field portal makes it ineffective; gating the field is a policy decision.
-- **Restart-safe returning checks** at Tomb of Remorse, Airship Crash and Hall of Life: their gate bodies are hash-pinned by `instance_entry_native_test.py`. They are bounded by the active window and post-menu roster checks.
-- **Not changed, by design**: Friday Dungeon's enchant clears random options as its own dialogue warns, and Illusion/Horror Toy slot choices can't reach physical card slots with the current item database.
-- **Further notes for review**:
-  - The one-time Final Battle story reward has no roster.
-  - The Sticky Sea story branch remains open to late joiners.
-  - Apprentice Craftsman turns away a player whose last matching copy is a rental.
+- **Late joiners**: Ghost Ship reports, the one-time Final Battle story reward and the Sticky Sea story branch now require a roster recorded at their encounter start (`'gs_roster`, `'fb_story_roster`, `'ep20_sticky_roster`). These rosters use `getmapunits`, which walks every unit and compares its map, so players just moved by `instance_warpall` are included.
+- **`episode20/Instances.txt` (The Undying)**: same `monster()` misuse as Alice. Lasgand's GID and the Vision GIDs are now read from `$@mobid[0]`, and `immortal_instance_test.py` models the native command.
+- **Twilight Garden**: the 8→9 ambush runs as an NPC event (`Almond#amond01::OnAmbush`), so a leader disconnect no longer skips the Heart Hunters.
+- **Dark Whisper**: fail checks wait detached and re-attach members each tick, so a member logout no longer stops them. The never-set `counter_started` check is removed.
+- **Geffen Magic Tournament Event 2**: the cutscene runs detached. The dialogue and buff are given only if the killer is still online.
+- **Smaller fixes**:
+  - Ellie names the input item.
+  - The investigator cooldown holds across map changes.
+  - Ascetic Jeon's quest condition has the intended precedence.
+  - Apprentice Craftsman selects the non-rental copy.
+- **Test fixtures**: `ghost_ship_report_claim_test.py` and `episode21_encounter_flow_test.py` seed the voyage roster through the VM. `ghost_ship_report_claim_test.py` also adds a refused late-joiner case.
+
+## Not bugs (evidence)
+
+- **Episode 20 multi-choice dailies**: the official client quest data defines a separate `[Standby]` cooldown quest for each option (19163/19165, 18237/18239, 11950/11952). Completing both options per day is official behaviour.
+- **The `dic_dun` warper gate**: dungeon access is officially open. The Manuk Teleport Cat, the Dimensional Gap and the plain field portal lead in, and El Dicastes itself is still gated at the city guard. The warper's stricter `dic_dun` check is a deliberate, tested design (`instance_warper_test.py`), not an exploit.
+- **Friday Dungeon enchant** clears random options, as its own dialogue warns.
+- **Illusion / Horror Toy slot choices** cannot reach physical card slots with the current item database.
+- **Restart-safe returning checks** at Tomb of Remorse, Airship Crash and Hall of Life are bounded by the active window and post-menu roster checks. Their gate bodies are pinned by `instance_entry_native_test.py`.
 
 ## Exploitation review (production logs, read-only)
 

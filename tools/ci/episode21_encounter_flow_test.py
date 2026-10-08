@@ -301,6 +301,9 @@ extern "C" int __wrap_main(int argc, char** argv) {
         boundary(code != nullptr, "actual NPC body parses"); codes[test.name] = code;
     }
     boundary(errors == 0, "production bodies parse without errors");
+    // Ghost Ship reports require the voyage roster recorded when the voyage began.
+    codes["@gs_board"] = parse_script("{ setarray 'gs_roster[0],99000010,99000011; end; }", "voyage roster fixture", 1, 0);
+    boundary(codes["@gs_board"] != nullptr && errors == 0, "voyage roster fixture parses");
     // Every shared dialogue transition: two real VM states suspend at close2.
     // The first progresses, another member may advance further, then the stale
     // continuation must neither rewind shared state nor issue world effects.
@@ -389,6 +392,7 @@ extern "C" int __wrap_main(int argc, char** argv) {
     };
     for (const auto& reward : rewards) {
         reset(); stage(reward.var,22);
+        if (std::string(reward.name) == "Maristella#ep21gs_finish") finish("@gs_board");
         for (unsigned p = 0; p < 2; ++p) { seed_quest(p,reward.from); finish(reward.name,p); check(q(p,reward.to) == Q_ACTIVE && q(p,reward.from) == -1, "each eligible member records its own completion"); }
         for (unsigned p = 0; p < 2; ++p) finish(reward.name,p);
         check(!disabled.count(reward.name) && items.empty() && reputation.empty(), "finish remains available without duplicate reward");

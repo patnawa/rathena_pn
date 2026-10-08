@@ -303,7 +303,7 @@ OnStickyDead:
 	'ep20_sticky_stage = 1;
 	disablenpc;
 	.@map$ = instance_mapname("1@slug");
-	// Only characters inside when the rescue starts may claim the daily reward;
+	// Only characters inside when the rescue starts may claim its story or daily reward;
 	// the roster is keyed by character ID so deaths and re-entry keep eligibility.
 	.@n = getmapunits(BL_PC,.@map$,.@players);
 	for (.@i = 0; .@i < .@n; ++.@i)
@@ -318,6 +318,12 @@ OnStickyDead:
 	if (instance_live_info(ILI_NAME) != "Sticky Sea" || 'ep20_sticky_stage != 4) end;
 	mes "[Rescued Copo]";
 	if (isbegin_quest(11946) == 1) {
+		if (inarray('ep20_sticky_roster,getcharid(0)) < 0) {
+			mes "Only adventurers present when the rescue began can report it to Lalaha.";
+			close2;
+			warp "icecastle",70,213;
+			end;
+		}
 		callfunc "EP20_MoveQuest",11946,11947;
 		mes "Rorohyu and his friend are safe. Report to Lalaha in Ice Castle.";
 		close2;
@@ -481,7 +487,9 @@ OnBossDead:
 	'ep20_undying_mode = .@choice;
 	'ep20_undying_stage = 1;
 	disablenpc;
-	.@gid = monster(instance_mapname("1@twbs"),80,93,"Demigod Lasgand",31900,1,instance_npcname("#EP20_Undying_Control")+"::OnBossDead");
+	// monster returns nothing; read the server-wide $@mobid before anything else spawns.
+	monster instance_mapname("1@twbs"),80,93,"Demigod Lasgand",31900,1,instance_npcname("#EP20_Undying_Control")+"::OnBossDead";
+	.@gid = $@mobid[0];
 	'ep20_undying_gid = .@gid;
 	if ('ep20_undying_mode == 2) {
 		setunitdata .@gid,UMOB_MAXHP,2000000000;
@@ -498,7 +506,8 @@ OnBossDead:
 	setarray .@vx[0],80,80,94,66;
 	setarray .@vy[0],107,79,93,93;
 	for (.@i = 0; .@i < 4; ++.@i) {
-		'ep20_undying_visions[.@i] = monster(instance_mapname("1@twbs"),.@vx[.@i],.@vy[.@i],"Vision of Lasgand",31901,1,instance_npcname("#EP20_Undying_Control")+"::OnVisionDead");
+		monster instance_mapname("1@twbs"),.@vx[.@i],.@vy[.@i],"Vision of Lasgand",31901,1,instance_npcname("#EP20_Undying_Control")+"::OnVisionDead";
+		'ep20_undying_visions[.@i] = $@mobid[0];
 		'ep20_undying_cast[.@i] = 5 + .@i;
 	}
 	// Use the instance controller's NPC timer so Lasgand always activates even
