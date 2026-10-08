@@ -159,3 +159,6 @@ guarded map-only cutover with zero players online.
   [deployment record](npc_script_audit_deployment_20261008.md).
 - The follow-up repairs went live as `957f42ea2`. See the
   [follow-up record](npc_script_audit_followup_deployment_20261008.md).
+
+Rendered client acceptance is the remaining owner step. Use the
+[client acceptance checklist](npc_script_audit_playtest_20261008.md).
