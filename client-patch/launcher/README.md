@@ -33,7 +33,7 @@ received bytes, average speed and an approximate remaining time.
 
 Build the dashboard with `build.ps1 -Output ABSOLUTE_DIRECTORY`, then use
 `install-dashboard.ps1 -Build ABSOLUTE_BUILD_DIRECTORY -ClientRoot ABSOLUTE_PN_CLIENT_DIRECTORY`.
-The installer adds `PNLauncher-20261007.exe`, `Launch PN Dashboard.cmd`,
+The installer adds `PNLauncher-20261013-v2.exe`, `Launch PN Dashboard.cmd`,
 `PN Launcher.lnk`, `PN Ragnarok.lnk` and `PN-Branding/`. The launcher has an
 embedded Midgard PN icon, also shown in the sidebar; the game shortcut uses
 the matching ivory Valkyrie-wing Ragnarok crest and
@@ -115,7 +115,13 @@ in an empty writable directory for a fresh installation, or use the supplied
 Windows installation; the build targets .NET Framework 4.x.
 
 The release envelope uses RSA-3072/SHA-256 and the embedded public key. The
-private publisher key stays in the developer's user-only `.ssh` directory.
+active publisher private key is stored outside Git and the public client tree;
+its locations and verified backup procedure are recorded in the local project
+context. The replacement launcher reads `release-v2.json` with the current key.
+It accepts the legacy key only for local installed/rollback manifests through
+sequence 2026092909. Existing launchers retain `release.json`; players must
+download the replacement `PNLauncher.exe` once from the LAN status page and
+run it inside their existing client folder to join the new update channel.
 Every downloaded object is verified by length and SHA-256 before installation.
 The launcher rejects redirects, invalid paths, reparse points and older feed
 sequences. Initial bootstrap trust comes from the local client or this LAN

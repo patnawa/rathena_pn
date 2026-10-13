@@ -24,7 +24,10 @@ def read_object(path):
 def client_info(root):
     """Display only published release metadata; the launcher verifies signatures."""
     try:
-        envelope=read_object(root/'release.json')
+        # Keep the legacy feed available while the replacement bootstrap moves
+        # clients onto the new publisher key. Display the active v2 release.
+        current=root/'release-v2.json'
+        envelope=read_object(current if current.exists() else root/'release.json')
         manifest=json.loads(base64.b64decode(envelope['payload'],validate=True))
         name=manifest['release'];files=manifest['files']
         if not isinstance(name,str) or not 0<len(name)<=180 or not isinstance(files,list):raise ValueError('Invalid metadata')
@@ -78,9 +81,9 @@ def handler(root,assets=ASSETS):
                 info=client_info(root)
                 if info is None:self.send_error(503);return
                 data=json.dumps(info).encode();mime='application/json'
-            elif path in ('/release.json','/PNLauncher.exe'):
+            elif path in ('/release.json','/release-v2.json','/PNLauncher.exe'):
                 file=root/path[1:]
-                if path=='/release.json':mime='application/json'
+                if path.endswith('.json'):mime='application/json'
             elif re.fullmatch(r'/objects/[0-9a-f]{64}',path):file=root/path[1:]
             else:self.send_error(404);return
             if file:

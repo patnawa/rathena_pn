@@ -5,13 +5,14 @@ New-Item -ItemType Directory -Force -Path $out | Out-Null
 $compiler=Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
 $sources=@((Join-Path $PSScriptRoot 'Launcher.cs'),(Join-Path $PSScriptRoot 'LauncherUI.cs'),(Join-Path $PSScriptRoot 'GameSettings.cs'),(Join-Path $PSScriptRoot 'SelfTest.cs'),(Join-Path $PSScriptRoot 'VerifiedFileCache.cs'),(Join-Path $PSScriptRoot 'ReliabilityTest.cs'),(Join-Path $PSScriptRoot 'Checksum.cs'),(Join-Path $PSScriptRoot 'Network.cs'),(Join-Path $PSScriptRoot 'StartupTest.cs'))
 $key=Join-Path $PSScriptRoot 'trusted-public-key.xml'
+$legacyKey=Join-Path $PSScriptRoot 'legacy-public-key.xml'
 $manifest=Join-Path $PSScriptRoot 'launcher.manifest'
 $icon=Join-Path $PSScriptRoot 'assets/midgard/pn-launcher.ico'
 $hero=Join-Path $PSScriptRoot 'assets/midgard/midgard-hero.jpg'
 $logo=Join-Path $PSScriptRoot 'assets/midgard/pn-launcher-256.png'
-& $compiler /nologo /target:winexe /platform:anycpu /optimize+ "/win32manifest:$manifest" "/win32icon:$icon" /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll "/resource:$key,trusted-public-key.xml" "/resource:$icon,pn-launcher.ico" "/resource:$logo,pn-launcher.png" "/resource:$hero,midgard-hero.jpg" "/out:$out/PNLauncher.exe" @sources
+& $compiler /nologo /target:winexe /platform:anycpu /optimize+ "/win32manifest:$manifest" "/win32icon:$icon" /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll "/resource:$key,trusted-public-key.xml" "/resource:$legacyKey,legacy-public-key.xml" "/resource:$icon,pn-launcher.ico" "/resource:$logo,pn-launcher.png" "/resource:$hero,midgard-hero.jpg" "/out:$out/PNLauncher.exe" @sources
 if($LASTEXITCODE){throw 'Launcher build failed'}
-& $compiler /nologo /target:exe /platform:anycpu /optimize+ "/win32manifest:$manifest" "/win32icon:$icon" /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll "/resource:$key,trusted-public-key.xml" "/resource:$icon,pn-launcher.ico" "/resource:$logo,pn-launcher.png" "/resource:$hero,midgard-hero.jpg" "/out:$out/PNLauncherCheck.exe" @sources
+& $compiler /nologo /target:exe /platform:anycpu /optimize+ "/win32manifest:$manifest" "/win32icon:$icon" /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Web.Extensions.dll "/resource:$key,trusted-public-key.xml" "/resource:$legacyKey,legacy-public-key.xml" "/resource:$icon,pn-launcher.ico" "/resource:$logo,pn-launcher.png" "/resource:$hero,midgard-hero.jpg" "/out:$out/PNLauncherCheck.exe" @sources
 if($LASTEXITCODE){throw 'Launcher check build failed'}
 & (Join-Path $out 'PNLauncherCheck.exe') --self-test
 if($LASTEXITCODE){throw 'Launcher self-tests failed'}

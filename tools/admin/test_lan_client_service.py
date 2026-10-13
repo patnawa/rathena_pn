@@ -46,15 +46,27 @@ class StatusTests(unittest.TestCase):
         payload['files'][0]['bytes']=-1;(self.root/'release.json').write_text(json.dumps({'payload':base64.b64encode(json.dumps(payload).encode()).decode()}));self.assertIsNone(service.client_info(self.root))
     def test_public_routes_head_and_private_denials(self):
         (self.root/'PNLauncher.exe').write_bytes(b'launcher');(self.root/'health.json').write_text('private');(self.root/'objects').mkdir();digest='a'*64;(self.root/'objects'/digest).write_bytes(b'object')
+        (self.root/'release.json').write_bytes(b'legacy');(self.root/'release-v2.json').write_bytes(b'current')
         server=ThreadingHTTPServer(('127.0.0.1',0),service.handler(self.root));thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f'http://127.0.0.1:{server.server_port}'
         try:
             for path,mime in [('/','text/html'),('/assets/status.js','text/javascript'),('/assets/status.css','text/css'),('/assets/midgard-hero.jpg','image/jpeg'),('/PNLauncher.exe','application/octet-stream')]:
                 with urllib.request.urlopen(base+path) as response:self.assertIn(mime,response.headers['Content-Type']);self.assertIn("script-src 'self'",response.headers['Content-Security-Policy']);self.assertGreater(len(response.read()),0)
             with urllib.request.urlopen(urllib.request.Request(base+'/PNLauncher.exe',method='HEAD')) as response:self.assertEqual(response.read(),b'');self.assertEqual(response.headers['Content-Length'],'8')
             with urllib.request.urlopen(base+'/objects/'+digest) as response:self.assertIn('immutable',response.headers['Cache-Control']);self.assertEqual(response.read(),b'object')
-            for path in ['/health.json','/assets/../health.json','/assets/index.html','/objects/not-a-hash','/unknown']:
+            for name,expected in [('release.json',b'legacy'),('release-v2.json',b'current')]:
+                with urllib.request.urlopen(base+'/'+name) as response:self.assertEqual(response.read(),expected);self.assertEqual(response.headers['Content-Type'],'application/json');self.assertEqual(response.headers['Cache-Control'],'no-store')
+            for path in ['/health.json','/private.pem','/signing-key.dpapi','/release-v3.json','/assets/../health.json','/assets/index.html','/objects/not-a-hash','/unknown']:
                 with self.assertRaises(urllib.error.HTTPError) as error:urllib.request.urlopen(base+path)
                 self.assertEqual(error.exception.code,404)
         finally:server.shutdown();server.server_close();thread.join(3)
+
+    def test_metadata_prefers_current_feed_and_does_not_hide_damage(self):
+        def release(name):return json.dumps({'payload':base64.b64encode(json.dumps({'release':name,'files':[{'bytes':10}]}).encode()).decode()})
+        (self.root/'release.json').write_text(release('legacy'))
+        self.assertEqual(service.client_info(self.root)['release'],'legacy')
+        (self.root/'release-v2.json').write_text(release('current'))
+        self.assertEqual(service.client_info(self.root)['release'],'current')
+        (self.root/'release-v2.json').write_text('damaged')
+        self.assertIsNone(service.client_info(self.root))
 
 if __name__=='__main__':unittest.main()

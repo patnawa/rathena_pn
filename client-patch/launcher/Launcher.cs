@@ -22,6 +22,7 @@ class Transaction { public string phase; public Change[] changes; public bool pr
 
 class Engine : IDisposable {
     public const string Feed="http://192.168.10.18:8082/";
+    public const string ReleaseFile="release-v2.json";
     internal readonly string Root,Work;
     internal readonly JavaScriptSerializer Json=new JavaScriptSerializer { MaxJsonLength=8000000 };
     readonly Action<string,int> progress;
@@ -32,7 +33,10 @@ class Engine : IDisposable {
     long transferred,totalDownload;
     Stopwatch transferClock;
     public void Dispose(){verifiedFiles.Dispose();}
-    static string PublicKey { get { using(var s=typeof(Engine).Assembly.GetManifestResourceStream("trusted-public-key.xml"))using(var r=new StreamReader(s))return r.ReadToEnd(); } }
+    static bool SignedBy(string resource,byte[] payload,byte[] signature) {
+        using(var s=typeof(Engine).Assembly.GetManifestResourceStream(resource))using(var r=new StreamReader(s))
+        using(var rsa=new RSACryptoServiceProvider(new CspParameters(24))){rsa.PersistKeyInCsp=false;rsa.FromXmlString(r.ReadToEnd());return rsa.VerifyData(payload,CryptoConfig.MapNameToOID("SHA256"),signature);}
+    }
     public Engine(string root,Action<string,int> report) : this(root,report,typeof(Engine).Assembly.Location) {}
     internal Engine(string root,Action<string,int> report,string executablePath) {
         Root=Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar);Work=Path.Combine(Root,".pn-updater");progress=report;
@@ -61,12 +65,16 @@ class Engine : IDisposable {
         using(var f=new FileStream(temp,FileMode.Create,FileAccess.Write,FileShare.None)){byte[] data=Encoding.UTF8.GetBytes(content);f.Write(data,0,data.Length);f.Flush(true);}
         if(File.Exists(path))File.Replace(temp,path,null);else File.Move(temp,path);
     }
-    internal Manifest Verify(string wrapper) {
+    internal Manifest Verify(string wrapper,bool allowLegacy=true) {
         var envelope=Json.Deserialize<Envelope>(wrapper);if(envelope==null)throw new IOException("Invalid release envelope.");
         byte[] payload=Convert.FromBase64String(envelope.payload),signature=Convert.FromBase64String(envelope.signature);
-        using(var rsa=new RSACryptoServiceProvider(new CspParameters(24))){rsa.PersistKeyInCsp=false;rsa.FromXmlString(PublicKey);if(!rsa.VerifyData(payload,CryptoConfig.MapNameToOID("SHA256"),signature))throw new IOException("Release signature is invalid.");}
+        // Old signatures remain valid for installed files and local rollback.
+        // Network updates must use the replacement publisher key.
+        bool current=SignedBy("trusted-public-key.xml",payload,signature);
+        if(!current&&!(allowLegacy&&SignedBy("legacy-public-key.xml",payload,signature)))throw new IOException("Release signature is invalid.");
         var m=Json.Deserialize<Manifest>(Encoding.UTF8.GetString(payload));
         if(m==null||m.schema!=1||m.sequence<1||String.IsNullOrWhiteSpace(m.release)||m.files==null||m.files.Length==0||m.files.Length>20000)throw new IOException("Unsupported release manifest.");
+        if(!current&&m.sequence>2026092909L)throw new IOException("Legacy signing key cannot authorize new releases.");
         var names=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach(var f in m.files){ValidName(f.path);if(!names.Add(f.path)||f.bytes<0||f.bytes>8L*1024*1024*1024||!Regex.IsMatch(f.sha256??"","^[0-9a-f]{64}$"))throw new IOException("Invalid release file.");}
         if(!names.Contains("Ragexe.exe")||!names.Contains("RELEASE.json"))throw new IOException("Incomplete client manifest.");return m;
@@ -161,7 +169,7 @@ class Engine : IDisposable {
         Cancellation.ThrowIfCancellationRequested();
         if(fullVerification)verifiedFiles.Clear();
         CheckStopped();Recover();progress("Checking signed release...",0);
-        string wrapper=Text(Feed+"release.json",Cancellation);Manifest manifest=Verify(wrapper);
+        string wrapper=Text(Feed+ReleaseFile,Cancellation);Manifest manifest=Verify(wrapper,false);
         string highPath=Path.Combine(Work,"highest-sequence.txt");NoLinks(highPath);long highest=File.Exists(highPath)?Int64.Parse(File.ReadAllText(highPath)):0;
         if(manifest.sequence<highest)throw new IOException("An older release was rejected. Use Rollback for the saved local version.");
         var changes=CheckFiles(manifest);
