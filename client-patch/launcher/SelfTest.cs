@@ -20,9 +20,14 @@ static class SelfTest {
             string settings=Path.Combine(root,"savedata","OptionInfo.lua");
             string original="OptionInfoList[\"WIDTH\"] = 1920\nOptionInfoList[\"HEIGHT\"] = 1080\nOptionInfoList[\"RENDERSYSTEM\"] = 2\nOptionInfoList[\"ISFULLSCREENMODE\"] = 0\n";
             File.WriteAllText(settings,original);File.WriteAllText(Path.Combine(root,"PN-Turbo.ini"),"personal Turbo");
+            string[] personalFiles={"savedata/ChatWndInfo.lua","savedata/ChatWndInfo_U.lua","savedata/LikeListInfoFile.lua","savedata/shortcutlist/6333-338.lua","savedata/shortcutlist/6333-333.lua"};
+            foreach(string name in personalFiles){string path=Path.Combine(root,name);Directory.CreateDirectory(Path.GetDirectoryName(path));File.WriteAllText(path,"personal "+name);}
+            File.WriteAllText(Path.Combine(root,"savedata/shortcutlist/unrelated.tmp"),"not a setting");
             string snapshot=GameSettings.Backup(e);
             Assert(File.ReadAllText(Path.Combine(snapshot,"savedata","OptionInfo.lua"))==original&&File.ReadAllText(settings)==original,"settings snapshot preserves source and Lua content");
             Assert(File.ReadAllText(Path.Combine(snapshot,"PN-Turbo.ini"))=="personal Turbo","settings snapshot preserves Turbo preferences");
+            foreach(string name in personalFiles)Assert(File.Exists(Path.Combine(snapshot,name))&&File.ReadAllText(Path.Combine(snapshot,name))=="personal "+name&&File.ReadAllText(Path.Combine(root,name))=="personal "+name,"settings snapshot preserves "+name);
+            Assert(!File.Exists(Path.Combine(snapshot,"savedata/shortcutlist/unrelated.tmp")),"settings snapshot excludes unrelated shortcut files");
             Assert(GameSettings.Summary(root).Contains("1920 × 1080")&&GameSettings.Summary(root).Contains("DirectX 9"),"reads current Lua display settings");
             string prefs=Path.Combine(work,"launcher-settings.json");File.WriteAllText(prefs,"{\"autoRefresh\":false,\"minimizeOnPlay\":false}");
             Assert(!LauncherPreferences.Load(prefs).autoRefresh&&!LauncherPreferences.Load(prefs).minimizeOnPlay,"launcher preferences persist independently of game settings");

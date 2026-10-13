@@ -73,6 +73,31 @@ class HealthTests(unittest.TestCase):
                 self.assertFalse(result['passed'])
                 self.assertEqual(result['reason'], 'Malformed runtime metrics')
 
+    def test_malformed_latest_heartbeat_cannot_reuse_healthy_sample(self):
+        now = datetime.now(timezone.utc)
+        state = {'Running': True, 'StartedAt': (now-timedelta(hours=1)).isoformat()}
+        for payload in ('', '{"version":2', 'null', '[]', '{"version":2} trailing'):
+            logs = self.metric(now) + '\n[Info]: PN_METRICS ' + payload
+            with self.subTest(payload=payload), patch.object(
+                    health, 'command', side_effect=[json.dumps(state), logs]):
+                result = health.inspect_service('rathena-map', 15)
+                self.assertFalse(result['passed'])
+                self.assertEqual(result['runtime']['reason'], 'Malformed runtime metrics')
+
+    def test_primary_sql_severity_fails_without_exposing_query(self):
+        state = {'Running': True, 'StartedAt': (datetime.now(timezone.utc)-timedelta(hours=1)).isoformat()}
+        for line, expected in (
+                ('[SQL]: Failed to save private character payload', False),
+                ('\x1b[31m[SQL]: transaction rollback failed', False),
+                ('[Info]: [SQL]: Connection established', True),
+                ('[Status]: [SQL]: Loaded database', True)):
+            with self.subTest(line=line), patch.object(
+                    health, 'command', side_effect=[json.dumps(state), line]):
+                result = health.inspect_service('rathena-char', 15)
+                self.assertEqual(result['passed'], expected)
+                self.assertEqual(result['recent_error_lines'], int(not expected))
+                self.assertNotIn('private character payload', json.dumps(result))
+
     def test_nonfinite_thresholds_fail_before_inspecting_services(self):
         for option in ('--max-backup-hours', '--min-free-gib', '--max-disk-percent'):
             for value in ('nan', 'inf', '-inf'):

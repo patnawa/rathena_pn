@@ -99,7 +99,20 @@ function dofile(path)
     hooks=hooks+1; before=clone(tbl); base_missing=(tbl[12781] == nil)
     -- Always reproduce the missing-base-record case, even after a base update.
     tbl[12781]=nil
-    return original_dofile(PATCH)
+    local result=original_dofile(PATCH)
+    -- Check this patch at its boundary. The real loader intentionally applies
+    -- unrelated branding, weights and new item tables after the bank overlay.
+    for id,entry in pairs(tbl) do
+      if id ~= 12781 then
+        local expected=clone(before[id])
+        if id == 6024 then
+          expected.identifiedDescriptionName=clone(entry.identifiedDescriptionName)
+        end
+        assert(equal(entry,expected), 'Unrelated item metadata changed: '..id)
+      end
+    end
+    for id in pairs(before) do assert(tbl[id], 'Removed item: '..id) end
+    return result
   end
   return original_dofile(path)
 end
@@ -117,13 +130,7 @@ assert(ticket.Custom == true, 'Custom bank ticket must not link to an unrelated 
 local count=0
 for id,entry in pairs(tbl) do
   count=count+1
-  if id ~= 12781 then
-    local expected=clone(before[id])
-    if id == 6024 then expected.identifiedDescriptionName=clone(entry.identifiedDescriptionName) end
-    assert(equal(entry,expected), 'Unrelated item metadata changed: '..id)
-  end
 end
-for id in pairs(before) do assert(tbl[id], 'Removed item: '..id) end
 local once=clone(tbl); dofile(PATCH); assert(equal(tbl,once), 'Repeated metadata load changes items')
 local registered, identified, unidentified={}, {}, {}
 function AddItem(id,uname,uresource,name,resource,slots,classnum)
@@ -152,8 +159,9 @@ local registrations=0; for _ in pairs(registered) do registrations=registrations
 assert(registrations == count and registered[12781], 'Ticket was not registered by main()/AddItem')
 for _,lines in ipairs({identified,unidentified}) do
   local text=table.concat(lines,'\n')
-  assert(text:find('1M Zeny Ticket',1,true))
-  assert(text:find('1,002,000',1,true) and text:find('998,000',1,true))
+  assert(text:find('Retired currency. Use direct Zeny instead.',1,true), 'Missing currency retirement notice')
+  assert(text:find('998,000',1,true) and text:find('@bank',1,true), 'Missing conversion value or bank guidance')
+  assert(not text:find('1,002,000',1,true), 'Retired tickets must not advertise a purchase price')
   assert(text:find('Weight:^000000 0',1,true))
 end
 -- Preserve an existing installation's own resources and extra metadata.

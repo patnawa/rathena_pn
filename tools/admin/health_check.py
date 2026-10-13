@@ -13,9 +13,11 @@ import subprocess
 import tempfile
 
 SERVICES = ('rathena-login', 'rathena-char', 'rathena-map', 'rathena-web', 'rathena-db', 'rathena-fluxcp', 'npm')
-ERROR = re.compile(r'\[(?:Error|Fatal[^\]]*)\]|AddressSanitizer|runtime error:|\[SQL\]:\s*DB error', re.I)
+ERROR = re.compile(r'\[(?:Error|Fatal[^\]]*)\]|AddressSanitizer|runtime error:|^\s*\[SQL\]:|\[SQL\]:\s*DB error', re.I)
 RECONNECT = re.compile(r'Connection to (?:Char|Login)[ -]Server lost|Unable to resolve (?:char|login)-server', re.I)
-METRICS = re.compile(r'^\s*\[Info\]:\s*PN_METRICS (\{.*\})\s*$')
+# Recognize the record before parsing its payload. Filtering for a complete
+# JSON object here would silently reuse an older success after truncated output.
+METRICS = re.compile(r'^\s*\[Info\]:\s*PN_METRICS\b(.*)$')
 
 
 def metrics_status(logs, now, uptime_seconds, max_pending_seconds=30, max_timer_p99_ms=None):

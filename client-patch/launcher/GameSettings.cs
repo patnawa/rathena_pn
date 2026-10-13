@@ -1,5 +1,6 @@
 // PN launcher preferences and local settings snapshots. GPL-3.0-or-later.
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
@@ -38,7 +39,13 @@ static class GameSettings {
     internal static string Backup(Engine engine) {
         string folder=Path.Combine(engine.Work,"settings-backups",DateTime.Now.ToString("yyyyMMdd-HHmmss")+"-"+Guid.NewGuid().ToString("N").Substring(0,6));
         Engine.NoLinks(folder);Directory.CreateDirectory(folder);int copied=0;
-        foreach(string name in new[]{"savedata/OptionInfo.lua","savedata/UserKeys.lua","savedata/ChatWndInfo.lua","savedata/UIInfo.lua","savedata/MiniPartyInfo.lua","PN-Turbo.ini"}) {
+        var files=new List<string>{"savedata/OptionInfo.lua","savedata/UserKeys.lua","savedata/ChatWndInfo.lua","savedata/ChatWndInfo_U.lua","savedata/UIInfo.lua","savedata/MiniPartyInfo.lua","savedata/LikeListInfoFile.lua","PN-Turbo.ini"};
+        // This client stores chat settings under the _U name and character
+        // hotbars in separate Lua files; UserKeys.lua alone is not a full backup.
+        string shortcuts=Path.Combine(engine.Root,"savedata","shortcutlist");Engine.NoLinks(shortcuts);
+        if(Directory.Exists(shortcuts))foreach(string path in Directory.GetFiles(shortcuts))
+            if(String.Equals(Path.GetExtension(path),".lua",StringComparison.OrdinalIgnoreCase))files.Add("savedata/shortcutlist/"+Path.GetFileName(path));
+        foreach(string name in files) {
             string source=Path.Combine(engine.Root,name.Replace('/',Path.DirectorySeparatorChar));Engine.NoLinks(source);
             if(!File.Exists(source))continue;
             if(new FileInfo(source).Length>8*1024*1024)throw new IOException("Settings file is unexpectedly large: "+name);
