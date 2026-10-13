@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "source_commit": "68dac3b2df624d6513c15df4a2c890836013e331",
+  "server": {
+    "deployed": true,
+    "source_files": [
+      "client-patch/launcher/GameSettings.cs",
+      "client-patch/launcher/SelfTest.cs",
+      "tools/admin/health_check.py",
+      "tools/ci/bank_item_metadata_test.py",
+      "tools/ci/health_check_test.py"
+    ],
+    "source_sha256": "2d55683455d1b14d813864baf43ddb9d38b78230985f27806ae6ff681a8f0dcc",
+    "health_passed": true,
+    "healthy_services": 7,
+    "health_regressions_passed": 13,
+    "game_service_restarts": 0,
+    "rollback_backup": "/app/pn-bughunt-20261013/server-backup",
+    "checked_utc": "2026-10-13T08:17:35.876831+00:00"
+  },
+  "local_client": {
+    "launcher": "PNLauncher-20261013.exe",
+    "launcher_sha256": "7df8ffa795d52b4c2de12f8e01081752e86806c529158e36453c181982c90c85",
+    "shortcut": "PN Launcher.lnk",
+    "installed_signed_files_verified": true,
+    "personal_settings_modified": false
+  },
+  "shared_client_feed": {
+    "published": false,
+    "current_release": "client-20261007-patcher",
+    "current_sequence": 2026092909,
+    "pending_release": "client-20261013-bughunt",
+    "pending_sequence": 2026092910,
+    "blocker": "Existing client release signing key pn-client-signing.pem unavailable; a new key cannot sign updates trusted by the installed launchers.",
+    "candidate_staged": "/app/pn-bughunt-20261013/publication",
+    "prior_feed_preserved": true
+  },
+  "offline_audit": {
+    "source_checks": 61,
+    "yaml_files": 314,
+    "portable_suites": 25,
+    "msvc_asan_fixtures": 6,
+    "client_combat_suites": 15,
+    "verified_archive_payloads": 242335,
+    "registered_items": 27165,
+    "economy_verdict": "no_resource_growth_in_combined_model",
+    "limitations": [
+      "No full linked server build/startup or real SQL crash recovery run.",
+      "No rendered gameplay or multiplayer acceptance.",
+      "291 dynamic grant sites remain unresolved by static acquisition tracing."
+    ]
+  },
+  "launcher_self_test_groups": 15,
+  "cleanup": {
+    "passed": true,
+    "retained_files_verified": 14973,
+    "removed_files": 6894,
+    "logical_removed_mib": 332.5,
+    "stored_removed_mib": 330.52,
+    "compact_archive_mib": 2.3,
+    "source_and_client_preserved": true,
+    "git_unchanged": true
+  },
+  "source_binding": [
+    {
+      "path": "client-patch/launcher/GameSettings.cs",
+      "before_sha256": "8526c4f332a8e37baed919be999324f407c2b1da1dd6925393737c5cbdad2fa7",
+      "after_sha256": "3aa5408755bf8137e0f32e2ff52f63a0a14feed53ec33b246bac478e33812089"
+    },
+    {
+      "path": "client-patch/launcher/SelfTest.cs",
+      "before_sha256": "aaa15d55ec9d8dba35cfcfba67174070f99524977dc579d5a849433a34de2b6e",
+      "after_sha256": "2aa10c6a6c6f5245c617e1e4bae13a11703c3b96898c79ac8f93699e728a3426"
+    },
+    {
+      "path": "tools/admin/health_check.py",
+      "before_sha256": "8980529b8108488dd21b0b3e3746c0215a357cd2bbdd33f8d8bd746050001a61",
+      "after_sha256": "0a5144d917a42b6e1334c9a54a739b021b3dfd46c206ee2126f22c9ebcba1b32"
+    },
+    {
+      "path": "tools/ci/health_check_test.py",
+      "before_sha256": "5569d656c429ac35a5530fcdffba16d75d18095c781608680d572968460dae1c",
+      "after_sha256": "b36be4852eec13114a4fde45bc8252de795a33d16fc801bb71b355adbc3e8cef"
+    },
+    {
+      "path": "tools/ci/bank_item_metadata_test.py",
+      "before_sha256": "7ae6b31a8134e63f240a93dea9ab9019472b86fe5db78ed8896bdf255c616c6e",
+      "after_sha256": "f3bc8fac295a0639d8afa65d9eb0d3ba7b8deb7ce0be723a6eb11cf28b651262"
+    }
+  ],
+  "evidence_sha256": {
+    "summary.json": "0edaa5e3a68705ac0f27648153c9033aff8476fbcea468bfdeba4168f84d5c4f",
+    "release-build.log": "6fdb5e718df84035a7aeceefe750809caa54cc3c3157ea329dc5bd7efb984657",
+    "server-deployment.json": "b5f6647f8ee3d19d2cfb86c6e74404536ba46791eab3490f8fa6ef7506405946",
+    "health-regression.log": "0d5f8346517fbbc9f8c76001a173ca4ace78dc0d43bc08446621d0299d7dcd04",
+    "live-postflight.json": "af5ac3c602feeebb3af1cea3e9800d1df1eb0cc6306f2dacdf26b31a7b833385",
+    "local-client-deployment.json": "4eb9275ebcfca22723cb35fab129b145ca9dd405984b02b2a8788a88d50a9c9f",
+    "local-installed-verification.log": "327913a88025678a5f5ba1f6f993d6c31a4b14dcbc10aa27c9d8f2fdece7cfed"
+  }
+}
