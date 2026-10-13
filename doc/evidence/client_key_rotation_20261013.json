@@ -1,0 +1,148 @@
+{
+  "schema": 1,
+  "source_commit": "f195ce88110ce43b1b6d4219c85104f7ecef007c",
+  "release": "client-20261013-key-rotation",
+  "sequence": 2026092910,
+  "published": true,
+  "feed": "release-v2.json",
+  "feed_sha256": "54d29523241035d9a90477e3802c83f5a0f25dad4e95fab8f062fa7205d41e96",
+  "bootstrap_sha256": "f7f41e6028e00ddd220e0b4078056e3c36f83b532320a23b112886a1a76d2187",
+  "legacy_feed_preserved": true,
+  "legacy_feed_sha256": "4a6266bfe1778e83f5090692167336d8f4c0c50f342e5314c13cca0d63a0a2c5",
+  "trust_policy": "Current key required for network updates; legacy key valid only for installed/rollback manifests through sequence 2026092909.",
+  "key_backup": {
+    "algorithm": "RSA-3072/SHA-256",
+    "public_spki_sha256": "87ead5b585d2280b5c91519c7f5da8ea53a222f65666cec55d0f5927fcf90db9",
+    "server_root_only_primary": true,
+    "independent_host_dpapi_backup": true,
+    "backup_acl_alpha_and_system_only": true,
+    "both_copies_sign_and_verify": true,
+    "backup_reproduced_published_signature": true,
+    "private_key_in_git": false
+  },
+  "deployment": {
+    "passed": true,
+    "published": true,
+    "source_revision": "f195ce88110ce43b1b6d4219c85104f7ecef007c",
+    "release": "client-20261013-key-rotation",
+    "sequence": 2026092910,
+    "backup": "/app/pn-bughunt-20261013/key-rotation/deployment-backup",
+    "source_before": "2d55683455d1b14d813864baf43ddb9d38b78230985f27806ae6ff681a8f0dcc",
+    "source_after": "08f07b6fe83fa64989b608c65890267f56c9033fddfad29057eaccd78154c845",
+    "started_utc": "2026-10-13T08:34:53.269905+00:00",
+    "game_services_healthy": true,
+    "game_services_unchanged": true,
+    "lan_download_service_restarted": true,
+    "legacy_feed_preserved": true,
+    "feed_sha256": "54d29523241035d9a90477e3802c83f5a0f25dad4e95fab8f062fa7205d41e96",
+    "bootstrap_sha256": "f7f41e6028e00ddd220e0b4078056e3c36f83b532320a23b112886a1a76d2187",
+    "finished_utc": "2026-10-13T08:34:56.098332+00:00"
+  },
+  "installed_client": {
+    "passed": true,
+    "release": "client-20261013-key-rotation",
+    "sequence": 2026092910,
+    "launcher": "PNLauncher-20261013-v2.exe",
+    "installed_signature_and_files_verified": true,
+    "actual_installed_bootstrap_verified": true,
+    "personal_files_preserved": 10,
+    "game_started": false,
+    "feed_sha256": "54d29523241035d9a90477e3802c83f5a0f25dad4e95fab8f062fa7205d41e96",
+    "bootstrap_sha256": "f7f41e6028e00ddd220e0b4078056e3c36f83b532320a23b112886a1a76d2187"
+  },
+  "native_acceptance": {
+    "passed": true,
+    "release": "client-20261013-key-rotation",
+    "sequence": 2026092910,
+    "legacy_installed_verified": true,
+    "current_signature_verified": true,
+    "wrong_key_rejected": true,
+    "legacy_network_signature_rejected": true,
+    "native_signed_upgrade": true,
+    "native_local_verification": true,
+    "native_rollback_exact": true,
+    "legacy_rollback_verified": true,
+    "older_feed_refused": true,
+    "native_reupgrade": true,
+    "tampered_payload_rejected": true,
+    "settings_preserved": true,
+    "downloaded_only_launcher_objects": true,
+    "feed_sha256": "54d29523241035d9a90477e3802c83f5a0f25dad4e95fab8f062fa7205d41e96",
+    "source_revision": "f195ce88110ce43b1b6d4219c85104f7ecef007c",
+    "test_source_difference": "Only the feed base points to the loopback fixture server."
+  },
+  "launcher_self_test_groups": 15,
+  "http_regression_tests": 8,
+  "fixture_cleanup": {
+    "passed": true,
+    "removed_files": 5669,
+    "logical_bytes": 5371592845,
+    "unique_file_bytes": 5152267,
+    "hard_linked_client_payloads_preserved": true,
+    "acceptance_logs_preserved": true
+  },
+  "post_cleanup_installed_client_verification": true,
+  "existing_players": "Download the replacement PNLauncher.exe once from the LAN status page, save it in the existing client folder, then run Check for updates.",
+  "source_files": [
+    {
+      "path": "client-patch/launcher/Launcher.cs",
+      "before_sha256": "b082cac62810a0f927df0c770a0ad5921afcfb5a1efc6258cbc600f4a2632c26",
+      "after_sha256": "092a2cae66cacd0ae5b208e05c59f64630b972298cf9958ad8004c7bf69a73a0"
+    },
+    {
+      "path": "client-patch/launcher/README.md",
+      "before_sha256": "59b96252faa4a11a6d999cd2059205bc508016d4b74f434a8c9f31d9fab0182e",
+      "after_sha256": "45933d76283122140382caa260dfca378e6deb9093491d58f448deb9dbcdfa9c"
+    },
+    {
+      "path": "client-patch/launcher/build.ps1",
+      "before_sha256": "4f5549bba1b1773a71b563543d864f700150ae02e51ef3ff5169209035ca44ff",
+      "after_sha256": "be7e8eb2960957b96f1f13b430157be0daf8a9dcca92227daa7f675cba4b9061"
+    },
+    {
+      "path": "client-patch/launcher/install-dashboard.ps1",
+      "before_sha256": "dbbf7b875753f0ac12395315183ad8d28e97c2b00a642e6e3bd68174d6ccd078",
+      "after_sha256": "1a2f935986f52949766fcb067c8a5c3a8890b5b5bf4447f93b893cdff49d008a"
+    },
+    {
+      "path": "client-patch/launcher/legacy-public-key.xml",
+      "before_sha256": null,
+      "after_sha256": "1e3e83e266087b6f323b772f02c6c07a11f49424e95e3e02974057e07894b18b"
+    },
+    {
+      "path": "client-patch/launcher/trusted-public-key.xml",
+      "before_sha256": "1e3e83e266087b6f323b772f02c6c07a11f49424e95e3e02974057e07894b18b",
+      "after_sha256": "b7e2ddf4ec733293d733f805e5f3ecfc8453712e462086dedd62f87071f48478"
+    },
+    {
+      "path": "tools/admin/lan_client_service.py",
+      "before_sha256": "d47e361504fcfdebaee502468d7da2ca6a5c7c10e2475b10b674035596eb8baf",
+      "after_sha256": "d7680d465b07c72c6d73b62cf86f93af48f8bac84e27aa1f75d463a578229a1c"
+    },
+    {
+      "path": "tools/admin/lan_client_status/index.html",
+      "before_sha256": "321010367cc2deb1ab7df1f5b3af2f73e2654a3a654e1f85d09b56104a374ded",
+      "after_sha256": "32ec93790923bb3d0a00c44fa8a683b0109341b8862559a25c6e1b0b6f285995"
+    },
+    {
+      "path": "tools/admin/test_lan_client_service.py",
+      "before_sha256": "0ae26470366ad1ed69c346d22258846dbc6cea626b8a96706bed06e586a9072d",
+      "after_sha256": "d2bc0dd9abfe6534496c6eb0dff258abb89549a4120d3ad52cc723bee44207f4"
+    },
+    {
+      "path": "tools/ci/launcher_key_migration_test.py",
+      "before_sha256": null,
+      "after_sha256": "50f9eaab5de475c1e3d2c98d449ab4630792e21341aa36a5ffde3030545ce79e"
+    }
+  ],
+  "evidence_sha256": {
+    "build.log": "fc2cea1f52d269d31479ea7fee65ac36754f2e1cd9347a009145857f5d113da7",
+    "deployment.json": "5e1a71b975157cac087890f07e18af8a0c1b8de08d31ff3208bae6fa9c9ce28c",
+    "acceptance/report.json": "4765bb9ef2eef88331cee73acfbe610b87e35d8c2c7b1b8ddcb9ba98cadc3ed6",
+    "installed-update.log": "1384fca30f30ac89eedac53efd739e7616218f88522ca8f0f82f794dfd645026",
+    "installed-verification.log": "b39352cacd762c3bb6a7663d89c352d273c31ddbc8761e916d231ee72159244b",
+    "http-regressions.log": "f111e89434bc76ed10e2304f46fdede8d9e2071cd54972e37d13b2304e750dba",
+    "post-cleanup-verification.log": "b39352cacd762c3bb6a7663d89c352d273c31ddbc8761e916d231ee72159244b",
+    "key-backup-verification.json": "fdc6b722f7afb62532302e44bcd47c0deeff21e7f6066c003462e27c49b6f3ce"
+  }
+}

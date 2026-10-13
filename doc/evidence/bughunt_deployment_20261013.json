@@ -96,5 +96,6 @@
     "live-postflight.json": "af5ac3c602feeebb3af1cea3e9800d1df1eb0cc6306f2dacdf26b31a7b833385",
     "local-client-deployment.json": "4eb9275ebcfca22723cb35fab129b145ca9dd405984b02b2a8788a88d50a9c9f",
     "local-installed-verification.log": "327913a88025678a5f5ba1f6f993d6c31a4b14dcbc10aa27c9d8f2fdece7cfed"
-  }
+  },
+  "subsequent_client_publication_receipt": "client_key_rotation_20261013.json"
 }
