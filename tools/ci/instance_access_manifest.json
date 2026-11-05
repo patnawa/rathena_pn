@@ -1,8 +1,8 @@
 {
   "review_date": "2026-09-17",
   "scope": "Unique instance guide categories, enabled Renewal import graph, effective instance DB, Warper menu and installed client map presence. Entry candidates require gate review; presence is not a completed gameplay test.",
-  "enabled_npc_file_count": 920,
-  "local_instance_count": 102,
+  "enabled_npc_file_count": 921,
+  "local_instance_count": 103,
   "unique_client_map_count": 124,
   "unavailable_client_maps": [],
   "reference_catalog": [
@@ -7950,6 +7950,41 @@
           "rsw": {
             "direct": true,
             "resolved": "guild_vs1.rsw",
+            "origin": "data.grf",
+            "available": true
+          }
+        }
+      },
+      "warper_status": "not_listed"
+    },
+    {
+      "id": 1002,
+      "name": "PN Minigame Arcade",
+      "maps": [
+        "guild_vs5"
+      ],
+      "name_references": [
+        "npc/custom/main_office/minigame_arcade.txt"
+      ],
+      "entry_npc_candidates": [],
+      "warper_labels": [],
+      "client_maps": {
+        "guild_vs5": {
+          "gat": {
+            "direct": true,
+            "resolved": "guild_vs5.gat",
+            "origin": "data.grf",
+            "available": true
+          },
+          "gnd": {
+            "direct": true,
+            "resolved": "guild_vs5.gnd",
+            "origin": "data.grf",
+            "available": true
+          },
+          "rsw": {
+            "direct": true,
+            "resolved": "guild_vs5.rsw",
             "origin": "data.grf",
             "available": true
           }

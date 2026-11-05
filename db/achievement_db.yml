@@ -52,3 +52,4 @@ Footer:
   - Path: db/re/achievement_db.yml
     Mode: Renewal
   - Path: db/import/achievement_db.yml
+  - Path: db/import/arcade_achievement_db.yml

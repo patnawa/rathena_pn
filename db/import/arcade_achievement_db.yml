@@ -1,0 +1,43 @@
+# Minigame Arcade achievements (npc/custom/main_office/minigame_arcade.txt).
+# Score stays zero on purpose: achievement score raises AchievementLevel, and level
+# achievements grant Gift_Box. These rows are recognition only and award nothing.
+# They have no Group, so only the arcade's achievementcomplete can complete them.
+# Client text: client-patch/pn_arcade/arcade_achievements.lua (ids must match).
+Header:
+  Type: ACHIEVEMENT_DB
+  Version: 2
+Body:
+  - Id: 300001
+    Name: Arcade First Coin
+  - Id: 300002
+    Name: Arcade All-Rounder
+  - Id: 300003
+    Name: Arcade Regular
+  - Id: 300004
+    Name: Arcade Veteran
+  - Id: 300005
+    Name: Arcade Legend
+  - Id: 300011
+    Name: Echo Steps Bronze
+  - Id: 300012
+    Name: Echo Steps Silver
+  - Id: 300013
+    Name: Echo Steps Gold
+  - Id: 300021
+    Name: Dice Pads Bronze
+  - Id: 300022
+    Name: Dice Pads Silver
+  - Id: 300023
+    Name: Dice Pads Gold
+  - Id: 300031
+    Name: Floor is Lava Bronze
+  - Id: 300032
+    Name: Floor is Lava Silver
+  - Id: 300033
+    Name: Floor is Lava Gold
+  - Id: 300041
+    Name: Poring Search Bronze
+  - Id: 300042
+    Name: Poring Search Silver
+  - Id: 300043
+    Name: Poring Search Gold

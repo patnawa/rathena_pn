@@ -19,12 +19,13 @@ function	script	PN_Adventure	{
 		case 1:
 			clear; mes "[A short adventure]";
 			mes "Pick a manageable objective; travel and your build determine the time needed.";
-			switch(select("Progress one story step:Practice a build in the lab:Work on a weekly objective:Find a material for my gear:Weekly Expedition:Back")) {
+			switch(select("Progress one story step:Practice a build in the lab:Work on a weekly objective:Find a material for my gear:Weekly Expedition:Minigame Arcade:Back")) {
 			case 1: callfunc "PN_GuideNext"; break;
 			case 2: callfunc "PN_LabChallengeMenu"; break;
 			case 3: callfunc "PN_WeeklyBoard"; break;
 			case 4: callfunc "PN_EquipmentPlanner"; break;
 			case 5: callfunc "PN_WeeklyExpedition"; break;
+			case 6: callfunc "PN_MinigameArcade"; break;
 			}
 			break;
 		case 2: callfunc "PN_PartyBoard"; break;

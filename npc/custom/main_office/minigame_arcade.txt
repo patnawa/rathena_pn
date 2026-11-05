@@ -1,0 +1,486 @@
+// ============================================================================
+//  PN  /  SERVER SCRIPTS
+//  minigame_arcade.txt
+// ----------------------------------------------------------------------------
+//  Project contributions: (C) 2026 PN Development Team
+//  License for project contributions: GPL-3.0-or-later; see LICENSE.
+//  Source: https://github.com/patnawa/rathena_pn/blob/main/npc/custom/main_office/minigame_arcade.txt
+//  Existing upstream authors, notices and other rights are retained.
+// ============================================================================
+
+// A private four-game arcade, playable alone at any time. Rewards are records
+// only: personal bests, one cosmetic stamp per game each week and zero-score
+// achievements. No item, Zeny, experience or AchievementLevel progress exists.
+//
+// No monster is ever spawned, so kill counters, drops and hunt quests cannot be
+// farmed here. Dialogs are refused during a run; position and clicks are the only
+// inputs and are read on the server.
+//
+// Room layout on guild_vs5, centred on (61,48). Cells within 3 of either centre
+// line are the neutral Centre; the four quadrants beyond it are the coloured pads.
+function	script	PN_ArcadeWeek	{
+	return (gettimetick(2)-345600)/604800;
+}
+// Zone: 0 Centre, 1 Red (NW), 2 Blue (NE), 3 Green (SW), 4 Yellow (SE).
+function	script	PN_ArcadeZone	{
+	.@dx=getarg(0)-61; .@dy=getarg(1)-48;
+	if (.@dx>=-3 && .@dx<=3) return 0;
+	if (.@dy>=-3 && .@dy<=3) return 0;
+	if (.@dy>0) return (.@dx<0)?1:2;
+	return (.@dx<0)?3:4;
+}
+function	script	PN_ArcadeZoneName	{
+	setarray .@names$[0],"CENTRE","RED (north-west)","BLUE (north-east)","GREEN (south-west)","YELLOW (south-east)";
+	return .@names$[getarg(0)];
+}
+function	script	PN_ArcadeGameName	{
+	setarray .@names$[0],"","Echo Steps","Dice Pads","Floor is Lava","Poring Search";
+	return .@names$[getarg(0)];
+}
+function	script	PN_ArcadeMaxScore	{
+	setarray .@max[0],0,8,12,15,15;
+	return .@max[getarg(0)];
+}
+// Tier thresholds are checked by PN_ArcadeAchievements and shown to the player.
+function	script	PN_ArcadeTier	{
+	setarray .@tier[0],0,3,5,8, 0,4,8,12, 0,5,10,15, 0,5,10,15;
+	return .@tier[(getarg(0)-1)*4+getarg(1)];
+}
+function	script	PN_ArcadeWeekReset	{
+	if (PNArcadeWeek!=getarg(0)) {
+		PNArcadeWeek=getarg(0);
+		PNArcadeClaimed=0;
+	}
+	return;
+}
+function	script	PN_ArcadeAchievements	{
+	.@game=getarg(0); .@score=getarg(1);
+	// achievementcomplete refuses a character whose data is still loading and
+	// ignores a completed row, so every record safely retries anything missed.
+	achievementcomplete 300001;
+	for (.@tier=1;.@tier<=3;.@tier++)
+		if (.@score>=callfunc("PN_ArcadeTier",.@game,.@tier))
+			achievementcomplete 300000+.@game*10+.@tier;
+	if (PNArcadeClaimed==15) achievementcomplete 300002;
+	if (PNArcadeStamps>=5) achievementcomplete 300003;
+	if (PNArcadeStamps>=20) achievementcomplete 300004;
+	if (PNArcadeStamps>=50) achievementcomplete 300005;
+	return;
+}
+function	script	PN_ArcadeRecord	{
+	.@id=instance_id(IM_CHAR);
+	if (!.@id || instance_live_info(ILI_NAME,.@id)!="PN Minigame Arcade") return 0;
+	if (strcharinfo(3)!=instance_mapname("guild_vs5",.@id) || Hp<=0
+	 || 'AOwner!=getcharid(0) || 'AAccount!=getcharid(3) || 'AStage!=2
+	 || 'ARecorded || 'AGame<1 || 'AGame>4 || 'AScore<1
+	 || 'AScore>callfunc("PN_ArcadeMaxScore",'AGame)
+	 || 'AWeek!=callfunc("PN_ArcadeWeek")) return 0;
+	// No dialog or sleep exists between this guard and the last registry write.
+	'ARecorded=1;
+	if ('AScore>PNArcadeBest['AGame]) PNArcadeBest['AGame]='AScore;
+	callfunc "PN_ArcadeWeekReset",'AWeek;
+	.@bit=1<<('AGame-1);
+	if (!(PNArcadeClaimed&.@bit)) {
+		PNArcadeClaimed|=.@bit;
+		PNArcadeStamps=min(1000000,PNArcadeStamps+1);
+	}
+	callfunc "PN_ArcadeAchievements",'AGame,'AScore;
+	return 1;
+}
+function	script	PN_ArcadeHideCritters	{
+	for (.@i=1;.@i<=12;.@i++) {
+		'ACritter[.@i]=0;
+		disablenpc instance_npcname("Critter#pna"+.@i);
+	}
+	return;
+}
+function	script	PN_ArcadeFinish	{
+	'AStage=2; 'ASeconds=max(1,gettimetick(2)-'AStarted);
+	stopnpctimer instance_npcname("PN Arcade Console");
+	callfunc "PN_ArcadeHideCritters";
+	mapannounce instance_mapname("guild_vs5"),"Game over! Score "+'AScore+". Talk to the console to record it.",bc_map;
+	return;
+}
+// Runs on the clicking character, so ownership is checked against that character.
+function	script	PN_ArcadePick	{
+	.@slot=getarg(0);
+	if ('AStage!=1 || 'AGame!=4 || 'APhase!=1 || !'ACritter[.@slot]) return;
+	if (getcharid(0)!='AOwner || getcharid(3)!='AAccount) return;
+	.@sprite='ACritter[.@slot];
+	'ACritter[.@slot]=0;
+	disablenpc instance_npcname("Critter#pna"+.@slot);
+	.@map$=instance_mapname("guild_vs5");
+	if (.@sprite=='ATarget) {
+		'AScore++; 'AFound++;
+		if ('AFound<3) { dispbottom "Found "+'AFound+" / 3."; return; }
+		callfunc "PN_ArcadeHideCritters";
+		if ('ARound>=5) { callfunc "PN_ArcadeFinish"; return; }
+		mapannounce .@map$,"Round cleared! Score "+'AScore+".",bc_map;
+		'APhase=0; 'ALeft=2;
+		return;
+	}
+	'ALives--;
+	mapannounce .@map$,"Wrong creature! Strikes: "+(3-'ALives)+" / 3.",bc_map;
+	if ('ALives<=0) callfunc "PN_ArcadeFinish";
+	return;
+}
+function	script	PN_ArcadeHelp	{
+	switch (getarg(0)) {
+	case 1:
+		mes "[Echo Steps]";
+		mes "Watch the coloured pads light up, then walk onto them in the same order.";
+		mes "Each round adds one step. A wrong pad or running out of time ends the game.";
+		mes "Cross the Centre between pads so you do not clip a third colour.";
+		break;
+	case 2:
+		mes "[Dice Pads]";
+		mes "Stand on a coloured pad before the dice land. Pads named by the dice are unsafe, and so is the Centre.";
+		mes "Later rounds roll more dice. You have three lives over twelve rounds.";
+		break;
+	case 3:
+		mes "[Floor is Lava]";
+		mes "Hot zones are announced before they ignite. The zone you stand on is always among them, so keep moving.";
+		mes "The Centre can burn too. You have three lives over fifteen waves.";
+		break;
+	case 4:
+		mes "[Poring Search]";
+		mes "Each round names a target. Click the three matching creatures among the crowd before time runs out.";
+		mes "A wrong click or an unfinished round costs a strike. Three strikes end the game.";
+		mes "These are harmless props: nothing is fought and nothing drops.";
+		break;
+	}
+	return;
+}
+function	script	PN_ArcadeBoard	{
+	mes "[Minigame Arcade]";
+	mes "Four short games in a private room. Play whenever you like; the rewards are records and bragging rights.";
+	.@week=callfunc("PN_ArcadeWeek");
+	for (.@g=1;.@g<=4;.@g++)
+		mes callfunc("PN_ArcadeGameName",.@g)+": best "+PNArcadeBest[.@g]+" / "+callfunc("PN_ArcadeMaxScore",.@g)
+			+((PNArcadeWeek==.@week && (PNArcadeClaimed&(1<<(.@g-1))))?" (stamped this week)":"");
+	mes "Lifetime stamps: "+PNArcadeStamps+". One stamp per game each week; resets Monday 07:00 Bangkok.";
+	return;
+}
+function	script	PN_MinigameArcade	{
+	callfunc "PN_ArcadeBoard";
+	if (select("Enter / resume my arcade room:Leave")==2) return;
+	if (Hp<=0) { mes "Revive before entering."; return; }
+	if (!getmapflag(strcharinfo(3),mf_town) || getmapflag(strcharinfo(3),mf_pvp)
+	 || getmapflag(strcharinfo(3),mf_gvg) || getmapflag(strcharinfo(3),mf_gvg_te)
+	 || getmapflag(strcharinfo(3),mf_battleground) || getmapflag(strcharinfo(3),mf_nowarp)) {
+		mes "Enter from an unrestricted town after finishing combat."; return;
+	}
+	.@id=instance_id(IM_CHAR);
+	if (.@id && instance_live_info(ILI_NAME,.@id)!="PN Minigame Arcade") { mes "Finish your other personal instance first."; return; }
+	if (!.@id) .@id=instance_create("PN Minigame Arcade",IM_CHAR,getcharid(0));
+	if (.@id<=0) { mes "The arcade room could not be created. Try again shortly."; return; }
+	.@result=instance_enter("PN Minigame Arcade",-1,-1,getcharid(0),.@id);
+	if (.@result!=IE_OK) mes "The room is preparing or cannot be entered. Try again shortly.";
+	return;
+}
+
+-	script	PN Arcade Desk	-1,{
+	callfunc "PN_MinigameArcade";
+	close;
+OnArcade:
+	callfunc "PN_MinigameArcade";
+	close;
+OnInit:
+	bindatcmd "arcade",strnpcinfo(3)+"::OnArcade",0,99;
+	end;
+}
+
+// Coloured markers. They only explain themselves; zones are computed from position.
+guild_vs5,53,56,4	script	Red Pad#pnarc	4_BOARD3,{ dispbottom "Red pad (north-west)."; end; }
+guild_vs5,69,56,4	script	Blue Pad#pnarc	4_BOARD3,{ dispbottom "Blue pad (north-east)."; end; }
+guild_vs5,53,40,4	script	Green Pad#pnarc	4_BOARD3,{ dispbottom "Green pad (south-west)."; end; }
+guild_vs5,69,40,4	script	Yellow Pad#pnarc	4_BOARD3,{ dispbottom "Yellow pad (south-east)."; end; }
+
+// Search props stay hidden unless a Poring Search round has placed them.
+guild_vs5,1,1,4	script	Critter#pna1	CLEAR_NPC,{
+	callfunc "PN_ArcadePick",atoi(replacestr(strnpcinfo(2),"pna",""));
+	end;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnInstanceInit:
+	disablenpc instance_npcname(strnpcinfo(0));
+	end;
+}
+guild_vs5,1,2,4	duplicate(Critter#pna1)	Critter#pna2	CLEAR_NPC
+guild_vs5,1,3,4	duplicate(Critter#pna1)	Critter#pna3	CLEAR_NPC
+guild_vs5,1,4,4	duplicate(Critter#pna1)	Critter#pna4	CLEAR_NPC
+guild_vs5,1,5,4	duplicate(Critter#pna1)	Critter#pna5	CLEAR_NPC
+guild_vs5,1,6,4	duplicate(Critter#pna1)	Critter#pna6	CLEAR_NPC
+guild_vs5,1,7,4	duplicate(Critter#pna1)	Critter#pna7	CLEAR_NPC
+guild_vs5,1,8,4	duplicate(Critter#pna1)	Critter#pna8	CLEAR_NPC
+guild_vs5,1,9,4	duplicate(Critter#pna1)	Critter#pna9	CLEAR_NPC
+guild_vs5,1,10,4	duplicate(Critter#pna1)	Critter#pna10	CLEAR_NPC
+guild_vs5,1,11,4	duplicate(Critter#pna1)	Critter#pna11	CLEAR_NPC
+guild_vs5,1,12,4	duplicate(Critter#pna1)	Critter#pna12	CLEAR_NPC
+
+guild_vs5,61,46,4	script	PN Arcade Console	4_BOARD3,{
+	.@id=instance_id(IM_CHAR);
+	if (!.@id || instance_live_info(ILI_NAME,.@id)!="PN Minigame Arcade") { mes "Use @arcade to open your room."; close; }
+	// No dialog during a run: positions and clicks must keep arriving on time.
+	if ('AStage==1) { dispbottom "A game is running. Follow the announcements."; end; }
+	mes "[Arcade Console]";
+	if ('AStage==2 && !'ARecorded) {
+		mes callfunc("PN_ArcadeGameName",'AGame)+" finished in "+'ASeconds+" seconds.";
+		mes "Score: "+'AScore+" / "+callfunc("PN_ArcadeMaxScore",'AGame)+".";
+		if ('AScore<1) mes "A score of zero cannot be recorded.";
+		else if (select("Record this score:Discard it")==1) {
+			if (callfunc("PN_ArcadeRecord")) {
+				mes "Recorded. Best: "+PNArcadeBest['AGame]+". Lifetime stamps: "+PNArcadeStamps+".";
+				specialeffect2 EF_ANGEL2;
+			} else mes "It could not be recorded: the weekly rotation changed or you are not in your room.";
+			next;
+		}
+		'ARecorded=1;
+		mes "[Arcade Console]";
+	} else if ('AStage==3) mes "The last game was abandoned: you died, left, disconnected or hit the time limit.";
+	.@pick=select("Play Echo Steps:Play Dice Pads:Play Floor is Lava:Play Poring Search:How to play:Leave room");
+	if (.@pick==6) { warp "pn_office",50,35; instance_destroy .@id; end; }
+	if (.@pick==5) {
+		callfunc "PN_ArcadeHelp",select("Echo Steps:Dice Pads:Floor is Lava:Poring Search");
+		close;
+	}
+	// The room's TimeLimit runs from creation: leave 600 s for a game and time to record it.
+	if ('ACloses && 'ACloses-gettimetick(2)<630) {
+		mes "This room closes before a full game can finish and be recorded.";
+		mes "Choose Leave room, then use @arcade again for a fresh room.";
+		close;
+	}
+	callfunc "PN_ArcadeHelp",.@pick;
+	if (select("Start:Cancel")==2) close;
+	if (Hp<=0 || 'AStage==1) close;
+	'AOwner=getcharid(0); 'AAccount=getcharid(3); 'AName$=strcharinfo(0);
+	'AWeek=callfunc("PN_ArcadeWeek"); 'AGame=.@pick;
+	'AStage=1; 'ARecorded=0; 'AScore=0; 'ALives=3; 'ARound=0; 'APhase=0; 'ALeft=2;
+	'AStarted=gettimetick(2); 'ASeconds=0; 'ALast=0; 'AStep=0; 'AHot=0;
+	close2;
+	mapannounce instance_mapname("guild_vs5"),callfunc("PN_ArcadeGameName",'AGame)+" begins in two seconds!",bc_map;
+	initnpctimer;
+	end;
+
+OnTimer1000:
+	if ('AStage!=1) { stopnpctimer; end; }
+	.@map$=instance_mapname("guild_vs5");
+	.@failed=!isloggedin('AAccount,'AOwner);
+	if (!.@failed) {
+		if (getmapxy(.@where$,.@x,.@y,BL_PC,'AName$)!=0 || .@where$!=.@map$ || readparam(Hp,'AOwner)<=0) .@failed=1;
+	}
+	if (gettimetick(2)-'AStarted>=600) .@failed=1;
+	if (.@failed) {
+		'AStage=3; stopnpctimer; callfunc "PN_ArcadeHideCritters";
+		mapannounce .@map$,"Game abandoned: death, leaving, disconnection or the time limit.",bc_map;
+		end;
+	}
+	.@zone=callfunc("PN_ArcadeZone",.@x,.@y);
+	setnpctimer 0;
+	switch ('AGame) {
+	case 1: callsub L_Echo,.@zone; break;
+	case 2: callsub L_Dice,.@zone; break;
+	case 3: callsub L_Lava,.@zone; break;
+	case 4: callsub L_Search; break;
+	}
+	end;
+
+L_Flash:
+	setarray .@pads$[1],"Red Pad#pnarc","Blue Pad#pnarc","Green Pad#pnarc","Yellow Pad#pnarc";
+	if (getarg(0)>=1 && getarg(0)<=4) specialeffect getarg(1),AREA,instance_npcname(.@pads$[getarg(0)]);
+	return;
+
+// Echo Steps. Phase 0 prepares a round, 1 shows it, 2 reads it back.
+L_Echo:
+	.@zone=getarg(0);
+	.@map$=instance_mapname("guild_vs5");
+	if ('APhase==0) {
+		if (--'ALeft>0) return;
+		'ARound++;
+		if ('ARound==1) {
+			'AEcho[0]=rand(1,4); 'AEcho[1]=rand(1,4);
+			while ('AEcho[1]=='AEcho[0]) 'AEcho[1]=rand(1,4);
+		}
+		.@len='ARound+2; .@new=rand(1,4);
+		while (.@new=='AEcho[.@len-2]) .@new=rand(1,4);
+		'AEcho[.@len-1]=.@new;
+		'APhase=1; 'AStep=0; 'ALeft=1;
+		mapannounce .@map$,"Round "+'ARound+" / 8: memorise "+.@len+" steps.",bc_map;
+		return;
+	}
+	if ('APhase==1) {
+		if (--'ALeft>0) return;
+		.@len='ARound+2;
+		if ('AStep<.@len) {
+			mapannounce .@map$,"Step "+('AStep+1)+": "+callfunc("PN_ArcadeZoneName",'AEcho['AStep]),bc_map;
+			callsub L_Flash,'AEcho['AStep],EF_FIREHIT;
+			'AStep++; 'ALeft=2;
+			return;
+		}
+		'APhase=2; 'AStep=0; 'ALeft=6+4*.@len;
+		// Standing on the first pad counts at once; standing on another is no mistake.
+		'ALast=(.@zone=='AEcho[0])?0:.@zone;
+		mapannounce .@map$,"Your turn! Walk the "+.@len+" steps in "+'ALeft+" seconds.",bc_map;
+		return;
+	}
+	.@len='ARound+2;
+	if (.@zone!='ALast) {
+		'ALast=.@zone;
+		if (.@zone) {
+			if (.@zone!='AEcho['AStep]) {
+				mapannounce .@map$,"Wrong pad! The next step was "+callfunc("PN_ArcadeZoneName",'AEcho['AStep])+".",bc_map;
+				callfunc "PN_ArcadeFinish";
+				return;
+			}
+			'AStep++;
+			if ('AStep>=.@len) {
+				'AScore='ARound;
+				if ('ARound>=8) { callfunc "PN_ArcadeFinish"; return; }
+				mapannounce .@map$,"Perfect! Get ready for the next round.",bc_map;
+				'APhase=0; 'ALeft=3;
+				return;
+			}
+		}
+	}
+	if (--'ALeft<=0) {
+		mapannounce .@map$,"Out of time!",bc_map;
+		callfunc "PN_ArcadeFinish";
+	}
+	return;
+
+// Dice Pads. The player commits to a pad before the dice are chosen.
+L_Dice:
+	.@zone=getarg(0);
+	.@map$=instance_mapname("guild_vs5");
+	if ('APhase==0) {
+		if (--'ALeft>0) return;
+		'ARound++;
+		'APhase=1; 'ALeft=5;
+		mapannounce .@map$,"Round "+'ARound+" / 12: stand on a coloured pad. Lives: "+'ALives+".",bc_map;
+		return;
+	}
+	if (--'ALeft>0) {
+		if ('ALeft<=2) mapannounce .@map$,"Dice land in "+'ALeft+"...",bc_map;
+		return;
+	}
+	.@dice=('ARound<=4)?1:(('ARound<=8)?2:3);
+	'AHot=0;
+	for (.@i=0;.@i<.@dice;.@i++) {
+		.@pad=rand(1,4);
+		while ('AHot&(1<<.@pad)) .@pad=rand(1,4);
+		'AHot|=1<<.@pad;
+		callsub L_Flash,.@pad,EF_LORD;
+		.@list$+=((.@i)?", ":"")+callfunc("PN_ArcadeZoneName",.@pad);
+	}
+	if (!.@zone || ('AHot&(1<<.@zone))) {
+		'ALives--;
+		mapannounce .@map$,"Dice: "+.@list$+". You were caught! Lives left: "+'ALives+".",bc_map;
+		if ('ALives<=0) { callfunc "PN_ArcadeFinish"; return; }
+	} else {
+		'AScore++;
+		mapannounce .@map$,"Dice: "+.@list$+". Safe! Score "+'AScore+".",bc_map;
+	}
+	if ('ARound>=12) { callfunc "PN_ArcadeFinish"; return; }
+	'APhase=0; 'ALeft=2;
+	return;
+
+// Floor is Lava. Hot zones always include the player's zone when announced.
+L_Lava:
+	.@zone=getarg(0);
+	.@map$=instance_mapname("guild_vs5");
+	if ('APhase==0) {
+		if (--'ALeft>0) return;
+		'ARound++;
+		.@count=1+('ARound>=4)+('ARound>=8);
+		'AHot=1<<.@zone;
+		.@list$=callfunc("PN_ArcadeZoneName",.@zone);
+		for (.@i=1;.@i<.@count;.@i++) {
+			.@pad=rand(0,4);
+			while ('AHot&(1<<.@pad)) .@pad=rand(0,4);
+			'AHot|=1<<.@pad;
+			.@list$+=", "+callfunc("PN_ArcadeZoneName",.@pad);
+		}
+		// At most three of five zones burn and any neighbour is under 2.4 s away at
+		// base speed, so a safe zone is always reachable within the shortest warning.
+		'ALeft=max(3,5-('ARound-1)/4);
+		'APhase=1;
+		mapannounce .@map$,"Wave "+'ARound+" / 15: "+.@list$+" ignite in "+'ALeft+" seconds!",bc_map;
+		return;
+	}
+	if (--'ALeft>0) return;
+	if ('AHot&(1<<.@zone)) {
+		'ALives--;
+		mapannounce .@map$,"Burned! Lives left: "+'ALives+".",bc_map;
+		specialeffect2 EF_FIREPILLARON,AREA,'AName$;
+		if ('ALives<=0) { callfunc "PN_ArcadeFinish"; return; }
+	} else {
+		'AScore++;
+		mapannounce .@map$,"Safe! Score "+'AScore+".",bc_map;
+	}
+	if ('ARound>=15) { callfunc "PN_ArcadeFinish"; return; }
+	'APhase=0; 'ALeft=2;
+	return;
+
+// Poring Search. Props are NPCs, so a pick is a click, never a kill.
+L_Search:
+	.@map$=instance_mapname("guild_vs5");
+	if ('APhase==0) {
+		if (--'ALeft>0) return;
+		'ARound++;
+		callsub L_PlaceCritters;
+		'APhase=1; 'ALeft=25; 'AFound=0;
+		mapannounce .@map$,"Round "+'ARound+" / 5: find 3 "+getmonsterinfo('ATarget,MOB_NAME)+". Strikes: "+(3-'ALives)+" / 3.",bc_map;
+		return;
+	}
+	if (--'ALeft>0) return;
+	'ALives--;
+	callfunc "PN_ArcadeHideCritters";
+	mapannounce .@map$,"Out of time! Strikes: "+(3-'ALives)+" / 3.",bc_map;
+	if ('ALives<=0 || 'ARound>=5) { callfunc "PN_ArcadeFinish"; return; }
+	'APhase=0; 'ALeft=2;
+	return;
+
+L_PlaceCritters:
+	setarray .@look[0],1031,1002,1113,1242; // Poporing, Poring, Drops, Marin
+	'ATarget=.@look[rand(0,3)];
+	// Twelve validated cells, spread so the player must walk between clusters.
+	setarray .@cx[0],50,54,50,54,68,72,68,72,50,54,68,72;
+	setarray .@cy[0],60,57,53,50,60,58,53,50,42,39,42,39;
+	for (.@i=0;.@i<12;.@i++) .@order[.@i]=.@i;
+	for (.@i=11;.@i>0;.@i--) {
+		.@j=rand(0,.@i);
+		.@tmp=.@order[.@i]; .@order[.@i]=.@order[.@j]; .@order[.@j]=.@tmp;
+	}
+	for (.@i=0;.@i<12;.@i++) {
+		.@npc$=instance_npcname("Critter#pna"+(.@i+1));
+		if (.@i<3) .@sprite='ATarget;
+		else {
+			.@sprite=.@look[rand(0,3)];
+			while (.@sprite=='ATarget) .@sprite=.@look[rand(0,3)];
+		}
+		'ACritter[.@i+1]=.@sprite;
+		setnpcdisplay .@npc$,.@sprite;
+		movenpc .@npc$,.@cx[.@order[.@i]],.@cy[.@order[.@i]];
+		enablenpc .@npc$;
+	}
+	return;
+
+OnInstanceInit:
+	if (instance_live_info(ILI_NAME,instance_id())!="PN Minigame Arcade") end;
+	'AStage=0;
+	'ACloses=gettimetick(2)+instance_info("PN Minigame Arcade",IIT_TIME_LIMIT);
+	.@map$=instance_mapname("guild_vs5");
+	setmapflag .@map$,mf_nomemo;
+	setmapflag .@map$,mf_noteleport;
+	setmapflag .@map$,mf_nobranch;
+	setmapflag .@map$,mf_nowarpto;
+	setmapflag .@map$,mf_partylock;
+	setmapflag .@map$,mf_noskill;
+	setmapflag .@map$,mf_noexp;
+	setmapflag .@map$,mf_nomobloot;
+	setmapflag .@map$,mf_nomvploot;
+	setmapflag .@map$,mf_nopenalty;
+	setmapflagnosave .@map$,"pn_office",50,35;
+	end;
+}

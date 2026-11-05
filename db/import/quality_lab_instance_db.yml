@@ -20,3 +20,12 @@ Body:
       Map: guild_vs1
       X: 50
       Y: 45
+  - Id: 1002
+    Name: PN Minigame Arcade
+    TimeLimit: 3600
+    IdleTimeOut: 300
+    NoMapFlag: true
+    Enter:
+      Map: guild_vs5
+      X: 61
+      Y: 44
