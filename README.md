@@ -87,7 +87,7 @@ Use direct deposits and withdrawals, or collect eligible offline-character Zeny.
 
 The normal game HUD shows the full confirmed wallet on its own solid-background row below Weight, with both values right-aligned. The supported Ragexe executable remains unchanged on disk. Other legacy numeric inputs retain their original limits; use the matching companion controls for larger transactions. A dash indicates that the native HUD is waiting for a confirmed balance.
 
-See the [wide economy release](doc/wide_economy_release_20260928.md) for migration, transaction verification and remaining scope, and the [native HUD follow-up](doc/native_zeny_hud_followup_20260928.md) for client guards and live verification. This is independent PN code and does not establish complete MuhRO patch parity.
+See the [wide economy release](doc/wide_economy_release_20260928.md) for migration, transaction verification and remaining scope, and the [native HUD follow-up](doc/native_zeny_hud_followup_20260928.md) for client guards and live verification. This is independent PN code and does not establish complete reference-server patch parity.
 
 ## Gold Points and fashion
 

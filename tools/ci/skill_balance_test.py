@@ -82,12 +82,12 @@ int main() {
     expect(blocked(LG_RAYOFGENESIS,&player,&player,1),true,"recursive self hit remains immune");
     expect(blocked(NPC_RAYOFGENESIS,&player,&player,0),true,"NPC Genesis unchanged");
     expect(blocked(AG_DEADLY_PROJECTION,&player,&enemy,1),false,"existing projection exception retained");
-    std::printf("MUHRO_SKILL_BALANCE checks=%d failures=%d\n",checks,failures);
+    std::printf("SKILL_BALANCE checks=%d failures=%d\n",checks,failures);
     return failures ? 1 : 0;
 }
 '''
 cpp = '#include <initializer_list>\n' + cpp
-with tempfile.TemporaryDirectory(prefix='pn-muhro-skills-') as temp:
+with tempfile.TemporaryDirectory(prefix='pn-skills-') as temp:
     path, executable = Path(temp)/'test.cpp', Path(temp)/'test'
     path.write_text(cpp)
     subprocess.run(['g++','-std=c++17','-fsanitize=address,undefined','-fno-sanitize-recover=all',str(path),'-o',str(executable)],check=True)

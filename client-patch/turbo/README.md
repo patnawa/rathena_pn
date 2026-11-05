@@ -1,8 +1,8 @@
 # PN Turbo
 
 An independent held-input implementation for the PN Windows client. The initial
-profile follows the user's local MuhRO `YXExt.ini`: F1–F3 smart-cast, F5–F7 key
-repeat, a 10 ms repeat gap, Alt+P toggle, and disabled on launch. No MuhRO binary
+profile follows the user's local reference `YXExt.ini`: F1–F3 smart-cast, F5–F7 key
+repeat, a 10 ms repeat gap, Alt+P toggle, and disabled on launch. No reference-server binary
 or source code is bundled.
 
 ## Player controls
@@ -77,8 +77,8 @@ from automated checks; a passing input test does not prove a skill was cast.
 
 ## References
 
-* [MuhRO patcher / turbo behavior](https://wiki.muhro.eu/Patcher)
-* [MuhRO configurable delays and toggle update](https://dis.muhro.eu/t/patch-notes-194-12-december-2025/3974)
+* reference-server patcher / turbo behavior
+* reference-server configurable delays and toggle update
 * [Windows SendInput ordering and key state](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-sendinput)
 * [Windows timer scheduling](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer)
 

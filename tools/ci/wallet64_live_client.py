@@ -8,8 +8,8 @@ import subprocess
 import time
 from bank_live_client import Client as LegacyHandshake, exact, drain
 
-GAME = 'pn-muhro-last10-20260928-game'
-DB = 'pn-muhro-last10-20260928-db'
+GAME = 'pn-last10-20260928-game'
+DB = 'pn-last10-20260928-db'
 DATABASE = 'ragnarok_ci'
 LIMIT = (1 << 63) - 1
 

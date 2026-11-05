@@ -13,7 +13,7 @@ Four Range cases remove the middle card while retaining the upper/lower cards, u
 ## Additional current regressions
 
 - Combat binding tests: 6 passed (native extracted binding probe included).
-- MuhRO skill balance: 48 checks, zero failures.
+- reference-server skill balance: 48 checks, zero failures.
 - Dimension autocast runtime: 110 assertions, zero failures (extracted production functions with fixture world boundaries).
 - Druid mentor: 18 passed using the current local test, which already accommodates the expanded catalogue and level cap. The older deployed copy still expected 366 pairs and level 275 and failed; this is test drift, not a gameplay finding.
 - Druid item database: 6 passed, including its 588 refine cases/native extracted bonus probe.

@@ -6,17 +6,17 @@ The local account bank already supports signed 64-bit balances, but the native
 character wallet and several economic packet fields are still 32-bit. Increasing
 the wallet constant alone is not a complete implementation. Independent client
 and server work is possible; the missing implementation is a development task,
-not evidence that MuhRO's source must be obtained.
+not evidence that the reference server's source must be obtained.
 
-MuhRO's 18 September patch announces wider wallets, trade, mail, vending,
+The reference server's 18 September patch announces wider wallets, trade, mail, vending,
 buying stores and shop search, including large-price confirmation and summaries.
 On 25 September it restores character-specific wallets, moves shared funds to
 the bank, converts tickets/diamonds, and adds larger bank presets. The later
 notes supersede the earlier shared-wallet design. Neither note specifies packet
 layouts, source code, hook addresses, or an exact maximum. Therefore the target
-9,223,372,036,854,775,807 is our signed-64-bit design choice, not a proven MuhRO
-limit. Sources: [18 September](https://dis.muhro.eu/t/patch-notes-244-18-september-2026/5331),
-[25 September](https://dis.muhro.eu/t/patch-notes-246-25-september-2026/5384).
+9,223,372,036,854,775,807 is our signed-64-bit design choice, not a proven reference-server
+limit. Sources: 18 September,
+25 September.
 
 ## Local constraints that require implementation
 

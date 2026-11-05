@@ -1,4 +1,4 @@
-# Wide Zeny and MuhRO-inspired gameplay release — 28 September 2026
+# Wide Zeny and gameplay release — 28 September 2026
 
 Deployed to the Docker server at `192.168.10.18`; all seven production services
 passed health checks and all four game servers completed startup without errors.
@@ -22,7 +22,7 @@ native Zeny row and Wallet & Bank show the full confirmed balance. Weight and
 Zeny occupy separate right-aligned rows. Other legacy numeric inputs retain
 their original limits. Native item selection and received/item-bearing RODEX
 mail remain in the game. Unsafe narrow transaction paths are rejected. This
-independent PN implementation does not claim full MuhRO native-client parity.
+independent PN implementation does not claim full reference-server native-client parity.
 
 The existing one diamond (6024) and 127 tickets (12781) were removed atomically
 and credited at 499,000,000 and 998,000 each. The account bank increased from
@@ -52,10 +52,10 @@ Native gameplay sessions proved six memo destinations and actual portal travel,
 missionary rescue progression, reset behavior, rental expiry without trap material
 duplication, and +15 certificate refinement with persisted inventory. Full item
 and quest metadata loaded in Lua 5.1. The applicable balance and instance changes
-are detailed in [the gameplay audit](muhro_last10_gameplay_20260928.md).
+are detailed in [the gameplay audit](last10_gameplay_20260928.md).
 
 Remote evidence and complete original SQL/file backups are under
-`/app/pn-muhro-zeny-20260928/release-20260928T060316Z`:
+`/app/pn-zeny-20260928/release-20260928T060316Z`:
 
 - `backup-proof.json`: the full database was restored into an isolated database;
   its canonical dump matched SHA-256
@@ -81,7 +81,7 @@ for coordinated recovery, not automatic rollback of players' later transactions.
 
 ## Remaining latest-ten scope
 
-This release is **not complete parity with all ten MuhRO patches**. Remaining
+This release is **not complete parity with all ten reference-server patches**. Remaining
 work includes BG/event systems, rankings/betting and their equipment/reward
 catalogs; the two-floor market; native 900,000-item stacks and larger inventory
 windows; gray-map/rendering features; and verification of the protected client's

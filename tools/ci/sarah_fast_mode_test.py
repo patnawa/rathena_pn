@@ -33,4 +33,4 @@ for _ in range(struct.unpack_from('<H',data,4)[0]):
     pos+=size
 assert found
 normal=sum(int(delay) for _,delay in pauses)
-print(f'MUHRO_SARAH_FAST_MODE 61 story pauses: {normal}ms -> {len(pauses)*100}ms; encounter operations preserved')
+print(f'SARAH_FAST_MODE 61 story pauses: {normal}ms -> {len(pauses)*100}ms; encounter operations preserved')

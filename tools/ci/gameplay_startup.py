@@ -11,8 +11,8 @@ import time
 
 ROOT = Path(os.environ['GAMEPLAY_CANDIDATE']).resolve()
 assert str(ROOT).startswith('/app/rathena-builds/')
-OUT = Path('/app/pn-muhro-zeny-20260928/gameplay-startup-' + datetime.now(timezone.utc).strftime('%H%M%S'))
-NET = 'pn-muhro-gameplay-20260928'
+OUT = Path('/app/pn-zeny-20260928/gameplay-startup-' + datetime.now(timezone.utc).strftime('%H%M%S'))
+NET = 'pn-gameplay-20260928'
 DB, GAME = NET + '-db', NET + '-game'
 CORE = 'sha256:cae30d441d1c6e8f784be1d5525ea0573d9cd680dd21baf077e85908ccfe531b'
 DBIMAGE = 'sha256:dd9b303aed4f4890ed09f766d8ca9ddfd176c0c6f6267feff53b3192ec65a979'
@@ -83,7 +83,7 @@ try:
     for town,x,y in [('prontera',150,180),('izlude',128,114),('payon',180,100),('geffen',119,59),('morocc',156,93),('alberta',116,57)]:
         sql(f"INSERT INTO memo(char_id,map,x,y) VALUES(99000032,'{town}',{x},{y});".encode())
     source = Path(os.environ['GAMEPLAY_FIXTURE_FILES'])
-    for name in ('pn_gameplay_fixture.txt','muhro_gameplay_live_client.py','bank_live_client.py'):
+    for name in ('pn_gameplay_fixture.txt','gameplay_live_client.py','bank_live_client.py'):
         shutil.copyfile(source/name,OUT/name)
     (OUT/'scripts_custom.conf').write_bytes((ROOT/'npc/scripts_custom.conf').read_bytes() + b'\nnpc: /evidence/pn_gameplay_fixture.txt\n')
     with (imports/'battle_conf.txt').open('a') as f:f.write('\nskill_log: 1\n')
@@ -130,7 +130,7 @@ wait
     if errors:
         raise RuntimeError('Startup diagnostics failed: ' + repr(errors[:4]))
     pid=run('docker','inspect','--format','{{.State.Pid}}',GAME,text=True).stdout.strip()
-    completed=run('nsenter','-t',pid,'-n','python3',str(OUT/'muhro_gameplay_live_client.py'),'--game',GAME,'--database',DB,text=True,check=False,timeout=240)
+    completed=run('nsenter','-t',pid,'-n','python3',str(OUT/'gameplay_live_client.py'),'--game',GAME,'--database',DB,text=True,check=False,timeout=240)
     (OUT/'client.log').write_text(completed.stdout+completed.stderr)
     completed.check_returncode()
     report['gameplay_live']=json.loads(completed.stdout)

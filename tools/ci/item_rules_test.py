@@ -11,7 +11,7 @@ for item_id in (2207,2253,2287):
     assert items[item_id]['Refineable'], items[item_id]['AegisName']
 assert items[20462]['Locations']=={'Costume_Head_Low':True}
 assert items[31682]['Locations']=={'Costume_Head_Mid':True}
-print('MUHRO_ITEM_RULES three refinable headgears and two costume positions correct')
+print('ITEM_RULES three refinable headgears and two costume positions correct')
 monsters={}
 for row in renewal_records(root,'db/mob_db.yml'):
     monsters.setdefault(row['Id'],{}).update(row)
@@ -22,4 +22,4 @@ for mob_id,card in ((22414,'Yordos_Inve_Card'),(22415,'Yordos_Judge_Card')):
     assert not any(drop['Item']=='Yortus_Bailiff_Card' for drop in drops)
 assert monsters[20891]['Hp']==868754928
 assert monsters[21062]['Hp']==1578754928
-print('MUHRO_MOB_RULES awakened Yordos cards and rescue-selected boss HP correct')
+print('MOB_RULES awakened Yordos cards and rescue-selected boss HP correct')

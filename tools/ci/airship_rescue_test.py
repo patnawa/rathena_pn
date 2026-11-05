@@ -53,7 +53,7 @@ int main() {
         check(mask==31,"five bits complete");
     } while(std::next_permutation(order,order+5));
     for(mask=0;mask<32;++mask) check(boss()==(mask==31?20891:21062),"every incomplete subset keeps stronger boss");
-    std::printf("MUHRO_AIRSHIP_RESCUE checks=%d failures=%d\n",checks,failures);
+    std::printf("AIRSHIP_RESCUE checks=%d failures=%d\n",checks,failures);
     return failures?1:0;
 }
 '''
@@ -82,4 +82,4 @@ width,height,data = cells
 for x,y in positions:
     x,y = int(x),int(y)
     assert 0<=x<width and 0<=y<height and data[y*width+x] in (0,3,6), (x,y)
-print('MUHRO_AIRSHIP_GEOMETRY five unique walkable survivor locations')
+print('AIRSHIP_GEOMETRY five unique walkable survivor locations')

@@ -1,6 +1,6 @@
 """Real Fashion NPC/refine packets and SQL persistence in labelled fixtures only.
 
-Run after muhro_gameplay_live_client.py in the disposable game namespace. This
+Run after gameplay_live_client.py in the disposable game namespace. This
 seeds only its synthetic character; it cannot target a general Ragnarok server.
 """
 import argparse

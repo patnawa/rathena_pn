@@ -18,8 +18,8 @@ import time
 from datetime import datetime, timezone
 
 LIVE=Path('/app/rathena')
-CANDIDATE=Path('/app/rathena-builds/muhro-mail-20260928')
-EVIDENCE=Path('/app/pn-muhro-zeny-20260928')
+CANDIDATE=Path('/app/rathena-builds/mail-20260928')
+EVIDENCE=Path('/app/pn-zeny-20260928')
 DB='rathena-db'
 WRITERS=['rathena-map','rathena-char','rathena-login','rathena-web','rathena-fluxcp']
 BINARIES=[role+'-server' for role in ('login','char','map','web')]
