@@ -105,6 +105,13 @@ int main(int argc,char** argv) {
     assert(!wallet_stack(observed_draw,std::size(observed_draw),false)); // old logic reproduces failure
     assert(attested_wallet_stack(observed_draw,std::size(observed_draw),false,active_row));
     assert(attested_wallet_stack(observed_measure,std::size(observed_measure),true,active_row));
+    // 2026-11-06 live capture: Windows x86 stack capture returns one DLL frame
+    // and no game frames, although TextOutW's direct return address is 15074d.
+    assert(!attested_wallet_stack(nullptr,0,false,active_row));
+    assert(attested_wallet_stack(nullptr,0,false,active_row,0x15074d));
+    assert(attested_wallet_stack(nullptr,0,true,active_row,0x150613));
+    assert(!attested_wallet_stack(nullptr,0,false,active_row,0x15074e));
+    assert(!attested_wallet_stack(nullptr,0,false,RowContext{},0x15074d));
     static constexpr uintptr_t secondary_measure[]={0x150613,0x14fd31,0x6805ff,0x597a1f,0x598875};
     assert(!attested_wallet_stack(secondary_measure,std::size(secondary_measure),true,active_row));
     assert(!attested_wallet_stack(secondary_measure,std::size(secondary_measure),true,RowContext{}));

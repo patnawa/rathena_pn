@@ -261,7 +261,13 @@ bool wallet_stack(const uintptr_t* frames,size_t count,bool measurement) {
         (frames[needed-1]==0x597a02||frames[needed-1]==0x599231);
 }
 
-bool attested_wallet_stack(const uintptr_t* frames,size_t count,bool measurement,const RowContext& row) {
+bool attested_wallet_stack(const uintptr_t* frames,size_t count,bool measurement,const RowContext& row,uintptr_t direct_caller=0) {
+    if(direct_caller) {
+        if(direct_caller!=uintptr_t(measurement?0x150613:0x15074d))return false;
+        // x86 stack walking can return no game frames. The scoped native
+        // owner/caller token and verified GDI return instruction remain exact.
+        if(row_context_valid(row))return true;
+    }
     if(!row.height)return wallet_stack(frames,count,measurement);
     if(!row_context_valid(row))return false;
     // GCC/native mixed frames can omit the original caller after detouring.
@@ -274,28 +280,37 @@ bool attested_wallet_stack(const uintptr_t* frames,size_t count,bool measurement
     return count>=needed&&std::equal(expected,expected+needed,frames);
 }
 
-bool native_caller(bool measurement) {
+bool native_text_call(bool measurement,uintptr_t direct_caller) {
     if(!InterlockedCompareExchange(&executable_verified,0,0)||!image_base)return false;
+    const uintptr_t expected=measurement?0x150613:0x15074d;
+    if(direct_caller!=expected)return false;
+    // Verify the executing unpacked call instruction as well as the PE hash.
+    // Its absolute IAT operand is rebased, so compare against this image base.
+    const uintptr_t caller=image_base+expected;
+    BYTE instruction[6]{};SIZE_T read=0;
+    if(!ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<void*>(caller-6),instruction,sizeof(instruction),&read)||read!=sizeof(instruction))return false;
+    uintptr_t target=0;memcpy(&target,instruction+2,sizeof(uint32_t));
+    return instruction[0]==0xff&&instruction[1]==0x15&&target==image_base+(measurement?0xcc70e0:0xcc712c);
+}
+
+bool native_caller(bool measurement,uintptr_t direct_caller) {
+    if(!native_text_call(measurement,direct_caller))return false;
+    // The packed executable's HUD code is unavailable at DLL attach. Retry
+    // only from the verified native text path on the rendering game thread.
+    if(!InterlockedCompareExchange(&layout_installed,0,0))install_layout_hooks();
+    if(attested_wallet_stack(nullptr,0,measurement,active_row,direct_caller))return true;
     void* captured[24]{};const auto count=CaptureStackBackTrace(0,24,captured,nullptr);
     uintptr_t frames[24]{};size_t used=0;
     for(unsigned i=0;i<count;++i) {
         const uintptr_t address=reinterpret_cast<uintptr_t>(captured[i]);
         if(address>=image_base&&address<image_base+0x460c000)frames[used++]=address-image_base;
     }
-    const bool matched=attested_wallet_stack(frames,used,measurement,active_row);
+    const bool matched=attested_wallet_stack(frames,used,measurement,active_row,direct_caller);
     if(InterlockedCompareExchange(&diagnostics,0,0)) {
     char stack[512]{};int at=0;for(size_t i=0;i<used&&at<490;++i)at+=snprintf(stack+at,sizeof(stack)-at," %08lx",static_cast<unsigned long>(frames[i]));
     trace("candidate api=%s stack_match=%u stack=%s",measurement?"measure":"draw",unsigned(matched),stack);
     }
-    if(!matched)return false;
-    // Verify the executing unpacked call instruction as well as the PE hash.
-    // Its absolute IAT operand is rebased, so compare against this image base.
-    const uintptr_t caller=image_base+(measurement?0x150613:0x15074d);
-    BYTE instruction[6]{};SIZE_T read=0;
-    if(!ReadProcessMemory(GetCurrentProcess(),reinterpret_cast<void*>(caller-6),instruction,sizeof(instruction),&read)||read!=sizeof(instruction))return false;
-    uintptr_t target=0;memcpy(&target,instruction+2,sizeof(uint32_t));
-    const bool valid=instruction[0]==0xff&&instruction[1]==0x15&&target==image_base+(measurement?0xcc70e0:0xcc712c);
-    trace("instruction valid=%u target=%08lx",unsigned(valid),static_cast<unsigned long>(target));return valid;
+    return matched;
 }
 
 bool native_surface(HDC dc,BITMAP& bitmap) {
@@ -350,7 +365,8 @@ bool read_snapshot(Snapshot& output) {
 
 BOOL WINAPI hooked_measure(HDC dc,LPCWSTR text,int count,LPSIZE size) {
     Snapshot snapshot;SIZE fitted{};std::wstring output;
-    if(size&&(active_row.height?row_source_matches(text,count):numeric_wallet_suffix(text,count))&&native_caller(true)) {
+    const auto caller=reinterpret_cast<uintptr_t>(__builtin_return_address(0))-image_base;
+    if(size&&(active_row.height?row_source_matches(text,count):numeric_wallet_suffix(text,count))&&native_caller(true,caller)) {
         const int64_t wallet=read_snapshot(snapshot)?snapshot.wallet:-1;
         BITMAP bitmap{};
         if(separate_surface(dc,bitmap)&&active_row.height==bitmap.bmHeight) {const auto full=full_row_text(wallet);return original_measure(dc,full.data(),int(full.size()),size);}
@@ -360,8 +376,8 @@ BOOL WINAPI hooked_measure(HDC dc,LPCWSTR text,int count,LPSIZE size) {
 }
 BOOL WINAPI hooked_text(HDC dc,int x,int y,LPCWSTR text,int count) {
     Snapshot snapshot;
-    if((active_row.height?row_source_matches(text,count):numeric_wallet_suffix(text,count))&&native_caller(false)) {
-        if(!InterlockedCompareExchange(&layout_installed,0,0))install_layout_hooks();
+    const auto caller=reinterpret_cast<uintptr_t>(__builtin_return_address(0))-image_base;
+    if((active_row.height?row_source_matches(text,count):numeric_wallet_suffix(text,count))&&native_caller(false,caller)) {
         const int64_t wallet=read_snapshot(snapshot)?snapshot.wallet:-1;
         bool changed=false;BITMAP bitmap{};
         const BOOL result=(separate_surface(dc,bitmap)&&active_row.height==bitmap.bmHeight)?draw_separate_row(dc,y,wallet,changed):draw_fitted(dc,x,y,text,count,wallet,changed);
@@ -428,5 +444,4 @@ void native_zeny_install() {
     if(MH_ApplyQueued()!=MH_OK){MH_RemoveHook(text);MH_RemoveHook(measure);return;}
     InterlockedExchange(&executable_verified,1);
     trace("installed pinned native wallet hooks pid=%lu",GetCurrentProcessId());
-    install_layout_hooks();
 }

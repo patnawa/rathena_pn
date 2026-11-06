@@ -46,3 +46,30 @@ and diagnostic logging is disabled in the installed client.
 
 The later [fashion shortcuts](main_office.md#gold-points-and-fashion-shortcuts)
 are a separate server-script update and need no further client patch.
+
+## November 6 render-path repair
+
+The November client again showed the legacy 2,147,483,647 value while Wallet &
+Bank confirmed 10,000,000,000. A live trace established two linked failures:
+the initial layout attempt ran before the packed HUD code was available, and
+Windows x86 stack capture omitted game frames on the draw path. The direct
+TextOutW return address still matched the pinned native call at RVA 0x15074d.
+
+Layout installation now retries from the verified native GDI path on the game
+rendering thread. A valid scoped Basic Information owner/caller/text token and
+the exact imported GDI call instruction authorize the separate row even when
+stack walking returns no game frames. The executable hash, decoded instruction
+guards, object checks, clip checks and authenticated generation-bound cache remain
+in force. The regression replay failed before the fix and passed afterward.
+
+The actual AP game screen and native trace verified separate right-aligned Weight
+and Zeny rows showing 10,000,000,000. Non-AP layout retains automated coverage;
+current non-AP live acceptance was not separately recorded. The corrected DLL
+SHA-256 is `922b7c6dfd1b881ee2f906eb2139bbf2eae97ef2af143957fb8ed1503928acd5`.
+Release `client-20261106-native-hud`, sequence `2026092913`, changes only that DLL
+and release metadata in the signed `release-v2.json` channel. The legacy feed and
+bootstrap are unchanged. The local signed update and actual installed bootstrap's
+offline verification passed, with ten personal files preserved and normal rollback
+containing both changed files. Temporary instrumentation was removed and diagnostic
+logging disabled. Operational receipts are in `OPS/zeny-display-20261106` in the
+workspace.
